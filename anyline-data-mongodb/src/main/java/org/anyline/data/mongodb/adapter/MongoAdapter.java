@@ -22,12 +22,14 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
-import org.anyline.data.listener.DDListener;
-import org.anyline.data.listener.DMListener;
+import org.anyline.data.mongodb.entity.MongoDataRow;
 import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -57,31 +59,16 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.anyline.util.SQLUtil;
 import org.bson.conversions.Bson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.util.*;
 
 @Repository("anyline.data.adapter.mongo")
 public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter {
-
-    @Autowired(required = false)
-    protected DMListener dmListener;
-    @Autowired(required = false)
-    protected DDListener ddListener;
-
-
-    public DMListener getListener() {
-        return dmListener;
-    }
-
-    @Autowired(required=false)
-    public void setListener(DMListener listener) {
-        this.dmListener = listener;
-    }
 
     @Override
     public DatabaseType type() {
@@ -91,11 +78,6 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String... conditions) {
         return false;
-    }
-
-    @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
-        return 0;
     }
 
     /**
@@ -337,7 +319,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     protected void fillQueryContent(DataRuntime runtime, TableRun run){
-        Bson bson = Filters.empty();
+        Bson bson = null;
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
@@ -390,15 +372,19 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     private Bson parseCondition(Bson bson, ConditionChain chain){
         String join = chain.getJoin();
-        Bson child = Filters.empty();
+        Bson child = null;
         List<Condition> conditions = chain.getConditions();
         for(Condition con:conditions){
             child = parseCondition(child, con);
         }
-        if("or".equalsIgnoreCase(join)){
-            bson = Filters.or(bson, child);
-        }else{
-            bson = Filters.and(bson, child);
+        if(null == bson){
+            bson = child;
+        }else {
+            if ("or".equalsIgnoreCase(join)) {
+                bson = Filters.or(bson, child);
+            } else {
+                bson = Filters.and(bson, child);
+            }
         }
         return bson;
     }
@@ -471,10 +457,13 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             MongoRuntime rt = (MongoRuntime) runtime;
             MongoDatabase database = rt.getDatabase();
             Bson bson = (Bson)run.getFilter();
-            if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
-                log.info("{}[collection:{}][filter:{}]", random, run.getTable(), bson);
+            if(null == bson){
+                bson = Filters.empty();
             }
-            FindIterable<DataRow> rows = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
+            if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+                log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTable(), bson);
+            }
+            FindIterable<MongoDataRow> rows = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列
@@ -493,7 +482,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(null != navi){
                 rows.skip((int)navi.getFirstRow()).limit(navi.getPageRows());
             }
-            for(DataRow row:rows){
+            for(MongoDataRow row:rows){
                 set.add(row);
             }
             if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
@@ -508,7 +497,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 throw ex;
             }else{
                 if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-                    log.error("{}[{}][collection:\n{}\n]", random, LogUtil.format("查询异常:", 33)+e.toString(), run.getTable());
+                    log.error("{}[{}][cmd:select][collection:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), run.getTable());
                 }
             }
         }
@@ -558,7 +547,20 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public long update(DataRuntime runtime, String random, String dest, Object data, Run run) {
-        return 0;
+        long result = -1;
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        long fr = System.currentTimeMillis();
+        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTable(), run.getUpdate(),run.getFilter());
+        MongoRuntime rt = (MongoRuntime) runtime;
+        MongoDatabase database = rt.getDatabase();
+        MongoCollection cons = database.getCollection(run.getTable());
+        UpdateResult dr = cons.updateMany((Bson)run.getFilter(), (Bson)run.getUpdate());
+        result = dr.getMatchedCount();
+        long millis = System.currentTimeMillis() - fr;
+        if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+            log.info("{}[action:update][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
+        }
+        return result;
     }
 
     @Override
@@ -573,7 +575,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values) {
-        return 0;
+        ConfigStore configs = new DefaultConfigStore();
+        configs.and(key, values);
+        return delete(runtime, random, table, configs);
     }
 
     @Override
@@ -639,7 +643,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
             return -1;
         }
-        long result = delete(runtime, random, table, run);
+        long result = delete(runtime, random, run);
         return result;
     }
 
@@ -761,14 +765,164 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
 
+
+    /**
+     * UPDATE [入口]
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param dest 表
+     * @param data 数据
+     * @param configs 条件
+     * @param columns 列
+     * @return 影响行数
+     */
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns) {
-        return null;
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+        return super.update(runtime, random, batch, dest, data, configs, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns) {
-        return null;
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String, Column> columns){
+        TableRun run = new TableRun(runtime, dest);
+        run.setFrom(2);
+        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        List<String> primaryKeys = new ArrayList<>();
+        if(null != columns && columns.size() >0 ){
+            cols = columns;
+        }else{
+            cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
+        }
+        if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+            primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
+        }else{
+            primaryKeys = new ArrayList<>();
+            primaryKeys.add("_id");
+        }
+
+        // 不更新主键 除非显示指定
+        for(String pk:primaryKeys){
+            if(!columns.containsKey(pk.toUpperCase())) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+        //不更新默认主键  除非显示指定
+        if(!columns.containsKey("_ID")) {
+            cols.remove("_ID");
+        }
+        boolean isReplaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
+        cols = checkMetadata(runtime, dest, cols);
+        List<Bson> updates = new ArrayList<>();
+        /*构造SQL*/
+        if(!cols.isEmpty()){
+            for(Column column:cols.values()){
+                String key = column.getName();
+                Object value = null;
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+                    Field field = EntityAdapterProxy.field(obj.getClass(), key);
+                    value = BeanUtil.getFieldValue(obj, field);
+                }else {
+                    value = BeanUtil.getFieldValue(obj, key);
+                }
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                }else{
+                    if("NULL".equals(value)){
+                        value = null;
+                    }else if("".equals(value) && isReplaceEmptyNull){
+                        value = null;
+                    }
+                    boolean chk = true;
+                    if(null == value){
+                        if(!ConfigTable.IS_UPDATE_NULL_FIELD){
+                            chk = false;
+                        }
+                    }else if("".equals(value)){
+                        if(!ConfigTable.IS_UPDATE_EMPTY_FIELD){
+                            chk = false;
+                        }
+                    }
+                    if(chk){
+                        updates.add(Updates.set(key, value));
+                    }
+                }
+            }
+            run.setUpdate(Updates.combine(updates));
+
+            if(null == configs) {
+                configs = new DefaultConfigStore();
+                for (String pk : primaryKeys) {
+                    if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
+                        Field field = EntityAdapterProxy.field(obj.getClass(), pk);
+                        configs.and(pk, BeanUtil.getFieldValue(obj, field));
+                    } else {
+                        configs.and(pk, BeanUtil.getFieldValue(obj, pk));
+                    }
+                }
+            }
+            run.setConfigStore(configs);
+            run.init();
+            run.appendCondition();
+        }
+        run.setFilter(parseCondition(null, run.getConditionChain()));
+        return run;
+    }
+
+    @Override
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, boolean checkPrimary, LinkedHashMap<String,Column> columns){
+        TableRun run = new TableRun(runtime, dest);
+        run.setFrom(1);
+        /*确定需要更新的列*/
+        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
+        List<String> primaryKeys = row.getPrimaryKeys();
+        if(primaryKeys.size() == 0){
+            throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
+        }
+
+        // 不更新主键 除非显示指定
+        for(String pk:primaryKeys){
+            if(!columns.containsKey(pk.toUpperCase())) {
+                cols.remove(pk.toUpperCase());
+            }
+        }
+        //不更新默认主键  除非显示指定
+        if(!columns.containsKey("_ID")) {
+            cols.remove("_ID");
+        }
+
+        boolean replaceEmptyNull = row.isReplaceEmptyNull();
+
+        List<Bson> updates = new ArrayList<>();
+        if(!cols.isEmpty()){
+            for(Column col:cols.values()){
+                String key = col.getName();
+                Object value = row.get(key);
+                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+                    String str = value.toString();
+                    value = str.substring(2, str.length()-1);
+                 }else{
+                     if("NULL".equals(value)){
+                        value = null;
+                    }else if("".equals(value) && replaceEmptyNull){
+                        value = null;
+                    }
+                }
+                updates.add(Updates.set(key, value));
+            }
+            run.setUpdate(Updates.combine(updates));
+            if(null == configs) {
+                configs = new DefaultConfigStore();
+                for (String pk : primaryKeys) {
+                    configs.and(pk, row.get(pk));
+                }
+            }
+            run.setConfigStore(configs);
+            run.init();
+            run.appendCondition();
+            run.setFilter(parseCondition(null, run.getConditionChain()));
+        }
+
+        return run;
     }
 
     @Override
@@ -817,8 +971,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String... columns) {
-        if(null == obj || null == columns || columns.length == 0){
+        if(null == obj){
             return null;
+        }
+        if(null == columns || columns.length == 0){
+           columns = new String[]{"_id"};
         }
         ConfigStore configs = new DefaultConfigStore();
         for(String column:columns){
@@ -902,11 +1059,10 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
-        Bson bson = Filters.empty();
+        Bson bson = null;
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
-
     }
     /**
      * 执行删除
@@ -929,17 +1085,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
-        long millis = -1;
-
-
-        cmd_success = true;
-        millis = System.currentTimeMillis() - fr;
-
+        log.info("{}[action:delete][collection:{}][filter:{}]", random, run.getTable(), run.getFilter());
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         MongoCollection cons = database.getCollection(run.getTable());
         DeleteResult dr = cons.deleteMany((Bson)run.getFilter());
         result = dr.getDeletedCount();
+        cmd_success = true;
+        long millis = System.currentTimeMillis() - fr;
+        if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+            log.info("{}[action:delete][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
+        }
         if(null != dmListener){
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
         }
