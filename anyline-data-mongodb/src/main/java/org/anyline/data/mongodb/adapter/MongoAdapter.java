@@ -43,6 +43,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.*;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
@@ -169,6 +170,15 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(runtime, dest);
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        if(null != generator) {
+            Object pv = BeanUtil.getFieldValue(obj, "_id");
+            if(null == pv){
+                List<String> pk = new ArrayList<>();
+                pk.add("_id");
+                generator.create(obj, DatabaseType.MongoDB, dest, pk, null);
+            }
+        }
         run.setValue(obj);
         return run;
     }
@@ -185,6 +195,18 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns){
         Run run = new TableRun(runtime, dest);
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        if(null != generator) {
+            List<String> pk = new ArrayList<>();
+            pk.add("_id");
+            for (Object item : list) {
+                Object pv = BeanUtil.getFieldValue(item, "_id");
+                if(null != pv){
+                    break;
+                }
+                generator.create(item, DatabaseType.MongoDB, dest, pk, null);
+            }
+        }
         run.setValue(list);
         return run;
     }
@@ -250,7 +272,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(SLOW_SQL_MILLIS > 0){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[SLOW CMD][action:insert][millis:{}ms][collection:{}]", random, millis, collection);
+                    log.warn("{}[slow cmd][action:insert][millis:{}ms][collection:{}]", random, millis, collection);
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
