@@ -22,6 +22,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.result.DeleteResult;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
@@ -30,6 +31,7 @@ import org.anyline.data.listener.DMListener;
 import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
@@ -576,7 +578,44 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public long delete(DataRuntime runtime, String random, String dest, Object obj, String... columns) {
-        return 0;
+        dest = DataSourceUtil.parseDataSource(dest,obj);
+        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+        long size = 0;
+        if(null != obj){
+            if(obj instanceof Collection){
+                Collection list = (Collection) obj;
+                for(Object item:list){
+                    long qty = delete(runtime, random, dest, item, columns);
+                    //如果不执行会返回-1
+                    if(qty > 0){
+                        size += qty;
+                    }
+                }
+                if(log.isInfoEnabled()) {
+                    log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
+                }
+            }else{
+                swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
+                if(swt == ACTION.SWITCH.BREAK){
+                    return -1;
+                }
+                if(null != dmListener){
+                    swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
+                }
+                if(swt == ACTION.SWITCH.BREAK){
+                    return -1;
+                }
+                Run run = buildDeleteRun(runtime, dest, obj, columns);
+                if(!run.isValid()){
+                    if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+                        log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+                    }
+                    return -1;
+                }
+                size = delete(runtime, random,  run);
+            }
+        }
+        return size;
     }
 
     @Override
@@ -600,7 +639,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
             return -1;
         }
-        long result = exeDelete(  runtime, random,  run);
+        long result = delete(runtime, random, table, run);
         return result;
     }
 
@@ -760,12 +799,32 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values) {
-        return null;
+        if(null == key || null == values){
+            return null;
+        }
+        ConfigStore configs = new DefaultConfigStore();
+        if(values instanceof Collection){
+            Collection collection = (Collection)values;
+            if(collection.isEmpty()){
+                return null;
+            }
+            configs.in(key, collection);
+        }else{
+            configs.and(key, values);
+        }
+        return buildDeleteRun(runtime, table, configs);
     }
 
     @Override
     public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String... columns) {
-        return null;
+        if(null == obj || null == columns || columns.length == 0){
+            return null;
+        }
+        ConfigStore configs = new DefaultConfigStore();
+        for(String column:columns){
+            configs.and(column, BeanUtil.getFieldValue(obj, column));
+        }
+        return buildDeleteRun(runtime, dest, configs);
     }
 
     /* *****************************************************************************************************************
@@ -834,15 +893,28 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      */
     @Override
     public void fillDeleteRunContent(DataRuntime runtime, Run run){
+        if(null != run){
+            if(run instanceof TableRun){
+                TableRun r = (TableRun) run;
+                fillDeleteRunContent(runtime, r);
+            }
+        }
     }
 
+    protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
+        Bson bson = Filters.empty();
+        ConditionChain chain = run.getConditionChain();
+        bson = parseCondition(bson, chain);
+        run.setFilter(bson);
+
+    }
     /**
      * 执行删除
      * @param runtime DataRuntime
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @return int
      */
-    protected long exeDelete(DataRuntime runtime, String random, Run run){
+    public long delete(DataRuntime runtime, String random, Run run){
         long result = -1;
         boolean cmd_success = false;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -859,10 +931,15 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         long millis = -1;
 
-        result = execute(runtime, random, run);
+
         cmd_success = true;
         millis = System.currentTimeMillis() - fr;
 
+        MongoRuntime rt = (MongoRuntime) runtime;
+        MongoDatabase database = rt.getDatabase();
+        MongoCollection cons = database.getCollection(run.getTable());
+        DeleteResult dr = cons.deleteMany((Bson)run.getFilter());
+        result = dr.getDeletedCount();
         if(null != dmListener){
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
         }
