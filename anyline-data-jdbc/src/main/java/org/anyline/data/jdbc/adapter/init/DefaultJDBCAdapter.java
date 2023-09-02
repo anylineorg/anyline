@@ -2107,7 +2107,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return -1;
 		}
-		long result = exeDelete(runtime, random, run);
+		long result = delete(runtime, random, run);
 		return result;
 	}
 
@@ -2157,7 +2157,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 					}
 					return -1;
 				}
-				size = exeDelete(runtime, random,  run);
+				size = delete(runtime, random,  run);
 			}
 		}
 		return size;
@@ -2195,7 +2195,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			}
 			return -1;
 		}
-		long result = exeDelete(  runtime, random,  run);
+		long result = delete(  runtime, random,  run);
 		return result;
 	}
 
@@ -2276,7 +2276,8 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return int
 	 */
-	protected long exeDelete(DataRuntime runtime, String random, Run run){
+ 
+	public long delete(DataRuntime runtime, String random, Run run){
 		long result = -1;
 		boolean cmd_success = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;

@@ -1042,8 +1042,7 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildTruncateRun(DataRuntime runtime, String table);
 
-
-
+	long delete(DataRuntime runtime, String random, Run run);
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
