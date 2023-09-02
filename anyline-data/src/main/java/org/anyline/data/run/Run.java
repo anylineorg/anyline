@@ -139,6 +139,8 @@ public interface Run {
 
 	void setFilter(Object filter);
 	Object getFilter();
+	void setUpdate(Object update);
+	Object getUpdate();
 	Run setQueryColumns(String ... columns);
 	Run setQueryColumns(List<String> columns);
 	List<String> getQueryColumns();
