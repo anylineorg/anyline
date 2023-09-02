@@ -30,6 +30,7 @@ public class OriginalDataRow extends DataRow {
         if (null != pk) {
             primaryKeys.add(DEFAULT_PRIMARY_KEY);
         }
+        parseKeycase(keyCase);
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
     }
