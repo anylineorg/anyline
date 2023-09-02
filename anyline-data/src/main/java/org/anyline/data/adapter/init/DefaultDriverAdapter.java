@@ -24,6 +24,8 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.listener.DDListener;
+import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -40,10 +42,12 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
+import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +65,22 @@ import java.util.*;
 
 public abstract class DefaultDriverAdapter implements DriverAdapter {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDriverAdapter.class);
+
+	@Autowired(required = false)
+	protected DMListener dmListener;
+	@Autowired(required = false)
+	protected DDListener ddListener;
+
+
+	public DMListener getListener() {
+		return dmListener;
+	}
+
+	@Autowired(required=false)
+	public void setListener(DMListener listener) {
+		this.dmListener = listener;
+	}
+
 	protected DatabaseType db;
 
 	public String delimiterFr = "";
@@ -417,7 +437,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			BeanUtil.removeAll(ignores, columns);
 			for(String ignore:ignores){
-				cols.remove(ignore);
+				cols.remove(ignore.toUpperCase());
 			}
 			if(log.isDebugEnabled()) {
 				log.debug("[confirm insert columns][ignores:{}]", ignores);
@@ -731,6 +751,96 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return cols;
 	}
 
+	/**
+	 * UPDATE [入口]
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param configs 条件
+	 * @param columns 列
+	 * @return 影响行数
+	 */
+	@Override
+	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		dest = DataSourceUtil.parseDataSource(dest, data);
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		boolean cmd_success = false;
+		if(null == random){
+			random = random(runtime);
+		}
+		swt = InterceptorProxy.prepareUpdate(runtime, random, batch, dest, data, configs, columns);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareUpdate(runtime, random, batch, dest, data, configs, false, columns);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null == data){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+				throw new SQLUpdateException("更新空数据");
+			}else{
+				log.error("更新空数据");
+			}
+		}
+		long result = 0;
+		if(data instanceof Collection){
+			if(batch <= 1){
+				Collection list = (Collection) data;
+				for (Object item : list) {
+					result += update(runtime, random, 0, dest, item, configs, columns);
+				}
+				return result;
+			}
+		}
+
+		Run run = buildUpdateRun(runtime, batch, dest, data, configs,false, columns);
+
+		Table table = new Table(dest);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			table.setColumns(columns(runtime, null,false, table, false));
+		}
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+			}
+			return -1;
+		}
+		//String sql = run.getFinalUpdate();
+		/*if(BasicUtil.isEmpty(sql)){
+			log.warn("[不具备更新条件][dest:{}]",dest);
+			return -1;
+		}
+		List<Object> values = run.getValues();*/
+		long fr = System.currentTimeMillis();
+		/*执行SQL*/
+		/*if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+		}*/
+		long millis = -1;
+		swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
+		if (swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+		if (null != dmListener) {
+			swt = dmListener.beforeUpdate(runtime, random, run, dest, data, columns);
+		}
+		if (swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+		result = update(runtime, random, dest, data, run);
+		cmd_success = true;
+		millis = System.currentTimeMillis() - fr;
+		if (null != dmListener) {
+			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, cmd_success, result,  millis);
+		}
+		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, cmd_success, result, System.currentTimeMillis() - fr);
+		return result;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													QUERY
