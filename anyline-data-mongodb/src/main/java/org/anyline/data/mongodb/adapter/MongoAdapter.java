@@ -93,53 +93,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      */
     @Override
     public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns) {
-        if(null == random){
-            random = random(runtime);
-        }
-        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        boolean cmd_success = false;
-        swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
-        if(swt == ACTION.SWITCH.BREAK){
-            return -1;
-        }
-        if(null != dmListener){
-            swt = dmListener.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
-        }
-        if(swt == ACTION.SWITCH.BREAK){
-            return -1;
-        }
-        Run run = buildInsertRun(runtime, batch, dest, data, checkPrimary, columns);
-        Table table = new Table(dest);
-        //提前设置好columns,到了adapter中需要手动检测缓存
-        if(ConfigTable.IS_AUTO_CHECK_METADATA){
-            table.setColumns(columns(runtime, random,  false, table, false));
-        }
-        if(null == run){
-            return 0;
-        }
-
-        long cnt = 0;
-        //final String sql = run.getFinalInsert();
-        //final List<Object> values = run.getValues();
-        long fr = System.currentTimeMillis();
-        long millis = -1;
-
-        swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
-        if(swt == ACTION.SWITCH.BREAK){
-            return -1;
-        }
-        if(null != dmListener){
-            swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
-        }
-        if(swt == ACTION.SWITCH.BREAK){
-            return -1;
-        }
-        cnt = insert(runtime, random, data, run, null);
-        if (null != dmListener) {
-            dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
-        }
-        InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
-        return cnt;
+        return super.insert(runtime, random, batch, dest, data, checkPrimary, columns);
     }
 
     /**
@@ -195,14 +149,13 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return run;
     }
     /**
-     * 执行 insert
+     * insert [执行]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param data entity|DataRow|DataSet
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @param pks pks
      * @return int 影响行数
-     * @throws Exception 异常
      */
     @Override
     public long insert(DataRuntime runtime, String random, Object data, Run run, String[] pks) {
@@ -211,7 +164,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         String collection = run.getTable();
         if(null == value){
             if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-                log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
+                log.warn("[valid:false][action:insert][不具备执行条件][dest:"+run.getTable()+"]");
             }
             return -1;
         }
@@ -263,18 +216,18 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 }
             }
             if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
-                log.info("{}[执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
+                log.info("{}[action:insert][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(cnt, 34));
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
+                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_SHOW_SQL_WHEN_ERROR){
-                    log.error("{}[{}][table:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTable());
+                    log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTable(), BeanUtil.object2json(data));
                 }
             }
         }
@@ -511,7 +464,16 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public long count(DataRuntime runtime, String random, Run run) {
-        return 0;
+        MongoRuntime rt = (MongoRuntime) runtime;
+        MongoDatabase database = rt.getDatabase();
+        Bson bson = (Bson)run.getFilter();
+        if(null == bson){
+            bson = Filters.empty();
+        }
+        if(ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()){
+            log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTable(), bson);
+        }
+        return database.getCollection(run.getTable()).countDocuments(bson);
     }
 
     @Override
