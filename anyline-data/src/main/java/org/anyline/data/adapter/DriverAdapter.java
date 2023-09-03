@@ -665,7 +665,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * select [入口]
+	 * query [入口]
 	 * <br/>
 	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -687,7 +687,7 @@ public interface DriverAdapter {
 	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
 
 	/**
-	 * select [入口]
+	 * query [入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param clazz 类
@@ -699,7 +699,7 @@ public interface DriverAdapter {
 	 */
 	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) ;
 	/**
-	 * select [入口]
+	 * query [入口]
 	 * <br/>
 	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

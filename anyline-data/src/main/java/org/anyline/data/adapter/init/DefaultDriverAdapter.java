@@ -24,9 +24,11 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
@@ -40,6 +42,7 @@ import org.anyline.data.util.ThreadConfig;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLUpdateException;
@@ -286,6 +289,84 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, boolean checkPrimary, LinkedHashMap<String,Column> columns)
 	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, boolean checkPrimary, List<String> columns)
 	 ******************************************************************************************************************/
+
+	/**
+	 * insert [入口]<br/>
+	 * 执行完成后会补齐自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param dest 表
+	 * @param data 数据
+	 * @param checkPrimary 是否需要检查重复主键,默认不检查
+	 * @param columns 列
+	 * @return 影响行数
+	 */
+	@Override
+	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, boolean checkPrimary, List<String> columns){
+		dest = DataSourceUtil.parseDataSource(dest, data);
+		if(null == random){
+			random = random(runtime);
+		}
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		boolean cmd_success = false;
+		swt = InterceptorProxy.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareInsert(runtime, random, batch, dest, data, checkPrimary, columns);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != data && data instanceof DataSet){
+			DataSet set = (DataSet)data;
+			Map<String,Object> tags = set.getTags();
+			if(null != tags && tags.size()>0){
+				LinkedHashMap<String, PartitionTable> ptables = ptables(runtime, random, false, new MasterTable(dest), tags, null);
+				if(ptables.size() != 1){
+					String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(ptables.keySet());
+					if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
+						throw new SQLUpdateException(msg);
+					}else{
+						log.error(msg);
+						return -1;
+					}
+				}
+				dest = ptables.values().iterator().next().getName();
+			}
+		}
+		Run run = buildInsertRun(runtime, batch, dest, data, checkPrimary, columns);
+		Table table = new Table(dest);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			table.setColumns(columns(runtime, random,  false, table, false));
+		}
+		if(null == run){
+			return 0;
+		}
+
+		long cnt = 0;
+		long fr = System.currentTimeMillis();
+		long millis = -1;
+
+		swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.beforeInsert(runtime, random, run, dest, data, checkPrimary, columns);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		cnt = insert(runtime, random, data, run, null);
+		if (null != dmListener) {
+			dmListener.afterInsert(runtime, random, run, cnt, dest, data, checkPrimary, columns, cmd_success, cnt, millis);
+		}
+		InterceptorProxy.afterInsert(runtime, random, run, dest, data, checkPrimary, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
+		return cnt;
+	}
 
 	/**
 	 * 创建 insert Run
@@ -854,6 +935,114 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * protected void fillQueryContent(DataRuntime runtime, TextRun run)
 	 * protected void fillQueryContent(DataRuntime runtime, TableRun run)
 	 ******************************************************************************************************************/
+
+	/**
+	 * query [入口]
+	 * <br/>
+	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
+	@Override
+	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		DataSet set = null;
+		Long fr = System.currentTimeMillis();
+		boolean cmd_success = false;
+		Run run = null;
+		PageNavi navi = null;
+
+		if(null == random){
+			random = random(runtime);
+		}
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		if (null != dmListener) {
+			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return new DataSet();
+		}
+		//query拦截
+		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
+		if(swt == ACTION.SWITCH.BREAK){
+			return new DataSet();
+		}
+
+		run = buildQueryRun(runtime, prepare, configs, conditions);
+
+		if (ConfigTable.IS_SHOW_SQL && log.isWarnEnabled() && !run.isValid()) {
+			String tmp = "[valid:false][不具备执行条件]";
+			String src = "";
+			if (prepare instanceof TablePrepare) {
+				src = prepare.getTable();
+			} else {
+				src = prepare.getText();
+			}
+			tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]";
+			log.warn(tmp);
+		}
+		navi = run.getPageNavi();
+		long total = 0;
+		if (run.isValid()) {
+			if (null != navi) {
+				if (null != dmListener) {
+					dmListener.beforeTotal(runtime, random, run);
+				}
+				fr = System.currentTimeMillis();
+				if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+					// 第一条 query中设置的标识(只查一行)
+					total = 1;
+				} else {
+					// 未计数(总数 )
+					if (navi.getTotalRow() == 0) {
+						total = count(runtime, random, run);
+						navi.setTotalRow(total);
+					} else {
+						total = navi.getTotalRow();
+					}
+				}
+				if (null != dmListener) {
+					dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+				}
+				if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+					log.info("[查询记录总数][行数:{}]", total);
+				}
+			}
+		}
+		fr = System.currentTimeMillis();
+		if (run.isValid()) {
+			if(null == navi || total > 0){
+				if(null != dmListener){
+					dmListener.beforeQuery(runtime, random, run, total);
+				}
+				swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
+				if(swt == ACTION.SWITCH.BREAK){
+					return new DataSet();
+				}
+				set = select(runtime, random, false, prepare.getTable(), configs, run);
+				cmd_success = true;
+			}else{
+				set = new DataSet();
+			}
+		} else {
+			set = new DataSet();
+		}
+
+		set.setDataSource(prepare.getDataSource());
+		set.setNavi(navi);
+		if (null != navi && navi.isLazy()) {
+			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+		}
+
+		if(null != dmListener){
+			dmListener.afterQuery(runtime, random, run, cmd_success, set, System.currentTimeMillis() - fr);
+		}
+		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, set, navi, System.currentTimeMillis() - fr);
+		return set;
+	}
 
 	/**
 	 * 创建查询SQL
