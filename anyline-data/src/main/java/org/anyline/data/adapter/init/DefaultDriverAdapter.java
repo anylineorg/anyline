@@ -1240,6 +1240,132 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * protected Run buildDeleteRunFromTable(String table, String key, Object values)
 	 * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
 	 ******************************************************************************************************************/
+
+	/**
+	 * delete [入口]
+	 * <br/>
+	 * 合成 where column in (values)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param values 列对应的值
+	 * @return 影响行数
+	 * @param <T> T
+	 */
+	@Override
+	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values){
+		table = DataSourceUtil.parseDataSource(table, null);
+		if(null == random){
+			random = random(runtime);
+		}
+		ACTION.SWITCH swt = InterceptorProxy.prepareDelete(runtime, random, batch, table, key, values);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareDelete(runtime, random, batch, table, key, values);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		Run run = buildDeleteRun(runtime, batch, table, key, values);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][table:" +table+ "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
+		long result = delete(runtime, random, run);
+		return result;
+	}
+
+	/**
+	 * delete [入口]
+	 * <br/>
+	 * 合成 where k1 = v1 and k2 = v2
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param obj entity或DataRow
+	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
+	 * @return 影响行数
+	 */
+	@Override
+	public long delete(DataRuntime runtime, String random, String dest, Object obj, String... columns){
+		dest = DataSourceUtil.parseDataSource(dest,obj);
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		long size = 0;
+		if(null != obj){
+			if(obj instanceof Collection){
+				Collection list = (Collection) obj;
+				for(Object item:list){
+					long qty = delete(runtime, random, dest, item, columns);
+					//如果不执行会返回-1
+					if(qty > 0){
+						size += qty;
+					}
+				}
+				if(log.isInfoEnabled()) {
+					log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
+				}
+			}else{
+				swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
+				if(swt == ACTION.SWITCH.BREAK){
+					return -1;
+				}
+				if(null != dmListener){
+					swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
+				}
+				if(swt == ACTION.SWITCH.BREAK){
+					return -1;
+				}
+				Run run = buildDeleteRun(runtime, dest, obj, columns);
+				if(!run.isValid()){
+					if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+						log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+					}
+					return -1;
+				}
+				size = delete(runtime, random,  run);
+			}
+		}
+		return size;
+	}
+
+	/**
+	 * delete [入口]
+	 * <br/>
+	 * 根据configs和conditions过滤条件
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @param configs 查询条件及相关设置
+	 * @param conditions  简单过滤条件
+	 * @return 影响行数
+	 */
+	@Override
+	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+		table = DataSourceUtil.parseDataSource(table, null);
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		if(null != dmListener){
+			swt = dmListener.prepareDelete(runtime, random, 0, table, configs, conditions);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return -1;
+		}
+		Run run = buildDeleteRun(runtime, table, configs, conditions);
+		if(!run.isValid()){
+			if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
+				log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+			}
+			return -1;
+		}
+		long result = delete(  runtime, random,  run);
+		return result;
+	}
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, int batch, String table, String key, Object values){
 		return buildDeleteRunFromTable(runtime, batch, table, key, values);

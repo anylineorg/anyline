@@ -542,69 +542,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public long delete(DataRuntime runtime, String random, String dest, Object obj, String... columns) {
-        dest = DataSourceUtil.parseDataSource(dest,obj);
-        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        long size = 0;
-        if(null != obj){
-            if(obj instanceof Collection){
-                Collection list = (Collection) obj;
-                for(Object item:list){
-                    long qty = delete(runtime, random, dest, item, columns);
-                    //如果不执行会返回-1
-                    if(qty > 0){
-                        size += qty;
-                    }
-                }
-                if(log.isInfoEnabled()) {
-                    log.info("[delete Collection][影响行数:{}]", LogUtil.format(size, 34));
-                }
-            }else{
-                swt = InterceptorProxy.prepareDelete(runtime, random, 0, dest, obj, columns);
-                if(swt == ACTION.SWITCH.BREAK){
-                    return -1;
-                }
-                if(null != dmListener){
-                    swt = dmListener.prepareDelete(runtime, random, 0, dest, obj, columns);
-                }
-                if(swt == ACTION.SWITCH.BREAK){
-                    return -1;
-                }
-                Run run = buildDeleteRun(runtime, dest, obj, columns);
-                if(!run.isValid()){
-                    if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-                        log.warn("[valid:false][不具备执行条件][dest:" + dest + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-                    }
-                    return -1;
-                }
-                size = delete(runtime, random,  run);
-            }
-        }
-        return size;
+        return super.delete(runtime, random, dest, obj, columns);
     }
 
     @Override
     public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
-        table = DataSourceUtil.parseDataSource(table, null);
-        ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
-        if(swt == ACTION.SWITCH.BREAK){
-            return -1;
-        }
-        if(null != dmListener){
-            swt = dmListener.prepareDelete(runtime,random, 0, table, configs, conditions);
-        }
-        if(swt == ACTION.SWITCH.BREAK){
-            return -1;
-        }
-        Run run = buildDeleteRun(runtime, table, configs, conditions);
-        if(!run.isValid()){
-            if(ConfigTable.IS_SHOW_SQL && log.isWarnEnabled()){
-                log.warn("[valid:false][不具备执行条件][table:" + table + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
-            }
-            return -1;
-        }
-        long result = delete(runtime, random, run);
-        return result;
+        return super.delete(runtime, random, table, configs, conditions);
     }
 
     @Override
