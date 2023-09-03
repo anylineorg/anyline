@@ -207,7 +207,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(SLOW_SQL_MILLIS > 0){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:insert][millis:{}ms][collection:{}]", random, millis, collection);
+                    log.warn("{}[slow cmd][action:insert][执行耗时:{}ms][collection:{}]", random, millis, collection);
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
@@ -517,7 +517,18 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         UpdateResult dr = cons.updateMany((Bson)run.getFilter(), (Bson)run.getUpdate());
         result = dr.getMatchedCount();
         long millis = System.currentTimeMillis() - fr;
-        if (ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
+        boolean slow = false;
+        long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
+        if(SLOW_SQL_MILLIS > 0){
+            if(millis > SLOW_SQL_MILLIS){
+                slow = true;
+                log.warn("{}[slow cmd][action:update][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
+                if(null != dmListener){
+                    dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true , result, millis);
+                }
+            }
+        }
+        if (!slow && ConfigTable.IS_SHOW_SQL && log.isInfoEnabled()) {
             log.info("{}[action:update][执行耗时:{}ms][影响行数:{}]", random, millis, LogUtil.format(result, 34));
         }
         return result;

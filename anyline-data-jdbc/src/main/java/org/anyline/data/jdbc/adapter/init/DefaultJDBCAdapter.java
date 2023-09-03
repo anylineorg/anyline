@@ -427,7 +427,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				slow = true;
 				if(mid[0] - fr > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:select][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, set,mid[0] - fr);
 					}
@@ -589,7 +589,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				slow = true;
 				if(mid[0] - fr > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:select][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0] - fr, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, set,mid[0] - fr);
 					}
@@ -759,7 +759,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				if(mid[0]-fr > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:select][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0]-fr, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:select][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, mid[0]-fr, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.SELECT,null, sql, values, null, true, maps, mid[0]-fr);
 					}
@@ -833,7 +833,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		if(SLOW_SQL_MILLIS > 0){
 			if(millis > SLOW_SQL_MILLIS){
 				slow = true;
-				log.warn("{}[slow cmd][action:exists][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
 				if(null != dmListener){
 					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql,  values, null, true, map, millis);
 				}
@@ -911,7 +911,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:update][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:update][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, sql, values, null, true , result, millis);
 					}
@@ -1026,7 +1026,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:insert][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
 					}
@@ -1110,7 +1110,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:insert][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:insert][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
 					}
@@ -1378,7 +1378,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:execute][millis:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:execute][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
 					}
@@ -1493,7 +1493,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][millis:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE,null, sql, inputs,  list, true, result, millis);
 					}
@@ -1643,7 +1643,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			long SLOW_SQL_MILLIS = ThreadConfig.check(runtime.getKey()).SLOW_SQL_MILLIS();
 			if(SLOW_SQL_MILLIS > 0){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][millis:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
 							, random
 							, millis
 							, procedure.getName()
