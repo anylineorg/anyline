@@ -2416,7 +2416,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		for(DataRow row:set){
 			String _catalog = row.getString("TABLE_CATALOG");
-			String _schema = row.getString("TABLE_SCHEMA");
+			String _schema = row.getString("TABLE_SCHEMA", "TABSCHEMA", "SCHEMA_NAME");
 			if(null == _catalog){
 				_catalog = catalog;
 			}
@@ -2427,12 +2427,6 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 			T table = tables.get(name.toUpperCase());
 			if(null == table){
 				table = (T)new Table();
-			}
-			if(null == catalog){
-				catalog = row.getString("TABLE_CATALOG");
-			}
-			if(null == schema){
-				schema = row.getString("TABLE_SCHEMA");
 			}
 			table.setCatalog(_catalog);
 			table.setSchema(_schema);
@@ -2451,7 +2445,7 @@ public abstract class DefaultJDBCAdapter extends DefaultDriverAdapter implements
 		}
 		for(DataRow row:set){
 			String _catalog = row.getString("TABLE_CATALOG");
-			String _schema = row.getString("TABLE_SCHEMA");
+			String _schema = row.getString("TABLE_SCHEMA", "TABSCHEMA", "SCHEMA_NAME");
 			if(null == _catalog){
 				_catalog = catalog;
 			}
