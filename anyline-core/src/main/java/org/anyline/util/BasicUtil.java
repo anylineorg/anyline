@@ -292,8 +292,8 @@ public class BasicUtil {
 			hPos = (176 + Math.abs(random.nextInt(39))); // 获取高位值
 			lPos = (161 + Math.abs(random.nextInt(93))); // 获取低位值
 			byte[] b = new byte[2];
-			b[0] = (new Integer(hPos).byteValue());
-			b[1] = (new Integer(lPos).byteValue());
+			b[0] = (Integer.valueOfhPos).byteValue());
+			b[1] = (Integer.valueOflPos).byteValue());
 			try {
 				str = new String(b, "GBk"); // 转成中文
 			} catch (Exception ex) {

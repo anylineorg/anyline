@@ -703,7 +703,7 @@ public class ConvertAdapter {
         reg(new AbstractConvert(BigDecimal.class, Integer.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return new Integer(((BigDecimal)value).intValue());
+                return Integer.valueOf(((BigDecimal)value).intValue());
             }
         });
         reg(new AbstractConvert(BigDecimal.class, int.class){
@@ -1963,13 +1963,13 @@ public class ConvertAdapter {
         reg(new AbstractConvert(short.class, Integer.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return new Integer((short)value);
+                return Integer.valueOf(short)value);
             }
         });
         reg(new AbstractConvert(short.class, int.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return new Integer((short)value).intValue();
+                return Integer.valueOf(short)value).intValue();
             }
         });
         reg(new AbstractConvert(short.class, Long.class){

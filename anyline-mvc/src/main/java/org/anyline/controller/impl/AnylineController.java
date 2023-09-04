@@ -453,7 +453,7 @@ public class AnylineController extends AbstractBasicController {
 		if(encrypt){
 			msg = DESUtil.encryptParamValue(msg);
 		}
-		Object code = ConfigTable.get("HTTP_FAIL_CODE", new Integer(-1));
+		Object code = ConfigTable.get("HTTP_FAIL_CODE", Integer.valueOf-1));
 		return result(code,false, null, msg);
 	}
 	protected String fail(String code, String msg, boolean encrypt) {
@@ -464,7 +464,7 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	protected String fail(String msg) {
-		Object code = ConfigTable.get("HTTP_FAIL_CODE", new Integer(-1));
+		Object code = ConfigTable.get("HTTP_FAIL_CODE", Integer.valueOf-1));
 		return result(code,false, null, msg);
 	}
 	protected String fail(String code, String msg) {
@@ -482,7 +482,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @return String
 	 */ 
 	protected String success(Object data, boolean encrypt) {
-		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
+		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", Integer.valueOf200));
 		if(encrypt && null != data){
 			return result(code,true,DESUtil.encryptParamValue(data.toString()),null);
 		} 
@@ -490,11 +490,11 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	protected String success(Object data) {
-		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
+		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", Integer.valueOf200));
 		return result(code,true, data, null);
 	}
 	protected String success(Object ... data) {
-		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
+		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", Integer.valueOf200));
 		return result(code,true, data, null);
 	}
 	/** 
