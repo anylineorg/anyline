@@ -4689,14 +4689,31 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return bool(keys, key, set, defaultValue);
 	}
+
+	/**
+	 * 从resultset中根据名列取值
+	 * @param keys 列名位置
+	 * @param key 列名 多个以,分隔
+	 * @param set result
+	 * @param def 默认值
+	 * @return Object
+	 * @throws Exception Exception
+	 */
 	protected Object value(Map<String, Integer> keys, String key, ResultSet set, Object def) throws Exception{
-		Integer index = keys.get(key);
-		if(null != index && index >= 0){
-			try {
-				// db2 直接用 set.getObject(String) 可能发生 参数无效：未知列名 String
-				return set.getObject(index);
-			}catch (Exception e){
-				return def;
+		String[] ks = key.split(",");
+		Object result = null;
+		for(String k:ks){
+			Integer index = keys.get(k);
+			if(null != index && index >= 0){
+				try {
+					// db2 直接用 set.getObject(String) 可能发生 参数无效：未知列名 String
+					result =  set.getObject(index);
+					if(null != result){
+						return result;
+					}
+				}catch (Exception e){
+
+				}
 			}
 		}
 		return def;
