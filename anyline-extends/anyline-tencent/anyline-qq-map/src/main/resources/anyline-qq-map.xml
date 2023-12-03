@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<!--https://lbs.qq.com/dev/console/application/mine-->
+	<config key="default">
+		<property key="KEY">XTWBZ-*****-*****-*****-CQEBF-PYFGN</property>
+		<property key="SECRET">gKq8Ol3U**************7KNXXfdC</property>
+	</config>
+</configs>
