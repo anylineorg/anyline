@@ -228,9 +228,8 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
   别说设计了，需求都有可能还没结束就催交付了,Entity哪里找  
   [【示例】](https://gitee.com/anyline/service)
 
-##  关于数据库的适配
-直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)  
-[【源码】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect)
+##  关于数据库的适配  [【更多查看】](http://doc.anyline.org/dbs)  
+[【示例源码】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect)
 
 <a style="display:inline-block;" href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-mysql"> <img alt="MySQL" src="http://cdn.anyline.org/img/logo/mysql.png" width="100" />MySQL </a> 
 <a style="display:inline-block;" href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-data-jdbc-dialect/anyline-simple-data-jdbc-postgresql"> <img alt="PostgreSQL" src="http://cdn.anyline.org/img/logo/postgres.png" width="100" />PostgreSQL </a> 
