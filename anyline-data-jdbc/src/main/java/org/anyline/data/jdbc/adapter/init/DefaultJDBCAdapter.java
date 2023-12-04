@@ -116,7 +116,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
 	 ******************************************************************************************************************/
 
 	/**
@@ -616,6 +615,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(batch > 1){
 				cnt = batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
+				//是否支持返回自增值
 				if(IS_KEYHOLDER_IDENTITY(configs)){
 					//需要返回自增
 					keyholder = new GeneratedKeyHolder();
@@ -695,7 +695,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
-	@Override
+	/*@Override
 	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
 		long cnt = 0;
 		if(null == random){
@@ -723,7 +723,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
-		/*执行SQL*/
+		*//*执行SQL*//*
 		if (log.isInfoEnabled() && IS_LOG_SQL(configs)) {
 			log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
@@ -784,7 +784,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		return cnt;
 	}
-
+*/
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE
