@@ -26,12 +26,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -40,7 +36,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
 @Repository("anyline.data.jdbc.adapter.voltdb")
 public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
@@ -103,7 +98,6 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
 	 ******************************************************************************************************************/
 
 	/**
@@ -288,21 +282,6 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
 
-	/**
-	 * insert [命令执行]
-	 * <br/>
-	 * 有些不支持返回自增的单独执行<br/>
-	 * 执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
-		return super.insert(runtime, random, data, configs, run);
-	}
 
 
 	/* *****************************************************************************************************************
