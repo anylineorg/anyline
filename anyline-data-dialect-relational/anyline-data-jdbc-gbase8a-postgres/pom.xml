@@ -11,9 +11,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-data-jdbc-gbase-postgres</artifactId>
+    <artifactId>anyline-data-jdbc-gbase8a-postgres</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-data-jdbc-gbase-postgresql</name>
+    <name>anyline-data-jdbc-gbase8a-postgresql</name>
     <url>http://www.anyline.org/gbase</url>
 
     <dependencies>
