@@ -56,7 +56,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * public String generatedKey()
      * [命令执行]
      * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-     * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks, boolean simple);
+     * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
      ******************************************************************************************************************/
 
     /**
@@ -249,14 +249,12 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param data data
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * @param pks pks
-     * @param simple 没有实际作用 用来标识有些不支持返回自增的单独执行
+     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)super.insert(runtime, random, data, configs, run)
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks, boolean simple){
-        return super.insert(runtime, random, data, configs, run, pks, simple);
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
+        return super.insert(runtime, random, data, configs, run);
     }
 
 
