@@ -171,7 +171,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
 	 ******************************************************************************************************************/
 
 	/**
@@ -560,24 +559,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return -1;
 	}
-
-	/**
-	 * insert [命令执行]
-	 * <br/>
-	 * 有些不支持返回自增的单独执行<br/>
-	 * 执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return 影响行数
-	 */
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run)", 37));
-		}
-		return -1;
-	}
+	
 
 
 	/* *****************************************************************************************************************
@@ -3171,7 +3153,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * schema[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Schema
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param schemas 上一步查询结果
 	 * @return databases
