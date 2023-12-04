@@ -242,21 +242,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         return super.insert(runtime, random, data, configs, run, pks);
     }
 
-    /**
-     * insert [命令执行]
-     * <br/>
-     * 有些不支持返回自增的单独执行<br/>
-     * 执行完成后会补齐自增主键值
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param random 用来标记同一组命令
-     * @param data data
-     * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)super.insert(runtime, random, data, configs, run)
-     * @return 影响行数
-     */
-    @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
-        return super.insert(runtime, random, data, configs, run);
-    }
+    
 
 
     /* *****************************************************************************************************************
