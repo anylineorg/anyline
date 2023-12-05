@@ -19,16 +19,16 @@ package org.anyline.data.adapter;
 
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.LogUtil;
-import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.data.DriverAdapterHolder")
 public class DriverAdapterHolder {
@@ -39,14 +39,14 @@ public class DriverAdapterHolder {
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
 
-	/**
+	/*
 	 * 临时数据源时相同的key会出现不同的adapter
 	 * 注册临时数据源时先清空缓存adapter
 	 * @param datasource 数据源key
 	 */
-	public static void remove(String datasource){
+	/*public static void remove(String datasource){
 		adapters.remove("al-ds:"+datasource);
-	}
+	}*/
 
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
@@ -75,11 +75,14 @@ public class DriverAdapterHolder {
 			return defaultAdapter;
 		}
 		DriverAdapter adapter = null;
-		if(null != adapter){
-			return adapter;
-		}
 		try {
-			//数据库名称(connection.getDatabaseProductName)或客户端class
+			for (DriverAdapter item:adapters){
+				if(item.match(runtime)){
+					adapter = item;
+					break;
+				}
+			}
+			/*//数据库名称(connection.getDatabaseProductName)或客户端class
 			String feature = runtime.getFeature();
 			if(null != feature){
 				//根据特征(先不要加版本号，提取版本号需要建立连接太慢)
@@ -89,10 +92,12 @@ public class DriverAdapterHolder {
 					feature = runtime.getFeature(true);
 					adapter = getAdapter(datasource, feature, runtime.getVersion());
 				}
-			}
+			}*/
 			if(null == adapter){
 				log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 				//adapter = SpringContextUtil.getBean(DriverAdapter.class);
+			}else{
+				log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]", datasource, runtime.getFeature(), adapter);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,23 +115,23 @@ public class DriverAdapterHolder {
 	 * 检测可支持版本数量
 	 * @return boolean
 	 */
-	private static int versions(DatabaseType type, String ... versions){
+	/*private static int versions(DatabaseType type, String ... versions){
 		int qty = 0;
 		for(String version:versions){
-			if(adapters.containsKey(type.name()+"_"+version)){
+			if(adapters.contains(type.name()+"_"+version)){
 				qty ++;
 			}
 		}
 		return qty;
-	}
+	}*/
 
-	/**
+	/*
 	 * 取第一个存在的版本
 	 * @param type DatabaseType
 	 * @param versions 版本号
 	 * @return adapter
 	 */
-	private static DriverAdapter adapter(DatabaseType type, String ... versions){
+	/*private static DriverAdapter adapter(DatabaseType type, String ... versions){
 		for(String version:versions){
 			DriverAdapter adapter = adapters.get(type.name() + "_" + version);
 			if(null != adapter){
@@ -134,8 +139,8 @@ public class DriverAdapterHolder {
 			}
 		}
 		return null;
-	}
-	private static boolean check(DriverAdapter adapter, String datasource, String feature){
+	}*/
+	/*private static boolean check(DriverAdapter adapter, String datasource, String feature){
 		DatabaseType type = adapter.type();
 		if(null != type){
 			List<String> keywords = type.keywords();
@@ -151,15 +156,15 @@ public class DriverAdapterHolder {
 			}
 		}
 		return false;
-	}
-	/**
+	}*/
+	/*
 	 * 根据数据源特征定位适配器
 	 * @param datasource 数据源key
 	 * @param feature 特征
 	 * @param version 版本
 	 * @return 适配器
 	 */
-	private static DriverAdapter getAdapter(String datasource, String feature, String version){
+	/*private static DriverAdapter getAdapter(String datasource, String feature, String version){
 		DriverAdapter adapter = null;
 		if(null != version){
 			version = version.toLowerCase();
@@ -214,7 +219,7 @@ public class DriverAdapterHolder {
 	}
 	private static DriverAdapter oracle(String datasource, String feature, String version){
 		DriverAdapter adapter = null;
-		/*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
+		//Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
 		if(null != version ){
 			version = RegularUtil.cut(version, "release","-");
 			if(null != version){
@@ -242,7 +247,7 @@ public class DriverAdapterHolder {
 	}
 	private static DriverAdapter kingbase(String datasource, String feature, String version){
 		DriverAdapter adapter = null;
-		/*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
+		*//*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
 		if(null != version ){
 			version = RegularUtil.cut(version, "release","-");
 			if(null != version){
@@ -267,5 +272,5 @@ public class DriverAdapterHolder {
 			adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
 		}
 		return adapter;
-	}
+	}*/
 }
