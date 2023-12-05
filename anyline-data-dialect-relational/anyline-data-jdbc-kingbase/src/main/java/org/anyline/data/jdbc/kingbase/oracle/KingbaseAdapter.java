@@ -16,7 +16,7 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase;
+package org.anyline.data.jdbc.kingbase.oracle;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
@@ -44,8 +44,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.kingbase")
-public class KingbaseOracleAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
+@Repository("anyline.data.jdbc.adapter.kingbase.oracle")
+public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
@@ -62,7 +62,7 @@ public class KingbaseOracleAdapter extends OracleGenusAdapter implements JDBCAda
 	}
 
 
-	public KingbaseOracleAdapter(){
+	public KingbaseAdapter(){
 		super();
 		delimiterFr = "";
 		delimiterTo = "";

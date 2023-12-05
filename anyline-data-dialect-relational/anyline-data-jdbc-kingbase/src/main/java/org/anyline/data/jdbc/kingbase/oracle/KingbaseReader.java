@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase;
+package org.anyline.data.jdbc.kingbase.oracle;
 
 import org.anyline.adapter.DataReader;
 

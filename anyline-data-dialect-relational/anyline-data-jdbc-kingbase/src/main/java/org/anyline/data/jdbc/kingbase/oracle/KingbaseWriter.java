@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase;
+package org.anyline.data.jdbc.kingbase.oracle;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.init.ConvertAdapter;
@@ -27,22 +27,12 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public enum KingbaseWriter {
-    DateWriter(new Object[]{java.sql.Date.class, LocalDate.class}, new DataWriter() {
+    DateWriter(new Object[]{java.sql.Date.class, Timestamp.class, Date.class, LocalDate.class, LocalDateTime.class}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
-                Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_date( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD')";
-            }
-            return value;
-        }
-    }),
-    DateTimeWriter(new Object[]{Timestamp.class, java.util.Date.class, LocalDateTime.class}, new DataWriter() {
-        @Override
-        public Object write(Object value, boolean placeholder) {
-            if(!placeholder && null != value) {
-                Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_timestamp( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
+                Date date = (Date)ConvertAdapter.convert(value, Date.class, false);
+                value = " to_date ( '"+DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
             }
             return value;
         }

@@ -22,7 +22,7 @@
 		<module>anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dm</module>
 		<module>anyline-data-jdbc-edb</module>
-		<module>anyline-data-jdbc-gbase8a-oracle</module>					<!--南大通用(oracle)-->
+		<module>anyline-data-jdbc-gbase</module>					<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-gbase8s-oracle</module>			<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-gbase8a-postgres</module>			<!--南大通用(postgresql)-->
 		<module>anyline-data-jdbc-h2</module>
