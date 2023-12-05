@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.gbase;
+package org.anyline.data.jdbc.gbase8a.oracle;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
