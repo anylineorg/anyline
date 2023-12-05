@@ -22,8 +22,12 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 /**
@@ -35,6 +39,29 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
         return "11";
     }
 
+    @Override
+    public boolean match(DataRuntime runtime) {
+        List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+        String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
+        boolean chk = match(feature, keywords);
+        if(chk) {
+            String version = runtime.getVersion();
+            //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
+            if(null != version ){
+                version = RegularUtil.cut(version, "release","-");
+                if(null != version){
+                    //11.2.0.1.0
+                    version = version.split("\\.")[0];
+                }
+                double v = BasicUtil.parseDouble(version, 0d);
+                String key = null;
+                if(v < 12.0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     @Override
     public String mergeFinalQuery(DataRuntime runtime, Run run){
         StringBuilder builder = new StringBuilder();
