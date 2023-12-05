@@ -682,7 +682,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg
      */
-    ,DATE("DATE", new DatabaseType[]{MYSQL, PostgreSQL, Informix, HANA, Derby}, java.sql.Date.class, false, false){
+    ,DATE("DATE", new DatabaseType[]{MYSQL, PostgreSQL, Informix, HANA, Derby}, java.sql.Date.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
