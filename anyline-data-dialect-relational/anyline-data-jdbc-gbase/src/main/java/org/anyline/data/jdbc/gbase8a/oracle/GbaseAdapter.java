@@ -1,4 +1,3 @@
- 
 /*
  * Copyright 2006-2023 www.anyline.org
  *
@@ -16,10 +15,10 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase;
+package org.anyline.data.jdbc.gbase8a.oracle;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -44,38 +43,33 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * 参考 PostgresGenusAdapter
- */
-@Repository("anyline.data.jdbc.adapter.kingbase.pg")
-public class KingbasePostgresAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
+@Repository("anyline.data.jdbc.adapter.gbase8a.oracle")
+public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
-		return DatabaseType.KingBase;
+		return DatabaseType.GBase8A;
 	}
-	@Value("${anyline.data.jdbc.delimiter.kingbase:}")
+
+	@Value("${anyline.data.jdbc.delimiter.gbase:}")
 	private String delimiter;
 
-	@Override
-	public void afterPropertiesSet()  {
-		setDelimiter(delimiter);
-	}
-
-	public KingbasePostgresAdapter(){
+	public GbaseAdapter(){
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (KingbaseColumnTypeAlias alias : KingbaseColumnTypeAlias.values()) {
+		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
-
-		for(KingbaseWriter writer: KingbaseWriter.values()){
+		for(GbaseWriter writer: GbaseWriter.values()){
 			reg(writer.supports(), writer.writer());
 		}
-		for(KingbaseReader reader: KingbaseReader.values()){
+		for(GbaseReader reader: GbaseReader.values()){
 			reg(reader.supports(), reader.reader());
 		}
+	}
+	@Override
+	public void afterPropertiesSet()  {
+		setDelimiter(delimiter);
 	}
 
 
@@ -5383,6 +5377,7 @@ public class KingbasePostgresAdapter extends PostgresGenusAdapter implements JDB
 		return super.buildRenameRun(runtime, meta);
 	}
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 														JDBC
@@ -5520,11 +5515,6 @@ public class KingbasePostgresAdapter extends PostgresGenusAdapter implements JDB
 		return super.row(system, runtime, metadatas, configs, rs);
 	}
 
-	@Override
-	public String concat(DataRuntime runtime, String ... args){
-		return super.concat(runtime, args);
-	}
-
 	/**
 	 * 内置函数 多种数据库兼容时需要
 	 * @param value SQL_BUILD_IN_VALUE
@@ -5534,10 +5524,31 @@ public class KingbasePostgresAdapter extends PostgresGenusAdapter implements JDB
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
 		return super.value(runtime, column, value);
 	}
+
+
+	/**
+	 * 拼接字符串
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param args args
+	 * @return String
+	 */
+	@Override
+	public String concat(DataRuntime runtime, String... args) {
+		return super.concatFun(runtime, args);
+	}
+
+	/**
+	 * 伪表
+	 * @return String
+	 */
+	protected String dummy(){
+		return super.dummy();
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 														具体数据库
 	 *
 	 *  ***************************************************************************************************************/
+
 
 } 

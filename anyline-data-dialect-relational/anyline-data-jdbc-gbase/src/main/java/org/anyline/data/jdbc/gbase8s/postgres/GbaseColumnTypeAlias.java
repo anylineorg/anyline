@@ -15,13 +15,13 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase;
+package org.anyline.data.jdbc.gbase8s.postgres;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.metadata.type.ColumnType;
 
-public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {
+public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
 
     BFILE                   (StandardColumnType.BFILE                 ), //       ,oracle,
     BINARY_DOUBLE           (StandardColumnType.BINARY_DOUBLE         ), //       ,oracle,
@@ -121,7 +121,7 @@ public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardColumnType.ILLEGAL               ), //     ,pg，      ,mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
     private final ColumnType standard;
-    private KingbaseColumnTypeAlias(ColumnType standard){
+    private GbaseColumnTypeAlias(ColumnType standard){
         this.standard = standard;
     }
 

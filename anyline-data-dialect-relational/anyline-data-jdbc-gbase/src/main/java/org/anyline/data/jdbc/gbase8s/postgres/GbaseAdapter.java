@@ -1,3 +1,4 @@
+ 
 /*
  * Copyright 2006-2023 www.anyline.org
  *
@@ -15,10 +16,10 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8a;
+package org.anyline.data.jdbc.gbase8s.postgres;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -43,35 +44,35 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.gbase8a.oracle")
-public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
-	
-	public DatabaseType type(){
+@Repository("anyline.data.jdbc.adapter.gbase8s.pg")
+public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
+
+	public DatabaseType type() {
 		return DatabaseType.GBase8A;
 	}
 
 	@Value("${anyline.data.jdbc.delimiter.gbase:}")
 	private String delimiter;
 
-	public GbaseAdapter(){
+	@Override
+	public void afterPropertiesSet() {
+		setDelimiter(delimiter);
+	}
+
+	public GbaseAdapter() {
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
-		for(GbaseWriter writer: GbaseWriter.values()){
+		for (GbaseWriter writer : GbaseWriter.values()) {
 			reg(writer.supports(), writer.writer());
 		}
-		for(GbaseReader reader: GbaseReader.values()){
+		for (GbaseReader reader : GbaseReader.values()) {
 			reg(reader.supports(), reader.reader());
 		}
 	}
-	@Override
-	public void afterPropertiesSet()  {
-		setDelimiter(delimiter);
-	}
-
 
 
 	/* *****************************************************************************************************************
@@ -5378,6 +5379,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 														JDBC
@@ -5534,7 +5536,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public String concat(DataRuntime runtime, String... args) {
-		return super.concatFun(runtime, args);
+		return super.concat(runtime, args);
 	}
 
 	/**
@@ -5550,5 +5552,4 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *
 	 *  ***************************************************************************************************************/
 
-
-} 
+}

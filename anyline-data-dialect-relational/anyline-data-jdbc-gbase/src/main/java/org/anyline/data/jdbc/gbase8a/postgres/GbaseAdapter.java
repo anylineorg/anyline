@@ -1,3 +1,4 @@
+ 
 /*
  * Copyright 2006-2023 www.anyline.org
  *
@@ -15,10 +16,10 @@
  */
 
 
-package org.anyline.data.jdbc.gbase;
+package org.anyline.data.jdbc.gbase8a.postgres;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -43,35 +44,35 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.gbase")
-public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
-	
-	public DatabaseType type(){
+@Repository("anyline.data.jdbc.adapter.gbase8a.pg")
+public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
+
+	public DatabaseType type() {
 		return DatabaseType.GBase8A;
 	}
 
 	@Value("${anyline.data.jdbc.delimiter.gbase:}")
 	private String delimiter;
 
-	public GbaseAdapter(){
+	@Override
+	public void afterPropertiesSet() {
+		setDelimiter(delimiter);
+	}
+
+	public GbaseAdapter() {
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
 			types.put(alias.name(), alias.standard());
 		}
-		for(GbaseWriter writer: GbaseWriter.values()){
+		for (GbaseWriter writer : GbaseWriter.values()) {
 			reg(writer.supports(), writer.writer());
 		}
-		for(GbaseReader reader: GbaseReader.values()){
+		for (GbaseReader reader : GbaseReader.values()) {
 			reg(reader.supports(), reader.reader());
 		}
 	}
-	@Override
-	public void afterPropertiesSet()  {
-		setDelimiter(delimiter);
-	}
-
 
 
 	/* *****************************************************************************************************************
@@ -107,7 +108,6 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
 	 ******************************************************************************************************************/
 
 	/**
@@ -292,21 +292,6 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
 
-	/**
-	 * insert [命令执行]
-	 * <br/>
-	 * 有些不支持返回自增的单独执行<br/>
-	 * 执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
-		return super.insert(runtime, random, data, configs, run);
-	}
 
 
 	/* *****************************************************************************************************************
@@ -5394,6 +5379,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 														JDBC
@@ -5550,7 +5536,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public String concat(DataRuntime runtime, String... args) {
-		return super.concatFun(runtime, args);
+		return super.concat(runtime, args);
 	}
 
 	/**
@@ -5566,5 +5552,4 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *
 	 *  ***************************************************************************************************************/
 
-
-} 
+}
