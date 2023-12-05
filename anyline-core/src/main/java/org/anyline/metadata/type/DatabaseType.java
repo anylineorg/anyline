@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum DatabaseType implements Serializable {
-        NONE			        ("NONE"	                            ,KEY_CASE.SRC,0,"","",""),
-        COMMON                  ("COMMON"	                            ,KEY_CASE.SRC,0,"","",""),
+        NONE			        ("NONE"	                            ,KEY_CASE.SRC,0,null,"",""),
+        COMMON                  ("COMMON"	                            ,KEY_CASE.SRC,0,null,"",""),
         Access              	("Microsoft Access"                 	,KEY_CASE.SRC	,980	,"Microsoft Access"	,"sun.jdbc.odbc.JdbcOdbcDriver"	,"jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};DBQ={database}"),
         Accumulo            	("Apache Accumulo"                  	,KEY_CASE.SRC	,910	,null	,""	,""),
         Acebase             	("Acebase"                          	,KEY_CASE.SRC	,624	,null	,""	,""),
@@ -487,6 +487,7 @@ public enum DatabaseType implements Serializable {
                         }
                 }
                 if(null != url){
+                        //   jdbc:mysql://host:3306/db
                         int idx = url.indexOf(":", 6);
                         if(idx > 0){
                                 this.keywords.add(url.substring(0,idx+1));
