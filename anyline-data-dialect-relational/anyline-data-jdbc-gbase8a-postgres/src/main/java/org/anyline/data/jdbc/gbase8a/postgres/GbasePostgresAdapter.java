@@ -16,7 +16,7 @@
  */
 
 
-package org.anyline.data.jdbc.gbase;
+package org.anyline.data.jdbc.gbase8a.postgres;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
@@ -27,7 +27,6 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -44,7 +43,7 @@ import java.util.*;
 /**
  * 参考 PostgresGenusAdapter
  */
-@Repository("anyline.data.jdbc.adapter.gbase.pg")
+@Repository("anyline.data.jdbc.adapter.gbase8a.pg")
 public class GbasePostgresAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type() {
@@ -108,7 +107,6 @@ public class GbasePostgresAdapter extends PostgresGenusAdapter implements JDBCAd
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
 	 ******************************************************************************************************************/
 
 	/**
@@ -293,21 +291,6 @@ public class GbasePostgresAdapter extends PostgresGenusAdapter implements JDBCAd
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
 
-	/**
-	 * insert [命令执行]
-	 * <br/>
-	 * 有些不支持返回自增的单独执行<br/>
-	 * 执行完成后会补齐自增主键值
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param data data
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run){
-		return super.insert(runtime, random, data, configs, run);
-	}
 
 
 	/* *****************************************************************************************************************
