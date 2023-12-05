@@ -6554,7 +6554,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.addColumnGuide(runtime, builder, meta);
+		builder.append(" ADD ");
+		return builder;
 	}
 
 
