@@ -23,6 +23,7 @@ import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.jdbc.kingbase.oracle.KingbaseColumnTypeAlias;
 import org.anyline.data.jdbc.kingbase.oracle.KingbaseReader;
 import org.anyline.data.jdbc.kingbase.oracle.KingbaseWriter;
+import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -32,6 +33,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -81,6 +83,34 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 	}
 
+	public String feature(DataRuntime runtime){
+		JdbcTemplate jdbc = ((JDBCRuntime)runtime).jdbc();
+		try {
+			List<Map<String, Object>> maps = jdbc.queryForList("show database_mode");
+
+			if(maps.size() > 0){
+				return maps.get(0).get("database_mode")+"";
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean match(DataRuntime runtime) {
+		boolean chk = super.match(runtime);
+		if(chk) {
+			String feature = feature(runtime);
+			if(null != feature && feature.toLowerCase().contains("oracle")){
+				return false;
+			}else{
+				log.info("[数据库兼容模式:{}]", feature);
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 	/* *****************************************************************************************************************
