@@ -28,6 +28,8 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.init.AbstractColumnType;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -95,6 +97,27 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	}
 
 
+	@Override
+	public boolean match(DataRuntime runtime) {
+		boolean chk = super.match(runtime);
+		if(chk) {
+			String version = runtime.getVersion();
+			//Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
+			if(null != version ){
+				version = RegularUtil.cut(version, "release","-");
+				if(null != version){
+					//11.2.0.1.0
+					version = version.split("\\.")[0];
+				}
+				double v = BasicUtil.parseDouble(version, 0d);
+				String key = null;
+				if(v >= 12.0){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	/* *****************************************************************************************************************
 	 *
