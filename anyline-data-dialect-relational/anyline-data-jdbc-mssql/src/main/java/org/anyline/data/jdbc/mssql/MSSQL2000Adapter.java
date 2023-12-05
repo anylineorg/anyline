@@ -33,7 +33,6 @@ import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
@@ -49,6 +48,24 @@ import java.util.List;
 public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, InitializingBean {
 
     public String version(){return "2000";}
+
+    @Override
+    public boolean match(DataRuntime runtime) {
+        List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+        String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
+        boolean chk = match(feature, keywords);
+        if(chk) {
+            String version = runtime.getVersion();
+            if (null != version && version.contains(".")) {
+                version = version.split("\\.")[0];
+                double v = BasicUtil.parseDouble(version, 0d);
+                if (v < 9.0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     /**
      * 查询SQL
      * Run 反转调用
