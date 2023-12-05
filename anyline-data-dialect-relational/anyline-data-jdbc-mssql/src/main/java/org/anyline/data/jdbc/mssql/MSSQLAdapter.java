@@ -28,7 +28,6 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -71,8 +70,22 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		}
 	}
 
-
-
+	@Override
+	public boolean match(DataRuntime runtime) {
+		boolean chk = super.match(runtime);
+		if(chk) {
+			String version = runtime.getVersion();
+			if (null != version && version.contains(".")) {
+				version = version.split("\\.")[0];
+				double v = BasicUtil.parseDouble(version, 0d);
+				if (v >= 9.0) {
+					//2005+
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
