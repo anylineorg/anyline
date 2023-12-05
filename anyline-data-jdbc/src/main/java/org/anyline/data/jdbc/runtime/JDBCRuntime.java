@@ -21,6 +21,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.data.runtime.init.DefaultRuntime;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
@@ -28,29 +29,19 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
-public class JDBCRuntime implements DataRuntime {
-
-    private String origin;
-    /**
-     * 表示数据源名称
-     */
-    private String key;
-    /**
-     * 运行环境特征 如jdbc-url
-     * 用来匹配 DriverAdapter
-     */
-    protected String feature;
-    /**
-     * 运行环境版本 用来匹配 DriverAdapter
-     */
-    protected String version;
-    protected DriverAdapter adapter;
+public class JDBCRuntime extends DefaultRuntime implements DataRuntime {
     protected JdbcTemplate processor;
-    protected RuntimeHolder holder;
 
     protected String url;
     protected String driver;
 
+    public JDBCRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter){
+        setKey(key);
+        setProcessor(jdbc);
+        setAdapter(adapter);
+    }
+    public JDBCRuntime(){
+    }
     @Override
     public String getUrl() {
         return url;
@@ -71,31 +62,8 @@ public class JDBCRuntime implements DataRuntime {
         this.driver = driver;
     }
 
-    @Override
-    public String origin() {
-        return origin;
-    }
-
-    @Override
-    public void origin(String origin) {
-        this.origin = origin;
-    }
-
-    public void setFeature(String feature) {
-        this.feature = feature;
-    }
-
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public JdbcTemplate jdbc(){
+        return processor;
     }
 
     public Object getProcessor() {
@@ -106,45 +74,6 @@ public class JDBCRuntime implements DataRuntime {
         this.processor = (JdbcTemplate) processor;
     }
 
-
-    public DriverAdapter getAdapter() {
-        if(null == adapter){
-            String ds = key;
-            adapter = DriverAdapterHolder.getAdapter(ds, this);
-        }
-        return adapter;
-    }
-
-    @Override
-    public String datasource() {
-        return key;
-    }
-
-    public void setAdapter(DriverAdapter adapter) {
-        this.adapter = adapter;
-    }
-
-    @Override
-    public void setHolder(RuntimeHolder holder) {
-        this.holder = holder;
-    }
-
-    @Override
-    public RuntimeHolder getHolder() {
-        return holder;
-    }
-
-    public JDBCRuntime(String key, JdbcTemplate jdbc, DriverAdapter adapter){
-        setKey(key);
-        setProcessor(jdbc);
-        setAdapter(adapter);
-    }
-    public JDBCRuntime(){
-    }
-
-    public JdbcTemplate jdbc(){
-        return processor;
-    }
     public String getFeature(boolean connection) {
         if(null == feature){
             if(connection || null == driver || null == url) {
@@ -157,7 +86,7 @@ public class JDBCRuntime implements DataRuntime {
                         con = DataSourceUtils.getConnection(ds);
                         DatabaseMetaData meta = con.getMetaData();
                         feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ", "") + "_"
-                        + meta.getURL();
+                                + meta.getURL();
                         if (null == version) {
                             version = meta.getDatabaseProductVersion();
                         }

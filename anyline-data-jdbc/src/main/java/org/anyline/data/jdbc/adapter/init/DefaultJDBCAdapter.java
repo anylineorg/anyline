@@ -19,6 +19,7 @@ package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -82,6 +83,17 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		return (JdbcTemplate) processor;
 	}
 
+	/**
+	 * 当前环境与指定运行环境(数据源)是否匹配
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return boolean
+	 */
+	@Override
+	public boolean match(DataRuntime runtime){
+		boolean result = false;
+
+		return result;
+	}
 
 	/* *****************************************************************************************************************
 	 *

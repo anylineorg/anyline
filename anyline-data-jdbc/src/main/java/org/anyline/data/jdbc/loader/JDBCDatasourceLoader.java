@@ -17,6 +17,7 @@
 
 package org.anyline.data.jdbc.loader;
 
+import org.anyline.data.datasource.DatasourceHolder;
 import org.anyline.data.jdbc.datasource.JDBCDatasourceHolder;
 import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.listener.DatasourceLoader;
@@ -31,7 +32,9 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component("anyline.data.datasource.loader.jdbc")
 public class JDBCDatasourceLoader implements DatasourceLoader {
@@ -44,28 +47,35 @@ public class JDBCDatasourceLoader implements DatasourceLoader {
         factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
         SpringContextUtil.init(context);
         JDBCRuntimeHolder.init(factory);
-        boolean loadDefault = true;
-        JdbcTemplate jdbc = null;
-        try{
-            jdbc = SpringContextUtil.getBean(JdbcTemplate.class);
-        }catch (Exception e){}
-
-        if(null != jdbc){
-            JDBCRuntimeHolder.reg("default", jdbc, null);
-            loadDefault = false;
-        }else{
-            DataSource datasource = null;
+        JDBCDatasourceHolder.loadCache();
+        boolean loadDefault = true; //是否需要加载default
+        if(!DatasourceHolder.contains("default")){
+            //如果还没有注册默认数据源
+            // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
+            JdbcTemplate jdbc = null;
             try{
-                datasource = SpringContextUtil.getBean(DataSource.class);
+                jdbc = SpringContextUtil.getBean(JdbcTemplate.class);
             }catch (Exception e){}
-            if(null != datasource){
-                try {
-                    JDBCDatasourceHolder.reg("default", datasource, false);
-                    loadDefault = false;
-                }catch (Exception e){
-                    e.printStackTrace();
+
+            if(null != jdbc){
+                JDBCRuntimeHolder.reg("default", jdbc, null);
+                loadDefault = false;
+            }else{
+                DataSource datasource = null;
+                try{
+                    datasource = SpringContextUtil.getBean(DataSource.class);
+                }catch (Exception e){}
+                if(null != datasource){
+                    try {
+                        JDBCDatasourceHolder.reg("default", datasource, false);
+                        loadDefault = false;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
+        }else{
+            loadDefault = false;
         }
         list.addAll(load(env,"spring.datasource", loadDefault));
         list.addAll(load(env,"anyline.datasource", loadDefault));

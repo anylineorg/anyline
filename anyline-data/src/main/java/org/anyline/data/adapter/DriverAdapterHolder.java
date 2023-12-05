@@ -27,18 +27,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository("anyline.data.DriverAdapterHolder")
 public class DriverAdapterHolder {
 
 	private static final Logger log = LoggerFactory.getLogger(DriverAdapterHolder.class);
-	private static ConcurrentHashMap<String, DriverAdapter> adapters= new ConcurrentHashMap<>();
-	private static Map<String, Boolean> supports = new HashMap<>();
+	private static HashSet<DriverAdapter> adapters= new HashSet<>();
+	private static HashSet<DatabaseType> supports= new HashSet<>();
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
 
@@ -54,20 +51,11 @@ public class DriverAdapterHolder {
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
 		for (DriverAdapter adapter:map.values()){
-			String version = adapter.version();
-			if(null == version) {
-				adapters.put(adapter.type().name(), adapter);
-			}else{
-				adapters.put(adapter.type().name() + "_" + adapter.version(), adapter);
-			}
-			supports.put(adapter.type().name(), true);
+			adapters.add(adapter);
 		}
 	}
 	public static boolean support(DatabaseType type){
-		if(supports.containsKey(type.name())){
-			return true;
-		}
-		return false;
+		return supports.contains(type);
 	}
 
 	private static DriverAdapter defaultAdapter = null;	// 如果当前项目只有一个adapter则不需要多次识别
@@ -83,12 +71,10 @@ public class DriverAdapterHolder {
 			return defaultAdapter;
 		}
 		if(adapters.size() ==1){
-			defaultAdapter = adapters.values().iterator().next();
+			defaultAdapter = adapters.iterator().next();
 			return defaultAdapter;
 		}
 		DriverAdapter adapter = null;
-		// 根据别名,识别成功后 把别名添加到adapters
-		adapter = adapters.get("al-ds:"+datasource);
 		if(null != adapter){
 			return adapter;
 		}
@@ -190,6 +176,8 @@ public class DriverAdapterHolder {
 						item = mssql(datasource, feature, version);
 					} else if (type.contains("oracle")) {
 						item = oracle(datasource, feature, version);
+					}else if(type.contains("kingbase")){
+						item = kingbase(datasource, feature, version);
 					}
 				}
 				if(null != item) {
@@ -200,71 +188,6 @@ public class DriverAdapterHolder {
 			}
 		}
 		return null;
-/*
-		if(support(DatabaseType.MYSQL) && feature.contains("mysql")){
-			adapter = adapters.get(DatabaseType.MYSQL.name());
-		}else if(support(DatabaseType.MSSQL) && (feature.contains("mssql") || feature.contains("sqlserver"))){
-			adapter = mssql(datasource, feature, version);
-		}else if(support(DatabaseType.ORACLE) && feature.contains("oracle")){
-			adapter = oracle(datasource, feature, version);
-		}else if(support(DatabaseType.PostgreSQL) && feature.contains("postgresql")){
-			adapter =  adapters.get(DatabaseType.PostgreSQL.name());
-		}
-
-		else if(support(DatabaseType.ClickHouse) && feature.contains("clickhouse")){
-			adapter =  adapters.get(DatabaseType.ClickHouse.name());
-		}else if(support(DatabaseType.DB2) && feature.contains("db2")){
-			adapter =  adapters.get(DatabaseType.DB2.name());
-		}else if(support(DatabaseType.Derby) && feature.contains("derby")){
-			adapter =  adapters.get(DatabaseType.Derby.name());
-		}else if(support(DatabaseType.DM) && feature.contains("dmdbms")){
-			adapter =  adapters.get(DatabaseType.DM.name());
-		}else if(support(DatabaseType.HighGo) && feature.contains("hgdb") || feature.contains("highgo")){
-			adapter =  adapters.get(DatabaseType.HighGo.name());
-		}else if(support(DatabaseType.KingBase) && feature.contains("kingbase")){
-			adapter =  adapters.get(DatabaseType.KingBase.name());
-		}else if(support(DatabaseType.GBase8A) && feature.contains("gbase")){
-			adapter =  adapters.get(DatabaseType.GBase8A.name());
-		}else if(support(DatabaseType.OceanBase) && feature.contains("oceanbase")){
-			adapter =  adapters.get(DatabaseType.OceanBase.name());
-		}else if(support(DatabaseType.OpenGauss) && feature.contains("opengauss")){
-			adapter =  adapters.get(DatabaseType.OpenGauss.name());
-		}else if(support(DatabaseType.PolarDB) && feature.contains("polardb")){
-			adapter =  adapters.get(DatabaseType.PolarDB.name());
-		}else if(support(DatabaseType.SQLite) && feature.contains("sqlite")){
-			adapter =  adapters.get(DatabaseType.SQLite.name());
-		}else if(support(DatabaseType.SQLite) && feature.contains("informix")){
-			adapter =  adapters.get(DatabaseType.Informix.name());
-		}else if(support(DatabaseType.H2) && feature.contains(":h2:")){
-			adapter =  adapters.get(DatabaseType.H2.name());
-		}else if(support(DatabaseType.Hive) && feature.contains("hive")){
-			adapter =  adapters.get(DatabaseType.H2.name());
-		}else if(support(DatabaseType.HSQLDB) && feature.contains("hsqldb")){
-			adapter =  adapters.get(DatabaseType.HSQLDB.name());
-		}else if(support(DatabaseType.TDengine) && feature.contains("taos")){
-			adapter =  adapters.get(DatabaseType.TDengine.name());
-		}else if(support(DatabaseType.Neo4j) && feature.contains("neo4j")){
-			adapter =  adapters.get(DatabaseType.Neo4j.name());
-		}else if(support(DatabaseType.Neo4j) && feature.contains("uxdb")){
-			adapter =  adapters.get(DatabaseType.UXDB.name());
-		}else if(support(DatabaseType.HANA) && feature.contains("sapdb")){
-			adapter =  adapters.get(DatabaseType.MaxDB.name());
-		}else if(support(DatabaseType.HANA) && feature.contains("sap")){
-			adapter =  adapters.get(DatabaseType.HANA.name());
-		}else if(support(DatabaseType.MongoDB) && feature.contains("mongo")){
-			adapter =  adapters.get(DatabaseType.MongoDB.name());
-		}else if(support(DatabaseType.Ignite) && feature.contains("ignite")){
-			adapter =  adapters.get(DatabaseType.Ignite.name());
-		}else if(support(DatabaseType.IoTDB) && feature.contains("iotdb")){
-			adapter =  adapters.get(DatabaseType.IoTDB.name());
-		}else if(support(DatabaseType.VoltDB) && feature.contains("voltdb")){
-			adapter =  adapters.get(DatabaseType.VoltDB.name());
-		}
-		if(null != adapter) {
-			adapters.put("al-ds:"+datasource, adapter);
-			log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]",datasource, feature, adapter);
-		}
-		return adapter;*/
 	}
 	private static DriverAdapter mssql(String datasource, String feature, String version) {
 		DriverAdapter adapter = null;
@@ -290,6 +213,34 @@ public class DriverAdapterHolder {
 		return adapter;
 	}
 	private static DriverAdapter oracle(String datasource, String feature, String version){
+		DriverAdapter adapter = null;
+		/*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
+		if(null != version ){
+			version = RegularUtil.cut(version, "release","-");
+			if(null != version){
+				//11.2.0.1.0
+				version = version.split("\\.")[0];
+			}
+			double v = BasicUtil.parseDouble(version, 0d);
+			String key = null;
+			if(v >= 12.0){
+				key = "12";
+			}else{
+				key = "11";
+			}
+			adapter =  adapters.get(DatabaseType.ORACLE.name()+"_"+key);
+		}else{
+			//如果没有提供版本号并且环境中只有一个版本
+			if(versions(DatabaseType.ORACLE, "11", "12") == 1 ){
+				adapter = adapter(DatabaseType.ORACLE, "11", "12");
+			}
+		}
+		if(null == adapter) {
+			adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
+		}
+		return adapter;
+	}
+	private static DriverAdapter kingbase(String datasource, String feature, String version){
 		DriverAdapter adapter = null;
 		/*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*/
 		if(null != version ){

@@ -55,6 +55,8 @@ import java.util.*;
 @Component("anyline.data.datasource.holder.jdbc")
 public class JDBCDatasourceHolder extends DatasourceHolder {
 	private static Logger log = LoggerFactory.getLogger(JDBCDatasourceHolder.class);
+
+	protected static Map<String,DataSource> caches = new HashMap<>();
 	private static Map<TransactionStatus, String> transactionStatus = new Hashtable<>();
 	public static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
@@ -85,7 +87,6 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 			}
 		});
 	}
-
 	/* *****************************************************************************************************************
 	 * reg:[调用入口]注册数据源(用户或配置监听调用)
 	 * inject:创建并注入数据源
@@ -324,13 +325,30 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	}
 	private static DataSource init(String key, DataSource datasource, boolean override) throws Exception{
 		if(null != datasource) {
-			check(key, override);
-			regTransactionManager(key, datasource);
-			JDBCRuntimeHolder.reg(key, datasource);
+			if(null != factory) {
+				check(key, override);
+				regTransactionManager(key, datasource);
+				JDBCRuntimeHolder.reg(key, datasource);
+			}else{
+				//spring还没加载完先缓存起来，最后统一注册
+				if(!caches.containsKey(key) || override){
+					caches.put(key, datasource);
+				}
+			}
 		}
 		return datasource;
 	}
 
+	public static void loadCache(){
+		for(String key:caches.keySet()){
+			DataSource ds = caches.get(key);
+			try {
+				reg(key, ds);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Override
 	public DataRuntime callTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {

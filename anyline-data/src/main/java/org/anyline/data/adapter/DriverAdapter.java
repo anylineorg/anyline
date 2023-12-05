@@ -28,6 +28,7 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import javax.sql.DataSource;
@@ -64,7 +65,6 @@ public interface DriverAdapter {
 			return name;
 		}
 	}
-
 	/**
 	 * 数据库类型
 	 * @return DatabaseType
@@ -77,6 +77,27 @@ public interface DriverAdapter {
 	 */
 	String version();
 
+	/**
+	 * 验证版本是否匹配<br/>
+	 * 在此之前先根据特征判断，特征判断通过的才会调用当前方法<br/>
+	 * 默认返回true,只有同一个库区分不同版本(如mmsql2000/mssql2005)或不同模式(如kingbase的oracle/pg模式)时才需要实现
+	 * @return boolean
+	 */
+	default boolean match(DataRuntime runtime){
+		DatabaseType type = type();
+		List<String> keywords = type.keywords();
+		if(null != keywords){
+			for (String k:keywords){
+				if(BasicUtil.isEmpty(k)){
+					continue;
+				}
+				if(feature.contains(k)){
+					return true;
+				}
+			}
+		}
+		return true;
+	}
 
 	String TAB 		= "\t"		;
 	String BR 		= "\n"		;
