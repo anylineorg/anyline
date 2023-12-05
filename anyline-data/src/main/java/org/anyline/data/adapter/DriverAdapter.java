@@ -78,14 +78,24 @@ public interface DriverAdapter {
 	String version();
 
 	/**
-	 * 验证版本是否匹配<br/>
-	 * 在此之前先根据特征判断，特征判断通过的才会调用当前方法<br/>
-	 * 默认返回true,只有同一个库区分不同版本(如mmsql2000/mssql2005)或不同模式(如kingbase的oracle/pg模式)时才需要实现
+	 * 验证运行环境与当前适配器是否匹配<br/>
+	 * 默认不连接只根据连接参数<br/>
+	 * 只有同一个库区分不同版本(如mmsql2000/mssql2005)或不同模式(如kingbase的oracle/pg模式)时才需要单独实现
 	 * @return boolean
 	 */
 	default boolean match(DataRuntime runtime){
-		DatabaseType type = type();
-		List<String> keywords = type.keywords();
+		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
+		return match(feature, keywords);
+	}
+
+	/**
+	 *
+	 * @param feature 当前运行环境特征
+	 * @param keywords 关键字+jdbc-url前缀+驱动类
+	 * @return 数据源特征中包含上以任何一项都可以通过
+	 */
+	default boolean match(String feature, List<String> keywords){
 		if(null != keywords){
 			for (String k:keywords){
 				if(BasicUtil.isEmpty(k)){
@@ -96,7 +106,7 @@ public interface DriverAdapter {
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	String TAB 		= "\t"		;
