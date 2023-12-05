@@ -90,9 +90,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public boolean match(DataRuntime runtime){
-		boolean result = false;
-
-		return result;
+		return super.match(runtime);
 	}
 
 	/* *****************************************************************************************************************
