@@ -2314,10 +2314,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             builder.append(" WHERE 1=0");
         }else{
             builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
-            builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME\n");
+            builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
             builder.append("WHERE M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')\n");
             if (BasicUtil.isNotEmpty(name)) {
                 builder.append("AND M.TABLE_NAME = '").append(name).append("'");
+            }
+            if(BasicUtil.isNotEmpty(schema)){
+                builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
             }
             builder.append(" ORDER BY M.TABLE_NAME");
         }
