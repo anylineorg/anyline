@@ -1,6 +1,7 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
@@ -385,7 +386,11 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
         long cnt = 0;
         if(data instanceof Collection) {
-            cnt = super.insert(runtime, random, data, configs, run);
+            if(null == configs){
+                configs = new DefaultConfigStore();
+            }
+            configs.IS_KEYHOLDER_IDENTITY(false);
+            cnt = super.insert(runtime, random, data, configs, run, pks);
         }else{
             //单行的可以返回序列号
             String pk = getPrimayKey(data);
