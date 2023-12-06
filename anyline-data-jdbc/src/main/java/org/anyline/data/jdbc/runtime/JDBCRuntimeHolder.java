@@ -19,7 +19,6 @@ package org.anyline.data.jdbc.runtime;
 
 import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
@@ -74,7 +73,7 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
             close(key);
             temporary.remove(key);
             runtimes.remove(key);
-            DriverAdapterHolder.remove(key);
+            //DriverAdapterHolder.remove(key);
             //创建新数据源
             runtime.setKey(key);
             runtime.setAdapter(adapter);
