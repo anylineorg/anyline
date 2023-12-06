@@ -4221,7 +4221,8 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 添加列引导
+	 * 添加列引导<br/>
+	 * alter table sso_user [add column] type_code int
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
 	 * @param meta 列
@@ -4235,7 +4236,8 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 删除列引导
+	 * 删除列引导<br/>
+	 * alter table sso_user [drop column] type_code
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
 	 * @param meta 列

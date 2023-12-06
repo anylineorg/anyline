@@ -39,15 +39,6 @@ public class DriverAdapterHolder {
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
 
-	/*
-	 * 临时数据源时相同的key会出现不同的adapter
-	 * 注册临时数据源时先清空缓存adapter
-	 * @param datasource 数据源key
-	 */
-	/*public static void remove(String datasource){
-		adapters.remove("al-ds:"+datasource);
-	}*/
-
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
 		for (DriverAdapter adapter:map.values()){
@@ -82,195 +73,15 @@ public class DriverAdapterHolder {
 					break;
 				}
 			}
-			/*//数据库名称(connection.getDatabaseProductName)或客户端class
-			String feature = runtime.getFeature();
-			if(null != feature){
-				//根据特征(先不要加版本号，提取版本号需要建立连接太慢)
-				adapter = getAdapter(datasource, feature, runtime.getVersion());
-				if(null == adapter){
-					//根据特征+版本号
-					feature = runtime.getFeature(true);
-					adapter = getAdapter(datasource, feature, runtime.getVersion());
-				}
-			}*/
-			if(null == adapter){
-				log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
-				//adapter = SpringContextUtil.getBean(DriverAdapter.class);
-			}else{
-				log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]", datasource, runtime.getFeature(), adapter);
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if(null == adapter){
-			log.error("[检测数据库适配器][检测其他可用的适配器失败][可用适配器数量:{}][{}]", adapters.size(), LogUtil.format("可能没有依赖anyline-data-jdbc-*(如mysql,neo4j)或没有扫描org.anyline包", 31));
+			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
+		}else{
+			log.info("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, runtime.getFeature(), adapter);
 		}
 		return adapter;
-	}
-	private static DriverAdapter getAdapter(){
-		return null;
 	}
 
-	/**
-	 * 检测可支持版本数量
-	 * @return boolean
-	 */
-	/*private static int versions(DatabaseType type, String ... versions){
-		int qty = 0;
-		for(String version:versions){
-			if(adapters.contains(type.name()+"_"+version)){
-				qty ++;
-			}
-		}
-		return qty;
-	}*/
-
-	/*
-	 * 取第一个存在的版本
-	 * @param type DatabaseType
-	 * @param versions 版本号
-	 * @return adapter
-	 */
-	/*private static DriverAdapter adapter(DatabaseType type, String ... versions){
-		for(String version:versions){
-			DriverAdapter adapter = adapters.get(type.name() + "_" + version);
-			if(null != adapter){
-				return adapter;
-			}
-		}
-		return null;
-	}*/
-	/*private static boolean check(DriverAdapter adapter, String datasource, String feature){
-		DatabaseType type = adapter.type();
-		if(null != type){
-			List<String> keywords = type.keywords();
-			if(null != keywords){
-				for (String k:keywords){
-					if(BasicUtil.isEmpty(k)){
-						continue;
-					}
-					if(feature.contains(k)){
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}*/
-	/*
-	 * 根据数据源特征定位适配器
-	 * @param datasource 数据源key
-	 * @param feature 特征
-	 * @param version 版本
-	 * @return 适配器
-	 */
-	/*private static DriverAdapter getAdapter(String datasource, String feature, String version){
-		DriverAdapter adapter = null;
-		if(null != version){
-			version = version.toLowerCase();
-		}
-		if(null != feature){
-			feature = feature.toLowerCase();
-		}
-		for(DriverAdapter item:adapters.values()){
-			boolean chk = check(item, datasource, feature);
-			if(chk){
-				String type = item.type().toString().toLowerCase();
-				if(null != version) {
-					if (type.contains("mssql")) {
-						item = mssql(datasource, feature, version);
-					} else if (type.contains("oracle")) {
-						item = oracle(datasource, feature, version);
-					}else if(type.contains("kingbase")){
-						item = kingbase(datasource, feature, version);
-					}
-				}
-				if(null != item) {
-					adapters.put("al-ds:" + datasource, item);
-					log.info("[检测数据库适配器][datasource:{}][特征:{}][适配器:{}]", datasource, feature, item);
-					return item;
-				}
-			}
-		}
-		return null;
-	}
-	private static DriverAdapter mssql(String datasource, String feature, String version) {
-		DriverAdapter adapter = null;
-		if(null != version ){
-			version = version.split("\\.")[0];
-			double v = BasicUtil.parseDouble(version, 0d);
-			String key = null;
-			if(v >= 9.0){
-				key = "2005";
-			}else{
-				key = "2000";
-			}
-			adapter =  adapters.get(DatabaseType.MSSQL.name()+"_"+key);
-		}else{
-			//如果没有提供版本号并且环境中只有一个版本
-			if(versions(DatabaseType.MSSQL, "2000", "2005") == 1 ){
-				adapter = adapter(DatabaseType.MSSQL, "2005", "2000");
-			}
-		}
-		if(null == adapter){
-			adapter =  adapters.get(DatabaseType.MSSQL.name()+"_2005");
-		}
-		return adapter;
-	}
-	private static DriverAdapter oracle(String datasource, String feature, String version){
-		DriverAdapter adapter = null;
-		//Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
-		if(null != version ){
-			version = RegularUtil.cut(version, "release","-");
-			if(null != version){
-				//11.2.0.1.0
-				version = version.split("\\.")[0];
-			}
-			double v = BasicUtil.parseDouble(version, 0d);
-			String key = null;
-			if(v >= 12.0){
-				key = "12";
-			}else{
-				key = "11";
-			}
-			adapter =  adapters.get(DatabaseType.ORACLE.name()+"_"+key);
-		}else{
-			//如果没有提供版本号并且环境中只有一个版本
-			if(versions(DatabaseType.ORACLE, "11", "12") == 1 ){
-				adapter = adapter(DatabaseType.ORACLE, "11", "12");
-			}
-		}
-		if(null == adapter) {
-			adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
-		}
-		return adapter;
-	}
-	private static DriverAdapter kingbase(String datasource, String feature, String version){
-		DriverAdapter adapter = null;
-		*//*Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
-		if(null != version ){
-			version = RegularUtil.cut(version, "release","-");
-			if(null != version){
-				//11.2.0.1.0
-				version = version.split("\\.")[0];
-			}
-			double v = BasicUtil.parseDouble(version, 0d);
-			String key = null;
-			if(v >= 12.0){
-				key = "12";
-			}else{
-				key = "11";
-			}
-			adapter =  adapters.get(DatabaseType.ORACLE.name()+"_"+key);
-		}else{
-			//如果没有提供版本号并且环境中只有一个版本
-			if(versions(DatabaseType.ORACLE, "11", "12") == 1 ){
-				adapter = adapter(DatabaseType.ORACLE, "11", "12");
-			}
-		}
-		if(null == adapter) {
-			adapter = adapters.get(DatabaseType.ORACLE.name() + "_" + version);
-		}
-		return adapter;
-	}*/
 }

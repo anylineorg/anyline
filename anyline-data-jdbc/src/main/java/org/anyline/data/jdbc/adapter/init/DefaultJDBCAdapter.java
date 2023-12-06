@@ -6362,7 +6362,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * column[命令合成]<br/>
-	 * 添加列
+	 * 添加列<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
@@ -6397,7 +6397,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * column[命令合成]<br/>
-	 * 修改列
+	 * 修改列<br/>
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
@@ -6506,7 +6506,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * column[命令合成]<br/>
-	 * 修改列名
+	 * 修改列名<br/>
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
@@ -6532,7 +6532,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 修改数据类型
+	 * 修改数据类型<br/>
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
@@ -6556,7 +6556,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 添加列引导
+	 * 添加列引导<br/>
+	 * alter table sso_user [add column] type_code int
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
 	 * @param meta 列
@@ -6564,14 +6565,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		builder.append(" ADD ");
+		builder.append(" ADD ").append(meta.getKeyword());
 		return builder;
 	}
 
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 删除列引导
+	 * 删除列引导<br/>
+	 * alter table sso_user [drop column] type_code
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
 	 * @param meta 列
@@ -6579,7 +6581,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.dropColumnGuide(runtime, builder, meta);
+		builder.append(" DROP ").append(meta.getKeyword());
+		return builder;
 	}
 
 	/**
