@@ -3432,11 +3432,17 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
-		List<Column> pks = meta.primarys();
-		if(pks.size()>0){
+		PrimaryKey primary = meta.getPrimaryKey();
+		LinkedHashMap<String, Column> pks = null;
+		if(null != primary){
+			pks = primary.getColumns();
+		}else{
+			pks = meta.primarys();
+		}
+		if(!pks.isEmpty()){
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
-			for(Column pk:pks){
+			for(Column pk:pks.values()){
 				if(!first){
 					builder.append(",");
 				}
