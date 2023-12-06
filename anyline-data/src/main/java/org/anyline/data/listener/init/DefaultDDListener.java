@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -85,15 +86,15 @@ public class DefaultDDListener implements DDListener {
             int vol = 100;
             PageNavi navi = new DefaultPageNavi();
             navi.setPageRows(vol);
-            List<Column> pks = table.primarys();
-            if(pks.size() == 0){
+            LinkedHashMap<String, Column> pks = table.primarys();
+            if(pks.isEmpty()){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
                     // 没有主键
                     return ACTION.SWITCH.SKIP;
                 }
             }
             List<String> keys = new ArrayList<>();
-            for (Column pk:pks){
+            for (Column pk:pks.values()){
                 keys.add(pk.getName());
             }
 
