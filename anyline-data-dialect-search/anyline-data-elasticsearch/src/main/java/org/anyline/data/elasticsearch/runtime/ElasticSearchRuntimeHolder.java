@@ -19,7 +19,6 @@ package org.anyline.data.elasticsearch.runtime;
 
 import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter;
 import org.anyline.data.elasticsearch.datasource.ElasticSearchDataSource;
 import org.anyline.data.runtime.DataRuntime;
@@ -74,7 +73,7 @@ public class ElasticSearchRuntimeHolder extends RuntimeHolder {
         if(datasource instanceof RestClient){
             String key = "temporary_es";
             temporary.remove(key);
-            DriverAdapterHolder.remove(key);
+            //DriverAdapterHolder.remove(key);
             //创建新数据源
             runtime.setKey(key);
             runtime.setAdapter(adapter);
