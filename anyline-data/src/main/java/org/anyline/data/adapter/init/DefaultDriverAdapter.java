@@ -1533,6 +1533,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					configs.add(run);
 				}
 				set = new DataSet();
+				if(IS_CHECK_EMPTY_SET_METADATA(configs)){
+					set.setMetadata(metadata(runtime, prepare, false));
+				}
 			}
 		} else {
 			set = new DataSet();
