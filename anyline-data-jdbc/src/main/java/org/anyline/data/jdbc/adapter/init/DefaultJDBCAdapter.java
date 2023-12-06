@@ -31,6 +31,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
@@ -6565,7 +6566,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		builder.append(" ADD ").append(meta.getKeyword());
+		builder.append(" ADD ").append(meta.getKeyword()).append(" ");
 		return builder;
 	}
 
@@ -6581,7 +6582,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		builder.append(" DROP ").append(meta.getKeyword());
+		builder.append(" DROP ").append(meta.getKeyword()).append(" ");
 		return builder;
 	}
 
@@ -9352,7 +9353,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(!process[0]){
 				mid[0] = System.currentTimeMillis();
 			}
-
+			if(metadatas.isEmpty() && IS_CHECK_EMPTY_SET_METADATA(configs)){
+				metadatas.putAll(metadata(runtime, new DefaultTextPrepare(sql), false));
+			}
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
 			if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
