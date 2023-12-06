@@ -11439,6 +11439,17 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return ConfigTable.IS_AUTO_CHECK_METADATA;
 	}
 	/**
+	 * 查询返回空DataSet时，是否检测元数据信息
+	 * @param configs ConfigStore
+	 * @return boolean
+	 */
+	protected boolean IS_CHECK_EMPTY_SET_METADATA(ConfigStore configs){
+		if(null != configs){
+			return configs.IS_CHECK_EMPTY_SET_METADATA();
+		}
+		return ConfigTable.IS_CHECK_EMPTY_SET_METADATA;
+	}
+	/**
 	 * 是否输出慢SQL日志
 	 * @param configs ConfigStore
 	 * @return boolean
