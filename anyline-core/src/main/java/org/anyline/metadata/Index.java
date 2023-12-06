@@ -17,6 +17,8 @@
 
 package org.anyline.metadata;
 
+import org.anyline.util.BeanUtil;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
@@ -65,6 +67,16 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
     }
     public M addColumn(String column, String order, int position){
         return addColumn(new Column(column).setOrder(order).setPosition(position));
+    }
+
+    public String getName() {
+        if(null == name){
+            name = "index_";
+            if(null != columns){
+                name += BeanUtil.concat(columns.keySet());
+            }
+        }
+        return name;
     }
 
     public Column getColumn(String name) {
