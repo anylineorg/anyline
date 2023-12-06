@@ -4960,6 +4960,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				idx ++;
 			}
 		}
+		if(null == indexs){
+			indexs = new ArrayList<>();
+		}
 		return indexs;
 	}
 	/**
@@ -5015,10 +5018,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		Index pk = null;
-		for(Index index:indexs.values()){
-			if(index.isPrimary()){
-				pk = index;
-				break;
+		if(null != indexs) {
+			for (Index index : indexs.values()) {
+				if (index.isPrimary()) {
+					pk = index;
+					break;
+				}
 			}
 		}
 		if(null == pk) {
@@ -5035,6 +5040,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					indexs.put(pk.getName().toUpperCase(), (T) pk);
 				}
 			}
+		}
+		if(null == indexs){
+			indexs = new LinkedHashMap<>();
 		}
 		return indexs;
 	}
