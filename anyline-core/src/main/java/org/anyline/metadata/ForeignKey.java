@@ -46,6 +46,11 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         addColumn(column, rcolumn);
     }
 
+    public ForeignKey addColumn(String column, String reference){
+
+        addColumn(new Column(column).setReference(new Column(reference)));
+        return this;
+    }
     public ForeignKey setReference(Table reference){
         if(setmap && null != update){
             update.setReference(reference);
