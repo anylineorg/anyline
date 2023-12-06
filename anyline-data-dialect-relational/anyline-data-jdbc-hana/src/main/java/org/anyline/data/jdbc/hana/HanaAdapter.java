@@ -21,6 +21,7 @@ package org.anyline.data.jdbc.hana;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
@@ -284,6 +285,9 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
 		configs.IS_KEYHOLDER_IDENTITY(false);
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
