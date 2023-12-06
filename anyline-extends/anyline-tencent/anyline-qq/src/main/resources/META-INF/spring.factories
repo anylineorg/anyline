@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.anyline.qq.mp.util.QQMPBean,\
-org.anyline.qq.open.util.QQOpenBean

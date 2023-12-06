@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configs>
-	<!--https://console.amap.com/dev/key/app-->
-	<config key="default">
-		<property key="KEY">3b9371b483******c219522fdc</property>
-		<property key="TABLE">5937******ab517b6a</property>
-		<property key="SECRET">72c5c*****4144682</property>
-	</config>
-</configs>

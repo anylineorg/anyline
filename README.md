@@ -1,7 +1,7 @@
 
 ***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)  
-开发测试来环境请使用[【8.7.1-SNAPSHOT】](http://doc.anyline.org/aa/aa_3702)版本    
+开发测试来环境请使用[【8.7.1-20231208】](http://doc.anyline.org/aa/aa_3702)版本    
 发版务必到[【中央库】](https://mvnrepository.com/artifact/org.anyline/anyline-core)找一个正式版本，不要把SNAPSHOT版本发到生产环境  
 关于多数据源，请先阅读   
 [【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
