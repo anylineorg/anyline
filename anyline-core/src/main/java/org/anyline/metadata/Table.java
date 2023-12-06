@@ -22,10 +22,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
 
@@ -183,21 +180,24 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     }
 
 
-    public List<Column> primarys(){
-        List<Column> pks = new ArrayList<>();
-        for(Column column:columns.values()){
+    public LinkedHashMap<String, Column> primarys(){
+        LinkedHashMap<String, Column> pks = new LinkedHashMap<>();
+        for(Map.Entry<String,Column> item:columns.entrySet()){
+            Column column = item.getValue();
+            String key = item.getKey();
             if(column.isPrimaryKey() == 1){
-                pks.add(column);
+                pks.put(key, column);
             }
         }
         return pks;
     }
     public Column primary(){
-        List<Column> pks = primarys();
-        if(pks.isEmpty()){
-            return null;
+        for(Column column:columns.values()){
+            if(column.isPrimaryKey() == 1){
+                return column;
+            }
         }
-        return pks.get(0);
+        return null;
     }
     public E clone(){
         E copy = super.clone();
