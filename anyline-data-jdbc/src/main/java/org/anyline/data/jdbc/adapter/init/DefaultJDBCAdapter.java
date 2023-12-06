@@ -5404,7 +5404,18 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		LinkedHashMap columMap = meta.getColumns();
 		Collection<Column> columns = null;
-		List<Column> pks = meta.primarys();
+		PrimaryKey primary = meta.getPrimaryKey();
+		LinkedHashMap<String, Column> pks = null;
+		if(null != primary){
+			pks = primary.getColumns();
+		}else{
+			pks = meta.primarys();
+			primary = new PrimaryKey();
+			primary.setTable(meta);
+			for (Column col:pks.values()){
+				primary.addColumn(col);
+			}
+		}
 		if(null != columMap){
 			columns = columMap.values();
 			if(null != columns && columns.size() >0){
@@ -5421,7 +5432,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					idx ++;
 				}
 				builder.append("\t");
-				if(pks.size() > 0) {
+				if(!pks.isEmpty()) {
 					primary(runtime, builder, meta);
 				}
 				builder.append(")");
@@ -5450,12 +5461,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				}
 			}
 		}
-		if(pks.size() > 1){
-			PrimaryKey primary = new PrimaryKey();
-			primary.setTable(meta);
-			for (Column col:pks){
-				primary.addColumn(col);
-			}
+		if(null != primary){
 			List<Run> pksql = buildAddRunAfterTable(runtime, primary);
 			if(null != pksql){
 				runs.addAll(pksql);
@@ -5591,11 +5597,17 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
-		List<Column> pks = meta.primarys();
-		if(pks.size()>0){
+		PrimaryKey primary = meta.getPrimaryKey();
+		LinkedHashMap<String, Column> pks = null;
+		if(null != primary){
+			pks = primary.getColumns();
+		}else{
+			pks = meta.primarys();
+		}
+		if(!pks.isEmpty()){
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
-			for(Column pk:pks){
+			for(Column pk:pks.values()){
 				if(!first){
 					builder.append(",");
 				}
@@ -6410,6 +6422,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		List<Run> runs = new ArrayList<>();
 		Column update = meta.getUpdate();
 		if(null != update){
+			if(null == update.getTable(false)){
+				update.setTable(meta.getTable(false));
+			}
 			// 修改列名
 			String name = meta.getName();
 			String uname = update.getName();
@@ -6895,7 +6910,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
-		Object def = meta.getDefaultValue();
+		Object def = null;
+		if(null != meta.getUpdate()){
+			def = meta.getUpdate().getDefaultValue();
+		}else {
+			def = meta.getDefaultValue();
+		}
 		if(null != def) {
 			builder.append(" DEFAULT ");
 			//boolean isCharColumn = isCharColumn(runtime, column);
