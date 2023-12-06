@@ -18,6 +18,7 @@
 package org.anyline.metadata;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -43,10 +44,10 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
         setType(type);
     }
     public String getName() {
-        if(BasicUtil.isEmpty(name)){
-            name = "index";
-            for(String column:columns.keySet()){
-                name += "_"+column;
+        if(null == name){
+            name = "constraint_";
+            if(null != columns){
+                name += BeanUtil.concat(columns.keySet());
             }
         }
         return name;
