@@ -220,6 +220,10 @@ public class AnylineProperty {
      */
     protected boolean autoCheckMetadata						    = false		    ; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
     /**
+     * 查询返回空DataSet时，是否检测元数据信息
+     */
+    protected boolean checkEmptySetMetadata                     = false         ;   // 查询返回空DataSet时，是否检测元数据信息
+    /**
      * DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
      */
     protected boolean removeEmptyHttpKey                        = false         ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
@@ -672,6 +676,15 @@ public class AnylineProperty {
     public void setAutoCheckMetadata(boolean autoCheckMetadata) {
         this.autoCheckMetadata = autoCheckMetadata;
         ConfigTable.IS_AUTO_CHECK_METADATA = autoCheckMetadata;
+    }
+
+    public boolean isCheckEmptySetMetadata() {
+        return checkEmptySetMetadata;
+    }
+
+    public void setCheckEmptySetMetadata(boolean checkEmptySetMetadata) {
+        this.checkEmptySetMetadata = checkEmptySetMetadata;
+        ConfigTable.IS_CHECK_EMPTY_SET_METADATA = checkEmptySetMetadata;
     }
 
     public boolean isCacheDisabled() {

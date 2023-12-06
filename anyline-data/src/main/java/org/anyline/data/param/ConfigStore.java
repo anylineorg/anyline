@@ -1592,6 +1592,16 @@ public interface ConfigStore {
 	default ConfigStore IS_AUTO_CHECK_METADATA(boolean value){
 		return config("IS_AUTO_CHECK_METADATA", value);
 	}
+	/**
+	 * 查询返回空DataSet时，是否检测元数据信息
+	 * @return boolean
+	 */
+	default boolean IS_CHECK_EMPTY_SET_METADATA(){
+		return getBoolean("IS_CHECK_EMPTY_SET_METADATA", ConfigTable.IS_CHECK_EMPTY_SET_METADATA);
+	}
+	default ConfigStore IS_CHECK_EMPTY_SET_METADATA(boolean value){
+		return config("IS_CHECK_EMPTY_SET_METADATA", value);
+	}
 
 
 	/**

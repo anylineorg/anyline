@@ -110,6 +110,7 @@ public class ConfigTable {
 	public static boolean IS_RETURN_EMPTY_STRING_REPLACE_NULL			= false			;  // DataRow.getString返回null时替换成""
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false			;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false			; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+	public static boolean IS_CHECK_EMPTY_SET_METADATA					= false			;   // 查询返回空DataSet时，是否检测元数据信息
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false			; 	// 禁用默认的entity adapter
 	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false			; 	// 是否禁用查询缓存
@@ -843,6 +844,9 @@ public class ConfigTable {
 
 	public boolean  IS_AUTO_CHECK_METADATA() {
 		return IS_AUTO_CHECK_METADATA;
+	}
+	public boolean  IS_CHECK_EMPTY_SET_METADATA(){
+		return IS_CHECK_EMPTY_SET_METADATA;
 	}
 
 	public boolean  IS_DISABLED_DEFAULT_ENTITY_ADAPTER() {
