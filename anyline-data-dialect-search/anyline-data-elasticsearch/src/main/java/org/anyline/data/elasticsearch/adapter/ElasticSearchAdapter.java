@@ -21,9 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSetMetaData;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1055,6 +1052,11 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
     @Override
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
         return super.delete(runtime, random, configs, run);
+    }
+
+    @Override
+    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta) {
+
     }
 
     /* *****************************************************************************************************************
@@ -5448,21 +5450,6 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
     @Override
     public List<Run> buildRenameRun(DataRuntime runtime, Function meta) throws Exception {
         return super.buildRenameRun(runtime, meta);
-    }
-
-    @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource dataSource, T meta) {
-
-    }
-
-    @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
-
-    }
-
-    @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta) {
-
     }
 
     @Override

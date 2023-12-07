@@ -26,12 +26,17 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.LinkedHashMap;
 
 public interface JDBCAdapter extends DriverAdapter {
+
+	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource dataSource, T meta);
+	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta);
 	/**
 	 * insert[命令执行后]
 	 * insert执行后 通过KeyHolder获取主键值赋值给data

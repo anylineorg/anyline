@@ -31,8 +31,6 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -1007,9 +1005,6 @@ public interface DriverAdapter {
 	 * function         : 函数
 	 ******************************************************************************************************************/
 
-
-	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource dataSource, T meta);
-	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta);
 	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta);
 
 	/**

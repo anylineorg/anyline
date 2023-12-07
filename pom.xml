@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.7.1-SNAPSHOT</version>
+	<version>8.7.1-20231207</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 
@@ -33,14 +33,15 @@
 		<module>anyline-data</module>
 		<module>anyline-data-jdbc</module>
 		<module>anyline-oro</module>
+		<module>anyline-net</module>
 
 		<!--发布时把以下目录注释掉 单独发布-->
 		<!-- dialect按数据库主模型分类 -->
 		<!--
-		-->
-
 		<module>anyline-data-dialect-relational</module>
 		<module>anyline-data-dialect-relational-extends</module>
+		-->
+
 
 		<module>anyline-data-dialect-document</module>
 		<module>anyline-data-dialect-event</module>
