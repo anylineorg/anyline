@@ -2148,7 +2148,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
-			builder.append("SELECT FTT.TABLE_CATALOG AS CATALOG_NAME, C.NAME AS COLUMN_NAME, SCHEMA_NAME(FT.SCHEMA_ID) AS SCHEMA_NAME, B.VALUE COLUMN_COMMENT, OBJECT_NAME(c.OBJECT_ID) AS TABLE_NAME,TYPE_NAME(user_type_id) AS TYPE_NAME, C.* \n \n");
+			builder.append("SELECT FTT.TABLE_CATALOG AS CATALOG_NAME, C.NAME AS COLUMN_NAME, SCHEMA_NAME(FT.SCHEMA_ID) AS SCHEMA_NAME, B.VALUE COLUMN_COMMENT, OBJECT_NAME(c.OBJECT_ID) AS TABLE_NAME,TYPE_NAME(user_type_id) AS TYPE_NAME, OBJECT_DEFINITION(c.default_object_id) AS DEFAULT_DEFINITION,OBJECT_NAME(C.default_object_id) AS DEFAULT_CONSTRAINT ,C.* \n \n");
 			builder.append("FROM SYS.COLUMNS C \n");
 			builder.append("LEFT JOIN SYS.TABLES AS FT ON C.OBJECT_ID = FT.OBJECT_ID \n");
 			//表catalog(库名)
@@ -4266,7 +4266,38 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception{
-		return super.buildChangeDefaultRun(runtime, meta);
+		//ALTER TABLE [dbo].[tab] ADD DEFAULT 123 FOR [NAME]
+		//ALTER TABLE [dbo].[tab] DROP CONSTRAINT 默认约束名
+		List<Run> runs = new ArrayList<>();
+		Column update = meta.getUpdate();
+		String constraint = meta.getDefaultConstraint();
+		Object udef = update.getDefaultValue();
+		if(null != constraint){
+			//删除原来的默认值
+			Run drop = new SimpleRun(runtime);
+			runs.add(drop);
+			StringBuilder builder = drop.getBuilder();
+			builder.append("ALTER TABLE ");
+			delimiter(builder, meta.getTable());
+			builder.append(" DROP CONSTRAINT ").append(constraint);
+		}
+		//添加默认值
+		if(null != udef) {
+			Run run = new SimpleRun(runtime);
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
+			builder.append("ALTER TABLE ");
+			delimiter(builder, meta.getTable());
+			builder.append(" ADD DEFAULT ");
+			udef = write(runtime, meta, udef, false);
+			if (null == udef) {
+				udef = meta.getDefaultValue();
+			}
+			builder.append(udef);
+			builder.append(" FOR ");
+			delimiter(builder, meta);
+		}
+		return runs;
 	}
 
 
