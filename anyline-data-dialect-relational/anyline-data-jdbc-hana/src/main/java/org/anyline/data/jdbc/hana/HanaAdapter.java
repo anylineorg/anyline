@@ -2301,7 +2301,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
-		PrimaryKey primary = table.getPrimaryKey();
+		PrimaryKey primary = null;
 		for(DataRow row:set){
 			if(null == primary){
 				primary = new PrimaryKey();

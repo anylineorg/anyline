@@ -2356,7 +2356,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
-		PrimaryKey primary = table.getPrimaryKey();
+		PrimaryKey primary = null;
 		for(DataRow row:set){
 			if(null == primary){
 				primary = new PrimaryKey();
@@ -3399,7 +3399,9 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		if(exists) {
 			// 仅drop时支持
-			return super.checkTableExists(runtime, builder, exists);
+			//TODO 2016以下不支持 runtime中确定一下版本
+			return builder;
+			//return super.checkTableExists(runtime, builder, exists);
 		}else {
 			// create时不支持
 			return builder;

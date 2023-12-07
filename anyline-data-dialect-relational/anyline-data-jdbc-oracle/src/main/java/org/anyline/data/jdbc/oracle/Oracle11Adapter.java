@@ -54,7 +54,6 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
                     version = version.split("\\.")[0];
                 }
                 double v = BasicUtil.parseDouble(version, 0d);
-                String key = null;
                 if(v < 12.0){
                     return true;
                 }

@@ -2498,7 +2498,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
-		PrimaryKey primary = table.getPrimaryKey();
+		PrimaryKey primary = null;
 		for(DataRow row:set){
 			if(null == primary){
 				primary = new PrimaryKey();
