@@ -8,7 +8,7 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-extends-dependency</artifactId>
 		<version>8.7.1-SNAPSHOT</version>
-		 <relativePath>../anyline-extends-dependency/pom.xml</relativePath>
+		 <relativePath>../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-net</artifactId>
