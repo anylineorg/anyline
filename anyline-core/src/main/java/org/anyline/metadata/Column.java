@@ -77,6 +77,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected int primary = -1                    ; // 是否主键
     protected int generated = -1                  ; // 是否generated
     protected Object defaultValue                 ; // 默认值
+    protected String defaultConstraint            ; // 默认约束名
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
     protected int withTimeZone                = -1;
@@ -735,6 +736,23 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.defaultValue = defaultValue;
+        return this;
+    }
+
+
+    public String getDefaultConstraint() {
+        if(getmap && null != update){
+            return update.defaultConstraint;
+        }
+        return defaultConstraint;
+    }
+
+    public Column setDefaultConstraint(String defaultConstraint) {
+        if(setmap && null != update){
+            update.setDefaultConstraint(defaultConstraint);
+            return this;
+        }
+        this.defaultConstraint = defaultConstraint;
         return this;
     }
 
