@@ -6207,7 +6207,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * *****************************************************************************************************************/
 
     @Override
-    public <T extends BaseMetadata> void  checkSchema(DataRuntime runtime, DataSource dataSource, T meta){
+    public <T extends BaseMetadata> void  checkSchema(DataRuntime runtime, DataSource ds, T meta){
         if(null == meta || null != meta.getCheckSchemaTime()){
             return;
         }
@@ -6222,15 +6222,15 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         try {
             //注意这里与数据库不一致
             if (null == meta.getSchema()) {
-                con = DataSourceUtils.getConnection(dataSource);
+                con = DataSourceUtils.getConnection(ds);
                 meta.setSchema(con.getCatalog());
             }
             meta.setCheckSchemaTime(new Date());
         }catch (Exception e){
             log.warn("[check schema][fail:{}]", e.toString());
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, dataSource)){
-                DataSourceUtils.releaseConnection(con, dataSource);
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+                DataSourceUtils.releaseConnection(con, ds);
             }
         }
     }

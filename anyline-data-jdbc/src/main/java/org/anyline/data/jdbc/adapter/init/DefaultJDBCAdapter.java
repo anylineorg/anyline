@@ -9436,21 +9436,21 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource dataSource, T meta){
+	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource ds, T meta){
 		if(null == meta || null != meta.getCheckSchemaTime()){
 			return;
 		}
 		Connection con = null;
 		try {
 			if (null == meta.getCatalog() || null == meta.getSchema()) {
-				con = DataSourceUtils.getConnection(dataSource);
+				con = DataSourceUtils.getConnection(ds);
 				checkSchema(runtime, con, meta);
 			}
 		}catch (Exception e){
 			log.warn("[check schema][fail:{}]", e.toString());
 		}finally {
-			if(null != con && !DataSourceUtils.isConnectionTransactional(con, dataSource)){
-				DataSourceUtils.releaseConnection(con, dataSource);
+			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
 	}

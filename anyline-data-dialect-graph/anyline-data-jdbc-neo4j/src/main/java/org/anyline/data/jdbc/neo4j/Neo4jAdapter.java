@@ -416,9 +416,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(),values));
                 }
             }
-        }
-
-        finally {
+        }finally {
             if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
                 DataSourceUtils.releaseConnection(con, ds);
             }
