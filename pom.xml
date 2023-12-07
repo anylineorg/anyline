@@ -30,11 +30,9 @@
     <modules>
 		<module>anyline-dependency</module>
 		<module>anyline-core</module>
-		<module>anyline-boot</module>
 		<module>anyline-data</module>
 		<module>anyline-data-jdbc</module>
 		<module>anyline-oro</module>
-		<module>anyline-data-cache</module>
 
 		<!--发布时把以下目录注释掉 单独发布-->
 		<!-- dialect按数据库主模型分类 -->
@@ -55,7 +53,6 @@
 		<module>anyline-data-dialect-time-series</module>
 		<module>anyline-data-dialect-vector</module>
 		<module>anyline-data-dialect-wide-column</module>
-		<module>anyline-data-search</module>
 	</modules>
 	<build>
 		<plugins>
