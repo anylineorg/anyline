@@ -29,22 +29,11 @@
 	</scm>
     <modules>
 		<module>anyline-dependency</module>
-		<module>anyline-dependency-web</module>
 		<module>anyline-core</module>
-		<module>anyline-net</module>
-		<module>anyline-encrypt</module>
-		<module>anyline-web</module>
-		<module>anyline-mvc</module>
 		<module>anyline-boot</module>
-
 		<module>anyline-data</module>
 		<module>anyline-data-jdbc</module>
-
 		<module>anyline-oro</module>
-
-
-		<module>anyline-nacos</module>
-		<module>anyline-struts</module>
 		<module>anyline-data-cache</module>
 
 		<!--发布时把以下目录注释掉 单独发布-->
