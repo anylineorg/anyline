@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.7.1-20231207</version>
+	<version>8.7.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline-dependency</name>
 	<description>anyline</description>
@@ -31,7 +31,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<anyline.version>8.7.1-20231207</anyline.version>
+		<anyline.version>8.7.1-SNAPSHOT</anyline.version>
 
 		<spring.version>5.3.23</spring.version>
 		<jdbc-mssql.version>7.2.2.jre8</jdbc-mssql.version>

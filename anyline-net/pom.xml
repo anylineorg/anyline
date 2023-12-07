@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-extends-dependency</artifactId>
-		<version>8.7.1-20231207</version>
+		<version>8.7.1-SNAPSHOT</version>
 		 <relativePath>../anyline-extends-dependency/pom.xml</relativePath>
 	</parent>
 
