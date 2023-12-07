@@ -8700,13 +8700,18 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			type = row.getString("UDT_NAME","DATA_TYPE", "TYPENAME", "DATA_TYPE_NAME");
 		}
 		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
-		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT", "DEFAULT_VALUE"), column.getDefaultValue())+"";
+		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT", "DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
 				def = def.substring(1, def.length()-1);
 			}
+			while(def.startsWith("'") && def.endsWith("'")){
+				def = def.substring(1, def.length()-1);
+			}
 			column.setDefaultValue(def);
 		}
+		//默认值约束
+		column.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
 		if(-1 == column.isAutoIncrement()){
 			column.autoIncrement(row.getBoolean("IS_IDENTITY", null));
 		}
