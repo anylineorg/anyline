@@ -4356,7 +4356,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 delimiter(builder, uname);
                 builder.append(" = ");
                 delimiter(builder, tmp_name);
-                runs.add(new SimpleRun(builder));
+                runs.add(new SimpleRun(runtime, builder));
 
                 meta.setName(tmp_name);
                 List<Run> drop = buildDropRun(runtime, meta);
@@ -4374,7 +4374,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 delimiter(builder, meta.getName()).append(" ");
                 type(runtime, builder, meta.getUpdate());
                 builder.append(")");
-                runs.add(new SimpleRun(builder));
+                runs.add(new SimpleRun(runtime, builder));
             }
         }
         // column.setName(name);
@@ -4865,7 +4865,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      */
     @Override
     public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-        return super.alter(runtime, table, meta);
+        return super.alter(runtime, table, meta, trigger);
     }
 
 
