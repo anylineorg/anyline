@@ -1932,7 +1932,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if (BasicUtil.isNotEmpty(pattern)) {
 			sql += " LIKE '" + pattern + "'";
 		}
-		runs.add(new SimpleRun(sql));
+		runs.add(new SimpleRun(runtime, sql));
 
 		sql = "SELECT * FROM INFORMATION_SCHEMA.INS_STABLES WHERE 1=1 ";
 		if (BasicUtil.isNotEmpty(catalog)) {
@@ -1941,7 +1941,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if (BasicUtil.isNotEmpty(pattern)) {
 			sql += " AND STABLE_NAME LIKE '" + pattern + "'";
 		}
-		runs.add(new SimpleRun(sql));
+		runs.add(new SimpleRun(runtime, sql));
 		return runs;
 	}
 
@@ -2492,10 +2492,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 				builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
 				builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
 			}
-			runs.add(new SimpleRun(builder));
+			runs.add(new SimpleRun(runtime, builder));
 			builder = new StringBuilder();
 			builder.append("DESCRIBE ").append(table.getName());
-			runs.add(new SimpleRun(builder));
+			runs.add(new SimpleRun(runtime, builder));
 		}
 		return runs;
 	}
@@ -3894,7 +3894,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 					idx ++;
 				}
 				builder.append(")");
-				runs.add(new SimpleRun(builder));
+				runs.add(new SimpleRun(runtime, builder));
 			}else{
 				runs.add(sql);
 			}
