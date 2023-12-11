@@ -2359,9 +2359,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		if(metadata){
-			builder.append("SELECT * FROM ");
+			//不支持
+			/*builder.append("SELECT * FROM ");
 			name(runtime, builder, table);
-			builder.append(" WHERE 1=0");
+			builder.append(" WHERE 1=0");*/
 		}else {
 			if(null != name) {
 				builder.append("DESCRIBE ").append(name);
@@ -2478,10 +2479,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		List<Run> runs = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(metadata){
-			builder.append("SELECT * FROM ");
+			//3.2.1不支持
+			/*builder.append("SELECT * FROM ");
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
-			runs.add(new SimpleRun(builder));
+			runs.add(new SimpleRun(builder));*/
 		}else {
 			if (table instanceof MasterTable) {
 				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
