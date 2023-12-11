@@ -85,8 +85,9 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public void setRuntime(DataRuntime runtime){
+	public Run setRuntime(DataRuntime runtime){
 		this.runtime = runtime;
+		return this;
 	}
 
 	@Override
