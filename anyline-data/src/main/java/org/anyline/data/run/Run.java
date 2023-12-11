@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface Run {
-	void setRuntime(DataRuntime runtime);
+	Run setRuntime(DataRuntime runtime);
 	void init();
 	DriverAdapter adapter();
 	/** 
