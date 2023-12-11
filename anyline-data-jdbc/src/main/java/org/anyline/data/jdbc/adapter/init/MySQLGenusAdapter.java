@@ -1802,7 +1802,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             ddls = new ArrayList<>();
         }
         for(DataRow row:set){
-            ddls.add(row.getString("Create Table"));
+            ddls.add(row.getString("CREATE TABLE"));
         }
 
         return ddls;
@@ -2034,7 +2034,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             ddls = new ArrayList<>();
         }
         for(DataRow row:set){
-            ddls.add(row.getString("Create View"));
+            ddls.add(row.getString("CREATE VIEW"));
         }
 
         return ddls;
@@ -5067,7 +5067,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-        return super.alter(runtime, table, meta);
+        return super.alter(runtime, table, meta, trigger);
     }
 
 
