@@ -3870,6 +3870,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					qty_total=columns.size();
 				}
 			} catch (Exception e) {
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
+					e.printStackTrace();
+				}
 				if(primary) {
 					e.printStackTrace();
 				} if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
@@ -3891,7 +3894,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 						}
 					}
 				} catch (Exception e) {
-					if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
 						e.printStackTrace();
 					}else {
 						if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
