@@ -1194,7 +1194,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		}
 		for(DataRow row:set){
 			Database database = new Database();
-			database.setName(row.getString("name"));
+			database.setName(row.getString("NAME"));
 			databases.put(database.getName().toUpperCase(), database);
 		}
 		return databases;
@@ -4739,7 +4739,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-		return super.alter(runtime, table, meta);
+		return super.alter(runtime, table, meta, trigger);
 	}
 
 
