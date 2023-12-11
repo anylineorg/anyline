@@ -1,0 +1,2 @@
+org.anyline.data.jdbc.kingbase.oracle.KingbaseAdapter
+org.anyline.data.jdbc.kingbase.postgres.KingbaseAdapter
