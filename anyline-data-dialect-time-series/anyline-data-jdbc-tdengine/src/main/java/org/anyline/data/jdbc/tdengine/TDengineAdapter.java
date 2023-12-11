@@ -1535,7 +1535,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			// SHOW TABLES 只返回一列stable_name
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1555,7 +1555,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			// a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
 
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1568,9 +1568,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						continue;
 					}
 				}
-				table.setCatalog(row.getString("db_name"));
-				table.setType(row.getString("type"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setType(row.getString("TYPE"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 			}
 		}
 		return tables;
@@ -1597,7 +1597,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			// SHOW TABLES 只返回一列stable_name
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1615,7 +1615,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			// a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
 
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1629,9 +1629,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						continue;
 					}
 				}
-				table.setCatalog(row.getString("db_name"));
-				table.setType(row.getString("type"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setType(row.getString("TYPE"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 				if(!contains){
 					tables.add(table);
 				}
@@ -1966,7 +1966,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			// SHOW STABLES 只返回一列stable_name
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1985,7 +1985,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			// stable_name  |db_name|create_time            |columns|tags|last_update           |table_comment|watermark  |max_delay|rollup|
 			// meters       |simple |yyyy-MM-dd HH:mm:ss.SSS|4      |2   |yyyy-MM-dd HH:mm:ss.SS|NULL         |5000a,5000a|-1a,-1a  |      |
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1998,8 +1998,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						continue;
 					}
 				}
-				table.setCatalog(row.getString("db_name"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 			}
 		}
 		return tables;
@@ -2207,26 +2207,26 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			tables = new LinkedHashMap<>();
 			for(DataRow row:set){
-				String name = row.getString("table_name");
+				String name = row.getString("TABLE_NAME");
 				T table = (T)new PartitionTable(name);
 				tables.put(name, table); //不要转大写 下一步需要交集
 			}
 		}else if(index < total -1){
 			//与此之前的集合求交集
-			tables.keySet().retainAll(set.getStrings("table_name"));
+			tables.keySet().retainAll(set.getStrings("TABLE_NAME"));
 		}
 		if(index == total -1){
 			//最后一步 补充详细信息
 			LinkedHashMap<String, T> result = new LinkedHashMap<>();
 			for (DataRow row:set){
-				String name = row.getString("table_name");
+				String name = row.getString("TABLE_NAME");
 				if(!tables.containsKey(name)){
 					continue;
 				}
 				T table = (T)new PartitionTable(name);
 				result.put(name.toUpperCase(), table);
-				table.setCatalog(row.getString("db_name"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 				table.setMaster(master);
 				result.put(name, table);
 			}
@@ -2390,8 +2390,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		}
 		// DESCRIBE
 		for(DataRow row:set){
-			String name = row.getString("field");
-			String note = row.getString("note");
+			String name = row.getString("FIELD");
+			String note = row.getString("NOTE");
 			if(BasicUtil.isEmpty(name)){
 				continue;
 			}
@@ -2410,8 +2410,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			column.setName(name);
 			column.setCatalog(table.getCatalog());
 			column.setSchema(table.getSchema());
-			column.setTypeName(row.getString("type"));
-			column.setPrecision(row.getInt("length", 0));
+			column.setTypeName(row.getString("TYPE"));
+			column.setPrecision(row.getInt("LENGTH", 0));
 			ColumnType columnType = type(column.getTypeName());
 			column.setColumnType(columnType);
 		}
@@ -2540,11 +2540,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		}else if(index ==1){
 			// DESCRIBE
 			for(DataRow row:set){
-				String note = row.getString("note");
+				String note = row.getString("NOTE");
 				if(!"TAG".equalsIgnoreCase(note)){
 					continue;
 				}
-				String name = row.getString("field");
+				String name = row.getString("FIELD");
 
 				if(BasicUtil.isEmpty(name)){
 					continue;
@@ -2558,8 +2558,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 					}
 				}
 				item.setName(name);
-				item.setTypeName(row.getString("type"));
-				item.setPrecision(row.getInt("length", 0));
+				item.setTypeName(row.getString("TYPE"));
+				item.setPrecision(row.getInt("LENGTH", 0));
 				item.setValue(row.get("TAG_VALUE"));
 				tags.put(name.toUpperCase(), item);
 			}
@@ -3606,7 +3606,34 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
-		return super.partitionOf(runtime, builder, meta);
+		String stable = meta.getMasterName();
+		if(BasicUtil.isEmpty(stable)){
+			throw new SQLException("未指定主表");
+		}
+		builder.append(" USING ");
+		delimiter(builder, stable);
+		builder.append("(");
+		Collection<Tag> tags = meta.getTags().values();
+		int idx = 0;
+		for(Tag tag:tags){
+			if(idx > 0){
+				builder.append(",");
+			}
+			delimiter(builder, tag.getName());
+			idx ++;
+		}
+		builder.append(") TAGS (");
+		idx = 0;
+		for(Tag tag:tags){
+			if(idx > 0){
+				builder.append(",");
+			}
+			//format(builder, tag.getValue());
+			builder.append(write(runtime,null, tag.getValue(), false));
+			idx ++;
+		}
+		builder.append(")");
+		return builder;
 	}
 
 
@@ -4046,15 +4073,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, PartitionTable meta) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		String stable = meta.getMasterName();
-		if(BasicUtil.isEmpty(stable)){
-			throw new SQLException("未指定主表");
-		}
 		Table tab = meta;
+		return super.buildCreateRun(runtime, tab);
+		/*
 		builder.append(super.buildCreateRun(runtime, tab).get(0).getFinalUpdate());
 		builder.append(" USING ");
 		delimiter(builder, stable);
@@ -4079,7 +4100,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			idx ++;
 		}
 		builder.append(")");
-		return runs;
+		return runs;*/
 	}
 
 	/**
@@ -4794,7 +4815,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-		return super.alter(runtime, table, meta);
+		return super.alter(runtime, table, meta, false);
 	}
 
 
