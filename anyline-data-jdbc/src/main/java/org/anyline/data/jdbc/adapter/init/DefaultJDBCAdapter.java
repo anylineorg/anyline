@@ -3883,13 +3883,20 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					List<Run> runs = buildQueryColumnRun(runtime, table, true);
 					if (null != runs) {
 						for (Run run  : runs) {
-							SqlRowSet set = ((JDBCRuntime)runtime).jdbc().queryForRowSet(run.getFinalQuery());
-							columns = columns(runtime, true, columns, table, set);
+							String sql = run.getFinalQuery();
+							if(BasicUtil.isNotEmpty(sql)) {
+								SqlRowSet set = ((JDBCRuntime) runtime).jdbc().queryForRowSet(sql);
+								columns = columns(runtime, true, columns, table, set);
+							}
 						}
 					}
 				} catch (Exception e) {
-					if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-						log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+					if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+						e.printStackTrace();
+					}else {
+						if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+							log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
+						}
 					}
 				}
 				if(null != columns) {
