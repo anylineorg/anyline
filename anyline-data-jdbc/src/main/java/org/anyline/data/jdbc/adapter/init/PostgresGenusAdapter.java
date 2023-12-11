@@ -1151,7 +1151,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         }
         for(DataRow row:set){
             Database database = new Database();
-            database.setName(row.getString("datname"));
+            database.setName(row.getString("DATNAME"));
             databases.put(database.getName().toUpperCase(), database);
         }
         return databases;
@@ -2273,8 +2273,8 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             primary = new PrimaryKey();
             //conname 	    |contype	|conkey |  define
             //test_pk_pkey	| p			| {2,1}	| 	PRIMARY KEY (id, name)
-            primary.setName(row.getString("conname"));
-            String define = row.getString("define");
+            primary.setName(row.getString("CONNAME"));
+            String define = row.getString("DEFINE");
             String[] cols = RegularUtil.cut(define, "(",")").split(",");
             for(String col:cols){
                 Column column = new Column(col.trim().replace("\"", ""));
@@ -4636,7 +4636,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-        return super.alter(runtime, table, meta);
+        return super.alter(runtime, table, meta, trigger);
     }
 
 
