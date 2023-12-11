@@ -4292,7 +4292,7 @@ public class HighgoAdapter extends PostgresGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-		return super.alter(runtime, table, meta);
+		return super.alter(runtime, table, meta, trigger);
 	}
 
 

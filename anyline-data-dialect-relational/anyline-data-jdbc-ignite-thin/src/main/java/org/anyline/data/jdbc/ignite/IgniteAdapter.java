@@ -1812,7 +1812,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 			ddls = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			ddls.add(row.getString("Create View"));
+			ddls.add(row.getString("CREATE VIEW"));
 		}
 		return ddls;
 	}
@@ -2332,12 +2332,12 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
 		PrimaryKey primary = null;
-		set = set.getRows("Key_name", "PRIMARY");
+		set = set.getRows("KEY_NAME", "PRIMARY");
 		if(set.size() > 0){
 			primary = new PrimaryKey();
 			for(DataRow row:set){
-				primary.setName(row.getString("Key_name"));
-				Column column = new Column(row.getString("Column_name"));
+				primary.setName(row.getString("KEY_NAME"));
+				Column column = new Column(row.getString("COLUMN_NAME"));
 				primary.addColumn(column);
 			}
 		}
@@ -4592,7 +4592,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-		return super.alter(runtime, table, meta);
+		return super.alter(runtime, table, meta, trigger);
 	}
 
 
