@@ -782,7 +782,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}else {
 					value = BeanUtil.getFieldValue(obj, key);
 				}
-				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+				//if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+				if(BasicUtil.checkEl(value+"")){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 
@@ -900,7 +901,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					builder.append(",");
 				}
 				first = false;
-				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+				//if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+				if(BasicUtil.checkEl(value+"")){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 					delimiter(builder, key).append(" = ").append(value).append(BR_TAB);
@@ -1013,7 +1015,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			for(Column col:cols.values()){
 				String key = col.getName();
 				Object value = BeanUtil.getFieldValue(item, key);
-				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+				//if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+				if(BasicUtil.checkEl(value+"")){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 				}else{
