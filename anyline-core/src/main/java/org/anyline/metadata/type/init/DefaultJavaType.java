@@ -64,7 +64,8 @@ public enum DefaultJavaType implements DataType {
             }
             if(value instanceof String){
                 String str = (String)value;
-                if(str.startsWith("${") && str.endsWith("}")){
+                //if(str.startsWith("${") && str.endsWith("}")){
+                if(BasicUtil.checkEl(str)){
                     value = str.substring(2, str.length()-1);
                 }
             }else if(value instanceof Date){
