@@ -1060,7 +1060,8 @@ public class DefaultService<E> implements AnylineService<E> {
         src = src.trim();
         List<String> pks = new ArrayList<>();
         // 文本sql
-        if (src.startsWith("${") && src.endsWith("}")) {
+        //if (src.startsWith("${") && src.endsWith("}")) {
+        if(BasicUtil.checkEl(src)){
             if (ConfigTable.isSQLDebug()) {
                 log.debug("[解析SQL类型] [类型:{JAVA定义}] [src:{}]", src);
             }
