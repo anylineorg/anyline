@@ -7,6 +7,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -1805,6 +1806,14 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             ddls.add(row.getString("CREATE TABLE"));
         }
 
+        if(BasicUtil.isEmpty(table.getCharset())) {
+            for (String item : ddls) {
+                if (item.contains("CHARSET=")) {
+                    String charset = RegularUtil.cut(item, "CHARSET=", " ");
+                    table.setCharset(charset);
+                }
+            }
+        }
         return ddls;
     }
 
