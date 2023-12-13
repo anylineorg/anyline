@@ -243,7 +243,8 @@ public class MapUtil {
 						kvs.put(p1, p2);
 						i += 2;
 						continue;
-					} else if (p2.startsWith("${") && p2.endsWith("}")) {
+					//} else if (p2.startsWith("${") && p2.endsWith("}")) {
+					} else if (BasicUtil.checkEl(p2)) {
 						p2 = p2.substring(2, p2.length() - 1);
 						kvs.put(p1, p2);
 						kvs.put(p1 + srcFlagTag, "true");
