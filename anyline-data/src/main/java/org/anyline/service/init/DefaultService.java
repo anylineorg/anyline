@@ -902,7 +902,25 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
-        return dao.deletes(batch, table, key, values);
+        if(batch >1){
+            long qty = 0;
+            List<T> list = new ArrayList<>();
+            int vol = 0;
+            for(T value:values){
+                list.add(value);
+                vol ++;
+                if(vol >= batch){
+                    qty += dao.deletes(0, table, key, values);
+                    list.clear();
+                }
+            }
+            if(!list.isEmpty()){
+                qty += dao.deletes(0, table, key, values);
+            }
+            return qty;
+        }else {
+            return dao.deletes(batch, table, key, values);
+        }
     }
 
     
