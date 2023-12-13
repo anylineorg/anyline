@@ -308,10 +308,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 value = BeanUtil.getFieldValue(obj, key);
             }
             delimiter(builder, key).append(":");
-            if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+            //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+            if(BasicUtil.checkEl(value+"")){
                 String str = value.toString();
                 value = str.substring(2, str.length()-1);
-                if(value.toString().startsWith("${") && value.toString().endsWith("}")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     builder.append("?");
                     insertColumns.add(key);
                     run.addValues(Compare.EQUAL, column, value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
@@ -481,7 +483,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 if(BasicUtil.isEmpty(column)){
                     continue;
                 }
-                if(column.startsWith("${") && column.endsWith("}")){
+                //if(column.startsWith("${") && column.endsWith("}")){
+                if(BasicUtil.checkEl(column)){
                     column = column.substring(2, column.length()-1);
                     builder.append(column);
                 }else{
@@ -885,7 +888,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
                 }
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
 
@@ -969,7 +973,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     builder.append(",");
                 }
                 first = false;
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                     delimiter(builder, key).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
