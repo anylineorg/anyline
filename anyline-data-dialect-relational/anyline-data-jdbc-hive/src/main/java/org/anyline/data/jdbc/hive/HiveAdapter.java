@@ -5526,7 +5526,19 @@ public class HiveAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
-		return super.value(runtime, column, value);
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME){
+			return "unix_timestamp()";
+		}
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE){
+			return "unix_timestamp()";
+		}
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+			return "unix_timestamp()";
+		}
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP){
+			return "unix_timestamp()";
+		}
+		return null;
 	}
 
 
