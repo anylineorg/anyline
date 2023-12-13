@@ -53,6 +53,7 @@ import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
@@ -549,7 +550,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
                 }
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                 }else{
@@ -623,7 +625,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             for(Column col:cols.values()){
                 String key = col.getName();
                 Object value = row.get(key);
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                  }else{
