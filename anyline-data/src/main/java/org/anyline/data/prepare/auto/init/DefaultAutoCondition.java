@@ -165,7 +165,8 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				String static_value = null;
 				if(v instanceof String){
 					String str = (String)v;
-					if(str.startsWith("${") && str.endsWith("}")){
+					//if(str.startsWith("${") && str.endsWith("}")){
+					if(BasicUtil.checkEl(str)){
 						static_value = str.substring(2, str.length() - 1);
 					}
 				}
