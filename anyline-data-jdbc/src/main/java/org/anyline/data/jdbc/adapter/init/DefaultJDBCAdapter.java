@@ -3020,14 +3020,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			table.setCatalog(_catalog);
 			table.setSchema(_schema);
 			table.setName(name);
-			table.setObjectId(row.getLong("OBJECT_ID"));
+			table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
-			table.setDataRows(row.getLong("TABLE_ROWS"));
-			table.setDataLength(row.getLong("DATA_LENGTH"));
-			table.setIndexLength(row.getLong("INDEX_LENGTH"));
-			table.setCreateTime(row.getDate("CREATE_TIME"));
-			table.setUpdateTime(row.getDate("UPDATE_TIME"));
+			table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+			table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
+			table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
+			table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
+			table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
 			tables.put(name.toUpperCase(), table);
 		}
 		return tables;
@@ -3080,14 +3080,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			table.setCatalog(_catalog);
 			table.setSchema(_schema);
 			table.setName(name);
-			table.setObjectId(row.getLong("OBJECT_ID"));
+			table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
-			table.setDataRows(row.getLong("TABLE_ROWS"));
-			table.setDataLength(row.getLong("DATA_LENGTH"));
-			table.setIndexLength(row.getLong("INDEX_LENGTH"));
-			table.setCreateTime(row.getDate("CREATE_TIME"));
-			table.setUpdateTime(row.getDate("UPDATE_TIME"));
+			table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+			table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
+			table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
+			table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
+			table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
 			if(!conains) {
 				tables.add(table);
 			}
