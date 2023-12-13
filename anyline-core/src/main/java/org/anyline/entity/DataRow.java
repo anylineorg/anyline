@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -1827,7 +1826,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return int
      * @throws Exception 异常 Exception
      */
-    public Integer getInt(String ... keys)  {
+    public Integer getInt(String ... keys) throws Exception {
         Object val = get(keys);
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
@@ -1837,12 +1836,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 return 0;
             }
         } else {
-            Double dbl = null;
-            try {
-                dbl = getDouble(keys);
-            }catch (Exception e){
-                dbl = null;
-            }
+            Double dbl = getDouble(keys);
             if(null != dbl){
                 return dbl.intValue();
             }else{
@@ -1851,7 +1845,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public Integer getInt(String key)  {
+    public Integer getInt(String key) throws Exception {
         Object val = get(key);
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
@@ -1861,14 +1855,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 return 0;
             }
         } else {
-            try {
-                Double dbl = getDouble(key);
-                if (null != dbl) {
-                    return dbl.intValue();
-                } else {
-                    return null;
-                }
-            }catch (Exception e){
+            Double dbl = getDouble(key);
+            if(null != dbl){
+                return dbl.intValue();
+            }else{
                 return null;
             }
         }
@@ -1893,14 +1883,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
-    public Double getDouble(String key){
+    public Double getDouble(String key) throws Exception {
         Object value = get(key);
         if(null != value) {
-            try {
-                return Double.parseDouble(value.toString());
-            }catch (Exception e){
-                return null;
-            }
+            return Double.parseDouble(value.toString());
         }
         return null;
     }
@@ -1928,13 +1914,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return BasicUtil.parseLong(value);
     }
 
-    public Long getLong(String key) {
+    public Long getLong(String key) throws Exception {
         Object value = get(key);
-        try {
-            return BasicUtil.parseLong(value);
-        }catch (Exception e){
-            return null;
-        }
+        return BasicUtil.parseLong(value);
     }
 
     public Long getLong(String key, Long def) {
@@ -2071,18 +2053,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Date getDate(String ... keys) throws Exception {
-        try {
-            return DateUtil.parse(get(keys));
-        }catch (Exception e){
-            return null;
-        }
+        return DateUtil.parse(get(keys));
     }
-    public Date getDate(String key)  {
-        try {
-            return DateUtil.parse(get(key));
-        }catch (Exception e){
-            return null;
-        }
+    public Date getDate(String key) throws Exception {
+        return DateUtil.parse(get(key));
     }
     public byte[] getBytes(String key){
         return (byte[]) get(key);
