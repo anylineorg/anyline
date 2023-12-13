@@ -1295,4 +1295,25 @@ public class BasicUtil {
 		return result;
 	}
 
+	/**
+	 * 检测是否符合el格式
+	 * ${body}<br/>
+	 * 主要过滤掉${A}xxx{B}中间不能再再现其他{}或${}格式
+	 * @param str string
+	 * @return boolean
+	 */
+	public static boolean checkEl(String str){
+		if(null != str){
+			//if(str.startsWith("${") && str.endsWith("}")){
+			if(BasicUtil.checkEl(str)){
+				String body = RegularUtil.cut(str,"${","}");
+				if(body.length() == str.length()-3){
+					//过滤 ${A}XX{B} 格式
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
