@@ -563,7 +563,8 @@ public class XMLRun extends BasicRun implements Run {
 			return this; 
 		} 
  
-		if(condition.startsWith("${") && condition.endsWith("}")){
+		//if(condition.startsWith("${") && condition.endsWith("}")){
+		if(BasicUtil.checkEl(condition)){
 			// 原生SQL  不处理 
 			addSatticCondition(condition.substring(2, condition.length()-1));
 			return this; 
