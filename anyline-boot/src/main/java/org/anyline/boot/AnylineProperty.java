@@ -105,6 +105,10 @@ public class AnylineProperty {
      */
     protected boolean multipleService                            = true         ;   // 如果有多数据源为每个数据源生成独立的service
     /**
+     * 是否开启默认的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
+     */
+    protected boolean enableDefaultJdbcAdapter                   = false        ;   //是否开启默认的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
+    /**
      * 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
      */
     protected boolean autoConvertBytes 							 = true		    ;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
@@ -1022,6 +1026,15 @@ public class AnylineProperty {
 
     public boolean isAutoConvertBytes() {
         return autoConvertBytes;
+    }
+
+    public boolean isEnableDefaultJdbcAdapter() {
+        return enableDefaultJdbcAdapter;
+    }
+
+    public void setEnableDefaultJdbcAdapter(boolean enableDefaultJdbcAdapter) {
+        this.enableDefaultJdbcAdapter = enableDefaultJdbcAdapter;
+        ConfigTable.IS_ENABLE_DEFAULT_JDBC_ADAPTER = enableDefaultJdbcAdapter;
     }
 
     public void setAutoConvertBytes(boolean autoConvertBytes) {
