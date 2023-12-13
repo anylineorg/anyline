@@ -480,7 +480,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			delimiter(builder, key);
 
-			if(null != str && str.startsWith("${") && str.endsWith("}")){
+			//if (str.startsWith("${") && str.endsWith("}")) {
+			if (BasicUtil.checkEl(str)) {
 				value = str.substring(2, str.length()-1);
 				valuesBuilder.append(value);
 			}else if(null != value && value instanceof SQL_BUILD_IN_VALUE){
@@ -1402,7 +1403,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				if(BasicUtil.isEmpty(column)){
 					continue;
 				}
-				if(column.startsWith("${") && column.endsWith("}")){
+				//if (column.startsWith("${") && column.endsWith("}")) {
+				if (BasicUtil.checkEl(column)) {
 					column = column.substring(2, column.length()-1);
 					builder.append(column);
 				}else{
@@ -9583,7 +9585,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					place = false;
 				}else if(value instanceof String){
 					String str = (String)value;
-					if(str.startsWith("${") && str.endsWith("}")){
+					//if(str.startsWith("${") && str.endsWith("}")){
+					if(BasicUtil.checkEl(str)){
 						src = true;
 						place = false;
 						value = str.substring(2, str.length()-1);
