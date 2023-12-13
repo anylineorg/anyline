@@ -152,7 +152,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 if(value instanceof String) {
                     String str = (String) value;
                     if (str.toUpperCase().contains(".NEXTVAL")) {
-                        if (str.startsWith("${") && str.endsWith("}")) {
+                        //if(str.startsWith("${") && str.endsWith("}")){
+                        if(BasicUtil.checkEl(str)){
                             str = str.substring(2, str.length() - 1);
                         }
                         sequens.put(key, new Sequence(str));
@@ -227,7 +228,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                     if(value instanceof String) {
                         String str = (String) value;
                         if (str.toUpperCase().contains(".NEXTVAL")) {
-                            if (str.startsWith("${") && str.endsWith("}")) {
+                            //if(str.startsWith("${") && str.endsWith("}")){
+                            if(BasicUtil.checkEl(str)){
                                 str = str.substring(2, str.length() - 1);
                             }
                             sequens.put(key, new Sequence(str));
