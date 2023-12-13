@@ -3024,6 +3024,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
 			table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+			table.setCollate(row.getString("TABLE_COLLATION"));
 			table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
 			table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
 			table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
@@ -3084,6 +3085,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			table.setEngine(row.getString("ENGINE"));
 			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
 			table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+			table.setCollate(row.getString("TABLE_COLLATION"));
 			table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
 			table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
 			table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
