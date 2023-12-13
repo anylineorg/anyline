@@ -336,7 +336,8 @@ public class ConfigParser {
 	}
 	public static String parseVar(Map<String, Object> values, ParseResult parser){
 		String var = parser.getVar().trim();
-		if(var.startsWith("${") && var.endsWith("}")){
+		//if(var.startsWith("${") && var.endsWith("}")){
+		if(BasicUtil.checkEl(var)){
 			var = var.substring(2, var.length()-1);
 			Object varv = values.get(var);
 			if(null == varv){
@@ -437,7 +438,8 @@ public class ConfigParser {
 			for(ParseResult def:defs){
 				result = new ArrayList<Object>();
 				String key = def.getKey();
-				if(key.startsWith("${") && key.endsWith("}")){
+				//if(key.startsWith("${") && key.endsWith("}")){
+				if(BasicUtil.checkEl(key)){
 					// col:value
 					key = key.substring(2, key.length()-1);
 					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
@@ -1007,7 +1009,8 @@ public class ConfigParser {
 		if (null == values || null == key) {
 			return null;
 		}
-		if(key.startsWith("${") && key.endsWith("}")){
+		//if(key.startsWith("${") && key.endsWith("}")){
+		if(BasicUtil.checkEl(key)){
 			result.add(key.substring(2, key.length()-1));
 		}else{
 			if (keyEncrypt) {
