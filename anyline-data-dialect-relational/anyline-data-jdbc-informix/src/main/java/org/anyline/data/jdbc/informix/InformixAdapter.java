@@ -213,7 +213,8 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			if(null != value && value instanceof String) {
 				String str = (String)value;
 				if (str.toUpperCase().contains(".NEXTVAL")) {
-					if (str.startsWith("${") && str.endsWith("}")) {
+					//if (str.startsWith("${") && str.endsWith("}")) {
+					if (BasicUtil.checkEl(str)) {
 						str = str.substring(2, str.length() - 1);
 					}
 					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
@@ -289,7 +290,8 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			if(null != value && value instanceof String) {
 				String str = (String)value;
 				if (str.toUpperCase().contains(".NEXTVAL")) {
-					if (str.startsWith("${") && str.endsWith("}")) {
+					//if (str.startsWith("${") && str.endsWith("}")) {
+					if (BasicUtil.checkEl(str)) {
 						str = str.substring(2, str.length() - 1);
 					}
 					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
