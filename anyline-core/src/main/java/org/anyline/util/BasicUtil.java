@@ -1304,8 +1304,7 @@ public class BasicUtil {
 	 */
 	public static boolean checkEl(String str){
 		if(null != str){
-			//if(str.startsWith("${") && str.endsWith("}")){
-			if(BasicUtil.checkEl(str)){
+			if(str.startsWith("${") && str.endsWith("}")){
 				String body = RegularUtil.cut(str,"${","}");
 				if(body.length() == str.length()-3){
 					//过滤 ${A}XX{B} 格式
