@@ -6061,7 +6061,25 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 	 */
 	@Override
     public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
-        meta.setSchema(catalog);
+        if(override || BasicUtil.isEmpty(meta.getSchema())) {
+            meta.setSchema(catalog);
+        }
+    }
+    @Override
+    public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
+        if(BasicUtil.isEmpty(meta.getSchema())) {
+            meta.setSchema(catalog);
+        }
+    }
+    /**
+     * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+     * @param catalog catalog
+     * @param schema schema
+     * @return String[]
+     */
+    @Override
+    public String[] checkSchema(String catalog, String schema){
+        return new String[]{schema, null};
     }
     public String insertHead(ConfigStore configs){
 

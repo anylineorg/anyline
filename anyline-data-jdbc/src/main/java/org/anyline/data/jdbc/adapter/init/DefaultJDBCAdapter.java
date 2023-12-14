@@ -3017,7 +3017,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(null != _schema){
 				_schema = _schema.trim();
 			}
-			checkSchema(table, _catalog, _schema);
+			table.setCatalog(_catalog);
+			table.setSchema(_schema);
 			table.setName(name);
 			table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 			table.setEngine(row.getString("ENGINE"));
@@ -3077,7 +3078,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(null != _schema){
 				_schema = _schema.trim();
 			}
-			checkSchema(table, _catalog, _schema);
+			table.setCatalog(_catalog);
+			table.setSchema(_schema);
 			table.setName(name);
 			table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 			table.setEngine(row.getString("ENGINE"));

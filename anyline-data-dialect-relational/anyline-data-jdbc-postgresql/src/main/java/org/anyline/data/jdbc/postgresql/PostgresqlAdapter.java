@@ -5418,7 +5418,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
     public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
-        super.checkSchema(meta, catalog, schema);
+        super.checkSchema(meta, catalog, schema, override);
     }
 	@Override
 	public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
