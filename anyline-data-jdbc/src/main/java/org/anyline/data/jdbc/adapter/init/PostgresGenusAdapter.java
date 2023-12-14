@@ -5776,10 +5776,44 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
     public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
         super.checkSchema(runtime, con, meta);
     }
-    @Override
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta BaseMetadata
+     * @param <T> BaseMetadata
+     */
+	@Override
     public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
         super.checkSchema(runtime, meta);
     }
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param override 如果meta中有值，是否覆盖
+	 * @param <T> BaseMetadata
+	 */
+	@Override
+    public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
+        super.checkSchema(meta, catalog, schema);
+    }
+	@Override
+	public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
+		super.checkSchema(meta, catalog, schema);
+	}
+	/**
+	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @return String[]
+	 */
+	@Override
+	public String[] checkSchema(String catalog, String schema){
+		return super.checkSchema(catalog, schema);
+	}
     /**
      * insert[命令执行后]
      * insert执行后 通过KeyHolder获取主键值赋值给data
