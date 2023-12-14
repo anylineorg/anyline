@@ -1573,68 +1573,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception{
-        //参考 checkSchema()
-        DataSource ds = null;
-        Connection con = null;
-        try {
-            JdbcTemplate jdbc = jdbc(runtime);
-            ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
-            DatabaseMetaData dbmd = con.getMetaData();
-
-            String catalogName = null;
-            String schemaName = null;
-            if(null != catalog){
-                catalogName = catalog.getName();
-            }
-            if(null != schema){
-                schemaName = schema.getName();
-            }
-            ResultSet set = dbmd.getTables( catalogName, schemaName, pattern, types);
-
-            if(null == tables){
-                tables = new LinkedHashMap<>();
-            }
-            Map<String,Integer> keys = keys(set);
-            while(set.next()) {
-                String tableName = string(keys, "TABLE_NAME", set);
-
-                if (BasicUtil.isEmpty(tableName)) {
-                    tableName = string(keys, "NAME", set);
-                }
-                if (BasicUtil.isEmpty(tableName)) {
-                    continue;
-                }
-                T table = tables.get(tableName.toUpperCase());
-                if (null == table) {
-                    if (create) {
-                        table = (T) new Table();
-                        tables.put(tableName.toUpperCase(), table);
-                    } else {
-                        continue;
-                    }
-                }
-                //参考 checkSchema()
-                table.setSchema(BasicUtil.evl(string(keys, "TABLE_CATALOG", set),string(keys, "TABLE_CAT", set), catalogName));
-                table.setCatalog((Catalog) null);
-
-                table.setName(tableName);
-                table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-                table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-                table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-                table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-                table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-                table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-                tables.put(tableName.toUpperCase(), table);
-
-                // table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
-            }
-        }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
-                DataSourceUtils.releaseConnection(con, ds);
-            }
-        }
-        return tables;
+        return super.tables(runtime, create, tables, catalog, schema, pattern, types);
     }
 
     /**
@@ -1652,71 +1591,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception{
-        //参考 checkSchema()
-        DataSource ds = null;
-        Connection con = null;
-        try {
-            JdbcTemplate jdbc = jdbc(runtime);
-            ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
-            DatabaseMetaData dbmd = con.getMetaData();
-
-            String catalogName = null;
-            String schemaName = null;
-            if(null != catalog){
-                catalogName = catalog.getName();
-            }
-            if(null != schema){
-                schemaName = schema.getName();
-            }
-            ResultSet set = dbmd.getTables( catalogName, schemaName, pattern, types);
-
-            if(null == tables){
-                tables = new ArrayList<>();
-            }
-            Map<String,Integer> keys = keys(set);
-            while(set.next()) {
-                String tableName = string(keys, "TABLE_NAME", set);
-
-                if (BasicUtil.isEmpty(tableName)) {
-                    tableName = string(keys, "NAME", set);
-                }
-                if (BasicUtil.isEmpty(tableName)) {
-                    continue;
-                }
-                boolean contains = true;
-                T table = table(tables, catalog, schema, tableName);
-                if (null == table) {
-                    if (create) {
-                        table = (T) new Table();
-                        contains = false;
-                    } else {
-                        continue;
-                    }
-                }
-                //参考 checkSchema()
-                table.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalogName));
-                table.setCatalog((Catalog) null);
-
-                table.setName(tableName);
-                table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-                table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-                table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-                table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-                table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-                table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-                if(!contains){
-                    tables.add(table);
-                }
-
-                // table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
-            }
-        }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
-                DataSourceUtils.releaseConnection(con, ds);
-            }
-        }
-        return tables;
+        return super.tables(runtime, create, tables, catalog, schema, pattern, types);
     }
 
     /**
@@ -1910,9 +1785,9 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             if(null == view){
                 view = (T)new View();
             }
-            //MYSQL不支付TABLE_CATALOG
-            //view.setCatalog(row.getString("TABLE_CATALOG"));
-            view.setSchema(row.getString("TABLE_SCHEMA"));
+            String catalogName = row.getString("TABLE_CATALOG");
+            String schemaName = row.getString("TABLE_SCHEMA");
+            checkSchema(view, catalogName, schemaName);
             view.setName(name);
             view.setDefinition(row.getString("VIEW_DEFINITION"));
             views.put(name.toUpperCase(), view);
@@ -1934,67 +1809,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception{
-        //参考 checkSchema()
-        DataSource ds = null;
-        Connection con = null;
-        try{
-            JdbcTemplate jdbc = jdbc(runtime);
-            ds = jdbc.getDataSource();
-            con = DataSourceUtils.getConnection(ds);
-            DatabaseMetaData dbmd = con.getMetaData();
-            String catalogName = null;
-            String schemaName = null;
-            if(null != catalog){
-                catalogName = catalog.getName();
-            }
-            if(null != schema){
-                schemaName = schema.getName();
-            }
-            ResultSet set = dbmd.getTables(catalogName, schemaName, pattern, types);
-
-            if(null == views){
-                views = new LinkedHashMap<>();
-            }
-            Map<String,Integer> keys = keys(set);
-            while(set.next()) {
-                String viewName = string(keys, "TABLE_NAME", set);
-
-                if(BasicUtil.isEmpty(viewName)){
-                    viewName = string(keys, "NAME", set);
-                }
-                if(BasicUtil.isEmpty(viewName)){
-                    continue;
-                }
-                T view = views.get(viewName.toUpperCase());
-                if(null == view){
-                    if(create){
-                        view = (T)new View();
-                        views.put(viewName.toUpperCase(), view);
-                    }else{
-                        continue;
-                    }
-                }
-                //参考 checkSchema()
-                view.setSchema(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalogName));
-                view.setCatalog((Catalog) null);
-
-                view.setName(viewName);
-                view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
-                view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
-                view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
-                view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
-                view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
-                view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
-                views.put(viewName.toUpperCase(), view);
-
-                // view_map.put(view.getType().toUpperCase()+"_"+viewName.toUpperCase(), viewName);
-            }
-        }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
-                DataSourceUtils.releaseConnection(con, ds);
-            }
-        }
-        return views;
+        return super.views(runtime, create, views, catalog, schema, pattern, types);
     }
 
     /**
@@ -6217,46 +6032,36 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     @Override
     public <T extends BaseMetadata> void  checkSchema(DataRuntime runtime, DataSource ds, T meta){
-        if(null == meta || null != meta.getCheckSchemaTime()){
-            return;
-        }
-        /*
-         * mysql不支持catalog
-         *
-         * con.getCatalog:数据库名 赋值给table.schema
-         * con.getSchema:null
-         * 查表时 SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '数据库名'
-         */
-        Connection con = null;
-        try {
-            //注意这里与数据库不一致
-            if (null == meta.getSchema()) {
-                con = DataSourceUtils.getConnection(ds);
-                meta.setSchema(con.getCatalog());
-            }
-            meta.setCheckSchemaTime(new Date());
-        }catch (Exception e){
-            log.warn("[check schema][fail:{}]", e.toString());
-        }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
-                DataSourceUtils.releaseConnection(con, ds);
-            }
-        }
+       super.checkSchema(runtime, ds, meta);
     }
 
     @Override
     public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
-        try {
-            if (null == meta.getSchema()) {
-                meta.setSchema(con.getCatalog());
-            }
-        }catch (Exception e){
-        }
-        meta.setCheckSchemaTime(new Date());
+       super.checkSchema(runtime, con, meta);
     }
-    @Override
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta BaseMetadata
+     * @param <T> BaseMetadata
+     */
+	@Override
     public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
         super.checkSchema(runtime, meta);
+    }
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param override 如果meta中有值，是否覆盖
+	 * @param <T> BaseMetadata
+	 */
+	@Override
+    public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
+        meta.setSchema(catalog);
     }
     public String insertHead(ConfigStore configs){
 
