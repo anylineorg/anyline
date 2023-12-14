@@ -1006,7 +1006,49 @@ public interface DriverAdapter {
 	 * function         : 函数
 	 ******************************************************************************************************************/
 
+	/**
+	 * 根据运行环境识别 catalog与schema
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta BaseMetadata
+	 * @param <T> BaseMetadata
+	 */
 	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta);
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param override 如果meta中有值，是否覆盖
+	 * @param <T> BaseMetadata
+	 */
+	default <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
+		if(override || BasicUtil.isEmpty(meta.getCatalogName())) {
+			meta.setCatalog(catalog);
+		}
+		if(override || BasicUtil.isEmpty(meta.getSchemaName())) {
+			meta.setSchema(schema);
+		}
+	}
+	default <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
+		if(BasicUtil.isEmpty(meta.getCatalogName())) {
+			meta.setCatalog(catalog);
+		}
+		if(BasicUtil.isEmpty(meta.getSchemaName())) {
+			meta.setSchema(schema);
+		}
+	}
+
+	/**
+	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @return String[]
+	 */
+	default String[] checkSchema(String catalog, String schema){
+		return new String[]{schema, null};
+	}
 
 	/**
 	 *  根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
