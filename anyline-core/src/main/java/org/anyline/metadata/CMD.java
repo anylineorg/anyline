@@ -1,5 +1,5 @@
 package org.anyline.metadata;
 
 public enum CMD {
-    CREATE,DROP,ALTER,RENAME
+    CREATE,DROP,ALTER,RENAME,IGNORE
 }
