@@ -1478,10 +1478,11 @@ public class DefaultService<E> implements AnylineService<E> {
                 table.setTags(tags(table));
                 PrimaryKey pk = primary(table);
                 if (null != pk) {
-                    for (String col : pk.getColumns().keySet()) {
-                        Column column = columns.get(col.toUpperCase());
+                    for (Column col : pk.getColumns().values()) {
+                        Column column = columns.get(col.getName().toUpperCase());
                         if (null != column) {
                             column.primary(true);
+                            BeanUtil.copyFieldValue(col, column);
                         }
                     }
                 }
