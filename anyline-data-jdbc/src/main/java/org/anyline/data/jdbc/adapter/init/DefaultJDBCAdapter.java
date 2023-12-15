@@ -3020,20 +3020,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			table.setCatalog(_catalog);
 			table.setSchema(_schema);
 			table.setName(name);
-			table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
-			table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
-			table.setCollate(row.getString("TABLE_COLLATION"));
-			table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
-			table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
-			table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
-			table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
+			init(table, row);
 			tables.put(name.toUpperCase(), table);
+
 		}
 		return tables;
 	}
-
 	/**
 	 * table[结果集封装] <br/>
 	 *  根据查询结果集构造Table
@@ -3081,20 +3073,48 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			table.setCatalog(_catalog);
 			table.setSchema(_schema);
 			table.setName(name);
-			table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-			table.setEngine(row.getString("ENGINE"));
-			table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
-			table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
-			table.setCollate(row.getString("TABLE_COLLATION"));
-			table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
-			table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
-			table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
-			table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
+			init(table, row);
 			if(!conains) {
 				tables.add(table);
 			}
 		}
 		return tables;
+	}
+	private void init(Table table, DataRow row){
+		table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+		table.setEngine(row.getString("ENGINE"));
+		table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
+		table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+		table.setCollate(row.getString("TABLE_COLLATION"));
+		table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
+		table.setDataFree(row.getLong("DATA_FREE", (Long)null));
+		table.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
+		table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
+		table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
+		table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
+		table.setType(row.getString("TABLE_TYPE"));
+		table.setEngine(row.getString("ENGINE"));
+	}
+	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
+		try {
+			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+		}catch (Exception e){}
+		try {
+			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+		}catch (Exception e){}
+		try {
+			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+		}catch (Exception e){}
+		try {
+			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+		}catch (Exception e){}
+		try {
+			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+		}catch (Exception e){}
+		try {
+			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+		}catch (Exception e){}
+
 	}
 	/**
 	 * table[结果集封装] <br/>
@@ -3155,12 +3175,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				schemaName = string(keys, "TABLE_SCHEM", set);
 				checkSchema(table, catalogName, schemaName);
 				table.setName(tableName);
-				table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-				table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-				table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-				table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-				table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-				table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+				init(table, set, keys);
 				tables.put(tableName.toUpperCase(), table);
 
 				// table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
@@ -3236,12 +3251,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				checkSchema(table, catalogName, schemaName);
 				table.setSchema(schema);
 				table.setName(tableName);
-				table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-				table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-				table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-				table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-				table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-				table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+				init(table, set, keys);
 				if(!contains) {
 					tables.add(table);
 				}
@@ -3506,12 +3516,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				schemaName = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
 				checkSchema(view, catalogName, schemaName);
 				view.setName(viewName);
-				view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
-				view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
-				view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
-				view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
-				view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
-				view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
+				init(view, set, keys);
 				views.put(viewName.toUpperCase(), view);
 			}
 		}finally {
@@ -3521,7 +3526,26 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		return  views;
 	}
-
+	protected void init(View view, ResultSet set, Map<String, Integer> keys){
+		try {
+			view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
+		}catch (Exception e){}
+		try {
+			view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
+		}catch (Exception e){}
+		try {
+			view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
+		}catch (Exception e){}
+		try {
+			view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
+		}catch (Exception e){}
+		try {
+			view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
+		}catch (Exception e){}
+		try {
+			view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
+		}catch (Exception e){}
+	}
 	/**
 	 * view[调用入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
