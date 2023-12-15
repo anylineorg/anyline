@@ -29,6 +29,7 @@ public interface ACTION {
         PROCEDURE
     }
     enum DDL{
+        IGNORE    (CMD.IGNORE,"忽略"),
         TABLE_CREATE    (CMD.CREATE,"表创建"),
         TABLE_ALTER     (CMD.ALTER, "表结构修改"),
         TABLE_DROP      (CMD.DROP, "表删除"),
