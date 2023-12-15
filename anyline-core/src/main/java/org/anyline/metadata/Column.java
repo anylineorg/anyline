@@ -974,7 +974,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(null == column){
             return false;
         }
-        if(!BasicUtil.equals(typeName, column.getTypeName())){
+        if(!BasicUtil.equals(columnType, column.getColumnType())){
             return false;
         }
         if(!BasicUtil.equals(precision, column.getPrecision())){
