@@ -5964,6 +5964,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		Table update = (Table)meta.getUpdate();
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
+		for(Column col:columns.values()){
+			col.setColumnType(type(col.getTypeName()));
+		}
+		for(Column col:ucolumns.values()){
+			col.setColumnType(type(col.getTypeName()));
+		}
 		String name = meta.getName();
 		String uname = update.getName();
 		String random = random(runtime);
