@@ -59,6 +59,14 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      */
     protected Long dataLength                   ;
     /**
+     * 下一个自增值
+     */
+    protected Long increment                    ;
+    /**
+     * 占用未用空间
+     */
+    protected Long dataFree                     ;
+    /**
      * 索引长度
      */
     protected Long indexLength                  ;
@@ -698,6 +706,13 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return this;
     }
 
+    public Long getDataFree() {
+        return dataFree;
+    }
+
+    public void setDataFree(Long dataFree) {
+        this.dataFree = dataFree;
+    }
 
     public Table getInherits() {
         return inherits;
@@ -754,6 +769,14 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     public void setDataLength(Long dataLength) {
         this.dataLength = dataLength;
+    }
+
+    public Long getIncrement() {
+        return increment;
+    }
+
+    public void setIncrement(Long increment) {
+        this.increment = increment;
     }
 
     public Long getIndexLength() {
