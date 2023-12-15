@@ -4883,18 +4883,21 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * 添加主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 主键
+     * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
      * @return String
      */
     @Override
-    public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
+    public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Map<String,Column> columns = meta.getColumns();
         if(columns.size()>0) {
-            builder.append("ALTER TABLE ");
-            name(runtime, builder, meta.getTable(true));
+            if(!slice) {
+                builder.append("ALTER TABLE ");
+                name(runtime, builder, meta.getTable(true));
+            }
             builder.append(" ADD PRIMARY KEY (");
             boolean first = true;
             for(Column column:columns.values()){
@@ -4914,22 +4917,24 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * 修改主键
      * 有可能生成多条SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 主键
+     * @param origin 原主键
+     * @param meta 新主键
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-        return super.buildAlterRun(runtime, meta);
+    public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception{
+        return super.buildAlterRun(runtime, origin, meta);
     }
     /**
      * primary[命令合成]<br/>
      * 删除主键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 主键
+     * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
      * @return String
      */
     @Override
-    public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
+    public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
