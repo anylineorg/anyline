@@ -10794,6 +10794,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			type = type.replace("[]","");
 			array = true;
 		}
+		if(type.contains(" ")){
+			type = type.split(" ")[0];
+		}
 		ColumnType ct = types.get(type.toUpperCase());
 		if(null != ct){
 			ct.setArray(array);
