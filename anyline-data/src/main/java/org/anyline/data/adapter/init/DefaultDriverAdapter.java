@@ -154,7 +154,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
@@ -562,7 +562,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
@@ -1422,7 +1422,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
 	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
 	 * void fillQueryContent(DataRuntime runtime, Run run)
@@ -2010,7 +2010,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * String mergeFinalTotal(DataRuntime runtime, Run run)
 	 * [命令执行]
 	 * long count(DataRuntime runtime, String random, Run run)
@@ -2138,7 +2138,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
 	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * void fillExecuteContent(DataRuntime runtime, Run run)
 	 * [命令执行]
@@ -2328,7 +2328,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
 	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
 	 * long truncate(DataRuntime runtime, String random, String table)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns)
 	 * Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values)
 	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
@@ -2673,7 +2673,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * Database database(DataRuntime runtime, String random)
 	 * String String product(DataRuntime runtime, String random);
 	 * String String version(DataRuntime runtime, String random);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryProductRun(DataRuntime runtime)
 	 * List<Run> buildQueryVersionRun(DataRuntime runtime)
 	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
@@ -3083,7 +3083,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
 	 * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
 	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
@@ -3369,7 +3369,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
 	 * List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
 	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set)
@@ -3651,7 +3651,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
-	 * [命令合成]<br/> 
+	 * [命令合成] 
 	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
 	 * [结果集封装]<br/> 
@@ -3662,7 +3662,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
@@ -4180,14 +4180,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
@@ -4467,7 +4467,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
 	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
@@ -4475,7 +4475,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
@@ -4720,7 +4720,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
@@ -4729,7 +4729,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
@@ -4958,7 +4958,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
 	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 	 * [结果集封装]<br/>
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
@@ -5107,7 +5107,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata)
 	 * [结果集封装]<br/>
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)
@@ -5196,7 +5196,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception
 	 * [结构集封装]
 	 * PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set)
@@ -5297,7 +5297,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
 	 * [结构集封装]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
@@ -5375,7 +5375,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
 	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name)
 	 * [结果集封装]<br/>
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
@@ -5627,7 +5627,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) ;
 	 * [结果集封装]<br/>
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
@@ -5735,7 +5735,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
 	 * [结果集封装]<br/>
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
@@ -5801,7 +5801,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
 	 * [结果集封装]<br/>
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
@@ -5810,7 +5810,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception;
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
@@ -6017,7 +6017,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
 	 * [结果集封装]<br/>
 	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception;
@@ -6026,7 +6026,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> functions)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Function function);
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
@@ -6354,7 +6354,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Table meta)
 	 * boolean drop(DataRuntime runtime, Table meta)
 	 * boolean rename(DataRuntime runtime, Table origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildCreateRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns)
@@ -6943,7 +6943,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, View view) throws Exception;
 	 * boolean drop(DataRuntime runtime, View view) throws Exception;
 	 * boolean rename(DataRuntime runtime, View origin, String name) throws Exception;
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception;
 	 * List<Run> buildAlterRun(DataRuntime runtime, View view) throws Exception;
 	 * List<Run> buildRenameRun(DataRuntime runtime, View view) throws Exception;
@@ -7285,7 +7285,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, MasterTable meta)
 	 * boolean drop(DataRuntime runtime, MasterTable meta)
 	 * boolean rename(DataRuntime runtime, MasterTable origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildCreateRun(DataRuntime runtime, MasterTable table)
 	 * List<Run> buildDropRun(DataRuntime runtime, MasterTable table)
 	 * [命令合成-子流程]
@@ -7635,7 +7635,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, PartitionTable meta) throws Exception;
 	 * boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception;
 	 * boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception;
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildCreateRun(DataRuntime runtime, PartitionTable table) throws Exception;
 	 * List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable table) throws Exception;
 	 * List<Run> buildAlterRun(DataRuntime runtime, PartitionTable table) throws Exception;
@@ -7960,7 +7960,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Column meta)
 	 * boolean drop(DataRuntime runtime, Column meta)
 	 * boolean rename(DataRuntime runtime, Column origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice)
 	 * List<Run> buildAddRun(DataRuntime runtime, Column column)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice)
@@ -8785,7 +8785,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Tag meta)
 	 * boolean drop(DataRuntime runtime, Tag meta)
 	 * boolean rename(DataRuntime runtime, Tag origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, Tag tag)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Tag tag)
 	 * List<Run> buildDropRun(DataRuntime runtime, Tag tag)
@@ -9179,7 +9179,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Table table, PrimaryKey meta)
 	 * boolean drop(DataRuntime runtime, PrimaryKey meta)
 	 * boolean rename(DataRuntime runtime, PrimaryKey origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary)
 	 * List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary)
 	 * List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary)
@@ -9473,7 +9473,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Table table, ForeignKey meta)
 	 * boolean drop(DataRuntime runtime, ForeignKey meta)
 	 * boolean rename(DataRuntime runtime, ForeignKey origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, ForeignKey meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, ForeignKey meta)
@@ -9766,7 +9766,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Table table, Index meta)
 	 * boolean drop(DataRuntime runtime, Index meta)
 	 * boolean rename(DataRuntime runtime, Index origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Index meta)
@@ -10087,7 +10087,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Table table, Constraint meta)
 	 * boolean drop(DataRuntime runtime, Constraint meta)
 	 * boolean rename(DataRuntime runtime, Constraint origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, Constraint meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Constraint meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Constraint meta)
@@ -10652,7 +10652,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Procedure meta)
 	 * boolean drop(DataRuntime runtime, Procedure meta)
 	 * boolean rename(DataRuntime runtime, Procedure origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildCreateRun(DataRuntime runtime, Procedure meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Procedure meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Procedure meta)
@@ -10930,7 +10930,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean alter(DataRuntime runtime, Function meta)
 	 * boolean drop(DataRuntime runtime, Function meta)
 	 * boolean rename(DataRuntime runtime, Function origin, String name)
-	 * [命令合成]<br/>
+	 * [命令合成]
 	 * List<Run> buildCreateRun(DataRuntime runtime, Function function)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Function function)
 	 * List<Run> buildDropRun(DataRuntime runtime, Function function)
