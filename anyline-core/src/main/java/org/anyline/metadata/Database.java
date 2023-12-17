@@ -43,4 +43,8 @@ public class Database extends BaseMetadata<Database> implements Serializable {
     public void setCollate(String collate) {
         this.collate = collate;
     }
+
+    public String toString(){
+        return name;
+    }
 }
