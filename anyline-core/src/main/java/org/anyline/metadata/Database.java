@@ -17,12 +17,17 @@
 
 package org.anyline.metadata;
 
+import org.dom4j.datatype.DatatypeAttribute;
+
 import java.io.Serializable;
 
 public class Database extends BaseMetadata<Database> implements Serializable {
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
-
+    public Database(){}
+    public Database(String name){
+        setName(name);
+    }
     public String getCharset() {
         return charset;
     }
