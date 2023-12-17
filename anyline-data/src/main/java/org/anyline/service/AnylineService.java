@@ -24,9 +24,11 @@ import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BeanUtil;
 
 import java.math.BigDecimal;
@@ -1147,8 +1149,25 @@ public interface AnylineService<E>{
 		/* *************************************************************************************************************
 		 * 													database
 		 **************************************************************************************************************/
+
 		/**
-		 * 查询所有数据库
+		 * 当前数据源 数据库类型
+		 * @return DatabaseType
+		 */
+		DatabaseType type();
+		/**
+		 * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+		 * @return String
+		 */
+		String version();
+		/**
+		 * 当前数据源 数据库描述(产品名称+版本号)
+		 * @return String
+		 */
+		String product();
+		Database database();
+		/**
+		 * 查询全部数据库
 		 * @return databases
 		 */
 		LinkedHashMap<String, Database> databases(String name);
@@ -1164,7 +1183,7 @@ public interface AnylineService<E>{
 		/* *************************************************************************************************************
 		 * 													catalog
 		 **************************************************************************************************************/
-
+		Catalog catalog();
 		LinkedHashMap<String, Catalog> catalogs(String name);
 		default LinkedHashMap<String, Catalog> catalogs(){
 			return catalogs(null);
@@ -1179,6 +1198,7 @@ public interface AnylineService<E>{
 		/* *************************************************************************************************************
 		 * 													schema
 		 **************************************************************************************************************/
+		Schema schema();
 		LinkedHashMap<String, Schema> schemas(Catalog catalog, String name);
 		default LinkedHashMap<String, Schema> schemas(Catalog catalog){
 			return schemas(catalog, null);
@@ -1627,7 +1647,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 查询所有表的列
+		 * 查询全部表的列
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param catalog catalog
 		 * @param schema schema
