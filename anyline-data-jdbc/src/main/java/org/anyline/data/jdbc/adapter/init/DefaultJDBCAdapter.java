@@ -2657,6 +2657,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public Database database(DataRuntime runtime, String random){
+		Catalog catalog = catalog(runtime, random);
+		if(null != catalog){
+			return new Database(catalog.getName());
+		}
 		return super.database(runtime, random);
 	}
 	/**

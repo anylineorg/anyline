@@ -1177,6 +1177,10 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public Database database(DataRuntime runtime, String random){
+		Catalog catalog = catalog(runtime, random);
+		if(null != catalog){
+			return new Database(catalog.getName());
+		}
 		return super.database(runtime, random);
 	}
 	/**
