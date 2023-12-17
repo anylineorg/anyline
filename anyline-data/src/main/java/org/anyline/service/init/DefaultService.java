@@ -32,6 +32,7 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.ServiceProxy;
@@ -1384,6 +1385,36 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String,Database> databases();
          ******************************************************************************************************************/
 
+        /**
+         * 当前数据源 数据库类型
+         * @return DatabaseType
+         */
+        @Override
+        public DatabaseType type() {
+            return dao.type();
+        }
+
+        /**
+         * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+         * @return String
+         */
+        @Override
+        public String version() {
+            return dao.version();
+        }
+
+        /**
+         * 当前数据源 数据库描述(产品名称+版本号)
+         * @return String
+         */
+        @Override
+        public String product(){
+            return dao.product();
+        }
+        @Override
+        public Database database() {
+            return dao.database();
+        }
         @Override
         public LinkedHashMap<String, Database> databases(String name) {
             return dao.databases(name);
@@ -1402,6 +1433,10 @@ public class DefaultService<E> implements AnylineService<E> {
          * LinkedHashMap<String,Database> databases();
          ******************************************************************************************************************/
         @Override
+        public Catalog catalog() {
+            return dao.catalog();
+        }
+        @Override
         public LinkedHashMap<String, Catalog> catalogs(String name) {
             return dao.catalogs(name);
         }
@@ -1417,6 +1452,10 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public LinkedHashMap<String, Schema> schemas(Catalog catalog, String name) {
             return dao.schemas(catalog, name);
+        }
+        @Override
+        public Schema schema() {
+            return dao.schema();
         }
         @Override
         public List<Schema> schemas(boolean greedy, Catalog catalog, String name) {
