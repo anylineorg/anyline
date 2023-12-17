@@ -25,6 +25,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
@@ -407,6 +408,37 @@ public interface AnylineDao<E>{
 	 * 													database
 	 ******************************************************************************************************************/
 
+	/**
+	 * 当前数据源 数据库类型
+	 * @return DatabaseType
+	 */
+	DatabaseType type();
+
+	/**
+	 * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	String version(DataRuntime runtime, String random);
+	default String version(){
+		return version(runtime(), null);
+	}
+
+	/**
+	 * 当前数据源 数据库描述(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	String product(DataRuntime runtime, String random);
+	default String product(){
+		return product(runtime(), null);
+	}
+	Database database(DataRuntime runtime, String random);
+	default Database database(){
+		return database(runtime(), null);
+	}
 	LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name);
 	default LinkedHashMap<String, Database> databases(String name){
 		return databases(runtime(), null, name);
@@ -425,6 +457,10 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													catalog
 	 ******************************************************************************************************************/
+	Catalog catalog(DataRuntime runtime, String random);
+	default Catalog catalog(){
+		return catalog(runtime(), null);
+	}
 	LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name);
 	default LinkedHashMap<String, Catalog> catalogs(String name){
 		return catalogs(runtime(), null, name);
@@ -437,6 +473,10 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													schema
 	 ******************************************************************************************************************/
+	Schema schema(DataRuntime runtime, String random);
+	default Schema schema(){
+		return schema(runtime(), null);
+	}
 	LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name);
 	default LinkedHashMap<String, Schema> schemas(Catalog catalog, String name){
 		return schemas(runtime(), null, catalog, name);
@@ -778,7 +818,7 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignRun(Table table) throws Exception
+	 * List<Run> buildQueryForeignsRun(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
