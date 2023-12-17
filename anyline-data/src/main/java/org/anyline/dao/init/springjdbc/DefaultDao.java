@@ -31,6 +31,7 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.persistence.ManyToMany;
 import org.anyline.metadata.persistence.OneToMany;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -779,6 +780,28 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, Database> databases()
 	 ******************************************************************************************************************/
 
+	@Override
+	public DatabaseType type() {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().type();
+	}
+
+	@Override
+	public String version(DataRuntime runtime, String random) {
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().version(runtime, random);
+	}
+
+	@Override
+	public String product(DataRuntime runtime, String random) {
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().product(runtime, random);
+	}
+
 	/**
 	 * 根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
 	 * @param prepare RunPrepare
@@ -789,6 +812,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().metadata(runtime, prepare, comment);
 	}
 
+	@Override
+	public Database database(DataRuntime runtime, String random){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().database(runtime, random);
+	}
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
 		if(null == runtime){
@@ -813,6 +843,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
+	public Catalog catalog(DataRuntime runtime, String random){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().catalog(runtime, random);
+	}
+	@Override
 	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
 		if(null == runtime){
 			runtime = runtime();
@@ -832,6 +869,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().schemas(runtime, random, catalog, name);
+	}
+	@Override
+	public Schema schema(DataRuntime runtime, String random){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().schema(runtime, random);
 	}
 	@Override
 	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
@@ -1053,7 +1097,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
