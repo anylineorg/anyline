@@ -926,7 +926,7 @@ public class ServiceProxy {
          ******************************************************************************************************************/
 
         /**
-         * 查询所有数据库
+         * 查询全部数据库
          * @return databases
          */
         public static LinkedHashMap<String, Database> databases(){

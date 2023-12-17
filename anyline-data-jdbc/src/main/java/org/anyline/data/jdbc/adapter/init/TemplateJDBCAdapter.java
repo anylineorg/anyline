@@ -147,7 +147,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
 
 
     /**
-     * column[结果集封装](方法3)<br/>
+     * column[结果集封装]<br/>(方法3)<br/>
      * 有表名的情况下可用<br/>
      * 根据jdbc.datasource.connection.DatabaseMetaData获取指定表的列数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -182,7 +182,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
 
 
     /**
-     * column[结果集封装](方法4)<br/>
+     * column[结果集封装]<br/>(方法4)<br/>
      * 解析查询结果metadata(0=1)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建

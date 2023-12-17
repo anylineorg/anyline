@@ -88,7 +88,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		});
 	}
 	/* *****************************************************************************************************************
-	 * reg:[调用入口]注册数据源(用户或配置监听调用)
+	 * reg:[调用入口]<br/>注册数据源(用户或配置监听调用)
 	 * inject:创建并注入数据源
 	 * init:初始化数据源周边环境(service, jdbc, 事务管理器)
 	 * destroy:注销数据源及周边环境
@@ -424,7 +424,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	}
 
 	/**
-	 * 根据当前数据源查询所有数据库列表，每个数据库创建一个数据源
+	 * 根据当前数据源查询全部数据库列表，每个数据库创建一个数据源
 	 * @param runtime runtime
 	 * @return 数据源key列表(全大写)
 	 */

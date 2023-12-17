@@ -425,7 +425,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
      ******************************************************************************************************************/
     /**
-     * UPDATE [调用入口]
+     * UPDATE [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -453,7 +453,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
     /**
-     * update [命令合成]
+     * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj Entity或DtaRow
@@ -522,7 +522,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
     /**
-     * update [命令执行]
+     * update [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -532,13 +532,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      */
     @Override
     public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
-        return super.update(runtime,random,  dest, data, configs, run);
+        return super.update(runtime, random,  dest, data, configs, run);
     }
 
 
 
     /**
-     * save [调用入口]
+     * save [调用入口]<br/>
      * <br/>
      * 根据是否有主键值确认insert | update<br/>
      * 执行完成后会补齐自增主键值
@@ -638,7 +638,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      ******************************************************************************************************************/
 
     /**
-     * query [调用入口]
+     * query [调用入口]<br/>
      * <br/>
      * 返回DataSet中包含元数据信息，如果性能有要求换成maps
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -654,7 +654,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * query procedure [调用入口]
+     * query procedure [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param procedure 存储过程
@@ -667,7 +667,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * query [调用入口]
+     * query [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param clazz 类
@@ -699,7 +699,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * query [调用入口]
+     * query [调用入口]<br/>
      * <br/>
      * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -714,7 +714,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.maps(runtime, random, prepare, configs, conditions);
     }
     /**
-     * select[命令合成] 最终可执行命令
+     * select[命令合成]<br/> 最终可执行命令<br/>
      * 创建查询SQL
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
@@ -832,7 +832,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.createConditionIn(runtime, builder, compare, value);
     }
     /**
-     * select [命令执行]
+     * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param system 系统表不检测列属性
@@ -847,7 +847,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
 
     /**
-     * select [命令执行]
+     * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -858,7 +858,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.maps(runtime, random, configs, run);
     }
     /**
-     * select [命令执行]
+     * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -870,7 +870,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * select [命令执行]
+     * select [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param next 是否查下一个序列值
@@ -883,7 +883,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * select [命令执行-子流程]
+     * select [命令执行-子流程]<br/>
      * JDBC执行完成后的结果处理
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param list JDBC执行返回的结果集
@@ -905,7 +905,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * long count(DataRuntime runtime, String random, Run run)
      ******************************************************************************************************************/
     /**
-     * count [调用入口]
+     * count [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -918,7 +918,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.count(runtime, random, prepare, configs, conditions);
     }
     /**
-     * count [命令合成]
+     * count [命令合成]<br/>
      * 合成最终 select count 命令
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -930,7 +930,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * count [命令执行]
+     * count [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -950,7 +950,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      ******************************************************************************************************************/
 
     /**
-     * exists [调用入口]
+     * exists [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -985,7 +985,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      ******************************************************************************************************************/
 
     /**
-     * execute [调用入口]
+     * execute [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -1003,7 +1003,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.execute(runtime, random,  batch, configs, cmd, values);
     }
     /**
-     * procedure [命令执行]
+     * procedure [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param procedure 存储过程
      * @param random  random
@@ -1014,7 +1014,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.execute(runtime, random, procedure);
     }
     /**
-     * execute [命令合成]
+     * execute [命令合成]<br/>
      * 创建执行SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -1040,7 +1040,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * execute [命令合成-子流程]
+     * execute [命令合成-子流程]<br/>
      * 填充 execute 命令内容
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -1050,7 +1050,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         super.fillExecuteContent(runtime, run);
     }
     /**
-     * execute [命令执行]
+     * execute [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -1080,7 +1080,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
      ******************************************************************************************************************/
     /**
-     * delete [调用入口]
+     * delete [调用入口]<br/>
      * <br/>
      * 合成 where column in (values)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1096,7 +1096,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * delete [调用入口]
+     * delete [调用入口]<br/>
      * <br/>
      * 合成 where k1 = v1 and k2 = v2
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1111,7 +1111,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * delete [调用入口]
+     * delete [调用入口]<br/>
      * <br/>
      * 根据configs和conditions过滤条件
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1127,7 +1127,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * truncate [调用入口]
+     * truncate [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param table 表
@@ -1251,14 +1251,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
      * Database database(DataRuntime runtime, String random, String name)
      * [命令合成]
-     * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-     * [结果集封装]
+     * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
+     * [结果集封装]<br/>
      * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)
      * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)
-     * Database database(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
      ******************************************************************************************************************/
     /**
-     * database[调用入口]
+     * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1270,7 +1271,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.databases(runtime, random, greedy, name);
     }
     /**
-     * database[调用入口]
+     * database[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param name 名称统配符或正则
@@ -1282,7 +1283,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
     /**
      * database[命令合成]<br/>
-     * 查询所有数据库
+     * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param name 名称统配符或正则
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1290,7 +1291,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
+    public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -1299,7 +1300,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return runs;
     }
     /**
-     * database[结果集封装]
+     * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1324,11 +1325,89 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
         return super.databases(runtime, index, create, databases, set);
     }
-    @Override
-    public Database database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-        return super.database(runtime, index, create, set);
-    }
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @param set 查询结果集
+	 * @return database
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
+		return super.database(runtime, index, create, database, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @return database
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Database database(DataRuntime runtime, boolean create, Database database) throws Exception{
+		return super.database(runtime, create, database);
+	}
 
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @param set 查询结果集
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+		return super.product(runtime, index, create, product, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String product(DataRuntime runtime, boolean create, String product){
+		return super.product(runtime, create, product);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @param set 查询结果集
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+		return super.version(runtime, index, create, version, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String version(DataRuntime runtime, boolean create, String version){
+		return super.version(runtime, create, version);
+	}
     /* *****************************************************************************************************************
      * 													catalog
      * -----------------------------------------------------------------------------------------------------------------
@@ -1336,8 +1415,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
      * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
      * [命令合成]
-     * List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name)
-     * [结果集封装]
+     * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+     * [结果集封装]<br/>
      * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
      * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
      * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs, DataSet set)
@@ -1345,7 +1424,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set)
      ******************************************************************************************************************/
     /**
-     * catalog[调用入口]
+     * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param name 名称统配符或正则
@@ -1356,7 +1435,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.catalogs(runtime, random, name);
     }
     /**
-     * catalog[调用入口]
+     * catalog[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param name 名称统配符或正则
@@ -1369,7 +1448,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
     /**
      * catalog[命令合成]<br/>
-     * 查询所有数据库
+     * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param name 名称统配符或正则
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1377,8 +1456,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-        return super.buildQueryCatalogRun(runtime, greedy, name);
+    public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
+        return super.buildQueryCatalogsRun(runtime, greedy, name);
     }
     /**
      * catalog[结果集封装]<br/>
@@ -1436,27 +1515,104 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
         return super.catalogs(runtime, create, catalogs);
     }
-    @Override
-    public Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-        return super.catalog(runtime, index, create, set);
-    }
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @param set 查询结果集
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
+		return super.catalog(runtime, index, create, catalog, set);
+	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception{
+		return super.catalog(runtime, create, catalog);
+	}
 
 
     /* *****************************************************************************************************************
      * 													schema
      * -----------------------------------------------------------------------------------------------------------------
-     * [调用入口]
-     * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
-     * List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
-     * [命令合成]
-     * List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
-     * [结果集封装]
-     * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set)
-     * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set)
-     * Schema schema(DataRuntime runtime, int index, boolean create, DataSet set)
-     ******************************************************************************************************************/
+	 * [调用入口]
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
+	 * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
+	 * Database database(DataRuntime runtime, String random, String name)
+	 * Database database(DataRuntime runtime, String random)
+	 * String String product(DataRuntime runtime, String random);
+	 * String String version(DataRuntime runtime, String random);
+	 * [命令合成]
+	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
+	 * [结果集封装]<br/>
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)
+	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+	 * String product(DataRuntime runtime, boolean create, String product)
+	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+	 * String version(DataRuntime runtime, boolean create, String version)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 ******************************************************************************************************************/
+
     /**
-     * schema[调用入口]
+     * database[调用入口]<br/>
+     * 当前数据库
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @return Database
+     */
+    @Override
+    public Database database(DataRuntime runtime, String random){
+        Schema schema = schema(runtime, random);
+        if(null != schema){
+            return new Database(schema.getName());
+        }
+        return super.database(runtime, random);
+    }
+    /**
+     * database[调用入口]<br/>
+     * 当前数据源 数据库描述(产品名称+版本号)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @return String
+     */
+    public String product(DataRuntime runtime, String random){
+        return super.product(runtime, random);
+    }
+    /**
+     * database[调用入口]<br/>
+     * 当前数据源 数据库类型
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @return String
+     */
+    public String version(DataRuntime runtime, String random){
+        return super.version(runtime, random);
+    }
+    /**
+     * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param catalog catalog
@@ -1468,7 +1624,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.schemas(runtime, random, catalog, name);
     }
     /**
-     * schema[调用入口]
+     * schema[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param catalog catalog
@@ -1481,8 +1637,30 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
+     * database[命令合成]<br/>
+     * 查询当前数据源 数据库产品说明(产品名称+版本号)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return sqls
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception{
+        return super.buildQueryProductRun(runtime);
+    }
+    /**
+     * database[命令合成]<br/>
+     * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return sqls
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
+        return super.buildQueryVersionRun(runtime);
+    }
+    /**
      * catalog[命令合成]<br/>
-     * 查询所有数据库
+     * 查询全部数据库
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param name 名称统配符或正则
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1490,8 +1668,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
-        return super.buildQuerySchemaRun(runtime, greedy, catalog, name);
+    public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
+        return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
     }
     /**
      * schema[结果集封装]<br/>
@@ -1512,10 +1690,36 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception{
         return super.schemas(runtime, index, create, schemas, set);
     }
-    @Override
-    public Schema schema(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-        return super.schema(runtime, index, create, set);
-    }
+
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @param set 查询结果集
+	 * @return schema
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception{
+		return super.schema(runtime, index, create, schema, set);
+	}
+
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @return schema
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception{
+		return super.schema(runtime, create, schema);
+	}
 
     /* *****************************************************************************************************************
      * 													table
@@ -1524,9 +1728,9 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
      * [命令合成]
-     * List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-     * List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-     * [结果集封装]
+     * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+     * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+     * [结果集封装]<br/>
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
      * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
@@ -1535,14 +1739,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
      * [命令合成]
-     * List<Run> buildQueryDDLRun(DataRuntime runtime, Table table)
-     * [结果集封装]
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+     * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
 
     /**
      *
-     * table[调用入口]
+     * table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1589,7 +1793,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return String
      */
     @Override
-    public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
         /*
 		ALL_TABLES：当前登录用户可见的所有表
 		DBA_TABLES：数据库中所有表
@@ -1660,7 +1864,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return String
      */
     @Override
-    public List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+    public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -1676,10 +1880,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * table[结果集封装] <br/>
+     * table[结果集封装]<br/> <br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
@@ -1694,10 +1898,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * table[结果集封装] <br/>
+     * table[结果集封装]<br/> <br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
@@ -1711,7 +1915,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.tables(runtime, index, create, catalog, schema, tables, set);
     }
     /**
-     * table[结果集封装] <br/>
+     * table[结果集封装]<br/> <br/>
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1751,7 +1955,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * table[结果集封装]<br/>
      * 表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
@@ -1769,7 +1973,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * table[结果集封装]<br/>
      * 表备注
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+     * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
@@ -1805,15 +2009,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception{
-        return super.buildQueryDDLRun(runtime, table);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception{
+        return super.buildQueryDdlsRun(runtime, table);
     }
 
     /**
      * table[结果集封装]<br/>
      * 查询表DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+     * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table 表
      * @param ddls 上一步查询结果
      * @param set sql执行的结果集
@@ -1830,15 +2034,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
      * [命令合成]
-     * List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-     * [结果集封装]
+     * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+     * [结果集封装]<br/>
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)
      * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, View view)
      * [命令合成]
-     * List<Run> buildQueryDDLRun(DataRuntime runtime, View view)
-     * [结果集封装]
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
+     * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
 
@@ -1872,7 +2076,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+    public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -1889,7 +2093,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * view[结果集封装]<br/>
      *  根据查询结果集构造View
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照buildQueryViewRun返回顺序
+     * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
@@ -1937,7 +2141,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * view[调用入口]
+     * view[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param view 视图
@@ -1956,15 +2160,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception{
-        return super.buildQueryDDLRun(runtime, view);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception{
+        return super.buildQueryDdlsRun(runtime, view);
     }
 
     /**
      * view[结果集封装]<br/>
      * 查询 view DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+     * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param view view
      * @param ddls 上一步查询结果
      * @param set sql执行的结果集
@@ -1980,16 +2184,16 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
      * [命令合成]
-     * List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-     * [结果集封装]
+     * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+     * [结果集封装]<br/>
      * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
-     * [结果集封装]
+     * [结果集封装]<br/>
      * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
      * [命令合成]
-     * List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table)
-     * [结果集封装]
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+     * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
 
@@ -2021,15 +2225,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return String
      */
     @Override
-    public List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-        return super.buildQueryMasterTableRun(runtime, catalog, schema, pattern, types);
+    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+        return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
     }
 
     /**
      * master table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param catalog catalog
      * @param schema schema
@@ -2059,7 +2263,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * master table[调用入口]
+     * master table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param table MasterTable
@@ -2077,14 +2281,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception{
-        return super.buildQueryDDLRun(runtime, table);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception{
+        return super.buildQueryDdlsRun(runtime, table);
     }
     /**
      * master table[结果集封装]<br/>
      * 查询 MasterTable DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+     * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
      * @param ddls 上一步查询结果
      * @param set sql执行的结果集
@@ -2100,17 +2304,17 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
      * [命令合成]
-     * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-     * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
-     * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
-     * [结果集封装]
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
+     * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
+     * [结果集封装]<br/>
      * <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
      * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
      * [命令合成]
-     * List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table)
-     * [结果集封装]
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
+     * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
     /**
@@ -2140,8 +2344,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return String
      */
     @Override
-    public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-        return super.buildQueryPartitionTableRun(runtime, catalog, schema, pattern, types);
+    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+        return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
     }
     /**
      * partition table[命令合成]<br/>
@@ -2154,8 +2358,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
-        return super.buildQueryPartitionTableRun(runtime,  master, tags, name);
+    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
+        return super.buildQueryPartitionTablesRun(runtime,  master, tags, name);
     }
     /**
      * partition table[命令合成]<br/>
@@ -2167,15 +2371,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
-        return super.buildQueryPartitionTableRun(runtime,  master, tags);
+    public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
+        return super.buildQueryPartitionTablesRun(runtime,  master, tags);
     }
     /**
      * partition table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param total 合计SQL数量
-     * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+     * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param master 主表
      * @param catalog catalog
@@ -2206,7 +2410,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.ptables(runtime, create, tables, catalog, schema, master);
     }
     /**
-     * partition table[调用入口]
+     * partition table[调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param table PartitionTable
@@ -2225,15 +2429,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception{
-        return super.buildQueryDDLRun(runtime, table);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception{
+        return super.buildQueryDdlsRun(runtime, table);
     }
 
     /**
      * partition table[结果集封装]<br/>
      * 查询 MasterTable DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+     * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param table MasterTable
      * @param ddls 上一步查询结果
      * @param set sql执行的结果集
@@ -2250,8 +2454,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
      * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
      * [命令合成]
-     * List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
-     * [结果集封装]
+     * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+     * [结果集封装]<br/>
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
      * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
      * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
@@ -2274,13 +2478,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
     /**
      * column[调用入口]<br/>
-     * 查询所有表的列
+     * 查询全部表的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
      * @param catalog catalog
      * @param schema schema
-     * @param table 查询所有表时 输入null
+     * @param table 查询全部表时 输入null
      * @return List
      * @param <T> Column
      */
@@ -2297,7 +2501,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
         List<Run> runs = new ArrayList<>();
         Catalog catalog = null;
         Schema schema = null;
@@ -2333,7 +2537,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
+     * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param columns 上一步查询结果
@@ -2375,8 +2579,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
      * [命令合成]
-     * List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata)
-     * [结果集封装]
+     * List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata)
+     * [结果集封装]<br/>
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)
      * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
      ******************************************************************************************************************/
@@ -2404,15 +2608,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
-        return super.buildQueryTagRun(runtime, table, metadata);
+    public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+        return super.buildQueryTagsRun(runtime, table, metadata);
     }
 
     /**
      * tag[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param tags 上一步查询结果
@@ -2492,7 +2696,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * primary[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
      * @param table 表
      * @param set sql查询结果
      * @throws Exception 异常
@@ -2525,7 +2729,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
      * [命令合成]
-     * List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception;
+     * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
      * [结构集封装]
      * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
      ******************************************************************************************************************/
@@ -2551,7 +2755,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception{
+    public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2573,7 +2777,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * foreign[结构集封装]<br/>
      *  根据查询结果集构造PrimaryKey
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryForeignRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
      * @param table 表
      * @param foreigns 上一步查询结果
      * @param set sql查询结果
@@ -2612,8 +2816,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
      * <T extends Index> LinkedHashMap<T, Index> indexs(DataRuntime runtime, String random, Table table, String pattern)
      * [命令合成]
-     * List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name)
-     * [结果集封装]
+     * List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name)
+     * [结果集封装]<br/>
      * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
      * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)
      * <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)
@@ -2657,15 +2861,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name){
-        return super.buildQueryIndexRun(runtime, table, name);
+    public List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name){
+        return super.buildQueryIndexsRun(runtime, table, name);
     }
 
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param indexs 上一步查询结果
@@ -2681,7 +2885,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param indexs 上一步查询结果
@@ -2733,8 +2937,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
      * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
      * [命令合成]
-     * List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern) ;
-     * [结果集封装]
+     * List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) ;
+     * [结果集封装]<br/>
      * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
      * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
      ******************************************************************************************************************/
@@ -2770,7 +2974,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * constraint[命令合成]
+     * constraint[命令合成]<br/>
      * 查询表上的约束
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
@@ -2778,15 +2982,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern) {
-        return super.buildQueryConstraintRun(runtime, table, column, pattern);
+    public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+        return super.buildQueryConstraintsRun(runtime, table, column, pattern);
     }
 
     /**
-     * constraint[结果集封装]
+     * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param constraints 上一步查询结果
@@ -2799,10 +3003,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.constraints(runtime, index, create, table, constraints, set);
     }
     /**
-     * constraint[结果集封装]
+     * constraint[结果集封装]<br/>
      * 根据查询结果集构造Constraint
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param column 列
@@ -2824,8 +3028,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
      * [命令合成]
-     * List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
-     * [结果集封装]
+     * List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+     * [结果集封装]<br/>
      * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
      ******************************************************************************************************************/
 
@@ -2844,14 +3048,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.triggers(runtime, random, greedy, table, events);
     }
     /**
-     * trigger[命令合成]
+     * trigger[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
      * @param events 事件 INSERT|UPDATE|DELETE
      * @return sqls
      */
-    public List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2881,10 +3085,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return runs;
     }
     /**
-     * trigger[结果集封装]
+     * trigger[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
      * @param triggers 上一步查询结果
@@ -2937,8 +3141,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
      * [命令合成]
-     * List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
-     * [结果集封装]
+     * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+     * [结果集封装]<br/>
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
      * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
      * <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures, DataSet set) throws Exception;
@@ -2946,8 +3150,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
      * [命令合成]
-     * List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception;
-     * [结果集封装]
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
+     * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
      ******************************************************************************************************************/
     /**
@@ -2982,7 +3186,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.procedures(runtime, random, catalog, schema, pattern);
     }
     /**
-     * procedure[命令合成]
+     * procedure[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param catalog catalog
@@ -2991,14 +3195,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-        return super.buildQueryProcedureRun(runtime, catalog, schema, pattern);
+    public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
+        return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
     }
     /**
-     * procedure[结果集封装]
+     * procedure[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param procedures 上一步查询结果
      * @param set 查询结果集
@@ -3011,7 +3215,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * procedure[结果集封装]
+     * procedure[结果集封装]<br/>
      * 根据驱动内置接口补充 Procedure
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3025,7 +3229,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * procedure[结果集封装]
+     * procedure[结果集封装]<br/>
      * 根据驱动内置接口补充 Procedure
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3057,15 +3261,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception{
-        return super.buildQueryDDLRun(runtime, procedure);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception{
+        return super.buildQueryDdlsRun(runtime, procedure);
     }
 
     /**
-     * procedure[结果集封装]
+     * procedure[结果集封装]<br/>
      * 查询 Procedure DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+     * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param procedure Procedure
      * @param ddls 上一步查询结果
      * @param set 查询结果集
@@ -3084,8 +3288,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
      * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
      * [命令合成]
-     * List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
-     * [结果集封装]
+     * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+     * [结果集封装]<br/>
      * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception;
      * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
      * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions, DataSet set) throws Exception;
@@ -3093,8 +3297,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * List<String> ddl(DataRuntime runtime, String random, Function function);
      * [命令合成]
-     * List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception;
-     * [结果集封装]
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
+     * [结果集封装]<br/>
      * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
      ******************************************************************************************************************/
     /**
@@ -3129,7 +3333,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.functions(runtime, random, catalog, schema, pattern);
     }
     /**
-     * function[命令合成]
+     * function[命令合成]<br/>
      * 查询表上的 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param catalog catalog
@@ -3138,15 +3342,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-        return super.buildQueryFunctionRun(runtime, catalog, schema, name);
+    public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
+        return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
     }
 
     /**
-     * function[结果集封装]
+     * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param functions 上一步查询结果
      * @param set 查询结果集
@@ -3158,10 +3362,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.functions(runtime, index, create, functions, set);
     }
     /**
-     * function[结果集封装]
+     * function[结果集封装]<br/>
      * 根据查询结果集构造 Trigger
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+     * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param functions 上一步查询结果
      * @param set 查询结果集
@@ -3174,7 +3378,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[结果集封装]
+     * function[结果集封装]<br/>
      * 根据驱动内置接口补充 Function
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3208,14 +3412,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public List<Run> buildQueryDDLRun(DataRuntime runtime, Function meta) throws Exception{
-        return super.buildQueryDDLRun(runtime, meta);
+    public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception{
+        return super.buildQueryDdlsRun(runtime, meta);
     }
     /**
      * function[结果集封装]<br/>
      * 查询 Function DDL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+     * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
      * @param function Function
      * @param ddls 上一步查询结果
      * @param set 查询结果集
@@ -5215,7 +5419,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      ******************************************************************************************************************/
 
     /**
-     * foreign[调用入口]
+     * foreign[调用入口]<br/>
      * 添加外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 外键
@@ -5228,7 +5432,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * foreign[调用入口]
+     * foreign[调用入口]<br/>
      * 修改外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 外键
@@ -5241,7 +5445,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * foreign[调用入口]
+     * foreign[调用入口]<br/>
      * 修改外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 外键
@@ -5254,7 +5458,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * foreign[调用入口]
+     * foreign[调用入口]<br/>
      * 删除外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 外键
@@ -5267,7 +5471,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * foreign[调用入口]
+     * foreign[调用入口]<br/>
      * 重命名外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param origin 外键
@@ -5282,7 +5486,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
 
     /**
-     * foreign[命令合成]
+     * foreign[命令合成]<br/>
      * 添加外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 外键
@@ -5293,7 +5497,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return super.buildAddRun(runtime, meta);
     }
     /**
-     * foreign[命令合成]
+     * foreign[命令合成]<br/>
      * 修改外键
      * @param meta 外键
      * @return List
@@ -5310,7 +5514,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * foreign[命令合成]
+     * foreign[命令合成]<br/>
      * 删除外键
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 外键
@@ -5322,7 +5526,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * foreign[命令合成]
+     * foreign[命令合成]<br/>
      * 修改外键名
      * 一般不直接调用,如果需要由buildAlterRun内部统一调用
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5905,7 +6109,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      ******************************************************************************************************************/
 
     /**
-     * function[调用入口]
+     * function[调用入口]<br/>
      * 添加函数
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 函数
@@ -5918,7 +6122,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[调用入口]
+     * function[调用入口]<br/>
      * 修改函数
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 函数
@@ -5931,7 +6135,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[调用入口]
+     * function[调用入口]<br/>
      * 删除函数
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 函数
@@ -5944,7 +6148,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[调用入口]
+     * function[调用入口]<br/>
      * 重命名函数
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param origin 函数
@@ -5959,7 +6163,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
 
     /**
-     * function[命令合成]
+     * function[命令合成]<br/>
      * 添加函数
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 函数
@@ -5971,7 +6175,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[命令合成]
+     * function[命令合成]<br/>
      * 修改函数
      * 有可能生成多条SQL
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5984,7 +6188,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[命令合成]
+     * function[命令合成]<br/>
      * 删除函数
      * @param meta 函数
      * @return String
@@ -5995,7 +6199,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     /**
-     * function[命令合成]
+     * function[命令合成]<br/>
      * 修改函数名
      * 一般不直接调用,如果需要由buildAlterRun内部统一调用
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -6096,7 +6300,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
 
     /**
-     * column[结果集封装](方法3)<br/>
+     * column[结果集封装]<br/>(方法3)<br/>
      * 有表名的情况下可用<br/>
      * 根据jdbc.datasource.connection.DatabaseMetaData获取指定表的列数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -6131,7 +6335,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
 
     /**
-     * column[结果集封装](方法4)<br/>
+     * column[结果集封装]<br/>(方法4)<br/>
      * 解析查询结果metadata(0=1)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
