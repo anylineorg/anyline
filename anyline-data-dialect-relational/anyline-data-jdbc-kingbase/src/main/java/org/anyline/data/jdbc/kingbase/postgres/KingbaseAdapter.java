@@ -4439,6 +4439,9 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(meta.isAutoIncrement() == 1){
+			builder.append(" AUTO_INCREMENT");
+		}
 		return super.increment(runtime, builder, meta);
 	}
 	/**
