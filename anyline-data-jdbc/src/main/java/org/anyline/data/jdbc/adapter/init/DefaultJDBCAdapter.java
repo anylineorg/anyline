@@ -5836,8 +5836,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("DROP ").append(keyword(meta)).append(" ");
 		checkTableExists(runtime, builder, true);
 		name(runtime, builder, meta);
@@ -8332,17 +8330,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Table table = meta.getTable(true);
-		Catalog catalog = meta.getCatalog();
-		Schema schema = table.getSchema();
 		builder.append("ALTER CONSTRAINT ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		builder.append(" RENAME TO ");
 		delimiter(builder, meta.getUpdate().getName());
 
@@ -8617,15 +8606,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("CREATE PROCEDURE ");
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
-		if(BasicUtil.isNotEmpty(catalog)){
-			delimiter(builder, catalog).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			delimiter(builder, schema).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		builder.append("(\n");
 		List<Parameter> ins = meta.getInputs();
 		List<Parameter> outs = meta.getOutputs();
@@ -8681,15 +8662,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("DROP PROCEDURE ");
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
-		if(BasicUtil.isNotEmpty(catalog)){
-			delimiter(builder, catalog).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			delimiter(builder, schema).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		return runs;
 	}
 
@@ -8707,16 +8680,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("ALTER PROCEDURE ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		builder.append(" RENAME TO ");
 		delimiter(builder, meta.getUpdate());
 		return runs;
@@ -8871,16 +8836,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("DROP FUNCTION ");
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
-		if(BasicUtil.isNotEmpty(catalog)){
-			delimiter(builder, catalog).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			delimiter(builder, schema).append(".");
-		}
-		delimiter(builder, meta.getName());
-
+		name(runtime, builder, meta);
 		return runs;
 	}
 
@@ -8898,16 +8854,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("ALTER FUNCTION ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog.getName()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		builder.append(" RENAME TO ");
 		delimiter(builder, meta.getUpdate().getName());
 		return runs;
@@ -9813,6 +9761,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	@Override
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+		if(null == meta){
+			return;
+		}
 		try {
 			String catalog = null;
 			String schema = null;
