@@ -4436,7 +4436,10 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.increment(runtime, builder, meta);
+		if(meta.isAutoIncrement() == 1){
+			builder.append(" AUTO_INCREMENT");
+		}
+		return builder;
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
