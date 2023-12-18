@@ -6156,6 +6156,9 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
 	@Override
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+		if(null == meta){
+			return;
+		}
 		try {
 			if (null == meta.getCatalog()) {
 				meta.setCatalog(con.getCatalog());
