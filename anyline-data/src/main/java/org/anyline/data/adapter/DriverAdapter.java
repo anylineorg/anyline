@@ -122,10 +122,12 @@ public interface DriverAdapter {
 	 */
 	DatabaseType compatible();
 
+
 	/**
-	 * 转换成相应数据库支持类型
-	 * @param type type
-	 * @return ColumnType
+	 * 转换成相应数据库类型<br/>
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
+	 * @param type 编码时输入的类型
+	 * @return 具体数据库中对应的数据类型
 	 */
 	ColumnType type(String type);
 
