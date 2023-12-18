@@ -4678,8 +4678,6 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
 	}
-
-
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略长度
@@ -4711,41 +4709,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public Boolean checkIgnorePrecision(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return false;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+		return super.checkIgnorePrecision(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4756,41 +4720,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public Boolean checkIgnoreScale(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return true;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+		return super.checkIgnoreScale(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4802,7 +4732,16 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.nullable(runtime, builder, meta);
+		if(meta.isNullable() == 0) {
+			int nullable = meta.isNullable();
+			if(nullable != -1) {
+				if (nullable == 0) {
+					builder.append(" NOT");
+				}
+				builder.append(" NULL");
+			}
+		}
+		return builder;
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4945,7 +4884,6 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		return super.alter(runtime, table, meta, trigger);
 	}
 
-
 	/**
 	 * tag[调用入口]<br/>
 	 * 修改标签
@@ -4985,7 +4923,6 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	public boolean rename(DataRuntime runtime, Tag origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
-
 
 	/**
 	 * tag[命令合成]<br/>
