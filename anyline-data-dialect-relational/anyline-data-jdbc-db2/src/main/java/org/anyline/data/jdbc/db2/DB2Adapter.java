@@ -5529,16 +5529,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("RENAME PROCEDURE ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog.getName()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema.getName()).append(".");
-		}
-		delimiter(builder, meta);
+		name(runtime, builder, meta);
 		builder.append(" TO ");
 		delimiter(builder, meta.getUpdate());
 		return runs;
@@ -5677,16 +5669,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("RENAME FUNCTION ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog.getName()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema.getName()).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		builder.append(" TO ");
 		delimiter(builder, meta.getUpdate().getName());
 		return runs;
