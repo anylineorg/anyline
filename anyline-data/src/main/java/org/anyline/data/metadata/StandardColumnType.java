@@ -45,32 +45,20 @@ import static org.anyline.metadata.type.DatabaseType.*;
 public enum StandardColumnType implements ColumnType {
 
 /*
-* -- "public"."chk_column" definition
-
--- Drop table
 
 -- DROP TABLE "public"."chk_column";
 ,kingbase
 CREATE TABLE "public"."chk_column" (
 	"c2" aclitem NULL,
-	"c3" bfile NULL,
-	"c4" bigint NULL,
-	"c5" bigint AUTO_INCREMENT,
 	"c6" binary_integer NULL,
 	"c7" bit(1) NULL,
 	"c8" bit varying NULL,
-	"c9" blob NULL,
-	"c10" boolean NULL,
-	"c11" boolean NULL,
-	"c12" box NULL,
 	"c13" bpchar NULL,
 	"c14" bpcharbyte NULL,
 	"c15" character(1 char) NULL,
 	"c16" character(1 char) NULL,
 	"c17" character(1 char) NULL,
-	"c19" cidr NULL,
 	"c20" clob NULL,
-	"c21" varchar NULL,
 	"c22" bytea NULL,
 	"c23" date NULL,
 	"c24" daterange NULL,
@@ -81,20 +69,14 @@ CREATE TABLE "public"."chk_column" (
 	"c28" dbms_quoted_id_30 NULL,
 	"c29" dbms_quoted_id_30 NULL,
 	"c30" "dbms_sql.desc_rec" NULL,
-	"c31" numeric NULL,
 	"c32" double precision NULL,
 	"c33" double precision NULL,
 	"c34" dsinterval NULL,
 	"c35" real NULL,
 	"c36" double precision NULL,
 	"c37" gtsvector NULL,
-	"c38" inet NULL,
-	"c39" smallint NULL,
-	"c40" integer NULL,
 	"c41" int4range NULL,
-	"c42" bigint NULL,
 	"c43" int8range NULL,
-	"c44" integer NULL,
 	"c45" pg_catalog.interval NULL,
 	"c46" interval day(2) NULL,
 	"c47" interval day(2) NULL,
@@ -113,38 +95,20 @@ CREATE TABLE "public"."chk_column" (
 	"c60" interval second(2,6) NULL,
 	"c61" interval year(2) NULL,
 	"c62" interval year(2) to month NULL,
-	"c63" json NULL,
-	"c64" jsonb NULL,
 	"c65" jsonpath NULL,
-	"c66" line NULL,
-	"c67" lseg NULL,
-	"c68" macaddr NULL,
 	"c69" macaddr8 NULL,
-	"c70" money NULL,
 	"c71" mysql_date NULL,
 	"c72" mysql_time NULL,
 	"c73" name NULL COLLATE "c",
 	"c74" character(1 char) NULL,
-	"c75" varchar NULL,
-	"c76" varchar NULL,
 	"c77" "natural" NULL,
 	"c78" naturaln NULL,
 	"c79" character(1 char) NULL,
-	"c80" varchar NULL,
-	"c81" nclob NULL,
-	"c82" numeric NULL,
-	"c83" numeric NULL,
 	"c84" numrange NULL,
-	"c85" varchar NULL,
-	"c86" varchar NULL,
 	"c87" oid NULL,
 	"c88" ora_date NULL,
-	"c89" path NULL,
-	"c90" point NULL,
-	"c91" polygon NULL,
 	"c92" positive NULL,
 	"c93" positiven NULL,
-	"c94" real NULL,
 	"c95" refcursor NULL,
 	"c96" regclass NULL,
 	"c97" regconfig NULL,
@@ -156,18 +120,11 @@ CREATE TABLE "public"."chk_column" (
 	"c103" regprocedure NULL,
 	"c104" regtype NULL,
 	"c105" regrole NULL,
-	"c106" integer AUTO_INCREMENT,
-	"c107" smallint AUTO_INCREMENT,
-	"c108" integer AUTO_INCREMENT,
-	"c109" bigint AUTO_INCREMENT,
 	"c110" signtype NULL,
 	"c111" simple_double NULL,
 	"c112" simple_integer NULL,
 	"c113" simple_float NULL,
-	"c114" smallint NULL,
-	"c115" smallint AUTO_INCREMENT,
 	"c116" string NULL,
-	"c117" text NULL,
 	"c118" tid NULL,
 	"c119" time without time zone NULL,
 	"c120" time with time zone NULL,
@@ -182,19 +139,11 @@ CREATE TABLE "public"."chk_column" (
 	"c129" timestamp_unconstrained NULL,
 	"c130" timestamp with time zone NULL,
 	"c131" time with time zone NULL,
-	"c132" tinyint NULL,
-	"c133" integer NULL,
-	"c134" tsquery NULL,
 	"c135" tsrange NULL,
 	"c136" tstzrange NULL,
-	"c137" tsvector NULL,
-	"c138" txid_snapshot NULL,
-	"c139" uuid NULL,
 	"c140" bit varying NULL,
-	"c141" varchar NULL,
 	"c142" varcharbyte NULL,
 	"c143" xid NULL,
-	"c144" xml NULL,
 	"c145" yminterval NULL
 );
 
@@ -253,7 +202,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * oracle
      */
-    ,CLOB("CLOB", new DatabaseType[]{ORACLE, Informix, Derby}, String.class, true, true){
+    ,CLOB("CLOB", new DatabaseType[]{ORACLE, Informix, Derby, KingBase}, String.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -265,7 +214,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * MSSQL
      */
-    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL, Informix, HANA}, String.class, false, true){
+    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL, Informix, HANA, KingBase}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -289,7 +238,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg,sqlite
      */
-    ,TEXT("TEXT", new DatabaseType[]{MYSQL, PostgreSQL, SQLite, Informix, IoTDB}, String.class, true, true){
+    ,TEXT("TEXT", new DatabaseType[]{MYSQL, PostgreSQL, SQLite, Informix, IoTDB, KingBase}, String.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -307,7 +256,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg,oracle,Informix(长度不超过 255 )
      */
-    ,VARCHAR("VARCHAR", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, Informix, HANA, Derby}, String.class, false, true){
+    ,VARCHAR("VARCHAR", new DatabaseType[]{MYSQL, PostgreSQL, ORACLE, Informix, HANA, Derby, KingBase}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     ,LVARCHAR("LVARCHAR", new DatabaseType[]{Informix}, String.class, false, true){
@@ -328,7 +277,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,UUID("UUID", new DatabaseType[]{PostgreSQL}, String.class, true, true){
+    ,UUID("UUID", new DatabaseType[]{PostgreSQL,KingBase}, String.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -367,7 +316,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg
      */
-    ,JSON("JSON", new DatabaseType[]{MYSQL, PostgreSQL}, String.class, true, true){
+    ,JSON("JSON", new DatabaseType[]{MYSQL, PostgreSQL, KingBase}, String.class, true, true){
 
         @Override
         public Object convert(Object value, Class target, Object def) {
@@ -437,7 +386,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * MSSQL
      */
-    ,XML("XML", new DatabaseType[]{MSSQL}, String.class, true, true){}
+    ,XML("XML", new DatabaseType[]{MSSQL,KingBase}, String.class, true, true){}
     /* *****************************************************************************************************************
      *
      *                                              number-int/long
@@ -512,7 +461,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql
      */
-    ,BIGINT("BIGINT", new DatabaseType[]{MYSQL, Informix, HANA, Derby}, Long.class, true, true)
+    ,BIGINT("BIGINT", new DatabaseType[]{MYSQL, Informix, HANA, Derby, KingBase}, Long.class, true, true)
     /**
      * mysql
      */
@@ -520,20 +469,20 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,sqlite
      */
-    ,INTEGER("INTEGER", new DatabaseType[]{MYSQL, SQLite, HANA, ElasticSearch, Derby}, Integer.class, true, true)
+    ,INTEGER("INTEGER", new DatabaseType[]{MYSQL, SQLite, HANA, ElasticSearch, Derby, KingBase}, Integer.class, true, true)
     /**
      * mysql
      */
-    ,SMALLINT("SMALLINT", new DatabaseType[]{MYSQL, Informix, HANA, Derby}, Integer.class, true, true)
+    ,SMALLINT("SMALLINT", new DatabaseType[]{MYSQL, Informix, HANA, Derby, KingBase}, Integer.class, true, true)
     /**
      * mysql
      */
-    ,TINYINT("TINYINT", new DatabaseType[]{MYSQL, HANA}, Integer.class, true, true){
+    ,TINYINT("TINYINT", new DatabaseType[]{MYSQL, HANA, KingBase}, Integer.class, true, true){
     }
     /**
      * pg
      */
-    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL, Informix, HANA, ElasticSearch}, Boolean.class, true, true)
+    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL, Informix, HANA, ElasticSearch, KingBase}, Boolean.class, true, true)
     /**
      * pg
      */
@@ -646,7 +595,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,MONEY("MONEY", new DatabaseType[]{PostgreSQL, Informix}, BigDecimal.class, true, true){
+    ,MONEY("MONEY", new DatabaseType[]{PostgreSQL, Informix, KingBase}, BigDecimal.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
@@ -658,7 +607,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,sqlite
      */
-    ,NUMERIC("NUMERIC", new DatabaseType[]{MYSQL, SQLite, Informix}, BigDecimal.class, false, false){
+    ,NUMERIC("NUMERIC", new DatabaseType[]{MYSQL, SQLite, Informix, KingBase}, BigDecimal.class, false, false){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
     }
     /**
@@ -670,7 +619,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(Double),sqlite
      */
-    ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite, Informix, HANA, Derby}, Double.class, false, false){
+    ,REAL("REAL", new DatabaseType[]{MYSQL, SQLite, Informix, HANA, Derby, KingBase}, Double.class, false, false){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MYSQL.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
@@ -830,7 +779,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(byte[]),  ,oracle,sqlite
      */
-    ,BLOB("BLOB", new DatabaseType[]{MYSQL, ORACLE, SQLite, Informix, HANA, Derby}, byte[].class, true, true){
+    ,BLOB("BLOB", new DatabaseType[]{MYSQL, ORACLE, SQLite, Informix, HANA, Derby, KingBase}, byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(clazz == byte[].class){
 
@@ -892,7 +841,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,JSONB("JSONB", new DatabaseType[]{PostgreSQL}, byte[].class, true, true){
+    ,JSONB("JSONB", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
@@ -907,7 +856,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * oracle
      */
-    ,BFILE("BFILE", new DatabaseType[]{ORACLE}, byte[].class, true, true)
+    ,BFILE("BFILE", new DatabaseType[]{ORACLE, KingBase}, byte[].class, true, true)
     /* *****************************************************************************************************************
      *
      *                                              byte[]-geometry
@@ -916,7 +865,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg
      */
-    ,POINT("POINT", new DatabaseType[]{MYSQL, PostgreSQL}, Point.class, byte[].class, true, true){
+    ,POINT("POINT", new DatabaseType[]{MYSQL, PostgreSQL, KingBase}, Point.class, byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return value;
@@ -953,7 +902,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql,pg
      */
-    ,POLYGON("POLYGON", new DatabaseType[]{MYSQL, PostgreSQL}, Polygon.class, byte[].class, true, true)
+    ,POLYGON("POLYGON", new DatabaseType[]{MYSQL, PostgreSQL, KingBase}, Polygon.class, byte[].class, true, true)
     /**
      * mysql
      */
@@ -970,7 +919,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,LINE("LINE", new DatabaseType[]{PostgreSQL}, LineString.class, byte[].class, true, true)
+    ,LINE("LINE", new DatabaseType[]{PostgreSQL, KingBase}, LineString.class, byte[].class, true, true)
     /**
      * mysql
      */
@@ -978,11 +927,11 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,PATH("PATH",  new DatabaseType[]{PostgreSQL},LineString.class, true, true)
+    ,PATH("PATH",  new DatabaseType[]{PostgreSQL, KingBase},LineString.class, true, true)
     /**
      * pg
      */
-    ,LSEG("LSEG", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
+    ,LSEG("LSEG", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
     /**
      * MSSQL
      */
@@ -990,11 +939,11 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,BOX("BOX", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
+    ,BOX("BOX", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
     /**
      * pg
      */
-    ,CIDR("CIDR", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
+    ,CIDR("CIDR", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
     /**
      * pg
      */
@@ -1002,7 +951,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,INET("INET", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
+    ,INET("INET", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
 
 
     /* *****************************************************************************************************************
@@ -1034,15 +983,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,TSQUERY("TSQUERY",  new DatabaseType[]{PostgreSQL},null, true, true)
+    ,TSQUERY("TSQUERY",  new DatabaseType[]{PostgreSQL, KingBase},null, true, true)
     /**
      * pg
      */
-    ,TSVECTOR("TSVECTOR",  new DatabaseType[]{PostgreSQL},null, true, true)
+    ,TSVECTOR("TSVECTOR",  new DatabaseType[]{PostgreSQL, KingBase},null, true, true)
     /**
      * pg
      */
-    ,MACADDR("MACADDR", new DatabaseType[]{PostgreSQL}, null, true, true)
+    ,MACADDR("MACADDR", new DatabaseType[]{PostgreSQL, KingBase}, null, true, true)
     /**
      * pg
      */
@@ -1051,7 +1000,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * pg
      * 弃用 换成pg_snapshot
      */
-    ,TXID_SNAPSHOT("TXID_SNAPSHOT", new DatabaseType[]{PostgreSQL}, null, true, true)
+    ,TXID_SNAPSHOT("TXID_SNAPSHOT", new DatabaseType[]{PostgreSQL, KingBase}, null, true, true)
     /**
      * oracle
      */
