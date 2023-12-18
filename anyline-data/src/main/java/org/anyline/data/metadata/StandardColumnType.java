@@ -176,7 +176,6 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * mysql,pg
      */
     CHAR("CHAR", new DatabaseType[]{MYSQL, PostgreSQL, Informix, HANA, Derby}, String.class, false, true){
-        
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
