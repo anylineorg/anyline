@@ -442,6 +442,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	} 
 	@Override 
@@ -453,6 +454,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override
@@ -464,6 +466,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override 
@@ -578,6 +581,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override
@@ -589,6 +593,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override
@@ -600,6 +605,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 
@@ -620,6 +626,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		if(!supportBr()){
 			text = text.replace("\r\n"," ").replace("\n"," ");
 		}
@@ -1089,6 +1096,14 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return result;
+	}
+	private String format(String sql){
+		if(null != sql) {
+			sql = sql.replaceAll("\n ", "\n\t")
+					.replaceAll("\n\t\n", "\n")
+					.replaceAll("\n{2,}", "\n");
+		}
+		return sql;
 	}
 	public String log(ACTION.DML action, boolean placeholder){
 		StringBuilder builder = new StringBuilder();
