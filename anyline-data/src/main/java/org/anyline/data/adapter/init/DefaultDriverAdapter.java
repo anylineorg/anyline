@@ -6541,10 +6541,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		//删除不存的的列
+		//忽略 删除不存的的列(原表中本来就没有的 还执行删除)
 		for(Column column:cols.values()){
 			if(!columns.containsKey(column.getName().toUpperCase())){
-				column.setAction(ACTION.DDL.IGNORE);
+				if(column.getAction() == ACTION.DDL.COLUMN_DROP) {
+					column.setAction(ACTION.DDL.IGNORE);
+				}
 			}
 		}
 
