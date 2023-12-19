@@ -1101,7 +1101,8 @@ public abstract class BasicRun implements Run {
 		if(null != sql) {
 			sql = sql.replaceAll("\n ", "\n\t")
 					.replaceAll("\n\t\n", "\n")
-					.replaceAll("\n{2,}", "\n");
+					.replaceAll("\n{2,}", "\n")
+					.trim();
 		}
 		return sql;
 	}
