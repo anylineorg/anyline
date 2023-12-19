@@ -1034,7 +1034,7 @@ public class AnylineProperty {
 
     public void setEnableDefaultJdbcAdapter(boolean enableDefaultJdbcAdapter) {
         this.enableDefaultJdbcAdapter = enableDefaultJdbcAdapter;
-        ConfigTable.IS_ENABLE_DEFAULT_JDBC_ADAPTER = enableDefaultJdbcAdapter;
+        ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER = enableDefaultJdbcAdapter;
     }
 
     public void setAutoConvertBytes(boolean autoConvertBytes) {
