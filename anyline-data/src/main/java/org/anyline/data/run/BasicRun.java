@@ -1072,7 +1072,7 @@ public abstract class BasicRun implements Run {
 				int index = result.indexOf("?");
 				String replacement = null;
 				if(null == value){
-					value = "null";
+					value = "NULL";
 				}
 				DriverAdapter adapter = adapter();
 				if(null != adapter){
