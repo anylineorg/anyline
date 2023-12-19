@@ -1,8 +1,5 @@
-[【***招募开发合伙伴，个人或组织皆可***】](http://doc.anyline.org/ss/23_1213)  
-实际过程很简单，任务已经拆解到一条SQL,一个方法。  
-就是把每极个别与ISO/IEC 9075标准不一致的SQL补充一下  
-我们将协助你熟悉源码 并 对你的项目提供全面的技术支持    
-这时有[【400+】](http://doc.anyline.org/dbs)数据库，总有一个是你熟悉的   
+[【***招募开发合伙伴，个人或组织皆可***】](http://doc.anyline.org/ss/23_1213)    
+这里有[【400+】](http://doc.anyline.org/dbs)数据库，总有一个是你熟悉的   
   
 ***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)  
