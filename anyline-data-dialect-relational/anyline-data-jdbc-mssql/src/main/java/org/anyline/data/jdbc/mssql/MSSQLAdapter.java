@@ -1682,7 +1682,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			builder.append(" AND O.NAME LIKE '").append(pattern).append("'");
 		}
 		if(BasicUtil.isNotEmpty(schema)) {
-			builder.append(" AND S.NAME ='").append(schema.getName()).append("'");
+			builder.append(" AND FT.TABLE_SCHEMA ='").append(schema.getName()).append("'");
 		}
 		if(null != types){
 			String[] tps = types.toUpperCase().trim().split(",");
