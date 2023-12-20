@@ -6390,6 +6390,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
+		checkPrimary(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
@@ -6438,6 +6439,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		for(Column col:ucolumns.values()){
 			col.setColumnType(type(col.getTypeName()));
 		}
+		checkPrimary(runtime, update);
 		String name = meta.getName();
 		String uname = update.getName();
 		String random = random(runtime);
@@ -6855,6 +6857,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 */
+	@Override
+	public void checkPrimary(DataRuntime runtime, Table table){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void checkPrimary(DataRuntime runtime, Table meta)", 37));
+		}
+	}
 
 	/**
 	 * table[命令合成-子流程]<br/>
