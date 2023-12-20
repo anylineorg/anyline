@@ -1142,7 +1142,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     if(null != compare && Compare.AUTO != compare){
                         cmp = compare;
                     }else{
-                        cmp = compares.get(k);;
+                        cmp = compares.get(k);
                     }
                     if(null != cmp) {
                         if (srcFlag) {
