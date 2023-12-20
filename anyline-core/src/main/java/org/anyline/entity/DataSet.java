@@ -4162,6 +4162,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+
+    /**
+     * 通过origin派生新列<br/>
+     * derive("ADDRESS","${PROVINCE_NAME}-%{CITY_NAME}"),执行完成后每个条目上会添加一个新列ADDRESS
+     * @param key 新列名
+     * @param origin 原列名,以${列名1}${列名2}格式提供，${}之外的原样输出
+     * @return DataSet
+     */
+    public DataSet derive(String key, Object origin){
+        return putVar(key, origin);
+    }
     public DataSet putVar(String key, Object value) {
         int regex = 0;
         if(null != value && value instanceof String){
