@@ -71,7 +71,6 @@ import java.util.*;
 /**
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
-@Repository("anyline.data.jdbc.adapter.default")
 public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdapter {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
 
