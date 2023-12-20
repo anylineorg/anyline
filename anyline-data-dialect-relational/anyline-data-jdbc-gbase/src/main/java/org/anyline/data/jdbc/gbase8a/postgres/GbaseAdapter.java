@@ -3330,6 +3330,17 @@ public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, I
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 */
+	@Override
+	public void checkPrimary(DataRuntime runtime, Table table){
+		super.checkPrimary(runtime, table);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
