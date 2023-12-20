@@ -3326,6 +3326,27 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 */
+	@Override
+	public void checkPrimary(DataRuntime runtime, Table table){
+		if(null != table){
+			LinkedHashMap<String, Column> columns = table.getColumns();
+			if(null != columns){
+				for(Column column:columns.values()){
+					//mysql中要求自增必须在主键上
+					if(column.isAutoIncrement() == 1){
+						column.setPrimary(true);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
