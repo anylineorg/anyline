@@ -1971,9 +1971,9 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             if(null == view){
                 view = (T)new View();
             }
-            String catalogName = row.getString("TABLE_CATALOG");
+            //String catalogName = row.getString("TABLE_CATALOG");
             String schemaName = row.getString("TABLE_SCHEMA");
-            checkSchema(view, catalogName, schemaName);
+            view.setSchema(schemaName);
             view.setName(name);
             view.setDefinition(row.getString("VIEW_DEFINITION"));
             views.put(name.toUpperCase(), view);
@@ -2419,15 +2419,13 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
+        set.removeColumn("TABLE_CATALOG");
         return super.columns(runtime, index, create, table, columns, set);
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception{
-        columns = super.columns(runtime, index, create, table, columns, set);
-        for(Column column:columns){
-            column.setCatalog((Catalog) null);
-        }
-        return columns;
+        set.removeColumn("TABLE_CATALOG");
+        return super.columns(runtime, index, create, table, columns, set);
     }
 
     /**
@@ -3792,7 +3790,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
         return super.checkTableExists(runtime, builder, exists);
     }
-    
+
     /**
      * table[命令合成-子流程]<br/>
      * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
@@ -6263,13 +6261,13 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
         if(override || BasicUtil.isEmpty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
     }
     @Override
-    public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
         if(BasicUtil.isEmpty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
@@ -6281,7 +6279,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return String[]
      */
     @Override
-    public String[] checkSchema(String catalog, String schema){
+    public String[] correctSchemaFromJDBC(String catalog, String schema){
         return new String[]{schema, null};
     }
     public String insertHead(ConfigStore configs){

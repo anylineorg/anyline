@@ -44,7 +44,7 @@ public class PersistenceAdapter {
          */
         OneToMany join = new OneToMany();
         join.joinColumn = ClassUtil.parseAnnotationFieldValue(field, "OneToMany.mappedBy");
-        join.dependencyClass = ClassUtil.getComponentClass(field);;
+        join.dependencyClass = ClassUtil.getComponentClass(field);
         join.joinField = ClassUtil.getField(join.dependencyClass, join.joinColumn);
         if(null == join.joinField){
             //提供的是列名

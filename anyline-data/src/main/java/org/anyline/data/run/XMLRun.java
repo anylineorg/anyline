@@ -485,7 +485,7 @@ public class XMLRun extends BasicRun implements Run {
 		if(null == prefix){
 			con = getCondition(variable);
 		}else{
-			con = getCondition(prefix);;
+			con = getCondition(prefix);
 		}
 
 		Variable var = getVariable(variable);

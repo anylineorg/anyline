@@ -5635,12 +5635,12 @@ public class SQLiteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
-        super.checkSchema(meta, catalog, schema, override);
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
+        super.correctSchemaFromJDBC(meta, catalog, schema, override);
     }
 	@Override
-	public <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
-		super.checkSchema(meta, catalog, schema);
+	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
+		super.correctSchemaFromJDBC(meta, catalog, schema);
 	}
 	/**
 	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
@@ -5649,8 +5649,8 @@ public class SQLiteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 * @return String[]
 	 */
 	@Override
-	public String[] checkSchema(String catalog, String schema){
-		return super.checkSchema(catalog, schema);
+	public String[] correctSchemaFromJDBC(String catalog, String schema){
+		return super.correctSchemaFromJDBC(catalog, schema);
 	}
 	/**
 	 * insert[命令执行后]

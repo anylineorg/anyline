@@ -1020,7 +1020,7 @@ public interface DriverAdapter {
 	 * @param override 如果meta中有值，是否覆盖
 	 * @param <T> BaseMetadata
 	 */
-	default <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema, boolean override){
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
 		if(override || BasicUtil.isEmpty(meta.getCatalogName())) {
 			meta.setCatalog(catalog);
 		}
@@ -1028,7 +1028,7 @@ public interface DriverAdapter {
 			meta.setSchema(schema);
 		}
 	}
-	default <T extends BaseMetadata> void checkSchema(T meta, String catalog, String schema){
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
 		if(BasicUtil.isEmpty(meta.getCatalogName())) {
 			meta.setCatalog(catalog);
 		}
@@ -1043,8 +1043,8 @@ public interface DriverAdapter {
 	 * @param schema schema
 	 * @return String[]
 	 */
-	default String[] checkSchema(String catalog, String schema){
-		return new String[]{schema, null};
+	default String[] correctSchemaFromJDBC(String catalog, String schema){
+		return new String[]{catalog, schema};
 	}
 
 	/**

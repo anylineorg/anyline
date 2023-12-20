@@ -221,7 +221,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		try {
 			String url =  value(params, "url", String.class, null);
 			if(BasicUtil.isEmpty(url)){
-				url = value(env, prefix,"url", String.class, null);;
+				url = value(env, prefix,"url", String.class, null);
 			}
 			if(BasicUtil.isEmpty(url)){
 				return null;
@@ -233,7 +233,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 
 			String type = value(params, "type", String.class, null);
 			if(BasicUtil.isEmpty(type)){
-				type = value(env, prefix,"type", String.class, null);;
+				type = value(env, prefix,"type", String.class, null);
 			}
 			if (type == null) {
 				type = DATASOURCE_TYPE_DEFAULT;

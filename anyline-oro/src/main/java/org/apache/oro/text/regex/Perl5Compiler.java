@@ -1534,7 +1534,7 @@ public final class Perl5Compiler implements PatternCompiler {
     char value, paren;
     char[] modifierFlags, posFlags = {0 }, negFlags = {0 };
     int nodeOffset = OpCode._NULL_OFFSET, parenthesisNum = 0, br, ender;
-    int[] flags = {0 };;
+    int[] flags = {0 };
     String modifiers = "iogmsx-";
 
     modifierFlags = posFlags;

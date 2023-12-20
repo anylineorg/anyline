@@ -214,7 +214,7 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 		check(key, override);
 		String url =  value(params, "url", String.class, null);
 		if(BasicUtil.isEmpty(url)){
-			url = value(env, prefix,"url", String.class, null);;
+			url = value(env, prefix,"url", String.class, null);
 		}
 		if(BasicUtil.isEmpty(url)){
 			return null;
