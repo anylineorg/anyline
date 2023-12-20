@@ -52,12 +52,13 @@ public class DriverAdapterHolder {
 	private static DriverAdapter defaultAdapter = null;	// 如果当前项目只有一个adapter则不需要多次识别
 
 	/**
-	 * 定准适配器
+	 * 定位适配器
 	 * @param datasource 数据源名称(配置文件中的key)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return DriverAdapter
 	 */
 	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime){
+		//项目中只有一个适配器时直接返回
 		if(null != defaultAdapter){
 			return defaultAdapter;
 		}
@@ -68,9 +69,17 @@ public class DriverAdapterHolder {
 		DriverAdapter adapter = null;
 		try {
 			for (DriverAdapter item:adapters){
-				if(item.match(runtime)){
+				if(item.match(runtime, false)){
 					adapter = item;
 					break;
+				}
+			}
+			if(null == adapter){
+				for (DriverAdapter item:adapters){
+					if(item.match(runtime, true)){
+						adapter = item;
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {

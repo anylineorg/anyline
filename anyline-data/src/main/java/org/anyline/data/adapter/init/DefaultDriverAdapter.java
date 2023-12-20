@@ -88,7 +88,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public String delimiterFr = "";
 	public String delimiterTo = "";
 
-	//根据名称定准数据类型
+	//根据名称定位数据类型
 	protected Map<String, ColumnType> types = new Hashtable();
 
 	@Autowired(required=false)
@@ -11583,9 +11583,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	/**
 	 * 从数据库中读取数据<br/>
 	 * 先由子类根据metadata.typeName(CHAR,INT)定位到具体的数据库类型ColumnType<br/>
-	 * 如果定准成功由CoumnType根据class转换(class可不提供)<br/>
+	 * 如果定位成功由CoumnType根据class转换(class可不提供)<br/>
 	 * 如果没有定位到ColumnType再根据className(String,BigDecimal)定位到JavaType<br/>
-	 * 如果定准失败或转换失败(返回null)再由父类转换<br/>
+	 * 如果定位失败或转换失败(返回null)再由父类转换<br/>
 	 * 如果没有提供metadata和class则根据value.class<br/>
 	 * 常用类型jdbc可以自动转换直接返回就可以(一般子类DataType返回null父类原样返回)<br/>
 	 * 不常用的如json/point/polygon/blob等转换成anyline对应的类型<br/>
