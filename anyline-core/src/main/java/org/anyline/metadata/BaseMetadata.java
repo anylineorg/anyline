@@ -64,7 +64,11 @@ public class BaseMetadata<T extends BaseMetadata> {
     }
 
     public T setCatalog(String catalog) {
-        this.catalog = new Catalog(catalog);
+        if(null == catalog){
+            this.catalog = null;
+        }else {
+            this.catalog = new Catalog(catalog);
+        }
         return (T)this;
     }
 
@@ -85,7 +89,11 @@ public class BaseMetadata<T extends BaseMetadata> {
     }
 
     public T setSchema(String schema) {
-        this.schema = new Schema(schema);
+        if(null == schema){
+            this.schema = null;
+        }else {
+            this.schema = new Schema(schema);
+        }
         return (T)this;
     }
     public T setSchema(Schema schema) {
