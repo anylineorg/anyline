@@ -621,7 +621,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(null != autoIncrement) {
             if(autoIncrement){
                 this.autoIncrement = 1;
-                this.primary = 1;
                 nullable(false);
             }else{
                 this.autoIncrement = 0;
