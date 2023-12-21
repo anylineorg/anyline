@@ -748,7 +748,7 @@ public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * select [命令执行-子流程]<br/>
+	 * select [结果集封装-子流程]<br/>
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param list JDBC执行返回的结果集

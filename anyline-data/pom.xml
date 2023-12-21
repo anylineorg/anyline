@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
     <name>anyline-data</name>
     <url>http://www.anyline.org/data</url>
-
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>

@@ -1991,7 +1991,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * select [命令执行-子流程]<br/>
+	 * select [结果集封装-子流程]<br/>
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param list JDBC执行返回的结果集
@@ -1999,10 +1999,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)", 37));
-		}
-		return new ArrayList<>();
+		return list;
 	}
 
 	/* *****************************************************************************************************************
