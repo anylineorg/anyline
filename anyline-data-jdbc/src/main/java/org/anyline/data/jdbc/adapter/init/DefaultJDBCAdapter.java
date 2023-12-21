@@ -7008,10 +7008,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		nullable(runtime, builder, meta);
 		//主键
 		primary(runtime, builder, meta);
-		// 递增
-		if(meta.isPrimaryKey() == 1) {
-			increment(runtime, builder, meta);
-		}
+		// 递增(注意有些数据库不需要是主键)
+		increment(runtime, builder, meta);
 		// 更新行事件
 		onupdate(runtime, builder, meta);
 		// 备注
