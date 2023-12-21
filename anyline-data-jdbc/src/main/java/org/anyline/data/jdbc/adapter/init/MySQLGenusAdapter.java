@@ -9,8 +9,6 @@ import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -3576,6 +3574,18 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     @Override
     public boolean alter(DataRuntime runtime, Table meta) throws Exception{
+        if(meta.isSort()){
+            LinkedHashMap<String, Column> columns = meta.getColumns();
+            String prefix = null;
+            for(Column column:columns.values()){
+                if(null == prefix){
+                    column.setPosition(0);
+                }else{
+                    column.setAfter(prefix);
+                }
+                prefix = column.getName();
+            }
+        }
         return super.alter(runtime, meta);
     }
     /**
