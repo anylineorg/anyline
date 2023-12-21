@@ -77,6 +77,8 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
     protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
+    protected boolean sort = false; //列是否排序
+
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
 
@@ -787,6 +789,29 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.indexLength = indexLength;
     }
 
+    public boolean isSort() {
+        return sort;
+    }
+
+    public void setSort(boolean sort) {
+        this.sort = sort;
+    }
+
+    /**
+     * 列排序
+     * @param nullFirst 未设置位置(setPosition)的列是否排在最前
+     * @return Table
+     */
+    public Table sort(boolean nullFirst){
+        sort = true;
+        if(null != columns){
+            Column.sort(columns, nullFirst);
+        }
+        return this;
+    }
+    public Table sort(){
+        return sort(false);
+    }
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append(keyword).append(":");
