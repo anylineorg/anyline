@@ -51,6 +51,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
+
 @Primary
 @Service("anyline.service")
 public class DefaultService<E> implements AnylineService<E> {
@@ -2251,8 +2252,8 @@ public class DefaultService<E> implements AnylineService<E> {
         
         @Override
         public boolean create(Table table) throws Exception{
-            boolean result =  dao.create(table);
-            return result;
+            table.sort();
+            return dao.create(table);
         }
         
         @Override
