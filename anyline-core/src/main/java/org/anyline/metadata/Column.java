@@ -26,15 +26,28 @@ import java.util.*;
 
 public class Column extends BaseMetadata<Column> implements Serializable {
     public static  <T extends Column>  void sort(Map<String,T> columns){
+        sort(columns, false);
+    }
+    public static  <T extends Column>  void sort(Map<String,T> columns, boolean nullFirst){
         List<T> list = new ArrayList<>();
         list.addAll(columns.values());
-        sort(list);
+        sort(list, nullFirst);
         columns.clear();
         for(T column:list){
             columns.put(column.getName().toUpperCase(), column);
         }
     }
     public static  <T extends Column>  void sort(List<T> columns){
+        sort(columns, false);
+    }
+
+    /**
+     * 列排序
+     * @param columns 列集合
+     * @param nullFirst 未设置过位置(setPosition)的列是否排在最前面
+     * @param <T> Column
+     */
+    public static  <T extends Column>  void sort(List<T> columns, boolean nullFirst){
         Collections.sort(columns, new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
@@ -43,11 +56,20 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 if(p1 == p2){
                     return 0;
                 }
-                if(null == p1){
-                    return -1;
-                }
-                if(null == p2){
-                    return 1;
+                if(nullFirst) {
+                    if (null == p1) {
+                        return -1;
+                    }
+                    if (null == p2) {
+                        return 1;
+                    }
+                }else{
+                    if (null == p1) {
+                        return 1;
+                    }
+                    if (null == p2) {
+                        return -1;
+                    }
                 }
                 return p1 > p2 ? 1:-1;
             }
@@ -1001,6 +1023,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return false;
         }
         if(!BasicUtil.equals(primary, column.isPrimaryKey())){
+            return false;
+        }
+        if(!BasicUtil.equals(position, column.getPosition())){
             return false;
         }
 
