@@ -80,7 +80,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public boolean match(DataRuntime runtime, boolean compensate) {
-		boolean chk = super.match(runtime);
+		boolean chk = super.match(runtime, compensate);
 		if(chk) {
 			String version = runtime.getVersion();
 			if (null != version && version.contains(".")) {
