@@ -104,7 +104,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public boolean match(DataRuntime runtime, boolean compensate) {
-		boolean chk = super.match(runtime);
+		boolean chk = super.match(runtime, compensate);
 		if(chk) {
 			String feature = feature(runtime);
 			if(null != feature && feature.toLowerCase().contains("oracle")){
