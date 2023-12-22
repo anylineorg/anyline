@@ -5709,6 +5709,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		//分区表
 		Table master = meta.getMaster();
 		if(null != master){
+			//CREATE TABLE simple.public.log1 PARTITION OF simple.public.log_master FOR VALUES FROM (1) TO (9)
 			partitionOf(runtime, builder, meta);
 		}
 		LinkedHashMap columMap = meta.getColumns();
@@ -5727,7 +5728,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		if(null != columMap){
 			columns = columMap.values();
-			if(null != columns && columns.size() >0){
+			if(null != columns && !columns.isEmpty()){
 				builder.append("(\n");
 				int idx = 0;
 				for(Column column:columns){
@@ -5749,8 +5750,13 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		//分区依据 PARTITION BY RANGE (code);
 		partitionBy(runtime, builder, meta);
-		//继承表
+		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
 		if(BasicUtil.isNotEmpty(meta.getInherits())){
+			if(null == columns || columns.isEmpty()){
+				// TODO 放到子类实现
+				//继承关系中 子表如果没有新添加的列 需要空()
+				builder.append("()");
+			}
 			builder.append(" INHERITS(");
 			name(runtime, builder, meta.getInherits());
 			builder.append(")");
