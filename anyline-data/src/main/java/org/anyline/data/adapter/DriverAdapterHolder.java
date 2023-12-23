@@ -39,6 +39,27 @@ public class DriverAdapterHolder {
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
 
+	/**
+	 * 获取支持数据库的适配器,注意有可能获取到多个
+	 * @param type 数据库类型
+	 * @return DriverAdapter
+	 */
+	public static DriverAdapter getAdapter(DatabaseType type){
+		List<DriverAdapter> list = getAdapters(type);
+		if(list.isEmpty()){
+			return null;
+		}
+		return list.get(0);
+	}
+	public static List<DriverAdapter> getAdapters(DatabaseType type){
+		List<DriverAdapter> list = new ArrayList<>();
+		for(DriverAdapter adapter:adapters){
+			if(adapter.type() == type){
+				list.add(adapter);
+			}
+		}
+		return list;
+	}
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
 		for (DriverAdapter adapter:map.values()){
