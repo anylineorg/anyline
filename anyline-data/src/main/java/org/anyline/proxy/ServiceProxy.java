@@ -81,7 +81,7 @@ public class ServiceProxy {
     public static AnylineService service(DatabaseType type, DriverAdapter adapter){
         DataRuntime runtime = new DefaultRuntime();
         runtime.setAdapter(adapter);
-        runtime.setKey("virtual:"+type);
+        runtime.setKey("virtual("+type+")");
         AnylineService service = new DefaultService();
         AnylineDao dao = new DefaultDao();
         service.setDao(dao);
