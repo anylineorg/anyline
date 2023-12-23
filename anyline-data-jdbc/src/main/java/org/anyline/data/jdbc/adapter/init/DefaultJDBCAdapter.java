@@ -9851,7 +9851,11 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	@Override
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
 		if(null != meta){
-			checkSchema(runtime, jdbc(runtime).getDataSource(), meta);
+			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return;
+			}
+			checkSchema(runtime, jdbc.getDataSource(), meta);
 		}
 	}
 

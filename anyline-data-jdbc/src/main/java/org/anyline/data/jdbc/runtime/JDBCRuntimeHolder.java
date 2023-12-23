@@ -226,6 +226,9 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
         DataRuntime runtime = runtime();
         if(null != runtime){
             JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
+            if(null == jdbc){
+                return null;
+            }
             return jdbc.getDataSource();
         }
         return null;
@@ -241,6 +244,9 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
         DataRuntime runtime = runtime(key);
         if(null != runtime){
             JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
+            if(null == jdbc){
+                return null;
+            }
             return jdbc.getDataSource();
         }
         return null;
