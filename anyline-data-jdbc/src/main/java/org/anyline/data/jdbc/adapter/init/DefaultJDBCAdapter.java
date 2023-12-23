@@ -625,6 +625,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		KeyHolder keyholder = null;
 		JdbcTemplate jdbc = jdbc(runtime);
+		if(null == jdbc){
+			return -1;
+		}
 		try {
 			if(batch > 1){
 				cnt = batch(jdbc, sql, batch, run.getVol(), values);
@@ -966,6 +969,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		long millis = -1;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return -1;
+			}
 			if(batch > 1){
 				result = batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
@@ -1160,6 +1166,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			final DataRuntime rt = runtime;
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new DataSet();
+			}
 			long fr = System.currentTimeMillis();
 			set = (DataSet) jdbc.execute(new CallableStatementCreator(){
 				public CallableStatement createCallableStatement(Connection conn) throws SQLException {
@@ -1616,6 +1625,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new ArrayList<>();
+			}
 			StreamHandler _handler = null;
 			if(null != configs){
 				_handler = configs.stream();
@@ -1720,6 +1732,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		try {
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new HashMap<>();
+			}
 			if (null != values && values.size() > 0) {
 				map = jdbc.queryForMap(sql, values.toArray());
 			} else {
@@ -2000,6 +2015,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		long millis= -1;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return false;
+			}
 			list = (List<Object>) jdbc.execute(sql, new CallableStatementCallback<Object>() {
 				public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
 					final List<Object> result = new ArrayList<Object>();
@@ -2159,6 +2177,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		long millis = -1;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return -1;
+			}
 			if(batch>1){
 				result = batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
@@ -2554,6 +2575,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
 			log.info("{}[action:metadata][sql:\n{}\n]", random, sql);
 		}
+		if(null == jdbc){
+			return new LinkedHashMap<>();
+		}
 		SqlRowSet rs = jdbc.queryForRowSet(sql);
 		if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
 			log.info("{}[action:metadata][执行耗时:{}ms]", random,  System.currentTimeMillis() - fr);
@@ -2822,6 +2846,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		DataSource ds = null;
 		try {
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return null;
+			}
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			product = con.getMetaData().getDatabaseProductName();
@@ -2863,6 +2890,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		DataSource ds = null;
 		try {
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return null;
+			}
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			version = con.getMetaData().getDatabaseProductVersion();
@@ -3380,6 +3410,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Connection con = null;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new LinkedHashMap<>();
+			}
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
@@ -3451,6 +3484,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Connection con = null;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new ArrayList<>();
+			}
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
@@ -3715,6 +3751,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Connection con = null;
 		try {
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new LinkedHashMap<>();
+			}
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
@@ -4386,6 +4425,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Connection con = null;
 		try{
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return new LinkedHashMap<>();
+			}
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 
@@ -4836,6 +4878,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			indexs = new LinkedHashMap<>();
 		}
 		JdbcTemplate jdbc = jdbc(runtime);
+		if(null == jdbc){
+			return new LinkedHashMap<>();
+		}
 		try{
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
@@ -9643,6 +9688,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			metadatas.putAll(columns);
 			set.setMetadata(metadatas);
 			JdbcTemplate jdbc = jdbc(runtime);
+			if(null == jdbc){
+				return set;
+			}
 			StreamHandler _handler = null;
 			if(null != configs){
 				_handler = configs.stream();
@@ -9740,6 +9788,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	protected long batch(JdbcTemplate jdbc, String sql, int batch, int vol,  List<Object> values){
 		int size = values.size(); //一共多少参数
 		int line = size/vol; //一共多少行
+		if(null == jdbc){
+			return line;
+		}
 		//batch insert保持SQL一致,如果不一致应该调用save方法
 		//返回每个SQL的影响行数
 		jdbc.batchUpdate(sql,
