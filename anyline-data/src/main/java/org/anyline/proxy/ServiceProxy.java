@@ -20,17 +20,20 @@ package org.anyline.proxy;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.init.DefaultRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.SpringContextUtil;
@@ -63,7 +66,7 @@ public class ServiceProxy {
     }
 
     public static AnylineService service(){
-        return service(null);
+        return service("default");
     }
     public static AnylineService service(String key){
         if(null == key){
@@ -74,6 +77,20 @@ public class ServiceProxy {
             service = (AnylineService)SpringContextUtil.getBean("anyline.service");
         }*/
         return service;
+    }
+    public static AnylineService service(DatabaseType type, DriverAdapter adapter){
+        DataRuntime runtime = new DefaultRuntime();
+        runtime.setAdapter(adapter);
+        runtime.setKey("virtual:"+type);
+        AnylineService service = new DefaultService();
+        AnylineDao dao = new DefaultDao();
+        service.setDao(dao);
+        dao.setRuntime(runtime);
+        return service;
+    }
+    public static AnylineService service(DatabaseType type){
+        DriverAdapter adapter = DriverAdapterHolder.getAdapter(type);
+        return service(type, adapter);
     }
 
     /**
