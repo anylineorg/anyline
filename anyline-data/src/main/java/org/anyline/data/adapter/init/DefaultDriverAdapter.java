@@ -6555,9 +6555,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		String src_define = "";
 		String cur_define = "";
 		if(null != src_primary) {
+			src_primary.setTable(update);
 			src_define = BeanUtil.concat(src_primary.getColumns().values(), "name", ",", false, true);
 		}
 		if(null != cur_primary){
+			cur_primary.setTable(update);
 			cur_define= BeanUtil.concat(cur_primary.getColumns().values(),"name", ",", false, true);
 		}
 		boolean change_pk = !cur_define.equalsIgnoreCase(src_define);
