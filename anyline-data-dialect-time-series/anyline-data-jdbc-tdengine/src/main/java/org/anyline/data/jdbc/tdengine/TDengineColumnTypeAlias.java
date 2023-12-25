@@ -45,8 +45,8 @@ public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
     DECIMAL                 (StandardColumnType.DOUBLE              ), //mysql,pg,oracle,mssql
     DOUBLE                  (StandardColumnType.DOUBLE              ), //mysql,                         ,td
     ENUM                    (StandardColumnType.ILLEGAL             ), //mysql,
-    FLOAT                   (StandardColumnType.FLOAT_MYSQL         ), //mysql   ,oracle,mssql          ,td
-    FLOAT4                  (StandardColumnType.FLOAT_MYSQL         ), //     ,pg
+    FLOAT                   (StandardColumnType.FLOAT_MySQL         ), //mysql   ,oracle,mssql          ,td
+    FLOAT4                  (StandardColumnType.FLOAT_MySQL         ), //     ,pg
     FLOAT8                  (StandardColumnType.DOUBLE              ), //     ,pg
     GEOGRAPHY               (StandardColumnType.ILLEGAL             ), //             ,  mssql
     GEOMETRY                (StandardColumnType.ILLEGAL             ), //mysql

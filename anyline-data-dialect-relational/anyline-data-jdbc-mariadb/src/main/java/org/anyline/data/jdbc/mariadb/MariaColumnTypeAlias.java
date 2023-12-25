@@ -24,7 +24,7 @@ import org.anyline.metadata.type.ColumnType;
 public enum MariaColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  ,oracle,
         BINARY_DOUBLE           (StandardColumnType.DOUBLE                ), //     ,  ,oracle,
-        BINARY_FLOAT            (StandardColumnType.FLOAT_MYSQL           ), //     ,  ,oracle,
+        BINARY_FLOAT            (StandardColumnType.FLOAT_MySQL           ), //     ,  ,oracle,
         BIGINT                  (StandardColumnType.BIGINT                ), //mysql,  ,     ,mssql,
         BIGSERIAL               (StandardColumnType.BIGINT                ), //     ,pg,
         BINARY                  (StandardColumnType.BINARY                ), //mysql,  ,     ,mssql,
@@ -44,9 +44,9 @@ public enum MariaColumnTypeAlias implements ColumnTypeAlias {
         DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql
         DOUBLE                  (StandardColumnType.DECIMAL               ), //mysql,
         ENUM                    (StandardColumnType.ENUM                  ), //mysql,
-        FLOAT                   (StandardColumnType.FLOAT_MYSQL           ), //mysql,  ,oracle,mssql
-        FLOAT4                  (StandardColumnType.FLOAT_MYSQL           ), //     ,pg
-        FLOAT8                  (StandardColumnType.FLOAT_MYSQL           ), //     ,pg
+        FLOAT                   (StandardColumnType.FLOAT_MySQL           ), //mysql,  ,oracle,mssql
+        FLOAT4                  (StandardColumnType.FLOAT_MySQL           ), //     ,pg
+        FLOAT8                  (StandardColumnType.FLOAT_MySQL           ), //     ,pg
         GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //     ,  ,     ,mssql
         GEOMETRY                (StandardColumnType.GEOMETRY              ), //mysql
         GEOMETRYCOLLECTION      (StandardColumnType.GEOMETRYCOLLECTION    ), //mysql

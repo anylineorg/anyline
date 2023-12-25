@@ -44,7 +44,7 @@ import java.util.*;
 public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
-		return DatabaseType.MYSQL; 
+		return DatabaseType.MySQL; 
 	}
  
 	public MySQLAdapter(){

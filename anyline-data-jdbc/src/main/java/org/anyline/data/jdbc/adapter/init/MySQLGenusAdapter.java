@@ -1712,7 +1712,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
         tables = super.tables(runtime, index, create, catalog, schema, tables, set);
-        //MYSQL不支持TABLE_CATALOG
+        //MySQL不支持TABLE_CATALOG
         for(Table table:tables.values()){
             table.setCatalog((Catalog) null);
         }
@@ -1735,7 +1735,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception{
         tables = super.tables(runtime, index, create, catalog, schema, tables, set);
-        //MYSQL不支持TABLE_CATALOG
+        //MySQL不支持TABLE_CATALOG
         for(Table table:tables){
             table.setCatalog((Catalog) null);
         }
