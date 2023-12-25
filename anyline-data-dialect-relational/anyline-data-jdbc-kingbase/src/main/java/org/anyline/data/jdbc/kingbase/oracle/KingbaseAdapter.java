@@ -3332,7 +3332,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -3411,7 +3411,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 备注
+	 * 备注 创建表的完整DDL拼接COMMENT部分，与buildAppendCommentRun二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -3755,7 +3755,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 
 	/**
 	 * master table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -3865,7 +3865,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 
 	/**
 	 * partition table[命令合成]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql

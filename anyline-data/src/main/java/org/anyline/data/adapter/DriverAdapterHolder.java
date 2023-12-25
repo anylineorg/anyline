@@ -60,6 +60,11 @@ public class DriverAdapterHolder {
 		}
 		return list;
 	}
+	public static List<DriverAdapter> getAdapters(){
+		List<DriverAdapter> list = new ArrayList<>();
+		list.addAll(adapters);
+		return list;
+	}
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
 		for (DriverAdapter adapter:map.values()){

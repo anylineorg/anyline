@@ -3740,7 +3740,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * table[命令合成-子流程]<br/>
-     * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+     * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表
      * @return sql
@@ -3749,7 +3749,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Table meta) throws Exception{
         List<Run> runs = new ArrayList<>();
-        String comment = meta.getComment();
+        /*String comment = meta.getComment();
         if(BasicUtil.isEmpty(comment)){
             return runs;
         }
@@ -3758,7 +3758,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         StringBuilder builder = run.getBuilder();
         builder.append("ALTER TABLE ");
         name(runtime, builder, meta);
-        builder.append(" COMMENT '").append(comment).append("'");
+        builder.append(" COMMENT '").append(comment).append("'");*/
         return runs;
     }
 
@@ -3871,7 +3871,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * table[命令合成-子流程]<br/>
-     * 备注
+     * 备注 创建表的完整DDL拼接COMMENT部分，与buildAppendCommentRun二选一实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 表
@@ -3879,7 +3879,13 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
-        return super.comment(runtime, builder, meta);
+        if(null != meta){
+            String comment = meta.getComment();
+            if(BasicUtil.isNotEmpty(comment)){
+                builder.append(" COMMENT '").append(comment).append("'");
+            }
+        }
+        return builder;
     }
 
     /**
@@ -4223,7 +4229,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * master table[命令合成-子流程]<br/>
-     * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+     * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表
      * @return sql
@@ -4333,7 +4339,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * partition table[命令合成]<br/>
-     * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+     * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表
      * @return sql
@@ -4718,14 +4724,14 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * column[命令合成-子流程]<br/>
-     * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+     * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param column 列
      * @return sql
      * @throws Exception 异常
      */
     /**
-     * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+     * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param meta 列
      * @return sql
      * @throws Exception 异常
