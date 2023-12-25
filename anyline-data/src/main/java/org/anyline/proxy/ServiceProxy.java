@@ -36,6 +36,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,9 @@ public class ServiceProxy {
         return service;
     }
     public static AnylineService service(DatabaseType type, DriverAdapter adapter){
+        if(null == adapter){
+            return null;
+        }
         DataRuntime runtime = new DefaultRuntime();
         runtime.setAdapter(adapter);
         runtime.setKey("virtual("+type+")");
@@ -90,6 +94,9 @@ public class ServiceProxy {
     }
     public static AnylineService service(DatabaseType type){
         DriverAdapter adapter = DriverAdapterHolder.getAdapter(type);
+        if(null == adapter && type.url().contains("jdbc:") && ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER){
+           adapter = (DriverAdapter)SpringContextUtil.getBean("anyline.data.jdbc.adapter.common");
+        }
         return service(type, adapter);
     }
 
