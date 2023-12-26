@@ -591,6 +591,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         }
 
         this.indexs = (LinkedHashMap<String, Index>) indexs;
+        for(Index index:indexs.values()){
+            index.setTable(this);
+        }
         return this;
     }
     public Table add(Index index){
