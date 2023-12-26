@@ -292,7 +292,7 @@ public enum DatabaseType implements Serializable {
         MuDB                	("沐融信息科技"                           	,KEY_CASE.SRC	,900	,null	,"org.postgresql.Driver"	,"jdbc:postgresql://{host}:{port:5432}/{database}"),
         Mulgara             	("Mulgara"                          	,KEY_CASE.SRC	,694	,null	,""	,""),
         MyScale             	("MyScale"                          	,KEY_CASE.SRC	,655	,null	,""	,""),
-        MYSQL               	("MySQL"                            	,KEY_CASE.SRC	,999	,null	,"com.mysql.cj.jdbc.Driver"	,"jdbc:mysql://{host}:{port:3306}/{database}"),
+        MySQL               	("MySQL"                            	,KEY_CASE.SRC	,999	,null	,"com.mysql.cj.jdbc.Driver"	,"jdbc:mysql://{host}:{port:3306}/{database}"),
         NCache              	("NCache"                           	,KEY_CASE.SRC	,801	,null	,""	,""),
         NebulaGraph         	("NebulaGraph"                      	,KEY_CASE.SRC	,873	,null	,"NebulaDriver"	,"jdbc:nebula://{host}"),
         Neo4j               	("Neo4j"                            	,KEY_CASE.SRC	,980	,null	,"org.neo4j.jdbc.Driver"	,"jdbc:neo4j:http://{host}:{port:7474}"),
