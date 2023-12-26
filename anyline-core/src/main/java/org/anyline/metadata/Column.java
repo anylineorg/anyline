@@ -757,13 +757,16 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         this.defaultValue = defaultValue;
         return this;
     }
-    public Column setDefaultCurrentDateTime(){
+    public Column setDefaultCurrentDateTime(boolean currentDateTime){
         if(setmap && null != update){
-            update.setDefaultCurrentDateTime();
+            update.setDefaultCurrentDateTime(currentDateTime);
             return this;
         }
-        this.defaultCurrentDateTime = true;
+        this.defaultCurrentDateTime = currentDateTime;
         return this;
+    }
+    public Column setDefaultCurrentDateTime(){
+        return setDefaultCurrentDateTime(true);
     }
     public boolean isDefaultCurrentDateTime(){
         return this.defaultCurrentDateTime;

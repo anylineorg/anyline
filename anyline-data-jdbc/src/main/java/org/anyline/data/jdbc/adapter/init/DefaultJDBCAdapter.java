@@ -7274,19 +7274,20 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
 		Object def = null;
+		boolean defaultCurrentDateTime = false;
 		if(null != meta.getUpdate()){
 			def = meta.getUpdate().getDefaultValue();
+			defaultCurrentDateTime = meta.getUpdate().isDefaultCurrentDateTime();
 		}else {
 			def = meta.getDefaultValue();
+			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
 		}
-		if(null == def){
-			if(meta.isDefaultCurrentDateTime() || meta.getUpdate().isDefaultCurrentDateTime()) {
-				String type = meta.getFullType().toLowerCase();
-				if (type.contains("timestamp")) {
-					def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
-				}else{
-					def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
-				}
+		if(null == def && defaultCurrentDateTime){
+			String type = meta.getFullType().toLowerCase();
+			if (type.contains("timestamp")) {
+				def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
+			}else{
+				def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
 			}
 		}
 		if(null != def) {
