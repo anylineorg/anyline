@@ -24,6 +24,8 @@ import java.io.Serializable;
 public class Database extends BaseMetadata<Database> implements Serializable {
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
+    protected String filePath                     ; // 文件位置
+    protected String logPath                      ; // 日志位置
     public Database(){}
     public Database(String name){
         setName(name);
@@ -46,5 +48,21 @@ public class Database extends BaseMetadata<Database> implements Serializable {
 
     public String toString(){
         return name;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getLogPath() {
+        return logPath;
+    }
+
+    public void setLogPath(String logPath) {
+        this.logPath = logPath;
     }
 }
