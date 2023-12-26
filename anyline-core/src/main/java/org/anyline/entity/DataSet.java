@@ -19,6 +19,8 @@ package org.anyline.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
+import ognl.Ognl;
+import ognl.OgnlContext;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.metadata.Column;
 import org.anyline.entity.geometry.Point;
@@ -5454,6 +5456,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
         private <T> DataSet between(DataSet src, String key, T min, T max) {
             DataSet set = greaterEqual(src, key, min);
             set = lessEqual(set, key, max);
+            return set;
+        }
+        public DataSet ognl(String formula) throws Exception{
+            return ognl(DataSet.this, formula);
+        }
+        private DataSet ognl(DataSet src, String formula) throws Exception{
+            DataSet set = new DataSet();
+            for(DataRow row:src){
+                OgnlContext context = new OgnlContext(null, null, new DefaultOgnlMemberAccess(true));
+                Object value = Ognl.getValue(formula, context, row);
+                if(BasicUtil.parseBoolean(value, false)){
+                    set.add(row);
+                }
+            }
             return set;
         }
 
