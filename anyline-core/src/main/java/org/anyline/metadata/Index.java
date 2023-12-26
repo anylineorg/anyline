@@ -73,7 +73,7 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
         if(null == name){
             name = "index_";
             if(null != columns){
-                name += BeanUtil.concat(columns.keySet());
+                name += BeanUtil.concat(columns.keySet(), "_");
             }
         }
         return name;
