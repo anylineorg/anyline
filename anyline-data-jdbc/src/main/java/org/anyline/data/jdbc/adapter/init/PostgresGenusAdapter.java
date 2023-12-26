@@ -11,6 +11,8 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -2687,8 +2689,88 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
-        return super.indexs(runtime, create, indexs, table, unique, approximate);
+        DataSource ds = null;
+        Connection con = null;
+        if(null == indexs){
+            indexs = new LinkedHashMap<>();
+        }
+        JdbcTemplate jdbc = jdbc(runtime);
+        if(null == jdbc){
+            return new LinkedHashMap<>();
+        }
+        try{
+            ds = jdbc.getDataSource();
+            con = DataSourceUtils.getConnection(ds);
+            DatabaseMetaData dbmd = con.getMetaData();
+            String[] tmp = correctSchemaFromJDBC(table.getCatalogName(), table.getSchemaName());
+            ResultSet set = dbmd.getIndexInfo(tmp[0], tmp[1], table.getName(), unique, approximate);
+            Map<String, Integer> keys = keys(set);
+            LinkedHashMap<String, Column> columns = null;
+            while (set.next()) {
+                String name = string(keys, "INDEX_NAME", set);
+                if(null == name){
+                    continue;
+                }
+                T index = indexs.get(name.toUpperCase());
+                if(null == index){
+                    if(create){
+                        index = (T)new Index();
+                        indexs.put(name.toUpperCase(), index);
+                    }else{
+                        continue;
+                    }
+                    index.setName(string(keys, "INDEX_NAME", set));
+                    //index.setType(integer(keys, "TYPE", set, null));
+                    index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
+                    //PG JDBC驱动中没有返回catalog 所以这里不用比较直接取输入参数中的catalog
+                    String catalog = table.getCatalogName();
+                    String schema = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
+                    correctSchemaFromJDBC(index, catalog, schema);
+                    //PG JDBC驱动中没有返回catalog 所以这里不用比较直接取输入参数中的catalog
+                    if(!BasicUtil.equals(table.getSchemaName(), index.getSchemaName())){
+                        continue;
+                    }
+                    index.setTable(string(keys, "TABLE_NAME", set));
+                    indexs.put(name.toUpperCase(), index);
+                    columns = new LinkedHashMap<>();
+                    index.setColumns(columns);
+                    if(name.equalsIgnoreCase("PRIMARY")){
+                        index.setCluster(true);
+                        index.setPrimary(true);
+                    }else if(name.equalsIgnoreCase("PK_"+table.getName())){
+                        index.setCluster(true);
+                        index.setPrimary(true);
+                    }
+                }else {
+                    columns = index.getColumns();
+                }
+                String columnName = string(keys, "COLUMN_NAME", set);
+                Column col = table.getColumn(columnName.toUpperCase());
+                Column column = null;
+                if(null != col){
+                    column = (Column) col.clone();
+                }else{
+                    column = new Column();
+                    column.setName(columnName);
+                }
+                String order = string(keys, "ASC_OR_DESC", set);
+                if(null != order && order.startsWith("D")){
+                    order = "DESC";
+                }else{
+                    order = "ASC";
+                }
+                column.setOrder(order);
+                column.setPosition(integer(keys,"ORDINAL_POSITION", set, null));
+                columns.put(column.getName().toUpperCase(), column);
+            }
+        }finally{
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+                DataSourceUtils.releaseConnection(con, ds);
+            }
+        }
+        return indexs;
     }
+
 
 
     /* *****************************************************************************************************************
