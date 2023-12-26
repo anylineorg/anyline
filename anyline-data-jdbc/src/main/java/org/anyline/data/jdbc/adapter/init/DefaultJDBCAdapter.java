@@ -7279,6 +7279,16 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}else {
 			def = meta.getDefaultValue();
 		}
+		if(null == def){
+			if(meta.isDefaultCurrentDateTime() || meta.getUpdate().isDefaultCurrentDateTime()) {
+				String type = meta.getFullType().toLowerCase();
+				if (type.contains("timestamp")) {
+					def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
+				}else{
+					def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
+				}
+			}
+		}
 		if(null != def) {
 			builder.append(" DEFAULT ");
 			//boolean isCharColumn = isCharColumn(runtime, column);
