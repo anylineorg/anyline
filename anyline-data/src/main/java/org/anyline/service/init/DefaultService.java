@@ -1510,7 +1510,6 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         private void struct(Table table){
-            ddl(table);
             LinkedHashMap<String, Column> columns = table.getColumns();
             if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                 columns = columns(table);
@@ -1528,6 +1527,9 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
                 table.setPrimaryKey(pk);
                 table.setIndexs(indexs(table));
+                if(null == table.ddl()){
+                    ddl(table);
+                }
             }
         }
         @Override
