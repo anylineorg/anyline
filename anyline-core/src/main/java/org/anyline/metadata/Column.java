@@ -122,9 +122,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String before                       ; // 修改列时 在表中的位置
     protected int onUpdate = -1                   ; // 是否在更新行时 更新这一列数据
     protected Object value                        ;
-
-
-
+    protected boolean defaultCurrentDateTime = false;
 
     public Column(){
     }
@@ -759,7 +757,17 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         this.defaultValue = defaultValue;
         return this;
     }
-
+    public Column setDefaultCurrentDateTime(){
+        if(setmap && null != update){
+            update.setDefaultCurrentDateTime();
+            return this;
+        }
+        this.defaultCurrentDateTime = true;
+        return this;
+    }
+    public boolean isDefaultCurrentDateTime(){
+        return this.defaultCurrentDateTime;
+    }
 
     public String getDefaultConstraint() {
         if(getmap && null != update){
