@@ -9086,7 +9086,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				column.autoIncrement(true);
 			}
 		}
-
+		String defaultValue = column.getDefaultValue()+"";
+		if(defaultValue.toLowerCase().contains("nextval")){
+			column.autoIncrement(true);
+		}
 		column.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		//主键
 		String column_key = row.getString("COLUMN_KEY");
