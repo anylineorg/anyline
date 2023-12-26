@@ -3586,6 +3586,21 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
                 prefix = column.getName();
             }
         }
+        Table update = (Table)meta.getUpdate();
+        if(null != update){
+            if(update.isSort()){
+                LinkedHashMap<String, Column> columns = update.getColumns();
+                String prefix = null;
+                for(Column column:columns.values()){
+                    if(null == prefix){
+                        column.setPosition(0);
+                    }else{
+                        column.setAfter(prefix);
+                    }
+                    prefix = column.getName();
+                }
+            }
+        }
         return super.alter(runtime, meta);
     }
     /**
@@ -5027,12 +5042,17 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
         Integer position = meta.getPosition();
-        if(null != position && 0 == position){
-            builder.append(" FIRST");
+        String after = meta.getAfter();
+        String before = meta.getBefore();
+        if(BasicUtil.isEmpty(before) && BasicUtil.isEmpty(after)){
+           if(null != position && 0 == position){
+               builder.append(" FIRST");
+           }
         }else{
-            String after = meta.getAfter();
             if(BasicUtil.isNotEmpty(after)){
                 builder.append(" AFTER ").append(after);
+            }else if(BasicUtil.isNotEmpty(before)){
+                builder.append(" BEFORE ").append(before);
             }
         }
         return builder;
