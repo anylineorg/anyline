@@ -249,24 +249,40 @@ public interface DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
-	long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){
+		return insert(runtime, random, batch, dest, data, null, columns);
+	}
+	default long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, String ... columns){
+		return insert(runtime, random, batch, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, int batch, Object data, String ... columns){
+		return insert(runtime, random, batch, (Table)null, data, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
+		return insert(runtime, random, 0, dest, data, columns);
+	}
+	default long insert(DataRuntime runtime, String random, Table dest, Object data, String ... columns){
+		return insert(runtime, random, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, Object data, String ... columns){
+		return insert(runtime, random, (Table)null, data, BeanUtil.array2list(columns));
+	}
+
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime, random, batch, new Table(dest), data, configs, columns);
+	}
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
 	}
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, String ... columns){
 		return insert(runtime, random, batch, dest, data, BeanUtil.array2list(columns));
 	}
-	default long insert(DataRuntime runtime, String random, int batch, Object data, String ... columns){
-		return insert(runtime, random, batch,null, data, BeanUtil.array2list(columns));
-	}
 	default long insert(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
 		return insert(runtime, random, 0, dest, data, columns);
 	}
 	default long insert(DataRuntime runtime, String random, String dest, Object data, String ... columns){
 		return insert(runtime, random, dest, data, BeanUtil.array2list(columns));
-	}
-	default long insert(DataRuntime runtime, String random, Object data, String ... columns){
-		return insert(runtime, random, null, data, BeanUtil.array2list(columns));
 	}
 	/**
 	 * insert [命令合成]<br/>
@@ -277,6 +293,26 @@ public interface DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
+	Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns);
+	default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns){
+		return buildInsertRun(runtime, batch, dest, obj, null, columns);
+	}
+	default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, String ... columns){
+		return buildInsertRun(runtime, batch, dest, obj, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore confgis, String ... columns){
+		return buildInsertRun(runtime, batch, dest, obj, confgis, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, String ... columns){
+		return buildInsertRun(runtime, batch, (Table)null, obj, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, ConfigStore configs, String ... columns){
+		return buildInsertRun(runtime, batch, (Table)null, obj, configs, BeanUtil.array2list(columns));
+	}
+	default Run buildInsertRun(DataRuntime runtime, int batch, ConfigStore configs, Object obj, String ... columns){
+		return buildInsertRun(runtime, batch, (Table)null, obj, configs, BeanUtil.array2list(columns));
+	}
+
 	Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns);
 	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, List<String> columns){
 		return buildInsertRun(runtime, batch, dest, obj, null, columns);
@@ -287,15 +323,7 @@ public interface DriverAdapter {
 	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore confgis, String ... columns){
 		return buildInsertRun(runtime, batch, dest, obj, confgis, BeanUtil.array2list(columns));
 	}
-	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, String ... columns){
-		return buildInsertRun(runtime, batch, null, obj, BeanUtil.array2list(columns));
-	}
-	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, ConfigStore configs, String ... columns){
-		return buildInsertRun(runtime, batch, null, obj, configs, BeanUtil.array2list(columns));
-	}
-	default Run buildInsertRun(DataRuntime runtime, int batch, ConfigStore configs, Object obj, String ... columns){
-		return buildInsertRun(runtime, batch, null, obj, configs, BeanUtil.array2list(columns));
-	}
+	
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -305,7 +333,37 @@ public interface DriverAdapter {
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
-	void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns);
+	void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns);
+	default void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns){
+		fillInsertContent(runtime, run, dest, list, null, columns);
+	}
+	/**
+	 * insert [命令合成-子流程]<br/>
+	 * 填充inset命令内容(创建批量INSERT RunPrepare)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param set 需要插入的数据集合
+	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 */
+	void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns);
+	default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, LinkedHashMap<String, Column> columns){
+		fillInsertContent(runtime, run, dest, set, null, columns);
+	}
+
+
+	/**
+	 * insert [命令合成-子流程]<br/>
+	 * 填充inset命令内容(创建批量INSERT RunPrepare)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param list 需要插入的数据集合
+	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
+	 */
+	default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		fillInsertContent(runtime, run, new Table(dest), list, configs, columns);
+	}
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, list, null, columns);
 	}
@@ -318,11 +376,12 @@ public interface DriverAdapter {
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
-	void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns);
+	default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		fillInsertContent(runtime, run, new Table(dest), set, configs, columns);
+	}
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, set, null, columns);
 	}
-
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
@@ -347,7 +406,10 @@ public interface DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return List
 	 */
-	LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object data, ConfigStore configs, List<String> columns, boolean batch);
+	LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object data, ConfigStore configs, List<String> columns, boolean batch);
+	default LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object data, ConfigStore configs, List<String> columns, boolean batch){
+		return confirmInsertColumns(runtime, new Table(dest), data, configs, columns, batch);
+	}
 
 	/**
 	 * insert [命令合成-子流程]<br/>
@@ -408,57 +470,83 @@ public interface DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
-	long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
 	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, batch, null, data, configs, columns);
+		return update(runtime, random, batch, (Table)null, data, configs, columns);
 	}
-	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
+	default long update(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){
 		return update(runtime, random, batch, dest, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, int batch, Object data, List<String> columns){
-		return update(runtime, random, batch, null, data, null, columns);
+		return update(runtime, random, batch, (Table)null, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs){
-		return update(runtime, random, batch, null, data, configs);
+		return update(runtime, random, batch, (Table)null, data, configs);
+	}
+	default long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, batch, (Table)null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, int batch, Table dest, Object data, String ... columns){
+		return update(runtime, random, batch, dest, data, BeanUtil.array2string(columns));
+	}
+	default long update(DataRuntime runtime, String random, int batch, Object data, String ... columns){
+		return update(runtime, random, batch, (Table)null, data, BeanUtil.array2string(columns));
+	}
+	default long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, 0, dest, data, configs, columns);
+	}
+	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, 0, (Table)null, data, configs, columns);
+	}
+	default long update(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
+		return update(runtime, random, 0, dest, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, Object data, List<String> columns){
+		return update(runtime, random, 0, (Table)null, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs){
+		return update(runtime, random, 0, (Table)null, data, configs);
+	}
+	default long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, 0, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, String ... columns){
+		return update(runtime, random, 0, (Table)null, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(DataRuntime runtime, String random, Table dest, Object data, String ... columns){
+		return update(runtime, random, 0, dest, data, BeanUtil.array2string(columns));
+	}
+	default long update(DataRuntime runtime, String random, Object data, String ... columns){
+		return update(runtime, random, 0, (Table)null, data, BeanUtil.array2string(columns));
+	}
+
+	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, batch, new Table(dest), data, configs, columns);
+	}
+
+	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
+		return update(runtime, random, batch, dest, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, String ... columns){
 		return update(runtime, random, batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, String ... columns){
-		return update(runtime, random, batch, null, data, configs, BeanUtil.array2list(columns));
-	}
 	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, String ... columns){
 		return update(runtime, random, batch, dest, data, BeanUtil.array2string(columns));
-	}
-	default long update(DataRuntime runtime, String random, int batch, Object data, String ... columns){
-		return update(runtime, random, batch, null, data, BeanUtil.array2string(columns));
 	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime, random, 0, dest, data, configs, columns);
 	}
-	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, 0, null, data, configs, columns);
-	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
 		return update(runtime, random, 0, dest, data, null, columns);
-	}
-	default long update(DataRuntime runtime, String random, Object data, List<String> columns){
-		return update(runtime, random, 0, null, data, null, columns);
-	}
-	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs){
-		return update(runtime, random, 0, null, data, configs);
 	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, String ... columns){
 		return update(runtime, random, 0, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, String ... columns){
-		return update(runtime, random, 0, null, data, configs, BeanUtil.array2list(columns));
-	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, String ... columns){
 		return update(runtime, random, 0, dest, data, BeanUtil.array2string(columns));
-	}
-	default long update(DataRuntime runtime, String random, Object data, String ... columns){
-		return update(runtime, random, 0, null, data, BeanUtil.array2string(columns));
 	}
 	/**
 	 * update [命令合成]<br/>
@@ -483,30 +571,51 @@ public interface DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildUpdateRun(DataRuntime runtime, int btch, String dest, Object obj, ConfigStore configs, List<String> columns);
-	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	Run buildUpdateRun(DataRuntime runtime, int btch, Table dest, Object obj, ConfigStore configs, List<String> columns);
+	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, List<String> columns){
-		return buildUpdateRun(runtime, null, obj, configs, columns);
+		return buildUpdateRun(runtime, (Table)null, obj, configs, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, List<String> columns){
+		return buildUpdateRun(runtime, dest, obj, null, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, List<String> columns){
+		return buildUpdateRun(runtime, (Table)null, obj, null, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, String ... columns){
+		return buildUpdateRun(runtime, dest, obj, configs, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, String ... columns){
+		return buildUpdateRun(runtime, (Table)null, obj, configs, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
+		return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
+	}
+	default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns){
+		return buildUpdateRun(runtime, (Table)null, obj, null, BeanUtil.array2list(columns));
+	}
+	Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns);
+
+	Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns);
+
+	Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns);
+
+	default Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return buildUpdateRun(runtime, batch, new Table(dest), obj, configs, columns);
+	}
+	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, List<String> columns){
 		return buildUpdateRun(runtime, dest, obj, null, columns);
 	}
-	default Run buildUpdateRun(DataRuntime runtime, Object obj, List<String> columns){
-		return buildUpdateRun(runtime, null, obj, null, columns);
-	}
 	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, String ... columns){
 		return buildUpdateRun(runtime, dest, obj, configs, BeanUtil.array2list(columns));
 	}
-	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, String ... columns){
-		return buildUpdateRun(runtime, null, obj, configs, BeanUtil.array2list(columns));
-	}
 	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, String ... columns){
 		return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
-	}
-	default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns){
-		return buildUpdateRun(runtime, null, obj, null, BeanUtil.array2list(columns));
 	}
 	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns);
 
@@ -534,8 +643,14 @@ public interface DriverAdapter {
 	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
 	 * @return List
 	 */
-	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns);
-	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns);
+	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns);
+	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns);
+	default LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+		return confirmUpdateColumns(runtime, new Table(dest), row, configs, columns);
+	}
+	default LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return confirmUpdateColumns(runtime, new Table(dest), obj, configs, columns);
+	}
 	/**
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -545,7 +660,10 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
-	long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run);
+	long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run);
+	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+		return update(runtime, random, new Table(dest), data, configs, run);
+	}
 
 
 	/**
@@ -560,20 +678,29 @@ public interface DriverAdapter {
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return 影响行数
 	 */
-
-	long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns);
-	default long save(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
+	long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long save(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
 		return save(runtime, random, dest, data, null, columns);
 	}
 
 	default long save(DataRuntime runtime, String random, Object data, List<String> columns){
-		return save(runtime, random, null, data, columns);
+		return save(runtime, random, (Table)null, data, columns);
 	}
-	default long save(DataRuntime runtime, String random, String dest, Object data, String ... columns){
+	default long save(DataRuntime runtime, String random, Table dest, Object data, String ... columns){
 		return save(runtime, random, dest, data, BeanUtil.array2list(columns));
 	}
 	default long save(DataRuntime runtime, String random, Object data, String ... columns){
-		return save(runtime, random, null, data, BeanUtil.array2list(columns));
+		return save(runtime, random, (Table)null, data, BeanUtil.array2list(columns));
+	}
+
+	default long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+		return save(runtime, random, new Table(dest), data, configs, columns);
+	}
+	default long save(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
+		return save(runtime, random, dest, data, null, columns);
+	}
+	default long save(DataRuntime runtime, String random, String dest, Object data, String ... columns){
+		return save(runtime, random, dest, data, BeanUtil.array2list(columns));
 	}
 	/* *****************************************************************************************************************
 	 * 													QUERY
@@ -704,7 +831,10 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return DataSet
 	 */
-	DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run);
+	DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run);
+	default DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run){
+		return select(runtime, random, system, new Table(table), configs, run);
+	}
 
 	/**
 	 * select [命令执行]<br/>
@@ -862,7 +992,32 @@ public interface DriverAdapter {
 	 * @return 影响行数
 	 * @param <T> T
 	 */
-	<T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values);
+	<T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String column, Collection<T> values);
+	default <T> long deletes(DataRuntime runtime, String random, int batch, Table table, String column, Collection<T> values){
+		return deletes(runtime, random, batch, table, null, column, values);
+	}
+	default <T> long deletes(DataRuntime runtime, String random, Table table, String column, Collection<T> values){
+		return deletes(runtime, random, 0, table, column, values);
+	}
+	default <T> long deletes(DataRuntime runtime, String random, Table table, ConfigStore configs, String column, Collection<T> values){
+		return deletes(runtime, random, 0, table, configs, column, values);
+	}
+	default <T> long deletes(DataRuntime runtime, String random, int batch, Table table, String column, T ... values){
+		return deletes(runtime, random, batch, table, column, BeanUtil.array2list(values));
+	}
+	default <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String column, T ... values){
+		return deletes(runtime, random, batch, table, configs, column, BeanUtil.array2list(values));
+	}
+	default <T> long deletes(DataRuntime runtime, String random, Table table, ConfigStore configs, String column, T ... values){
+		return deletes(runtime, random, 0, table, configs, column, BeanUtil.array2list(values));
+	}
+	default <T> long deletes(DataRuntime runtime, String random, Table table, String column, T ... values){
+		return deletes(runtime, random, 0, table, column, BeanUtil.array2list(values));
+	}
+
+	default <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values){
+		return deletes(runtime, random, batch, new Table(table), configs, column, values);
+	}
 	default <T> long deletes(DataRuntime runtime, String random, int batch, String table, String column, Collection<T> values){
 		return deletes(runtime, random, batch, table, null, column, values);
 	}
@@ -884,7 +1039,6 @@ public interface DriverAdapter {
 	default <T> long deletes(DataRuntime runtime, String random, String table, String column, T ... values){
 		return deletes(runtime, random, 0, table, column, BeanUtil.array2list(values));
 	}
-
 	/**
 	 * delete [调用入口]<br/>
 	 * <br/>
@@ -896,7 +1050,10 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return 影响行数
 	 */
-	long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns);
+	long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, Object obj, String... columns);
+	default long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns){
+		return delete(runtime, random, new Table(table), configs, obj, columns);
+	}
 
 	/**
 	 * delete [调用入口]<br/>
@@ -909,7 +1066,10 @@ public interface DriverAdapter {
 	 * @param conditions  简单过滤条件
 	 * @return 影响行数
 	 */
-	long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions);
+	long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions);
+	default long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+		return delete(runtime, random, new Table(table), configs, conditions);
+	}
 
 	/**
 	 * truncate [调用入口]<br/>
@@ -918,7 +1078,10 @@ public interface DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return 1表示成功执行
 	 */
-	long truncate(DataRuntime runtime, String random, String table);
+	long truncate(DataRuntime runtime, String random, Table table);
+	default long truncate(DataRuntime runtime, String random, String table){
+		return truncate(runtime, random, new Table(table));
+	}
 	/**
 	 * delete[命令合成]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
@@ -928,7 +1091,10 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns);
+	Run buildDeleteRun(DataRuntime runtime, Table table, Object obj, String ... columns);
+	default Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns){
+		return buildDeleteRun(runtime, new Table(table), obj, columns);
+	}
 
 	/**
 	 * delete[命令合成]<br/>
@@ -939,7 +1105,10 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values);
+	Run buildDeleteRun(DataRuntime runtime, int batch, Table table, String column, Object values);
+	default Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values){
+		return buildDeleteRun(runtime, batch, new Table(table), column, values);
+	}
 
 	/**
 	 * truncate[命令合成]<br/>
@@ -947,7 +1116,10 @@ public interface DriverAdapter {
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	List<Run> buildTruncateRun(DataRuntime runtime, String table);
+	List<Run> buildTruncateRun(DataRuntime runtime, Table table);
+	default List<Run> buildTruncateRun(DataRuntime runtime, String table){
+		return buildTruncateRun(runtime, new Table(table));
+	}
 
 	/**
 	 * delete[命令合成-子流程]<br/>
@@ -958,7 +1130,10 @@ public interface DriverAdapter {
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values);
+	Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values);
+	default Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values){
+		return buildDeleteRunFromTable(runtime, batch, new Table(table), column, values);
+	}
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
@@ -968,7 +1143,10 @@ public interface DriverAdapter {
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String ... columns);
+	Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, Object obj, String ... columns);
+	default Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String ... columns){
+		return buildDeleteRunFromEntity(runtime, new Table(table), obj, columns);
+	}
 
 	/**
 	 * delete[命令合成-子流程]<br/>

@@ -21,6 +21,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.metadata.ACTION.SWITCH;
+import org.anyline.metadata.Table;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,11 +36,11 @@ public interface DeleteInterceptor extends DMInterceptor{
      * @param columns  需要更新的列
      * @return RESULT
      */
-    default SWITCH prepare(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){ return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){ return SWITCH.CONTINUE;}
 
-    default SWITCH prepare(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String ... conditions){ return SWITCH.CONTINUE;}
-    default SWITCH prepare(DataRuntime runtime, String random, int batch, String table, String key, Collection values){ return SWITCH.CONTINUE;}
-    default SWITCH prepare(DataRuntime runtime, String random, int batch, String table, Object obj, String ... columns){ return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String ... conditions){ return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime, String random, int batch, Table table, String key, Collection values){ return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime, String random, int batch, Table table, Object obj, String ... columns){ return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成

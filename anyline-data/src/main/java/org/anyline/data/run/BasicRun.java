@@ -28,8 +28,7 @@ import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.metadata.ACTION;
-import org.anyline.metadata.Column;
+import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -45,9 +44,9 @@ public abstract class BasicRun implements Run {
 	protected int batch;
 	protected int vol;//每行多少个值
 	protected RunPrepare prepare;
-	protected String catalog;
-	protected String schema;
-	protected String table;
+	protected Catalog catalog;
+	protected Schema schema;
+	protected Table table;
 	protected List<String> keys;
 	protected List<RunValue> values;
 	protected List<RunValue> batchValues;
@@ -123,42 +122,75 @@ public abstract class BasicRun implements Run {
 		 
 	}
 	@Override
-	public String getTable(){
+	public Table getTable(){
 		return table;
 	}
 
 	@Override
-	public String getCatalog() {
+	public Catalog getCatalog() {
 		return catalog;
 	}
-
-	public void setCatalog(String catalog) {
+	public void setCatalog(Catalog catalog){
 		this.catalog = catalog;
+	}
+	public void setCatalog(String catalog) {
+		if(BasicUtil.isNotEmpty(catalog)){
+			this.catalog = new Catalog(catalog);
+		}else{
+			this.catalog = null;
+		}
 	}
 
 	@Override
-	public String getSchema() {
+	public Schema getSchema() {
 		return schema;
 	}
-
-	public void setSchema(String schema) {
+	public void setSchema(Schema schema){
 		this.schema = schema;
+	}
+	public void setSchema(String schema) {
+		if(BasicUtil.isNotEmpty(schema)){
+			this.schema = new Schema(schema);
+		}else{
+			this.schema = null;
+		}
 	}
 
 	public void setTable(String table) {
+		if(BasicUtil.isNotEmpty(table)){
+			this.table = new Table(table);
+		}else{
+			this.table = null;
+		}
+	}
+	public void setTable(Table table){
 		this.table = table;
 	}
 
 	@Override
-	public String getDataSource() {
-		String ds = table;
-		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
-			ds = schema + "." + ds;
+	public String getDest() {
+		String dest = null;
+		String catalogName = getCatalogName();
+		String schemaName = getSchemaName();
+		String tableName = getTableName();
+		if(BasicUtil.isNotEmpty(catalogName)){
+			dest = catalogName;
 		}
-		if (BasicUtil.isEmpty(ds)) {
-			ds = schema;
+		if(BasicUtil.isNotEmpty(schemaName)){
+			if(null == dest){
+				dest = schemaName;
+			}else{
+				dest += "." + schemaName;
+			}
 		}
-		return ds;
+		if(BasicUtil.isNotEmpty(tableName)){
+			if(null == dest){
+				dest = tableName;
+			}else{
+				dest += "." + tableName;
+			}
+		}
+		return dest;
 	}
 	@Override
 	public Run group(String group){
@@ -1138,6 +1170,35 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return builder.toString();
+	}
+
+	@Override
+	public String getTableName() {
+		if(null != table){
+			return table.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public String getCatalogName() {
+		if(null != catalog){
+			return catalog.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public String getSchemaName() {
+		if(null != schema){
+			return schema.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean checkValid() {
+		return false;
 	}
 }
  

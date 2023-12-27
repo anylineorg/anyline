@@ -617,11 +617,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return int 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		long result =  runtime.getAdapter().insert(runtime, random, batch, dest, data, configs, columns);
+		long result =  runtime.getAdapter().insert(runtime, random, batch," dest", data, configs, columns);
 		int ENTITY_FIELD_INSERT_DEPENDENCY = ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY;
 		checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 		checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
@@ -712,7 +712,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param <T>
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, String key, Collection<T> values){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -721,7 +721,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
+	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns) {
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -735,7 +735,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return qty;
 	}
 	@Override
-	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
+	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -744,7 +744,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	}
 	@Override
-	public long truncate(DataRuntime runtime, String random, String table){
+	public long truncate(DataRuntime runtime, String random, Table table){
 		if(null == runtime){
 			runtime = runtime();
 		}

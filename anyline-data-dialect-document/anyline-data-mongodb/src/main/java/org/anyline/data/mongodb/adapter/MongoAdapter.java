@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 
 
 package org.anyline.data.mongodb.adapter;
@@ -74,17 +75,24 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return DatabaseType.MongoDB;
     }
 
+    @Override
+    public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildInsertRun(runtime, batch, new Table(dest), obj, configs, columns);
+    }
 
-    /**
+
+    */
+/**
      * 根据entity创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 数据
      * @param columns 需要插入的列
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-     */
+     *//*
+
     @Override
-    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
         Run run = new TableRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         if(null != generator) {
@@ -99,16 +107,18 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return run;
     }
 
-    /**
+    */
+/**
      * 根据collection创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 对象集合
      * @param columns 需要插入的列, 如果不指定则全部插入
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-     */
+     *//*
+
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore confis, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns){
         Run run = new TableRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         if(null != generator) {
@@ -125,7 +135,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         run.setValue(list);
         return run;
     }
-    /**
+    */
+/**
      * insert [命令执行]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
@@ -133,7 +144,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @param pks pks
      * @return int 影响行数
-     */
+     *//*
+
     @Override
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         long cnt = 0;
@@ -211,13 +223,15 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return cnt;
     }
 
-    /**
+    */
+/**
      * 创建查询SQL
      * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
      * @param conditions 简单过滤条件
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-     */
+     *//*
+
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
         Run run = null;
@@ -240,6 +254,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
         }
         return run;
+    }
+
+    @Override
+    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
+        return null;
     }
 
     @Override
@@ -320,9 +339,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             boolean multiple = compare.isMultipleValue();
             if (multiple) {
                 List<Object> list = new ArrayList<>();
-                /*for (RunValue rv : values) {
+                */
+/*for (RunValue rv : values) {
                     list.add(rv.getValue());
-                }*/
+                }*//*
+
                 list.addAll(values);
                 value = list;
             } else {
@@ -442,6 +463,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
+    public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String column, Collection<T> values) {
+        return 0;
+    }
+
+    @Override
     public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
@@ -476,8 +502,14 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         configs.and(key, values);
         return delete(runtime, random, table, configs);
     }
+
     @Override
-    public long truncate(DataRuntime runtime, String random, String table) {
+    public long truncate(DataRuntime runtime, String random, Table table) {
+        return 0;
+    }
+
+    @Override
+    public long truncate(DataRuntime runtime, String random, Table table) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
@@ -493,7 +525,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return result;
     }
 
-    /**
+    */
+/**
      * UPDATE [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
@@ -502,7 +535,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param configs 条件
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return 影响行数
-     */
+     *//*
+
     @Override
     public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
         return super.update(runtime, random, batch, dest, data, configs, columns);
@@ -539,7 +573,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         boolean isReplaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
         cols = checkMetadata(runtime, dest, configs, cols);
         List<Bson> updates = new ArrayList<>();
-        /*构造SQL*/
+        */
+/*构造SQL*//*
+
         if(!cols.isEmpty()){
             for(Column column:cols.values()){
                 String key = column.getName();
@@ -600,7 +636,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(1);
-        /*确定需要更新的列*/
+        */
+/*确定需要更新的列*//*
+
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
@@ -654,6 +692,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return run;
     }
 
+    @Override
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        return null;
+    }
+
 
     @Override
     public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values) {
@@ -674,7 +717,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String... columns) {
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, Object obj, String... columns) {
         if(null == obj){
             return null;
         }
@@ -688,7 +731,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return buildDeleteRun(runtime, dest, configs);
     }
 
-    /* *****************************************************************************************************************
+    */
+/* *****************************************************************************************************************
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * Run buildDeleteRun(DataRuntime runtime, String table, String key, Object values)
@@ -697,10 +741,11 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      *
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
-     ******************************************************************************************************************/
+     ******************************************************************************************************************//*
+
 
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
         if(null == obj){
             return null;
         }
@@ -733,10 +778,27 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return run;
     }
 
-    /**
+    @Override
+    public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, String column, Object values) {
+        return null;
+    }
+
+    @Override
+    public List<Run> buildTruncateRun(DataRuntime runtime, Table table) {
+        return null;
+    }
+
+    @Override
+    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
+        return null;
+    }
+
+    */
+/**
      * 构造删除主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * */
+     * *//*
+
     @Override
     public void fillDeleteRunContent(DataRuntime runtime, Run run){
         if(null != run){
@@ -753,12 +815,14 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
     }
-    /**
+    */
+/**
      * 执行删除
      * @param runtime DataRuntime
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @return int
-     */
+     *//*
+
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
         long result = -1;
         boolean cmd_success = false;
@@ -809,3 +873,4 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
 }
+*/

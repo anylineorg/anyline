@@ -21,7 +21,8 @@ package org.anyline.data.prepare.auto.init;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.entity.Join;
- 
+import org.anyline.metadata.Table;
+
 public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrepare {
 
 	public DefaultTablePrepare(){
@@ -33,13 +34,23 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 		chain = new DefaultAutoConditionChain();
 		setTable(table);
 	}
+	public DefaultTablePrepare(Table table){
+		super();
+		chain = new DefaultAutoConditionChain();
+		setTable(table);
+	}
 
 
 
 	@Override 
-	public void setTable(String table) {
-		this.table = table;
+	public RunPrepare setTable(String table) {
+		if(null != table){
+			this.table = new Table(table);
+		}else{
+			this.table = null;
+		}
 		parseTable();
+		return this;
 	} 
  
 	@Override 

@@ -27,6 +27,7 @@ import org.anyline.metadata.ACTION;
 import org.anyline.metadata.ACTION.DDL;
 import org.anyline.metadata.ACTION.SWITCH;
 import org.anyline.metadata.Procedure;
+import org.anyline.metadata.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -223,7 +224,7 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareUpdate(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public static SWITCH prepareUpdate(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.prepare(runtime, random, batch, dest, data, configs, columns);
@@ -234,7 +235,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns){
+    public static SWITCH beforeUpdate(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.before(runtime, random, run, dest, data, configs, columns);
@@ -245,7 +246,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, String dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis){
+    public static SWITCH afterUpdate(DataRuntime runtime, String random, Run run, Table dest, Object data, ConfigStore configs, List<String> columns, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
             swt = interceptor.after(runtime, random, run, dest, data, configs, columns, success, result, millis);
@@ -258,7 +259,7 @@ public class InterceptorProxy {
     }
 
 
-    public static SWITCH prepareInsert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
+    public static SWITCH prepareInsert(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.prepare(runtime, random, batch, dest, data, columns);
@@ -269,7 +270,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH beforeInsert(DataRuntime runtime, String random, Run run, String dest, Object data, List<String> columns){
+    public static SWITCH beforeInsert(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.before(runtime, random, run, dest, data, columns);
@@ -280,7 +281,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, String dest, Object data, List<String> columns, boolean success, long result, long millis){
+    public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns, boolean success, long result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
             swt = interceptor.after(runtime, random, run, dest, data, columns, success, result, millis);
@@ -292,7 +293,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, String table, String key, Collection values){
+    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table table, String key, Collection values){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime, random, batch, table, key, values);
@@ -303,7 +304,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String ... conditions){
+    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String ... conditions){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime, random, batch, table, configs, conditions);
@@ -315,7 +316,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, String dest, Object obj, String... columns){
+    public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table dest, Object obj, String... columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors){
             swt = interceptor.prepare(runtime, random, batch, dest, obj, columns);

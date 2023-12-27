@@ -128,7 +128,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
 		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
 	/**
@@ -990,7 +990,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return 1表示成功执行
 	 */
 	@Override
-	public long truncate(DataRuntime runtime, String random, String table){
+	public long truncate(DataRuntime runtime, String random, Table table){
 		return super.truncate(runtime, random, table);
 	}
 
@@ -1004,7 +1004,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+	public Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
 		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
@@ -1052,7 +1052,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String... columns) {
+	public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, Object obj, String... columns) {
 		return super.buildDeleteRunFromEntity(runtime, table, obj, columns);
 	}
 

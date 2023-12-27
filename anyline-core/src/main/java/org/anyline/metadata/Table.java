@@ -85,7 +85,23 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     public Table(){
     }
     public Table(String name){
-        this.name = name;
+        if(null != name){
+            if(name.contains(".")){
+                String[] tmps = name.split("\\.");
+                if(tmps.length ==2){
+                    this.schema = new Schema(tmps[0]);
+                    this.name = tmps[1];
+                }else if(tmps.length ==3){
+                    this.catalog = new Catalog(tmps[0]);
+                    this.schema = new Schema(tmps[1]);
+                    this.name = tmps[2];
+                }
+            }else{
+                this.name = name;
+            }
+        }else {
+            this.name = name;
+        }
     }
     public Table(String schema, String table){
         this(null, schema, table);

@@ -153,16 +153,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
+	 * long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
+	 * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
 	 * public String batchInsertSeparator()
 	 * public boolean supportInsertPlaceholder ()
-	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
@@ -193,9 +193,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
 		configs = DataSourceUtil.parseDest(dest, data, configs);
-		dest = configs.dest();
+		dest = configs.table();
 		if(null == random){
 			random = random(runtime);
 		}
@@ -225,14 +225,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 						return -1;
 					}
 				}
-				dest = ptables.values().iterator().next().getName();
+				dest = ptables.values().iterator().next();
 			}
 		}
 		Run run = buildInsertRun(runtime, batch, dest, data, configs, columns);
-		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(IS_AUTO_CHECK_METADATA(configs)){
-			table.setColumns(columns(runtime, random, false, table, false));
+			dest.setColumns(columns(runtime, random, false, dest, false));
 		}
 		if(null == run){
 			return 0;
@@ -269,9 +268,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)", 37));
 		}
 		return null;
 	}
@@ -286,9 +285,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
 		}
 	}
 
@@ -302,9 +301,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)", 37));
 		}
 	}
 
@@ -333,7 +332,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
 		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();/*确定需要插入的列*/
 		if(null == obj){
 			return new LinkedHashMap<>();
@@ -505,9 +504,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRun(DataRuntime runtime, String dest, Object obj, List<String> columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRun(DataRuntime runtime, Table dest, Object obj, List<String> columns)", 37));
 		}
 		return null;
 	}
@@ -521,9 +520,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, List<String> columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, List<String> columns)", 37));
 		}
 		return null;
 	}
@@ -562,16 +561,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
+	 * long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
+	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
-	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
+	 * long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * UPDATE [调用入口]<br/>
@@ -598,9 +597,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
 		configs = DataSourceUtil.parseDest(dest, data, configs);
-		dest = configs.dest();
+		dest = configs.table();
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
 		if(null == random){
@@ -636,10 +635,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 		Run run = buildUpdateRun(runtime, batch, dest, data, configs, columns);
 
-		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(IS_AUTO_CHECK_METADATA(configs)){
-			table.setColumns(columns(runtime, null,false, table, false));
+			dest.setColumns(columns(runtime, null,false, dest, false));
 		}
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
@@ -702,14 +700,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		Run run = null;
 		if(null == obj){
 			return null;
 		}
 		if(null == dest){
-			configs = DataSourceUtil.parseDest(null,obj, configs);
-			dest = configs.dest();
+			configs = DataSourceUtil.parseDest(dest, obj, configs);
+			dest = configs.table();
 		}
 		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		if(null != columns){
@@ -732,7 +730,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return run;
 	}
 	@Override
-	public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(2);
 		StringBuilder builder = run.getBuilder();
@@ -775,7 +773,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		List<String> updateColumns = new ArrayList<>();
 		/*构造SQL*/
 		if(!cols.isEmpty()){
-			builder.append("UPDATE ").append(parseTable(dest));
+			builder.append("UPDATE ");
+			name(runtime, builder, dest);
 			builder.append(" SET").append(BR_TAB);
 			boolean first = true;
 			for(Column column:cols.values()){
@@ -849,7 +848,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return run;
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(1);
 		StringBuilder builder = run.getBuilder();
@@ -896,7 +895,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		/*构造SQL*/
 
 		if(!cols.isEmpty()){
-			builder.append("UPDATE ").append(parseTable(dest));
+			builder.append("UPDATE ");
+			name(runtime, builder, dest);
 			builder.append(" SET").append(BR_TAB);
 			boolean first = true;
 			for(Column col:cols.values()){
@@ -935,7 +935,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return run;
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(1);
 		Object first = list.iterator().next();
@@ -996,7 +996,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		/*构造SQL*/
 
 		if(!cols.isEmpty()){
-			builder.append("UPDATE ").append(parseTable(dest));
+			builder.append("UPDATE ");
+			name(runtime, builder, dest);
 			builder.append(" SET ");
 			boolean start = true;
 			for(Column col:cols.values()){
@@ -1071,7 +1072,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns){
 		LinkedHashMap<String,Column> cols = null;/*确定需要更新的列*/
 		if(null == row){
 			return new LinkedHashMap<>();
@@ -1155,7 +1156,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		cols = checkMetadata(runtime, dest, configs, cols);
 		return cols;
 	}
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		LinkedHashMap<String,Column> cols = null;/*确定需要更新的列*/
 		if(null == obj){
 			return new LinkedHashMap<>();
@@ -1249,9 +1250,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
-	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)", 37));
 		}
 		return -1;
 	}
@@ -1286,7 +1287,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == random){
 			random = random(runtime);
 		}
@@ -1309,12 +1310,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return saveObject(runtime, random, dest, data, configs, columns);
 	}
 
-	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
+	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
 		long cnt = 0;
 		//List<Run> runs = buildInsertRun(runtime, random, batch, dest, data, columns);
 		return cnt;
 	}
-	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == data){
 			return 0;
 		}
@@ -1376,9 +1377,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return boolean
 	 */
 	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
-		String table = run.getTable();
+		Table table = run.getTable();
 		if (null != table) {
-			LinkedHashMap<String, Column> columns = columns(runtime, null, false, new Table(table), false);
+			LinkedHashMap<String, Column> columns = columns(runtime, null, false, table, false);
 			if(null != columns){
 				Column column = columns.get(key.toUpperCase());
 				return isMultipleValue(column);
@@ -1402,12 +1403,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param columns columns
 	 * @return List
 	 */
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		if(!IS_AUTO_CHECK_METADATA(configs)){
 			return columns;
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
-		LinkedHashMap<String, Column> metadatas = columns(runtime, null,false, new Table(table), false);
+		LinkedHashMap<String, Column> metadatas = columns(runtime, null,false, table, false);
 		if(metadatas.size() > 0) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {
@@ -1494,7 +1495,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String tmp = "[valid:false][不具备执行条件]";
 			String src = "";
 			if (prepare instanceof TablePrepare) {
-				src = prepare.getTable();
+				src = prepare.getTableName();
 			} else {
 				src = prepare.getText();
 			}
@@ -1554,7 +1555,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			set = new DataSet();
 		}
 
-		set.setDataSource(prepare.getDest());
+		set.setDest(prepare.getDest());
 		set.setNavi(navi);
 		if (null != navi && navi.isLazy()) {
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
@@ -1702,7 +1703,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param <T> entity.class
 	 *
 	 */
-	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
+	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
 		EntitySet<T> set = new EntitySet<>();
 		if(null == random){
 			random = random(runtime);
@@ -1763,7 +1764,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			String tmp = "[valid:false][不具备执行条件]";
 			String src = "";
 			if (prepare instanceof TablePrepare) {
-				src = prepare.getTable();
+				src = prepare.getTableName();
 			} else {
 				src = prepare.getText();
 			}
@@ -1802,7 +1803,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof TablePrepare){
-			run = new TableRun(runtime, prepare.getTable());
+			run = new TableRun(runtime, prepare.getTableName());
 		}else if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
 		}else if(prepare instanceof TextPrepare){
@@ -2059,7 +2060,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		run = buildQueryRun(runtime, prepare, configs, conditions);
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
 			}
 			return -1;
 		}
@@ -2182,7 +2183,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		Run run = buildExecuteRun(runtime, prepare, configs, conditions);
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
 			}
 			return -1;
 		}
@@ -2362,9 +2363,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values){
 		configs = DataSourceUtil.parseDest(table, null, configs);
-		table = configs.dest();
+		table = configs.table();
 		if(null == random){
 			random = random(runtime);
 		}
@@ -2400,9 +2401,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns){
 		configs = DataSourceUtil.parseDest(dest, obj, configs);
-		dest = configs.dest();
+		dest = configs.table();
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		long size = 0;
 		if(null != obj){
@@ -2454,9 +2455,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions){
 		configs = DataSourceUtil.parseDest(table, null, configs);
-		table = configs.dest();
+		table = configs.table();
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
@@ -2487,7 +2488,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 1表示成功执行
 	 */
 	@Override
-	public long truncate(DataRuntime runtime, String random, String table){
+	public long truncate(DataRuntime runtime, String random, Table table){
 		table = DataSourceUtil.parseDest(table, null, null).dest();
 		List<Run> runs = buildTruncateRun(runtime, table);
 		if(null != runs && runs.size()>0) {
@@ -2507,13 +2508,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+	public Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
 		if(null == obj){
 			return null;
 		}
 		Run run = null;
 		if(null == dest){
-			dest = DataSourceUtil.parseDest(dest, obj, null).dest();
+			dest = DataSourceUtil.parseDest(dest, obj, null).table();
 		}
 		if(null == dest){
 			Object entity = obj;
@@ -2522,7 +2523,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			Table table = EntityAdapterProxy.table(entity.getClass());
 			if(null != table){
-				dest = table.getName();
+				dest = table;
 			}
 		}
 		if(obj instanceof ConfigStore){
@@ -2551,14 +2552,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, int batch, String table, String key, Object values){
+	public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, String key, Object values){
 		Run run = buildDeleteRunFromTable(runtime, batch, table, key, values);
 		convert(runtime, new DefaultConfigStore(), run);
 		return run;
 	}
 
 	@Override
-	public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+	public List<Run> buildTruncateRun(DataRuntime runtime, Table table){
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -2596,7 +2597,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String... columns) {
+	public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, Object obj, String... columns) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String... columns)", 37));
 		}
@@ -2747,7 +2748,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs){
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						product = product(runtime, idx++, true, product, set);
 					}
 				}
@@ -2793,7 +2794,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if (null != runs) {
 					int idx = 0;
 					for(Run run:runs){
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						version = version(runtime, idx++, true, version, set);
 					}
 				}
@@ -2841,7 +2842,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						databases = databases(runtime, idx++, true, databases, set);
 					}
 				}
@@ -2885,7 +2886,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						databases = databases(runtime, idx++, true, databases, set);
 					}
 				}
@@ -3131,7 +3132,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						catalog = catalog(runtime, idx++, true, catalog, set);
 					}
 				}
@@ -3185,7 +3186,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						catalogs = catalogs(runtime, idx++, true, catalogs, set);
 					}
 				}
@@ -3229,7 +3230,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						catalogs = catalogs(runtime, idx++, true, catalogs, set);
 					}
 				}
@@ -3414,7 +3415,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						schema = schema(runtime, idx++, true, schema, set);
 					}
 				}
@@ -3469,7 +3470,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						schemas = schemas(runtime, idx++, true, schemas, set);
 					}
 				}
@@ -3514,7 +3515,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						schemas = schemas(runtime, idx++, true, schemas, set);
 					}
 				}
@@ -4114,7 +4115,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
@@ -4423,7 +4424,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, view, list, set);
 				}
 				view.setDdls(list);
@@ -4678,7 +4679,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
@@ -4913,7 +4914,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if (null != runs) {
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
@@ -5969,7 +5970,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, procedure, list, set);
 				}
 				if(list.size()>0) {
@@ -6186,7 +6187,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
-					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(list.size()>0) {
@@ -11705,7 +11706,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(null != column){
 				type = column.getTypeName();
 				if(null == type && BasicUtil.isNotEmpty(run.getTable())){
-					LinkedHashMap<String,Column> columns = columns(runtime,null, false, new Table(run.getTable()), false);
+					LinkedHashMap<String,Column> columns = columns(runtime,null, false, run.getTable(), false);
 					column = columns.get(column.getName().toUpperCase());
 					if(null != column) {
 						type = column.getTypeName();
@@ -11722,7 +11723,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public boolean convert(DataRuntime runtime, ConfigStore configs, Run run){
 		boolean result = false;
 		if(null != run) {
-			result = convert(runtime, new Table<>(run.getTable()), run);
+			result = convert(runtime, run.getTable(), run);
 		}
 		return result;
 	}

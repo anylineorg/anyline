@@ -106,13 +106,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public DataSet querys(Table dest, ConfigStore configs, Object obj, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
-        }
-        conditions = BasicUtil.compress(conditions);
-        configs = append(configs, obj);
-        return queryFromDao(dest, configs, conditions);
+        return queryFromDao(new DefaultTablePrepare(dest), configs, conditions);
     }
     @Override 
     public List<String> column2param(String table) {
@@ -864,7 +858,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).insert(batch, ps[1], data, configs, columns);
+            return ServiceProxy.service(ps[0]).insert(batch, dest, data, configs, columns);
         }
         return dao.insert(batch, dest, data, configs, columns);
     }
@@ -900,7 +894,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public long update(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
+            return ServiceProxy.service(ps[0]).update(batch, dest, data, configs, columns);
         }
         return dao.update(batch, dest, data, configs, columns);
     }
@@ -928,68 +922,7 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override 
     public long save(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
-        if (null == data) {
-            return 0;
-        }
-        String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).save(ps[1], data, configs, columns);
-        }
-        if(data instanceof DataSet){
-            DataSet set = (DataSet) data;
-            long cnt = 0;
-            DataSet inserts = new DataSet();
-            DataSet updates = new DataSet();
-            for(DataRow row:set){
-                Boolean override = row.getOverride();
-                if(null != override) {
-                    //如果设置了override需要到数据库中实际检测
-                    boolean exists = exists(dest, row);
-                    if(exists){
-                        if(!override){//忽略
-
-                        }else{//覆盖(更新)
-                            updates.add(row);
-                        }
-                    }else{
-                        inserts.add(row);
-                    }
-                }else {
-                    if (row.isNew()) {
-                        inserts.add(row);
-                    } else {
-                        updates.add(row);
-                    }
-                }
-            }
-            if(!inserts.isEmpty()){
-                cnt += insert(batch, dest, inserts, configs, columns);
-            }
-            if(!updates.isEmpty()){
-                cnt += update(batch, dest, updates, configs, columns);
-            }
-            return cnt;
-        }else if (data instanceof Collection) {
-            Collection objs = (Collection) data;
-            long cnt = 0;
-            List<Object> inserts = new ArrayList<>();
-            List<Object> updates = new ArrayList<>();
-            for (Object obj : objs) {
-                if(BeanUtil.checkIsNew(obj)){
-                    inserts.add(obj);
-                }else{
-                    updates.add(obj);
-                }
-            }
-            if(!inserts.isEmpty()){
-                cnt += insert(batch, dest, inserts, configs, columns);
-            }
-            if(!updates.isEmpty()){
-                cnt += update(batch, dest, updates, configs, columns);
-            }
-            return cnt;
-        }
-        return saveObject(dest, data, configs, columns);
+        return save(batch, new Table(dest), data, configs, columns);
     }
 
     @Override
@@ -999,7 +932,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).save(ps[1], data, configs, columns);
+            return ServiceProxy.service(ps[0]).save(batch, dest, data, configs, columns);
         }
         if(data instanceof DataSet){
             DataSet set = (DataSet) data;
@@ -1060,22 +993,14 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     protected long saveObject(String dest, Object data, ConfigStore configs, List<String> columns) {
-        if (BasicUtil.isEmpty(dest)) {
-            if (data instanceof DataRow || data instanceof DataSet) {
-                configs = DataSourceUtil.parseDest(dest, data, configs);
-                dest = configs.dest();
-            } else {
-                dest = EntityAdapterProxy.table(data.getClass(), true);
-            }
-        }
-        return dao.save(dest, data, configs, columns);
+        return saveObject(new Table(dest), data, configs, columns);
     }
 
     protected long saveObject(Table dest, Object data, ConfigStore configs, List<String> columns) {
         if (BasicUtil.isEmpty(dest)) {
             if (data instanceof DataRow || data instanceof DataSet) {
-                configs = DataSourceUtil.parseDest(null, data, configs);
-                dest = new Table(configs.dest());
+                configs = DataSourceUtil.parseDest(dest, data, configs);
+                dest = configs.table();
             } else {
                 dest = new Table(EntityAdapterProxy.table(data.getClass(), true));
             }
@@ -1171,13 +1096,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long delete(String dest, DataSet set, String... columns) {
-        long cnt = 0;
-        int size = set.size();
-        for (int i = 0; i < size; i++) {
-            cnt += delete(dest, set.getRow(i), columns);
-        }
-        log.info("[delete DataSet][影响行数:{}]", LogUtil.format(cnt, 34));
-        return cnt;
+        return delete(new Table(dest), set, columns);
     }
 
     @Override
@@ -1194,11 +1113,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long delete(String dest, DataRow row, String... columns) {
-        String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).delete(ps[1], row, columns);
-        }
-        return dao.delete(dest, row, columns);
+        return delete(new Table(dest), row, columns);
     }
 
 
@@ -1217,20 +1132,20 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == obj) {
             return 0;
         }
-        String dest = null;
+        Table dest = null;
         if (obj instanceof DataRow) {
             DataRow row = (DataRow) obj;
-            dest = DataSourceUtil.parseDest(null, row, null).dest();
+            dest = DataSourceUtil.parseDest((String)null, row, null).table();
             return dao.delete(dest, row, columns);
         } else {
             if (obj instanceof Collection) {
                 Collection list =((Collection) obj);
                 if(!list.isEmpty()) {
                     Class clazz = list.iterator().next().getClass();
-                    dest = EntityAdapterProxy.table(clazz, true);
+                    dest = EntityAdapterProxy.table(clazz);
                 }
             } else {
-                    dest = EntityAdapterProxy.table(obj.getClass(), true);
+                    dest = EntityAdapterProxy.table(obj.getClass());
             }
             if(null != dest) {
                 return dao.delete(dest, obj, columns);
@@ -1394,6 +1309,21 @@ public class DefaultService<E> implements AnylineService<E> {
         return navi;
     }
 
+    protected PageNavi setPageLazy(Table src, ConfigStore configs, String... conditions) {
+        PageNavi navi = null;
+        String lazyKey = null;
+        if (null != configs) {
+            navi = configs.getPageNavi();
+            if (null != navi && navi.isLazy()) {
+                lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+                navi.setLazyKey(lazyKey);
+                long total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+                navi.setTotalRow(total);
+            }
+        }
+        return navi;
+    }
+
     protected DataSet queryFromDao(RunPrepare prepare, ConfigStore configs, String... conditions) {
         DataSet set = null;
         if (ConfigTable.isSQLDebug()) {
@@ -1413,24 +1343,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected DataSet queryFromDao(String dest, ConfigStore configs, String... conditions) {
-        DataSet set = null;
-        if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][dest:{}]", dest);
-        }
-        try {
-            setPageLazy(dest, configs, conditions);
-            RunPrepare prepare = createRunPrepare(dest);
-
-            set = dao.querys(prepare, configs, conditions);
-
-        } catch (Exception e) {
-            set = new DataSet();
-            set.setException(e);
-            if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                throw e;
-            }
-        }
-        return set;
+       return queryFromDao(new Table(dest), configs, conditions);
     }
     protected DataSet queryFromDao(Table dest, ConfigStore configs, String... conditions) {
         DataSet set = null;
@@ -1454,21 +1367,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected <T> EntitySet<T> queryFromDao(String dest, Class<T> clazz, ConfigStore configs, String... conditions) {
-        EntitySet<T> list = null;
-        if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][dest:{}]", clazz);
-        }
-        try {
-            setPageLazy(dest, configs, conditions);
-            RunPrepare prepare = createRunPrepare(dest);
-            list = dao.selects(prepare, clazz, configs, conditions);
-        } catch (Exception e) {
-            list = new EntitySet<>();
-            if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                throw e;
-            }
-        }
-        return list;
+        return queryFromDao(new Table(dest), clazz, configs, conditions);
     }
 
     protected <T> EntitySet<T> queryFromDao(Table dest, Class<T> clazz, ConfigStore configs, String... conditions) {
@@ -1588,62 +1487,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected DataSet queryFromCache(String cache, String dest, ConfigStore configs, String... conditions) {
-        if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-            log.debug("[cache from][cache:{}][dest:{}]", cache, dest);
-        }
-        DataSet set = null;
-        String key = "SET:";
-        if (cache.contains(">")) {
-            String tmp[] = cache.split(">");
-            cache = tmp[0];
-        }
-        if (cache.contains(":")) {
-            String ks[] = BeanUtil.parseKeyValue(cache);
-            cache = ks[0];
-            key += ks[1] + ":";
-        }
-        key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-        RunPrepare prepare = createRunPrepare(dest);
-        if (null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
-            if (null != cacheElement && null != cacheElement.getValue()) {
-                Object cacheValue = cacheElement.getValue();
-                if (cacheValue instanceof DataSet) {
-                    set = (DataSet) cacheValue;
-                    set.setIsFromCache(true);
-                } else {
-                    log.error("[缓存设置错误, 检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
-                }
-//       	// 开启新线程提前更新缓存(90%时间)
-                long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
-                final int _max = cacheElement.getExpires();
-                if (age > _max * 0.9) {
-                    if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-                        log.debug("[缓存即将到期提前刷新][dest:{}] [生存:{}/{}]", dest, age, _max);
-                    }
-                    final String _key = key;
-                    final String _cache = cache;
-                    final RunPrepare _sql = prepare;
-                    final ConfigStore _configs = configs;
-                    final String[] _conditions = conditions;
-                    new Thread(new Runnable() {
-                        @Override  
-                        public void run() {
-                            CacheUtil.start(_key, _max / 10);
-                            DataSet newSet = dao.querys(_sql, _configs, _conditions);
-                            cacheProvider.put(_cache, _key, newSet);
-                            CacheUtil.stop(_key, _max / 10);
-                        }
-                    }).start();
-                }
-
-            } else {
-                setPageLazy(dest, configs, conditions);
-                set = dao.querys(prepare, configs, conditions);
-                cacheProvider.put(cache, key, set);
-            }
-        }
-        return set;
+        return queryFromCache(cache, new Table(dest), configs, conditions);
     }
 
     protected DataSet queryFromCache(String cache, Table dest, ConfigStore configs, String... conditions) {

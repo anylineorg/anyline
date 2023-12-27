@@ -30,8 +30,7 @@ import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Constraint;
+import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -67,8 +66,96 @@ public class DefaultConfigStore implements ConfigStore {
 	protected boolean execute				= true  				;
 	protected String datasource				= null					; // 查询或操作的数据源
 	protected String dest					= null					; // 查询或操作的目标(表,存储过程,sql等)
+	protected Catalog catalog				= null					;
+	protected Schema schema					= null					;
+	protected Table table					= null					;
 	protected List<String> keys				= new ArrayList<>();
 
+	@Override
+	public Table table() {
+		return table;
+	}
+
+	@Override
+	public Schema schema() {
+		return schema;
+	}
+
+	@Override
+	public Catalog catalog() {
+		return catalog;
+	}
+	@Override
+	public String tableName() {
+		if(null != table){
+			return table.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public String schemaName() {
+		if(null != schema){
+			return schema.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public String catalogName() {
+		if(null != catalog){
+			return catalog.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public ConfigStore table(Table table) {
+		this.table = table;
+		return this;
+	}
+
+	@Override
+	public ConfigStore schema(Schema schema) {
+		this.schema = schema;
+		return this;
+	}
+
+	@Override
+	public ConfigStore catalog(Catalog catalog) {
+		this.catalog = catalog;
+		return this;
+	}
+
+	@Override
+	public ConfigStore table(String table) {
+		if(BasicUtil.isNotEmpty(table)) {
+			this.table = new Table(table);
+		}else{
+			this.table = null;
+		}
+		return this;
+	}
+
+	@Override
+	public ConfigStore schema(String schema) {
+		if(BasicUtil.isNotEmpty(schema)) {
+			this.schema = new Schema(schema);
+		}else{
+			this.schema = null;
+		}
+		return this;
+	}
+
+	@Override
+	public ConfigStore catalog(String catalog) {
+		if(BasicUtil.isNotEmpty(catalog)) {
+			this.catalog = new Catalog(catalog);
+		}else{
+			this.catalog = null;
+		}
+		return this;
+	}
 
 	/**
 	 * 设置查询或操作的数据源
