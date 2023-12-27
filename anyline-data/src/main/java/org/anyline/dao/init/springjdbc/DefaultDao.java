@@ -194,7 +194,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -202,6 +202,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		checkMany2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 		checkOne2ManyDependencySave(runtime, random, data, ConfigTable.ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 		return result;
+	}
+
+	@Override
+	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+		return update(runtime, random, batch, new Table(dest), data, configs, columns);
 	}
 
 	/**
@@ -595,7 +600,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String>  columns){
+	public long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String>  columns){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -605,6 +610,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 1);
 		return result;
 
+	}
+
+	@Override
+	public long save(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+		return save(runtime, random, batch, new Table(dest), data, configs, columns);
 	}
 
 	/**
@@ -699,6 +709,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().querys(runtime, random, procedure, navi);
+	}
+
+	@Override
+	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
+		return delete(runtime, random, new Table(dest), configs, obj, columns);
 	}
 
 	/**

@@ -313,7 +313,9 @@ public interface DriverAdapter {
 		return buildInsertRun(runtime, batch, (Table)null, obj, configs, BeanUtil.array2list(columns));
 	}
 
-	Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns);
+	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return buildInsertRun(runtime, batch, new Table(dest), obj, configs, columns);
+	}
 	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, List<String> columns){
 		return buildInsertRun(runtime, batch, dest, obj, null, columns);
 	}

@@ -28,6 +28,9 @@ import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.entity.Compare;
+import org.anyline.metadata.Catalog;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -344,11 +347,47 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 	public RunPrepare setDest(String ds){
 		this.id = ds; 
 		return this; 
-	} 
+	}
+
+	@Override
+	public RunPrepare setDest(Table dest) {
+		return null;
+	}
+
+	@Override
+	public RunPrepare setCatalog(String catalog) {
+		return null;
+	}
+
+	@Override
+	public Catalog getCatalog() {
+		return null;
+	}
+
+	@Override
+	public String getCatalogName() {
+		return null;
+	}
+
+	@Override
+	public RunPrepare setSchema(String schema) {
+		return null;
+	}
+
+	@Override
+	public String getSchemaName() {
+		return null;
+	}
+
+	@Override
+	public String getTableName() {
+		return null;
+	}
+
 	public String getDest(){
 		return id ; 
 	} 
-	public String getSchema(){
+	public Schema getSchema(){
 		return null; 
 	} 
 	@Override 
@@ -371,7 +410,7 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 	}
 
 	@Override
-	public String getTable() {
+	public Table getTable() {
 		return null;
 	}
 	

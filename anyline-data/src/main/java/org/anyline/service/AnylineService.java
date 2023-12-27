@@ -1214,7 +1214,7 @@ public interface AnylineService<E>{
 	long delete(String dest, DataSet set, String ... columns);
 	long delete(Table dest, DataSet set, String ... columns);
 	default long delete(DataSet set, String ... columns){
-		String dest = DataSourceUtil.parseDest(null, set, null).dest();
+		String dest = DataSourceUtil.parseDest((String)null, set, null).dest();
 		return delete(dest, set, columns);
 	}
 	long delete(String dest, DataRow row, String ... columns);

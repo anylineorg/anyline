@@ -2489,7 +2489,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, Table table){
-		table = DataSourceUtil.parseDest(table, null, null).dest();
+		table = DataSourceUtil.parseDest(table, null, null).table();
 		List<Run> runs = buildTruncateRun(runtime, table);
 		if(null != runs && runs.size()>0) {
 			RunPrepare prepare = new DefaultTextPrepare(runs.get(0).getFinalUpdate());
