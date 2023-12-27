@@ -25,8 +25,11 @@ import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.adapter.init.LowerKeyAdapter;
 import org.anyline.adapter.init.SrcKeyAdapter;
 import org.anyline.adapter.init.UpperKeyAdapter;
+import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.entity.geometry.Point;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.dom4j.Attribute;
@@ -79,8 +82,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
     protected String datalink                         = null                  ; // 超链接
     protected String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
-    protected String schema                           = null                  ; // schema
-    protected String table                            = null                  ; // table
+    protected Catalog catalog                         = null                  ; // catalog
+    protected Schema schema                           = null                  ; // schema
+    protected Table table                             = null                  ; // table
     protected DataRow attributes                      = null                  ; // 属性
     protected DataRow tags                            = null                  ; // 标签
     protected DataRow relations                       = null                  ; // 对外关系
@@ -1180,26 +1184,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    /**
-     * 读取数据源
-     * 数据源为空时, 读取容器数据源
-     * @return String
-     */
-    public String getDataSource() {
-        String ds = table;
-        if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
-            ds = schema + "." + ds;
-        }
-        if (BasicUtil.isEmpty(ds)) {
-            ds = dataSource;
-        }
-        if (null == ds && null != getContainer()) {
-            ds = getContainer().getDataSource();
-        }
-
-        return ds;
-    }
-
     public String getCategory() {
         return category;
     }
@@ -1250,21 +1234,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     /**
      * 设置数据源
      * 当前对象处于容器中时, 设置容器数据源
-     * @param dataSource  dataSource
+     * @param dest  dest
      * @return DataRow
      */
-    public DataRow setDataSource(String dataSource) {
-        if (null == dataSource) {
+    public DataRow setDest(String dest) {
+        if (null == dest) {
             return this;
         }
-        if (null != getContainer()) {
-            getContainer().setDataSource(dataSource);
-        } else {
-            this.dataSource = dataSource;
-            if (dataSource.contains(".") && !dataSource.contains(":")) {
-                schema = dataSource.substring(0, dataSource.indexOf("."));
-                table = dataSource.substring(dataSource.indexOf(".") + 1);
+        if (dest.contains(".") && !dest.contains(":")) {
+            String[] tmps = dest.split("\\.");
+            if(tmps.length == 2){
+                setSchema(tmps[0]);
+                setTable(tmps[1]);
+            }else if(tmps.length == 3){
+                setCatalog(tmps[0]);
+                setSchema(tmps[1]);
+                setTable(tmps[2]);
             }
+        }else{
+            setTable(dest);
         }
         return this;
     }
@@ -2199,8 +2187,47 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public Catalog getCatalog() {
+        if (null != catalog) {
+            return catalog;
+        } else {
+            DataSet container = getContainer();
+            if (null != container) {
+                return container.getCatalog();
+            } else {
+                return null;
+            }
+        }
+    }
 
-    public String getSchema() {
+    public String getCatalogName() {
+        if (null != catalog) {
+            return catalog.getName();
+        } else {
+            DataSet container = getContainer();
+            if (null != container) {
+                return container.getCatalogName();
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public DataRow setCatalog(String catalog) {
+        if(BasicUtil.isNotEmpty(catalog)) {
+            this.catalog = new Catalog(catalog);
+        }else{
+            this.catalog = null;
+        }
+        return this;
+    }
+
+    public DataRow setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+        return this;
+    }
+
+    public Schema getSchema() {
         if (null != schema) {
             return schema;
         } else {
@@ -2213,12 +2240,34 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
+    public String getSchemaName() {
+        if (null != schema) {
+            return schema.getName();
+        } else {
+            DataSet container = getContainer();
+            if (null != container) {
+                return container.getSchemaName();
+            } else {
+                return null;
+            }
+        }
+    }
+
     public DataRow setSchema(String schema) {
+        if(BasicUtil.isNotEmpty(schema)) {
+            this.schema = new Schema(schema);
+        }else{
+            this.schema = null;
+        }
+        return this;
+    }
+
+    public DataRow setSchema(Schema schema) {
         this.schema = schema;
         return this;
     }
 
-    public String getTable() {
+    public Table getTable() {
         if (null != table) {
             return table;
         } else {
@@ -2230,14 +2279,57 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
         }
     }
+    public String getTableName(){
+        if(null != table){
+            return table.getName();
+        }
+        return null;
+    }
 
+    public String getDest() {
+        String dest = null;
+        String catalogName = getCatalogName();
+        String schemaName = getSchemaName();
+        String tableName = getTableName();
+        if(BasicUtil.isNotEmpty(catalogName)){
+            dest = catalogName;
+        }
+        if(BasicUtil.isNotEmpty(schemaName)){
+            if(null == dest){
+                dest = schemaName;
+            }else{
+                dest += "." + schemaName;
+            }
+        }
+        if(BasicUtil.isNotEmpty(tableName)){
+            if(null == dest){
+                dest = tableName;
+            }else{
+                dest += "." + tableName;
+            }
+        }
+        if(null == dest && null != container){
+            dest = container.getDest();
+        }
+        return dest;
+    }
     public DataRow setTable(String table) {
-        if (null != table && table.contains(".")) {
-            String[] tbs = table.split("\\.");
-            this.table = tbs[1];
-            this.schema = tbs[0];
-        } else {
-            this.table = table;
+        if(null != table) {
+            if (table.contains(".")) {
+                String[] tbs = table.split("\\.");
+                if (tbs.length == 2) {
+                    this.table = new Table(tbs[1]);
+                    this.schema = new Schema(tbs[0]);
+                } else if (tbs.length == 3) {
+                    this.table = new Table(tbs[2]);
+                    this.schema = new Schema(tbs[1]);
+                    this.catalog = new Catalog(tbs[0]);
+                }
+            } else {
+                this.table = new Table(table);
+            }
+        }else{
+            this.table = null;
         }
         return this;
     }
