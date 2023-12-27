@@ -77,7 +77,7 @@ public class TableBuilder {
     }
     public RunPrepare build(){
         DefaultTablePrepare sql = new DefaultTablePrepare();
-        sql.setDataSource(datasource);
+        sql.setDest(datasource);
         sql.setTable(table);
         if(BasicUtil.isNotEmpty(alias)) {
             sql.setAlias(alias);

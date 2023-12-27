@@ -44,7 +44,7 @@ public class StyleParser {
                 }
                 key = key.trim();
                 value = value.trim();
-                String[] keys = key.split(", ");
+                String[] keys = key.split(",");
                 for (String k : keys) {
                     k = k.trim();
                     Map<String, String> tmps = parse(value);
