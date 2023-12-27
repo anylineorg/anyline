@@ -742,16 +742,23 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			list.add(column.getName());
 		}
 		LinkedHashMap<String,Column> cols = confirmUpdateColumns(runtime, dest, obj, configs, list);
-		List<String> primaryKeys = new ArrayList<>();
 
 
-		if(EntityAdapterProxy.hasAdapter(obj.getClass())){
-			primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
-		}else{
-			primaryKeys = new ArrayList<>();
-			primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+		if(null == configs){
+			configs = new DefaultConfigStore();
 		}
-
+		List<String> primaryKeys = configs.keys();
+		if(primaryKeys.isEmpty()){
+			if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
+				primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
+			} else {
+				primaryKeys = new ArrayList<>();
+				primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+			}
+		}
+		if(primaryKeys.isEmpty()){
+			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
+		}
 		// 不更新主键 除非显示指定
 		for(String pk:primaryKeys){
 			if(!columns.containsKey(pk.toUpperCase())) {
@@ -823,9 +830,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			builder.append(BR);
 			builder.append("\nWHERE 1=1").append(BR_TAB);
-			if(null == configs){
-				configs = new DefaultConfigStore();
-			}
+
 			for (String pk : primaryKeys) {
 				if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
 					Field field = EntityAdapterProxy.field(obj.getClass(), pk);
@@ -854,13 +859,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		/*确定需要更新的列*/
 		LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
 
-		List<String> primaryKeys = row.getPrimaryKeys();
-		if(primaryKeys.size() == 0){
-			throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
-		}
-		//先把pk类型取出来
 		if(null == configs){
 			configs = new DefaultConfigStore();
+		}
+		List<String> primaryKeys = configs.keys();
+		if(primaryKeys.isEmpty()){
+			primaryKeys.addAll(row.getPrimaryKeys());
+		}
+		if(primaryKeys.isEmpty()){
+			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
 		}
 		for (String pk : primaryKeys) {
 			Object pv = row.get(pk);
@@ -935,11 +942,15 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if (null == first){
 			return run;
 		}
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
 		if(first instanceof Map && !(first instanceof DataRow)){
 			first = new DataRow((Map)first);
 		}
 		LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
 		List<String> primaryKeys = new ArrayList<>();
+
 		boolean replaceEmptyNull = false;
 		if(first instanceof DataRow){
 			DataRow row = (DataRow)first;
@@ -962,8 +973,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		cols = checkMetadata(runtime, dest, configs, cols);
 		StringBuilder builder = run.getBuilder();
+		List<String> keys = configs.keys();
+		if(!keys.isEmpty()){
+			primaryKeys = keys;
+		}
 		if(primaryKeys.size() == 0){
-			throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
+			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
 		}
 
 		// 不更新主键 除非显示指定
@@ -992,9 +1007,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				start = false;
 				builder.append(key);
 				builder.append(" = ?");
-			}
-			if(null == configs){
-				configs = new DefaultConfigStore();
 			}
 			start = true;
 			for (String pk : primaryKeys) {
