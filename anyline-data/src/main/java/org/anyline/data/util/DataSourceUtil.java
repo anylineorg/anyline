@@ -22,6 +22,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 
@@ -88,6 +89,14 @@ public class DataSourceUtil {
         return configs;
     }
     public static ConfigStore parseDest(String dest, Object obj, ConfigStore configs){
+        Table table = null;
+        if(BasicUtil.isNotEmpty(dest)){
+            table = new Table(dest);
+        }
+        return parseDest(table, obj, configs);
+    }
+    public static ConfigStore parseDest(Table tab, Object obj, ConfigStore configs){
+        String dest = tab.getName();
         if(BasicUtil.isNotEmpty(dest) || null == obj){
             return parseDest(dest, configs);
         }
@@ -101,7 +110,7 @@ public class DataSourceUtil {
             if(BasicUtil.isNotEmpty(link)){
                 //DatasourceHolder.setDataSource(link, true);
             }
-            table = row.getDataSource();
+            table = row.getDest();
             configs.dest(table);
         }else if(obj instanceof DataSet){
             DataSet set = (DataSet)obj;
