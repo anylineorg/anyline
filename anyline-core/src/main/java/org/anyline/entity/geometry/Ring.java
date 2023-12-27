@@ -101,7 +101,7 @@ public class Ring extends Geometry{
             if(!first){
                 builder.append(", ");
             }
-            builder.append(point.sql(false,  false));
+            builder.append(point.sql(false, false));
             first = false;
         }
         if(bracket){
@@ -110,6 +110,6 @@ public class Ring extends Geometry{
         return builder.toString();
     }
     public String sql(){
-        return sql(true,  true);
+        return sql(true, true);
     }
 }

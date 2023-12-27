@@ -2,15 +2,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.postgresql")
-public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapter,  InitializingBean {
+public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
 		return DatabaseType.PostgreSQL;
@@ -63,13 +63,13 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (PostresqlColumnTypeAlias alias: PostresqlColumnTypeAlias.values()){
-			types.put(alias.name(),  alias.standard());
+			types.put(alias.name(), alias.standard());
 		}
 		for(PostgresqlWriter writer: PostgresqlWriter.values()){
-			reg(writer.supports(),  writer.writer());
+			reg(writer.supports(), writer.writer());
 		}
 		for(PostgresqlReader reader: PostgresqlReader.values()){
-			reg(reader.supports(),  reader.reader());
+			reg(reader.supports(), reader.reader());
 		}
 	}
 
@@ -95,19 +95,19 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long insert(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns)
+	 * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * public Run buildInsertRun(DataRuntime runtime,  int batch,  String dest,  Object obj,  ConfigStore configs,  List<String> columns)
-	 * public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  DataSet set,  ConfigStore configs,  LinkedHashMap<String,  Column> columns)
-	 * public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  Collection list,  ConfigStore configs,  LinkedHashMap<String,  Column> columns)
-	 * public LinkedHashMap<String,  Column> confirmInsertColumns(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns,  boolean batch)
+	 * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
 	 * public String batchInsertSeparator()
 	 * public boolean supportInsertPlaceholder ()
-	 * protected Run createInsertRun(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns)
-	 * protected Run createInsertRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore configs,  List<String> columns)
+	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns)
 	 * public String generatedKey()
 	 * [命令执行]
-	 * long insert(DataRuntime runtime,  String random,  Object data,  ConfigStore configs,  Run run,  String[] pks);
+	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
 	 ******************************************************************************************************************/
 
 	/**
@@ -135,8 +135,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns){
-		return super.insert(runtime,  random,  batch,  dest,  data,  configs,  columns);
+	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
 	/**
 	 * insert [命令合成]<br/>
@@ -148,8 +148,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime,  int batch,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){
-		return super.buildInsertRun(runtime,  batch,  dest,  obj,  configs,  columns);
+	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
 	}
 
 	/**
@@ -162,8 +162,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  DataSet set,  ConfigStore configs,  LinkedHashMap<String,  Column> columns){
-		super.fillInsertContent(runtime,  run,  dest,  set,  configs,  columns);
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		super.fillInsertContent(runtime, run, dest, set, configs, columns);
 	}
 
 	/**
@@ -176,8 +176,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  Collection list,  ConfigStore configs,  LinkedHashMap<String,  Column> columns){
-		super.fillInsertContent(runtime,  run,  dest,  list,  configs,  columns);
+	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		super.fillInsertContent(runtime, run, dest, list, configs, columns);
 	}
 
 	/**
@@ -205,8 +205,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,  Column> confirmInsertColumns(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns,  boolean batch){
-		return super.confirmInsertColumns(runtime,  dest,  obj,  configs,  columns,  batch);
+	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+		return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
 	}
 
 	/**
@@ -235,8 +235,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param value value
 	 */
 	@Override
-	protected void setPrimaryValue(Object obj,  Object value){
-		super.setPrimaryValue(obj,  value);
+	protected void setPrimaryValue(Object obj, Object value){
+		super.setPrimaryValue(obj, value);
 	}
 	/**
 	 * insert [命令合成-子流程]<br/>
@@ -248,8 +248,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRun(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){
-		return super.createInsertRun(runtime,  dest,  obj,  configs,  columns);
+	protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return super.createInsertRun(runtime, dest, obj, configs, columns);
 	}
 
 	/**
@@ -262,8 +262,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore configs,  List<String> columns){
-		return super.createInsertRunFromCollection(runtime,  batch,  dest,  list,  configs,  columns);
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
+		return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
 	/**
@@ -288,8 +288,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime,  String random,  Object data,  ConfigStore configs,  Run run,  String[] pks){
-		return super.insert(runtime,  random,  data,  configs,  run,  pks);
+	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+		return super.insert(runtime, random, data, configs, run, pks);
 	}
 
 
@@ -298,16 +298,16 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long update(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns)
+	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime,  int batch,   String dest,  Object obj,  ConfigStore configs,  List<String> columns)
-	 * Run buildUpdateRunFromEntity(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  LinkedHashMap<String,  Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime,  String dest,  DataRow row,  ConfigStore configs,  LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore configs,  LinkedHashMap<String, Column> columns)
-	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime,  String dest,  DataRow row,  ConfigStore configs,  List<String> columns)
-	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
-	 * long update(DataRuntime runtime,  String random,  String dest,  Object data,  ConfigStore configs,  Run run)
+	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * UPDATE [调用入口]<br/>
@@ -334,8 +334,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns){
-		return super.update(runtime,  random,  batch,  dest,  data,  configs,  columns);
+	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return super.update(runtime, random, batch, dest, data, configs, columns);
 	}
 	/**
 	 * update [命令合成]<br/>
@@ -361,20 +361,20 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime,  int batch,   String dest,  Object obj,  ConfigStore configs,  List<String> columns){
-		return super.buildUpdateRun(runtime,  batch,  dest,  obj,  configs,  columns);
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromEntity(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  LinkedHashMap<String,  Column> columns){
-		return super.buildUpdateRunFromEntity(runtime,  dest,  obj,  configs,  columns);
+	public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime,  String dest,  DataRow row,  ConfigStore configs,  LinkedHashMap<String, Column> columns){
-		return super.buildUpdateRunFromDataRow(runtime,  dest,  row,  configs,  columns);
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore configs,  LinkedHashMap<String, Column> columns){
-		return super.buildUpdateRunFromCollection(runtime,  batch,  dest,  list,  configs,  columns);
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 	/**
 	 * update [命令合成-子流程]<br/>
@@ -399,12 +399,12 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime,  String dest,  DataRow row,  ConfigStore configs,  List<String> columns){
-		return super.confirmUpdateColumns(runtime,  dest,  row,  configs,  columns);
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){
-		return super.confirmUpdateColumns(runtime,  dest,  obj,  configs,  columns);
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 	/**
 	 * update [命令执行]<br/>
@@ -416,8 +416,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime,  String random,  String dest,  Object data,  ConfigStore configs,  Run run){
-		return super.update(runtime,  random,   dest,  data,  configs,  run);
+	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+		return super.update(runtime, random, dest, data, configs, run);
 	}
 
 
@@ -450,17 +450,17 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime,  String random,  String dest,  Object data,  ConfigStore configs,  List<String> columns){
-		return super.save(runtime,  random,   dest,  data,  configs,  columns);
+	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
-	protected long saveCollection(DataRuntime runtime,  String random,  String dest,  Collection<?> data,  ConfigStore configs,  List<String> columns){
-		return super.saveCollection(runtime,  random,   dest,  data,  configs,  columns);
+	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
+		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected long saveObject(DataRuntime runtime,  String random,  String dest,  Object data,  ConfigStore configs,  List<String> columns){
-		return super.saveObject(runtime,  random,   dest,  data,  configs,  columns);
+	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected Boolean checkOverride(Object obj){
@@ -480,8 +480,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return boolean
 	 */
 	@Override
-	protected boolean isMultipleValue(DataRuntime runtime,  TableRun run,  String key){
-		return super.isMultipleValue(runtime,  run,  key);
+	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+		return super.isMultipleValue(runtime, run, key);
 	}
 	@Override
 	protected boolean isMultipleValue(Column column){
@@ -494,32 +494,32 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,  Column> checkMetadata(DataRuntime runtime,  String table,  ConfigStore configs,  LinkedHashMap<String,  Column> columns){
-		return super.checkMetadata(runtime,  table,  configs,  columns);
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime,  String random,   RunPrepare prepare,  ConfigStore configs,  String ... conditions)
-	 * DataSet querys(DataRuntime runtime,  String random,  Procedure procedure,  PageNavi navi)
-	 * <T> EntitySet<T> selects(DataRuntime runtime,  String random,  RunPrepare prepare,  Class<T> clazz,  ConfigStore configs,  String... conditions)
-	 * List<Map<String, Object>> maps(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
+	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
-	 * Run buildQueryRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
-	 * List<Run> buildQuerySequence(DataRuntime runtime,  boolean next,  String ... names)
-	 * void fillQueryContent(DataRuntime runtime,  Run run)
-	 * String mergeFinalQuery(DataRuntime runtime,  Run run)
-	 * RunValue createConditionLike(DataRuntime runtime,  StringBuilder builder,  Compare compare,  Object value)
-	 * Object createConditionFindInSet(DataRuntime runtime,  StringBuilder builder,  String column,  Compare compare,  Object value)
-	 * StringBuilder createConditionIn(DataRuntime runtime,  StringBuilder builder,  Compare compare,  Object value)
+	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
+	 * void fillQueryContent(DataRuntime runtime, Run run)
+	 * String mergeFinalQuery(DataRuntime runtime, Run run)
+	 * RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
+	 * Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value)
+	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
 	 * [命令执行]
-	 * DataSet select(DataRuntime runtime,  String random,  boolean system,  String table,  ConfigStore configs,  Run run)
-	 * List<Map<String, Object>> maps(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
-	 * Map<String, Object> map(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
-	 * DataRow sequence(DataRuntime runtime,  String random,  boolean next,  String ... names)
-	 * List<Map<String, Object>> process(DataRuntime runtime,  List<Map<String, Object>> list)
+	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
 
 	/**
@@ -534,8 +534,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.querys(runtime,  random,  prepare,  configs,  conditions);
+	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.querys(runtime, random, prepare, configs, conditions);
 	}
 
 	/**
@@ -547,8 +547,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime,  String random,  Procedure procedure,  PageNavi navi){
-		return super.querys(runtime,  random,  procedure,  navi);
+	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+		return super.querys(runtime, random, procedure, navi);
 	}
 
 	/**
@@ -563,8 +563,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param <T> Entity
 	 */
 	@Override
-	public <T> EntitySet<T> selects(DataRuntime runtime,  String random,  RunPrepare prepare,  Class<T> clazz,  ConfigStore configs,  String ... conditions){
-		return super.selects(runtime,  random,  prepare,  clazz,  configs,  conditions);
+	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return super.selects(runtime, random, prepare, clazz, configs, conditions);
 	}
 
 	/**
@@ -579,8 +579,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 *
 	 */
 	@Override
-	protected  <T> EntitySet<T> select(DataRuntime runtime,  String random,  Class<T> clazz,  String table,  ConfigStore configs,  Run run){
-		return super.select(runtime,  random,  clazz,  table,  configs,  run);
+	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
+		return super.select(runtime, random, clazz, table, configs, run);
 	}
 
 	/**
@@ -595,8 +595,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.maps(runtime,  random,  prepare,  configs,  conditions);
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 	/**
 	 * select[命令合成]<br/> 最终可执行命令<br/>
@@ -607,8 +607,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildQueryRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.buildQueryRun(runtime,  prepare,  configs,  conditions);
+	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.buildQueryRun(runtime, prepare, configs, conditions);
 	}
 
 	/**
@@ -618,8 +618,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQuerySequence(DataRuntime runtime,  boolean next,  String ... names){
-		return super.buildQuerySequence(runtime,  next,  names);
+	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+		return super.buildQuerySequence(runtime, next, names);
 	}
 
 	/**
@@ -628,20 +628,20 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillQueryContent(DataRuntime runtime,  Run run){
-		super.fillQueryContent(runtime,  run);
+	public void fillQueryContent(DataRuntime runtime, Run run){
+		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime,  XMLRun run){
-		super.fillQueryContent(runtime,  run);
+	protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime,  TextRun run){
-		super.fillQueryContent(runtime,  run);
+	protected void fillQueryContent(DataRuntime runtime, TextRun run){
+		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime,  TableRun run){
-		super.fillQueryContent(runtime,  run);
+	protected void fillQueryContent(DataRuntime runtime, TableRun run){
+		super.fillQueryContent(runtime, run);
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -651,8 +651,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return String
 	 */
 	@Override
-	public String mergeFinalQuery(DataRuntime runtime,  Run run) {
-		return super.mergeFinalQuery(runtime,  run);
+	public String mergeFinalQuery(DataRuntime runtime, Run run) {
+		return super.mergeFinalQuery(runtime, run);
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -665,8 +665,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return value 有占位符时返回占位值，没有占位符返回null
 	 */
 	@Override
-	public RunValue createConditionLike(DataRuntime runtime,  StringBuilder builder,  Compare compare,  Object value) {
-		return super.createConditionLike(runtime,  builder,  compare,  value);
+	public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
+		return super.createConditionLike(runtime, builder, compare, value);
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -680,8 +680,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime,  StringBuilder builder,  String column,  Compare compare,  Object value) {
-		return super.createConditionFindInSet(runtime,  builder,  column,  compare,  value);
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) {
+		return super.createConditionFindInSet(runtime, builder, column, compare, value);
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -693,8 +693,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder createConditionIn(DataRuntime runtime,  StringBuilder builder,  Compare compare,  Object value) {
-		return super.createConditionIn(runtime,  builder,  compare,  value);
+	public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
+		return super.createConditionIn(runtime, builder, compare, value);
 	}
 	/**
 	 * select [命令执行]<br/>
@@ -706,8 +706,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime,  String random,  boolean system,  String table,  ConfigStore configs,  Run run) {
-		return super.select(runtime,  random,  system,  table,  configs,  run);
+	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+		return super.select(runtime, random, system, table, configs, run);
 	}
 
 
@@ -719,8 +719,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
-		return super.maps(runtime,  random,  configs,  run);
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+		return super.maps(runtime, random, configs, run);
 	}
 	/**
 	 * select [命令执行]<br/>
@@ -730,8 +730,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return map
 	 */
 	@Override
-	public Map<String, Object> map(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
-		return super.map(runtime,  random,  configs,  run);
+	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+		return super.map(runtime, random, configs, run);
 	}
 
 	/**
@@ -743,8 +743,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return DataRow 保存序列查询结果 以存储过程name作为key
 	 */
 	@Override
-	public DataRow sequence(DataRuntime runtime,  String random,  boolean next,  String ... names){
-		return super.sequence(runtime,  random,  next,  names);
+	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+		return super.sequence(runtime, random, next, names);
 	}
 
 	/**
@@ -755,19 +755,19 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String, Object>> process(DataRuntime runtime,  List<Map<String, Object>> list){
-		return super.process(runtime,  list);
+	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+		return super.process(runtime, list);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long count(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
-	 * String mergeFinalTotal(DataRuntime runtime,  Run run)
+	 * String mergeFinalTotal(DataRuntime runtime, Run run)
 	 * [命令执行]
-	 * long count(DataRuntime runtime,  String random,  Run run)
+	 * long count(DataRuntime runtime, String random, Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * count [调用入口]<br/>
@@ -779,8 +779,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.count(runtime,  random,  prepare,  configs,  conditions);
+	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.count(runtime, random, prepare, configs, conditions);
 	}
 	/**
 	 * count [命令合成]<br/>
@@ -790,8 +790,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return String
 	 */
 	@Override
-	public String mergeFinalTotal(DataRuntime runtime,  Run run){
-		return super.mergeFinalTotal(runtime,  run);
+	public String mergeFinalTotal(DataRuntime runtime, Run run){
+		return super.mergeFinalTotal(runtime, run);
 	}
 
 	/**
@@ -802,16 +802,16 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime,  String random,  Run run){
-		return super.count(runtime,  random,  run);
+	public long count(DataRuntime runtime, String random, Run run){
+		return super.count(runtime, random, run);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													EXISTS
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean exists(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
-	 * String mergeFinalExists(DataRuntime runtime,  Run run)
+	 * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * String mergeFinalExists(DataRuntime runtime, Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -824,12 +824,12 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return boolean
 	 */
 	@Override
-	public boolean exists(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.exists(runtime,  random,  prepare,  configs,  conditions);
+	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.exists(runtime, random, prepare, configs, conditions);
 	}
 	@Override
-	public String mergeFinalExists(DataRuntime runtime,  Run run){
-		return super.mergeFinalExists(runtime,  run);
+	public String mergeFinalExists(DataRuntime runtime, Run run){
+		return super.mergeFinalExists(runtime, run);
 	}
 
 
@@ -837,14 +837,14 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * 													EXECUTE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long execute(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
-	 * long execute(DataRuntime runtime,  String random,  int batch,  ConfigStore configs,  String sql,  List<Object> values)
-	 * boolean execute(DataRuntime runtime,  String random,  Procedure procedure)
+	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
+	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
 	 * [命令合成]
-	 * Run buildExecuteRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
-	 * void fillExecuteContent(DataRuntime runtime,  Run run)
+	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * void fillExecuteContent(DataRuntime runtime, Run run)
 	 * [命令执行]
-	 * long execute(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
+	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -857,13 +857,13 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long execute(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.execute(runtime,  random,   prepare,  configs,  conditions);
+	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.execute(runtime, random, prepare, configs, conditions);
 	}
 
 	@Override
-	public long execute(DataRuntime runtime,  String random,  int batch,  ConfigStore configs,  String cmd,  List<Object> values){
-		return super.execute(runtime,  random,   batch,  configs,  cmd,  values);
+	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
+		return super.execute(runtime, random, batch, configs, cmd, values);
 	}
 	/**
 	 * procedure [命令执行]<br/>
@@ -873,8 +873,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime,  String random,  Procedure procedure){
-		return super.execute(runtime,  random,  procedure);
+	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+		return super.execute(runtime, random, procedure);
 	}
 	/**
 	 * execute [命令合成]<br/>
@@ -886,20 +886,20 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildExecuteRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
-		return super.buildExecuteRun(runtime,  prepare,  configs,  conditions);
+	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return super.buildExecuteRun(runtime, prepare, configs, conditions);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime,  XMLRun run){
-		super.fillExecuteContent(runtime,  run);
+	protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+		super.fillExecuteContent(runtime, run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime,  TextRun run){
-		super.fillExecuteContent(runtime,  run);
+	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+		super.fillExecuteContent(runtime, run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime,  TableRun run){
-		super.fillExecuteContent(runtime,  run);
+	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+		super.fillExecuteContent(runtime, run);
 	}
 
 	/**
@@ -909,8 +909,8 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillExecuteContent(DataRuntime runtime,  Run run){
-		super.fillExecuteContent(runtime,  run);
+	public void fillExecuteContent(DataRuntime runtime, Run run){
+		super.fillExecuteContent(runtime, run);
 	}
 	/**
 	 * execute [命令执行]<br/>
@@ -920,17 +920,17 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return 影响行数
 	 */
 	@Override
-	public long execute(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
-		return super.execute(runtime,  random,   configs,  run);
+	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
+		return super.execute(runtime, random, configs, run);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T> long deletes(DataRuntime runtime,  String random,  int batch,  String table,  ConfigStore configs,  String column,  Collection<T> values)
-	 * long delete(DataRuntime runtime,  String random,  String table,  ConfigStore configs,  Object obj,  String... columns)
-	 * long delete(DataRuntime runtime,  String random,  String table, ConfigStore configs, String... conditions)
+	 * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
+	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
+	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
 	 * long truncate(DataRuntime runtime, String random, String table)
 	 * [命令合成]
 	 * Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns)
@@ -955,7 +955,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		return super.deletes(runtime, random,  batch, table, configs, key, values);
+		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
 	/**
@@ -970,7 +970,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
-		return super.delete(runtime, random,  dest, configs, obj, columns);
+		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
 	/**
@@ -986,7 +986,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
-		return super.delete(runtime, random,  table, configs, conditions);
+		return super.delete(runtime, random, table, configs, conditions);
 	}
 
 	/**
@@ -998,7 +998,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, String table){
-		return super.truncate(runtime, random,  table);
+		return super.truncate(runtime, random, table);
 	}
 
 	/**
@@ -1012,7 +1012,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
-		return super.buildDeleteRun(runtime, dest,  obj, columns);
+		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
 	/**
@@ -2115,7 +2115,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		return super.buildQueryPartitionTablesRun(runtime,  master, tags, name);
+		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
 	}
 	/**
 	 * partition table[命令合成]<br/>
@@ -2128,7 +2128,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
-		return super.buildQueryPartitionTablesRun(runtime,  master, tags);
+		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
 	/**
 	 * partition table[结果集封装]<br/>
@@ -2775,7 +2775,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
 	/**
@@ -2790,7 +2790,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random,  Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
 	/**
@@ -5271,7 +5271,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean drop(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
 
@@ -5285,7 +5285,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception{
+	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
 

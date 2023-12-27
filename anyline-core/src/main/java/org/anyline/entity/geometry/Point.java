@@ -86,9 +86,9 @@ public class Point extends Geometry{
             builder.append(tag());
         }
         builder.append("(");
-        builder.append(NumberUtil.format(x,  "0.###########"));
+        builder.append(NumberUtil.format(x, "0.###########"));
         builder.append(", ");
-        builder.append(NumberUtil.format(y,  "0.###########"));
+        builder.append(NumberUtil.format(y, "0.###########"));
         builder.append(")");
         return builder.toString();
     }
@@ -101,7 +101,7 @@ public class Point extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag,  boolean bracket){
+    public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag){
             builder.append(tag());
@@ -109,15 +109,15 @@ public class Point extends Geometry{
         if(bracket){
             builder.append("(");
         }
-        builder.append(NumberUtil.format(x,  "0.###########"))
+        builder.append(NumberUtil.format(x, "0.###########"))
                 .append(" ")
-                .append(NumberUtil.format(y,  "0.###########"));
+                .append(NumberUtil.format(y, "0.###########"));
         if(bracket){
             builder.append(")");
         }
         return builder.toString();
     }
     public String sql(){
-        return sql(true,  true);
+        return sql(true, true);
     }
 }

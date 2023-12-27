@@ -4152,7 +4152,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean drop(DataRuntime runtime,  Trigger meta) throws Exception;
+	boolean drop(DataRuntime runtime, Trigger meta) throws Exception;
 
 	/**
 	 * trigger[调用入口]<br/>
@@ -4163,7 +4163,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception;
+	boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception;
 
 	/**
 	 * trigger[命令合成]<br/>

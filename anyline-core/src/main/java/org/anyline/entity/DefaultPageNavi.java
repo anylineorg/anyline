@@ -100,13 +100,13 @@ public class DefaultPageNavi implements PageNavi{
 		this.curPage = page;
 		this.pageRows = vol;
 	}
-	public DefaultPageNavi(long totalRow,  long curPage,  int pageRows,  String baseLink) {
+	public DefaultPageNavi(long totalRow, long curPage, int pageRows, String baseLink) {
 		this.totalRow = totalRow;
 		this.curPage = curPage;
 		setPageRows(pageRows);
 		this.baseLink = baseLink;
 	}
-	public DefaultPageNavi(long curPage,  int pageRows,  String baseLink){
+	public DefaultPageNavi(long curPage, int pageRows, String baseLink){
 		this.curPage = curPage;
 		setPageRows(pageRows);
 		this.baseLink = baseLink;
@@ -123,14 +123,14 @@ public class DefaultPageNavi implements PageNavi{
 		return navi; 
 	}
 
-	public PageNavi scope(long first,  long last){
+	public PageNavi scope(long first, long last){
 		setFirstRow(first);
 		setLastRow(last);
 		setCalType(1);
 		setTotalRow(last-first+1);
 		return this;
 	}
-	public PageNavi limit(long offset,  int rows){
+	public PageNavi limit(long offset, int rows){
 		setFirstRow(offset);
 		setLastRow(offset+rows);
 		setCalType(1);
@@ -234,8 +234,8 @@ public class DefaultPageNavi implements PageNavi{
 		this.displayPageLast = displayPageLast; 
 	} 
  
-	@SuppressWarnings({"unchecked",  "rawtypes" })
-	public void addParam(String key,  Object value){
+	@SuppressWarnings({"unchecked", "rawtypes" })
+	public void addParam(String key, Object value){
 		if(null == key || null == value){
 			return; 
 		} 
@@ -251,7 +251,7 @@ public class DefaultPageNavi implements PageNavi{
 		}else{
 			values.add(value); 
 		} 
-		params.put(key,  values);
+		params.put(key, values);
 	} 
 	public Object getParams(String key){
 		Object result = null; 
@@ -274,10 +274,10 @@ public class DefaultPageNavi implements PageNavi{
 		return result; 
 	} 
 	public String getOrderText(boolean require){
-		// return getOrderText(require,  null);
+		// return getOrderText(require, null);
 		return null; 
 	} 
-	public String getOrderText(boolean require,  OrderStore store,  String delimiter){
+	public String getOrderText(boolean require, OrderStore store, String delimiter){
 		String result = ""; 
 		if(null == orders){
 			orders = store; 
@@ -303,16 +303,16 @@ public class DefaultPageNavi implements PageNavi{
 	 * @return PageNavi
 	 */
 	@Override
-	public PageNavi order(Order order,  boolean override){
+	public PageNavi order(Order order, boolean override){
 		if(null == orders){
 			orders = new DefaultOrderStore();
 		} 
-		orders.order(order,  override);
+		orders.order(order, override);
 		return this; 
 	}
 	@Override
 	public PageNavi order(Order order){
-		return order(order,  true);
+		return order(order, true);
 	}
 	/** 
 	 * 设置排序方式 
@@ -322,28 +322,28 @@ public class DefaultPageNavi implements PageNavi{
 	 * @return PageNavi
 	 */
 	@Override
-	public PageNavi order(String order,  Order.TYPE type,  boolean override){
-		return order(new DefaultOrder(order,  type),  override);
+	public PageNavi order(String order, Order.TYPE type, boolean override){
+		return order(new DefaultOrder(order, type), override);
 	}
 	@Override
-	public PageNavi order(String order,  Order.TYPE type){
-		return order(order,  type,  true);
+	public PageNavi order(String order, Order.TYPE type){
+		return order(order, type, true);
 	}
 	@Override
-	public PageNavi order(String order,  String type,  boolean override){
-		return order(new DefaultOrder(order,  type),  override);
+	public PageNavi order(String order, String type, boolean override){
+		return order(new DefaultOrder(order, type), override);
 	}
 	@Override
-	public PageNavi order(String order,  String type){
-		return order(order,  type,  true);
+	public PageNavi order(String order, String type){
+		return order(order, type, true);
 	}
 	@Override
-	public PageNavi order(String order,  boolean override){
-		return order(new DefaultOrder(order),  override);
+	public PageNavi order(String order, boolean override){
+		return order(new DefaultOrder(order), override);
 	}
 	@Override
 	public PageNavi order(String order){
-		return order(order,  true);
+		return order(order, true);
 	}
 
 	/** 
@@ -518,7 +518,7 @@ public class DefaultPageNavi implements PageNavi{
 	 *  @param method get/post
 	 * @return String
 	 */ 
-	public String html(String adapter,  String method){
+	public String html(String adapter, String method){
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
 		if(null == config){
 			config = new PageNaviConfig();
@@ -584,8 +584,8 @@ public class DefaultPageNavi implements PageNavi{
 		navi.append("<div class=\"anyline-navi\">\n");
 		// 数据统计 
 		String statFormat = config.STYLE_STAT_FORMAT;  
-		statFormat = statFormat.replace("${totalRow}",  totalRow+"").replace("${curPage}",  curPage+"").replace("${totalPage}",  totalPage+"");
-		statFormat = statFormat.replace("${total-row}",  totalRow+"").replace("${cur-page}",  curPage+"").replace("${total-page}",  totalPage+"");
+		statFormat = statFormat.replace("${totalRow}", totalRow+"").replace("${curPage}", curPage+"").replace("${totalPage}", totalPage+"");
+		statFormat = statFormat.replace("${total-row}", totalRow+"").replace("${cur-page}", curPage+"").replace("${total-page}", totalPage+"");
 		if(showStat){
 			stat.append(statFormat).append("\n"); 
 		} 
@@ -602,8 +602,8 @@ public class DefaultPageNavi implements PageNavi{
 		if(totalPage - curPage < range/2){
 			fr = totalPage - range; 
 		} 
-		fr = NumberUtil.max(fr,  1);
-		to = NumberUtil.min(to,  totalPage);
+		fr = NumberUtil.max(fr, 1);
+		to = NumberUtil.min(to, totalPage);
 		 
 		if(type ==0){// 下标导航
 			// 每页多少条 
@@ -612,7 +612,7 @@ public class DefaultPageNavi implements PageNavi{
 			} 
 			if(config.VAR_CLIENT_SET_VOL_ENABLE){
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){
-					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}",  configVarKey).replace("{navi-conf-key}",  flag));
+					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
 				}else{
 					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(", ");
 					String clazz = config.VAR_PAGE_VOL_CLASS; 
@@ -622,7 +622,7 @@ public class DefaultPageNavi implements PageNavi{
 					vol.append("<select class='").append(clazz).append("' id='navi_val_set_").append(flag).append("' onchange='_navi_change_vol(").append(configVarKey).append(")'>"); 
 					for(String num:nums){
 						vol.append("<option value='").append(num).append("' id='navi_val_set_").append(flag).append("_item_").append(num).append("'"); 
-						if(pageRows == BasicUtil.parseInt(num,  0)){
+						if(pageRows == BasicUtil.parseInt(num, 0)){
 							vol.append(" selected=\"selected\""); 
 						} 
 						vol.append(">").append(num).append(" 条/页</option>\n"); 
@@ -636,7 +636,7 @@ public class DefaultPageNavi implements PageNavi{
 			// 1 .. 3 4 5 6 7 8 .. 10 
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(index,  method, "navi-button navi-prev-button",  config.STYLE_BUTTON_PREV,  NumberUtil.max(curPage-1, 1),  configVarKey);
+					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1, 1), configVarKey);
 				} 
 				// 下标 
 				if(config.VAR_SHOW_INDEX){
@@ -647,43 +647,43 @@ public class DefaultPageNavi implements PageNavi{
 						to = totalPage-1; 
 					} 
 					index.append("<div class='navi-num-border'>\n"); 
-					createPageTag(index,  method,  "navi-num-item",  "1",  1,  configVarKey);
+					createPageTag(index, method, "navi-num-item", "1", 1, configVarKey);
 					if(fr > 2){
-						createPageTag(index,  method,  "navi-num-item",  config.STYLE_INDEX_ELLIPSIS,  0,  configVarKey);
+						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
 					for(long i=fr; i<=to; i++){
-						createPageTag(index,  method,  "navi-num-item",  i + "",  i,  configVarKey);
+						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					if(to < totalPage-1){
-						createPageTag(index,  method,  "navi-num-item",  config.STYLE_INDEX_ELLIPSIS,  0,  configVarKey);
+						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
 					if(totalPage >1){//不是只有一页 
-						createPageTag(index,  method,  "navi-num-item",  totalPage+"",  totalPage,  configVarKey);
+						createPageTag(index, method, "navi-num-item", totalPage+"", totalPage, configVarKey);
 					} 
 					index.append("</div>\n"); 
 				} 
 				// 下一页 最后页 
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(index,  method,  "navi-button navi-next-button",  config.STYLE_BUTTON_NEXT,  (int)NumberUtil.min(curPage+1,  totalPage),  configVarKey);
+					createPageTag(index, method, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 				} 
 			}else{
 				// 上一页  第一页 
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(index,  method,  "navi-button navi-first-button",  config.STYLE_BUTTON_FIRST,  1,  configVarKey);
-					createPageTag(index,  method,  "navi-button navi-prev-button",  config.STYLE_BUTTON_PREV,  NumberUtil.max(curPage-1, 1),  configVarKey);
+					createPageTag(index, method, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
+					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1, 1), configVarKey);
 				} 
 				// 下标 
 				if(config.VAR_SHOW_INDEX){
 					index.append("<div class='navi-num-border'>\n"); 
 					for(long i=fr; i<=to; i++){
-						createPageTag(index,  method,  "navi-num-item",  i + "",  i,  configVarKey);
+						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					index.append("</div>\n"); 
 				} 
 				// 下一页 最后页 
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(index,  method,  "navi-button navi-next-button",  config.STYLE_BUTTON_NEXT,  (int)NumberUtil.min(curPage+1,  totalPage),  configVarKey);
-					createPageTag(index,  method,  "navi-button navi-last-button",  config.STYLE_BUTTON_LAST,  totalPage,  configVarKey);
+					createPageTag(index, method, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
+					createPageTag(index, method, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
 				} 
 			} 
 			// VOL位置:下标之后 
@@ -707,7 +707,7 @@ public class DefaultPageNavi implements PageNavi{
 		}else if(type == 1){
 			// 加载更多
 			if(curPage+1 <= totalPage){
-				createPageTag(index,  method,  "navi-more-button",  loadMoreFormat,  (int)NumberUtil.min(curPage+1,  totalPage+1),  configVarKey);
+				createPageTag(index, method, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
 			}else{
 				index.append(config.STYLE_PAGE_OVER);
 			}
@@ -718,15 +718,15 @@ public class DefaultPageNavi implements PageNavi{
 		if(null == layout_html){
 			layout_html = "${navi-stat}${navi-index}${navi-vol}${navi-jump}";
 		} 
-		layout_html = layout_html.replace("${stat}",  stat.toString());
-		layout_html = layout_html.replace("${index}",  index.toString());
-		layout_html = layout_html.replace("${vol}",  vol.toString());
-		layout_html = layout_html.replace("${jump}",  jump.toString());
+		layout_html = layout_html.replace("${stat}", stat.toString());
+		layout_html = layout_html.replace("${index}", index.toString());
+		layout_html = layout_html.replace("${vol}", vol.toString());
+		layout_html = layout_html.replace("${jump}", jump.toString());
  
-		layout_html = layout_html.replace("${navi-stat}",  stat.toString());
-		layout_html = layout_html.replace("${navi-index}",  index.toString());
-		layout_html = layout_html.replace("${navi-vol}",  vol.toString());
-		layout_html = layout_html.replace("${navi-jump}",  jump.toString());
+		layout_html = layout_html.replace("${navi-stat}", stat.toString());
+		layout_html = layout_html.replace("${navi-index}", index.toString());
+		layout_html = layout_html.replace("${navi-vol}", vol.toString());
+		layout_html = layout_html.replace("${navi-jump}", jump.toString());
 		navi.append(layout_html); 
 		navi.append("</div>"); 
  
@@ -747,7 +747,7 @@ public class DefaultPageNavi implements PageNavi{
 	 * @param page 跳到第几页 
 	 * @param configFlag  configFlag
 	 */ 
-	private void createPageTag(StringBuilder builder,  String method,  String clazz,  String tag,  long page,  String configFlag){
+	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, long page, String configFlag){
 		boolean get = false;
 		if("get".equalsIgnoreCase(method)){
 			get = true;
@@ -809,7 +809,7 @@ public class DefaultPageNavi implements PageNavi{
 		return html; 
 	} 
 	 
-	public String createHidParam(String name,  Object values) {
+	public String createHidParam(String name, Object values) {
 		String html = ""; 
 		if(null == values){
 			html = "<input type='hidden' name='"+name+"' value=''>\n"; 
@@ -827,26 +827,26 @@ public class DefaultPageNavi implements PageNavi{
 	}
 	@Transient
 	public String getHtml(){
-		return html("html",  "get");
+		return html("html", "get");
 	}
 	@Transient
 	public String html(){
-		return html("html",  "get");
+		return html("html", "get");
 	}
 	@Transient
 	public String html(String adapter){
-		return html(adapter,  "get");
+		return html(adapter, "get");
 	}
 	@Transient
 	public String getForm(){
-		return html("html",  "post");
+		return html("html", "post");
 	}
 	@Transient
 	public String form(){
-		return html("html",  "post");
+		return html("html", "post");
 	}
 	@Transient
 	public String ajax(){
-		return html("ajax",  "post");
+		return html("ajax", "post");
 	}
 }

@@ -45,7 +45,7 @@ public interface Run {
 	 * @param compare 			比较方式
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run setConditionValue(EMPTY_VALUE_SWITCH swt,  Compare compare,  String prefix,  String variable,  Object value);
+	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
 	void setGroupStore(GroupStore groups) ;
 	GroupStore getGroupStore() ; 
 	Run group(String group);
@@ -68,7 +68,7 @@ public interface Run {
 	 * @param compare 比较方式 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run addCondition(EMPTY_VALUE_SWITCH swt,  Compare compare,  String prefix,  String var,  Object value);
+	Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value);
 	Run setConditionChain(ConditionChain chain);
 
 	/**
@@ -96,7 +96,7 @@ public interface Run {
 	 * @param split 遇到集合/数组类型是否拆分处理
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	RunValue addValues(Compare compare,  Column column,  Object obj,  boolean split);
+	RunValue addValues(Compare compare, Column column, Object obj, boolean split);
 	Run addValue(RunValue value);
 	Run addOrders(OrderStore orderStore);
 	Run addOrder(Order order);
@@ -107,13 +107,13 @@ public interface Run {
 	String getDataSource();
 	Run setPrepare(RunPrepare prepare) ;
 	Run setInsertColumns(List<String> keys);
-	Run setInsertColumns(LinkedHashMap<String,  Column> columns);
+	Run setInsertColumns(LinkedHashMap<String, Column> columns);
 	List<String> getInsertColumns();
-	LinkedHashMap<String,  Column> getInsertColumns(boolean metadata);
+	LinkedHashMap<String, Column> getInsertColumns(boolean metadata);
 	Run setUpdateColumns(List<String> keys);
-	Run setUpdateColumns(LinkedHashMap<String,  Column> columns);
+	Run setUpdateColumns(LinkedHashMap<String, Column> columns);
 	List<String> getUpdateColumns();
-	LinkedHashMap<String,  Column> getUpdateColumns(boolean metadata);
+	LinkedHashMap<String, Column> getUpdateColumns(boolean metadata);
 	String getBaseQuery(boolean placeholder) ;
 	default String getBaseQuery() {
 		return getBaseQuery(true);
@@ -174,7 +174,7 @@ public interface Run {
 	//1-DataRow 2-Entity
 	int getFrom();
 	void setFrom(int from);
-	boolean isSetValue(String condition,  String variable);
+	boolean isSetValue(String condition, String variable);
 	boolean isSetValue(String variable);
 	Variable getVariable(String var);
 
@@ -191,7 +191,7 @@ public interface Run {
 	Run setExcludeColumns(String... columns);
 
 	void setValue(Object value);
-	void setValues(String key,  List<Object> values);
+	void setValues(String key, List<Object> values);
 	Object getValue();
 	void setBatch(int batch);
 	int getBatch();
@@ -200,6 +200,6 @@ public interface Run {
 	String action();
 	void action(String action);
 
-	String log(ACTION.DML action,  boolean placeholder);
+	String log(ACTION.DML action, boolean placeholder);
 
 }

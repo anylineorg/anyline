@@ -29,10 +29,10 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //    ,,oracle,
         BINARY_DOUBLE           (StandardColumnType.DECIMAL                ), //    ,,oracle,
         BINARY_FLOAT            (StandardColumnType.FLOAT           ), //    ,,oracle,
-        BIGINT                  (StandardColumnType.BIGINT                ), //mysql,,   ,mssql,
+        BIGINT                  (StandardColumnType.BIGINT                ), //mysql,, ,mssql,
         BIGSERIAL               (StandardColumnType.BIGINT                ), //    ,pg,
-        BINARY                  (StandardColumnType.VARBINARY                ), //mysql,,   ,mssql,
-        BIT                     (StandardColumnType.TINYINT                   ), //mysql,pg,   ,mssql,
+        BINARY                  (StandardColumnType.VARBINARY                ), //mysql,, ,mssql,
+        BIT                     (StandardColumnType.TINYINT                   ), //mysql,pg, ,mssql,
         BLOB                    (StandardColumnType.VARBINARY                  ), //mysql,,oracle, ,sqlite
         BOOL                    (StandardColumnType.TINYINT                   ), //    ,pg
         BOX                     (StandardColumnType.ILLEGAL               ), //    ,pg
@@ -42,23 +42,23 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         CIRCLE                  (StandardColumnType.ILLEGAL               ), //      pg
         CLOB                    (StandardColumnType.VARCHAR                  ), //    ,,oracle
         DATE                    (StandardColumnType.TIMESTAMP                  ), //mysql,pg,oracle,mssql
-        DATETIME                (StandardColumnType.TIMESTAMP              ), //mysql,,   ,mssql
-        DATETIME2               (StandardColumnType.TIMESTAMP             ), //mysql,,   ,mssql
-        DATETIMEOFFSET          (StandardColumnType.TIMESTAMP        ), //mysql,,   ,mssql
+        DATETIME                (StandardColumnType.TIMESTAMP              ), //mysql,, ,mssql
+        DATETIME2               (StandardColumnType.TIMESTAMP             ), //mysql,, ,mssql
+        DATETIMEOFFSET          (StandardColumnType.TIMESTAMP        ), //mysql,, ,mssql
         DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql,pg,oracle,mssql
         DOUBLE                  (StandardColumnType.DECIMAL                ), //mysql,
         ENUM                    (StandardColumnType.ILLEGAL                  ), //mysql,
         FLOAT                   (StandardColumnType.FLOAT           ), //mysql,,oracle,mssql
         FLOAT4                  (StandardColumnType.FLOAT           ), //    ,pg
         FLOAT8                  (StandardColumnType.FLOAT           ), //    ,pg
-        GEOGRAPHY               (StandardColumnType.GEOGRAPHY               ), //    ,,   ,mssql
+        GEOGRAPHY               (StandardColumnType.GEOGRAPHY               ), //    ,, ,mssql
         GEOMETRY                (StandardColumnType.GEOGRAPHY              ), //mysql
         GEOMETRYCOLLECTION      (StandardColumnType.GEOGRAPHY    ), //mysql
-        HIERARCHYID             (StandardColumnType.ILLEGAL               ), //    ,,   ,mssql
-        IMAGE                   (StandardColumnType.VARBINARY                  ), //    ,,   ,mssql
+        HIERARCHYID             (StandardColumnType.ILLEGAL               ), //    ,, ,mssql
+        IMAGE                   (StandardColumnType.VARBINARY                  ), //    ,, ,mssql
         INET                    (StandardColumnType.ILLEGAL               ), //    ,pg
         INTERVAL                (StandardColumnType.ILLEGAL               ), //    ,pg
-        INT                     (StandardColumnType.INTEGER                   ), //mysql,,   ,mssql,
+        INT                     (StandardColumnType.INTEGER                   ), //mysql,, ,mssql,
         INT2                    (StandardColumnType.INTEGER                   ), //    ,pg
         INT4                    (StandardColumnType.INTEGER                   ), //    ,pg
         INT8                    (StandardColumnType.BIGINT                ), //    ,pg
@@ -72,12 +72,12 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         LONGTEXT                (StandardColumnType.VARCHAR              ), //mysql
         LSEG                    (StandardColumnType.ILLEGAL               ), //    ,pg
         MACADDR                 (StandardColumnType.ILLEGAL               ), //    ,pg
-        MONEY                   (StandardColumnType.DECIMAL               ), //    ,pg,   ,mssql
+        MONEY                   (StandardColumnType.DECIMAL               ), //    ,pg, ,mssql
         NUMBER                  (StandardColumnType.DECIMAL               ), //    ,,oracle
         NCHAR                   (StandardColumnType.VARCHAR               ), //    ,,oracle,mssql
         NCLOB                   (StandardColumnType.VARCHAR                  ), //    ,,oracle
-        NTEXT                   (StandardColumnType.VARCHAR                  ), //    ,,   ,mssql
-        NVARCHAR                (StandardColumnType.VARCHAR               ), //    ,,   ,mssql
+        NTEXT                   (StandardColumnType.VARCHAR                  ), //    ,, ,mssql
+        NVARCHAR                (StandardColumnType.VARCHAR               ), //    ,, ,mssql
         NVARCHAR2               (StandardColumnType.VARCHAR               ), //    ,,oracle
         PATH                    (StandardColumnType.ILLEGAL               ), //    ,pg
         MEDIUMBLOB              (StandardColumnType.GEOGRAPHY            ), //mysql,
@@ -87,11 +87,11 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         MULTILINESTRING         (StandardColumnType.GEOGRAPHY       ), //mysql,
         MULTIPOINT              (StandardColumnType.GEOGRAPHY            ), //mysql,
         MULTIPOLYGON            (StandardColumnType.GEOGRAPHY          ), //mysql,
-        NUMERIC                 (StandardColumnType.DECIMAL               ), //mysql,,    ,mssql,sqlite
+        NUMERIC                 (StandardColumnType.DECIMAL               ), //mysql,, ,mssql,sqlite
         POINT                   (StandardColumnType.GEOGRAPHY_POINT                 ), //mysql,pg
         GEOGRAPHY_POINT         (StandardColumnType.GEOGRAPHY_POINT                 ), //voltdb
         POLYGON                 (StandardColumnType.POLYGON               ), //mysql,pg
-        REAL                    (StandardColumnType.FLOAT                  ), //mysql,,   ,mssql,sqlite
+        REAL                    (StandardColumnType.FLOAT                  ), //mysql,, ,mssql,sqlite
         RAW                     (StandardColumnType.ILLEGAL               ), //    ,,oracle
         ROWID                   (StandardColumnType.ILLEGAL               ), //    ,,oracle
         SERIAL                  (StandardColumnType.TINYINT               ), //    ,pg,
@@ -99,14 +99,14 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         SERIAL4                 (StandardColumnType.INTEGER                   ), //    ,pg,
         SERIAL8                 (StandardColumnType.BIGINT                ), //    ,pg,
         SET                     (StandardColumnType.ILLEGAL                   ), //mysql,
-        SMALLDATETIME           (StandardColumnType.TIMESTAMP              ), //    ,,   ,mssql
-        SMALLMONEY              (StandardColumnType.DECIMAL               ), //    ,,   ,mssql
+        SMALLDATETIME           (StandardColumnType.TIMESTAMP              ), //    ,, ,mssql
+        SMALLMONEY              (StandardColumnType.DECIMAL               ), //    ,, ,mssql
         SMALLINT                (StandardColumnType.TINYINT               ), //mysql,
         SMALLSERIAL             (StandardColumnType.TINYINT               ), //    ,pg,
-        SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //    ,,   ,mssql
-        SYSNAME                 (StandardColumnType.ILLEGAL               ), //    ,,   ,mssql
-        TEXT                    (StandardColumnType.VARCHAR                  ), //mysql,pg,   ,mssql,sqlite
-        TIME                    (StandardColumnType.TIMESTAMP                  ), //mysql,pg,   ,mssql
+        SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //    ,, ,mssql
+        SYSNAME                 (StandardColumnType.ILLEGAL               ), //    ,, ,mssql
+        TEXT                    (StandardColumnType.VARCHAR                  ), //mysql,pg, ,mssql,sqlite
+        TIME                    (StandardColumnType.TIMESTAMP                  ), //mysql,pg, ,mssql
         TIMEZ                   (StandardColumnType.TIMESTAMP                  ), //    ,pg
         TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql,pg,oracle,mssql
         TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    ,pg
@@ -119,9 +119,9 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         UROWID                  (StandardColumnType.ILLEGAL               ), //    ,,oracle
         VARBIT                  (StandardColumnType.VARBINARY             ), //    ,pg
         TINYBLOB                (StandardColumnType.VARBINARY              ), //mysql,
-        TINYINT                 (StandardColumnType.TINYINT               ), //mysql,,   ,mssql
+        TINYINT                 (StandardColumnType.TINYINT               ), //mysql,, ,mssql
         TINYTEXT                (StandardColumnType.VARCHAR              ), //mysql,
-        VARBINARY               (StandardColumnType.VARBINARY             ), //mysql,,   ,mssql
+        VARBINARY               (StandardColumnType.VARBINARY             ), //mysql,, ,mssql
         VARCHAR                 (StandardColumnType.VARCHAR               ), //mysql,pg,oracle,mssql
         VARCHAR2                (StandardColumnType.VARCHAR               ), //    ,,oracle,
         XML                     (StandardColumnType.VARCHAR                  ), //    ,pg，     ,mssql

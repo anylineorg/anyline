@@ -116,7 +116,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
      * @param reference 依赖列
      * @return ForeignKey
      */
-    public ForeignKey addColumn(String column,  Column reference){
+    public ForeignKey addColumn(String column, Column reference){
         if(setmap && null != update){
             update.addColumn(column, reference);
             return this;

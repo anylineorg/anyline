@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (DataRuntime runtime,  String random,  the "License"){return SWITCH.CONTINUE;}
+ * Licensed under the Apache License, Version 2.0 (DataRuntime runtime, String random, the "License"){return SWITCH.CONTINUE;}
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
@@ -18,15 +18,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -59,7 +59,7 @@ public interface DMListener {
      * @param conditions  简单过滤条件
      * @return SWITCH
      */
-    default SWITCH prepareQuery(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){return SWITCH.CONTINUE;}
+    default SWITCH prepareQuery(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){return SWITCH.CONTINUE;}
 
 
     /**
@@ -71,7 +71,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return SWITCH
      */
-    default SWITCH beforeTotal(DataRuntime runtime,  String random,  Run run){return SWITCH.CONTINUE;}
+    default SWITCH beforeTotal(DataRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
     /**
      * 统计总记录数之后调用
      *
@@ -84,10 +84,10 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterTotal(DataRuntime runtime,  String random,  Run run,  boolean success,  long total,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterTotal(DataRuntime runtime, String random, Run run, boolean success, long total, long millis){return SWITCH.CONTINUE;}
     /**
      * 查询之前调用<br/>
-     * 不满足查询条件的不会走到这一步(DataRuntime runtime,  String random,  如必须参数未提供)
+     * 不满足查询条件的不会走到这一步(DataRuntime runtime, String random, 如必须参数未提供)
      * 只有确定执行查询时才会到这一步，到了这一步已经不能修改查询条件<br/>
      * 要修改查询条件可以在prepareQuery实现
      
@@ -97,9 +97,9 @@ public interface DMListener {
      * @param total 上一步合计的总行数
      * @return SWITCH
      */
-    default SWITCH beforeQuery(DataRuntime runtime,  String random,  Run run,  long total){return SWITCH.CONTINUE;}
+    default SWITCH beforeQuery(DataRuntime runtime, String random, Run run, long total){return SWITCH.CONTINUE;}
     /**
-     * 查询之后调用(DataRuntime runtime,  String random,  调用service.map或service.maps)
+     * 查询之后调用(DataRuntime runtime, String random, 调用service.map或service.maps)
      *
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
@@ -110,10 +110,10 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterQuery(DataRuntime runtime,  String random,  Run run,  boolean success,  List<?>  maps,  long millis){return SWITCH.CONTINUE;}
-    default SWITCH afterQuery(DataRuntime runtime,  String random,  Run run,  boolean success,  EntitySet<?> maps,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, List<?>  maps, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, EntitySet<?> maps, long millis){return SWITCH.CONTINUE;}
     /**
-     * 查询之后调用(DataRuntime runtime,  String random,  调用service.query或service.querys)
+     * 查询之后调用(DataRuntime runtime, String random, 调用service.query或service.querys)
      *
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
@@ -124,7 +124,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterQuery(DataRuntime runtime,  String random,  Run run,  boolean success,  DataSet set,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterQuery(DataRuntime runtime, String random, Run run, boolean success, DataSet set, long millis){return SWITCH.CONTINUE;}
     /**
      * count之前调用
      *
@@ -134,7 +134,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return SWITCH
      */
-    default SWITCH beforeCount(DataRuntime runtime,  String random,  Run run){return SWITCH.CONTINUE;}
+    default SWITCH beforeCount(DataRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
     /**
      * count之后调用
      *
@@ -147,7 +147,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterCount(DataRuntime runtime,  String random,  Run run,  boolean success,  long result,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterCount(DataRuntime runtime, String random, Run run, boolean success, long result, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 判断是否存在之前调用
@@ -158,7 +158,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return SWITCH
      */
-    default SWITCH beforeExists(DataRuntime runtime,  String random,  Run run){return SWITCH.CONTINUE;}
+    default SWITCH beforeExists(DataRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
     /**
      * 判断是否存在之后调用
      *
@@ -171,7 +171,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterExists(DataRuntime runtime,  String random,  Run run,  boolean success,  boolean exists,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterExists(DataRuntime runtime, String random, Run run, boolean success, boolean exists, long millis){return SWITCH.CONTINUE;}
 
 
     /**
@@ -187,7 +187,7 @@ public interface DMListener {
      * @return 如果返回false 则中断执行
      * @return SWITCH
      */
-    default SWITCH  prepareUpdate(DataRuntime runtime,  String random,  int batch,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareUpdate(DataRuntime runtime, String random, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){return SWITCH.CONTINUE;}
 
 
     /**
@@ -203,7 +203,7 @@ public interface DMListener {
      * @return 是否执行  如果返回false 将不执行更新
      * @return SWITCH
      */
-    default SWITCH  beforeUpdate(DataRuntime runtime,  String random,  Run run,  String dest,  Object obj,  List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  beforeUpdate(DataRuntime runtime, String random, Run run, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 更新之前调用
      *
@@ -220,7 +220,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterUpdate(DataRuntime runtime,  String random,  Run run,  long count,  String dest,  Object obj,  List<String> columns,  boolean success,  long qty,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count, String dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
 
     /**
@@ -234,7 +234,7 @@ public interface DMListener {
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return SWITCH
      */
-    default SWITCH  prepareInsert(DataRuntime runtime,  String random,  int batch,  String dest,  Object obj,  List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareInsert(DataRuntime runtime, String random, int batch, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 创建insert sql之前调用
      *
@@ -247,7 +247,7 @@ public interface DMListener {
      * @param columns 需要插入的列
      * @return SWITCH
      */
-    default SWITCH  beforeInsert(DataRuntime runtime,  String random,  Run run,  String dest,  Object obj,  List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  beforeInsert(DataRuntime runtime, String random, Run run, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
 
     /**
      * 插入之后调用
@@ -265,7 +265,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterInsert(DataRuntime runtime,  String random,  Run run,  long count,  String dest,  Object obj,  List<String> columns,  boolean success,  long qty,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterInsert(DataRuntime runtime, String random, Run run, long count, String dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL之前调用
@@ -276,7 +276,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return SWITCH
      */
-    default SWITCH  beforeExecute(DataRuntime runtime,  String random,  Run run){return SWITCH.CONTINUE;}
+    default SWITCH  beforeExecute(DataRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL之后调用
@@ -290,7 +290,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterExecute(DataRuntime runtime,  String random,  Run run,  boolean success,  long qty,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterExecute(DataRuntime runtime, String random, Run run, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行存储过程之前调用
@@ -302,8 +302,8 @@ public interface DMListener {
      * @return 是否执行 如果返回false装不执行存储过程
      * @return SWITCH
      */
-    default SWITCH  prepareExecute(DataRuntime runtime,  String random,  Procedure procedure){return SWITCH.CONTINUE;}
-    default SWITCH  beforeExecute(DataRuntime runtime,  String random,  Procedure procedure){return SWITCH.CONTINUE;}
+    default SWITCH  prepareExecute(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
+    default SWITCH  beforeExecute(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
 
     /**
      * 执行存储过程之后调用
@@ -316,7 +316,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterExecute(DataRuntime runtime,  String random,  Procedure procedure,  boolean success,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterExecute(DataRuntime runtime, String random, Procedure procedure, boolean success, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 查询存过程之前调用
@@ -327,7 +327,7 @@ public interface DMListener {
      * @param procedure 存储过程
      * @return SWITCH
      */
-    default SWITCH beforeQuery(DataRuntime runtime,  String random,  Procedure procedure){return SWITCH.CONTINUE;}
+    default SWITCH beforeQuery(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
 
     /**
      * 查询存储过程之后调用
@@ -341,13 +341,13 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterQuery(DataRuntime runtime,  String random,  Procedure procedure,  boolean success,  DataSet set,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterQuery(DataRuntime runtime, String random, Procedure procedure, boolean success, DataSet set, long millis){return SWITCH.CONTINUE;}
 
     /**
-     * 创建删除SQL前调用(DataRuntime runtime,  String random,  根据Entity/DataRow), 修改删除条件可以在这一步实现<br/>
+     * 创建删除SQL前调用(DataRuntime runtime, String random, 根据Entity/DataRow), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
-     * service.delete(DataRuntime runtime,  String random,  DataRow/Entity){return SWITCH.CONTINUE;}
+     * service.delete(DataRuntime runtime, String random, DataRow/Entity){return SWITCH.CONTINUE;}
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
@@ -356,12 +356,12 @@ public interface DMListener {
      * @param columns 删除条件的我
      * @return SWITCH
      */
-    default SWITCH  prepareDelete(DataRuntime runtime,  String random,  int batch,  String dest,  Object obj,  String ... columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
     /**
-     * 创建删除SQL前调用(DataRuntime runtime,  String random,  根据条件), 修改删除条件可以在这一步实现<br/>
+     * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
-     * service.delete(DataRuntime runtime,  String random,  "CRM_USER",  "ID",  "1",  "2",  "3"){return SWITCH.CONTINUE;}
+     * service.delete(DataRuntime runtime, String random, "CRM_USER", "ID", "1", "2", "3"){return SWITCH.CONTINUE;}
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
@@ -370,7 +370,7 @@ public interface DMListener {
      * @param values values
      * @return SWITCH
      */
-    default SWITCH  prepareDelete(DataRuntime runtime,  String random,  int batch,  String table,  String key,  Object values){return SWITCH.CONTINUE;}
+    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String table, String key, Object values){return SWITCH.CONTINUE;}
     /**
      * 执行删除前调用
      *
@@ -380,7 +380,7 @@ public interface DMListener {
      * @param run 包含最终执行的SQL以及占位参数值
      * @return SWITCH
      */
-    default SWITCH  beforeDelete(DataRuntime runtime,  String random,  Run run){return SWITCH.CONTINUE;}
+    default SWITCH  beforeDelete(DataRuntime runtime, String random, Run run){return SWITCH.CONTINUE;}
 
     /**
      * 执行删除后调用
@@ -394,7 +394,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterDelete(DataRuntime runtime,  String random,  Run run,  boolean success,  long qty,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterDelete(DataRuntime runtime, String random, Run run, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL时间超限时触发
@@ -411,5 +411,5 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH slow(DataRuntime runtime,  String random,  ACTION.DML action,  Run run,  String sql,  List inputs,  List outputs,  boolean success,  Object result,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH slow(DataRuntime runtime, String random, ACTION.DML action, Run run, String sql, List inputs, List outputs, boolean success, Object result, long millis){return SWITCH.CONTINUE;}
 }

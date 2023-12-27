@@ -88,14 +88,14 @@ public class ClassUtil {
 	public static List<Class<?>> list(String packageName, boolean recursion, Class<?> ... bases){
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		try {
-			List<String> names = getClassNames(packageName,  recursion);
+			List<String> names = getClassNames(packageName, recursion);
 			for (String name : names) {
 				try {
 					if(name.startsWith("java")){
 						continue;
 					}
 					Class<?> c = Class.forName(name);
-					if (isInSub(c,  bases)) {
+					if (isInSub(c, bases)) {
 						list.add(c);
 					}
 				}catch (NoClassDefFoundError e){
@@ -109,14 +109,14 @@ public class ClassUtil {
 	}
 
 
-	public static List<String> names(String packageName,  boolean recursion,  Class<?> ... bases){
+	public static List<String> names(String packageName, boolean recursion, Class<?> ... bases){
 		List<String> list = new ArrayList<>();
 		try {
-			List<String> names = getClassNames(packageName,  recursion);
+			List<String> names = getClassNames(packageName, recursion);
 			for (String name : names) {
 				try {
 					Class<?> c = Class.forName(name);
-					if (isInSub(c,  bases)) {
+					if (isInSub(c, bases)) {
 						list.add(name);
 					}
 				} catch (Exception e) {
@@ -134,7 +134,7 @@ public class ClassUtil {
 	 * @param bases  父类或接口
 	 * @return boolean
 	 */
-	public static boolean isInSub(Class<?> clazz,  Class<?> ... bases){
+	public static boolean isInSub(Class<?> clazz, Class<?> ... bases){
 		if(null == bases || bases.length == 0){
 			return true;
 		}
@@ -151,7 +151,7 @@ public class ClassUtil {
 	 * @param bases  bases
 	 * @return boolean
 	 */
-	public static boolean isAllSub(Class<?> c,  Class<?> ... bases){
+	public static boolean isAllSub(Class<?> c, Class<?> ... bases){
 		if(null == bases || bases.length == 0){
 			return true;
 		}
@@ -171,11 +171,11 @@ public class ClassUtil {
 	 * @return 类的完整名称
 	 * @throws UnsupportedEncodingException
 	 */
-	private static List<String> getClassNames(String packageName,  boolean childPackage) throws IOException {
+	private static List<String> getClassNames(String packageName, boolean childPackage) throws IOException {
 		List<String> fileNames = new ArrayList<>();
 		log.warn("[正在加载本地类][package:{}]", packageName);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		String packagePath = packageName.replace(".",  "/");
+		String packagePath = packageName.replace(".", "/");
 		Enumeration<URL> urls = loader.getResources(packagePath);
 		while (urls.hasMoreElements()) {
 			URL url = urls.nextElement();
@@ -183,9 +183,9 @@ public class ClassUtil {
 				continue;
 			String type = url.getProtocol();
 			if (type.equals("file")) {
-				fileNames.addAll(getClassNameListFromFile(url.getPath(),  childPackage));
+				fileNames.addAll(getClassNameListFromFile(url.getPath(), childPackage));
 			} else if (type.equals("jar")) {
-				fileNames.addAll(getClassNameListFromJar(url.getPath(),  childPackage));
+				fileNames.addAll(getClassNameListFromJar(url.getPath(), childPackage));
 			}
 		}
 		return fileNames;
@@ -200,7 +200,7 @@ public class ClassUtil {
 	 * @return 类的完整名称
 	 * @throws UnsupportedEncodingException
 	 */
-	private static List<String> getClassNameListFromFile(String filePath,  boolean childPackage) throws UnsupportedEncodingException {
+	private static List<String> getClassNameListFromFile(String filePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> myClassName = new ArrayList<>();
 		// filePath = UrlDecode.getURLDecode(filePath);
 		File file = new File(filePath);
@@ -210,7 +210,7 @@ public class ClassUtil {
 		for (File childFile : childFiles) {
 			if (childFile.isDirectory()) {
 				if (childPackage) {
-					myClassName.addAll(getClassNameListFromFile(childFile.getPath(),  childPackage));
+					myClassName.addAll(getClassNameListFromFile(childFile.getPath(), childPackage));
 				}
 			} else {
 				String childFilePath = childFile.getPath();
@@ -235,7 +235,7 @@ public class ClassUtil {
 	 * @return 类的完整名称
 	 * @throws UnsupportedEncodingException
 	 */
-	private static List<String> getClassNameListFromJar(String jarPath,  boolean childPackage) throws UnsupportedEncodingException {
+	private static List<String> getClassNameListFromJar(String jarPath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> names = new ArrayList<>();
 		String[] jarInfo = jarPath.split("!");
 		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
@@ -249,19 +249,19 @@ public class ClassUtil {
 				if (entryName.endsWith(".class") && !entryName.contains("$")) {
 					if (childPackage) {
 						if (entryName.startsWith(packagePath)) {
-							entryName = entryName.replace("/",  ".").substring(0,  entryName.lastIndexOf("."));
+							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
 							names.add(entryName);
 						}
 					} else {
 						int index = entryName.lastIndexOf("/");
 						String myPackagePath;
 						if (index != -1) {
-							myPackagePath = entryName.substring(0,  index);
+							myPackagePath = entryName.substring(0, index);
 						} else {
 							myPackagePath = entryName;
 						}
 						if (myPackagePath.equals(packagePath)) {
-							entryName = entryName.replace("/",  ".").substring(0,  entryName.lastIndexOf("."));
+							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
 							names.add(entryName);
 						}
 					}
@@ -281,7 +281,7 @@ public class ClassUtil {
 	 * @return 类的完整名称
 	 * @throws UnsupportedEncodingException
 	 */
-	private static List<String> getClassNameListFromJar(URL[] urls,  String packagePath,  boolean childPackage) throws UnsupportedEncodingException {
+	private static List<String> getClassNameListFromJar(URL[] urls, String packagePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> names = new ArrayList<>();
 		if (urls != null) {
 			for (int i = 0; i < urls.length; i++) {
@@ -292,7 +292,7 @@ public class ClassUtil {
 					continue;
 				}
 				String jarPath = urlPath + "!/" + packagePath;
-				names.addAll(getClassNameListFromJar(jarPath,  childPackage));
+				names.addAll(getClassNameListFromJar(jarPath, childPackage));
 			}
 		}
 		return names;
@@ -303,20 +303,20 @@ public class ClassUtil {
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
 	 * @param target 类
-	 * @param annotation 注解类名 如: *,  Table*
-	 * @param field 属性名 如: *,  value,  name,  *package*
+	 * @param annotation 注解类名 如: *, Table*
+	 * @param field 属性名 如: *, value, name, *package*
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> parseAnnotationFieldValues(Class target,  String annotation,  String field,  int qty){
+	public static List<Object> parseAnnotationFieldValues(Class target, String annotation, String field, int qty){
 		Annotation[] annotations = target.getAnnotations();
-		return parseAnnotationFieldValues(annotations,  annotation,  field,  qty);
+		return parseAnnotationFieldValues(annotations, annotation, field, qty);
 	}
-	public static List<Object> parseAnnotationFieldValues(Class target,  String annotation,  String field){
-		return parseAnnotationFieldValues(target,  annotation,  field,  -1);
+	public static List<Object> parseAnnotationFieldValues(Class target, String annotation, String field){
+		return parseAnnotationFieldValues(target, annotation, field, -1);
 	}
-	public static Object parseAnnotationFieldValue(Class target,  String annotation,  String field){
-		List<Object> values = parseAnnotationFieldValues(target,  annotation,  field,  1);
+	public static Object parseAnnotationFieldValue(Class target, String annotation, String field){
+		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
 		if(values.size() > 0){
 			return values.get(0);
 		}
@@ -328,36 +328,36 @@ public class ClassUtil {
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
 	 * @param target 类的属性
-	 * @param annotation 注解类名 支持模糊匹配 如: *,  Table*
-	 * @param field 注解的属性名 如: *,  value,  name,  *package*
+	 * @param annotation 注解类名 支持模糊匹配 如: *, Table*
+	 * @param field 注解的属性名 如: *, value, name, *package*
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> parseAnnotationFieldValues(Field target,  String annotation,  String field,  int qty){
+	public static List<Object> parseAnnotationFieldValues(Field target, String annotation, String field, int qty){
 		Annotation[] annotations = target.getAnnotations();
-		return parseAnnotationFieldValues(annotations,  annotation,  field,  qty);
+		return parseAnnotationFieldValues(annotations, annotation, field, qty);
 	}
-	public static List<Object> parseAnnotationFieldValues(Field target,  String annotation,  String field){
-		return parseAnnotationFieldValues(target,  annotation,  field,  -1);
+	public static List<Object> parseAnnotationFieldValues(Field target, String annotation, String field){
+		return parseAnnotationFieldValues(target, annotation, field, -1);
 	}
-	public static Object parseAnnotationFieldValue(Field target,  String annotation,  String field){
-		List<Object> values = parseAnnotationFieldValues(target,  annotation,  field,  1);
+	public static Object parseAnnotationFieldValue(Field target, String annotation, String field){
+		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
 		if(values.size() > 0){
 			return values.get(0);
 		}
 		return null;
 	}
-	private static List<Object> parseAnnotationFieldValues(Annotation[] annotations,  String annotation,  String field,  int qty){
+	private static List<Object> parseAnnotationFieldValues(Annotation[] annotations, String annotation, String field, int qty){
 		List<Object> list = new ArrayList<>();
 		for(Annotation an : annotations){
 			String name = an.annotationType().getSimpleName();
-			if(!match(name,  annotation)){
+			if(!match(name, annotation)){
 				continue;//注解名不匹配
 			}
 			Method methods[] = an.annotationType().getMethods();
 			for(Method method:methods){
 				name = method.getName();
-				if(!match(name,  field)){
+				if(!match(name, field)){
 					continue;//属性名不匹配
 				}
 				try {
@@ -381,7 +381,7 @@ public class ClassUtil {
 		return list;
 	}
 
-	private static boolean match(String value,  String regex){
+	private static boolean match(String value, String regex){
 		regex = regex.replace("*", ".*").toUpperCase();
 		return value.toUpperCase().matches(regex);
 	}
@@ -393,7 +393,7 @@ public class ClassUtil {
 	 * @param finals  是否返回final属性
 	 * @return List
 	 */
-	public static List<Field> getFields(Class<?> clazz,  boolean statics,  boolean finals){
+	public static List<Field> getFields(Class<?> clazz, boolean statics, boolean finals){
 		List<Field> fields = new ArrayList<Field>();
 		while(null != clazz){
 			Field[] tmp = clazz.getDeclaredFields();
@@ -411,7 +411,7 @@ public class ClassUtil {
 		return fields;
 	}
 	public static List<Field> getFields(Class<?> clazz){
-		return getFields(clazz,  true,  true);
+		return getFields(clazz, true, true);
 	}
 	public static List<String> getFieldsName(Class<?> clazz){
 		List<Field> fields = getFields(clazz);
@@ -421,7 +421,7 @@ public class ClassUtil {
 		}
 		return keys;
 	}
-	public static List<Method> getMethods(Class<?> clazz,  boolean recursion){
+	public static List<Method> getMethods(Class<?> clazz, boolean recursion){
 		List<Method> list = new ArrayList<>();
 		Method[] methods = clazz.getMethods();
 		for(Method method:methods){
@@ -436,14 +436,14 @@ public class ClassUtil {
 		}
 		return list;
 	}
-	public static Method getMethod(Class<?> clazz,  String name,  boolean recursion,  Class<?>... parameterTypes){
+	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes){
 		Method method = null;
 		try{
-			method = clazz.getMethod(name,  parameterTypes);
+			method = clazz.getMethod(name, parameterTypes);
 		}catch(Exception e){}
 		if(null == method){
 			try{
-				method = clazz.getDeclaredMethod(name,  parameterTypes);
+				method = clazz.getDeclaredMethod(name, parameterTypes);
 			}catch(Exception e){
 
 			}
@@ -452,16 +452,16 @@ public class ClassUtil {
 		if(null == method && recursion){
 			clazz = clazz.getSuperclass();
 			if(null != clazz){
-				method = getMethod(clazz,  name,  recursion,  parameterTypes);
+				method = getMethod(clazz, name, recursion, parameterTypes);
 			}
 		}
 		return method;
 	}
 
-	public static Method getMethod(Class<?> clazz,  String name,  Class<?>... parameterTypes){
-		return getMethod(clazz,  name,  false,  parameterTypes);
+	public static Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes){
+		return getMethod(clazz, name, false, parameterTypes);
 	}
-	public static Field getField(Class<?> clazz,  String name,  boolean recursion){
+	public static Field getField(Class<?> clazz, String name, boolean recursion){
 		Field field = null;
 		try{
 			field = clazz.getField(name);
@@ -477,7 +477,7 @@ public class ClassUtil {
 		if(null == field && recursion){
 			clazz = clazz.getSuperclass();
 			if(null != clazz){
-				field = getField(clazz,  name);
+				field = getField(clazz, name);
 			}
 		}
 		return field;
@@ -491,7 +491,7 @@ public class ClassUtil {
 	 * @param ignoreSplit 是否忽略分隔符号
 	 * @return Field
 	 */
-	public static Field getField(List<Field> fields,  String name,  boolean ignoreCase,  boolean ignoreSplit){
+	public static Field getField(List<Field> fields, String name, boolean ignoreCase, boolean ignoreSplit){
 		if(null == name){
 			return null;
 		}
@@ -512,8 +512,8 @@ public class ClassUtil {
 		}
 		return field;
 	}
-	public static Field getField(Class<?> clazz,  String name){
-		return getField(clazz,  name,  true);
+	public static Field getField(Class<?> clazz, String name){
+		return getField(clazz, name, true);
 	}
 
 	/**
@@ -522,8 +522,8 @@ public class ClassUtil {
 	 * @param annotation  annotation
 	 * @return List
 	 */
-	@SuppressWarnings({"rawtypes",  "unchecked" })
-	public static List<Field> getFieldsByAnnotation(Class clazz,  Class annotation){
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public static List<Field> getFieldsByAnnotation(Class clazz, Class annotation){
 		List<Field> list = new ArrayList<Field>();
 		try{
 			List<Field> fields = getFields(clazz);
@@ -545,12 +545,12 @@ public class ClassUtil {
 	 * @param names 注解名称
 	 * @return Annotation
 	 */
-	public static List<Annotation> getFieldAnnotations(Field field,  String ... names){
+	public static List<Annotation> getFieldAnnotations(Field field, String ... names){
 		List<Annotation> list = new ArrayList<>();
 		Annotation[] annotations = field.getAnnotations();
 		for(Annotation annotation:annotations){
 			for(String name:names) {
-				if (match(annotation.annotationType().getSimpleName(),  name)) {
+				if (match(annotation.annotationType().getSimpleName(), name)) {
 					list.add(annotation);
 					break;
 				}
@@ -564,8 +564,8 @@ public class ClassUtil {
 	 * @param names 注解名称
 	 * @return Annotation
 	 */
-	public static Annotation getFieldAnnotation(Field field,  String ... names){
-		List<Annotation> list = getFieldAnnotations(field,  names);
+	public static Annotation getFieldAnnotation(Field field, String ... names){
+		List<Annotation> list = getFieldAnnotations(field, names);
 		if(list.size()>0){
 			return list.get(0);
 		}
@@ -577,8 +577,8 @@ public class ClassUtil {
 	 * @param annotations  annotation 支持模糊匹配, 不区分大小写 如 Table*
 	 * @return List
 	 */
-	@SuppressWarnings({"rawtypes",  "unchecked" })
-	public static List<Field> getFieldsByAnnotation(Class clazz,  String ... annotations){
+	@SuppressWarnings({"rawtypes", "unchecked" })
+	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations){
 		List<Field> list = new ArrayList<Field>();
 		try{
 			List<Field> fields = getFields(clazz);
@@ -586,7 +586,7 @@ public class ClassUtil {
 				Annotation[] ans = field.getAnnotations();
 				for(Annotation an:ans){
 					for(String annotation:annotations){
-						if(match(an.annotationType().getSimpleName(),  annotation)){
+						if(match(an.annotationType().getSimpleName(), annotation)){
 							list.add(field);
 							break;
 						}
@@ -606,10 +606,10 @@ public class ClassUtil {
 	 * @return List
 	 */
 
-	@SuppressWarnings({"unchecked",  "rawtypes" })
-	public static List<Class> getClasses(String pack,  Class ... bases){
+	@SuppressWarnings({"unchecked", "rawtypes" })
+	public static List<Class> getClasses(String pack, Class ... bases){
 		List<Class> list = new ArrayList<Class>();
-		File dir = new File(ClassUtil.class.getResource("/").getFile(), pack.replace(".",  File.separator));
+		File dir = new File(ClassUtil.class.getResource("/").getFile(), pack.replace(".", File.separator));
 		List<File> files = FileUtil.getAllChildrenFile(dir, ".class");
 		for(File file:files){
 			try{
@@ -620,8 +620,8 @@ public class ClassUtil {
 				if(path.contains(File.separator+"classes"+File.separator)){
 					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
 				}
-				path = path.replace(File.separator,  ".");
-				path = path.replace(".classes.",  "").replace(".class",  "");
+				path = path.replace(File.separator, ".");
+				path = path.replace(".classes.", "").replace(".class", "");
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 					log.warn("[检索类][class:{}]", path);
 				}
@@ -655,13 +655,13 @@ public class ClassUtil {
 	 * @param configs 注册名.注解属性名, 不区分大小写 支持模糊匹配 如 *Table.ID*
 	 * @return String
 	 */
-	public static String parseAnnotationFieldValue(Class clazz,  String ... configs){
+	public static String parseAnnotationFieldValue(Class clazz, String ... configs){
 		for(String config:configs){
 			String[] tmps = config.split("\\.");
 			if(tmps.length <2){
 				continue;
 			}
-			Object name = parseAnnotationFieldValue(clazz,  tmps[0],  tmps[1]);
+			Object name = parseAnnotationFieldValue(clazz, tmps[0], tmps[1]);
 			if(BasicUtil.isNotEmpty(name)){
 				return name.toString();
 			}
@@ -675,20 +675,20 @@ public class ClassUtil {
 	 *                可以只提供注解名如Column则依次按Column.name, Column.value解析
 	 * @return String
 	 */
-	public static String parseAnnotationFieldValue(Field field,  String ... configs){
+	public static String parseAnnotationFieldValue(Field field, String ... configs){
 		for(String config:configs){
 			String[] tmps = config.split("\\.");
 			if(tmps.length >= 2){
-				Object value = parseAnnotationFieldValue(field,  tmps[0],  tmps[1]);
+				Object value = parseAnnotationFieldValue(field, tmps[0], tmps[1]);
 				if(BasicUtil.isNotEmpty(value)){
 					return value.toString();
 				}
 			}else {
-				Object value = parseAnnotationFieldValue(field,  config,  "name");
+				Object value = parseAnnotationFieldValue(field, config, "name");
 				if(BasicUtil.isNotEmpty(value)){
 					return value.toString();
 				}
-				value = parseAnnotationFieldValue(field,  config,  "value");
+				value = parseAnnotationFieldValue(field, config, "value");
 				if(BasicUtil.isNotEmpty(value)){
 					return value.toString();
 				}
@@ -801,16 +801,16 @@ public class ClassUtil {
 		if(null != implementClass){
 			return implementClass.newInstance();
 		}
-		if(isInSub(clazz,  List.class)){
+		if(isInSub(clazz, List.class)){
 			return new ArrayList<>();
 		}
-		if(isInSub(clazz,  Set.class)){
+		if(isInSub(clazz, Set.class)){
 			return new HashSet();
 		}
-		if(isInSub(clazz,  Collection.class)){
+		if(isInSub(clazz, Collection.class)){
 			return new ArrayList<>();
 		}
-		if(isInSub(clazz,  Map.class)){
+		if(isInSub(clazz, Map.class)){
 			return new HashMap<>();
 		}
 		return null;

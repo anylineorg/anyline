@@ -50,7 +50,7 @@ public class FTPUtil {
         client = new FTPClient();   
         client.setControlEncoding("UTF-8");  
     }   
-    public FTPUtil(String host, String account,  String password,  int port){
+    public FTPUtil(String host, String account, String password, int port){
         client = new FTPClient();
     	this.host = host; 
     	this.account = account; 
@@ -59,7 +59,7 @@ public class FTPUtil {
         client.setControlEncoding("UTF-8");  
 		connect(); 
     }   
-    public FTPUtil(String host,  String account,  String password){
+    public FTPUtil(String host, String account, String password){
         client = new FTPClient();   
     	this.host = host; 
     	this.account = account; 
@@ -68,19 +68,19 @@ public class FTPUtil {
 		connect(); 
     } 
  
-    public static FTPUtil getInstance (String host,  String account,  String password,  int port){
+    public static FTPUtil getInstance (String host, String account, String password, int port){
     	String key = "host:"+host+", account:"+account+", password:"+password+", port:"+port;
     	FTPUtil util = instances.get(key); 
     	if(null == util){
-    		util = new FTPUtil(host,  account,  password,  port);
+    		util = new FTPUtil(host, account, password, port);
     	} 
     	return util; 
     }   
-    public static FTPUtil getInstance(String host,  String account,  String password){
-    	return getInstance(host,  account,  password,  21);
+    public static FTPUtil getInstance(String host, String account, String password){
+    	return getInstance(host, account, password, 21);
     } 
        
-    public void setTimeOut(int defaultTimeoutSecond,  int connectTimeoutSecond,  int dataTimeoutSecond){
+    public void setTimeOut(int defaultTimeoutSecond, int connectTimeoutSecond, int dataTimeoutSecond){
         try {
             client.setDefaultTimeout(defaultTimeoutSecond * 1000);   
             client.setConnectTimeout(connectTimeoutSecond * 1000); // commons-net-3.5.jar   
@@ -109,7 +109,7 @@ public class FTPUtil {
 	 * @param local  local
 	 * @return boolean
 	 */ 
-	public boolean downloadFile(String remote,  File local) {
+	public boolean downloadFile(String remote, File local) {
 	    boolean success = false; 
 	    long fr = System.currentTimeMillis(); 
 	    try {
@@ -119,12 +119,12 @@ public class FTPUtil {
         		_localDir.mkdirs(); 
         	} 
             OutputStream is = new FileOutputStream(local);    
-	        client.retrieveFile(remote,  is);
+	        client.retrieveFile(remote, is);
 	        success = true;   
 	    } catch (IOException e) {
 	        e.printStackTrace();   
 	    } 
-	    log.warn("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote,  local.getAbsolutePath());
+	    log.warn("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
 	    return success;   
 	} 
 	// ///////////////////////////
@@ -142,7 +142,7 @@ public class FTPUtil {
    
     public void connect() {
     	try{
-	        client.connect(host,  port);
+	        client.connect(host, port);
 	        int reply = client.getReplyCode();   
 	        if (!FTPReply.isPositiveCompletion(reply)) {
 	            disconnect();   
@@ -150,7 +150,7 @@ public class FTPUtil {
 	        if ("".equals(account)) {
 	        	account = "anonymous";   
 	        }   
-	        if (!client.login(account,  password)) {
+	        if (!client.login(account, password)) {
 	            disconnect();   
 	        }   
 	        client.setFileType(FTP.BINARY_FILE_TYPE);
@@ -165,7 +165,7 @@ public class FTPUtil {
     /**  
      * Test connection to ftp server  
      *   
-     * @return true,  if connected
+     * @return true, if connected
      */   
     public boolean isConnected() {
         return client.isConnected();   
@@ -188,7 +188,7 @@ public class FTPUtil {
      * @param out    OutputStream  
      * @throws IOException  IOException
      */   
-    public void retrieveFile(String ftpFileName,  OutputStream out) throws IOException {
+    public void retrieveFile(String ftpFileName, OutputStream out) throws IOException {
         try {
             // Get file info.   
             FTPFile[] fileInfoArray = client.listFiles(ftpFileName);   
@@ -204,7 +204,7 @@ public class FTPUtil {
             }   
    
             // Download file.   
-            if (!client.retrieveFile(ftpFileName,  out)) {
+            if (!client.retrieveFile(ftpFileName, out)) {
                 throw new IOException("Error loading file '" + ftpFileName + "' from FTP server. Check FTP permissions and path.");   
             }   
    
@@ -227,9 +227,9 @@ public class FTPUtil {
      * @param in    InputStream  
      * @throws IOException   IOException
      */   
-    public void storeFile(String ftpFileName,  InputStream in) throws IOException {
+    public void storeFile(String ftpFileName, InputStream in) throws IOException {
         try {
-            if (!client.storeFile(ftpFileName,  in)) {
+            if (!client.storeFile(ftpFileName, in)) {
                 throw new IOException("Can't upload file '" + ftpFileName + "' to FTP server. Check FTP permissions and path.");   
             }   
         } finally {
@@ -247,8 +247,8 @@ public class FTPUtil {
      * @return boolean
      * @throws IOException IOException  
      */   
-    public boolean rename(String from,  String to) throws IOException {
-        return client.rename(from,  to);
+    public boolean rename(String from, String to) throws IOException {
+        return client.rename(from, to);
     }   
        
     /**  
@@ -263,7 +263,7 @@ public class FTPUtil {
         }   
     }   
  
-    public boolean  uploadFile(File local,  String remote) {
+    public boolean  uploadFile(File local, String remote) {
     	boolean result = false; 
     	long fr = System.currentTimeMillis(); 
     	 InputStream in = null;   
@@ -271,7 +271,7 @@ public class FTPUtil {
              in = new BufferedInputStream(new FileInputStream(local));   
              List<String> paths = formatPath(remote); 
              makeDir(paths.get(0)); 
-             client.storeFile(remote,  in);
+             client.storeFile(remote, in);
              result = true; 
          }catch(Exception e){
          	e.printStackTrace(); 
@@ -284,18 +284,18 @@ public class FTPUtil {
         log.warn("[ftp upload file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
         return result; 
     } 
-    public boolean  uploadFile(String remote,  File local) {
-    	return uploadFile(local,  remote);
+    public boolean  uploadFile(String remote, File local) {
+    	return uploadFile(local, remote);
     } 
-    public boolean  upload(String remote,  File local) {
+    public boolean  upload(String remote, File local) {
     	boolean result = false; 
         if (!local.exists()) {
         	return result; 
         } 
         if(local.isDirectory()){
-        	uploadDir(remote,  local);
+        	uploadDir(remote, local);
         }else{
-        	uploadFile(remote,  local);
+        	uploadFile(remote, local);
         } 
         return result; 
     }   
@@ -305,7 +305,7 @@ public class FTPUtil {
      * @param remotePath 远程目录 /home/test/a  
      * @param local 本地目录 D:/test/a  
      */   
-    public void uploadDir(String remotePath,  File local){
+    public void uploadDir(String remotePath, File local){
     	log.warn("[ftp upload dir][remote:{}][local:{}]", remotePath, local.getAbsolutePath());
         if (null != local &&local.exists()) {
             if(!cd(remotePath)){
@@ -319,9 +319,9 @@ public class FTPUtil {
             File[] files = local.listFiles();   
             for (File f : files) {
                 if (f.isDirectory() && !f.getName().equals(".") && !f.getName().equals("..")) {
-                    uploadDir(remotePath + "/" + f.getName(),  f);
+                    uploadDir(remotePath + "/" + f.getName(), f);
                 } else if (f.isFile()) {
-                    uploadFile(remotePath + "/" + f.getName(),  f);
+                    uploadFile(remotePath + "/" + f.getName(), f);
                 }   
             }   
         }   
@@ -334,7 +334,7 @@ public class FTPUtil {
 	 * @param localDir  localDir
 	 * @return boolean
 	 */ 
-	public boolean downloadDir(String remoteDir,  File localDir) {
+	public boolean downloadDir(String remoteDir, File localDir) {
 	    boolean success = false;   
 	    log.warn("[ftp download dir][remote:{}][local:{}]", remoteDir, localDir.getAbsolutePath());
 	    try {
@@ -352,8 +352,8 @@ public class FTPUtil {
 		try {
 			result = client.changeWorkingDirectory(dir); 
 			String path = client.doCommandAsStrings("pwd", "")[0];
-			this.dir = RegularUtil.cut(path,  "\"",  "\"");
-			log.warn("[ftp change directory][directory:{}]",  this.dir);
+			this.dir = RegularUtil.cut(path, "\"", "\"");
+			log.warn("[ftp change directory][directory:{}]", this.dir);
 		} catch (IOException e) {
 			e.printStackTrace(); 
 		} 
@@ -368,7 +368,7 @@ public class FTPUtil {
 	        		downloadDir(new File(localDir+"/"+file.getName())); 
 	        	}else{
 		        	File local = new File(localDir, file.getName());
-	        		downloadFile(this.dir+"/"+file.getName(),  local);
+	        		downloadFile(this.dir+"/"+file.getName(), local);
 	        	} 
 	        } 
         }catch(Exception e){
@@ -456,15 +456,15 @@ public class FTPUtil {
     /**  
      * 格式化路径.  
      * @param srcPath 原路径. /xxx/xxx/xxx.yyy 或 X:/xxx/xxx/xxx.yy  
-     * @return list,  第一个是路径（/xxx/xxx/）, 第二个是文件名（xxx.yy）
+     * @return list, 第一个是路径（/xxx/xxx/）, 第二个是文件名（xxx.yy）
      */   
     public static List<String> formatPath(String srcPath) {
         List<String> list = new ArrayList<>(2);
-        String repSrc = srcPath.replaceAll("\\\\",  "/");
+        String repSrc = srcPath.replaceAll("\\\\", "/");
         int firstP = repSrc.indexOf("/");   
         int lastP = repSrc.lastIndexOf("/");   
         String fileName = lastP + 1 == repSrc.length() ? "" : repSrc.substring(lastP + 1);   
-        String dir = firstP == -1 ? "" : repSrc.substring(firstP,  lastP);
+        String dir = firstP == -1 ? "" : repSrc.substring(firstP, lastP);
         dir = (dir.length() == 1 ? dir : (dir + "/"));   
         list.add(dir);   
         list.add(fileName);   

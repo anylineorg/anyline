@@ -7,9 +7,9 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -21,12 +21,12 @@ public interface DataType {
     public static DataType ILLEGAL = new DataType() {
 
         @Override
-        public Object read(Object value,  Object def,  Class clazz) {
+        public Object read(Object value, Object def, Class clazz) {
             return null;
         }
 
         @Override
-        public Object write(Object value,  Object def,  boolean placeholder) {
+        public Object write(Object value, Object def, boolean placeholder) {
             return null;
         }
 
@@ -64,10 +64,10 @@ public interface DataType {
      * 从数据库中读取数据, 常用的基本类型可以自动转换, 不常用的如json/point/polygon/blob等转换成anyline对应的类型
      * @param value value
      * @param def 默认值
-     * @param clazz 目标数据类型(给entity赋值时可以根据class,  DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
+     * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)
      * @return Object
      */
-    public abstract Object read(Object value,  Object def,  Class clazz);
+    public abstract Object read(Object value, Object def, Class clazz);
     /**
      * 写入数据库前类型转换<br/>
      * 如果有占位符成数据库可接受的Java数据类型<br/>
@@ -77,7 +77,7 @@ public interface DataType {
      * @param def 默认值
      * @return Object
      */
-    public abstract Object write(Object value,  Object def,  boolean placeholder);
+    public abstract Object write(Object value, Object def, boolean placeholder);
 
     public abstract DataType convert(Convert convert);
     public abstract Convert convert(Class clazz);

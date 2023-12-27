@@ -138,9 +138,9 @@ public class BasicUtil {
 		return !isEmpty(false, obj);
 	}
 	public static boolean isNotEmpty(boolean recursion, Object obj) {
-		return !isEmpty(recursion,  obj);
+		return !isEmpty(recursion, obj);
 	}
-	public static boolean equals(byte[] bytes1,  byte[] bytes2){
+	public static boolean equals(byte[] bytes1, byte[] bytes2){
 		if(null == bytes1){
 			if(null == bytes2){
 				return true;
@@ -163,7 +163,7 @@ public class BasicUtil {
 		}
 		return true;
 	}
-	public static boolean equals(Object obj1,  Object obj2) {
+	public static boolean equals(Object obj1, Object obj2) {
 		if (null == obj1) {
 			if (null == obj2) {
 				return true;
@@ -178,7 +178,7 @@ public class BasicUtil {
 			}
 		}
 	}
-	public static boolean equalsIgnoreCase(Object obj1,  Object obj2) {
+	public static boolean equalsIgnoreCase(Object obj1, Object obj2) {
 		if (null == obj1) {
 			if (null == obj2) {
 				return true;
@@ -221,12 +221,12 @@ public class BasicUtil {
 	 * @param <T> T
 	 * @return Object
 	 */ 
-	public static <T> T evl(boolean recursion,  T... values) {
+	public static <T> T evl(boolean recursion, T... values) {
 		if (null == values) {
 			return null; 
 		} 
 		for (T item : values) {
-			if (isNotEmpty(recursion,  item)) {
+			if (isNotEmpty(recursion, item)) {
 				return item; 
 			} 
 		} 
@@ -234,7 +234,7 @@ public class BasicUtil {
 	} 
  
 	public static <T> T evl(T... values) {
-		return evl(false,  values); 
+		return evl(false, values);
 	} 
  
 	/** 
@@ -244,11 +244,11 @@ public class BasicUtil {
 	 * @param to  to
 	 * @return int
 	 */
-	public static int getRandomNumber(int fr,  int to) {
-		return NumberUtil.random(fr,  to);
+	public static int getRandomNumber(int fr, int to) {
+		return NumberUtil.random(fr, to);
 	}
-	public static double getRandomNumber(double fr,  double to) {
-		return NumberUtil.random(fr,  to);
+	public static double getRandomNumber(double fr, double to) {
+		return NumberUtil.random(fr, to);
 	} 
  
 	/** 
@@ -258,7 +258,7 @@ public class BasicUtil {
 	 * @param buffer  buffer
 	 * @return String
 	 */ 
-	public static String getRandomString(int length,  StringBuffer buffer) {
+	public static String getRandomString(int length, StringBuffer buffer) {
 		StringBuffer sb = new StringBuffer(); 
 		Random r = new Random(); 
 		int range = buffer.length(); 
@@ -273,15 +273,15 @@ public class BasicUtil {
 	} 
  
 	public static String getRandomLowerString(int length) {
-		return getRandomString(length,  new StringBuffer("abcdefghijklmnopqrstuvwxyz")); 
+		return getRandomString(length, new StringBuffer("abcdefghijklmnopqrstuvwxyz"));
 	} 
  
 	public static String getRandomUpperString(int length) {
-		return getRandomString(length,  new StringBuffer("ABCDEFGHIJKLMNOPQRSTUVWXYZ")); 
+		return getRandomString(length, new StringBuffer("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 	} 
  
 	public static String getRandomNumberString(int length) {
-		return getRandomString(length,  new StringBuffer("123567890")); 
+		return getRandomString(length, new StringBuffer("123567890"));
 	}
 	/**
 	 * 随机中文字符(GBK)
@@ -292,7 +292,7 @@ public class BasicUtil {
 		String result = "";
 		for (int i = 0; i < length; i++) {
 			String str = null;
-			int hPos,  lPos; // 定义高低位
+			int hPos, lPos; // 定义高低位
 			Random random = new Random();
 			hPos = (176 + Math.abs(random.nextInt(39))); // 获取高位值
 			lPos = (161 + Math.abs(random.nextInt(93))); // 获取低位值
@@ -300,7 +300,7 @@ public class BasicUtil {
 			b[0] = (Integer.valueOf(hPos).byteValue());
 			b[1] = (Integer.valueOf(lPos).byteValue());
 			try {
-				str = new String(b,  "GBk"); // 转成中文
+				str = new String(b, "GBk"); // 转成中文
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -315,11 +315,11 @@ public class BasicUtil {
 	 * @param key key
 	 * @return String
 	 */ 
-	public static String insert(String src,  int idx,  String key) {
+	public static String insert(String src, int idx, String key) {
 		if (null == src || null == key) {
 			return src; 
 		} 
-		src = src.substring(0,  idx) + key + src.substring(idx); 
+		src = src.substring(0, idx) + key + src.substring(idx);
 		return src; 
  
 	} 
@@ -378,7 +378,7 @@ public class BasicUtil {
 		return RegularUtil.isDateTime(obj.toString());
 	}
 
-	public static Byte parseByte(Object value,  Byte def){
+	public static Byte parseByte(Object value, Byte def){
 		try {
 			return Byte.parseByte(value.toString());
 		}catch (Exception e){
@@ -388,7 +388,7 @@ public class BasicUtil {
 	public static Byte parseByte(Object value) throws Exception{
 		return Byte.parseByte(value.toString());
 	}
-	public static Short parseShort(Object value,  Short def) {
+	public static Short parseShort(Object value, Short def) {
 		if (null == value) {
 			return def;
 		}
@@ -405,7 +405,7 @@ public class BasicUtil {
 		return (short) Double.parseDouble(value.toString());
 	}
 
-	public static Integer parseInt(Object value,  Integer def) {
+	public static Integer parseInt(Object value, Integer def) {
 		if (null == value) {
 			return def;
 		}
@@ -423,7 +423,7 @@ public class BasicUtil {
 	}
 
 
-	public static Float parseFloat(Object value,  Float def) {
+	public static Float parseFloat(Object value, Float def) {
 		if (null == value) {
 			return def;
 		}
@@ -436,7 +436,7 @@ public class BasicUtil {
 			return def;
 		}
 	} 
-	public static Double parseDouble(Object value,  Double def) {
+	public static Double parseDouble(Object value, Double def) {
 		if (null == value) {
 			return def; 
 		}
@@ -450,11 +450,11 @@ public class BasicUtil {
 		} 
 	}
 
-	public static BigDecimal parseDecimal(Object value,  double def) {
+	public static BigDecimal parseDecimal(Object value, double def) {
 		return parseDecimal(value, new BigDecimal(def));
 	}
 
-	public static BigDecimal parseDecimal(Object value,  BigDecimal def) {
+	public static BigDecimal parseDecimal(Object value, BigDecimal def) {
 		if (null == value) {
 			return def;
 		}
@@ -489,7 +489,7 @@ public class BasicUtil {
 		}
 		return result;
 	}
-	public static Long parseLong(Object value,  Long def) {
+	public static Long parseLong(Object value, Long def) {
 		try{
 			return parseLong(value);
 		}catch (Exception e){
@@ -524,7 +524,7 @@ public class BasicUtil {
 	 * @param def  def
 	 * @return Boolean
 	 */ 
-	public static Boolean parseBoolean(Object obj,  Boolean def) {
+	public static Boolean parseBoolean(Object obj, Boolean def) {
 		if(obj instanceof Boolean){
 			return (Boolean) obj;
 		}
@@ -590,14 +590,14 @@ public class BasicUtil {
 	 * @param replace  replace
 	 * @return String
 	 */ 
-	public static String replace(String src,  String pattern,  String replace) {
+	public static String replace(String src, String pattern, String replace) {
 		if (src == null) 
 			return null; 
 		int s = 0; 
 		int e = 0; 
 		StringBuilder result = new StringBuilder(); 
-		while ((e = src.indexOf(pattern,  s)) >= 0) {
-			result.append(src.substring(s,  e)); 
+		while ((e = src.indexOf(pattern, s)) >= 0) {
+			result.append(src.substring(s, e));
 			result.append(replace); 
 			s = e + pattern.length(); 
 		} 
@@ -655,7 +655,7 @@ public class BasicUtil {
 	 */ 
 	public static String compress(String str) {
 		if (null != str) {
-			str = str.replaceAll("\\s{2, }",  " ").trim(); 
+			str = str.replaceAll("\\s{2, }", " ").trim();
 		} 
 		return str; 
 	}
@@ -694,7 +694,7 @@ public class BasicUtil {
 	 * @param len  需要达到的长度 
 	 * @return String
 	 */ 
-	public static String fillLChar(String src,  String chr,  int len) {
+	public static String fillLChar(String src, String chr, int len) {
 		if (null != src && null != chr && chr.length() > 0) {
 			while (src.length() < len) {
 				src = chr + src; 
@@ -703,7 +703,7 @@ public class BasicUtil {
 		return src; 
 	} 
  
-	public static String fillRChar(String src,  String chr,  int len) {
+	public static String fillRChar(String src, String chr, int len) {
 		if (null != src && null != chr && chr.length() > 0) {
 			while (src.length() < len) {
 				src = src + chr; 
@@ -712,30 +712,30 @@ public class BasicUtil {
 		return src; 
 	} 
  
-	public static String fillChar(String src,  String chr,  int len) {
-		return fillLChar(src,  chr,  len); 
+	public static String fillChar(String src, String chr, int len) {
+		return fillLChar(src, chr, len);
 	} 
  
-	public static String fillChar(String src,  int len) {
-		return fillChar(src,  "0",  len); 
+	public static String fillChar(String src, int len) {
+		return fillChar(src, "0", len);
 	}
 
 
 
-	public static String fillLChar(int src,  String chr,  int len) {
-		return fillLChar(src+"",  chr,  len);
+	public static String fillLChar(int src, String chr, int len) {
+		return fillLChar(src+"", chr, len);
 	}
 
-	public static String fillRChar(int src,  String chr,  int len) {
-		 return fillRChar(src+"",  chr,  len);
+	public static String fillRChar(int src, String chr, int len) {
+		 return fillRChar(src+"", chr, len);
 	}
 
-	public static String fillChar(int src,  String chr,  int len) {
-		return fillChar(src+"",  chr,  len);
+	public static String fillChar(int src, String chr, int len) {
+		return fillChar(src+"", chr, len);
 	}
 
-	public static String fillChar(int src,  int len) {
-		return fillChar(src+"",  len);
+	public static String fillChar(int src, int len) {
+		return fillChar(src+"", len);
 	}
 
 
@@ -745,7 +745,7 @@ public class BasicUtil {
 	 * @param map  map
 	 * @return List
 	 */ 
-	public static List<String> getMapKeys(Map<?,  ?> map) {
+	public static List<String> getMapKeys(Map<?, ?> map) {
 		List<String> keys = new ArrayList<>();
 		Iterator<?> it = map.keySet().iterator(); 
 		while (it.hasNext()) {
@@ -757,7 +757,7 @@ public class BasicUtil {
 		return keys; 
 	}
 
-	public static List<String> split(String str,  String separator){
+	public static List<String> split(String str, String separator){
 		List<String> list = new ArrayList<>();
 		if(null !=str && null != separator){
 			String tmps[] = str.split(separator);
@@ -779,24 +779,24 @@ public class BasicUtil {
 	 * @param chr  chr
 	 * @return int
 	 */ 
-	public static int charCount(String src,  String chr) {
+	public static int charCount(String src, String chr) {
 		int count = 0; 
 		int idx = -1; 
 		if (null == src || null == chr || chr.trim().isEmpty()) {
 			return 0; 
 		} 
-		while ((idx = src.indexOf(chr,  idx + chr.length())) != -1) {
+		while ((idx = src.indexOf(chr, idx + chr.length())) != -1) {
 			count++; 
 		} 
 		return count; 
 	} 
  
-	public static Object fetch(Collection<?> items,  String key,  Object value) {
+	public static Object fetch(Collection<?> items, String key, Object value) {
 		if (null == items) {
 			return null; 
 		} 
 		for (Object item : items) {
-			Object tmpValue = BeanUtil.getFieldValue(item,  key); 
+			Object tmpValue = BeanUtil.getFieldValue(item, key);
 			if (null != tmpValue && tmpValue.equals(value)) {
 				return item; 
 			} 
@@ -811,7 +811,7 @@ public class BasicUtil {
 	 * @param to 结束位置 负数表示倒数, 如-2表示删除最后2位
 	 * @return String
 	 */
-	public static String cut(String src,  int fr,  int to) {
+	public static String cut(String src, int fr, int to) {
 		if (null == src) {
 			return null; 
 		} 
@@ -825,7 +825,7 @@ public class BasicUtil {
 		if(to < 0 || to < fr){
 			return null;
 		}
-		return src.substring(fr,  to); 
+		return src.substring(fr, to);
 	}
 
 	/**
@@ -834,7 +834,7 @@ public class BasicUtil {
 	 * @param len 截取长度
 	 * @return String
 	 */
-	public static String left(String src,  int len){
+	public static String left(String src, int len){
 		if(null == src){
 			return null;
 		}
@@ -842,7 +842,7 @@ public class BasicUtil {
 		if(len > max){
 			len = max;
 		}
-		return src.substring(0,  len);
+		return src.substring(0, len);
 	}
 	/**
 	 * 从右侧开始取len位
@@ -850,7 +850,7 @@ public class BasicUtil {
 	 * @param len 截取长度
 	 * @return String
 	 */
-	public static String right(String src,  int len){
+	public static String right(String src, int len){
 		if(null == src){
 			return null;
 		}
@@ -858,7 +858,7 @@ public class BasicUtil {
 		if(len > max){
 			len = max;
 		}
-		return src.substring(max-len,  max);
+		return src.substring(max-len, max);
 	}
 
 	/**
@@ -867,7 +867,7 @@ public class BasicUtil {
 	 * @param src 原文
 	 * @return String
 	 */
-	public static String ellipsis(int length,  String src){
+	public static String ellipsis(int length, String src){
 		String result ="";
 		int size = length * 2;
 		String chrs[] = src.split("");
@@ -933,44 +933,44 @@ public class BasicUtil {
 	 * @param objs  objs
 	 * @param obj  obj
 	 * @param ignoreCase  是否不区分大小写
-	 * @param ignoreNull  是否忽略null,  如果忽略 则无论是否包含null都返回false
+	 * @param ignoreNull  是否忽略null, 如果忽略 则无论是否包含null都返回false
 	 * @return boolean
 	 */
-	public static boolean containsString(boolean ignoreNull,  boolean ignoreCase,  Object[] objs,  String obj){
+	public static boolean containsString(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
 		if(null == objs){
 			return false;
 		}
-		return containsString(ignoreNull,  ignoreCase,  BeanUtil.array2list(objs),  obj);
+		return containsString(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
-	public static int index(boolean ignoreNull,  boolean ignoreCase,  Object[] objs,  String obj){
+	public static int index(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
 		if(null == objs){
 			return -1;
 		}
-		return index(ignoreNull,  ignoreCase,  BeanUtil.array2list(objs),  obj);
+		return index(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
-	public static boolean containsString(Object[] objs,  String obj){
-		return containsString(false, false, objs,  obj);
+	public static boolean containsString(Object[] objs, String obj){
+		return containsString(false, false, objs, obj);
 	}
-	public static int index(Object[] objs,  String obj){
-		return index(false, false, objs,  obj);
+	public static int index(Object[] objs, String obj){
+		return index(false, false, objs, obj);
 	}
-	public static boolean contains(Object[] objs,  Object obj){
+	public static boolean contains(Object[] objs, Object obj){
 		if(null == objs){
 			return false;
 		}
-		return contains(false, BeanUtil.array2list(objs),  obj);
+		return contains(false, BeanUtil.array2list(objs), obj);
 	}
-	public static int index(Object[] objs,  Object obj){
+	public static int index(Object[] objs, Object obj){
 		if(null == objs){
 			return -1;
 		}
-		return index(false, BeanUtil.array2list(objs),  obj);
+		return index(false, BeanUtil.array2list(objs), obj);
 	}
 
-	public static int index(boolean ignoreNull,  Collection<Object> objs,  Object obj){
-		return index(ignoreNull,  objs,  obj);
+	public static int index(boolean ignoreNull, Collection<Object> objs, Object obj){
+		return index(ignoreNull, objs, obj);
 	}
-	public static boolean contains(boolean ignoreNull,  Collection<Object> objs,  Object obj){
+	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj){
 		if(null == objs){
 			return false;
 		}
@@ -993,7 +993,7 @@ public class BasicUtil {
 		}
 		return false;
 	}
-	public static <T> boolean containsString(boolean ignoreNull,  boolean ignoreCase,  Collection<T> objs,  String obj){
+	public static <T> boolean containsString(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj){
 		if(null == objs){
 			return false;
 		}
@@ -1025,7 +1025,7 @@ public class BasicUtil {
 		return false;
 	}
 
-	public static <T> int index(boolean ignoreNull,  boolean ignoreCase,  Collection<T> objs,  String obj){
+	public static <T> int index(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj){
 		int idx = -1;
 		if(null == objs){
 			return -1;
@@ -1057,10 +1057,10 @@ public class BasicUtil {
 		}
 		return -1;
 	}
-	public static boolean containsString(Collection<Object> objs,  String obj){
+	public static boolean containsString(Collection<Object> objs, String obj){
 		return containsString(false, false, objs, obj);
 	}
-	public static int index(Collection<Object> objs,  String obj){
+	public static int index(Collection<Object> objs, String obj){
 		return index(false, false, objs, obj);
 	}
 
@@ -1070,7 +1070,7 @@ public class BasicUtil {
 	 * @param split split
 	 * @return String
 	 */
-   public static String concat(List<String> list,  String split){
+   public static String concat(List<String> list, String split){
 	   if(null == list){
 		   return "";
 	   }
@@ -1087,7 +1087,7 @@ public class BasicUtil {
 	   return result.toString();
    }
 
-	public static String concat(String split,  String ... values) {
+	public static String concat(String split, String ... values) {
 		StringBuilder builder = new StringBuilder();
 		if(null != values){
 			for(String value:values){
@@ -1102,10 +1102,10 @@ public class BasicUtil {
 		}
 		return builder.toString();
 	}
-   public static String omit(String src,  int left,  int right){
-	   return omit(src,  left,  right,  "*");
+   public static String omit(String src, int left, int right){
+	   return omit(src, left, right, "*");
    }
-   public static String omit(String src,  int left,  int right,  String ellipsis){
+   public static String omit(String src, int left, int right, String ellipsis){
 	   String result = "";
 	   if(BasicUtil.isEmpty(src)){
 		   return result;
@@ -1119,7 +1119,7 @@ public class BasicUtil {
 		}
 		String l = src.substring(0, left);
 		String r = src.substring(length - right);
-		result = l+BasicUtil.fillRChar("",  ellipsis,  length-left-right)+r;
+		result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
 		return result;
    }
    public static String escape(String src) {
@@ -1139,7 +1139,7 @@ public class BasicUtil {
 	 * @param propertys2 属性列表2
 	 * @return boolean
 	 */
-	public static boolean equals(Object v1,  Object v2,  List<String> propertys1,  List<String> propertys2){
+	public static boolean equals(Object v1, Object v2, List<String> propertys1, List<String> propertys2){
 		boolean result = false;
 		if(null == v1 && null == v2){
 			return true;
@@ -1154,7 +1154,7 @@ public class BasicUtil {
 			}else{
 				// v2非基础类型
 				if(null != propertys2 && propertys2.size()>0){
-					v2 = BeanUtil.getFieldValue(v2,  propertys2.get(0))+"";
+					v2 = BeanUtil.getFieldValue(v2, propertys2.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}
@@ -1163,7 +1163,7 @@ public class BasicUtil {
 			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
 				// v2基础类型
 				if(null != propertys1 && propertys1.size()>0){
-					v1 = BeanUtil.getFieldValue(v1,  propertys1.get(0))+"";
+					v1 = BeanUtil.getFieldValue(v1, propertys1.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}else{
@@ -1174,14 +1174,14 @@ public class BasicUtil {
 					eq = false;
 				}else{
 					// 取长度较短的一个长度
-					psize = NumberUtil.min(propertys1.size(),  propertys2.size());
+					psize = NumberUtil.min(propertys1.size(), propertys2.size());
 				}
 				if(psize > 0){
 					for(int i=0; i<psize; i++){
 						String p1 = propertys1.get(i);
 						String p2 = propertys2.get(i);
-						String vv1 = BeanUtil.getFieldValue(v1,  p1)+"";
-						String vv2 = BeanUtil.getFieldValue(v2,  p2)+"";
+						String vv1 = BeanUtil.getFieldValue(v1, p1)+"";
+						String vv2 = BeanUtil.getFieldValue(v2, p2)+"";
 						if(!vv1.equals(vv2)){
 							eq = false;
 							break;
@@ -1205,7 +1205,7 @@ public class BasicUtil {
 	 * @param propertys 属性(ID:CD, NM:NAME)(ID, NM)
 	 * @return boolean
 	 */
-	public static boolean equals(Object v1,  Object v2,  String propertys){
+	public static boolean equals(Object v1, Object v2, String propertys){
 		boolean result = false;
 		List<String> propertys1 = new ArrayList<>();
 		List<String> propertys2 = new ArrayList<>();
@@ -1225,7 +1225,7 @@ public class BasicUtil {
 				}
 			}
 		}
-		return equals(v1,  v2,  propertys1,  propertys2);
+		return equals(v1, v2, propertys1, propertys2);
 	}
 
 	/**
@@ -1234,7 +1234,7 @@ public class BasicUtil {
 	 * @param size 总行数
 	 * @return 最终下标
 	 */
-	public static int index(int index,  int size){
+	public static int index(int index, int size){
 		if(size == 0){
 			return 0;
 		}
@@ -1258,7 +1258,7 @@ public class BasicUtil {
 	 * @param total 总数
 	 * @return [开始, 结束]
 	 */
-	public static int[] range(Integer begin,  Integer end,  Integer qty,  Integer total){
+	public static int[] range(Integer begin, Integer end, Integer qty, Integer total){
 		int[] result = new int[2];
 		if(null != begin && begin < 0){
 			begin = 0;

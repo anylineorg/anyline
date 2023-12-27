@@ -1,15 +1,15 @@
 /*  
  * Copyright 2006-2023 www.anyline.org
  * 
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0 
  * 
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  * 
@@ -20,15 +20,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -71,7 +71,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	/* *****************************************************************************************************************
 	 * reg:[调用入口]<br/>注册数据源(用户或配置监听调用)
 	 * inject:创建并注入数据源
-	 * init:初始化数据源周边环境(service,  jdbc,  事务管理器)
+	 * init:初始化数据源周边环境(service, jdbc, 事务管理器)
 	 * destroy:注销数据源及周边环境
 	 * validate:检测数据源可用状态
 	 * transaction:事务相关
@@ -99,28 +99,28 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * @return MongoDatabase
 	 * @throws Exception 异常 Exception
 	 */
-	public static String reg(String key,  String uri,  String database,  String user,  String password) throws Exception{
-		Map<String,  String> param = new HashMap<String,  String>();
-		param.put("uri",  uri);
-		param.put("database",  database);
-		param.put("user",  user);
-		param.put("password",  password);
-		return reg(key,  param,  true);
+	public static String reg(String key, String uri, String database, String user, String password) throws Exception{
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("uri", uri);
+		param.put("database", database);
+		param.put("user", user);
+		param.put("password", password);
+		return reg(key, param, true);
 	}
-	public static String reg(String key,  Map param,  boolean override) throws Exception{
-		String ds_id = inject(key,  param,  override);
-		return init(key,  ds_id,  override);
+	public static String reg(String key, Map param, boolean override) throws Exception{
+		String ds_id = inject(key, param, override);
+		return init(key, ds_id, override);
 	}
 
-	public static MongoDatabase reg(String key,  MongoDatabase ds,  boolean over) throws Exception{
-		return init(key,  ds,  over);
+	public static MongoDatabase reg(String key, MongoDatabase ds, boolean over) throws Exception{
+		return init(key, ds, over);
 	}
-	public static MongoDatabase reg(String key,  MongoDatabase ds) throws Exception{
-		return init(key,  ds,  true);
+	public static MongoDatabase reg(String key, MongoDatabase ds) throws Exception{
+		return init(key, ds, true);
 	}
-	public static String inject(String key,  Map param,  boolean override) throws Exception{
+	public static String inject(String key, Map param, boolean override) throws Exception{
 
-		return inject(key,  null,  param,  null,  override);
+		return inject(key, null, param, null, override);
 	}
 
 
@@ -136,12 +136,12 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		}
 		return database;
 	}
-	public static String reg(String key,  String prefix,  Environment env) {
+	public static String reg(String key, String prefix, Environment env) {
 		try {
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
 				prefix += ".";
 			}
-			String uri = value(env,  prefix,  "url",  String.class,  null);
+			String uri = value(env, prefix, "url", String.class, null);
 			if(BasicUtil.isEmpty(uri)){
 				return null;
 			}
@@ -149,7 +149,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 				//只注册mongo驱动
 				return null;
 			}
-			String database = value(env,  prefix,  "database",  String.class,  null);
+			String database = value(env, prefix, "database", String.class, null);
 			if(BasicUtil.isEmpty(database)){
 				database = parseDatabase(uri);
 			}
@@ -159,11 +159,11 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 			}
 			Map<String, Object> map = new HashMap<>();
 			map.put("database", database);
-			String client = inject(key,  prefix,  map,  env,  true);
+			String client = inject(key, prefix, map, env, true);
 			if(null == client){//创建数据源失败
 				return null;
 			}
-			init(key,  client,  false);
+			init(key, client, false);
 			return client;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -177,22 +177,22 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-	public static String inject(String key,  String prefix,  Map params,  Environment env,  boolean override) throws Exception{
-		Map<String,  Object> cache = DatasourceHolder.params.get(key);
+	public static String inject(String key, String prefix, Map params, Environment env, boolean override) throws Exception{
+		Map<String, Object> cache = DatasourceHolder.params.get(key);
 		if(null == cache){
 			cache = new HashMap<>();
-			DatasourceHolder.params.put(key,  cache);
+			DatasourceHolder.params.put(key, cache);
 		}
-		check(key,  override);
+		check(key, override);
 
 		String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
 		String database_id = DataRuntime.ANYLINE_DATABASE_BEAN_PREFIX + key;
 		MongoClient client = null;
 		MongoDatabase db = null;
 		try {
- 			String uri =  value(params,  "url",  String.class,  null);
+ 			String uri =  value(params, "url", String.class, null);
 			if(BasicUtil.isEmpty(uri)){
-				uri =  value(env,  prefix, "url",  String.class,  null);
+				uri =  value(env, prefix, "url", String.class, null);
 			}
 			if(BasicUtil.isEmpty(uri)){
 				return null;
@@ -202,7 +202,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 				return null;
 			}
 
-			String database =  value(params,  "database",  String.class,  null);
+			String database =  value(params, "database", String.class, null);
 
 			if(BasicUtil.isEmpty(database)){
 				database = parseDatabase(uri);
@@ -213,23 +213,23 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 			}
 			Map<String, Object> map = new HashMap<>();
 			map.putAll(params);
-			map.put("database",  database);
+			map.put("database", database);
 
 			client = MongoClients.create(uri);
 			db = client.getDatabase(database);
-			factory.registerSingleton(datasource_id,  client);
-			factory.registerSingleton(database_id,  db);
+			factory.registerSingleton(datasource_id, client);
+			factory.registerSingleton(database_id, db);
 
 		} catch (Exception e) {
-			log.error("[注册数据源失败][数据源:{}][msg:{}]",  key,  e.toString());
+			log.error("[注册数据源失败][数据源:{}][msg:{}]", key, e.toString());
 			e.printStackTrace();
 			return null;
 		}
 		return datasource_id;
 	}
 
-	public static String inject(String key,  Map params) throws Exception{
-		return inject(key,  params,  true);
+	public static String inject(String key, Map params) throws Exception{
+		return inject(key, params, true);
 	}
 
 	/**
@@ -240,27 +240,27 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * @return MongoDatabase
 	 * @throws Exception 异常 Exception
 	 */
-	private static String init(String key,  String datasource,  boolean over) throws Exception{
+	private static String init(String key, String datasource, boolean over) throws Exception{
 		if(null != datasource) {
-			check(key,  over);
+			check(key, over);
 			MongoRuntimeHolder.reg(key);
 		}
 		return datasource;
 	}
-	private static MongoDatabase init(String key,  MongoDatabase database,  boolean over) throws Exception{
+	private static MongoDatabase init(String key, MongoDatabase database, boolean over) throws Exception{
 		if(null != database) {
-			check(key,  over);
+			check(key, over);
 			MongoRuntimeHolder.reg(key);
 		}
 		return database;
 	}
 	@Override
-	public DataRuntime callTemporary(Object datasource,  String database,  DriverAdapter adapter) throws Exception {
-		return exeTemporary( datasource,  database,  adapter);
+	public DataRuntime callTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
+		return exeTemporary( datasource, database, adapter);
 	}
 
-	private static DataRuntime exeTemporary(Object datasource,  String database,  DriverAdapter adapter) throws Exception {
-		return MongoRuntimeHolder.temporary( datasource,  database,  adapter);
+	private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
+		return MongoRuntimeHolder.temporary( datasource, database, adapter);
 	}
 
 	/**
@@ -329,23 +329,23 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		List<String> list = new ArrayList<>();
 		//查看结果
 		AnylineService service = ServiceProxy.service(runtime.datasource());
-		LinkedHashMap<String,  Database> databases = service.metadata().databases();
+		LinkedHashMap<String, Database> databases = service.metadata().databases();
 		Map<String, Object> map = params.get(runtime.datasource());
 		if(null == map){
 			log.warn("不是从anyline创建的数据源获取不到数据源参数");
 			return list;
 		}
 		for(String database:databases.keySet()){
-			Map<String,  Object> copy_params = new HashMap<>();
-			BeanUtil.copy(copy_params,  map);
-			copy_params.put("database",  database);
+			Map<String, Object> copy_params = new HashMap<>();
+			BeanUtil.copy(copy_params, map);
+			copy_params.put("database", database);
 			String key = runtime.datasource() + "_" + database.toLowerCase();
 			if(RuntimeHolder.contains(key)){
 				list.add(key);
 				continue;
 			}
 			try {
-				String id = reg(key,  copy_params,  true);
+				String id = reg(key, copy_params, true);
 				if(null != id) {
 					RuntimeHolder.runtime(key).origin(runtime.getKey());
 					list.add(key);

@@ -180,9 +180,9 @@ public class SeoUtil {
 	 * @param idx  idx
 	 * @return boolean
 	 */ 
-	private static boolean isNearExistKey(String src, String key,  int idx){
+	private static boolean isNearExistKey(String src, String key, int idx){
 		boolean keyExist = false;	//
-		int nearKeyIdx = src.indexOf(key,  idx-key.length()-10);	// 最近关键词位置
+		int nearKeyIdx = src.indexOf(key, idx-key.length()-10);	// 最近关键词位置
 		if(nearKeyIdx != -1 && Math.abs(nearKeyIdx - idx) <= MIN_KEYWORDS_GAP){
 			keyExist = true; 
 		}else{
@@ -190,7 +190,7 @@ public class SeoUtil {
 			if(idx >= src.length()){
 				idx = src.length(); 
 			} 
-			String tmp = src.substring(0,  idx); 
+			String tmp = src.substring(0, idx); 
 			nearKeyIdx = tmp.lastIndexOf(key); 
 			if(nearKeyIdx != -1 && Math.abs(nearKeyIdx - idx) <= MIN_KEYWORDS_GAP){
 				keyExist = true; 

@@ -54,7 +54,7 @@ public interface DDInterceptor  extends JDBCInterceptor{
      * @param runs 需要执行的SQL 有些命令需要多条SQL完成
      * @return SWITCH
      */
-    default SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Object metadata,  List<Run> runs){return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){return SWITCH.CONTINUE;}
 
     /**
      *
@@ -67,6 +67,6 @@ public interface DDInterceptor  extends JDBCInterceptor{
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH after(DataRuntime runtime,  String random,  ACTION.DDL action,  Object metadata,  List<Run> runs,  boolean result,  long millis){return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
 
 }

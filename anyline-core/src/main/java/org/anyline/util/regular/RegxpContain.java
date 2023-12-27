@@ -58,10 +58,10 @@ public class RegxpContain implements Regular{
 	public List<List<String>> fetchs(String src, String regx){
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{
-			Pattern pattern = patternCompiler.compile(regx,  Perl5Compiler.CASE_INSENSITIVE_MASK);
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.contains(input,  pattern)){
+			while(matcher.contains(input, pattern)){
 				MatchResult matchResult = matcher.getMatch(); 
 				int groups = matchResult.groups(); 
 				List<String> item = new ArrayList<>();
@@ -71,7 +71,7 @@ public class RegxpContain implements Regular{
 				list.add(item); 
 			} 
 		}catch(Exception e){
-			log.error("[提取异常][src:{}][reg:{}]",  src,  regx);
+			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			e.printStackTrace(); 
 		} 
 		return list; 
@@ -83,27 +83,27 @@ public class RegxpContain implements Regular{
 	 * @param idx		指定提取位置  idx		指定提取位置
 	 * @return List
 	 */ 
-	public List<String> fetch(String src,  String regx,  int idx) throws Exception{
+	public List<String> fetch(String src, String regx, int idx) throws Exception{
 		List<String> list = new ArrayList<>();
 		 
 		try{
-			Pattern pattern = patternCompiler.compile(regx,  Perl5Compiler.CASE_INSENSITIVE_MASK);
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			 
-			while(matcher.contains(input,  pattern)){
+			while(matcher.contains(input, pattern)){
 				MatchResult matchResult = matcher.getMatch(); 
 				list.add(matchResult.group(idx)); 
 			} 
 		}catch(Exception e){
-			log.error("[提取异常][src:{}][reg:{}]",  src,  regx);
+			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			e.printStackTrace(); 
 			throw e; 
 		} 
 		return list; 
 	} 
-	public List<String> fetch(String src,  String regx) throws Exception{
-		return fetch(src,  regx,  0);
+	public List<String> fetch(String src, String regx) throws Exception{
+		return fetch(src, regx, 0);
 	}
 	/** 
 	 * 过滤 保留匹配项 
@@ -111,10 +111,10 @@ public class RegxpContain implements Regular{
 	 * @param regx 表达式
 	 * @return List
 	 */ 
-	public List<String> pick(List<String> src,  String regx){
+	public List<String> pick(List<String> src, String regx){
 		List<String> list = new ArrayList<>();
 		for(String item : src){
-			if(match(item,  regx)){
+			if(match(item, regx)){
 				list.add(item);
 			} 
 		} 
@@ -126,10 +126,10 @@ public class RegxpContain implements Regular{
 	 * @param regx 表达式
 	 * @return List
 	 */ 
-	public List<String> wipe(List<String> src,  String regx){
+	public List<String> wipe(List<String> src, String regx){
 		List<String> list = new ArrayList<>();
 		for(String item : src){
-			if(!match(item,  regx)){
+			if(!match(item, regx)){
 				list.add(item);
 			} 
 		} 

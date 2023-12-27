@@ -30,49 +30,49 @@ public class IDCardUtil {
  
 	private static Map<String, String> CODE_NM =  new HashMap<String, String>();
 	private static String CITY_CODE[] = {"11", "12", "13", "14", "15", "21", "22",
-			"23", "31", "32", "33", "34",  "35",  "36",  "37",  "41",  "42",  "43",
-			"44",  "45",  "46",  "50",  "51",  "52",  "53",  "54",  "61",  "62",  "63",  
-			"64",  "65",  "71",  "81",  "82",  "91" }; 
+			"23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43",
+			"44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63",
+			"64", "65", "71", "81", "82", "91" };
 	// 每位加权因子
-	private static int power[] = {7,  9,  10,  5,  8,  4,  2,  1,  6,  3,  7,  9,  10,  5,  8,  4,  2 };
+	private static int power[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
 	// 第18位校检码
-	private static String verifyCode[] = {"1",  "0",  "X",  "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2" };
+	private static String verifyCode[] = {"1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
 	static{
-		CODE_NM.put( "11",  "北京" ); 
-		CODE_NM.put( "12",  "天津" ); 
-		CODE_NM.put( "13",  "河北" ); 
-		CODE_NM.put( "14",  "山西" ); 
-		CODE_NM.put( "15",  "内蒙古" ); 
-		CODE_NM.put( "21",  "辽宁" ); 
-		CODE_NM.put( "22",  "吉林" ); 
-		CODE_NM.put( "23",  "黑龙江" ); 
-		CODE_NM.put( "31",  "上海" ); 
-		CODE_NM.put( "32",  "江苏" ); 
-		CODE_NM.put( "33",  "浙江" ); 
-		CODE_NM.put( "34",  "安徽" ); 
-		CODE_NM.put( "35",  "福建" ); 
-		CODE_NM.put( "36",  "江西" ); 
-		CODE_NM.put( "37",  "山东" ); 
-		CODE_NM.put( "41",  "河南" ); 
-		CODE_NM.put( "42",  "湖北" ); 
-		CODE_NM.put( "43",  "湖南" ); 
-		CODE_NM.put( "44",  "广东" ); 
-		CODE_NM.put( "45",  "广西" ); 
-		CODE_NM.put( "46",  "海南" ); 
-		CODE_NM.put( "50",  "重庆" ); 
-		CODE_NM.put( "51",  "四川" ); 
-		CODE_NM.put( "52",  "贵州" ); 
-		CODE_NM.put( "53",  "云南" ); 
-		CODE_NM.put( "54",  "西藏" ); 
-		CODE_NM.put( "61",  "陕西" ); 
-		CODE_NM.put( "62",  "甘肃" ); 
-		CODE_NM.put( "63",  "青海" ); 
-		CODE_NM.put( "64",  "宁夏" ); 
-		CODE_NM.put( "65",  "新疆" ); 
-		CODE_NM.put( "71",  "台湾" ); 
-		CODE_NM.put( "81",  "香港" ); 
-		CODE_NM.put( "82",  "澳门" ); 
-		CODE_NM.put( "91",  "国外" ); 
+		CODE_NM.put( "11", "北京" );
+		CODE_NM.put( "12", "天津" );
+		CODE_NM.put( "13", "河北" );
+		CODE_NM.put( "14", "山西" );
+		CODE_NM.put( "15", "内蒙古" );
+		CODE_NM.put( "21", "辽宁" );
+		CODE_NM.put( "22", "吉林" );
+		CODE_NM.put( "23", "黑龙江" );
+		CODE_NM.put( "31", "上海" );
+		CODE_NM.put( "32", "江苏" );
+		CODE_NM.put( "33", "浙江" );
+		CODE_NM.put( "34", "安徽" );
+		CODE_NM.put( "35", "福建" );
+		CODE_NM.put( "36", "江西" );
+		CODE_NM.put( "37", "山东" );
+		CODE_NM.put( "41", "河南" );
+		CODE_NM.put( "42", "湖北" );
+		CODE_NM.put( "43", "湖南" );
+		CODE_NM.put( "44", "广东" );
+		CODE_NM.put( "45", "广西" );
+		CODE_NM.put( "46", "海南" );
+		CODE_NM.put( "50", "重庆" );
+		CODE_NM.put( "51", "四川" );
+		CODE_NM.put( "52", "贵州" );
+		CODE_NM.put( "53", "云南" );
+		CODE_NM.put( "54", "西藏" );
+		CODE_NM.put( "61", "陕西" );
+		CODE_NM.put( "62", "甘肃" );
+		CODE_NM.put( "63", "青海" );
+		CODE_NM.put( "64", "宁夏" );
+		CODE_NM.put( "65", "新疆" );
+		CODE_NM.put( "71", "台湾" );
+		CODE_NM.put( "81", "香港" );
+		CODE_NM.put( "82", "澳门" );
+		CODE_NM.put( "91", "国外" );
 	} 
 	/** 
 	 * 验证所有的身份证的合法性 
@@ -127,9 +127,9 @@ public class IDCardUtil {
 			return false; 
 		} 
 		// 获取前17位
-		String idcard17 = idcard.substring(0,  17); 
+		String idcard17 = idcard.substring(0, 17);
 		// 获取第18位
-		String idcard18Code = idcard.substring(17,  18); 
+		String idcard18Code = idcard.substring(17, 18);
 		char c[] = null; 
 		String checkCode = ""; 
 		// 是否都为数字
@@ -175,11 +175,11 @@ public class IDCardUtil {
  
 		// 是否全都为数字
 		if (isDigital(idcard)) {
-			String provinceid = idcard.substring(0,  2); 
-			String birthday = idcard.substring(6,  12); 
-			int year = Integer.parseInt(idcard.substring(6,  8)); 
-			int month = Integer.parseInt(idcard.substring(8,  10)); 
-			int day = Integer.parseInt(idcard.substring(10,  12)); 
+			String provinceid = idcard.substring(0, 2);
+			String birthday = idcard.substring(6, 12);
+			int year = Integer.parseInt(idcard.substring(6, 8));
+			int month = Integer.parseInt(idcard.substring(8, 10));
+			int day = Integer.parseInt(idcard.substring(10, 12));
  
 			// 判断是否为合法的省份
 			boolean flag = false; 
@@ -270,7 +270,7 @@ public class IDCardUtil {
  
 		if (isDigital(idcard)) {
 			// 获取出生年月日
-			String birthday = idcard.substring(6,  12); 
+			String birthday = idcard.substring(6, 12);
 			Date birthdate = null; 
 			try {
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
@@ -281,7 +281,7 @@ public class IDCardUtil {
 			cday.setTime(birthdate); 
 			String year = String.valueOf(cday.get(Calendar.YEAR)); 
  
-			idcard17 = idcard.substring(0,  6) + year + idcard.substring(8); 
+			idcard17 = idcard.substring(0, 6) + year + idcard.substring(8);
  
 			char c[] = idcard17.toCharArray(); 
 			String checkCode = ""; 
@@ -318,7 +318,7 @@ public class IDCardUtil {
 	 */ 
 	public static boolean isIdcard(String idcard) {
 		return idcard == null || idcard.isEmpty() ? false : Pattern.matches(
-				"(^\\d{15}$)|(\\d{17}(?:\\d|x|X)$)",  idcard); 
+				"(^\\d{15}$)|(\\d{17}(?:\\d|x|X)$)", idcard);
 	} 
  
 	/** 
@@ -329,7 +329,7 @@ public class IDCardUtil {
 	 */ 
 	public static boolean is15Idcard(String idcard) {
 		return idcard == null || idcard.isEmpty() ? false : Pattern.matches(
-				"^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$",  
+				"^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$",
 				idcard); 
 	} 
  
@@ -342,7 +342,7 @@ public class IDCardUtil {
 	public static boolean is18Idcard(String idcard) {
 		return Pattern 
 				.matches( 
-						"^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([\\d|x|X]{1})$",  
+						"^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([\\d|x|X]{1})$",
 						idcard); 
 	} 
  
@@ -449,9 +449,9 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		result = idcard.substring(6,  14);
+		result = idcard.substring(6, 14);
 		try {
-			result = DateUtil.format(result,  "yyyy-MM-dd");
+			result = DateUtil.format(result, "yyyy-MM-dd");
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -466,7 +466,7 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		result = idcard.substring(0,  2); 
+		result = idcard.substring(0, 2);
 		return result; 
 	} 
 	public static String getProvince(String idcard){
@@ -488,7 +488,7 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		String id17 = idcard.substring(16,  17);   
+		String id17 = idcard.substring(16, 17);
         if (Integer.parseInt(id17) % 2 != 0) {
             result = "1";   
         } else {
@@ -513,7 +513,7 @@ public class IDCardUtil {
 		String birthday = getBirthday(idcard); 
 		if(BasicUtil.isNotEmpty(birthday)){
 			try {
-				age = (int) DateUtil.diff(Calendar.YEAR,  birthday);
+				age = (int) DateUtil.diff(Calendar.YEAR, birthday);
 			}catch (Exception e){
 				e.printStackTrace();
 			}

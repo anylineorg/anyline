@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -42,7 +42,7 @@ public class AnylineProperty {
      * 多数据源配置
      *  anyline.datasource.{数据源key}.url=...
      */
-    protected Map<String,  DataSourceProperty> datasource;
+    protected Map<String, DataSourceProperty> datasource;
     /**
      * 用来配置默认的 mongodb 数据源，如果还有其他数据源(包括JDBC)可以合并到datasource
      */
@@ -211,9 +211,9 @@ public class AnylineProperty {
     protected String sqlDelimiterPlaceholder					= "`"		    ;   // 界定符的点位符
     protected boolean returnEmptyStringReplaceNull               = false         ;
     /**
-     * service.query() dataset.getRow()返回null时, 是否替换成new DataRow(),  new entity()
+     * service.query() dataset.getRow()返回null时, 是否替换成new DataRow(), new entity()
      */
-    protected boolean returnEmptyInstanceReplaceNull			= false			;	// service.query() dataset.getRow()返回null时, 是否替换成new DataRow(),  new entity()
+    protected boolean returnEmptyInstanceReplaceNull			= false			;	// service.query() dataset.getRow()返回null时, 是否替换成new DataRow(), new entity()
     /**
      * 更新数据库时，是把自动把数组/集合类型拆分
      */
@@ -381,7 +381,7 @@ public class AnylineProperty {
 
     public String generatorTables                               = "*"           ;   // 主键生成器适用的表
 
-    public Map<String,  PrimaryGenerator.GENERATOR> generators          = new HashMap();
+    public Map<String, PrimaryGenerator.GENERATOR> generators          = new HashMap();
 
 
 
@@ -1132,15 +1132,15 @@ public class AnylineProperty {
         ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY = metadataAutoCheckColumnPrimary;
     }
 
-    public Map<String,  PrimaryGenerator.GENERATOR> getGenerators() {
+    public Map<String, PrimaryGenerator.GENERATOR> getGenerators() {
         return generators;
     }
 
-    public void setGenerators(Map<String,  PrimaryGenerator.GENERATOR> generators) {
+    public void setGenerators(Map<String, PrimaryGenerator.GENERATOR> generators) {
         this.generators = generators;
         if(null != generators){
             for(String key:generators.keySet()){
-                ConfigTable.GENERATOR.put(key,  generators.get(key));
+                ConfigTable.GENERATOR.put(key, generators.get(key));
             }
         }
     }
@@ -1171,11 +1171,11 @@ public class AnylineProperty {
     }
 
 
-    public Map<String,  DataSourceProperty> getDatasource() {
+    public Map<String, DataSourceProperty> getDatasource() {
         return datasource;
     }
 
-    public void setDatasource(Map<String,  DataSourceProperty> datasource) {
+    public void setDatasource(Map<String, DataSourceProperty> datasource) {
         this.datasource = datasource;
     }
 

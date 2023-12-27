@@ -949,7 +949,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
-		return super.delete(runtime, random,  table, configs, conditions);
+		return super.delete(runtime, random, table, configs, conditions);
 	}
 
 	/**
@@ -961,7 +961,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, String table){
-		return super.truncate(runtime, random,  table);
+		return super.truncate(runtime, random, table);
 	}
 
 	/**
@@ -975,7 +975,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
-		return super.buildDeleteRun(runtime, dest,  obj, columns);
+		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
 	/**
@@ -2078,7 +2078,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		return super.buildQueryPartitionTablesRun(runtime,  master, tags, name);
+		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
 	}
 	/**
 	 * partition table[命令合成]<br/>
@@ -2091,7 +2091,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
-		return super.buildQueryPartitionTablesRun(runtime,  master, tags);
+		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
 	/**
 	 * partition table[结果集封装]<br/>
@@ -2738,7 +2738,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
 	/**
@@ -2753,7 +2753,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random,  Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
 	/**
@@ -5234,7 +5234,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean drop(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
 
@@ -5248,7 +5248,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception{
+	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
 

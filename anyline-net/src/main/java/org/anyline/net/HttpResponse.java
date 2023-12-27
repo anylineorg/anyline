@@ -43,7 +43,7 @@ public class HttpResponse {
 	private Map<String, HttpCookie> cookies = new HashMap<String, HttpCookie>();
 	private InputStream inputStream;
  
-	private Map<String,  String> seed;
+	private Map<String, String> seed;
 	 
 	public String getContentType() {
 		return contentType; 
@@ -107,16 +107,16 @@ public class HttpResponse {
 		this.url = url; 
 	}
 
-	public Map<String,  String> getHeaders() {
+	public Map<String, String> getHeaders() {
 		return headers;
 	}
-	public void setHeaders(Map<String,  String> headers) {
+	public void setHeaders(Map<String, String> headers) {
 		this.headers = headers;
 	}
-	public Map<String,  HttpCookie> getCookies() {
+	public Map<String, HttpCookie> getCookies() {
 		return cookies;
 	}
-	public void setCookies(Map<String,  HttpCookie> cookies) {
+	public void setCookies(Map<String, HttpCookie> cookies) {
 		this.cookies = cookies;
 	}
 	public HttpCookie getCookie(String key){
@@ -124,7 +124,7 @@ public class HttpResponse {
 	}
 	public void setCookie(HttpCookie cookie){
 		if(null != cookie){
-			cookies.put(cookie.getKey(),  cookie);
+			cookies.put(cookie.getKey(), cookie);
 		}
 	}
 	public String getCookieValue(String key){
@@ -153,10 +153,10 @@ public class HttpResponse {
 		this.backFileCd = backFileCd; 
 	} 
  
-	public Map<String,  String> getSeed() {
+	public Map<String, String> getSeed() {
 		return seed; 
 	} 
-	public void setSeed(Map<String,  String> seed) {
+	public void setSeed(Map<String, String> seed) {
 		this.seed = seed; 
 	} 
 	public String getParser() {

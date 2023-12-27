@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -84,15 +84,15 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){
-        Run run = new TableRun(runtime,  dest);
-        PrimaryGenerator generator = checkPrimaryGenerator(type(),  dest.replace(getDelimiterFr(),  "").replace(getDelimiterTo(),  ""));
+    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+        Run run = new TableRun(runtime, dest);
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         if(null != generator) {
-            Object pv = BeanUtil.getFieldValue(obj,  "_id");
+            Object pv = BeanUtil.getFieldValue(obj, "_id");
             if(null == pv){
                 List<String> pk = new ArrayList<>();
                 pk.add("_id");
-                generator.create(obj,  DatabaseType.MongoDB,  dest,  pk,  null);
+                generator.create(obj, DatabaseType.MongoDB, dest, pk, null);
             }
         }
         run.setValue(obj);
@@ -108,18 +108,18 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore confis,  List<String> columns){
-        Run run = new TableRun(runtime,  dest);
-        PrimaryGenerator generator = checkPrimaryGenerator(type(),  dest.replace(getDelimiterFr(),  "").replace(getDelimiterTo(),  ""));
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore confis, List<String> columns){
+        Run run = new TableRun(runtime, dest);
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         if(null != generator) {
             List<String> pk = new ArrayList<>();
             pk.add("_id");
             for (Object item : list) {
-                Object pv = BeanUtil.getFieldValue(item,  "_id");
+                Object pv = BeanUtil.getFieldValue(item, "_id");
                 if(null != pv){
                     break;
                 }
-                generator.create(item,  DatabaseType.MongoDB,  dest,  pk,  null);
+                generator.create(item, DatabaseType.MongoDB, dest, pk, null);
             }
         }
         run.setValue(list);
@@ -135,7 +135,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @return int 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime,  String random,  Object data,  ConfigStore configs,  Run run,  String[] pks) {
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         long cnt = 0;
         Object value = run.getValue();
         String collection = run.getTable();
@@ -152,12 +152,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             MongoCollection cons = null;
             if(value instanceof List){
                 List list = (List) value;
-                cons = database.getCollection(run.getTable(),  list.get(0).getClass());
+                cons = database.getCollection(run.getTable(), list.get(0).getClass());
                 cnt = list.size();
                 cons.insertMany(list);
             }else if(value instanceof DataSet){
                 DataSet set = (DataSet)value;
-                cons = database.getCollection(run.getTable(),  ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
+                cons = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
                 cons.insertMany(set.getRows());
                 cnt = set.size();
             }else if(value instanceof EntitySet){
@@ -172,10 +172,10 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                     list.add(item);
                     cnt ++;
                 }
-                cons = database.getCollection(run.getTable(),  list.get(0).getClass());
+                cons = database.getCollection(run.getTable(), list.get(0).getClass());
                 cons.insertMany(list);
             }else{
-                cons = database.getCollection(run.getTable(),  value.getClass());
+                cons = database.getCollection(run.getTable(), value.getClass());
                 cons.insertOne(value);
                 cnt = 1;
             }
@@ -186,25 +186,25 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}ms][collection:{}]",  random,  run.getTable(),  millis,  collection);
+                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}ms][collection:{}]", random, run.getTable(), millis, collection);
                     if(null != dmListener){
-                        dmListener.slow(runtime,  random,  ACTION.DML.INSERT,  run,  null,  null,  null,  true,  cnt,  millis);
+                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
                 }
             }
             if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[action:insert][collection:{}][执行耗时:{}ms][影响行数:{}]",  random,  run.getTable(),  millis,  LogUtil.format(cnt,  34));
+                log.info("{}[action:insert][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(cnt, 34));
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 e.printStackTrace();
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e,  e);
+                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-                    log.error("{}[{}][collection:{}][param:{}]",  random,  LogUtil.format("插入异常:",  33)+e, run.getTable(), BeanUtil.object2json(data));
+                    log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTable(), BeanUtil.object2json(data));
                 }
             }
         }
@@ -442,7 +442,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs,  Run run) {
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
@@ -788,7 +788,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(null != dmListener){
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
         }
-        InterceptorProxy.afterDelete(runtime, random, run,  cmd_success, result, millis);
+        InterceptorProxy.afterDelete(runtime, random, run, cmd_success, result, millis);
         return result;
     }
 

@@ -328,7 +328,7 @@ public class DefaultSQLStore extends SQLStore {
 			swt = Compare.EMPTY_VALUE_SWITCH.valueOf(_swt.toUpperCase());
 		}else {
 			boolean required = BasicUtil.parseBoolean(element.attributeValue("required"), false);
-			boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"),  false);
+			boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"), false);
 			if(strictRequired){
 				swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
 			}else if(required){
@@ -336,12 +336,12 @@ public class DefaultSQLStore extends SQLStore {
 			}
 		}
 		if (null != id) {
-			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"),  false);    // 是否是静态文本
+			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"), false);    // 是否是静态文本
 			String text = element.getText().trim();            // 查询条件文本
 			if (!text.toUpperCase().startsWith("AND ")) {
 				text = "\nAND " + text;
 			}
-			condition = new DefaultXMLCondition(id,  text,  isStatic);
+			condition = new DefaultXMLCondition(id, text, isStatic);
 			String test = element.attributeValue("test");
 			condition.setTest(test);
 			if (null != prepare) {
@@ -409,19 +409,19 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		try {
 			if (ConfigTable.isSQLDebug()) {
-				log.warn("[提取SQL][id:{}]",  id);
+				log.warn("[提取SQL][id:{}]", id);
 			}
-			log.debug("sqlId:{}",  id);
+			log.debug("sqlId:{}", id);
 			prepare = sqls.get(id);
 			if (null == prepare) {
-				log.error("[SQL提取失败][id:{}][所有可用sql:{}]",  id,  BeanUtil.concat(BeanUtil.getMapKeys(sqls)));
+				log.error("[SQL提取失败][id:{}][所有可用sql:{}]", id, BeanUtil.concat(BeanUtil.getMapKeys(sqls)));
 			}else{
 				if(prepare.isMultiple()){
-					log.error("[SQL提取失败][有多个重名SQL使用完整ID调用][id:{}]",  id);
+					log.error("[SQL提取失败][有多个重名SQL使用完整ID调用][id:{}]", id);
 				}
 			}
 		} catch (Exception e) {
-			log.error("[SQL提取失败][id:{}]",  id);
+			log.error("[SQL提取失败][id:{}]", id);
 		}
 		return prepare;
 	}

@@ -199,9 +199,9 @@ public class RSAUtil {
 			}
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
-			return new String(rsaSplitCodec(cipher,  Cipher.DECRYPT_MODE,  Base64.decodeBase64(data),  publicKey.getModulus().bitLength()),  CHARSET);
+			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET);
 		} catch (Exception e) {
-			throw new Exception("[公钥解密异常][解密数据:" + data + "]",  e);
+			throw new Exception("[公钥解密异常][解密数据:" + data + "]", e);
 		} 
 	} 
 
@@ -214,7 +214,7 @@ public class RSAUtil {
      * @return String
      * @throws Exception 异常 Exception
      */ 
-    public static String sign(byte[] data,  PrivateKey key) throws Exception {
+    public static String sign(byte[] data, PrivateKey key) throws Exception {
         Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM); 
         signature.initSign(key);
         signature.update(data); 
@@ -222,11 +222,11 @@ public class RSAUtil {
          
 		 
     }
-	public static String sign(String data,  String key) throws Exception {
-		return sign(data.getBytes(),  createPrivateKey(key));
+	public static String sign(String data, String key) throws Exception {
+		return sign(data.getBytes(), createPrivateKey(key));
 	}
-	public static String sign(String data,  PrivateKey key) throws Exception {
-		return sign(data.getBytes(),  key);
+	public static String sign(String data, PrivateKey key) throws Exception {
+		return sign(data.getBytes(), key);
 	}
 
 	/**
@@ -238,14 +238,14 @@ public class RSAUtil {
      * @return boolean
      * @throws Exception 异常  Exception
      */
-	public static boolean verify(byte[] data,  PublicKey key,  String sign) throws Exception {
+	public static boolean verify(byte[] data, PublicKey key, String sign) throws Exception {
 		Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
 		signature.initVerify(key);
 		signature.update(data);
 		return signature.verify(Base64Util.decode(sign));
 	}
-	public static boolean verify(byte[] data,  String key,  String sign) throws Exception {
-		return verify(data,  createPublicKey(key),  sign);
+	public static boolean verify(byte[] data, String key, String sign) throws Exception {
+		return verify(data, createPublicKey(key), sign);
 	}
 	/**
 	 * 校验数字签名
@@ -256,8 +256,8 @@ public class RSAUtil {
 	 * @return boolean
 	 * @throws Exception 异常  Exception
 	 */
-	public static boolean verify(String data,  String key,  String sign) throws Exception {
-		return verify(data.getBytes(),  key,  sign);
+	public static boolean verify(String data, String key, String sign) throws Exception {
+		return verify(data.getBytes(), key, sign);
 	}
 	/**
 	 * 校验数字签名
@@ -268,8 +268,8 @@ public class RSAUtil {
 	 * @return boolean
 	 * @throws Exception 异常  Exception
 	 */
-	public static boolean verify(String data,  PublicKey key,  String sign) throws Exception {
-		return verify(data.getBytes(),  key,  sign);
+	public static boolean verify(String data, PublicKey key, String sign) throws Exception {
+		return verify(data.getBytes(), key, sign);
 	}
 
 	/**
@@ -359,7 +359,7 @@ public class RSAUtil {
 	}
 
 	@SuppressWarnings("deprecation")
-	private static byte[] rsaSplitCodec(Cipher cipher,  int opmode,  byte[] datas,  int keySize) throws Exception{
+	private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize) throws Exception{
 		int maxBlock = 0;
 		if (opmode == Cipher.DECRYPT_MODE) {
 			maxBlock = keySize / 8;
@@ -373,16 +373,16 @@ public class RSAUtil {
 		try {
 			while (datas.length > offSet) {
 				if (datas.length - offSet > maxBlock) {
-					buff = cipher.doFinal(datas,  offSet,  maxBlock);
+					buff = cipher.doFinal(datas, offSet, maxBlock);
 				} else {
-					buff = cipher.doFinal(datas,  offSet,  datas.length - offSet);
+					buff = cipher.doFinal(datas, offSet, datas.length - offSet);
 				}
-				out.write(buff,  0,  buff.length);
+				out.write(buff, 0, buff.length);
 				i++;
 				offSet = i * maxBlock;
 			}
 		} catch (Exception e) {
-			throw new Exception("[加密异常][加解密阀值:" + maxBlock + "]",  e);
+			throw new Exception("[加密异常][加解密阀值:" + maxBlock + "]", e);
 		}
 		byte[] result = out.toByteArray();
 		IOUtils.closeQuietly(out);

@@ -97,9 +97,9 @@ public abstract class NumberTextUtil {
  
 		static enum Connect {
  
-			Minus("minus"), Hundred("hundred"), And("and"), AfterMinus(" "),  AfterNumber(
-					" "),  AfterPower(" "),  AfterHundred(" "),  AfterAnd(" "),  AfterTen(
-					"-"),  ;
+			Minus("minus"), Hundred("hundred"), And("and"), AfterMinus(" "), AfterNumber(
+					" "), AfterPower(" "), AfterHundred(" "), AfterAnd(" "), AfterTen(
+					"-"), ;
  
 			final String display; 
  
@@ -114,27 +114,27 @@ public abstract class NumberTextUtil {
  
 		static enum Power {
  
-			Thousand("thousand"),  // 10 ^ 3
-			Million("million"),  // 10 ^ 6
-			Billion("billion"),  // 10 ^ 9
-			Trillion("trillion"),  // 10 ^ 12
-			Quadrillion("quadrillion"),  // 10 ^ 15
-			Quintillion("quintillion"),  // 10 ^ 18 (enough for Long.MAX_VALUE)
-			Sextillion("sextillion"),  // 10 ^ 21
-			Septillion("septillion"),  // 10 ^ 24
-			Octillion("octillion"),  // 10 ^ 27
-			Nonillion("nonillion"),  // 10 ^ 30
-			Decillion("decillion"),  // 10 ^ 33
-			Undecillion("undecillion"),  // 10 ^ 36
-			Duodecillion("duodecillion"),  // 10 ^ 39
-			Tredecillion("tredecillion"),  // 10 ^ 42
-			Quattuordecillion("quattuordecillion"),  // 10 ^ 45
-			Quindecillion("quindecillion"),  // 10 ^ 48
-			Sexdecillion("sexdecillion"),  // 10 ^ 51
-			Septendecillion("septendecillion"),  // 10 ^ 54
-			Octodecillion("octodecillion"),  // 10 ^ 57
-			Novemdecillion("novemdecillion"),  // 10 ^ 60
-			Vigintillion("vigintillion"),  // 10 ^ 63
+			Thousand("thousand"), // 10 ^ 3
+			Million("million"), // 10 ^ 6
+			Billion("billion"), // 10 ^ 9
+			Trillion("trillion"), // 10 ^ 12
+			Quadrillion("quadrillion"), // 10 ^ 15
+			Quintillion("quintillion"), // 10 ^ 18 (enough for Long.MAX_VALUE)
+			Sextillion("sextillion"), // 10 ^ 21
+			Septillion("septillion"), // 10 ^ 24
+			Octillion("octillion"), // 10 ^ 27
+			Nonillion("nonillion"), // 10 ^ 30
+			Decillion("decillion"), // 10 ^ 33
+			Undecillion("undecillion"), // 10 ^ 36
+			Duodecillion("duodecillion"), // 10 ^ 39
+			Tredecillion("tredecillion"), // 10 ^ 42
+			Quattuordecillion("quattuordecillion"), // 10 ^ 45
+			Quindecillion("quindecillion"), // 10 ^ 48
+			Sexdecillion("sexdecillion"), // 10 ^ 51
+			Septendecillion("septendecillion"), // 10 ^ 54
+			Octodecillion("octodecillion"), // 10 ^ 57
+			Novemdecillion("novemdecillion"), // 10 ^ 60
+			Vigintillion("vigintillion"), // 10 ^ 63
 			; 
  
 			final String display; 
@@ -146,18 +146,18 @@ public abstract class NumberTextUtil {
  
 		static enum Digit {
  
-			Zero("zero",  "zeroth",  "ten",  ""),  One("one",  "first",  "eleven",
-					"ten"),  Two("two",  "second",  "twelve",  "twenty"),  Three(
-					"three",  "third",  "thirteen",  "thirty"),  Four("four",
-					"fourth",  "fourteen",  "fourty"),  Five("five",  "fifth",
-					"fifteen",  "fifty"),  Six("six",  "sixth",  "sixteen",  "sixty"),  Seven(
-					"seven",  "seventh",  "seventeen",  "seventy"),  Eight("eight",
-					"eighth",  "eighteen",  "eighty"),  Nine("nine",  "nineth",
-					"nineteen",  "ninety"),  ;
+			Zero("zero", "zeroth", "ten", ""), One("one", "first", "eleven",
+					"ten"), Two("two", "second", "twelve", "twenty"), Three(
+					"three", "third", "thirteen", "thirty"), Four("four",
+					"fourth", "fourteen", "fourty"), Five("five", "fifth",
+					"fifteen", "fifty"), Six("six", "sixth", "sixteen", "sixty"), Seven(
+					"seven", "seventh", "seventeen", "seventy"), Eight("eight",
+					"eighth", "eighteen", "eighty"), Nine("nine", "nineth",
+					"nineteen", "ninety"), ;
  
-			final String display,  displayOrdinal,  plusTen,  multiTen;
+			final String display, displayOrdinal, plusTen, multiTen;
  
-			Digit(String display,  String displayOrdinal,  String plusTen,
+			Digit(String display, String displayOrdinal, String plusTen,
 					String multiTen) {
 				this.display = display; 
 				this.displayOrdinal = displayOrdinal; 
@@ -166,29 +166,29 @@ public abstract class NumberTextUtil {
 			} 
 		} 
  
-		private static final Map<String,  String> _Ordinals;
+		private static final Map<String, String> _Ordinals;
 		static {
 			_Ordinals = new HashMap<>(); 
 			for (Digit d : Digit.values()) 
-				_Ordinals.put(d.display,  d.displayOrdinal);
+				_Ordinals.put(d.display, d.displayOrdinal);
 		} 
  
 		@Override 
 		public String getText(long number) {
 			StringBuilder builder = new StringBuilder(); 
-			buildText(builder,  number);
+			buildText(builder, number);
 			return builder.toString(); 
 		} 
  
 		@Override 
 		public String getOrdinalText(long number) {
 			StringBuilder builder = new StringBuilder(); 
-			buildText(builder,  number);
+			buildText(builder, number);
 			replaceLastTokenWithOrdinal(builder); 
 			return builder.toString(); 
 		} 
  
-		private void buildText(StringBuilder builder,  long number) {
+		private void buildText(StringBuilder builder, long number) {
  
 			assert builder != null; 
  
@@ -205,16 +205,16 @@ public abstract class NumberTextUtil {
 				power++; 
  
 			while (power > 0) {
-				boolean modified = extendToken(builder,  numString,  power * 3);
+				boolean modified = extendToken(builder, numString, power * 3);
 				if (modified) 
 					builder.append(getConnectDisplay(Connect.AfterNumber)) 
 							.append(getPowerDisplay(Power.values()[power - 1])); 
 				power--; 
 			} 
-			extendToken(builder,  Long.toString(number),  0);
+			extendToken(builder, Long.toString(number), 0);
 		} 
  
-		private boolean extendToken(StringBuilder builder,  String number,
+		private boolean extendToken(StringBuilder builder, String number,
 				int suffix) {
  
 			assert builder != null && checkNumber(number) 
@@ -266,7 +266,7 @@ public abstract class NumberTextUtil {
 			while (suffix >= 0 && !isConnect(builder.charAt(suffix))) 
 				suffix--; 
 			String lastToken = builder.substring(suffix + 1); 
-			builder.delete(suffix + 1,  builder.length()).append(
+			builder.delete(suffix + 1, builder.length()).append(
 					toOrdinal(lastToken)); 
 		} 
  
@@ -298,7 +298,7 @@ public abstract class NumberTextUtil {
 			String result = _Ordinals.get(name); 
 			if (result == null) {
 				if (name.charAt(name.length() - 1) == 'y') 
-					result = name.substring(0,  name.length() - 1) + "ieth";
+					result = name.substring(0, name.length() - 1) + "ieth";
 				else 
 					result = name + "th"; 
 			} 
@@ -344,16 +344,16 @@ public abstract class NumberTextUtil {
 	private static class NumberTextChinese extends NumberTextUtil {
  
 		static enum Type {
-			Simplified,  Traditional;
+			Simplified, Traditional;
 		} 
  
 		static enum Connect {
-			Di("第",  "第"),  Fu("负",  "負"),  Ling("零",  "零"),  Shi("十",  "拾"),  Bai("百",
-					"佰"),  Qian("千",  "仟"),  ;
+			Di("第", "第"), Fu("负", "負"), Ling("零", "零"), Shi("十", "拾"), Bai("百",
+					"佰"), Qian("千", "仟"), ;
  
-			final String display,  displayTraditional;
+			final String display, displayTraditional;
  
-			Connect(String display,  String displayTraditional) {
+			Connect(String display, String displayTraditional) {
 				this.display = display; 
 				this.displayTraditional = displayTraditional; 
 			} 
@@ -361,22 +361,22 @@ public abstract class NumberTextUtil {
  
 		static enum Power {
  
-			Wan("万",  "萬"),  // 10^4
-			Yi("亿",  "億"),  // 10^8
-			Zhao("兆",  "兆"),  // 10^12
-			Jing("京",  "京"),  // 10^16 (enough for Long.MAX_VALUE)
-			Gai("垓",  "垓"),  // 10^20
-			Zi("秭",  "秭"),  // 10^24
-			Rang("穰",  "穰"),  // 10^28
-			Gou("沟",  "溝"),  // 10^32
-			Jian("涧",  "澗"),  // 10^36
-			Zheng("正",  "正"),  // 10^40
-			Zai("载",  "載"),  // 10^44
+			Wan("万", "萬"), // 10^4
+			Yi("亿", "億"), // 10^8
+			Zhao("兆", "兆"), // 10^12
+			Jing("京", "京"), // 10^16 (enough for Long.MAX_VALUE)
+			Gai("垓", "垓"), // 10^20
+			Zi("秭", "秭"), // 10^24
+			Rang("穰", "穰"), // 10^28
+			Gou("沟", "溝"), // 10^32
+			Jian("涧", "澗"), // 10^36
+			Zheng("正", "正"), // 10^40
+			Zai("载", "載"), // 10^44
 			; 
  
-			final String display,  displayTraditional;
+			final String display, displayTraditional;
  
-			Power(String display,  String displayTraditional) {
+			Power(String display, String displayTraditional) {
 				this.display = display; 
 				this.displayTraditional = displayTraditional; 
 			} 
@@ -384,14 +384,14 @@ public abstract class NumberTextUtil {
  
 		static enum Digit {
  
-			Ling("零",  "零"),  // just to occupy this position
-			Yi("一",  "壹"),  Er("二",  "贰"),  San("三",  "叁"),  Si("四",  "肆"),  Wu("五",
-					"伍"),  Liu("六",  "陆"),  Qi("七",  "柒"),  Ba("八",  "捌"),  Jiu("九",
-					"玖"),  ;
+			Ling("零", "零"), // just to occupy this position
+			Yi("一", "壹"), Er("二", "贰"), San("三", "叁"), Si("四", "肆"), Wu("五",
+					"伍"), Liu("六", "陆"), Qi("七", "柒"), Ba("八", "捌"), Jiu("九",
+					"玖"), ;
  
-			final String display,  displayTraditional;
+			final String display, displayTraditional;
  
-			Digit(String display,  String displayTraditional) {
+			Digit(String display, String displayTraditional) {
 				this.display = display; 
 				this.displayTraditional = displayTraditional; 
 			} 
@@ -409,7 +409,7 @@ public abstract class NumberTextUtil {
 		public String getText(long number) {
  
 			StringBuilder builder = new StringBuilder(); 
-			buildText(builder,  number);
+			buildText(builder, number);
 			return builder.toString(); 
 		} 
  
@@ -417,11 +417,11 @@ public abstract class NumberTextUtil {
 		public String getOrdinalText(long number) {
  
 			StringBuilder builder = new StringBuilder().append("Di"); 
-			buildText(builder,  number);
+			buildText(builder, number);
 			return builder.toString(); 
 		} 
  
-		private void buildText(StringBuilder builder,  long number) {
+		private void buildText(StringBuilder builder, long number) {
  
 			assert builder != null; 
  
@@ -436,14 +436,14 @@ public abstract class NumberTextUtil {
 				power++; 
  
 			while (power > 0) {
-				if (extendToken(builder,  numString,  power * 4))
+				if (extendToken(builder, numString, power * 4))
 					builder.append(getPowerDisplay(Power.values()[power - 1])); 
 				power--; 
 			} 
-			extendToken(builder,  numString,  0);
+			extendToken(builder, numString, 0);
 		} 
  
-		private boolean extendToken(StringBuilder builder,  String number,
+		private boolean extendToken(StringBuilder builder, String number,
 				int suffix) {
  
 			assert builder != null && checkNumber(number) 

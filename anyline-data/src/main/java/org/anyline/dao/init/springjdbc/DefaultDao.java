@@ -435,7 +435,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?, ?, ?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet allItems = runtime.getAdapter().querys(runtime, random,   new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet allItems = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set){
 							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
@@ -447,7 +447,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet alls = runtime.getAdapter().querys(runtime, random,   new DefaultTextPrepare(sql), conditions);
+						DataSet alls = runtime.getAdapter().querys(runtime, random, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set){
 							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
@@ -482,7 +482,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				runtime.getAdapter().deletes(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
+				runtime.getAdapter().deletes(runtime, random, join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
 
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -978,17 +978,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * LinkedHashMap<String, MasterTable> mtables(Catalog catalog, Schema schema, String name, String types)
-	 * LinkedHashMap<String, MasterTable> mtables(Schema schema, String name,  String types)
-	 * LinkedHashMap<String,  MasterTable> mtables(String name,  String types)
-	 * LinkedHashMap<String,  MasterTable> mtables(String types)
-	 * LinkedHashMap<String,  MasterTable> mtables()
+	 * LinkedHashMap<String, MasterTable> mtables(Schema schema, String name, String types)
+	 * LinkedHashMap<String, MasterTable> mtables(String name, String types)
+	 * LinkedHashMap<String, MasterTable> mtables(String types)
+	 * LinkedHashMap<String, MasterTable> mtables()
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String,  T> mtables(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String pattern,  String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().mtables(runtime,  random,  greedy,   catalog,  schema,  pattern,  types);
+		return runtime.getAdapter().mtables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -997,29 +997,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime,  String random,  MasterTable table){
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddl(runtime,  random,  table);
+		return runtime.getAdapter().ddl(runtime, random, table);
 	}
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String,  PartitionTable> ptables(Catalog catalog,  Schema schema,  String master,  String name)
-	 * LinkedHashMap<String,  PartitionTable> ptables(Schema schema,  String master,  String name)
-	 * LinkedHashMap<String,  PartitionTable> ptables(String master,  String name)
-	 * LinkedHashMap<String,  PartitionTable> ptables(String master)
-	 * LinkedHashMap<String,  PartitionTable> ptables(MasterTable table)
+	 * LinkedHashMap<String, PartitionTable> ptables(Catalog catalog, Schema schema, String master, String name)
+	 * LinkedHashMap<String, PartitionTable> ptables(Schema schema, String master, String name)
+	 * LinkedHashMap<String, PartitionTable> ptables(String master, String name)
+	 * LinkedHashMap<String, PartitionTable> ptables(String master)
+	 * LinkedHashMap<String, PartitionTable> ptables(MasterTable table)
 	 ******************************************************************************************************************/
 
 
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime,  String random,  boolean greedy,  MasterTable master,  Map<String,  Object> tags,  String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ptables(runtime,  random,  greedy,  master,  tags,  name);
+		return runtime.getAdapter().ptables(runtime, random, greedy, master, tags, name);
 	}
 
 
@@ -1029,48 +1029,48 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime,  String random,  PartitionTable table){
+	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddl(runtime,  random,  table);
+		return runtime.getAdapter().ddl(runtime, random, table);
 	}
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String,  Column> columns(Table table)
-	 * LinkedHashMap<String,  Column> columns(String table)
-	 * LinkedHashMap<String,  Column> columns(Catalog catalog,  Schema schema,  String table)
+	 * LinkedHashMap<String, Column> columns(Table table)
+	 * LinkedHashMap<String, Column> columns(String table)
+	 * LinkedHashMap<String, Column> columns(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Column> LinkedHashMap<String,  T> columns(DataRuntime runtime,  String random,  boolean greedy,  Table table,  boolean primary){
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().columns(runtime,  random,  greedy,  table,  primary);
+		return runtime.getAdapter().columns(runtime, random, greedy, table, primary);
 	}
 
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().columns(runtime,  random,  greedy,  catalog,  schema);
+		return runtime.getAdapter().columns(runtime, random, greedy, catalog, schema);
 
 	}
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String,  Tag> tags(Table table)
-	 * LinkedHashMap<String,  Tag> tags(String table)
-	 * LinkedHashMap<String,  Tag> tags(Catalog catalog,  Schema schema,  String table)
+	 * LinkedHashMap<String, Tag> tags(Table table)
+	 * LinkedHashMap<String, Tag> tags(String table)
+	 * LinkedHashMap<String, Tag> tags(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Tag> LinkedHashMap<String,  T> tags(DataRuntime runtime,  String random,  boolean greedy,  Table table) {
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().tags(runtime,  random,  greedy,  table);
+		return runtime.getAdapter().tags(runtime, random, greedy, table);
 	}
 
 	/* *****************************************************************************************************************
@@ -1078,7 +1078,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * PrimaryKey primary(Table table)
 	 * PrimaryKey primary(String table)
-	 * PrimaryKey primary(Catalog catalog,  Schema schema,  String table)
+	 * PrimaryKey primary(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	/**
 	 * 索引
@@ -1086,83 +1086,83 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return map
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime,  String random,  boolean greedy,  Table table){
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().primary(runtime,  random,  greedy,  table);
+		return runtime.getAdapter().primary(runtime, random, greedy, table);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignsRun(DataRuntime runtime,  Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String,  T> foreigns(DataRuntime runtime,  int index,  Table table,  LinkedHashMap<String,  T> foreigns,  DataSet set) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String,  T> foreigns(DataRuntime runtime,  String random,  boolean greedy,  Table table){
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().foreigns(runtime,  random,  greedy,  table);
+		return runtime.getAdapter().foreigns(runtime, random, greedy, table);
 	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String,  Index> indexs(Table table,  String name)
-	 * LinkedHashMap<String,  Index> indexs(String table,  String name)
-	 * LinkedHashMap<String,  Index> indexs(Table table)
-	 * LinkedHashMap<String,  Index> indexs(String table)
-	 * LinkedHashMap<String,  Index> indexs(Catalog catalog,  Schema schema,  String table)
+	 * LinkedHashMap<String, Index> indexs(Table table, String name)
+	 * LinkedHashMap<String, Index> indexs(String table, String name)
+	 * LinkedHashMap<String, Index> indexs(Table table)
+	 * LinkedHashMap<String, Index> indexs(String table)
+	 * LinkedHashMap<String, Index> indexs(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime,  String random,  boolean greedy,  Table table,  String name){
+	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().indexs(runtime,  random,  greedy,  table,  name);
+		return runtime.getAdapter().indexs(runtime, random, greedy, table, name);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String,  T> indexs(DataRuntime runtime,  String random,  Table table,  String name){
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().indexs(runtime,  random,  table,  name);
+		return runtime.getAdapter().indexs(runtime, random, table, name);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String,  Constraint> constraints(Table table,  String name)
-	 * LinkedHashMap<String,  Constraint> constraints(String table,  String name)
-	 * LinkedHashMap<String,  Constraint> constraints(Table table)
-	 * LinkedHashMap<String,  Constraint> constraints(String table)
-	 * LinkedHashMap<String,  Constraint> constraints(Catalog catalog,  Schema schema,  String table)
+	 * LinkedHashMap<String, Constraint> constraints(Table table, String name)
+	 * LinkedHashMap<String, Constraint> constraints(String table, String name)
+	 * LinkedHashMap<String, Constraint> constraints(Table table)
+	 * LinkedHashMap<String, Constraint> constraints(String table)
+	 * LinkedHashMap<String, Constraint> constraints(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime,  String random,  boolean greedy,  Table table,  String name) {
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String name) {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().constraints(runtime,  random,  greedy,  table,  name);
+		return runtime.getAdapter().constraints(runtime, random, greedy, table, name);
 	}
 	@Override
-	public <T extends Constraint> LinkedHashMap<String,  T> constraints(DataRuntime runtime,  String random,  Table table,  Column column,  String name) {
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String name) {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().constraints(runtime,  random,  table,  column,  name);
+		return runtime.getAdapter().constraints(runtime, random, table, column, name);
 	}
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Trigger> LinkedHashMap<String,  T> triggers(DataRuntime runtime,  String random,  boolean greedy,  Table table,  List<Trigger.EVENT> events){
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().triggers(runtime,  random,  greedy,  table,  events);
+		return runtime.getAdapter().triggers(runtime, random, greedy, table, events);
 
 	}
 
@@ -1170,18 +1170,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													procedure
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String name){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().procedures(runtime,  random,  greedy,  catalog,  schema,  name);
+		return runtime.getAdapter().procedures(runtime, random, greedy, catalog, schema, name);
 	}
 	@Override
-	public <T extends Procedure> LinkedHashMap<String,  T> procedures(DataRuntime runtime,  String random,  Catalog catalog,  Schema schema,  String name){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().procedures(runtime,  random,  catalog,  schema,  name);
+		return runtime.getAdapter().procedures(runtime, random, catalog, schema, name);
 	}
 
 	/**
@@ -1190,11 +1190,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime,  String random,  Procedure procedure){
+	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddl(runtime,  random,  procedure);
+		return runtime.getAdapter().ddl(runtime, random, procedure);
 
 	}
 
@@ -1202,18 +1202,18 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													function
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String name){
+	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().functions(runtime,  random,  greedy,  catalog,  schema,  name);
+		return runtime.getAdapter().functions(runtime, random, greedy, catalog, schema, name);
 	}
 	@Override
-	public <T extends Function> LinkedHashMap<String,  T> functions(DataRuntime runtime,  String random,   Catalog catalog,  Schema schema,  String name){
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().functions(runtime,  random,  catalog,  schema,  name);
+		return runtime.getAdapter().functions(runtime, random, catalog, schema, name);
 	}
 
 	/**
@@ -1222,11 +1222,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime,  String random,  Function function){
+	public List<String> ddl(DataRuntime runtime, String random, Function function){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddl(runtime,  random,  function);
+		return runtime.getAdapter().ddl(runtime, random, function);
 	}
 	/* *****************************************************************************************************************
 	 *
@@ -1255,24 +1255,24 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Table table) throws Exception
 	 * boolean alter(Table table) throws Exception
 	 * boolean drop(Table table) throws Exception
-	 * boolean rename(Table origin,  String name) throws Exception
+	 * boolean rename(Table origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Table meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 
 	@Override
 	public boolean alter(Table meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 
 	@Override
 	public boolean drop(Table meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	/**
 	 * 重命名
@@ -1282,9 +1282,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @throws Exception DDL异常
 	 */
 	@Override
-	public boolean rename(Table origin,  String name) throws Exception {
+	public boolean rename(Table origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -1297,25 +1297,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(View meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 
 	@Override
 	public boolean alter(View meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 
 	@Override
 	public boolean drop(View meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 
 	@Override
-	public boolean rename(View origin,  String name) throws Exception {
+	public boolean rename(View origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 
@@ -1329,22 +1329,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(MasterTable meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 	@Override
 	public boolean alter(MasterTable meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
 	public boolean drop(MasterTable meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean rename(MasterTable origin,  String name) throws Exception {
+	public boolean rename(MasterTable origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -1358,52 +1358,52 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean create(PartitionTable meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 	@Override
 	public boolean alter(PartitionTable meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 	@Override
 	public boolean drop(PartitionTable meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 
 	@Override
-	public boolean rename(PartitionTable origin,  String name) throws Exception {
+	public boolean rename(PartitionTable origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean add(Column column) throws Exception
-	 * boolean alter(Table table,  Column column) throws Exception
+	 * boolean alter(Table table, Column column) throws Exception
 	 * boolean alter(Column column) throws Exception
 	 * boolean drop(Column column) throws Exception
 	 *
-	 * private boolean alter(Table table,  Column column,  boolean trigger) throws Exception
+	 * private boolean alter(Table table, Column column, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Column meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 	@Override
 	public boolean drop(Column meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table,  Column column) throws Exception{
-		return alter(table,  column,  true);
+	public boolean alter(Table table, Column column) throws Exception{
+		return alter(table, column, true);
 	}
 	@Override
 	public boolean alter(Column meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	/**
 	 * 修改列
@@ -1412,47 +1412,47 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
-	public boolean alter(Table table,  Column meta,  boolean trigger) throws Exception{
+	public boolean alter(Table table, Column meta, boolean trigger) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  table,  meta,  trigger);
+		return runtime.getAdapter().alter(runtime, table, meta, trigger);
 	}
 
 
 	@Override
-	public boolean rename(Column origin,  String name) throws Exception {
+	public boolean rename(Column origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean add(Tag tag) throws Exception
-	 * boolean alter(Table table,  Tag tag) throws Exception
+	 * boolean alter(Table table, Tag tag) throws Exception
 	 * boolean alter(Tag tag) throws Exception
 	 * boolean drop(Tag tag) throws Exception
 	 *
-	 * private boolean alter(Table table,  Tag tag,  boolean trigger) throws Exception
+	 * private boolean alter(Table table, Tag tag, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
 
 	@Override
 	public boolean add(Tag meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 	@Override
 	public boolean drop(Tag meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table,  Tag column) throws Exception{
-		return alter(table,  column,  true);
+	public boolean alter(Table table, Tag column) throws Exception{
+		return alter(table, column, true);
 	}
 	@Override
 	public boolean alter(Tag meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	/**
 	 * 修改标签
@@ -1461,16 +1461,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
-	public boolean alter(Table table,  Tag meta,  boolean trigger) throws Exception{
+	public boolean alter(Table table, Tag meta, boolean trigger) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  table,  meta,  trigger);
+		return runtime.getAdapter().alter(runtime, table, meta, trigger);
 	}
 
 
 	@Override
-	public boolean rename(Tag origin,  String name) throws Exception {
+	public boolean rename(Tag origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -1483,29 +1483,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(PrimaryKey meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 
 	@Override
 	public boolean alter(PrimaryKey meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table,  PrimaryKey meta) throws Exception{
+	public boolean alter(Table table, PrimaryKey meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  table,  meta);
+		return runtime.getAdapter().alter(runtime, table, meta);
 	}
 	@Override
 	public boolean drop(PrimaryKey meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 
 	@Override
-	public boolean rename(PrimaryKey origin,  String name) throws Exception {
+	public boolean rename(PrimaryKey origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -1518,29 +1518,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(ForeignKey meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 
 	@Override
 	public boolean alter(ForeignKey meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table,  ForeignKey meta) throws Exception{
+	public boolean alter(Table table, ForeignKey meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  table,  meta);
+		return runtime.getAdapter().alter(runtime, table, meta);
 	}
 	@Override
 	public boolean drop(ForeignKey meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 
 	@Override
-	public boolean rename(ForeignKey origin,  String name) throws Exception {
+	public boolean rename(ForeignKey origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 	/* *****************************************************************************************************************
 	 * 													index
@@ -1552,28 +1552,28 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public boolean add(Index meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 
 	@Override
 	public boolean alter(Index meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table,  Index meta) throws Exception{
+	public boolean alter(Table table, Index meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  table,  meta);
+		return runtime.getAdapter().alter(runtime, table, meta);
 	}
 	@Override
 	public boolean drop(Index meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean rename(Index origin,  String name) throws Exception {
+	public boolean rename(Index origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -1582,33 +1582,33 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean add(Constraint constraint) throws Exception
 	 * boolean alter(Constraint constraint) throws Exception
 	 * boolean drop(Constraint constraint) throws Exception
-	 * boolean rename(Constraint origin,  String name) throws Exception
+	 * boolean rename(Constraint origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Constraint meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 
 	@Override
 	public boolean alter(Constraint meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table,  Constraint meta) throws Exception{
+	public boolean alter(Table table, Constraint meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  table,  meta);
+		return runtime.getAdapter().alter(runtime, table, meta);
 	}
 	@Override
 	public boolean drop(Constraint meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean rename(Constraint origin,  String name) throws Exception {
+	public boolean rename(Constraint origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 
@@ -1618,29 +1618,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Trigger meta) throws Exception
 	 * boolean alter(Trigger meta) throws Exception
 	 * boolean drop(Trigger meta) throws Exception
-	 * boolean rename(Trigger origin,  String name) throws Exception
+	 * boolean rename(Trigger origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Trigger meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().add(runtime,  meta);
+		return runtime.getAdapter().add(runtime, meta);
 	}
 
 
 	@Override
 	public boolean alter(Trigger meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
 	public boolean drop(Trigger meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean rename(Trigger origin,  String name) throws Exception {
+	public boolean rename(Trigger origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 
@@ -1650,29 +1650,29 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Procedure procedure) throws Exception
 	 * boolean alter(Procedure procedure) throws Exception
 	 * boolean drop(Procedure procedure) throws Exception
-	 * boolean rename(Procedure origin,  String name) throws Exception
+	 * boolean rename(Procedure origin, String name) throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Procedure meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 
 
 	@Override
 	public boolean alter(Procedure meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
 	public boolean drop(Procedure meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean rename(Procedure origin,  String name) throws Exception {
+	public boolean rename(Procedure origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -1681,38 +1681,38 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean create(Function meta) throws Exception
 	 * boolean alter(Function meta) throws Exception
 	 * boolean drop(Function meta) throws Exception
-	 * boolean rename(Function origin,  String name)  throws Exception
+	 * boolean rename(Function origin, String name)  throws Exception
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Function meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().create(runtime,  meta);
+		return runtime.getAdapter().create(runtime, meta);
 	}
 
 
 	@Override
 	public boolean alter(Function meta) throws Exception{
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().alter(runtime,  meta);
+		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
 	public boolean drop(Function meta) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().drop(runtime,  meta);
+		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean rename(Function origin,  String name) throws Exception {
+	public boolean rename(Function origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().rename(runtime,  origin,  name);
+		return runtime.getAdapter().rename(runtime, origin, name);
 	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
 	 *
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * void checkSchema(DataRuntime runtime,  Table table)
+	 * void checkSchema(DataRuntime runtime, Table table)
 	 * protected String LogUtil.param(List<?> params)
-	 * protected String LogUtil.param(List<?> keys,  List<?> values)
+	 * protected String LogUtil.param(List<?> keys, List<?> values)
 	 * private static String random()
 	 ******************************************************************************************************************/
 

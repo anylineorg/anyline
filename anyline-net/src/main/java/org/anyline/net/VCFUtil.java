@@ -151,8 +151,8 @@ public class VCFUtil {
                         int b = bytes[i];
                         if (b == '=') {
                             try {
-                                int u = Character.digit((char) bytes[++i],  16);
-                                int l = Character.digit((char) bytes[++i],  16);
+                                int u = Character.digit((char) bytes[++i], 16);
+                                int l = Character.digit((char) bytes[++i], 16);
                                 if (u == -1 || l == -1) {
                                     continue;
                                 }
@@ -164,7 +164,7 @@ public class VCFUtil {
                             buffer.write(b);
                         }
                     }
-                    str = new String(buffer.toByteArray(),  "UTF-8");
+                    str = new String(buffer.toByteArray(), "UTF-8");
                 }
             }catch(Exception e){
                 e.printStackTrace();

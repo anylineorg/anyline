@@ -64,19 +64,19 @@ public class Coordinate {
 		this.srs = srs;
 		point = new Point(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
 	}
-	public Coordinate(SRS srs,  Double lng,  Double lat){
+	public Coordinate(SRS srs, Double lng, Double lat){
 		this.srs = srs;
-		point = new Point(lng,  lat);
+		point = new Point(lng, lat);
 	}
-	public Coordinate(String lng,  String lat){
+	public Coordinate(String lng, String lat){
 		point = new Point(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
 	}
-	public Coordinate(Double lng,  Double lat){
+	public Coordinate(Double lng, Double lat){
 		point = new Point(lng, lat);
 	}
 	public Coordinate convert(SRS srs){
-		Double[] loc = GISUtil.convert(this.srs,  point.x(),  point.y(),  srs);
-		point = new Point(loc[0],  loc[1]);
+		Double[] loc = GISUtil.convert(this.srs, point.x(), point.y(), srs);
+		point = new Point(loc[0], loc[1]);
 		this.setSrs(srs);
 		return this;
 	}
@@ -145,7 +145,7 @@ public class Coordinate {
 		this.point.x(lng);
 	}
 	public void setLng(String lng) {
-		setLng(BasicUtil.parseDouble(lng,  null));
+		setLng(BasicUtil.parseDouble(lng, null));
 	}
 
 	public Double getLat() {
@@ -159,7 +159,7 @@ public class Coordinate {
 		point.y(lat);
 	}
 	public void setLat(String lat) {
-		setLat(BasicUtil.parseDouble(lat,  null));
+		setLat(BasicUtil.parseDouble(lat, null));
 	}
 
 	public String getProvinceCode() {
@@ -316,7 +316,7 @@ public class Coordinate {
 		if(correct){
 			return this;
 		}
-		String code = BasicUtil.evl(getVillageCode(),  getTownCode(),  getCountyCode(),  getCityCode(),  getProvinceCode());
+		String code = BasicUtil.evl(getVillageCode(), getTownCode(), getCountyCode(), getCityCode(), getProvinceCode());
 		if(null == code){
 			return this;
 		}

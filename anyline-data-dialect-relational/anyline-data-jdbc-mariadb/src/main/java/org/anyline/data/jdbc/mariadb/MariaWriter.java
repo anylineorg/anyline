@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -23,31 +23,31 @@ import org.anyline.entity.geometry.*;
 
 public enum MariaWriter {
 
-    PointWriter(new Object[]{Point.class,  StandardColumnType.POINT},  new DataWriter() {
+    PointWriter(new Object[]{Point.class, StandardColumnType.POINT}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             Point point = null;
             if(value instanceof Point) {
                 point = (Point) value;
             }else if(value instanceof double[]){
                 double[] xy = (double[]) value;
                 if(xy.length >= 2){
-                    point = new Point(xy[0],  xy[1]);
+                    point = new Point(xy[0], xy[1]);
                 }
             }else if(value instanceof Double[]){
                 Double[] xy = (Double[]) value;
                 if(xy.length >= 2){
-                    point = new Point(xy[0],  xy[1]);
+                    point = new Point(xy[0], xy[1]);
                 }
             }else if(value instanceof int[]){
                 int[] xy = (int[]) value;
                 if(xy.length >= 2){
-                    point = new Point(xy[0],  xy[1]);
+                    point = new Point(xy[0], xy[1]);
                 }
             }else if(value instanceof Integer[]){
                 Integer[] xy = (Integer[]) value;
                 if(xy.length >= 2){
-                    point = new Point(xy[0],  xy[1]);
+                    point = new Point(xy[0], xy[1]);
                 }
             }
             if(null != point) {
@@ -61,9 +61,9 @@ public enum MariaWriter {
         }
     }),
 
-    LineWriter(new Object[]{LineString.class,  StandardColumnType.LINESTRING},  new DataWriter() {
+    LineWriter(new Object[]{LineString.class, StandardColumnType.LINESTRING}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             if(value instanceof LineString) {
                 LineString line = (LineString) value;
                 if (placeholder) {
@@ -76,9 +76,9 @@ public enum MariaWriter {
         }
     }),
 
-    PolygonWriter(new Object[]{Polygon.class,  StandardColumnType.POLYGON},  new DataWriter() {
+    PolygonWriter(new Object[]{Polygon.class, StandardColumnType.POLYGON}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             if(value instanceof Polygon) {
                 Polygon polygon = (Polygon) value;
                 if (placeholder) {
@@ -91,9 +91,9 @@ public enum MariaWriter {
         }
     }),
 
-    MultiPointWriter(new Object[]{MultiPoint.class,  StandardColumnType.MULTIPOINT},  new DataWriter() {
+    MultiPointWriter(new Object[]{MultiPoint.class, StandardColumnType.MULTIPOINT}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             if(value instanceof MultiPoint) {
                 MultiPoint multiPoint = (MultiPoint) value;
                 if (placeholder) {
@@ -106,9 +106,9 @@ public enum MariaWriter {
         }
     }),
 
-    MultiLineWriter(new Object[]{MultiLine.class,  StandardColumnType.MULTILINESTRING},  new DataWriter() {
+    MultiLineWriter(new Object[]{MultiLine.class, StandardColumnType.MULTILINESTRING}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             if(value instanceof MultiLine) {
                 MultiLine multiLine = (MultiLine) value;
                 if (placeholder) {
@@ -121,9 +121,9 @@ public enum MariaWriter {
         }
     }),
 
-    MultiPolygonWriter(new Object[]{MultiPolygon.class,  StandardColumnType.MULTIPOLYGON},  new DataWriter() {
+    MultiPolygonWriter(new Object[]{MultiPolygon.class, StandardColumnType.MULTIPOLYGON}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             if(value instanceof MultiPolygon) {
                 MultiPolygon multiPolygon = (MultiPolygon) value;
                 if (placeholder) {
@@ -136,9 +136,9 @@ public enum MariaWriter {
         }
     }),
 
-    GeometryCollectionWriter(new Object[]{GeometryCollection.class,  StandardColumnType.GEOMETRYCOLLECTION},  new DataWriter() {
+    GeometryCollectionWriter(new Object[]{GeometryCollection.class, StandardColumnType.GEOMETRYCOLLECTION}, new DataWriter() {
         @Override
-        public Object write(Object value,  boolean placeholder) {
+        public Object write(Object value, boolean placeholder) {
             if(value instanceof GeometryCollection) {
                 GeometryCollection collection = (GeometryCollection) value;
                 if (placeholder) {
@@ -160,7 +160,7 @@ public enum MariaWriter {
     }
     private final Object[] supports;
     private final DataWriter writer;
-    MariaWriter(Object[] supports,  DataWriter writer){
+    MariaWriter(Object[] supports, DataWriter writer){
         this.supports = supports;
         this.writer = writer;
     }

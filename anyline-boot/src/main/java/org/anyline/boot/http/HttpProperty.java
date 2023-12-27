@@ -33,7 +33,7 @@ public class HttpProperty {
     /**
      * 针对不同的地址, 特别设置不同的长连接保持时间
      */
-    private Map<String,  Integer> keepAliveTargetHost;
+    private Map<String, Integer> keepAliveTargetHost;
     /**
      * 针对不同的地址, 特别设置不同的长连接保持时间, 单位 s
      */
@@ -95,11 +95,11 @@ public class HttpProperty {
         this.connectionRequestTimout = connectionRequestTimout;
     }
 
-    public Map<String,  Integer> getKeepAliveTargetHost() {
+    public Map<String, Integer> getKeepAliveTargetHost() {
         return keepAliveTargetHost;
     }
 
-    public void setKeepAliveTargetHost(Map<String,  Integer> keepAliveTargetHost) {
+    public void setKeepAliveTargetHost(Map<String, Integer> keepAliveTargetHost) {
         this.keepAliveTargetHost = keepAliveTargetHost;
     }
 

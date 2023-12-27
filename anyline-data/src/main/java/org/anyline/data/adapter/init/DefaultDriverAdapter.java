@@ -2881,7 +2881,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3127,7 +3127,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[catalog][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[catalog][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			//根据JDBC接口补充
@@ -3137,7 +3137,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[catalog][{}][msg:{}]", random, LogUtil.format("根据JDBC接口补充失败", 33),  e.toString());
+					log.warn("{}[catalog][{}][msg:{}]", random, LogUtil.format("根据JDBC接口补充失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3181,7 +3181,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[catalogs][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[catalogs][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3225,7 +3225,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[catalogs][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[catalogs][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3410,7 +3410,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[schema][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[schema][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			//根据JDBC接口补充
@@ -3420,7 +3420,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[schema][{}][msg:{}]", random, LogUtil.format("根据JDBC接口补充失败", 33),  e.toString());
+					log.warn("{}[schema][{}][msg:{}]", random, LogUtil.format("根据JDBC接口补充失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3465,7 +3465,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[schemas][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[schemas][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3510,7 +3510,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[schemas][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[schemas][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -3881,7 +3881,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			if(!sys){
 				try {
-					tables = tables(runtime, true,  tables, catalog, schema, null, null);
+					tables = tables(runtime, true, tables, catalog, schema, null, null);
 					CacheProxy.name(tables);
 				}catch (Exception e){
 					e.printStackTrace();
@@ -4103,7 +4103,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
 					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, table, list,  set);
+					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
 			}else{
@@ -4412,7 +4412,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, view, list,  set);
+					list = ddl(runtime, idx++, view, list, set);
 				}
 				view.setDdls(list);
 			}
@@ -4667,7 +4667,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, table, list,  set);
+					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
 			}
@@ -4902,7 +4902,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, table, list,  set);
+					list = ddl(runtime, idx++, table, list, set);
 				}
 				table.setDdls(list);
 			}
@@ -5329,7 +5329,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for(Run run:runs){
 					DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					foreigns = foreigns(runtime, idx,  table, foreigns, set);
+					foreigns = foreigns(runtime, idx, table, foreigns, set);
 					idx++;
 				}
 			}
@@ -5802,7 +5802,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													procedure
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern);
+	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	 * [命令合成]
 	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
@@ -5830,9 +5830,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> ArrayList<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> ArrayList<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
 		}
 		return new ArrayList<>();
 	}/**
@@ -5958,7 +5958,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
 					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, procedure, list,  set);
+					list = ddl(runtime, idx++, procedure, list, set);
 				}
 				if(list.size()>0) {
 					procedure.setDdls(list);
@@ -6175,7 +6175,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					//不要传table,这里的table用来查询表结构
 					DataSet set = select(runtime, random, true, null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, meta, list,  set);
+					list = ddl(runtime, idx++, meta, list, set);
 				}
 				if(list.size()>0) {
 					meta.setDdls(list);
@@ -6408,7 +6408,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action,  meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -7009,7 +7009,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action,  meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -7056,7 +7056,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action,  meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -8145,7 +8145,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, Column meta) throws Exception{
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(runtime, null,  meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(runtime, null, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -9434,7 +9434,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta,  boolean slice)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -9559,7 +9559,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, ForeignKey meta) throws Exception{
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables(runtime,  null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.size() == 0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -9855,7 +9855,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, Index meta) throws Exception{
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables(runtime,  null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -10455,7 +10455,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	public boolean alter(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean alter(DataRuntime runtime, Trigger meta) throws Exception{
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ALTER;
 		String random = random(runtime);
@@ -10502,7 +10502,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	public boolean drop(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception{
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_DROP;
 		String random = random(runtime);
@@ -10550,7 +10550,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	public boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception{
+	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception{
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_RENAME;
 		String random = random(runtime);
@@ -10694,7 +10694,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ADD;
 		String random = random(runtime);
-		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random,  action, meta);
+		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
 			swt = ddListener.prepareCreate(runtime, random, meta);
 		}
@@ -10720,7 +10720,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result,  millis);
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
 			}
 			if(swt == ACTION.SWITCH.CONTINUE){
 				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);

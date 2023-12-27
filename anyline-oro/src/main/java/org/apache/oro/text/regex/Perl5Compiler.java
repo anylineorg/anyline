@@ -119,20 +119,20 @@ public final class Perl5Compiler implements PatternCompiler {
   
   static {
     __hashPOSIX = new HashMap();
-    __hashPOSIX.put("alnum",     new Character(OpCode._ALNUMC));
-    __hashPOSIX.put("word",      new Character(OpCode._ALNUM));
-    __hashPOSIX.put("alpha",     new Character(OpCode._ALPHA));
-    __hashPOSIX.put("blank",     new Character(OpCode._BLANK));
-    __hashPOSIX.put("cntrl",     new Character(OpCode._CNTRL));
-    __hashPOSIX.put("digit",     new Character(OpCode._DIGIT));
-    __hashPOSIX.put("graph",     new Character(OpCode._GRAPH));
-    __hashPOSIX.put("lower",     new Character(OpCode._LOWER));
-    __hashPOSIX.put("print",     new Character(OpCode._PRINT));
-    __hashPOSIX.put("punct",     new Character(OpCode._PUNCT));
-    __hashPOSIX.put("space",     new Character(OpCode._SPACE));
-    __hashPOSIX.put("upper",     new Character(OpCode._UPPER));
-    __hashPOSIX.put("xdigit",    new Character(OpCode._XDIGIT));
-    __hashPOSIX.put("ascii",     new Character(OpCode._ASCII));
+    __hashPOSIX.put("alnum", new Character(OpCode._ALNUMC));
+    __hashPOSIX.put("word", new Character(OpCode._ALNUM));
+    __hashPOSIX.put("alpha", new Character(OpCode._ALPHA));
+    __hashPOSIX.put("blank", new Character(OpCode._BLANK));
+    __hashPOSIX.put("cntrl", new Character(OpCode._CNTRL));
+    __hashPOSIX.put("digit", new Character(OpCode._DIGIT));
+    __hashPOSIX.put("graph", new Character(OpCode._GRAPH));
+    __hashPOSIX.put("lower", new Character(OpCode._LOWER));
+    __hashPOSIX.put("print", new Character(OpCode._PRINT));
+    __hashPOSIX.put("punct", new Character(OpCode._PUNCT));
+    __hashPOSIX.put("space", new Character(OpCode._SPACE));
+    __hashPOSIX.put("upper", new Character(OpCode._UPPER));
+    __hashPOSIX.put("xdigit", new Character(OpCode._XDIGIT));
+    __hashPOSIX.put("ascii", new Character(OpCode._ASCII));
   }
 
 

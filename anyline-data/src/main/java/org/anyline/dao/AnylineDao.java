@@ -192,7 +192,7 @@ public interface AnylineDao<E>{
 	 * @return int
 	 */
 	long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
-	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data,  List<String> columns){
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
 	}
 	default long insert(int batch, String dest, Object data, List<String> columns){
@@ -323,7 +323,7 @@ public interface AnylineDao<E>{
 	default long execute(int batch, String sql, List<Object> values){
 		return execute(runtime(), null, batch, sql, values);
 	}
-	default long execute(RunPrepare prepare,  String ... conditions){
+	default long execute(RunPrepare prepare, String ... conditions){
 		return execute(prepare, null, conditions);
 	}
  
@@ -467,7 +467,7 @@ public interface AnylineDao<E>{
 	}
 	List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name);
 	default List<Catalog> catalogs(boolean greedy, String name){
-		return catalogs(runtime(),  null, greedy, name);
+		return catalogs(runtime(), null, greedy, name);
 	}
 
 	/* *****************************************************************************************************************
@@ -499,66 +499,66 @@ public interface AnylineDao<E>{
 		return tables(greedy, null, schema, name, types, strut);
 	}
 	default <T extends Table> List<T> tables(boolean greedy, String name, String types, boolean strut){
-		return tables(greedy, null, null, name,  types,  strut);
+		return tables(greedy, null, null, name, types, strut);
 	}
-	default <T extends Table> List<T> tables(boolean greedy,  String types,  boolean strut){
-		return tables(greedy,  null,  null,  types,  strut);
+	default <T extends Table> List<T> tables(boolean greedy, String types, boolean strut){
+		return tables(greedy, null, null, types, strut);
 	}
-	default <T extends Table> List<T> tables(boolean greedy,  boolean strut){
-		return tables(greedy,  null,  null,  null,  "TABLE",  strut);
+	default <T extends Table> List<T> tables(boolean greedy, boolean strut){
+		return tables(greedy, null, null, null, "TABLE", strut);
 	}
-	<T extends Table> LinkedHashMap<String,  T> tables(DataRuntime runtime,  String random,  Catalog catalog,  Schema schema,  String name,  String types,  boolean strut);
-	default <T extends Table> LinkedHashMap<String,  T> tables(Catalog catalog,  Schema schema,  String name,  String types,  boolean strut){
-		return tables(runtime(),  null,  catalog,  schema,  name,  types,  strut);
-	}
-
-	default <T extends Table> LinkedHashMap<String,  T> tables(Schema schema,  String name,  String types,  boolean strut){
-		return tables( null,  schema,  name,  types,  strut);
-	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(String name,  String types,  boolean strut){
-		return tables( null,  null,  name,  types,  strut);
-	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(String types,  boolean strut){
-		return tables( null,  null,  types,  strut);
-	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(){
-		return tables( null,  null,  null,  "TABLE",  false);
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, String types, boolean strut);
+	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean strut){
+		return tables(runtime(), null, catalog, schema, name, types, strut);
 	}
 
+	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, boolean strut){
+		return tables( null, schema, name, types, strut);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, boolean strut){
+		return tables( null, null, name, types, strut);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(String types, boolean strut){
+		return tables( null, null, types, strut);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(){
+		return tables( null, null, null, "TABLE", false);
+	}
 
-	default <T extends Table> List<T> tables(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String name,  String types){
-		return tables(runtime,  random,  greedy,  catalog,  schema,  name,  types,  false);
+
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types){
+		return tables(runtime, random, greedy, catalog, schema, name, types, false);
 	}
-	default <T extends Table> List<T> tables(boolean greedy,  Catalog catalog,  Schema schema,  String name,  String types){
-		return tables(runtime(),  null,  greedy,  catalog,  schema,  name,  types);
+	default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types){
+		return tables(runtime(), null, greedy, catalog, schema, name, types);
 	}
-	default <T extends Table> List<T> tables(boolean greedy,  Schema schema,  String name,  String types){
-		return tables(greedy,  null,  schema,  name,  types);
+	default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types){
+		return tables(greedy, null, schema, name, types);
 	}
-	default <T extends Table> List<T> tables(boolean greedy,  String name,  String types){
-		return tables(greedy,  null,  null,  name,  types);
+	default <T extends Table> List<T> tables(boolean greedy, String name, String types){
+		return tables(greedy, null, null, name, types);
 	}
-	default <T extends Table> List<T> tables(boolean greedy,  String types){
-		return tables(greedy,  null,  null,  types);
+	default <T extends Table> List<T> tables(boolean greedy, String types){
+		return tables(greedy, null, null, types);
 	}
 	default <T extends Table> List<T> tables(boolean greedy){
-		return tables(greedy,  null,  null,  null,  "TABLE");
+		return tables(greedy, null, null, null, "TABLE");
 	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(DataRuntime runtime,  String random,  Catalog catalog,  Schema schema,  String name,  String types){
-		return tables(runtime,  random,  catalog,  schema,  name,  types,  false);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, String types){
+		return tables(runtime, random, catalog, schema, name, types, false);
 	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(Catalog catalog,  Schema schema,  String name,  String types){
-		return tables(runtime(),  null,  catalog,  schema,  name,  types);
+	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types){
+		return tables(runtime(), null, catalog, schema, name, types);
 	}
 
-	default <T extends Table> LinkedHashMap<String,  T> tables(Schema schema,  String name,  String types){
-		return tables( null,  schema,  name,  types);
+	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types){
+		return tables( null, schema, name, types);
 	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(String name,  String types){
-		return tables( null,  null,  name,  types);
+	default <T extends Table> LinkedHashMap<String, T> tables(String name, String types){
+		return tables( null, null, name, types);
 	}
-	default <T extends Table> LinkedHashMap<String,  T> tables(String types){
-		return tables( null,  null,  types);
+	default <T extends Table> LinkedHashMap<String, T> tables(String types){
+		return tables( null, null, types);
 	}
 	/**
 	 *
@@ -569,9 +569,9 @@ public interface AnylineDao<E>{
 	 * @param init 是否还原初始状态(自增ID)
 	 * @return List
 	 */
-	List<String> ddl(DataRuntime runtime,  String random,  Table table,  boolean init);
-	default List<String> ddl(Table table,  boolean init){
-		return ddl(runtime(),  null,  table,  init);
+	List<String> ddl(DataRuntime runtime, String random, Table table, boolean init);
+	default List<String> ddl(Table table, boolean init){
+		return ddl(runtime(), null, table, init);
 	}
 
 
@@ -591,132 +591,132 @@ public interface AnylineDao<E>{
 	 * @return LinkedHashMap
 	 * @param <T> entity.class
 	 */
-	<T extends View> LinkedHashMap<String,  T> views(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String pattern,  String types);
-	default <T extends View> LinkedHashMap<String,  T> views(boolean greedy,  Catalog catalog,  Schema schema,  String name,  String types){
-		return views(runtime(),  null,  greedy,  catalog,  schema,  name,  types);
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types);
+	default <T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, String types){
+		return views(runtime(), null, greedy, catalog, schema, name, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(boolean greedy,  Schema schema,  String name,  String types){
-		return views(greedy,  null,  schema,  name,  types);
+	default <T extends View> LinkedHashMap<String, T> views(boolean greedy, Schema schema, String name, String types){
+		return views(greedy, null, schema, name, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(boolean greedy,  String name,  String types){
-		return views(greedy,  null,  null,  name,  types);
+	default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, String types){
+		return views(greedy, null, null, name, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(boolean greedy,  String types){
-		return views(greedy,  null,  null,  types);
+	default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String types){
+		return views(greedy, null, null, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(boolean greedy){
-		return views(greedy,  null,  null,  null,  "TABLE");
+	default <T extends View> LinkedHashMap<String, T> views(boolean greedy){
+		return views(greedy, null, null, null, "TABLE");
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(Catalog catalog,  Schema schema,  String name,  String types){
-		return views(false,  catalog,  schema,  name,  types);
+	default <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, String types){
+		return views(false, catalog, schema, name, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(Schema schema,  String name,  String types){
-		return views(false,  null,  schema,  name,  types);
+	default <T extends View> LinkedHashMap<String, T> views(Schema schema, String name, String types){
+		return views(false, null, schema, name, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(String name,  String types){
-		return views(false,  null,  null,  name,  types);
+	default <T extends View> LinkedHashMap<String, T> views(String name, String types){
+		return views(false, null, null, name, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(String types){
-		return views(false,  null,  null,  types);
+	default <T extends View> LinkedHashMap<String, T> views(String types){
+		return views(false, null, null, types);
 	}
-	default <T extends View> LinkedHashMap<String,  T> views(){
-		return views(false,  null,  null,  null,  "TABLE");
+	default <T extends View> LinkedHashMap<String, T> views(){
+		return views(false, null, null, null, "TABLE");
 	}
-	List<String> ddl(DataRuntime runtime,  String random,  View view);
+	List<String> ddl(DataRuntime runtime, String random, View view);
 	default List<String> ddl(View view){
-		return ddl(runtime(),  null,  view);
+		return ddl(runtime(), null, view);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
-	<T extends MasterTable> LinkedHashMap<String,  T> mtables(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String name,  String types);
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(boolean greedy,  Catalog catalog,  Schema schema,  String name,  String types){
-		return mtables(runtime(),  null,  greedy,  catalog,  schema,  name,  types);
+	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Catalog catalog, Schema schema, String name, String types){
+		return mtables(runtime(), null, greedy, catalog, schema, name, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(boolean greedy,  Schema schema,  String name,  String types){
-		return mtables(greedy,  null,  schema,  name,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Schema schema, String name, String types){
+		return mtables(greedy, null, schema, name, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(boolean greedy,  String name,  String types){
-		return mtables(greedy,  null,  null,  name,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types){
+		return mtables(greedy, null, null, name, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(boolean greedy,  String types){
-		return mtables(greedy,  null,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types){
+		return mtables(greedy, null, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(boolean greedy){
-		return mtables(greedy,  "STABLE");
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy){
+		return mtables(greedy, "STABLE");
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(Catalog catalog,  Schema schema,  String name,  String types){
-		return mtables(false,  catalog,  schema,  name,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(Catalog catalog, Schema schema, String name, String types){
+		return mtables(false, catalog, schema, name, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(Schema schema,  String name,  String types){
-		return mtables(false,  null,  schema,  name,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(Schema schema, String name, String types){
+		return mtables(false, null, schema, name, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(String name,  String types){
-		return mtables(false,  null,  null,  name,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types){
+		return mtables(false, null, null, name, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(String types){
-		return mtables(false,  null,  types);
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(String types){
+		return mtables(false, null, types);
 	}
-	default <T extends MasterTable> LinkedHashMap<String,  T> mtables(){
-		return mtables(false,  "STABLE");
+	default <T extends MasterTable> LinkedHashMap<String, T> mtables(){
+		return mtables(false, "STABLE");
 	}
-	List<String> ddl(DataRuntime runtime,  String random,  MasterTable table);
+	List<String> ddl(DataRuntime runtime, String random, MasterTable table);
 	default List<String> ddl(MasterTable table){
-		return ddl(runtime(),  null,  table);
+		return ddl(runtime(), null, table);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	<T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime,  String random,  boolean greedy,  MasterTable master,  Map<String,  Object> tags,  String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
 
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  Catalog catalog,  Schema schema,  String master,  String name){
-		return ptables(greedy,  new MasterTable(catalog,  schema,  master),  null,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, Catalog catalog, Schema schema, String master, String name){
+		return ptables(greedy, new MasterTable(catalog, schema, master), null, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  Schema schema,  String master,  String name){
-		return ptables(greedy, null,  schema,  master,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, Schema schema, String master, String name){
+		return ptables(greedy, null, schema, master, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  String master,  String name){
-		return ptables(greedy, null,  null,  master,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name){
+		return ptables(greedy, null, null, master, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  String master){
-		return ptables(greedy, null,  null,  master,  null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master){
+		return ptables(greedy, null, null, master, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  MasterTable master){
-		return ptables(greedy,  master,  null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master){
+		return ptables(greedy, master, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  MasterTable master,  Map<String, Object> tags,  String name){
-		return ptables(runtime(),  null,  greedy,  master,  tags,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name){
+		return ptables(runtime(), null, greedy, master, tags, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(boolean greedy,  MasterTable master,  Map<String, Object> tags){
-		return ptables(runtime(),  null,  greedy, master,  tags,  null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags){
+		return ptables(runtime(), null, greedy, master, tags, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(Catalog catalog,  Schema schema,  String master,  String name){
-		MasterTable mtable = new MasterTable(catalog,  schema,  master);
-		return ptables(false, mtable,  null,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(Catalog catalog, Schema schema, String master, String name){
+		MasterTable mtable = new MasterTable(catalog, schema, master);
+		return ptables(false, mtable, null, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(Schema schema,  String master,  String name){
-		return ptables(false, null,  schema,  master,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(Schema schema, String master, String name){
+		return ptables(false, null, schema, master, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(String master,  String name){
-		return ptables(false, null,  null,  master,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name){
+		return ptables(false, null, null, master, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(String master){
-		return ptables(false, null,  null,  master,  null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master){
+		return ptables(false, null, null, master, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(MasterTable master){
-		return ptables(false, master,  null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master){
+		return ptables(false, master, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(MasterTable master,  Map<String, Object> tags,  String name){
-		return ptables(false,  master,  tags,  name);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags, String name){
+		return ptables(false, master, tags, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String,  T> ptables(MasterTable master,  Map<String, Object> tags){
-		return ptables(false, master,  tags,  null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags){
+		return ptables(false, master, tags, null);
 	}
-	List<String> ddl(DataRuntime runtime,  String random,  PartitionTable table);
+	List<String> ddl(DataRuntime runtime, String random, PartitionTable table);
 	default List<String> ddl(PartitionTable table){
-		return ddl(runtime(),  null,   table);
+		return ddl(runtime(), null, table);
 	}
 
 	/* *****************************************************************************************************************
@@ -733,85 +733,85 @@ public interface AnylineDao<E>{
 	 * @return LinkedHashMap
 	 * @param <T> Column
 	 */
-	<T extends Column> LinkedHashMap<String,  T> columns(DataRuntime runtime,  String random,  boolean greedy,  Table table,  boolean primary);
-	default <T extends Column> LinkedHashMap<String,  T> columns(boolean greedy,  Table table){
-		return columns(runtime(),  null,  greedy,  table,  ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY);
+	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table){
+		return columns(runtime(), null, greedy, table, ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY);
 	}
-	default <T extends Column> LinkedHashMap<String,  T> columns(boolean greedy,  String table){
-		return columns(greedy,  new Table(table));
-	}
-
-	default <T extends Column> LinkedHashMap<String,  T> columns(boolean greedy,  Catalog catalog,  Schema schema,  String table){
-		return columns(greedy,  new Table(catalog,  schema,  table));
-	}
-	default <T extends Column> LinkedHashMap<String,  T> columns(Table table){
-		return columns(false,  table);
-	}
-	default <T extends Column> LinkedHashMap<String,  T> columns(String table){
-		return columns(false,  table);
-	}
-	default <T extends Column> LinkedHashMap<String,  T> columns(Catalog catalog,  Schema schema,  String table){
-		return columns(new Table(catalog,  schema,  table));
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table){
+		return columns(greedy, new Table(table));
 	}
 
-	<T extends Column> List<T> columns(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema);
-
-	default <T extends Column> List<T> columns(boolean greedy,  Catalog catalog,  Schema schema){
-		return columns(runtime(),  null,  greedy,  catalog,  schema);
+	default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table){
+		return columns(greedy, new Table(catalog, schema, table));
 	}
-	default <T extends Column> List<T> columns(Catalog catalog,  Schema schema){
-		return columns(false,  catalog,  schema);
+	default <T extends Column> LinkedHashMap<String, T> columns(Table table){
+		return columns(false, table);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(String table){
+		return columns(false, table);
+	}
+	default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table){
+		return columns(new Table(catalog, schema, table));
+	}
+
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema);
+
+	default <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema){
+		return columns(runtime(), null, greedy, catalog, schema);
+	}
+	default <T extends Column> List<T> columns(Catalog catalog, Schema schema){
+		return columns(false, catalog, schema);
 	}
 	default <T extends Column> List<T> columns(boolean greedy){
-		return columns(greedy,  null,  null);
+		return columns(greedy, null, null);
 	}
 	default <T extends Column> List<T> columns(){
-		return columns(false,  null,  null);
+		return columns(false, null, null);
 	}
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
-	<T extends Tag> LinkedHashMap<String,  T> tags(DataRuntime runtime,  String random,  boolean greedy,  Table table);
-	default <T extends Tag> LinkedHashMap<String,  T> tags(boolean greedy,  String table){
-		return tags(runtime(),  null,  greedy,  new Table(table));
+	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table);
+	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table){
+		return tags(runtime(), null, greedy, new Table(table));
 	}
-	default <T extends Tag> LinkedHashMap<String,  T> tags(boolean greedy,  Catalog catalog,  Schema schema,  String table){
-		return tags(runtime(), null,  greedy,  new Table(catalog,  schema,  table));
+	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Catalog catalog, Schema schema, String table){
+		return tags(runtime(), null, greedy, new Table(catalog, schema, table));
 	}
-	default <T extends Tag> LinkedHashMap<String,  T> tags(boolean greedy,  Table table){
-		return tags(runtime(),  null,  greedy,  table);
+	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table){
+		return tags(runtime(), null, greedy, table);
 	}
-	default <T extends Tag> LinkedHashMap<String,  T> tags(Table table){
-		return tags(runtime(),  null,  false,  table);
+	default <T extends Tag> LinkedHashMap<String, T> tags(Table table){
+		return tags(runtime(), null, false, table);
 	}
-	default <T extends Tag> LinkedHashMap<String,  T> tags(String table){
-		return tags(false,  table);
+	default <T extends Tag> LinkedHashMap<String, T> tags(String table){
+		return tags(false, table);
 	}
-	default <T extends Tag> LinkedHashMap<String,  T> tags(Catalog catalog,  Schema schema,  String table){
-		return tags(false,  catalog,  schema,  table);
+	default <T extends Tag> LinkedHashMap<String, T> tags(Catalog catalog, Schema schema, String table){
+		return tags(false, catalog, schema, table);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
-	PrimaryKey primary(DataRuntime runtime,  String random,  boolean greedy,  Table table);
-	default PrimaryKey primary(boolean greedy,  Table table){
-		return primary(runtime(),  null,  greedy,  table);
+	PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table);
+	default PrimaryKey primary(boolean greedy, Table table){
+		return primary(runtime(), null, greedy, table);
 	}
-	default PrimaryKey primary(boolean greedy,  String table){
+	default PrimaryKey primary(boolean greedy, String table){
 		return primary(greedy, new Table(table));
 	}
-	default PrimaryKey primary(boolean greedy,  Catalog catalog,  Schema schema,  String table){
-		return primary(greedy,  new Table(catalog,  schema,  table));
+	default PrimaryKey primary(boolean greedy, Catalog catalog, Schema schema, String table){
+		return primary(greedy, new Table(catalog, schema, table));
 	}
 	default PrimaryKey primary(Table table){
-		return primary(false,  table);
+		return primary(false, table);
 	}
 	default PrimaryKey primary(String table){
-		return primary(false,  table);
+		return primary(false, table);
 	}
-	default PrimaryKey primary(Catalog catalog,  Schema schema,  String table){
-		return primary(false,  catalog,  schema,  table);
+	default PrimaryKey primary(Catalog catalog, Schema schema, String table){
+		return primary(false, catalog, schema, table);
 	}
 
 
@@ -819,89 +819,89 @@ public interface AnylineDao<E>{
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * List<Run> buildQueryForeignsRun(Table table) throws Exception
-	 * <T extends ForeignKey> LinkedHashMap<String,  T> foreigns(int index,  Table table,  LinkedHashMap<String,  T> foreigns,  DataSet set) throws Exception
+	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
-	<T extends ForeignKey> LinkedHashMap<String,  T> foreigns(DataRuntime runtime,  String random,  boolean greedy,  Table table);
-	default <T extends ForeignKey> LinkedHashMap<String,  T> foreigns(boolean greedy,  Table table){
-		return foreigns(runtime(),  null,  greedy,  table);
+	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
+	default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table){
+		return foreigns(runtime(), null, greedy, table);
 	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
-	<T extends Index> List<T> indexs(DataRuntime runtime,  String random,  boolean greedy,  Table table,  String name);
-	default <T extends Index> List<T> indexs(boolean greedy,  Table table,  String name){
-		return indexs(runtime(),  null,  greedy,  table,  name);
+	<T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name);
+	default <T extends Index> List<T> indexs(boolean greedy, Table table, String name){
+		return indexs(runtime(), null, greedy, table, name);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy,  String table,  String name){
-		return indexs(greedy,  new Table(table),  name);
+	default <T extends Index> List<T> indexs(boolean greedy, String table, String name){
+		return indexs(greedy, new Table(table), name);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy,  Table table){
-		return indexs(greedy,  table,  null);
+	default <T extends Index> List<T> indexs(boolean greedy, Table table){
+		return indexs(greedy, table, null);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy,  String table){
-		return indexs(greedy,  new Table(table),  null);
+	default <T extends Index> List<T> indexs(boolean greedy, String table){
+		return indexs(greedy, new Table(table), null);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy,  Catalog catalog,  Schema schema,  String table){
-		return indexs(greedy,  new Table(catalog,  schema,  table),  null);
+	default <T extends Index> List<T> indexs(boolean greedy, Catalog catalog, Schema schema, String table){
+		return indexs(greedy, new Table(catalog, schema, table), null);
 	}
 
 
-	<T extends Index> LinkedHashMap<String,  T> indexs(DataRuntime runtime,  String random,  Table table,  String name);
-	default <T extends Index> LinkedHashMap<String,  T> indexs(Table table,  String name){
-		return indexs(runtime(),  null,  table,  name);
+	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String name);
+	default <T extends Index> LinkedHashMap<String, T> indexs(Table table, String name){
+		return indexs(runtime(), null, table, name);
 	}
-	default <T extends Index> LinkedHashMap<String,  T> indexs(String table,  String name){
-		return indexs(new Table(table),  name);
+	default <T extends Index> LinkedHashMap<String, T> indexs(String table, String name){
+		return indexs(new Table(table), name);
 	}
-	default <T extends Index> LinkedHashMap<String,  T> indexs(Table table){
-		return indexs(table,  null);
+	default <T extends Index> LinkedHashMap<String, T> indexs(Table table){
+		return indexs(table, null);
 	}
-	default <T extends Index> LinkedHashMap<String,  T> indexs(String table){
-		return indexs(new Table(table),  null);
+	default <T extends Index> LinkedHashMap<String, T> indexs(String table){
+		return indexs(new Table(table), null);
 	}
-	default <T extends Index> LinkedHashMap<String,  T> indexs(Catalog catalog,  Schema schema,  String table){
-		return indexs(new Table(catalog,  schema,  table),  null);
+	default <T extends Index> LinkedHashMap<String, T> indexs(Catalog catalog, Schema schema, String table){
+		return indexs(new Table(catalog, schema, table), null);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
-	<T extends Constraint> List<T> constraints(DataRuntime runtime,  String random,  boolean greedy,  Table table,  String name);
-	default <T extends Constraint> List<T> constraints(boolean greedy,  Table table,  String name){
-		return constraints(runtime(),  null,  greedy,  table,  name);
+	<T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String name);
+	default <T extends Constraint> List<T> constraints(boolean greedy, Table table, String name){
+		return constraints(runtime(), null, greedy, table, name);
 	}
-	default <T extends Constraint> List<T> constraints(boolean greedy,  String table,  String name){
-		return constraints(greedy,  new Table(table),  name);
+	default <T extends Constraint> List<T> constraints(boolean greedy, String table, String name){
+		return constraints(greedy, new Table(table), name);
 	}
-	default <T extends Constraint> List<T> constraints(boolean greedy,  Table table){
-		return constraints(greedy,  table,  null);
+	default <T extends Constraint> List<T> constraints(boolean greedy, Table table){
+		return constraints(greedy, table, null);
 	}
-	default <T extends Constraint> List<T> constraints(boolean greedy,  String table){
-		return constraints(greedy,  new Table(table),  null);
+	default <T extends Constraint> List<T> constraints(boolean greedy, String table){
+		return constraints(greedy, new Table(table), null);
 	}
-	default <T extends Constraint> List<T> constraints(boolean greedy,  Catalog catalog,  Schema schema,  String table){
-		return constraints(greedy,  new Table(catalog,  schema,  table),  null);
+	default <T extends Constraint> List<T> constraints(boolean greedy, Catalog catalog, Schema schema, String table){
+		return constraints(greedy, new Table(catalog, schema, table), null);
 	}
-	<T extends Constraint> LinkedHashMap<String,  T> constraints(DataRuntime runtime,  String random,  Table table,  Column column,  String name);
-	default <T extends Constraint> LinkedHashMap<String,  T> constraints(DataRuntime runtime,  String random,  Table table,  String name){
-		return constraints(runtime,  random,  table,  null,  name);
+	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String name);
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, String name){
+		return constraints(runtime, random, table, null, name);
 	}
-	default <T extends Constraint> LinkedHashMap<String,  T> constraints(Table table,  String name){
-		return constraints(runtime(),  null,  table,  name);
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(Table table, String name){
+		return constraints(runtime(), null, table, name);
 	}
-	default <T extends Constraint> LinkedHashMap<String,  T> constraints(Column column,  String name){
-		return constraints(runtime(),  null,  column.getTable(),  column,  name);
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(Column column, String name){
+		return constraints(runtime(), null, column.getTable(), column, name);
 	}
-	default <T extends Constraint> LinkedHashMap<String,  T>  constraints(String table,  String name){
-		return constraints(new Table(table),  name);
+	default <T extends Constraint> LinkedHashMap<String, T>  constraints(String table, String name){
+		return constraints(new Table(table), name);
 	}
-	default <T extends Constraint> LinkedHashMap<String,  T> constraints(Table table){
-		return constraints(table,  null);
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(Table table){
+		return constraints(table, null);
 	}
-	default <T extends Constraint> LinkedHashMap<String,  T> constraints(String table){
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(String table){
 		return constraints(new Table(table));
 	}
-	default <T extends Constraint> LinkedHashMap<String,  T> constraints(Catalog catalog,  Schema schema,  String table){
-		return constraints(new Table(catalog,  schema,  table));
+	default <T extends Constraint> LinkedHashMap<String, T> constraints(Catalog catalog, Schema schema, String table){
+		return constraints(new Table(catalog, schema, table));
 	}
 
 
@@ -910,9 +910,9 @@ public interface AnylineDao<E>{
 	 * 													trigger
 	 ******************************************************************************************************************/
 
-	<T extends Trigger> LinkedHashMap<String,  T> triggers(DataRuntime runtime,  String random,  boolean greedy,  Table table,  List<Trigger.EVENT> events);
-	default <T extends Trigger> LinkedHashMap<String,  T> triggers(boolean greedy,  Table table,  List<Trigger.EVENT> events){
-		return triggers(runtime(),  null,  greedy,  table,  events);
+	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events);
+	default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events){
+		return triggers(runtime(), null, greedy, table, events);
 	}
 
 
@@ -920,38 +920,38 @@ public interface AnylineDao<E>{
 	 * 													procedure
 	 ******************************************************************************************************************/
 
-	<T extends Procedure> List<T> procedures(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String name);
-	default <T extends Procedure> List<T> procedures(boolean greedy,  Catalog catalog,  Schema schema,  String name){
-		return procedures(runtime(),  null,  greedy,  catalog,  schema,  name);
+	<T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name);
+	default <T extends Procedure> List<T> procedures(boolean greedy, Catalog catalog, Schema schema, String name){
+		return procedures(runtime(), null, greedy, catalog, schema, name);
 	}
 
-	<T extends Procedure> LinkedHashMap<String,  T> procedures(DataRuntime runtime,  String random,  Catalog catalog,  Schema schema,  String name);
-	default <T extends Procedure> LinkedHashMap<String,  T> procedures(Catalog catalog,  Schema schema,  String name){
-		return procedures(runtime(),  null,  catalog,  schema,  name);
+	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name);
+	default <T extends Procedure> LinkedHashMap<String, T> procedures(Catalog catalog, Schema schema, String name){
+		return procedures(runtime(), null, catalog, schema, name);
 	}
-	List<String> ddl(DataRuntime runtime,  String random,  Procedure procedure);
+	List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
 	default List<String> ddl(Procedure procedure){
-		return ddl(runtime(),  null,  procedure);
+		return ddl(runtime(), null, procedure);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
 
-	<T extends Function> List<T> functions(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String name);
-	default <T extends Function> List<T> functions(boolean greedy,  Catalog catalog,  Schema schema,  String name){
-		return functions(runtime(),  null,  greedy,  catalog,  schema,  name);
+	<T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name);
+	default <T extends Function> List<T> functions(boolean greedy, Catalog catalog, Schema schema, String name){
+		return functions(runtime(), null, greedy, catalog, schema, name);
 	}
 
-	<T extends Function> LinkedHashMap<String,  T> functions(DataRuntime runtime,  String random,  Catalog catalog,  Schema schema,  String name);
-	default <T extends Function> LinkedHashMap<String,  T> functions(Catalog catalog,  Schema schema,  String name){
-		return functions(runtime(),  null,  catalog,  schema,  name);
+	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name);
+	default <T extends Function> LinkedHashMap<String, T> functions(Catalog catalog, Schema schema, String name){
+		return functions(runtime(), null, catalog, schema, name);
 	}
 
 
-	List<String> ddl(DataRuntime runtime,  String random,  Function function);
+	List<String> ddl(DataRuntime runtime, String random, Function function);
 	default List<String> ddl(Function function){
-		return ddl(runtime(),  null,  function);
+		return ddl(runtime(), null, function);
 	}
 
 	/* *****************************************************************************************************************
@@ -980,79 +980,79 @@ public interface AnylineDao<E>{
 	boolean create(Table table) throws Exception;
 	boolean alter(Table table) throws Exception;
 	boolean drop(Table table) throws Exception;
-	boolean rename(Table origin,  String name) throws Exception;
+	boolean rename(Table origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
 	boolean create(View view) throws Exception;
 	boolean alter(View view) throws Exception;
 	boolean drop(View view) throws Exception;
-	boolean rename(View origin,  String name) throws Exception;
+	boolean rename(View origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
 	boolean create(MasterTable table) throws Exception;
 	boolean alter(MasterTable table) throws Exception;
 	boolean drop(MasterTable table) throws Exception;
-	boolean rename(MasterTable origin,  String name) throws Exception;
+	boolean rename(MasterTable origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
 	boolean create(PartitionTable table) throws Exception;
 	boolean alter(PartitionTable table) throws Exception;
 	boolean drop(PartitionTable table) throws Exception;
-	boolean rename(PartitionTable origin,  String name) throws Exception;
+	boolean rename(PartitionTable origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
 	boolean add(Column column) throws Exception;
-	boolean alter(Table table,  Column column) throws Exception;
+	boolean alter(Table table, Column column) throws Exception;
 	boolean alter(Column column) throws Exception;
 	boolean drop(Column column) throws Exception;
-	boolean rename(Column origin,  String name) throws Exception;
+	boolean rename(Column origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
 	boolean add(Tag tag) throws Exception;
-	boolean alter(Table table,  Tag tag) throws Exception;
+	boolean alter(Table table, Tag tag) throws Exception;
 	boolean alter(Tag tag) throws Exception;
 	boolean drop(Tag tag) throws Exception;
-	boolean rename(Tag origin,  String name) throws Exception;
+	boolean rename(Tag origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
 	boolean add(PrimaryKey primary) throws Exception;
 	boolean alter(PrimaryKey primary) throws Exception;
-	boolean alter(Table table,  PrimaryKey primary) throws Exception;
+	boolean alter(Table table, PrimaryKey primary) throws Exception;
 	boolean drop(PrimaryKey primary) throws Exception;
-	boolean rename(PrimaryKey origin,  String name) throws Exception;
+	boolean rename(PrimaryKey origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 ******************************************************************************************************************/
 	boolean add(ForeignKey foreign) throws Exception;
 	boolean alter(ForeignKey foreign) throws Exception;
-	boolean alter(Table table,  ForeignKey foreign) throws Exception;
+	boolean alter(Table table, ForeignKey foreign) throws Exception;
 	boolean drop(ForeignKey foreign) throws Exception;
-	boolean rename(ForeignKey origin,  String name) throws Exception;
+	boolean rename(ForeignKey origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
 	boolean add(Index index) throws Exception;
 	boolean alter(Index index) throws Exception;
-	boolean alter(Table table,  Index index) throws Exception;
+	boolean alter(Table table, Index index) throws Exception;
 	boolean drop(Index index) throws Exception;
-	boolean rename(Index origin,  String name) throws Exception;
+	boolean rename(Index origin, String name) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
 	boolean add(Constraint constraint) throws Exception;
 	boolean alter(Constraint constraint) throws Exception;
-	boolean alter(Table table,  Constraint constraint) throws Exception;
+	boolean alter(Table table, Constraint constraint) throws Exception;
 	boolean drop(Constraint constraint) throws Exception;
-	boolean rename(Constraint origin,  String name) throws Exception;
+	boolean rename(Constraint origin, String name) throws Exception;
 
 
 	/* *****************************************************************************************************************
@@ -1067,7 +1067,7 @@ public interface AnylineDao<E>{
 	boolean add(Trigger trigger) throws Exception;
 	boolean alter(Trigger trigger) throws Exception;
 	boolean drop(Trigger trigger) throws Exception;
-	boolean rename(Trigger origin,  String name) throws Exception;
+	boolean rename(Trigger origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 ******************************************************************************************************************/
@@ -1080,7 +1080,7 @@ public interface AnylineDao<E>{
 	boolean create(Procedure procedure) throws Exception;
 	boolean alter(Procedure procedure) throws Exception;
 	boolean drop(Procedure procedure) throws Exception;
-	boolean rename(Procedure origin,  String name) throws Exception;
+	boolean rename(Procedure origin, String name) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -1093,5 +1093,5 @@ public interface AnylineDao<E>{
 	boolean create(Function function) throws Exception;
 	boolean alter(Function function) throws Exception;
 	boolean drop(Function function) throws Exception;
-	boolean rename(Function origin,  String name) throws Exception;
+	boolean rename(Function origin, String name) throws Exception;
 } 

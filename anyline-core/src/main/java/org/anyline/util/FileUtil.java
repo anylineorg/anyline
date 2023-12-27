@@ -202,7 +202,7 @@ public class FileUtil {
 			if(BUFFER_SIZE>input.available()){
 				BUFFER_SIZE = input.available();
 			}
-			in = new BufferedInputStream(input,  BUFFER_SIZE);
+			in = new BufferedInputStream(input, BUFFER_SIZE);
 			reader = new InputStreamReader(in);
 			input.available();
 			char [] by = new char [BUFFER_SIZE];
@@ -239,7 +239,7 @@ public class FileUtil {
 			int n;
 			while ((n = fis.read(b)) != -1)
 			{
-				bos.write(b,  0,  n);
+				bos.write(b, 0, n);
 			}
 			fis.close();
 			bos.close();
@@ -249,7 +249,7 @@ public class FileUtil {
 		}
 		return buffer;
 	}
-	public static File byte2file(byte[] buf,  File file){
+	public static File byte2file(byte[] buf, File file){
 		BufferedOutputStream bos = null;
 		FileOutputStream fos = null;
 		try{
@@ -294,7 +294,7 @@ public class FileUtil {
 				if(file.getAbsolutePath().contains(".jar!")){
 					buffer = readJar(file.getAbsolutePath());
 				}else {
-					buffer = read(new FileInputStream(file),  encode);
+					buffer = read(new FileInputStream(file), encode);
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -302,8 +302,8 @@ public class FileUtil {
 		}
 		return buffer;
 	}
-	public static StringBuffer read(File file,  String encode){
-		return read(file,  Charset.forName(encode));
+	public static StringBuffer read(File file, String encode){
+		return read(file, Charset.forName(encode));
 	}
 
 	public static StringBuffer readJar(String path )throws IOException {
@@ -335,7 +335,7 @@ public class FileUtil {
 	 * @param encode 编码
 	 * @param append 是否追加
 	 */
-	public static void write(String content,  File file,  Charset encode,  boolean append) {
+	public static void write(String content, File file, Charset encode, boolean append) {
 		if(null == file){
 			return;
 		}
@@ -346,8 +346,8 @@ public class FileUtil {
 		FileOutputStream fos = null;
 		OutputStreamWriter osw = null;
 		try {
-			fos = new FileOutputStream(file,  append);
-			osw = new OutputStreamWriter(fos,  encode);
+			fos = new FileOutputStream(file, append);
+			osw = new OutputStreamWriter(fos, encode);
 			if(append){
 				osw.append(content);
 			}else{
@@ -366,24 +366,24 @@ public class FileUtil {
 		}
 	}
 
-	public static void write(String content,  File file,  String encode,  boolean append) {
-		write(content,  file,  Charset.forName(encode),  append);
+	public static void write(String content, File file, String encode, boolean append) {
+		write(content, file, Charset.forName(encode), append);
 	}
-	public static void write(String content,  File file,  Charset encode) {
-		write(content,  file,  encode,  false);
+	public static void write(String content, File file, Charset encode) {
+		write(content, file, encode, false);
 	}
-	public static void write(String content,  File file,  String encode) {
-		write(content,  file,  Charset.forName(encode),  false);
-	}
-
-	public static void write(String content,  File file,  boolean append) {
-		write(content,  file,  "UTF-8",  append);
-	}
-	public static void write(String content,  File file) {
-		write(content,  file,  "UTF-8",  false);
+	public static void write(String content, File file, String encode) {
+		write(content, file, Charset.forName(encode), false);
 	}
 
-	public static boolean write(InputStream is,  File file){
+	public static void write(String content, File file, boolean append) {
+		write(content, file, "UTF-8", append);
+	}
+	public static void write(String content, File file) {
+		write(content, file, "UTF-8", false);
+	}
+
+	public static boolean write(InputStream is, File file){
 		if(null == file || null == is){
 			return false;
 		}
@@ -396,22 +396,22 @@ public class FileUtil {
 				file.createNewFile();
 			}
 			OutputStream os = new FileOutputStream(file);
-			return write(is,  os,  true);
+			return write(is, os, true);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
 	}
-	public static boolean write(InputStream is,  OutputStream os){
+	public static boolean write(InputStream is, OutputStream os){
 		return write(is, os, true);
 	}
-	public static boolean write(InputStream is,  OutputStream os,  boolean close){
+	public static boolean write(InputStream is, OutputStream os, boolean close){
 		BufferedInputStream bis = new BufferedInputStream(is);
 		int len;
 		byte[] arr = new byte[1024];
 		try {
 			while ((len = bis.read(arr)) != -1) {
-				os.write(arr,  0,  len);
+				os.write(arr, 0, len);
 				os.flush();
 			}
 		}catch(Exception e){
@@ -440,14 +440,14 @@ public class FileUtil {
 	 * @param over 是否清空已存在的同名文件
 	 * @return boolean
 	 */
-	public static boolean create(String dir,  String name,  boolean over){
-		String filePath = merge(dir,  name);
+	public static boolean create(String dir, String name, boolean over){
+		String filePath = merge(dir, name);
 		return create(filePath, over);
 	}
-	public static boolean create(String file,  boolean over){
-		return create(new File(file),  over);
+	public static boolean create(String file, boolean over){
+		return create(new File(file), over);
 	}
-	public static boolean create(File file,  boolean over){
+	public static boolean create(File file, boolean over){
 		if(null == file){
 			return false;
 		}
@@ -471,10 +471,10 @@ public class FileUtil {
 	}
 
 	public static File createTempFile(File file) throws Exception{
-		File tempFile = File.createTempFile(file.getName(),  null);
+		File tempFile = File.createTempFile(file.getName(), null);
 		boolean renameOk = file.renameTo(tempFile);
 		if(!renameOk){
-			tempFile = new File(file.getParent(),  "tmp_"+System.currentTimeMillis()+file.getName());
+			tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
 			renameOk = file.renameTo(tempFile);
 		}
 		if (!renameOk) {
@@ -595,7 +595,7 @@ public class FileUtil {
 	 * @param dest 目标文件(新文件)
 	 * @return boolean
 	 */
-	public static boolean copy(File src,  File dest){
+	public static boolean copy(File src, File dest){
 		boolean result = true;
 		if (src.isDirectory()){
 			if (!dest.exists()){
@@ -603,7 +603,7 @@ public class FileUtil {
 			}
 			String[] files = src.list();
 			for(int i = 0; i < files.length; i++){
-				copy(new File(src,  files[i]),  new File(dest,  files[i]));
+				copy(new File(src, files[i]), new File(dest, files[i]));
 			}
 		} else{
 			if(!src.exists()){
@@ -622,7 +622,7 @@ public class FileUtil {
 							dirs.mkdirs();
 						}
 					}else{
-						dest = new File(dest,  src.getName());
+						dest = new File(dest, src.getName());
 					}
 					dest.createNewFile();
 					in = new FileInputStream(src);
@@ -630,7 +630,7 @@ public class FileUtil {
 					byte[] buf = new byte[1024];
 					int len;
 					while ((len = in.read(buf)) > 0) {
-						out.write(buf,  0,  len);
+						out.write(buf, 0, len);
 					}
 				}catch(Exception e){
 					e.printStackTrace();
@@ -662,10 +662,10 @@ public class FileUtil {
 	 * @param subbfixs  subbfixs
 	 * @return List
 	 */
-	public static List<File> getAllChildrenFile(File dir,  String ...subbfixs){
+	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){
 		List<File> list = new ArrayList<File>();
 		if(dir.isFile()){
-			if(filterByType(dir,  subbfixs)){
+			if(filterByType(dir, subbfixs)){
 				list.add(dir);
 			}
 			return list;
@@ -725,7 +725,7 @@ public class FileUtil {
 	 * @param types  types
 	 * @return List
 	 */
-	public static List<File> getChildrenFile(File dir,  String ...types){
+	public static List<File> getChildrenFile(File dir, String ...types){
 		List<File> list = new ArrayList<File>();
 		File files[] = dir.listFiles();
 		if(null != files){
@@ -742,7 +742,7 @@ public class FileUtil {
 	 * @param types  types
 	 * @return List
 	 */
-	public static List<File> getZipAllChildrenFile(File zip,  String ...types){
+	public static List<File> getZipAllChildrenFile(File zip, String ...types){
 		List<File> list = new ArrayList<File>();
 		ZipInputStream in = null;
 		try{
@@ -751,7 +751,7 @@ public class FileUtil {
 			while((entry=in.getNextEntry()) != null){
 				String path = zip.getAbsolutePath() + "!/" + entry.getName();
 				File file = new File(path);
-				if(filterByType(file,  types)){
+				if(filterByType(file, types)){
 					list.add(file);
 				}
 			}
@@ -772,7 +772,7 @@ public class FileUtil {
 	 * @param types  types
 	 * @return boolean
 	 */
-	public static boolean filterByType(File file,  String ... types){
+	public static boolean filterByType(File file, String ... types){
 		if(null == file){
 			return false;
 		}
@@ -782,7 +782,7 @@ public class FileUtil {
 		for(String type:types){
 			String fileName = file.getAbsolutePath().toUpperCase();
 			type = type.toUpperCase();
-			if(RegularUtil.match(fileName,  type,  Regular.MATCH_MODE.MATCH)){
+			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){
 				return true;
 			}
 			if(!type.startsWith(".")){
@@ -846,9 +846,9 @@ public class FileUtil {
     }
 	public static String getFileType(byte[] b){
         String hex = NumberUtil.byte2hex(b);
-        Iterator<Entry<String,  String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
+        Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
         while (entryiterator.hasNext()) {
-            Entry<String,  String> entry =  entryiterator.next();
+            Entry<String, String> entry =  entryiterator.next();
             String fileTypeHexValue = entry.getValue();
             if (hex.toUpperCase().startsWith(fileTypeHexValue)) {
                 return entry.getKey();
@@ -884,16 +884,16 @@ public class FileUtil {
 	/**
 	 * 计算文件行数
 	 * @param file file
-	 * @param subbfixs 如果file是目录,  只统计其中subbfixs结尾的文件
+	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件
 	 * @return int
 	 */
-	public static int lines(File file,  String ... subbfixs){
+	public static int lines(File file, String ... subbfixs){
 		int size = 0;
 		if(null == file || !file.exists()){
 			return size;
 		}
 		if(file.isDirectory()){
-			List<File> files = FileUtil.getAllChildrenFile(file,  subbfixs);
+			List<File> files = FileUtil.getAllChildrenFile(file, subbfixs);
 			for(File item:files){
 				size += lines(item);
 			}
@@ -914,15 +914,15 @@ public class FileUtil {
 	 * @param srcs  srcs
 	 * @return boolean
 	 */
-	public static boolean zip(File zip,  File... srcs) {
+	public static boolean zip(File zip, File... srcs) {
 		List<File> files = new ArrayList<File>();
 		for (File src:srcs) {
 			files.add(src);
 		}
 		return zip(zip, files);
 	}
-	public static boolean zip(File zip,  List<File> srcs) {
-		return ZipUtil.zip(srcs,  zip);
+	public static boolean zip(File zip, List<File> srcs) {
+		return ZipUtil.zip(srcs, zip);
 	}
     /**
     * 获取单个文件的MD5值！
@@ -938,8 +938,8 @@ public class FileUtil {
     * @param recursion  true递归子目录中的文件
     * @return Map
     */
-    public static Map<String,  String> md5(File file,  boolean recursion) {
-    	return MD5Util.crypto(file,  recursion);
+    public static Map<String, String> md5(File file, boolean recursion) {
+    	return MD5Util.crypto(file, recursion);
     }
 
     /**
@@ -948,7 +948,7 @@ public class FileUtil {
      * @param file 文件名
 	 * @return boolean
      */
-    public static boolean save(InputStream is,  File file) {
+    public static boolean save(InputStream is, File file) {
     	if (BasicUtil.isEmpty(file)) {
 			return false;
 		}
@@ -993,8 +993,8 @@ public class FileUtil {
      * @param path 文件存储目录
 	 * @return boolean
      */
-    public static boolean save(InputStream is,  String path) {
-    	return save(is,  new File(path));
+    public static boolean save(InputStream is, String path) {
+    	return save(is, new File(path));
     }
 
 	/**
@@ -1002,10 +1002,10 @@ public class FileUtil {
 	 * @param finish 已完成
 	 * @return String
 	 */
-	public static String progress(long total,  long finish){
+	public static String progress(long total, long finish){
 		String title = "";
 		double rate = finish*100.00/total;
-		String rateTitle = NumberUtil.format(rate,  "0.00");
+		String rateTitle = NumberUtil.format(rate, "0.00");
 		if(finish>=total){
 			rateTitle = "100";
 		}
@@ -1039,7 +1039,7 @@ public class FileUtil {
 	 * @param dest 目标文件(新文件)
 	 * @param items items
 	 */
-	public static void merge(File dest,  List<File> items){
+	public static void merge(File dest, List<File> items){
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
@@ -1057,7 +1057,7 @@ public class FileUtil {
                 long fr = System.currentTimeMillis();
                 is = new FileInputStream(item);
                 while ((length = is.read(bytes)) != -1) {
-                    os.write(bytes,  0,  length);
+                    os.write(bytes, 0, length);
                 }
                 log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
@@ -1081,7 +1081,7 @@ public class FileUtil {
 	 * @param dest dst
 	 * @param dir dir
 	 */
-	public static void merge(File dest,  File dir){
+	public static void merge(File dest, File dir){
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
@@ -1100,7 +1100,7 @@ public class FileUtil {
                 long fr = System.currentTimeMillis();
                 is = new FileInputStream(item);
                 while ((length = is.read(bytes)) != -1) {
-                    os.write(bytes,  0,  length);
+                    os.write(bytes, 0, length);
                 }
                 log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
@@ -1125,16 +1125,16 @@ public class FileUtil {
 
     	}
     }
-	public static void replace(File file,   Charset encode,  String fr,  String to){
+	public static void replace(File file, Charset encode, String fr, String to){
 		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
-			String content = read(file,  encode).toString().replace(fr, to);
-			write(content,  file,  encode);
+			String content = read(file, encode).toString().replace(fr, to);
+			write(content, file, encode);
 		}
 	}
-	public static void replace(File file,  String fr,  String to){
+	public static void replace(File file, String fr, String to){
 		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
 			String content = read(file).toString().replace(fr, to);
-			write(content,  file);
+			write(content, file);
 		}
 	}
 	/**
@@ -1142,7 +1142,7 @@ public class FileUtil {
 	 * @param file file
 	 * @param count count
 	 */
-	public static void split(File file,  int count) {
+	public static void split(File file, int count) {
 	    FileInputStream fis = null;
 	    FileOutputStream fos = null;
 	    FileChannel input = null;
@@ -1164,7 +1164,7 @@ public class FileUtil {
 		    for (int i = 0; i < count; i++) {
 		    	long fr = System.currentTimeMillis();
 		        if (i + 1 != count) {
-		            int read = input.read(byteBuffer,  endPosition);// 读取数据
+		            int read = input.read(byteBuffer, endPosition);// 读取数据
 		            readW:
 		            while (read != -1) {
 		                byteBuffer.flip();//切换读模式
@@ -1178,16 +1178,16 @@ public class FileUtil {
 		                }
 		                endPosition += bufferSize;
 		                byteBuffer.clear(); // 重置缓存块指针
-		                read = input.read(byteBuffer,  endPosition);
+		                read = input.read(byteBuffer, endPosition);
 		            }
 		        }else{
 		            endPosition = fileSize; // 最后一个文件直接指向文件末尾
 		        }
-		        File item = new File(file.getParent(),  fileName+"_"+(i+1)+subName);
+		        File item = new File(file.getParent(), fileName+"_"+(i+1)+subName);
 		        try{
 			        fos = new FileOutputStream(item);
 			        out = fos.getChannel();
-			        input.transferTo(startPosition,  endPosition - startPosition,  out);//通道传输文件数据
+			        input.transferTo(startPosition, endPosition - startPosition, out);//通道传输文件数据
 		        }catch(Exception e){
 		        	e.printStackTrace();
 		        }finally{
@@ -1224,44 +1224,44 @@ public class FileUtil {
 	// HTTP 文件类型
 		public final static List<String> httpFileExtend = new ArrayList<>();
 		public final static List<String> httpFileType = new ArrayList<>();
-		public final static Map<String,  String> FILE_TYPE_MAP = new HashMap<>();
+		public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>();
 		static{
-			FILE_TYPE_MAP.put("jpg",  "FFD8FF"); 	// JPEG (jpg)
-	        FILE_TYPE_MAP.put("png",  "89504E47");   // PNG (png)
-	        FILE_TYPE_MAP.put("gif",  "47494638");   // GIF (gif)
-	        FILE_TYPE_MAP.put("tif",  "49492A00");   // TIFF (tif)
-	        FILE_TYPE_MAP.put("bmp",  "424D"); 		// Windows Bitmap (bmp)
-	        FILE_TYPE_MAP.put("dwg",  "41433130");   // CAD (dwg)
-	        FILE_TYPE_MAP.put("html",  "68746D6C3E");//HTML (html)
-	        FILE_TYPE_MAP.put("rtf",  "7B5C727466"); // Rich Text Format (rtf)
-	        FILE_TYPE_MAP.put("xml",  "3C3F786D6C");
-	        FILE_TYPE_MAP.put("zip",  "504B0304");
-	        FILE_TYPE_MAP.put("rar",  "52617221");
-	        FILE_TYPE_MAP.put("psd",  "38425053");   // Photoshop (psd)
-	        FILE_TYPE_MAP.put("eml",  "44656C69766572792D646174653A");  // Email [thorough only] (eml)
-	        FILE_TYPE_MAP.put("dbx",  "CFAD12FEC5FD746F");  // Outlook Express (dbx)
-	        FILE_TYPE_MAP.put("pst",  "2142444E");  // Outlook (pst)
-	        FILE_TYPE_MAP.put("xls",  "D0CF11E0");  // MS Word
+			FILE_TYPE_MAP.put("jpg", "FFD8FF"); 	// JPEG (jpg)
+	        FILE_TYPE_MAP.put("png", "89504E47");   // PNG (png)
+	        FILE_TYPE_MAP.put("gif", "47494638");   // GIF (gif)
+	        FILE_TYPE_MAP.put("tif", "49492A00");   // TIFF (tif)
+	        FILE_TYPE_MAP.put("bmp", "424D"); 		// Windows Bitmap (bmp)
+	        FILE_TYPE_MAP.put("dwg", "41433130");   // CAD (dwg)
+	        FILE_TYPE_MAP.put("html", "68746D6C3E");//HTML (html)
+	        FILE_TYPE_MAP.put("rtf", "7B5C727466"); // Rich Text Format (rtf)
+	        FILE_TYPE_MAP.put("xml", "3C3F786D6C");
+	        FILE_TYPE_MAP.put("zip", "504B0304");
+	        FILE_TYPE_MAP.put("rar", "52617221");
+	        FILE_TYPE_MAP.put("psd", "38425053");   // Photoshop (psd)
+	        FILE_TYPE_MAP.put("eml", "44656C69766572792D646174653A");  // Email [thorough only] (eml)
+	        FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F");  // Outlook Express (dbx)
+	        FILE_TYPE_MAP.put("pst", "2142444E");  // Outlook (pst)
+	        FILE_TYPE_MAP.put("xls", "D0CF11E0");  // MS Word
 			FILE_TYPE_MAP.put("xlsx", "504B0304");
-			FILE_TYPE_MAP.put("doc",  "D0CF11E0");  // MS Excel 注意:word 和 excel的文件头一样
+			FILE_TYPE_MAP.put("doc", "D0CF11E0");  // MS Excel 注意:word 和 excel的文件头一样
 			FILE_TYPE_MAP.put("docx", "504B0304");
-			FILE_TYPE_MAP.put("ppt",  "D0CF11E0");
+			FILE_TYPE_MAP.put("ppt", "D0CF11E0");
 			FILE_TYPE_MAP.put("pptx", "504B0304");
-	        FILE_TYPE_MAP.put("mdb",  "5374616E64617264204A");  // MS Access (mdb)
-	        FILE_TYPE_MAP.put("wpd",  "FF575043"); // WordPerfect (wpd)
-	        FILE_TYPE_MAP.put("eps",  "252150532D41646F6265");
-	        FILE_TYPE_MAP.put("ps",   "252150532D41646F6265");
-	        FILE_TYPE_MAP.put("pdf",  "255044462D312E");  // Adobe Acrobat (pdf)
-	        FILE_TYPE_MAP.put("qdf",  "AC9EBD8F");  // Quicken (qdf)
-	        FILE_TYPE_MAP.put("pwl",  "E3828596");  // Windows Password (pwl)
-	        FILE_TYPE_MAP.put("wav",  "57415645");  // Wave (wav)
-	        FILE_TYPE_MAP.put("avi",  "41564920");
-	        FILE_TYPE_MAP.put("ram",  "2E7261FD");  // Real Audio (ram)
-	        FILE_TYPE_MAP.put("rm",  "2E524D46");  // Real Media (rm)
-	        FILE_TYPE_MAP.put("mpg",  "000001BA");  //
-	        FILE_TYPE_MAP.put("mov",  "6D6F6F76");  // Quicktime (mov)
-	        FILE_TYPE_MAP.put("asf",  "3026B2758E66CF11"); // Windows Media (asf)
-	        FILE_TYPE_MAP.put("mid",  "4D546864");  // MIDI (mid)
+	        FILE_TYPE_MAP.put("mdb", "5374616E64617264204A");  // MS Access (mdb)
+	        FILE_TYPE_MAP.put("wpd", "FF575043"); // WordPerfect (wpd)
+	        FILE_TYPE_MAP.put("eps", "252150532D41646F6265");
+	        FILE_TYPE_MAP.put("ps", "252150532D41646F6265");
+	        FILE_TYPE_MAP.put("pdf", "255044462D312E");  // Adobe Acrobat (pdf)
+	        FILE_TYPE_MAP.put("qdf", "AC9EBD8F");  // Quicken (qdf)
+	        FILE_TYPE_MAP.put("pwl", "E3828596");  // Windows Password (pwl)
+	        FILE_TYPE_MAP.put("wav", "57415645");  // Wave (wav)
+	        FILE_TYPE_MAP.put("avi", "41564920");
+	        FILE_TYPE_MAP.put("ram", "2E7261FD");  // Real Audio (ram)
+	        FILE_TYPE_MAP.put("rm", "2E524D46");  // Real Media (rm)
+	        FILE_TYPE_MAP.put("mpg", "000001BA");  //
+	        FILE_TYPE_MAP.put("mov", "6D6F6F76");  // Quicktime (mov)
+	        FILE_TYPE_MAP.put("asf", "3026B2758E66CF11"); // Windows Media (asf)
+	        FILE_TYPE_MAP.put("mid", "4D546864");  // MIDI (mid)
 
 			// 文件编码
 			// 文件类型

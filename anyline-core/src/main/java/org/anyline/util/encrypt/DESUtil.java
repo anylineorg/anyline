@@ -198,7 +198,7 @@ public class DESUtil {
 				Object value = BeanUtil.getFieldValue(obj, key);
 				if(null != value){
 					value = DESUtil.getInstance().encrypt(value.toString()); 
-					BeanUtil.setFieldValue(obj,  key,  value); 
+					BeanUtil.setFieldValue(obj, key, value); 
 				} 
 			} 
 		} 
@@ -214,7 +214,7 @@ public class DESUtil {
 	 * HTTP_REQUEST_PARAM_KEY_DES_KEY = "@#$%#"; // 参数名加密密钥 public static final
 	 * String HTTP_REQUEST_PARAM_VALUE_DES_KEY = "@#23$%097#"; // 参数值加密密钥
 	 */
-	private static Map<String,  DESKey> deskeys = null;
+	private static Map<String, DESKey> deskeys = null;
 	private static DESKey defaultDesKey = null;
 	private static final int MAX_DES_VERSION_INDEX = 12; // 密文中插入版本号最大位置
 	private static final int DES_VERSION_LENGTH = 3;
@@ -223,7 +223,7 @@ public class DESUtil {
 	private static final String ENCRYPT_TYPE_VALUE = "value";
 	public static List<String> ignores = new ArrayList<>();
 	static {
-		deskeys = new HashMap<String,  DESKey>();
+		deskeys = new HashMap<String, DESKey>();
 		try {
 			String ignoreList = ConfigTable.getString("DES_IGNORE");
 			if(null != ignoreList){
@@ -235,7 +235,7 @@ public class DESUtil {
 			String keyPath = ConfigTable.getString("DES_KEY_FILE");
 			if (BasicUtil.isNotEmpty(keyPath)) {
 				if (keyPath.contains("${classpath}")) {
-					keyPath = keyPath.replace("${classpath}",  ConfigTable.getClassPath());
+					keyPath = keyPath.replace("${classpath}", ConfigTable.getClassPath());
 				} else if (keyPath.startsWith("/")) {
 					keyPath = ConfigTable.getWebRoot() + keyPath;
 				} else {
@@ -262,7 +262,7 @@ public class DESUtil {
 						if (null == defaultDesKey) {
 							defaultDesKey = key;
 						} else {
-							deskeys.put(version,  key);
+							deskeys.put(version, key);
 						}
 					}
 				}
@@ -309,7 +309,7 @@ public class DESUtil {
 		if (null == param || param.trim().isEmpty()) {
 			return "";
 		}
-		return encryptByType(param,  ENCRYPT_TYPE_PARAM);
+		return encryptByType(param, ENCRYPT_TYPE_PARAM);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class DESUtil {
 		if (null == param) {
 			return null;
 		}
-		return decrypt(param,  ENCRYPT_TYPE_PARAM);
+		return decrypt(param, ENCRYPT_TYPE_PARAM);
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class DESUtil {
 		if (null == key) {
 			return null;
 		}
-		return decrypt(key,  ENCRYPT_TYPE_KEY);
+		return decrypt(key, ENCRYPT_TYPE_KEY);
 	}
 
 	/**
@@ -374,7 +374,7 @@ public class DESUtil {
 		if (null == value) {
 			return null;
 		}
-		return decrypt(value.trim(),  ENCRYPT_TYPE_VALUE);
+		return decrypt(value.trim(), ENCRYPT_TYPE_VALUE);
 	}
 
 	/**
@@ -384,12 +384,12 @@ public class DESUtil {
 	 * @param type type 原文类型
 	 * @return 加密>插入版本号>添加前缀
 	 */
-	private static String encryptByType(String src,  String type,  boolean mix) {
+	private static String encryptByType(String src, String type, boolean mix) {
 		String result = null;
 		if(null == src || ignores.contains(src)){
 			return src;
 		}
-		if (isEncrypt(src,  type)) {
+		if (isEncrypt(src, type)) {
 			return src;
 		}
 		DESUtil des = DESUtil.getInstance(defaultDesKey.getKey(type));
@@ -409,26 +409,26 @@ public class DESUtil {
 		return result;
 	}
 
-	public static String encryptByType(String src,  String type) {
-		return encryptByType(src,  type,  false);
+	public static String encryptByType(String src, String type) {
+		return encryptByType(src, type, false);
 	}
 
 	public static String encryptKey(String src) {
 		if (null == src) {
 			return src;
 		}
-		return encryptByType(src,  ENCRYPT_TYPE_KEY);
+		return encryptByType(src, ENCRYPT_TYPE_KEY);
 	}
 
-	public static String encryptValue(String src,  boolean mix) {
+	public static String encryptValue(String src, boolean mix) {
 		if (null == src) {
 			return src;
 		}
-		return encryptByType(src,  ENCRYPT_TYPE_VALUE,  mix);
+		return encryptByType(src, ENCRYPT_TYPE_VALUE, mix);
 	}
 
 	public static String encryptValue(String src) {
-		return encryptValue(src,  false);
+		return encryptValue(src, false);
 	}
 
 	/**
@@ -438,12 +438,12 @@ public class DESUtil {
 	 * @param type type
 	 * @return boolean
 	 */
-	public static boolean isEncrypt(String src,  String type) {
+	public static boolean isEncrypt(String src, String type) {
 		if (null == src) {
 			return false;
 		}
 		try {
-			String value = decrypt(src,  type);
+			String value = decrypt(src, type);
 			if (null != value) {
 				return true;
 			}
@@ -460,19 +460,19 @@ public class DESUtil {
 	 * @param type type 密文类型
 	 * @return 删除前缀 > 解析版本号 > 解密
 	 */
-	private static String decrypt(String src,  String type) {
+	private static String decrypt(String src, String type) {
 		if (null == src || null == type || ignores.contains(src)) {
 			return null;
 		}
 		String result = null;
-		result = decrypt(src,  defaultDesKey,  type); // 默认版本解密
+		result = decrypt(src, defaultDesKey, type); // 默认版本解密
 
 		if (null == result) {
 			// 没有对应版本号, 逐个版本解密
 			for (Iterator<String> versions = deskeys.keySet().iterator(); versions
 					.hasNext();) {
 				DESKey key = deskeys.get(versions.next());
-				result = decrypt(src,  key,  type);
+				result = decrypt(src, key, type);
 				if (null != result) {
 					break;
 				}
@@ -489,9 +489,9 @@ public class DESUtil {
 	 * @param type type
 	 * @return String
 	 */
-	private static String decrypt(String src,  DESKey key,  String type) {
+	private static String decrypt(String src, DESKey key, String type) {
 		if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
-			log.warn("[decrypt][start][src:{}][type:{}]",  src,  type);
+			log.warn("[decrypt][start][src:{}][type:{}]", src, type);
 		}
 		String result = src;
 		if (null == src || ignores.contains(src)) {
@@ -500,10 +500,10 @@ public class DESUtil {
 		// 删除随机URL混淆码
 		if (ENCRYPT_TYPE_VALUE.equals(type)) {
 			if (RegularUtil
-					.match(result,  "v\\d{5}v",  Regular.MATCH_MODE.PREFIX)) {
+					.match(result, "v\\d{5}v", Regular.MATCH_MODE.PREFIX)) {
 				result = result.substring(7);
 				if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
-					log.warn("[decrypt][删除混淆码][result:{}]",  result);
+					log.warn("[decrypt][删除混淆码][result:{}]", result);
 				}
 			}
 		}
@@ -520,7 +520,7 @@ public class DESUtil {
 			if(result.startsWith(prefix)) {
 				result = result.substring(sub);
 				if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
-					log.warn("[decrypt][删除前缀][result:{}]",  result);
+					log.warn("[decrypt][删除前缀][result:{}]", result);
 				}
 			}
 			// 解析版本
@@ -545,7 +545,7 @@ public class DESUtil {
 			result = null;
 		}
 		if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
-			log.warn("[decrypt][end][result:{}]",  result);
+			log.warn("[decrypt][end][result:{}]", result);
 		}
 		return result;
 	}
@@ -566,12 +566,12 @@ public class DESUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		url = url.substring(0,  url.indexOf("?") + 1) + param;
+		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
 	}
 
-	public static String encryptUrl(String url,  boolean union, 
-			boolean encryptKey,  boolean encryptValue) {
+	public static String encryptUrl(String url, boolean union, 
+			boolean encryptKey, boolean encryptValue) {
 		if (null == url || !url.contains("?")) {
 			return url;
 		}
@@ -604,7 +604,7 @@ public class DESUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		url = url.substring(0,  url.indexOf("?") + 1) + param;
+		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
 	}
 
@@ -617,7 +617,7 @@ public class DESUtil {
 	public static String encryptHtmlTagA(String tag) {
 		try {
 			String url = RegularUtil.fetchUrl(tag);
-			tag = tag.replace(url,  encryptUrl(url));
+			tag = tag.replace(url, encryptUrl(url));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -639,8 +639,8 @@ public class DESUtil {
 				String tmp = src.substring(DES_VERSION_LENGTH);
 				int idx = getDESVersionIndex(tmp);
 				if (idx >= 0) {
-					result[0] = src.substring(idx,  idx + DES_VERSION_LENGTH); // 版本号
-					result[1] = src.substring(0,  idx)
+					result[0] = src.substring(idx, idx + DES_VERSION_LENGTH); // 版本号
+					result[1] = src.substring(0, idx)
 							+ src.substring(idx + DES_VERSION_LENGTH); // 没有版本号的密文
 				}
 			} catch (Exception e) {
@@ -661,7 +661,7 @@ public class DESUtil {
 		if (null != src && src.length() > MAX_DES_VERSION_INDEX) {
 			String tmp = src.substring(MAX_DES_VERSION_INDEX);
 			int len = tmp.length();
-			String chr = src.substring(len / 2,  len / 2 + 1);
+			String chr = src.substring(len / 2, len / 2 + 1);
 			idx = (int) chr.toCharArray()[0];
 			idx = Math.abs(idx % MAX_DES_VERSION_INDEX);
 		}
@@ -674,16 +674,16 @@ public class DESUtil {
 	 * @param src 未插入版本号的密文
 	 * @return String
 	 */
-	private static String insertDESVersion(String src,  String version) {
+	private static String insertDESVersion(String src, String version) {
 		int idx = getDESVersionIndex(src);
 		if (idx >= 0) {
-			src = BasicUtil.insert(src,  idx,  version);
+			src = BasicUtil.insert(src, idx, version);
 		}
 		return src;
 	}
 
 	private static String insertDESVersion(String src) {
-		return insertDESVersion(src,  defaultDesKey.getVersion());
+		return insertDESVersion(src, defaultDesKey.getVersion());
 	}
 
 	/*************************************加密key***********************************************/ 
@@ -694,7 +694,7 @@ public class DESUtil {
 	 * @param keys  keys
 	 * @return Map
 	 */ 
-	private static Map<String,  Object> encryptKey(Map<String,  Object> map,  boolean mix,  String... keys) {
+	private static Map<String, Object> encryptKey(Map<String, Object> map, boolean mix, String... keys) {
 		if (null == map) {
 			return map; 
 		} 
@@ -702,15 +702,15 @@ public class DESUtil {
 		for (String k : ks) {
 			Object v = map.get(k); 
 			if (null == v || v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-				if(null == keys || keys.length == 0 || BasicUtil.contains(keys,  k)){
-					String key = encryptByType(k,  DESUtil.ENCRYPT_TYPE_KEY,  mix); 
+				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){
+					String key = encryptByType(k, DESUtil.ENCRYPT_TYPE_KEY, mix); 
 					map.remove(k); 
-					map.put(key,  v); 
+					map.put(key, v); 
 				} 
 			} else{
-				v = encryptKey(v,  mix,  keys); 
+				v = encryptKey(v, mix, keys); 
 			} 
-			// map.put(k,  v);
+			// map.put(k, v);
 		} 
 		return map; 
 	} 
@@ -723,42 +723,42 @@ public class DESUtil {
 	 * @param keys  keys
 	 * @return Collection
 	 */ 
-	private static Collection<Object> encryptKey(Collection<Object> list,  boolean mix,  String... keys) {
+	private static Collection<Object> encryptKey(Collection<Object> list, boolean mix, String... keys) {
 		if (null == list) {
 			return list; 
 		} 
 		for (Object obj : list) {
-			obj = encryptKey(obj,  mix,  keys); 
+			obj = encryptKey(obj, mix, keys); 
 		} 
 		return list; 
 	} 
  
-	public static Collection<Object> encryptKey(Collection<Object> list,  String... keys) {
-		return encryptKey(list,  false,  keys); 
+	public static Collection<Object> encryptKey(Collection<Object> list, String... keys) {
+		return encryptKey(list, false, keys); 
 	} 
 	/** 
-	 * 加密obj的keys属性值(递归Collection,  Map) 
+	 * 加密obj的keys属性值(递归Collection, Map) 
 	 * @param mix 是否混淆url 生成随机URL用来防止QQ等工具报警 
 	 * @param obj  obj
 	 * @param keys  keys
 	 * @return Object
 	 */ 
 	@SuppressWarnings("unchecked")
-	public static Object encryptKey(Object obj,  boolean mix,  String... keys) {
+	public static Object encryptKey(Object obj, boolean mix, String... keys) {
 		if (null == obj) {
 			return obj; 
 		} 
 		if (obj instanceof Map) {
-			obj = encryptKey((Map<String,  Object>) obj,  mix,  keys); 
+			obj = encryptKey((Map<String, Object>) obj, mix, keys); 
 		} else if (obj instanceof Collection) {
-			obj = encryptKey((Collection<Object>) obj,  mix,  keys); 
+			obj = encryptKey((Collection<Object>) obj, mix, keys); 
 		} else {
 			// Object无法加密
 		} 
 		return obj; 
 	} 
-	public static Object encryptKey(Object obj,  String... keys) {
-		return encryptKey(obj,  false,  keys); 
+	public static Object encryptKey(Object obj, String... keys) {
+		return encryptKey(obj, false, keys); 
 	}
 } 
  

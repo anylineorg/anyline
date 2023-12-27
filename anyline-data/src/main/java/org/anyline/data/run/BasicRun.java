@@ -65,8 +65,8 @@ public abstract class BasicRun implements Run {
 
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE;
 	protected boolean valid = true;
-	protected LinkedHashMap<String,  Column> insertColumns = null;
-	protected LinkedHashMap<String,  Column> updateColumns;
+	protected LinkedHashMap<String, Column> insertColumns = null;
+	protected LinkedHashMap<String, Column> updateColumns;
 	protected List<String> queryColumns;	//查询列
 	protected List<String> excludeColumn;  //不查询列
 	protected int from = 1;
@@ -221,13 +221,13 @@ public abstract class BasicRun implements Run {
 		return list;
 	}
 	@Override
-	public void setValues(String key,  List<Object> values) {
+	public void setValues(String key, List<Object> values) {
 		if(null != values){
 			if(null == this.values){
 				this.values = new ArrayList<>();
 			}
 			for(Object value:values){
-				this.values.add(new RunValue(key,  value));
+				this.values.add(new RunValue(key, value));
 			}
 		}
 	}
@@ -240,9 +240,9 @@ public abstract class BasicRun implements Run {
 	 * @param split  遇到集合/数组类型是否拆分处理(DataRow 并且Column不是数组类型)
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	@SuppressWarnings({"rawtypes",  "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	@Override
-	public RunValue addValues(Compare compare,  Column column,  Object obj,  boolean split){
+	public RunValue addValues(Compare compare, Column column, Object obj, boolean split){
 		RunValue rv = null;
 		if(null != obj){
 			// from:1-DataRow 2-Entity
@@ -261,7 +261,7 @@ public abstract class BasicRun implements Run {
 					if(obj instanceof Object[] && !json){
 						Object[] list = (Object[]) obj;
 						for(Object item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -270,7 +270,7 @@ public abstract class BasicRun implements Run {
 					}else if(obj instanceof double[] && !json){
 						double[] list = (double[]) obj;
 						for(double item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -279,7 +279,7 @@ public abstract class BasicRun implements Run {
 					}else if(obj instanceof long[] && !json){
 						long[] list = (long[]) obj;
 						for(long item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -288,7 +288,7 @@ public abstract class BasicRun implements Run {
 					}else if(obj instanceof int[] && !json){
 						int[] list = (int[]) obj;
 						for(int item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -297,7 +297,7 @@ public abstract class BasicRun implements Run {
 					}else if(obj instanceof float[] && !json){
 						float[] list = (float[]) obj;
 						for(float item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -306,7 +306,7 @@ public abstract class BasicRun implements Run {
 					}else if(obj instanceof short[] && !json){
 						short[] list = (short[]) obj;
 						for(short item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -315,7 +315,7 @@ public abstract class BasicRun implements Run {
 					}else if(obj instanceof Object[] && !json){
 						Object[] list = (Object[]) obj;
 						for(Object item:list){
-							rv = new RunValue(column,  item);
+							rv = new RunValue(column, item);
 							addValues(rv);
 							if(Compare.EQUAL == compare){
 								break;
@@ -325,24 +325,24 @@ public abstract class BasicRun implements Run {
 				}else if(obj instanceof Collection && !json){
 					Collection list = (Collection)obj;
 					for(Object item:list){
-						rv = new RunValue(column,  item);
+						rv = new RunValue(column, item);
 						addValues(rv);
 						if(Compare.EQUAL == compare){
 							break;
 						}
 					}
 				}else{
-					rv = new RunValue(column,  obj);
+					rv = new RunValue(column, obj);
 					addValues(rv);
 				}
 			}
 			else{
-				rv = new RunValue(column,  obj);
+				rv = new RunValue(column, obj);
 				addValues(rv);
 			}
 
 		}else{
-			rv = new RunValue(column,  obj);
+			rv = new RunValue(column, obj);
 			addValues(rv);
 		}
 		return rv;
@@ -354,7 +354,7 @@ public abstract class BasicRun implements Run {
 	 * @param run  run
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	@SuppressWarnings({"rawtypes",  "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked" })
 	public Run addValues(RunValue run){
 		if(null == values){
 			values = new ArrayList<>();
@@ -422,7 +422,7 @@ public abstract class BasicRun implements Run {
 	}
  
 	@Override 
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt,  Compare compare,  String prefix,  String variable,  Object value) {
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value) {
 		return this; 
 	} 
 	@Override 
@@ -437,7 +437,7 @@ public abstract class BasicRun implements Run {
 	public String getFinalQuery(boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalQuery(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = SQLUtil.placeholder(text,  delimiterFr,  delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
@@ -449,7 +449,7 @@ public abstract class BasicRun implements Run {
 	public String getTotalQuery(boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalTotal(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = SQLUtil.placeholder(text,  delimiterFr,  delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
@@ -461,7 +461,7 @@ public abstract class BasicRun implements Run {
 	public String getFinalExists(boolean placeholder){
 		String text =  runtime.getAdapter().mergeFinalExists(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = SQLUtil.placeholder(text,  delimiterFr,  delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
@@ -528,8 +528,8 @@ public abstract class BasicRun implements Run {
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(EMPTY_VALUE_SWITCH swt,  Compare compare,  String prefix,  String var,  Object value){
-		Condition condition = new DefaultAutoCondition(swt,  compare,  prefix, var,  value);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
+		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		}
@@ -575,7 +575,7 @@ public abstract class BasicRun implements Run {
 	@Override
 	public String getFinalDelete(boolean placeholder){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  SQLUtil.placeholder(builder.toString(),  delimiterFr,  delimiterTo);
+			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		String text = builder.toString();
 		if(!placeholder){
@@ -587,7 +587,7 @@ public abstract class BasicRun implements Run {
 	@Override
 	public String getFinalInsert(boolean placeholder){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  SQLUtil.placeholder(builder.toString(),  delimiterFr,  delimiterTo);
+			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		String text = builder.toString();
 		if(!placeholder){
@@ -599,7 +599,7 @@ public abstract class BasicRun implements Run {
 	@Override
 	public String getFinalUpdate(boolean placeholder){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  SQLUtil.placeholder(builder.toString(),  delimiterFr,  delimiterTo);
+			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		String text = builder.toString();
 		if(!placeholder){
@@ -621,7 +621,7 @@ public abstract class BasicRun implements Run {
 	public String getFinalExecute(boolean placeholder){
 		String text = builder.toString();
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = SQLUtil.placeholder(text,  delimiterFr,  delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
@@ -674,7 +674,7 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public LinkedHashMap<String,  Column> getInsertColumns(boolean metadata) {
+	public LinkedHashMap<String, Column> getInsertColumns(boolean metadata) {
 		return insertColumns;
 	}
 
@@ -696,19 +696,19 @@ public abstract class BasicRun implements Run {
 				insertColumns = new LinkedHashMap<>();
 			}
 			for(String column:columns){
-				insertColumns.put(column.toUpperCase(),  new Column(column));
+				insertColumns.put(column.toUpperCase(), new Column(column));
 			}
 		}
 		return this;
 	}
 	@Override
-	public Run setInsertColumns(LinkedHashMap<String,  Column> columns) {
+	public Run setInsertColumns(LinkedHashMap<String, Column> columns) {
 		this.insertColumns = columns;
 		return this;
 	}
 
 	@Override
-	public LinkedHashMap<String,  Column> getUpdateColumns(boolean metadata) {
+	public LinkedHashMap<String, Column> getUpdateColumns(boolean metadata) {
 		return updateColumns;
 	}
 
@@ -730,13 +730,13 @@ public abstract class BasicRun implements Run {
 				updateColumns = new LinkedHashMap<>();
 			}
 			for(String column:columns){
-				updateColumns.put(column.toUpperCase(),  new Column(column));
+				updateColumns.put(column.toUpperCase(), new Column(column));
 			}
 		}
 		return this;
 	}
 	@Override
-	public Run setUpdateColumns(LinkedHashMap<String,  Column> columns) {
+	public Run setUpdateColumns(LinkedHashMap<String, Column> columns) {
 		this.updateColumns = columns;
 		return this;
 	}
@@ -755,7 +755,7 @@ public abstract class BasicRun implements Run {
 					continue;
 				}
 				condition = condition.trim();
-				String up = condition.toUpperCase().replaceAll("\\s+",  " ").trim();
+				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim();
 
 				if(up.startsWith("ORDER BY")){
 					// 排序条件
@@ -796,7 +796,7 @@ public abstract class BasicRun implements Run {
 				//if(condition.startsWith("${") && condition.endsWith("}")){
 				if(BasicUtil.checkEl(condition)){
 					// 原生SQL  不处理
-					Condition con = new DefaultAutoCondition(condition.substring(2,  condition.length()-1));
+					Condition con = new DefaultAutoCondition(condition.substring(2, condition.length()-1));
 					addCondition(con);
 					continue;
 				}
@@ -806,14 +806,14 @@ public abstract class BasicRun implements Run {
 					boolean isTime = false;
 					int idx = condition.indexOf(":");
 					// ''之内
-					if(condition.indexOf("'")<idx && condition.indexOf("'",  idx+1) > 0){
+					if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){
 						isTime = true;
 					}
 					if(!isTime){
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.getSwitch(), parser.getCompare(),  parser.getPrefix(), parser.getVar(), value);
+						addCondition(parser.getSwitch(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
 						continue;
 					}
 				}
@@ -836,11 +836,11 @@ public abstract class BasicRun implements Run {
 			try{
 				int bSize = 0;//左括号数据
 				if(txt.contains(")")){
-					bSize = RegularUtil.fetch(txt,  "\\)").size();
+					bSize = RegularUtil.fetch(txt, "\\)").size();
 				}
 				int eSize = 0;//右括号数量
 				if(txt.contains("(")){
-					eSize = RegularUtil.fetch(txt,  "\\(").size();
+					eSize = RegularUtil.fetch(txt, "\\(").size();
 				}
 				if(bSize == eSize){
 					result = true;
@@ -868,11 +868,11 @@ public abstract class BasicRun implements Run {
 				try{
 					int bSize = 0;//左括号数据
 					if(txt.contains(")")){
-						bSize = RegularUtil.fetch(txt,  "\\)").size();
+						bSize = RegularUtil.fetch(txt, "\\)").size();
 					}
 					int eSize = 0;//右括号数量
 					if(txt.contains("(")){
-						eSize = RegularUtil.fetch(txt,  "\\(").size();
+						eSize = RegularUtil.fetch(txt, "\\(").size();
 					}
 					if(bSize == eSize){
 						result = true;
@@ -899,7 +899,7 @@ public abstract class BasicRun implements Run {
 
 
 
-	public boolean isSetValue(String condition,  String variable){
+	public boolean isSetValue(String condition, String variable){
 		Condition con = getCondition(condition);
 		if(null == con){
 			Variable var = con.getVariable(variable);
@@ -1051,9 +1051,9 @@ public abstract class BasicRun implements Run {
 				for(String col:cols){
 					if(null == result){
 
-						result = SQLUtil.delimiter(col,  runtime.getAdapter().getDelimiterFr(),  runtime.getAdapter().getDelimiterTo());
+						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}else{
-						result += ", " + SQLUtil.delimiter(col,  runtime.getAdapter().getDelimiterFr(),  runtime.getAdapter().getDelimiterTo());
+						result += ", " + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}
 				}
 			}
@@ -1083,7 +1083,7 @@ public abstract class BasicRun implements Run {
 				}
 				DriverAdapter adapter = adapter();
 				if(null != adapter){
-					replacement = adapter.write(runtime,  column,  value,  false)+"";
+					replacement = adapter.write(runtime, column, value, false)+"";
 				}else {
 					if (BasicUtil.isNumber(value) || "NULL".equalsIgnoreCase(value.toString())) {
 						replacement = value.toString();
@@ -1091,7 +1091,7 @@ public abstract class BasicRun implements Run {
 						replacement = "'" + value + "'";
 					}
 				}
-				result = result.substring(0,  index) + replacement + result.substring(index+1);
+				result = result.substring(0, index) + replacement + result.substring(index+1);
 
 			}
 		}
@@ -1099,15 +1099,15 @@ public abstract class BasicRun implements Run {
 	}
 	private String format(String sql){
 		if(null != sql) {
-			sql = sql.replaceAll("\n ",  "\n\t")
-					.replaceAll("\n\t\n",  "\n")
-					.replaceAll("\n{2, }",  "\n")
-					.replaceAll(" {2, }",  " ")
+			sql = sql.replaceAll("\n ", "\n\t")
+					.replaceAll("\n\t\n", "\n")
+					.replaceAll("\n{2, }", "\n")
+					.replaceAll(" {2, }", " ")
 					.trim();
 		}
 		return sql;
 	}
-	public String log(ACTION.DML action,  boolean placeholder){
+	public String log(ACTION.DML action, boolean placeholder){
 		StringBuilder builder = new StringBuilder();
 		List<String> keys = null;
 		builder.append("[sql:\n");
@@ -1133,7 +1133,7 @@ public abstract class BasicRun implements Run {
 			List<Object> values = getValues();
 			if(null!= values && values.size() > 0) {
 				builder.append("\n[param:");
-				builder.append(LogUtil.param(keys,  getValues()));
+				builder.append(LogUtil.param(keys, getValues()));
 				builder.append("];");
 			}
 		}

@@ -40,7 +40,7 @@ public class OriginalDataRow extends DataRow {
         return this;
     }
     public DataRow set(String key, Object value) {
-        put(keyCase,  key,  value,  false,  true);
+        put(keyCase, key, value, false, true);
         return this;
     }
     public Object get(String key) {

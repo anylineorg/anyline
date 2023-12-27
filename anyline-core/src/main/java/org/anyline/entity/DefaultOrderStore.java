@@ -49,17 +49,17 @@ public class DefaultOrderStore implements OrderStore{
 	}
 
 	public void order(String col, Order.TYPE type, boolean override) {
-		order(new DefaultOrder(col,  type),  override);
+		order(new DefaultOrder(col, type), override);
 	}
-	public void order(String col,  Order.TYPE type) {
-		order(col,  type,  true);
+	public void order(String col, Order.TYPE type) {
+		order(col, type, true);
 	}
 
-	public void order(String col,  String type,  boolean override) {
-		order(new DefaultOrder(col,  type),  override);
+	public void order(String col, String type, boolean override) {
+		order(new DefaultOrder(col, type), override);
 	}
-	public void order(String col,  String type) {
-		order(col,  type,  true);
+	public void order(String col, String type) {
+		order(col, type, true);
 	}
 	/** 
 	 * 排序多列以, 分隔
@@ -69,23 +69,23 @@ public class DefaultOrderStore implements OrderStore{
 	 * @param str  str
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 */ 
-	public void order(String str,  boolean override) {
+	public void order(String str, boolean override) {
 		if (BasicUtil.isEmpty(str)) {
 			return; 
 		}
 		str = str.trim();
-		String up = str.toUpperCase().replaceAll("\\s+",  " ").trim();
+		String up = str.toUpperCase().replaceAll("\\s+", " ").trim();
 		if (up.startsWith("ORDER BY")) {
 			str = str.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
 		} 
 		String[] tmps = str.split(", "); // 多列排序
 		for (String tmp : tmps) {
-			order(new DefaultOrder(tmp),  override);
+			order(new DefaultOrder(tmp), override);
 		} 
 	}
 
 	public void order(String str) {
-		order(str,  true);
+		order(str, true);
 	}
 	public Order getOrder(String order){
 		if(null == order){
@@ -109,7 +109,7 @@ public class DefaultOrderStore implements OrderStore{
 				if(null == order){
 					continue;
 				}
-				SQLUtil.delimiter(builder,  order.getColumn(),  delimiter).append(" ").append(order.getType());
+				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
 				if(i<orders.size()-1){
 					builder.append(", ");
 				} 

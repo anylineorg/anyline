@@ -86,12 +86,12 @@ public class ByteBuffer {
         return result;
     }
     public int readInt(){
-        int result = NumberUtil.byte2int(bytes, offset,  4,  endian==0);
+        int result = NumberUtil.byte2int(bytes, offset, 4, endian==0);
         offset += 4;
         return result;
     }
     public double readDouble(){
-        double result = NumberUtil.byte2double(bytes,  offset);
+        double result = NumberUtil.byte2double(bytes, offset);
         offset += 8;
         return result;
     }

@@ -341,9 +341,9 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 	public String toString(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("join", this.getJoin());
-		map.put("column",  column);
-		map.put("compare",  compare.getName());
-		map.put("values",  values);
+		map.put("column", column);
+		map.put("compare", compare.getName());
+		map.put("values", values);
 		return BeanUtil.map2json(map);
 	}
 

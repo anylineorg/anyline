@@ -1,15 +1,15 @@
 /*  
  * Copyright 2006-2023 www.anyline.org
  * 
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0 
  * 
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  * 
@@ -20,15 +20,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -103,7 +103,7 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	/* *****************************************************************************************************************
 	 * reg:[调用入口]<br/>注册数据源(用户或配置监听调用)
 	 * inject:创建并注入数据源
-	 * init:初始化数据源周边环境(service,  jdbc,  事务管理器)
+	 * init:初始化数据源周边环境(service, jdbc, 事务管理器)
 	 * destroy:注销数据源及周边环境
 	 * validate:检测数据源可用状态
 	 * transaction:事务相关
@@ -129,43 +129,43 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	public static String reg(String key,  String url,  String user,  String password) throws Exception{
-		Map<String,  Object> param = new HashMap<>();
-		param.put("type",  "ElasticSearchDataSource");
-		param.put("url",  url);
-		param.put("user",  user);
-		param.put("password",  password);
-		return reg(key,  param);
+	public static String reg(String key, String url, String user, String password) throws Exception{
+		Map<String, Object> param = new HashMap<>();
+		param.put("type", "ElasticSearchDataSource");
+		param.put("url", url);
+		param.put("user", user);
+		param.put("password", password);
+		return reg(key, param);
 	}
 
-	public static String reg(String key,  Map<String, Object> param,  boolean override) throws Exception{
-		String ds_id = inject(key,  param,  override);
-		return init(key,  ds_id,  override);
+	public static String reg(String key, Map<String, Object> param, boolean override) throws Exception{
+		String ds_id = inject(key, param, override);
+		return init(key, ds_id, override);
 	}
 
-	public static String reg(String key,  Map<String, Object> param) throws Exception{
-		return reg(key,  param,  true);
+	public static String reg(String key, Map<String, Object> param) throws Exception{
+		return reg(key, param, true);
 	}
-	public static RestClient reg(String key,  RestClient client,  boolean override) throws Exception{
-		return init(key,  client,  override);
+	public static RestClient reg(String key, RestClient client, boolean override) throws Exception{
+		return init(key, client, override);
 	}
-	public static RestClient reg(String key,  RestClient client) throws Exception{
-		return init(key,  client,  false);
+	public static RestClient reg(String key, RestClient client) throws Exception{
+		return init(key, client, false);
 	}
 
-	public static String reg(String key,  String prefix,  Environment env) {
+	public static String reg(String key, String prefix, Environment env) {
 		try {
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
 				prefix += ".";
 			}
-			String url = value(env,  prefix,  "url",  String.class,  null);
+			String url = value(env, prefix, "url", String.class, null);
 			if(BasicUtil.isEmpty(url)){
 				return null;
 			}
 
-			String type = value(env,  prefix,  "type",  String.class,  null);
+			String type = value(env, prefix, "type", String.class, null);
 			if(null == type){//未设置类型 先取默认数据源类型
-				type = value(env,  prefix.substring(0,  prefix.length()- key.length()-1),  "type",  String.class,  null);
+				type = value(env, prefix.substring(0, prefix.length()- key.length()-1), "type", String.class, null);
 			}
 
 			if(null == type || !type.contains("ElasticSearchDataSource")){
@@ -173,11 +173,11 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 				return null;
 			}
 			Map<String, Object> map = new HashMap<>();
-			String ds = inject(key,  prefix,  map,  env,  true);
+			String ds = inject(key, prefix, map, env, true);
 			if(null == ds){//创建数据源失败
 				return null;
 			}
-			init(key,  ds,  false);
+			init(key, ds, false);
 			return ds;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -191,8 +191,8 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-	private static String inject(String key,  Map params,  boolean over) throws Exception{
-		return inject(key,  null,  params,  null,  over);
+	private static String inject(String key, Map params, boolean over) throws Exception{
+		return inject(key, null, params, null, over);
 	}
 
 	/**
@@ -205,23 +205,23 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	 * @return bean.di
 	 * @throws Exception Exception
 	 */
-	private static String inject(String key,  String prefix,  Map<String, Object> params,  Environment env,  boolean override) throws Exception{
-		Map<String,  Object> cache = DatasourceHolder.params.get(key);
+	private static String inject(String key, String prefix, Map<String, Object> params, Environment env, boolean override) throws Exception{
+		Map<String, Object> cache = DatasourceHolder.params.get(key);
 		if(null == cache){
 			cache = new HashMap<>();
-			DatasourceHolder.params.put(key,  cache);
+			DatasourceHolder.params.put(key, cache);
 		}
-		check(key,  override);
-		String url =  value(params,  "url",  String.class,  null);
+		check(key, override);
+		String url =  value(params, "url", String.class, null);
 		if(BasicUtil.isEmpty(url)){
-			url = value(env,  prefix, "url",  String.class,  null);
+			url = value(env, prefix, "url", String.class, null);
 		}
 		if(BasicUtil.isEmpty(url)){
 			return null;
 		}
-		String type = value(params,  "type",  String.class,  null);
+		String type = value(params, "type", String.class, null);
 		if(BasicUtil.isEmpty(type)){
-			type = value(env,  prefix,  "type",  String.class,  null);
+			type = value(env, prefix, "type", String.class, null);
 		}
 		if(null == type || !type.contains("ElasticSearchDataSource")){
 			//只注册ElasticSearchDataSource类型
@@ -237,21 +237,21 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 				String[] tmps = host.split(":");
 				String schema = tmps[0];
 				String ip = tmps[1].replace("//", "");
-				int port = BasicUtil.parseInt(tmps[2],  9200);
-				posts[idx++] = new HttpHost(ip,  port,  schema);
+				int port = BasicUtil.parseInt(tmps[2], 9200);
+				posts[idx++] = new HttpHost(ip, port, schema);
 			}
 			RestClient client = RestClient.builder(posts)
 					.setRequestConfigCallback(requestConfigBuilder -> {
 						//设置连接超时时间
-						requestConfigBuilder.setConnectTimeout(value( env,  prefix,  "connectTimeout", Integer.class, 10000));
-						requestConfigBuilder.setSocketTimeout(value(env,  prefix,  "socketTimeout",  Integer.class, 10000));
-						requestConfigBuilder.setConnectionRequestTimeout(value(env,  prefix,  "connectionRequestTimeout",  Integer.class, 10000));
+						requestConfigBuilder.setConnectTimeout(value( env, prefix, "connectTimeout", Integer.class, 10000));
+						requestConfigBuilder.setSocketTimeout(value(env, prefix, "socketTimeout", Integer.class, 10000));
+						requestConfigBuilder.setConnectionRequestTimeout(value(env, prefix, "connectionRequestTimeout", Integer.class, 10000));
 						return requestConfigBuilder;
 					}).setFailureListener(new RestClient.FailureListener() {
 						//某节点失败
 						@Override
 						public void onFailure(Node node) {
-							log.error("[ ElasticSearchClient ] >>  node :{},  host:{},   fail !",  node.getName(),
+							log.error("[ ElasticSearchClient ] >>  node :{}, host:{}, fail !", node.getName(),
 									node.getHost());
 						}
 					}).setHttpClientConfigCallback(httpSyncClientBuilder -> {
@@ -261,8 +261,8 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 							// 设置协议http和https对应的处理socket链接工厂的对象
 							Registry<SchemeIOSessionStrategy> sessionStrategyRegistry = RegistryBuilder
 									.<SchemeIOSessionStrategy>create()
-									.register("http",  NoopIOSessionStrategy.INSTANCE)
-									.register("https",  new SSLIOSessionStrategy(sslContext))
+									.register("http", NoopIOSessionStrategy.INSTANCE)
+									.register("https", new SSLIOSessionStrategy(sslContext))
 									.build();
 
 							// 配置io线程
@@ -272,35 +272,35 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 									.build();
 
 							ConnectingIOReactor ioReactor = new DefaultConnectingIOReactor(ioReactorConfig);
-							Assert.notNull(ioReactor,  "ioReactor init error");
+							Assert.notNull(ioReactor, "ioReactor init error");
 
 							//使用Httpclient连接池的方式配置(推荐)，同时支持netty，okHttp以及其他http框架
 							PoolingNHttpClientConnectionManager poolConnManager = new PoolingNHttpClientConnectionManager(ioReactor,
-									null,  sessionStrategyRegistry,  (DnsResolver) null);
+									null, sessionStrategyRegistry, (DnsResolver) null);
 							// 最大连接数
-							poolConnManager.setMaxTotal(value(env,  prefix,  "maxTotalConnect",  Integer.class, 100));
+							poolConnManager.setMaxTotal(value(env, prefix, "maxTotalConnect", Integer.class, 100));
 							// 同路由并发数
-							poolConnManager.setDefaultMaxPerRoute(value(env,  prefix,  "maxConnectPerRoute",  Integer.class, 10));
+							poolConnManager.setDefaultMaxPerRoute(value(env, prefix, "maxConnectPerRoute", Integer.class, 10));
 							//配置连接池
 							httpSyncClientBuilder.setConnectionManager(poolConnManager);
 							//设置默认请求头
 							List<Header> headers = getDefaultHeaders();
 							httpSyncClientBuilder.setDefaultHeaders(headers);
 							// 设置长连接策略
-							httpSyncClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy(null, value(env,  prefix,  "keepAliveTime",  Integer.class, 10) ));
+							httpSyncClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy(null, value(env, prefix, "keepAliveTime", Integer.class, 10) ));
 							httpSyncClientBuilder.disableAuthCaching();
 						} catch (IOReactorException e) {
-							log.error("ES的Http异步连接池配置错误",  e);
+							log.error("ES的Http异步连接池配置错误", e);
 						}
-						String user = value(env,  prefix,  "user",  String.class,  null);
-						String password = value(env,  prefix,  "password",  String.class,  null);
-						return getHttpAsyncClientBuilder(httpSyncClientBuilder,  user,  password);
+						String user = value(env, prefix, "user", String.class, null);
+						String password = value(env, prefix, "password", String.class, null);
+						return getHttpAsyncClientBuilder(httpSyncClientBuilder, user, password);
 					}).build();
 			DefaultListableBeanFactory factory =(DefaultListableBeanFactory) SpringContextUtil.getApplicationContext().getAutowireCapableBeanFactory();
-			factory.registerSingleton(datasource_id,  client);
+			factory.registerSingleton(datasource_id, client);
 
 		} catch (Exception e) {
-			log.error("[注册数据源失败][type:ElasticSearch][key:{}][msg:{}]",  key,  e.toString());
+			log.error("[注册数据源失败][type:ElasticSearch][key:{}][msg:{}]", key, e.toString());
 			return null;
 		}
 		return datasource_id;
@@ -314,20 +314,20 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	private static String init(String key,  String client,  boolean override) throws Exception{
+	private static String init(String key, String client, boolean override) throws Exception{
 		if(null != client) {
-			check(key,  override);
+			check(key, override);
 			Object bean = factory.getBean(client);
 			if(bean instanceof RestClient) {
-				ElasticSearchRuntimeHolder.reg(key,  (RestClient)bean,  null);
+				ElasticSearchRuntimeHolder.reg(key, (RestClient)bean, null);
 			}
 		}
 		return client;
 	}
-	private static RestClient init(String key,  RestClient client,  boolean override) throws Exception{
+	private static RestClient init(String key, RestClient client, boolean override) throws Exception{
 		if(null != client) {
-			check(key,  override);
-			ElasticSearchRuntimeHolder.reg(key,  client,  null);
+			check(key, override);
+			ElasticSearchRuntimeHolder.reg(key, client, null);
 		}
 		return client;
 	}

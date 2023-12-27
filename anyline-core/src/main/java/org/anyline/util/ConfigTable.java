@@ -128,7 +128,7 @@ public class ConfigTable {
 	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  	;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
 	public static String ENTITY_CLASS_TABLE_MAP							= "Camel_"  	;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
 	public static String ENTITY_TABLE_ANNOTATION						= null			;   // 表名注解(逗号分隔, 不区分大小写, 支持正则匹配)
-	public static String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解(逗号分隔, 不区分大小写, 支持正则匹配)column.name, column.value,  TableField.name,  TableField.value,  tableId.name,  tableId.value, Id.name, Id.value
+	public static String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解(逗号分隔, 不区分大小写, 支持正则匹配)column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value
 	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔, 不区分大小写, 支持正则匹配) tableId.value, Id.name, Id(如果不指定注解属性名则依次按name, value解析)
 	public static int ENTITY_FIELD_SELECT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:查询属性关联表
 	public static int ENTITY_FIELD_INSERT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:插入属性关联表
@@ -178,7 +178,7 @@ public class ConfigTable {
 			@Override
 			public void run() {
 				while (true) {
-					for (Map.Entry<String,  Long> item : listener_files.entrySet()) {
+					for (Map.Entry<String, Long> item : listener_files.entrySet()) {
 						File file = new File(item.getKey());
 						Long lastLoad = item.getValue();
 						Long lastModify = file.lastModified();
@@ -276,15 +276,15 @@ public class ConfigTable {
 		String osName = props.getProperty("os.name");
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
 			path = path.substring(1);
-			path =path.replace("file:/",  "");
+			path =path.replace("file:/", "");
 		}
-		path = path.replace("file:",  "");//jar项目
+		path = path.replace("file:", "");//jar项目
 		// file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
 		// log.debug("root={}", root);
 		if(null == root && null != path){
 			root = path;
 			if(root.contains(".jar")){
-				root = root.substring(0,  root.indexOf(".jar"));
+				root = root.substring(0, root.indexOf(".jar"));
 				root = root.substring(0, root.lastIndexOf("/"));
 			}
 			if(path.indexOf("bin") > 0){
@@ -320,7 +320,7 @@ public class ConfigTable {
 				classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
 			}
 		}
-		libpath = new File(new File(classpath).getParent(),  "lib").getAbsolutePath();
+		libpath = new File(new File(classpath).getParent(), "lib").getAbsolutePath();
 		// 加载配置文件
 		loadConfig(flag);
 	}
@@ -336,7 +336,7 @@ public class ConfigTable {
 				configs = new Hashtable<String, Object>();
 			}
 			if(null != root){
-				configs.put("HOME_DIR",  root);
+				configs.put("HOME_DIR", root);
 			}
 
 			if("jar".equals(getPackageType())){
@@ -372,14 +372,14 @@ public class ConfigTable {
 					}
 				}else{
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+flag+"-config.xml");
-					String txt = FileUtil.read(in,  Charset.forName("UTF-8")).toString();
+					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
 					parse(txt);
 				}
 				// 加载jar文件同目录的config
 				File dir = new File(FileUtil.merge(root, "config"));
 				loadConfigDir(dir, flag);
 				//加载当前目录下的 config.xml
-				loadConfig(new File(root,  flag+"-config.xml"));
+				loadConfig(new File(root, flag+"-config.xml"));
 			}else{
 				// classpath根目录
 				File dir = new File(classpath);
@@ -398,9 +398,9 @@ public class ConfigTable {
 			}
 		}
 	}
-	protected synchronized static void loadConfigDir(File dir,  String flag) {
+	protected synchronized static void loadConfigDir(File dir, String flag) {
 		log.info("[加载配置文件][dir:{}]", dir.getAbsolutePath());
-		List<File> files = FileUtil.getAllChildrenFile(dir,  "xml");
+		List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 		for(File f:files){
 			String name = f.getName();
 			if((flag+"-config.xml").equals(name)){
@@ -417,7 +417,7 @@ public class ConfigTable {
 	}
 	public static void parse(File file){
 		parse(FileUtil.read(file).toString());
-		listener_files.put(file.getAbsolutePath(),  System.currentTimeMillis());
+		listener_files.put(file.getAbsolutePath(), System.currentTimeMillis());
 	}
 	public static void parse(String xml){
 		try {
@@ -430,9 +430,9 @@ public class ConfigTable {
 				Element propertyElement = itrProperty.next();
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
-				put(key.toUpperCase().trim(),  value);
+				put(key.toUpperCase().trim(), value);
 				if (IS_DEBUG) {
-					log.debug("[解析配置文件][{}={}]",  key,  value);
+					log.debug("[解析配置文件][{}={}]", key, value);
 				}
 			}
 			map2field();
@@ -449,9 +449,9 @@ public class ConfigTable {
 				Element propertyElement = itrProperty.next();
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
-				configs.put(key.toUpperCase().trim(),  value);
+				configs.put(key.toUpperCase().trim(), value);
 				if (IS_DEBUG) {
-					log.info("[解析配置文件][{}={}]",  key,  value);
+					log.info("[解析配置文件][{}={}]", key, value);
 				}
 			}
 			map2field();
@@ -465,7 +465,7 @@ public class ConfigTable {
 		for(Field field:fields){
 			String name = field.getName();
 			if(configs.containsKey(name)){
-				BeanUtil.setFieldValue(null,  field,  configs.get(name));
+				BeanUtil.setFieldValue(null, field, configs.get(name));
 			}
 		}
 	}
@@ -517,7 +517,7 @@ public class ConfigTable {
 				}
 				val = environment.getProperty(key);
 				if(null != val){
-					put(key,  val);
+					put(key, val);
 				}
 			}
 		}
@@ -530,14 +530,14 @@ public class ConfigTable {
 		}
 		return null;
 	}
-	public static String getString(String key,  String def){
+	public static String getString(String key, String def){
 		String val = getString(key);
 		if(null == val){
 			val = def;
 		}
 		return val;
 	}
-	public static Object get(String key,  Object def){
+	public static Object get(String key, Object def){
 		Object val = get(key);
 		if(null == val){
 			val = def;
@@ -547,36 +547,36 @@ public class ConfigTable {
 	public static boolean getBoolean(String key){
 		return getBoolean(key, false);
 	}
-	public static boolean getBoolean(String key,  boolean def){
-		return BasicUtil.parseBoolean(get(key),  def);
+	public static boolean getBoolean(String key, boolean def){
+		return BasicUtil.parseBoolean(get(key), def);
 	}
 	public static int getInt(String key) {
 		return BasicUtil.parseInt(get(key), 0);
 	}
-	public static int getInt(String key,  int def){
-		return BasicUtil.parseInt(get(key),  def);
+	public static int getInt(String key, int def){
+		return BasicUtil.parseInt(get(key), def);
 	}
-	public static void put(String key,  String value){
-		configs.put(key,  value);
+	public static void put(String key, String value){
+		configs.put(key, value);
 		if(IS_DEBUG){
 			log.info("[ConfigTable动态更新][{}={}]", key, value);
 		}
 	}
-	public static void put(String key,  Object value){
-		configs.put(key,  value);
+	public static void put(String key, Object value){
+		configs.put(key, value);
 		if(value instanceof Collection){
 			Collection cols = (Collection) value;
 			int i = 0;
 			for(Object col:cols){
-				configs.put(key + "[" + i++ + "]",  col);
-				configs.put(key + "." + i++,  col);
+				configs.put(key + "[" + i++ + "]", col);
+				configs.put(key + "." + i++, col);
 			}
 		}
 		if(value instanceof Map){
 			Map map = (Map)value;
 			for(Object k: map.keySet()){
-				configs.put(key + "[" + k + "]",  map.get(k));
-				configs.put(key + "." + k,  map.get(k));
+				configs.put(key + "[" + k + "]", map.get(k));
+				configs.put(key + "." + k, map.get(k));
 			}
 		}
 		if(IS_DEBUG){
@@ -602,7 +602,7 @@ public class ConfigTable {
 
 
 
-	protected static void line(String src,  String chr,  int append,  boolean center){
+	protected static void line(String src, String chr, int append, boolean center){
 		int len = 80 + append;
 		String line = "";
 		if(center){
@@ -612,10 +612,10 @@ public class ConfigTable {
 				fillRight ++;
 
 			}
-			line = "*"+BasicUtil.fillChar("",  chr,  fillLeft) + src +BasicUtil.fillChar("",  chr,  fillRight) +"*";
+			line = "*"+BasicUtil.fillChar("", chr, fillLeft) + src +BasicUtil.fillChar("", chr, fillRight) +"*";
 		}else{
 			int fill = len - src.length() - 2;
-			line = "*" + src + BasicUtil.fillChar("",  chr,  fill)+"";
+			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"";
 		}
 		System.out.println(line);
 	}
@@ -646,7 +646,7 @@ public class ConfigTable {
 					path = path.substring(0, path.indexOf("!"));
 				}
 				if(path.contains("/WEB-INF")){
-					project = path.substring(0,  path.indexOf("/WEB-INF"));
+					project = path.substring(0, path.indexOf("/WEB-INF"));
 				}
 
 				File file = new File(path);
@@ -661,30 +661,30 @@ public class ConfigTable {
 					}
 					file = new File(anylineJarPath);
 				}catch (Exception e){}
-				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",  Locale.CHINESE).format(new Date(file.lastModified()));
+				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(file.lastModified()));
 			}catch(Exception e){
 
 			}
 
 			System.out.println();
-			line("", "*",  0, true);
-			line("Anyline Core [" + version + "]",  " ", 0,  true);
-			line("http://doc.anyline.org ",  " ",  0,  true);
-			line("", " ",  0,  true);
+			line("", "*", 0, true);
+			line("Anyline Core [" + version + "]", " ", 0, true);
+			line("http://doc.anyline.org ", " ", 0, true);
+			line("", " ", 0, true);
 			if(null != time && time.startsWith("2")){
-				line("Last Modified " + "[" + time +"] ",  " ",  0,  true);
+				line("Last Modified " + "[" + time +"] ", " ", 0, true);
 			}else{
-				line("MinVersion " +  "[" + minVersion + "]",  " ",  0,  true);
+				line("MinVersion " +  "[" + minVersion + "]", " ", 0, true);
 			}
-			line("", " ",  0,  true);
-			line("", "*",  0,  true);
-			//line("", "*",  0,  true);
+			line("", " ", 0, true);
+			line("", "*", 0, true);
+			//line("", "*", 0, true);
 			if(null != project){
-			//	line(" project root > " + project,  "",  0,  false);
+			//	line(" project root > " + project, "", 0, false);
 			}
-			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>",  "",  0,  false);
-			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================",  "",  0,  false);
-			//line("", "*",  0,  true);
+			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", 0, false);
+			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", 0, false);
+			//line("", "*", 0, true);
 			System.out.println();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1011,12 +1011,12 @@ public class ConfigTable {
 
 
 	public static void closeAllSqlLog(){
-		put("IS_LOG_SQL",  false);
-		put("IS_LOG_SQL_WHEN_ERROR",  false);
-		put("IS_LOG_SQL_TIME",  false);
-		put("IS_LOG_SQL_PARAM",  false);
-		put("IS_LOG_SQL_PARAM_WHEN_ERROR",  false);
-		put("IS_LOG_SLOW_SQL",  false);
+		put("IS_LOG_SQL", false);
+		put("IS_LOG_SQL_WHEN_ERROR", false);
+		put("IS_LOG_SQL_TIME", false);
+		put("IS_LOG_SQL_PARAM", false);
+		put("IS_LOG_SQL_PARAM_WHEN_ERROR", false);
+		put("IS_LOG_SLOW_SQL", false);
 
 		IS_LOG_SQL = false;
 		IS_LOG_SQL_WHEN_ERROR = false;
@@ -1026,12 +1026,12 @@ public class ConfigTable {
 		IS_LOG_SLOW_SQL = false;
 	}
 	public static void openAllSqlLog(){
-		put("IS_LOG_SQL",  true);
-		put("IS_LOG_SQL_WHEN_ERROR",  true);
-		put("IS_LOG_SQL_TIME",  true);
-		put("IS_LOG_SQL_PARAM",  true);
-		put("IS_LOG_SQL_PARAM_WHEN_ERROR",  true);
-		put("IS_LOG_SLOW_SQL",  true);
+		put("IS_LOG_SQL", true);
+		put("IS_LOG_SQL_WHEN_ERROR", true);
+		put("IS_LOG_SQL_TIME", true);
+		put("IS_LOG_SQL_PARAM", true);
+		put("IS_LOG_SQL_PARAM_WHEN_ERROR", true);
+		put("IS_LOG_SLOW_SQL", true);
 
 		IS_LOG_SQL = true;
 		IS_LOG_SQL_WHEN_ERROR = true;

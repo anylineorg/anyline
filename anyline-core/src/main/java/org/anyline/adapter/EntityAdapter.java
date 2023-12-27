@@ -46,8 +46,8 @@ public interface EntityAdapter {
     }
 
     static void sort(List<? extends EntityAdapter> interceptors){
-        Collections.sort(interceptors,  new Comparator<EntityAdapter>() {
-            public int compare(EntityAdapter r1,  EntityAdapter r2) {
+        Collections.sort(interceptors, new Comparator<EntityAdapter>() {
+            public int compare(EntityAdapter r1, EntityAdapter r2) {
                 int order1 = r1.order();
                 int ordre2 = r2.order();
                 if(order1 > ordre2){
@@ -93,7 +93,7 @@ public interface EntityAdapter {
         Class parent = clazz;
         String name = null;
         while (true){
-            name = ClassUtil.parseAnnotationFieldValue(parent,  "table.name",  "table.value",  "tableName.name",  "tableName.value");
+            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name", "table.value", "tableName.name", "tableName.value");
             if(BasicUtil.isEmpty(name)){
                 parent = parent.getSuperclass();
                 if(null == parent){
@@ -101,7 +101,7 @@ public interface EntityAdapter {
                 }
             }else{
                 table = new Table(name);
-                EntityAdapterProxy.class2table.put(key.toUpperCase(),  table);
+                EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
                 return table;
             }
         }
@@ -109,13 +109,13 @@ public interface EntityAdapter {
         if("Camel_".equalsIgnoreCase(ConfigTable.ENTITY_CLASS_TABLE_MAP)){
             name = BeanUtil.camel_(clazz.getSimpleName());
             table = new Table(name);
-            EntityAdapterProxy.class2table.put(key.toUpperCase(),  table);
+            EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
             return table;
         }
         // 4.类名
         name = clazz.getSimpleName();
         table = new Table(name);
-        EntityAdapterProxy.class2table.put(key.toUpperCase(),  table);
+        EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
         return table;
     }
 
@@ -125,8 +125,8 @@ public interface EntityAdapter {
      * @param clazz 类
      * @return List
      */
-    default LinkedHashMap<String,  Column> columns(Class clazz) {
-        return columns(clazz,  MODE.DDL);
+    default LinkedHashMap<String, Column> columns(Class clazz) {
+        return columns(clazz, MODE.DDL);
     }
 
     /**
@@ -136,8 +136,8 @@ public interface EntityAdapter {
      * @return List
      */
 
-    default LinkedHashMap<String,  Column> columns(Class clazz,  MODE mode) {
-        LinkedHashMap<String,  Column> columns = null;
+    default LinkedHashMap<String, Column> columns(Class clazz, MODE mode) {
+        LinkedHashMap<String, Column> columns = null;
         if(MODE.INSERT == mode) {
             columns = EntityAdapterProxy.insert_columns.get(clazz.getName().toUpperCase());
         }else if(MODE.UPDATE == mode){
@@ -147,20 +147,20 @@ public interface EntityAdapter {
         }
         if(null == columns) {
             columns = new LinkedHashMap<>();
-            List<Field> fields = ClassUtil.getFields(clazz,  false,  false);
-            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz,  "Transient",  "OneToMany",  "ManyToMany");
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
+            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient", "OneToMany", "ManyToMany");
             fields.removeAll(ignores);
             for (Field field : fields) {
-                Column column = column(clazz,  field);
+                Column column = column(clazz, field);
                 if(MODE.INSERT == mode){
                     //检测是否需要insert
-                    String insertable = ClassUtil.parseAnnotationFieldValue(field,  "column.insertable");
+                    String insertable = ClassUtil.parseAnnotationFieldValue(field, "column.insertable");
                     if("false".equalsIgnoreCase(insertable)){
                         continue;
                     }
                 }else if(MODE.UPDATE == mode){
                     //检测是否需要update
-                    String updatable = ClassUtil.parseAnnotationFieldValue(field,  "column.updatable");
+                    String updatable = ClassUtil.parseAnnotationFieldValue(field, "column.updatable");
                     if("false".equalsIgnoreCase(updatable)){
                         continue;
                     }
@@ -168,7 +168,7 @@ public interface EntityAdapter {
 
                 }
                 if(BasicUtil.isNotEmpty(column)) {
-                    columns.put(column.getName().toUpperCase(),  column);
+                    columns.put(column.getName().toUpperCase(), column);
                 }
             }
             if(MODE.INSERT == mode) {
@@ -179,7 +179,7 @@ public interface EntityAdapter {
                 EntityAdapterProxy.ddl_columns.put(clazz.getName().toUpperCase(), columns);
             }
         }
-        LinkedHashMap<String,  Column> list = new LinkedHashMap();
+        LinkedHashMap<String, Column> list = new LinkedHashMap();
         list.putAll(columns);
         return list;
     }
@@ -188,12 +188,12 @@ public interface EntityAdapter {
      * @param clazz 类
      * @param field 属性
      * @param annotations 根据指定的注解, 以第一个成功取值的注解为准<br/>
-     *                    不指定则按默认规则 column.name, column.value,  TableField.name,  TableField.value,  tableId.name,  tableId.value, Id.name, Id.value
+     *                    不指定则按默认规则 column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value
      *
      * @return String
      */
 
-    default Column column(Class clazz,  Field field,  String ... annotations) {
+    default Column column(Class clazz, Field field, String ... annotations) {
         String key = clazz.getName()+":"+field.getName().toUpperCase();
         // 1.缓存
         Column column = EntityAdapterProxy.field2column.get(key.toUpperCase());
@@ -206,10 +206,10 @@ public interface EntityAdapter {
             if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
                 annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(", ");
             }else {
-                annotations = "column.name, column.value,  TableField.name,  TableField.value,  tableId.name,  tableId.value, Id.name, Id.value".split(", ");
+                annotations = "column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value".split(", ");
             }
         }
-        name = ClassUtil.parseAnnotationFieldValue(field,  annotations);
+        name = ClassUtil.parseAnnotationFieldValue(field, annotations);
 
 
         // 3.属性名转成列名
@@ -230,10 +230,10 @@ public interface EntityAdapter {
         //创建Column
         if(BasicUtil.isNotEmpty(name)){
             column = new Column(name);
-            EntityAdapterProxy.field2column.put(key.toUpperCase(),  column);
-            EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(),  field);
+            EntityAdapterProxy.field2column.put(key.toUpperCase(), column);
+            EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+name.toUpperCase(), field);
             //类型
-            String type = ClassUtil.parseAnnotationFieldValue(field,  "column.columnDefinition");
+            String type = ClassUtil.parseAnnotationFieldValue(field, "column.columnDefinition");
             if(BasicUtil.isNotEmpty(type)){
                 if(type.contains("[]")){
                     type = type.replace("[]", "");
@@ -254,8 +254,8 @@ public interface EntityAdapter {
      * @return Field
      */
 
-    default Field field(Class clazz,  Column column) {
-        return field(clazz,  column.getName());
+    default Field field(Class clazz, Column column) {
+        return field(clazz, column.getName());
     }
 
     /**
@@ -264,7 +264,7 @@ public interface EntityAdapter {
      * @param column 列名
      * @return 属性
      */
-    default Field field(Class clazz,  String column) {
+    default Field field(Class clazz, String column) {
         Field field = EntityAdapterProxy.column2field.get(clazz.getName().toUpperCase()+":"+column.toUpperCase());
         if(null == field){
             fields(clazz);
@@ -272,11 +272,11 @@ public interface EntityAdapter {
         }
         //可能是父类属性
         if(null == field || field.getDeclaringClass() != clazz){
-            List<Field> fields = ClassUtil.getFields(clazz,  false,  false);
+            List<Field> fields = ClassUtil.getFields(clazz, false, false);
             for(Field f:fields){
                 if(f.getName().equalsIgnoreCase(column) && f.getDeclaringClass() == clazz){
                     field = f;
-                    EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+column.toUpperCase(),  field);
+                    EntityAdapterProxy.column2field.put(clazz.getName().toUpperCase()+":"+column.toUpperCase(), field);
                     break;
                 }
             }
@@ -284,9 +284,9 @@ public interface EntityAdapter {
         return field;
     }
     default void fields(Class clazz){
-        List<Field> fields = ClassUtil.getFields(clazz,  false,  false);
+        List<Field> fields = ClassUtil.getFields(clazz, false, false);
         for(Field field:fields){
-            column(clazz,  field);
+            column(clazz, field);
         }
     }
 
@@ -298,18 +298,18 @@ public interface EntityAdapter {
      * @return Column
      */
     default Column primaryKey(Class clazz) {
-        LinkedHashMap<String,  Column> list = primaryKeys(clazz);
+        LinkedHashMap<String, Column> list = primaryKeys(clazz);
         for(Column column:list.values()){
             return column;
         }
         return new Column(DataRow.DEFAULT_PRIMARY_KEY);
     }
 
-    default PrimaryGenerator generator(String table,  Field field){
+    default PrimaryGenerator generator(String table, Field field){
         PrimaryGenerator generator = null;
         table = table.toUpperCase();
         if(null == GeneratorConfig.get(table)){
-            Object generatorName = ClassUtil.parseAnnotationFieldValue(field,  "GeneratedValue",  "generator");
+            Object generatorName = ClassUtil.parseAnnotationFieldValue(field, "GeneratedValue", "generator");
             if(null != generatorName){
                 String name = generatorName.toString();
                 for(PrimaryGenerator.GENERATOR item:PrimaryGenerator.GENERATOR.values()){
@@ -322,13 +322,13 @@ public interface EntityAdapter {
             if(null == generator){
                 generator = PrimaryGenerator.GENERATOR.AUTO;
             }
-            GeneratorConfig.put(table,  generator);
+            GeneratorConfig.put(table, generator);
         }
         return generator;
     }
-    default PrimaryGenerator generator(Class clazz,  Field field){
+    default PrimaryGenerator generator(Class clazz, Field field){
         String table = table(clazz).getName().toUpperCase();
-        return generator(table,  field);
+        return generator(table, field);
     }
 
     /**
@@ -336,7 +336,7 @@ public interface EntityAdapter {
      * @param clazz clazz
      */
     default void generator(Class clazz){
-        List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz,  "GeneratedValue");
+        List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "GeneratedValue");
         for(Field field:fields){
             String table = null;
             try {
@@ -349,7 +349,7 @@ public interface EntityAdapter {
             if(null == table) {
                 table = table(clazz).getName();
             }
-            generator(table,  field);
+            generator(table, field);
         }
 
     }
@@ -363,8 +363,8 @@ public interface EntityAdapter {
      * @return List
      */
 
-    default LinkedHashMap<String,  Column> primaryKeys(Class clazz) {
-        LinkedHashMap<String,  Column> list = EntityAdapterProxy.primarys.get(clazz.getName().toUpperCase());
+    default LinkedHashMap<String, Column> primaryKeys(Class clazz) {
+        LinkedHashMap<String, Column> list = EntityAdapterProxy.primarys.get(clazz.getName().toUpperCase());
         if(null == list) {
             list = new LinkedHashMap<>();
             String annotations = ConfigTable.ENTITY_PRIMARY_KEY_ANNOTATION;
@@ -373,29 +373,29 @@ public interface EntityAdapter {
                 annotations = "tableId, Id";
             }
             //根据注解提取属性s
-            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz,  annotations.split(", "));
+            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(", "));
             for (Field field : fields) {
                 //根据属性获取相应的列名
-                Column column = column(clazz,  field,  annotations.split(", "));
+                Column column = column(clazz, field, annotations.split(", "));
                 if (null != column) {
-                    list.put(column.getName().toUpperCase(),  column);
+                    list.put(column.getName().toUpperCase(), column);
                 }
             }
             if(list.isEmpty()) {
                 //从所有属性中 过滤出名称与DataRow.DEFAULT_PRIMARY_KEY相同的属性
-                fields = ClassUtil.getFields(clazz,  false,  false);
-                Field field = ClassUtil.getField(fields,  DataRow.DEFAULT_PRIMARY_KEY,  true,  true);
+                fields = ClassUtil.getFields(clazz, false, false);
+                Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
                 if (null != field) {
-                    Column column = column(clazz,  field,  annotations.split(", "));
+                    Column column = column(clazz, field, annotations.split(", "));
                     if (null != column) {
-                        list.put(column.getName().toUpperCase(),  column);
+                        list.put(column.getName().toUpperCase(), column);
                     }
                 }
             }
             if (list.size() == 0) {
-                list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(),  new Column(DataRow.DEFAULT_PRIMARY_KEY));
+                list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(), new Column(DataRow.DEFAULT_PRIMARY_KEY));
             }
-            EntityAdapterProxy.primarys.put(clazz.getName().toUpperCase(),  list);
+            EntityAdapterProxy.primarys.put(clazz.getName().toUpperCase(), list);
         }
 
         //解析主键生成器(包含当前表及属性关联表)
@@ -409,12 +409,12 @@ public interface EntityAdapter {
      * @param obj obj
      * @return String
      */
-    default Map<String,  Object> primaryValue(Object obj) {
+    default Map<String, Object> primaryValue(Object obj) {
         Column primary = primaryKey(obj.getClass());
         Field field = EntityAdapterProxy.column2field.get(obj.getClass().getName().toUpperCase()+":"+primary.getName().toUpperCase());
-        Object value = BeanUtil.getFieldValue(obj,  field);
+        Object value = BeanUtil.getFieldValue(obj, field);
         Map<String, Object> map = new HashMap<>();
-        map.put(primary.getName().toUpperCase(),  value);
+        map.put(primary.getName().toUpperCase(), value);
         return map;
     }
 
@@ -424,10 +424,10 @@ public interface EntityAdapter {
      * @param inserts 需要插入的列, 注意成功创建主键后需要把主键key添加到inserts中
      * @return boolean 是否成功
      */
-    default boolean createPrimaryValue(Object obj,  List<String> inserts) {
+    default boolean createPrimaryValue(Object obj, List<String> inserts) {
         return false;
     }
-    default boolean createPrimaryValue(Object obj,  LinkedHashMap<String,  Column> inserts) {
+    default boolean createPrimaryValue(Object obj, LinkedHashMap<String, Column> inserts) {
         return false;
     }
     /**
@@ -436,13 +436,13 @@ public interface EntityAdapter {
      * @return Map
      */
 
-    default Map<String,  Object> primaryValues(Object obj) {
-        LinkedHashMap<String,  Column> primarys = primaryKeys(obj.getClass());
+    default Map<String, Object> primaryValues(Object obj) {
+        LinkedHashMap<String, Column> primarys = primaryKeys(obj.getClass());
         Map<String, Object> map = new HashMap<>();
         for(String primary:primarys.keySet()){
             Field field = EntityAdapterProxy.column2field.get(obj.getClass().getName().toUpperCase()+":"+primary.toUpperCase());
-            Object value = BeanUtil.getFieldValue(obj,  field);
-            map.put(primary.toUpperCase(),  value);
+            Object value = BeanUtil.getFieldValue(obj, field);
+            map.put(primary.toUpperCase(), value);
         }
         return map;
     }
@@ -457,8 +457,8 @@ public interface EntityAdapter {
      * @param <T> T
      */
 
-    default <T> T entity(Class<T> clazz,  Map<String,  Object> map,  Map columns) {
-        return entity(null,  clazz,  map,  columns);
+    default <T> T entity(Class<T> clazz, Map<String, Object> map, Map columns) {
+        return entity(null, clazz, map, columns);
     }
 
     /**
@@ -472,10 +472,10 @@ public interface EntityAdapter {
      * @param <T> T
      */
 
-    default <T> T entity(T entity,  Class<T> clazz,  Map<String,  Object> map,  Map metadatas) {
-        List<Field> fields = ClassUtil.getFields(clazz,  false,  false);
-        Map<Field,  String> fk = new HashMap<>();
-        //entity = BeanUtil.map2object(entity,  map,  clazz,  metadatas,  false,  true,  true);
+    default <T> T entity(T entity, Class<T> clazz, Map<String, Object> map, Map metadatas) {
+        List<Field> fields = ClassUtil.getFields(clazz, false, false);
+        Map<Field, String> fk = new HashMap<>();
+        //entity = BeanUtil.map2object(entity, map, clazz, metadatas, false, true, true);
         if (null == entity) {
             try {
                 entity = (T) clazz.newInstance();
@@ -502,7 +502,7 @@ public interface EntityAdapter {
 
             if(null == value) {
                 //根据默认转换规则
-                Column column = column(clazz,  field);//列名
+                Column column = column(clazz, field);//列名
                 columnName = column.getName();
                 if (null != row) {
                     value = row.get(columnName);
@@ -523,7 +523,7 @@ public interface EntityAdapter {
                 if(null == metadata && null != metadatas){
                     metadata = (Column) metadatas.get(columnName.toUpperCase());
                 }
-                BeanUtil.setFieldValue(entity,  field,  metadata,  value);
+                BeanUtil.setFieldValue(entity, field, metadata, value);
 
             }
         }
@@ -540,8 +540,8 @@ public interface EntityAdapter {
      * @return DataRow
      */
 
-    default DataRow row(Object obj,  String... keys) {
-        return row(null,  obj,  keys);
+    default DataRow row(Object obj, String... keys) {
+        return row(null, obj, keys);
     }
 
 
@@ -549,15 +549,15 @@ public interface EntityAdapter {
     /**
      * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
      * 如果不实现当前可以返回null, 将继续执行默认处理方式
-     * 注意实现时不要调用 DataRow.public static DataRow parse(DataRow row,  Object obj,  String... keys) 形成无限递归
+     * 注意实现时不要调用 DataRow.public static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
      * @param row 在此基础上执行, 如果不提供则新创建
      * @param obj obj
      * @param keys keys
      * @return DataRow
      */
-    default DataRow row(DataRow row,  Object obj,  String... keys) {
-        // 注意不要调用 DataRow.default static DataRow parse(DataRow row,  Object obj,  String... keys) 形成无限递归
-        return DataRow.parse(row,  KeyAdapter.KEY_CASE.CONFIG,  obj,  keys);
+    default DataRow row(DataRow row, Object obj, String... keys) {
+        // 注意不要调用 DataRow.default static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
+        return DataRow.parse(row, KeyAdapter.KEY_CASE.CONFIG, obj, keys);
     }
 
     /**

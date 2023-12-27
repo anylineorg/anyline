@@ -23,7 +23,7 @@ public class DataSourceKeyMap {
             HashSet<String> list = maps.get(key);
             if(null == list){
                 list = new HashSet<>();
-                maps.put(key,  list);
+                maps.put(key, list);
             }
             for (String item:keys){
                 if(!key.equals(item) && !list.contains(item)){

@@ -105,7 +105,7 @@ public class MultiPoint extends Geometry{
         return builder.toString();
     }
     public String sql(){
-        return sql(true,  true);
+        return sql(true, true);
     }
 
     public List<Point> getPoints() {

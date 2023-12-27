@@ -29,72 +29,72 @@ public interface PrimaryGenerator {
 	enum GENERATOR implements PrimaryGenerator{
 		DISABLE{ //不生成主键，由数据库决定
 			@Override
-			public boolean create(Object entity, DatabaseType type,  String table,  List<String> pks,  String other) {
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
 				return false;
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column>  pks,  String other) {
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column>  pks, String other) {
 				return false;
 			}
 		}, 
 		AUTO{ //不设置，按配置文件
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other) {
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
 				return false;
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column>  pks,  String other) {
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column>  pks, String other) {
 				return false;
 			}
 		}, 
 		RANDOM{
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other) {
-				return new RandomGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
+				return new RandomGenerator().create(entity, type, table, pks, other);
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column>  pks,  String other) {
-				return new RandomGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column>  pks, String other) {
+				return new RandomGenerator().create(entity, type, table, pks, other);
 			}
 		}, 
 		SNOWFLAKE{
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other) {
-				return new SnowflakeGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
+				return new SnowflakeGenerator().create(entity, type, table, pks, other);
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column>  pks,  String other) {
-				return new SnowflakeGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column>  pks, String other) {
+				return new SnowflakeGenerator().create(entity, type, table, pks, other);
 			}
 		}, 
 		UUID{
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other) {
-				return new UUIDGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
+				return new UUIDGenerator().create(entity, type, table, pks, other);
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column>  pks,  String other) {
-				return new UUIDGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column>  pks, String other) {
+				return new UUIDGenerator().create(entity, type, table, pks, other);
 			}
 		}, 
 		TIME{
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other) {
-				return new TimeGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
+				return new TimeGenerator().create(entity, type, table, pks, other);
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column>  pks,  String other) {
-				return new TimeGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column>  pks, String other) {
+				return new TimeGenerator().create(entity, type, table, pks, other);
 			}
 		}, 
 		TIMESTAMP{
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other) {
-				return new TimestampGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other) {
+				return new TimestampGenerator().create(entity, type, table, pks, other);
 			}
 			@Override
-			public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column> pks,  String other) {
-				return new TimestampGenerator().create(entity,  type,  table,  pks,  other);
+			public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> pks, String other) {
+				return new TimestampGenerator().create(entity, type, table, pks, other);
 			}
 		}
 		;
@@ -109,6 +109,6 @@ public interface PrimaryGenerator {
 	 * @param other 其他参数
 	 * @return 是否成功创建
 	 */
-	boolean create(Object entity,  DatabaseType type,  String table,  List<String> pks,  String other);
-	boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column> pks,  String other);
+	boolean create(Object entity, DatabaseType type, String table, List<String> pks, String other);
+	boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> pks, String other);
 } 

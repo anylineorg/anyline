@@ -72,12 +72,12 @@ public class MultiLine extends Geometry{
     /**
      * sql格式
      * @param tag 是否包含tag<br/>
-     *             false:((120 36.1, 120 36.2, 120 36.3), (121 36.1, 121 36.2,  121 36.3))<br/>
-     *             true: MultiLine((120 36.1,  120 36.2,  120 36.3),  (121 36.1,  121 36.2,  121 36.3))
+     *             false:((120 36.1, 120 36.2, 120 36.3), (121 36.1, 121 36.2, 121 36.3))<br/>
+     *             true: MultiLine((120 36.1, 120 36.2, 120 36.3), (121 36.1, 121 36.2, 121 36.3))
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag,  boolean bracket){
+    public String sql(boolean tag, boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
@@ -91,7 +91,7 @@ public class MultiLine extends Geometry{
                 builder.append(", ");
             }
             first = false;
-            builder.append(line.sql(false,  false));
+            builder.append(line.sql(false, false));
         }
         if(bracket) {
             builder.append(")");
@@ -99,7 +99,7 @@ public class MultiLine extends Geometry{
         return builder.toString();
     }
     public String sql(){
-        return sql(true,  true);
+        return sql(true, true);
     }
 
     public List<LineString> getLines() {

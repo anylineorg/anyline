@@ -47,19 +47,19 @@ public class Tag extends Column implements Serializable {
         return setNewName(newName, true, true);
     }
 
-    public Tag setNewName(String newName, boolean setmap,  boolean getmap) {
+    public Tag setNewName(String newName, boolean setmap, boolean getmap) {
         if(null == update){
-            update(setmap,  getmap);
+            update(setmap, getmap);
         }
         update.setName(newName);
         return update;
     }
 
     public Tag update(){
-        return update(true,  true);
+        return update(true, true);
     }
 
-    public Tag update(boolean setmap,  boolean getmap){
+    public Tag update(boolean setmap, boolean getmap){
         this.setmap = setmap;
         this.getmap = getmap;
         update = clone();
@@ -67,7 +67,7 @@ public class Tag extends Column implements Serializable {
         return update;
     }
 
-    public Tag setUpdate(Tag update,  boolean setmap,  boolean getmap) {
+    public Tag setUpdate(Tag update, boolean setmap, boolean getmap) {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
@@ -96,7 +96,7 @@ public class Tag extends Column implements Serializable {
     }
     public Tag clone(){
         Tag copy = new Tag();
-        BeanUtil.copyFieldValue(copy,  this);
+        BeanUtil.copyFieldValue(copy, this);
         return copy;
     }
     public String getKeyword() {

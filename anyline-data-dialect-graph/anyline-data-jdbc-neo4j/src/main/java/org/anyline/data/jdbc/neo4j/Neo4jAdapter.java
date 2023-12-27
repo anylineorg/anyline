@@ -134,7 +134,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             if(null == row){
                 continue;
             }
-            insertValue("e"+i, run,  dest,  row, columns);
+            insertValue("e"+i, run, dest, row, columns);
             if(i<dataSize-1){
                 builder.append(", ");
             }
@@ -218,8 +218,8 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }else{
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             if(!create && null != generator){
-                generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns,  null);
-                //createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null,  null);
+                generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns, null);
+                //createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
 

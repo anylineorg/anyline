@@ -134,7 +134,7 @@ public final class Util {
    * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following list would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -196,7 +196,7 @@ public final class Util {
    * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following list would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -214,7 +214,7 @@ public final class Util {
    * @param input   The <code>String</code> to split.
    * @since 2.0
    */
-  public static void split(Collection results,  PatternMatcher matcher,
+  public static void split(Collection results, PatternMatcher matcher,
 			   Pattern pattern, String input)
   {
     split(results, matcher, pattern, input, SPLIT_ALL);
@@ -240,7 +240,7 @@ public final class Util {
    * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following Vector would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -292,7 +292,7 @@ public final class Util {
    * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following Vector would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12",  "15", "18" } </code> </ul>
+   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>

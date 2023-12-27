@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License,  Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -29,7 +29,7 @@ public class PostgresqlGeometryAdapter {
      * @return Point
      */
     public static Point parsePoint(PGpoint pg){
-        Point point = new Point(pg.x,  pg.y);
+        Point point = new Point(pg.x, pg.y);
         point.origin(pg);
         point.tag("Point");
         return point;
@@ -41,7 +41,7 @@ public class PostgresqlGeometryAdapter {
      */
     public static LineSegment parseLineSegment(PGlseg pg){
         PGpoint[] points = pg.point;
-        LineSegment segment = new LineSegment(parsePoint(points[0]),  parsePoint(points[1]));
+        LineSegment segment = new LineSegment(parsePoint(points[0]), parsePoint(points[1]));
         segment.origin(pg);
         segment.tag("Lseg");
         return segment;
@@ -86,7 +86,7 @@ public class PostgresqlGeometryAdapter {
      * @return Circle
      */
     public static Circle parseCircle(PGcircle pg){
-        Circle circle = new Circle(parsePoint(pg.center),  pg.radius);
+        Circle circle = new Circle(parsePoint(pg.center), pg.radius);
         circle.origin(pg);
         circle.tag("Circle");
         return circle;
@@ -98,7 +98,7 @@ public class PostgresqlGeometryAdapter {
      * @return Line
      */
     public static Line parseLine(PGline pg){
-        Line line = new Line(pg.a,  pg.b,  pg.c);
+        Line line = new Line(pg.a, pg.b, pg.c);
         line.origin(pg);
         line.tag("Line");
         return line;
@@ -110,18 +110,18 @@ public class PostgresqlGeometryAdapter {
      */
     public static Box parseBox(PGbox pg){
         PGpoint[] points = pg.point;
-        Box box = new Box(parsePoint(points[0]),  parsePoint(points[1]));
+        Box box = new Box(parsePoint(points[0]), parsePoint(points[1]));
         box.origin(pg);
         box.tag("Box");
         return box;
     }
 
     public static PGpoint convert(Point point){
-        PGpoint pg = new PGpoint(point.x(),  point.y());
+        PGpoint pg = new PGpoint(point.x(), point.y());
         return pg;
     }
     public static PGlseg convert(LineSegment segment){
-        PGlseg  pg = new PGlseg(convert(segment.p1()),  convert(segment.p2()));
+        PGlseg  pg = new PGlseg(convert(segment.p1()), convert(segment.p2()));
         return pg;
     }
     public static PGpath convert(LineString string){
@@ -139,21 +139,21 @@ public class PostgresqlGeometryAdapter {
             for(Point point:points){
                 pgs[index++] = convert(point);
             }
-            PGpath pg = new PGpath(pgs,  open);
+            PGpath pg = new PGpath(pgs, open);
             return pg;
         }
         return new PGpath();
     }
     public static PGline convert(Line line){
-        PGline pg = new PGline(line.a(),  line.b(),  line.c());
+        PGline pg = new PGline(line.a(), line.b(), line.c());
         return pg;
     }
     public static PGbox convert(Box box){
-        PGbox pg = new PGbox(convert(box.p1()),  convert(box.p2()));
+        PGbox pg = new PGbox(convert(box.p1()), convert(box.p2()));
         return pg;
     }
     public static PGcircle convert(Circle circle){
-        PGcircle pg = new PGcircle(convert(circle.center()),  circle.radius());
+        PGcircle pg = new PGcircle(convert(circle.center()), circle.radius());
         return pg;
     }
 }

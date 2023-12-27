@@ -81,7 +81,7 @@ public class DefaultOgnlMemberAccess implements MemberAccess {
 	}
 	@SuppressWarnings("rawtypes")
 	public void restore(Map context, Object target, Member member,
-			String propertyName,  Object state) {
+			String propertyName, Object state) {
 		if (state != null) {
 			((AccessibleObject) member).setAccessible(((Boolean) state)
 					.booleanValue());
@@ -89,7 +89,7 @@ public class DefaultOgnlMemberAccess implements MemberAccess {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public boolean isAccessible(Map context,  Object target,  Member member,  String propertyName) {
+	public boolean isAccessible(Map context, Object target, Member member, String propertyName) {
 		int modifiers = member.getModifiers();
 		boolean result = Modifier.isPublic(modifiers);
 

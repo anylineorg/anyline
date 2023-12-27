@@ -50,20 +50,20 @@ public class HttpClient {
 	private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
 	private String protocol = "TLSv1";
 	private RequestConfig requestConfig;
-	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,  like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
+	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	private PoolingHttpClientConnectionManager connManager;
     private int connectTimeout = 6000; // 毫秒
 	private int socketTimeout = 6000;
-	private Map<String,  String> headers;
+	private Map<String, String> headers;
 	private String url;
 	private String charset = "UTF-8";
-	private Map<String,  Object> params = new HashMap<>();
+	private Map<String, Object> params = new HashMap<>();
 	private HttpEntity entity = null;
 	private List<NameValuePair> pairs = new ArrayList<>();
     private boolean autoClose = true;
     private DownloadTask task;
 	//上传文件 File或byte[]
-	private Map<String,  Object> files;
+	private Map<String, Object> files;
 
 	private String returnType = "text";//stream
 	private CloseableHttpClient client;
@@ -89,7 +89,7 @@ public class HttpClient {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
-				entity = new UrlEncodedFormEntity(pairs,  charset);
+				entity = new UrlEncodedFormEntity(pairs, charset);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -109,7 +109,7 @@ public class HttpClient {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
-				entity = new UrlEncodedFormEntity(pairs,  charset);
+				entity = new UrlEncodedFormEntity(pairs, charset);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -123,17 +123,17 @@ public class HttpClient {
 	}
 
 	public HttpResponse get() {
-		url = HttpUtil.mergeParam(url,  params);
+		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
-			url = HttpUtil.mergeParam(url,  URLEncodedUtils.format(pairs,  charset));
+			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs, charset));
 		}
 		HttpGet method = new HttpGet(url);
 		return exe(method);
 	}
 	public HttpResponse delete() {
-		url = HttpUtil.mergeParam(url,  params);
+		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
-			url = HttpUtil.mergeParam(url,  URLEncodedUtils.format(pairs,  charset));
+			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs, charset));
 		}
 		HttpDelete method = new HttpDelete(url);
 		return exe(method);
@@ -142,7 +142,7 @@ public class HttpClient {
 
 
 
-	public HttpResponse postStream(Map<String,  String> headers,  String url,  String encode,  HttpEntity entity) {
+	public HttpResponse postStream(Map<String, String> headers, String url, String encode, HttpEntity entity) {
 		HttpResponse result = new HttpResponse();
 		InputStream is = null;
 		if(null == client){
@@ -155,7 +155,7 @@ public class HttpClient {
 		if(null != entity){
 			method.setEntity(entity);
 		}
-		setHeader(method,  headers);
+		setHeader(method, headers);
 		try {
 			CloseableHttpResponse response = client.execute(method);
 			is = response.getEntity().getContent();
@@ -168,9 +168,9 @@ public class HttpClient {
 
 
 	private HttpResponse exe(HttpRequestBase method){
-		setHeader(method,  headers);
+		setHeader(method, headers);
 		if(null == client){
-			client = HttpUtil.client(url,  userAgent);
+			client = HttpUtil.client(url, userAgent);
 		}
 		if(url.startsWith("//")){
 			url = "http:" + url;
@@ -180,7 +180,7 @@ public class HttpClient {
 		try {
 			long fr = System.currentTimeMillis();
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
-				log.warn("[http request][method:{}][url:{}]",  method.getMethod(),  method.getURI());
+				log.warn("[http request][method:{}][url:{}]", method.getMethod(), method.getURI());
 			}
 			if("stream".equals(returnType)) {
 				response = client.execute(method);
@@ -188,12 +188,12 @@ public class HttpClient {
 				result = new HttpResponse();
 				result.setInputStream(is);
 			}else{
-				method.setHeader("Connection",  "close");
+				method.setHeader("Connection", "close");
 				response = client.execute(method);
-				result = parseResult(result,  response,  charset);
+				result = parseResult(result, response, charset);
 			}
 			if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
-				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]",  method.getMethod(),  result.getStatus(),  System.currentTimeMillis() - fr,  method.getURI());
+				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]", method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
 			result = new HttpResponse();
@@ -230,7 +230,7 @@ public class HttpClient {
 			finalUrl = "http:"+url;
 		}
 
-		finalUrl = HttpUtil.mergeParam(finalUrl,  task.getParams());
+		finalUrl = HttpUtil.mergeParam(finalUrl, task.getParams());
 		// DownloadProgress progress = task.getProgress();
 		File dst = task.getLocal();
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
@@ -241,10 +241,10 @@ public class HttpClient {
 		boolean override = task.isOverride();
 		if(dst.exists() && !override){
 			past = dst.length();
-			task.init(length,  past);
+			task.init(length, past);
 			task.finish();
-//			progress.init(url,  "",  length,  past);
-//			progress.finish(url,  "");
+//			progress.init(url, "", length, past);
+//			progress.finish(url, "");
 			return true;
 		}
 		File parent = dst.getParentFile();
@@ -253,16 +253,16 @@ public class HttpClient {
 		}
 		HttpGet get = new HttpGet(finalUrl);
 		get.setConfig(requestConfig);
-		Map<String,  String> headers = task.getHeaders();
+		Map<String, String> headers = task.getHeaders();
 		if(null != headers){
 			for(String key:headers.keySet()){
-				get.setHeader(key,  headers.get(key));
+				get.setHeader(key, headers.get(key));
 			}
 		}
 		RandomAccessFile raf = null;
 		InputStream is = null;
-		File tmpFile = new File(dst.getParent(),  dst.getName()+".downloading");
-		File configFile = new File(dst.getParent(),  dst.getName()+".downloading.config");
+		File tmpFile = new File(dst.getParent(), dst.getName()+".downloading");
+		File configFile = new File(dst.getParent(), dst.getName()+".downloading.config");
 		String config = "";
 		if(configFile.exists()){
 			config = FileUtil.read(configFile).toString();
@@ -283,7 +283,7 @@ public class HttpClient {
 			start = tmpFile.length();
 		}
 		String range = "bytes=" + start + "-";
-		get.setHeader("Range",  range);
+		get.setHeader("Range", range);
 
 		try {
 			org.apache.http.HttpResponse response = client.execute(get);
@@ -295,21 +295,21 @@ public class HttpClient {
 				log.warn("[http download][断点设置异常][url:{}]", url);
 			}
 			if(code != 200 && code !=206){
-				// progress.error(url,  "",  code,  "状态异常");
-				task.error(code,  "状态异常");
+				// progress.error(url, "", code, "状态异常");
+				task.error(code, "状态异常");
 				return false;
 			}
 			HttpEntity entity = response.getEntity();
 			if(entity != null) {
 				long total = entity.getContentLength();
-				// progress.init(url,  "",  total,  start);
-				task.init(total,  past);
+				// progress.init(url, "", total, start);
+				task.init(total, past);
 				int buf = 1024*1024*10;
 				if(buf > total){
 					buf = (int)total;
 				}
 				is = entity.getContent();
-				raf = new RandomAccessFile(tmpFile,  "rwd");
+				raf = new RandomAccessFile(tmpFile, "rwd");
 				raf.seek(start);
 
 				byte[] buffer = new byte[buf];
@@ -319,16 +319,16 @@ public class HttpClient {
 						log.warn("[http download][break][url:{}]", url);
 						break;
 					}
-					raf.write(buffer,  0,  len);
+					raf.write(buffer, 0, len);
 
-					// progress.step(url,  "",  len);
+					// progress.step(url, "", len);
 					task.step(len);
 				}
 			}
 			result = true;
 		} catch (Exception e) {
-			// progress.error(url,  "",  0,  e.toString());
-			task.error(-1,  e.toString());
+			// progress.error(url, "", 0, e.toString());
+			task.error(-1, e.toString());
 			log.warn("[http download][下载异常][url:{}]", url);
 			e.printStackTrace();
 		}finally{
@@ -373,12 +373,12 @@ public class HttpClient {
 		builder.setBoundary(BOUNDARY);
 		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  // 浏览器兼容模式
 		builder.setCharset(Charset.forName(charset));  // 设置字符编码集
-		ContentType contentType = ContentType.create("text/plain",  Charset.forName(charset));
+		ContentType contentType = ContentType.create("text/plain", Charset.forName(charset));
 
-		HttpUtil.mergeParam(builder,  params,  contentType);
+		HttpUtil.mergeParam(builder, params, contentType);
 		if(null != headers){
 			for(String key:headers.keySet()){
-				post.setHeader(key,  headers.get(key));
+				post.setHeader(key, headers.get(key));
 			}
 		}
 		String fileLog = "";
@@ -390,11 +390,11 @@ public class HttpClient {
 				}
 				if(val instanceof File) {
 					File file = (File)val;
-					builder.addBinaryBody(key,  file,  ContentType.MULTIPART_FORM_DATA,  file.getName());
+					builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
 					fileLog += "[" + key + ":" + file.getAbsolutePath() + "]";
 				}else if(val instanceof byte[]){
 					byte[] bytes = (byte[]) val;
-					builder.addBinaryBody(key,  bytes,  ContentType.MULTIPART_FORM_DATA,  key);
+					builder.addBinaryBody(key, bytes, ContentType.MULTIPART_FORM_DATA, key);
 					fileLog += "[" + key + ":bytes]";
 				}
 			}
@@ -405,7 +405,7 @@ public class HttpClient {
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
 		post.setEntity(entity);   // post 实体.
-		post.addHeader("Content-Type",  "multipart/form-data;boundary=" + BOUNDARY);  // 表单形式.
+		post.addHeader("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);  // 表单形式.
 		HttpResponse source = exe(post);
 		return source;
 	}
@@ -433,18 +433,18 @@ public class HttpClient {
 		}
 		return code;
 	}
-	public static HttpResponse parseResult(HttpResponse result,  CloseableHttpResponse response,  String encode) {
+	public static HttpResponse parseResult(HttpResponse result, CloseableHttpResponse response, String encode) {
 		if (null == result) {
 			result = new HttpResponse();
 		}
 		try {
 			if(null != response){
-				Map<String,  String> headers = new HashMap<>();
+				Map<String, String> headers = new HashMap<>();
 				Header[] all = response.getAllHeaders();
 				for (Header header : all) {
 					String key = header.getName();
 					String value = header.getValue();
-					headers.put(key,  value);
+					headers.put(key, value);
 					if ("Set-Cookie".equalsIgnoreCase(key)) {
 						HttpCookie c = new HttpCookie(value);
 						result.setCookie(c);
@@ -456,7 +456,7 @@ public class HttpClient {
 				HttpEntity entity = response.getEntity();
 				if (null != entity) {
 					result.setInputStream(entity.getContent());
-					String text = EntityUtils.toString(entity,  encode);
+					String text = EntityUtils.toString(entity, encode);
 					result.setText(text);
 				}
 			}
@@ -472,13 +472,13 @@ public class HttpClient {
 	 * @param method  method
 	 * @param headers  headers
 	 */
-	public static void setHeader(HttpRequestBase method,   Map<String,  String> headers) {
+	public static void setHeader(HttpRequestBase method, Map<String, String> headers) {
 		if (null != headers) {
 			Iterator<String> keys = headers.keySet().iterator();
 			while (keys.hasNext()) {
 				String key = keys.next();
 				String value = headers.get(key);
-				method.setHeader(key,  value);
+				method.setHeader(key, value);
 			}
 		}
 	}
@@ -490,22 +490,22 @@ public class HttpClient {
 		client = builder.build();
 		return client;
 	}
-	public CloseableHttpClient ceateSSLClient(File keyFile,  String protocol,  String password){
+	public CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
 		CloseableHttpClient httpclient = null;
 		try{
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
 			FileInputStream instream = new FileInputStream(keyFile);
 			try {
-				keyStore.load(instream,  password.toCharArray());
+				keyStore.load(instream, password.toCharArray());
 			} finally {
 				instream.close();
 			}
-			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore,  password.toCharArray()).build();
+			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
 			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证, 允许和所有的host建立SSL通信                  
 			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略, 即通配符能够匹配所有子域名
 			// STRICT_HOSTNAME_VERIFIER  严格匹配模式, hostname必须匹配第一个CN或者任何一个subject-alts
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols,  null,
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}catch(Exception e){
@@ -513,8 +513,8 @@ public class HttpClient {
 		}
 		return httpclient;
 	}
-	public CloseableHttpClient ceateSSLClient(File keyFile,  String password){
-		return ceateSSLClient(keyFile,  protocol,  password);
+	public CloseableHttpClient ceateSSLClient(File keyFile, String password){
+		return ceateSSLClient(keyFile, protocol, password);
 	}
 
 	public String getProtocol() {
@@ -565,11 +565,11 @@ public class HttpClient {
 		this.socketTimeout = socketTimeout;
 	}
 
-	public Map<String,  String> getHeaders() {
+	public Map<String, String> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(Map<String,  String> headers) {
+	public void setHeaders(Map<String, String> headers) {
 		this.headers = headers;
 	}
 
@@ -592,11 +592,11 @@ public class HttpClient {
 		this.charset = charset;
 	}
 
-	public Map<String,  Object> getParams() {
+	public Map<String, Object> getParams() {
 		return params;
 	}
 
-	public void setParams(Map<String,  Object> params) {
+	public void setParams(Map<String, Object> params) {
 		this.params = params;
 	}
 
@@ -624,11 +624,11 @@ public class HttpClient {
 		this.task = task;
 	}
 
-	public Map<String,  Object> getFiles() {
+	public Map<String, Object> getFiles() {
 		return files;
 	}
 
-	public void setFiles(Map<String,  Object> files) {
+	public void setFiles(Map<String, Object> files) {
 		this.files = files;
 	}
 

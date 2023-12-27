@@ -86,7 +86,7 @@ public class DefaultDDListener implements DDListener {
             int vol = 100;
             PageNavi navi = new DefaultPageNavi();
             navi.setPageRows(vol);
-            LinkedHashMap<String,  Column> pks = table.primarys();
+            LinkedHashMap<String, Column> pks = table.primarys();
             if(pks.isEmpty()){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
                     // 没有主键
@@ -104,11 +104,11 @@ public class DefaultDDListener implements DDListener {
                 prepare.setDataSource(table.getName());
                 ConfigStore configs = new DefaultConfigStore();
                 configs.setPageNavi(navi);
-                DataSet set = runtime.getAdapter().querys(runtime,  null,  prepare,  configs);
+                DataSet set = runtime.getAdapter().querys(runtime, null, prepare, configs);
                 if(set.isEmpty()){
                     break;
                 }
-                set.setPrimaryKey(true,  keys);
+                set.setPrimaryKey(true, keys);
                 for(DataRow row:set){
                     String value = row.getString(column.getName()+"_TMP_UPDATE_TYPE");
                     if(null == value){
@@ -121,11 +121,11 @@ public class DefaultDDListener implements DDListener {
                         }
                         RunValue run = new RunValue();
                         run.setValue(value);
-                        adapter.convert(runtime,  update,  run);
+                        adapter.convert(runtime, update, run);
                         convert = run.getValue();
-                        row.put(column.getName(),  convert);
-                        log.warn("[after exception][数据修正][{}>{}]",  value,  convert);
-                        runtime.getAdapter().update(runtime,  null,  table.getName(),  row,  new DefaultConfigStore(),  column.getName());
+                        row.put(column.getName(), convert);
+                        log.warn("[after exception][数据修正][{}>{}]", value, convert);
+                        runtime.getAdapter().update(runtime, null, table.getName(), row, new DefaultConfigStore(), column.getName());
                     }
                 }
                 if(set.size() <  vol){

@@ -29,8 +29,8 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     BIGINT                  (StandardColumnType.NUMBER                ), //mysql        ,mssql,
     BIGSERIAL               (StandardColumnType.NUMBER                ), //    ,pg,
     BINARY                  (StandardColumnType.BLOB                  ), //mysql        ,mssql,
-    BIT                     (StandardColumnType.NUMBER                ), //mysql,pg,    ,mssql,
-    BLOB                    (StandardColumnType.BLOB                  ), //mysql ,oracle,  ,sqlite
+    BIT                     (StandardColumnType.NUMBER                ), //mysql,pg, ,mssql,
+    BLOB                    (StandardColumnType.BLOB                  ), //mysql ,oracle, ,sqlite
     BOOL                    (StandardColumnType.NUMBER                ), //    ,pg
     BOX                     (StandardColumnType.ILLEGAL               ), //    ,pg
     BYTEA                   (StandardColumnType.BLOB                  ), //    ,pg
@@ -68,7 +68,7 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     LONGTEXT                (StandardColumnType.CLOB                  ), //mysql
     LSEG                    (StandardColumnType.ILLEGAL               ), //    ,pg
     MACADDR                 (StandardColumnType.ILLEGAL               ), //    ,pg
-    MONEY                   (StandardColumnType.NUMBER                ), //    ,pg,    ,mssql
+    MONEY                   (StandardColumnType.NUMBER                ), //    ,pg, ,mssql
     NUMBER                  (StandardColumnType.NUMBER                ), //      ,oracle
     NCHAR                   (StandardColumnType.NCHAR                 ), //      ,oracle,mssql
     NCLOB                   (StandardColumnType.NCLOB                 ), //      ,oracle
@@ -99,8 +99,8 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     SMALLSERIAL             (StandardColumnType.NUMBER                ), //    ,pg,
     SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //             ,mssql
     SYSNAME                 (StandardColumnType.ILLEGAL               ), //             ,mssql
-    TEXT                    (StandardColumnType.CLOB                  ), //mysql,pg,    ,mssql,sqlite
-    TIME                    (StandardColumnType.TIMESTAMP             ), //mysql,pg,    ,mssql
+    TEXT                    (StandardColumnType.CLOB                  ), //mysql,pg, ,mssql,sqlite
+    TIME                    (StandardColumnType.TIMESTAMP             ), //mysql,pg, ,mssql
     TIMEZ                   (StandardColumnType.TIMESTAMP             ), //    ,pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql,pg,oracle,mssql
     TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    ,pg

@@ -54,13 +54,13 @@ public abstract class RuntimeHolder {
     }
     public abstract void callDestroy(String datasource);
     public static void reg(String key, DataRuntime runtime){
-        runtimes.put(key,  runtime);
+        runtimes.put(key, runtime);
     }
     public static DataRuntime runtime(){
         return runtime(null);
     }
 
-    public static Map<String,  DataRuntime> all(){
+    public static Map<String, DataRuntime> all(){
         return runtimes;
     }
     /**
@@ -68,12 +68,12 @@ public abstract class RuntimeHolder {
      * @param origin 源
      * @return Map
      */
-    public static Map<String,  DataRuntime> runtimes(String origin){
-        Map<String,  DataRuntime> map = new Hashtable<>();
+    public static Map<String, DataRuntime> runtimes(String origin){
+        Map<String, DataRuntime> map = new Hashtable<>();
         for(String key:runtimes.keySet()){
            DataRuntime runtime = runtimes.get(key);
            if(origin.equals(runtime.origin())){
-               map.put(key,  runtime);
+               map.put(key, runtime);
            }
         }
         return map;

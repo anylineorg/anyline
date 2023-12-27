@@ -159,12 +159,12 @@ public class PageNaviConfig extends AnylineConfig  {
 	} 
  
 	public static PageNaviConfig parse(String key, DataRow row){
-		return parse(PageNaviConfig.class,  key,  row,  instances, compatibles);
+		return parse(PageNaviConfig.class, key, row, instances, compatibles);
 	} 
-	public static Hashtable<String, AnylineConfig> parse(String column,  DataSet set){
+	public static Hashtable<String, AnylineConfig> parse(String column, DataSet set){
 		for(DataRow row:set){
 			String key = row.getString(column); 
-			parse(key,  row);
+			parse(key, row);
 		} 
 		return instances; 
 	} 
@@ -172,11 +172,11 @@ public class PageNaviConfig extends AnylineConfig  {
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() {
-		load(instances,  PageNaviConfig.class,  CONFIG_NAME,  compatibles);
+		load(instances, PageNaviConfig.class, CONFIG_NAME, compatibles);
 		PageNaviConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
  
-	protected void afterParse(String key,  String value){
+	protected void afterParse(String key, String value){
  
 		if("VAR_PAGE_VOL_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){
 			CONFIG_PAGE_VAL_SET_SORT = 1; 

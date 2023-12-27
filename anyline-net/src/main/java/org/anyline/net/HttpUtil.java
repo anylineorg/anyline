@@ -7,9 +7,9 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,  software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -57,32 +57,32 @@ public class HttpUtil {
 	private static RequestConfig default_request_config;
 	private static int default_connect_timeout = 72000; // 毫秒
 	private static int default_socket_timeout = 72000;
-	private static String default_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,  like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
+	private static String default_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	public static String PROTOCOL_TLSV1 = "TLSv1";
 
 
-	public static HttpResponse post(String url,  String charset,  Map<String,  Object> params) {
-		return post(null,  url,  charset,  params);
+	public static HttpResponse post(String url, String charset, Map<String, Object> params) {
+		return post(null, url, charset, params);
 	}
-	public static HttpResponse post(String url,  Map<String,  Object> params) {
-		return post(null,  url,  "UTF-8",  params);
+	public static HttpResponse post(String url, Map<String, Object> params) {
+		return post(null, url, "UTF-8", params);
 	}
 	public static HttpResponse post(String url) {
-		return post(null,  url,  "UTF-8",  (HttpEntity)null);
+		return post(null, url, "UTF-8", (HttpEntity)null);
 	}
-	public static HttpResponse post(Map<String,  String> headers,  String url) {
-		return post(headers,  url,  "UTF-8",  (HttpEntity)null);
+	public static HttpResponse post(Map<String, String> headers, String url) {
+		return post(headers, url, "UTF-8", (HttpEntity)null);
 	}
-	public static HttpResponse post(String url,  String charset,  HttpEntity entity) {
-		return post(null,  url,  charset,  entity);
+	public static HttpResponse post(String url, String charset, HttpEntity entity) {
+		return post(null, url, charset, entity);
 	}
-	public static HttpResponse post(String url,  HttpEntity entity) {
-		return post(null,  url,  null,  entity);
+	public static HttpResponse post(String url, HttpEntity entity) {
+		return post(null, url, null, entity);
 	}
-	public static HttpResponse post(Map<String,  String> headers,  String url,  HttpEntity entity) {
-		return post(headers,  url,  null,  entity);
+	public static HttpResponse post(Map<String, String> headers, String url, HttpEntity entity) {
+		return post(headers, url, null, entity);
 	}
-	public static HttpResponse post(Map<String,  String> headers,  String url,  String charset,  Map<String,  Object> params) {
+	public static HttpResponse post(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -92,7 +92,7 @@ public class HttpUtil {
 	} 
  
  
-	public static HttpResponse post(Map<String,  String> headers,  String url,  String charset,  HttpEntity entity) {
+	public static HttpResponse post(Map<String, String> headers, String url, String charset, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -104,10 +104,10 @@ public class HttpUtil {
 
 
 
-	public static HttpResponse put(String url,  String charset,  Map<String,  Object> params) {
-		return put(null,  url,  charset,  params);
+	public static HttpResponse put(String url, String charset, Map<String, Object> params) {
+		return put(null, url, charset, params);
 	}
-	public static HttpResponse put(Map<String,  String> headers,  String url,  String charset,  Map<String,  Object> params) {
+	public static HttpResponse put(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -117,7 +117,7 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResponse put(Map<String,  String> headers,  String url,  String charset,  HttpEntity entity) {
+	public static HttpResponse put(Map<String, String> headers, String url, String charset, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -128,15 +128,15 @@ public class HttpUtil {
 
 
 	public static HttpResponse stream(String url) {
-		return stream(null,  url,  "UTF-8",  (HttpEntity)null);
+		return stream(null, url, "UTF-8", (HttpEntity)null);
 	}
-	public static HttpResponse stream(String url,  String charset,  HttpEntity entity) {
-		return stream(null,  url,  charset,  entity);
+	public static HttpResponse stream(String url, String charset, HttpEntity entity) {
+		return stream(null, url, charset, entity);
 	}
-	public static HttpResponse stream(String url,  String charset,  Map<String,  Object> params) {
-		return stream(null,  url,  charset,  params);
+	public static HttpResponse stream(String url, String charset, Map<String, Object> params) {
+		return stream(null, url, charset, params);
 	}
-	public static HttpResponse stream(Map<String,  String> headers,  String url,  String charset,  Map<String,  Object> params) {
+	public static HttpResponse stream(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -147,7 +147,7 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResponse stream(Map<String,  String> headers,  String url,  String charset,  HttpEntity entity) {
+	public static HttpResponse stream(Map<String, String> headers, String url, String charset, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -158,16 +158,16 @@ public class HttpUtil {
 	}
 
 	public static HttpResponse get(String url) {
-		return get(url,  "UTF-8");
+		return get(url, "UTF-8");
 	} 
-	public static HttpResponse get(String url,  String charset) {
-		return get(url,  charset,  new HashMap<String, Object>());
+	public static HttpResponse get(String url, String charset) {
+		return get(url, charset, new HashMap<String, Object>());
 	} 
-	public static HttpResponse get(String url,  String charset,  Map<String,  Object> params) {
-		return get(null,  url,  charset,  params);
+	public static HttpResponse get(String url, String charset, Map<String, Object> params) {
+		return get(null, url, charset, params);
 	} 
  
-	public static HttpResponse get(Map<String,  String> headers,  String url,  String charset,  Map<String,  Object> params) {
+	public static HttpResponse get(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -176,11 +176,11 @@ public class HttpUtil {
 				.build().get();
 	} 
  
-	public static HttpResponse get(String url,  String charset,  List<NameValuePair> pairs) {
-		return get(null,  url,  charset,  pairs);
+	public static HttpResponse get(String url, String charset, List<NameValuePair> pairs) {
+		return get(null, url, charset, pairs);
 	}
 
-	public static HttpResponse get(Map<String,  String> headers,  String url,  String charset,  List<NameValuePair> pairs) {
+	public static HttpResponse get(Map<String, String> headers, String url, String charset, List<NameValuePair> pairs) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -188,14 +188,14 @@ public class HttpUtil {
 				.setPairs(pairs)
 				.build().get();
 	}
-	public static HttpResponse get(Map<String,  String> headers,  String url,  String charset) {
+	public static HttpResponse get(Map<String, String> headers, String url, String charset) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
 				.setCharset(charset)
 				.build().get();
 	}
-	public static HttpResponse get(Map<String,  String> headers,  String url) {
+	public static HttpResponse get(Map<String, String> headers, String url) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -205,11 +205,11 @@ public class HttpUtil {
 
 
 
-	public static HttpResponse delete(String url,  String charset,  Map<String,  Object> params) {
-		return delete(null,  url,  charset,  params);
+	public static HttpResponse delete(String url, String charset, Map<String, Object> params) {
+		return delete(null, url, charset, params);
 	} 
  
-	public static HttpResponse delete(Map<String,  String> headers,  String url,  String charset,  Map<String,  Object> params) {
+	public static HttpResponse delete(Map<String, String> headers, String url, String charset, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -218,14 +218,14 @@ public class HttpUtil {
 				.build().delete();
 	} 
  
-	public static HttpResponse delete(String url,  String charset,  List<NameValuePair> pairs) {
-		return delete(null,  url,  charset,  pairs);
+	public static HttpResponse delete(String url, String charset, List<NameValuePair> pairs) {
+		return delete(null, url, charset, pairs);
 	} 
-	public static HttpResponse delete(Map<String,  String> headers,  String url,  String charset,  NameValuePair ... pairs) {
-		return delete(headers,  url,  charset,  BeanUtil.array2list(pairs));
+	public static HttpResponse delete(Map<String, String> headers, String url, String charset, NameValuePair ... pairs) {
+		return delete(headers, url, charset, BeanUtil.array2list(pairs));
 	} 
  
-	public static HttpResponse delete(Map<String,  String> headers,  String url,  String charset,  List<NameValuePair> pairs) {
+	public static HttpResponse delete(Map<String, String> headers, String url, String charset, List<NameValuePair> pairs) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -243,38 +243,38 @@ public class HttpUtil {
 	}
 
 
-	public static DownloadTask download(String url,  String dst){
+	public static DownloadTask download(String url, String dst){
 		File file = new File(dst); 
-		return download(url,  file,  null,  null,  false);
+		return download(url, file, null, null, false);
 	} 
-	public static DownloadTask download(String url,  File dst){
-		return download(url,  dst,  null,  null,  false);
+	public static DownloadTask download(String url, File dst){
+		return download(url, dst, null, null, false);
 	} 
-	public static DownloadTask download(String url,  String dest,  Map<String,  String> headers, Map<String, Object> params){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params){
 		File file = new File(dest);
-		return download(url,  file,  headers,  params,  false);
+		return download(url, file, headers, params, false);
 	} 
-	public static DownloadTask download(String url,  File dst,  Map<String,  String> headers, Map<String, Object> params){
-		return download(url,  dst,  headers,  params,  false);
+	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params){
+		return download(url, dst, headers, params, false);
 	} 
-	public static DownloadTask download(String url,  String dest,  Map<String,  String> headers, Map<String, Object> params,  boolean override){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override){
 		File file = new File(dest);
-		return download(url,  file,  headers,  params,  override);
+		return download(url, file, headers, params, override);
 	} 
-	public static DownloadTask download(String url,  File dst,  Map<String,  String> headers, Map<String, Object> params,  boolean override){
-		return download(new DefaultProgress(url,  dst),  url,  dst,  headers,  params,  override);
+	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override){
+		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress,  String url,  String dest,  boolean override){
-		return download(progress,  url,  new File(dest),  null,  null,  override);
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){
+		return download(progress, url, new File(dest), null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress,  String url,  File dst,  boolean override){
-		return download(progress,  url,  dst,  null,  null,  override);
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){
+		return download(progress, url, dst, null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress,  String url,  String dest,  Map<String,  String> headers, Map<String, Object> params,  boolean override){
-		return download(progress,  url,  new File(dest),  headers,  params,  override);
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override){
+		return download(progress, url, new File(dest), headers, params, override);
 	}
 
-	public static DownloadTask download(DownloadProgress progress,  String url,  File dst,  Map<String,  String> headers, Map<String, Object> params,  boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override){
 		DownloadTask task = new DownloadTask(); 
 		task.setProgress(progress); 
 		task.setLocal(dst); 
@@ -286,14 +286,14 @@ public class HttpUtil {
 		return task; 
 	} 
 
-	public static HttpResponse upload(String url,  Map<String,  Object> files,  Map<String,  String> headers,  Map<String, Object> params){
-		return upload(url,  files,  "UTF-8",  headers,  params);
+	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, String> headers, Map<String, Object> params){
+		return upload(url, files, "UTF-8", headers, params);
 	} 
-	public static HttpResponse upload(String url,  Map<String,  Object> files,  Map<String,  Object> params) {
-		return upload( url,  files,  null,  params);
+	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, Object> params) {
+		return upload( url, files, null, params);
 	} 
-	public static HttpResponse upload(String url,  Map<String,  Object> files) {
-		return upload(url,  files,  null,  null);
+	public static HttpResponse upload(String url, Map<String, Object> files) {
+		return upload(url, files, null, null);
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class HttpUtil {
 	 * @param params
 	 * @return HttpResponse
 	 */
-	public static HttpResponse upload(String url,  Map<String,  Object> files,  String charset,  Map<String,  String> headers,  Map<String, Object> params){
+	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String, Object> params){
 		return HttpBuilder.init()
 				.setUrl(url)
 				.setCharset(charset)
@@ -323,7 +323,7 @@ public class HttpUtil {
 				if(BasicUtil.isEmpty(path)){
 					continue;
 				}
-				path = path.replace("\\",  "/");
+				path = path.replace("\\", "/");
 				if(null == result){
 					result = path;
 				}else{
@@ -355,7 +355,7 @@ public class HttpUtil {
 	 * @param url  url
 	 * @return String
 	 */
-	public static String createFullPath(String host,  String url) {
+	public static String createFullPath(String host, String url) {
 		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
 			return url;
 		}
@@ -385,10 +385,10 @@ public class HttpUtil {
 		if(null == url){
 			return null;
 		}
-		String str = url.replaceAll("http://",  "").replaceAll("https://",  "").replaceAll("//",  "");
+		String str = url.replaceAll("http://", "").replaceAll("https://", "").replaceAll("//", "");
 		int idx = str.indexOf("/");
 		if (idx != -1) {
-			str = str.substring(0,  idx);
+			str = str.substring(0, idx);
 		}
 		if(url.startsWith("https")){
 			return "https://" + str;
@@ -404,10 +404,10 @@ public class HttpUtil {
 		}
 		url = url.replace("http://", "").replace("https://", "");
 		if (url.contains(":")){
-			url = url.substring(0,  url.indexOf(":"));
+			url = url.substring(0, url.indexOf(":"));
 		}
 		if(url.contains("/")){
-			url = url.substring(0,  url.indexOf("/"));
+			url = url.substring(0, url.indexOf("/"));
 		}
 		return url;
 	}
@@ -420,7 +420,7 @@ public class HttpUtil {
 	public static String parsePath(String url) {
 		int to = url.indexOf("?");
 		if (to != -1)
-			url = url.substring(0,  to);
+			url = url.substring(0, to);
 		return url;
 	}
 
@@ -439,7 +439,7 @@ public class HttpUtil {
 			dir = url;
 		} else if (isHttpFile(url)) {
 			int to = url.lastIndexOf("/");
-			dir = url.substring(0,  to);
+			dir = url.substring(0, to);
 		} else {
 			dir = url;
 		}
@@ -454,11 +454,11 @@ public class HttpUtil {
 	public static String parseFileName(String url) {
 		String name = null;
 		if(null != url){
-			url = url.replace("://",  "");
+			url = url.replace("://", "");
 			if(!url.endsWith("/")){
 				name = url.substring(url.lastIndexOf("/")+1);
 				if(name.contains("?")){
-					name = name.substring(0,  name.indexOf("?"));
+					name = name.substring(0, name.indexOf("?"));
 				}
 			}
 		}
@@ -510,7 +510,7 @@ public class HttpUtil {
 		return false;
 	}
 
-	public static String read(InputStream is,  String charset) {
+	public static String read(InputStream is, String charset) {
 		if (is == null) {
 			return null;
 		}
@@ -519,9 +519,9 @@ public class HttpUtil {
 		int len = 0;
 		try {
 			while ((len = is.read(b)) != -1) {
-				bab.append(b,  0,  len);
+				bab.append(b, 0, len);
 			}
-			return new String(bab.toByteArray(),  charset);
+			return new String(bab.toByteArray(), charset);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -541,7 +541,7 @@ public class HttpUtil {
 	 * @param params  params
 	 * @return String
 	 */
-	public static String mergeParam(String url,  Map<String, Object> params){
+	public static String mergeParam(String url, Map<String, Object> params){
 		if(BasicUtil.isEmpty(params)){
 			return url;
 		}
@@ -562,14 +562,14 @@ public class HttpUtil {
 		}
 		return url;
 	}
-	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder,  Map<String, Object> params,  ContentType contetType){
+	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String, Object> params, ContentType contetType){
 		if(null != params){
 			String txt = BeanUtil.map2string(params);
 			String[] kvs = txt.split("&");
 			for(String kv:kvs){
 				String[] tmps = kv.split("=");
 				if(tmps.length==2){
-					builder.addTextBody(tmps[0],  tmps[1],  contetType);
+					builder.addTextBody(tmps[0], tmps[1], contetType);
 				}
 			}
 		}
@@ -581,7 +581,7 @@ public class HttpUtil {
 	 * @param params  params
 	 * @return String
 	 */
-	public static String mergeParam(String url,  String ... params){
+	public static String mergeParam(String url, String ... params){
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
 			return url;
 		}
@@ -625,9 +625,9 @@ public class HttpUtil {
 						if(null == val){
 							continue;
 						}
-						pairs.add(new BasicNameValuePair(key,  val));
+						pairs.add(new BasicNameValuePair(key, val));
 						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-							log.info("[request param][{}={}]",  key,  BasicUtil.cut(val, 0, 20));
+							log.info("[request param][{}={}]", key, BasicUtil.cut(val, 0, 20));
 						}
 					}
 				}else if(value instanceof Collection){
@@ -636,13 +636,13 @@ public class HttpUtil {
 						if(null == val){
 							continue;
 						}
-						pairs.add(new BasicNameValuePair(key,  val.toString()));
+						pairs.add(new BasicNameValuePair(key, val.toString()));
 						if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 							log.info("[request param][{}={}]", key, BasicUtil.cut(val.toString(), 0, 20));
 						}
 					}
 				}else if(null != value){
-					pairs.add(new BasicNameValuePair(key,  value.toString()));
+					pairs.add(new BasicNameValuePair(key, value.toString()));
 					if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 						log.info("[request param][{}={}]", key, BasicUtil.cut(value.toString(), 0, 20));
 					}
@@ -659,7 +659,7 @@ public class HttpUtil {
 			return defaultClient();
 		}
 	}
-	public static CloseableHttpClient client(String url,  String userAgent){
+	public static CloseableHttpClient client(String url, String userAgent){
 		if(url.contains("https://")){
 			return defaultSSLClient(userAgent);
 		}else{
@@ -684,22 +684,22 @@ public class HttpUtil {
 	}
 
 
-	public static CloseableHttpClient ceateSSLClient(File keyFile,  String protocol,  String password){
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
 		CloseableHttpClient httpclient = null;
 		try{
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
 			FileInputStream instream = new FileInputStream(keyFile);
 			try {
-				keyStore.load(instream,  password.toCharArray());
+				keyStore.load(instream, password.toCharArray());
 			} finally {
 				instream.close();
 			}
-			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore,  password.toCharArray()).build();
+			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
 			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证, 允许和所有的host建立SSL通信
 			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略, 即通配符能够匹配所有子域名
 			// STRICT_HOSTNAME_VERIFIER  严格匹配模式, hostname必须匹配第一个CN或者任何一个subject-alts
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols,  null,
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}catch(Exception e){
@@ -720,7 +720,7 @@ public class HttpUtil {
 			httpClientBuilder.setMaxConnTotal(10000);
 			httpClientBuilder.setMaxConnPerRoute(1000);
 
-			httpClientBuilder.evictIdleConnections((long) 15,  TimeUnit.SECONDS);
+			httpClientBuilder.evictIdleConnections((long) 15, TimeUnit.SECONDS);
 			SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
 			socketConfigBuilder.setTcpNoDelay(true);
 			httpClientBuilder.setDefaultSocketConfig(socketConfigBuilder.build());
@@ -730,7 +730,7 @@ public class HttpUtil {
 			httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			X509TrustManager tm = new SimpleX509TrustManager(null);
-			ctx.init(null,  new TrustManager[]{tm},  null);
+			ctx.init(null, new TrustManager[]{tm}, null);
 			httpClientBuilder.setSslcontext(ctx);
 			httpClientBuilder.setConnectionManagerShared(true);
 			default_ssl_client = httpClientBuilder.build();
@@ -747,10 +747,10 @@ public class HttpUtil {
 	 * @param cn 是否编译中文
 	 * @return String
 	 */
-	public static String encode(String src,  boolean cn){
+	public static String encode(String src, boolean cn){
 		if(cn){
 			try {
-				return URLEncoder.encode(src,  "UTF-8");
+				return URLEncoder.encode(src, "UTF-8");
 			}catch (Exception e){
 				return src;
 			}
@@ -761,33 +761,33 @@ public class HttpUtil {
 					.replace("\n", "")
 					.replace("\r", "")
 					.replace("\t", "")
-					.replace("~",  "%7E")
-					.replace("!",  "%21")
-					.replace("@",  "%40")
-					.replace("#",  "%23")
-					.replace("$",  "%24")
-					.replace("%",  "%25")
-					.replace("^",  "%5E")
-					.replace("&",  "%26")
-					.replace("(",  "%28")
-					.replace(")",  "%29")
-					.replace("=",  "%3D")
-					.replace("`",  "%60")
-					.replace("+",  "%2B")
-					.replace("{",  "%7B")
-					.replace("}",  "%7D")
-					.replace("[",  "%5B")
-					.replace("]",  "%5D")
-					.replace("<",  "%3C")
-					.replace(">",  "%3E")
-					.replace(", ",  "%2C")
-					.replace("/",  "%2F")
-					.replace("\\",  "%5C")
-					.replace("?",  "%3F")
-					.replace(";",  "%3B")
-					.replace("'",  "%27")
-					.replace(":",  "%3A")
-					.replace("\"",  "%22");
+					.replace("~", "%7E")
+					.replace("!", "%21")
+					.replace("@", "%40")
+					.replace("#", "%23")
+					.replace("$", "%24")
+					.replace("%", "%25")
+					.replace("^", "%5E")
+					.replace("&", "%26")
+					.replace("(", "%28")
+					.replace(")", "%29")
+					.replace("=", "%3D")
+					.replace("`", "%60")
+					.replace("+", "%2B")
+					.replace("{", "%7B")
+					.replace("}", "%7D")
+					.replace("[", "%5B")
+					.replace("]", "%5D")
+					.replace("<", "%3C")
+					.replace(">", "%3E")
+					.replace(", ", "%2C")
+					.replace("/", "%2F")
+					.replace("\\", "%5C")
+					.replace("?", "%3F")
+					.replace(";", "%3B")
+					.replace("'", "%27")
+					.replace(":", "%3A")
+					.replace("\"", "%22");
 			return result;
 		}
 	}
