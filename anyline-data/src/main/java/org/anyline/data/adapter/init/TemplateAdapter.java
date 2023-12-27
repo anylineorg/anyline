@@ -1562,7 +1562,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @param strut 是否查询表结构
 	 * @return List
 	 * @param <T> Table
@@ -1598,7 +1598,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return String
 	 */
 	@Override
@@ -1614,7 +1614,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return String
 	 */
 	@Override
@@ -1666,7 +1666,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1685,7 +1685,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1799,7 +1799,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return List
 	 * @param <T> View
 	 */
@@ -1815,7 +1815,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return List
 	 */
 	@Override
@@ -1850,7 +1850,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return views
 	 * @throws Exception 异常
 	 */
@@ -1925,7 +1925,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return List
 	 * @param <T> MasterTable
 	 */
