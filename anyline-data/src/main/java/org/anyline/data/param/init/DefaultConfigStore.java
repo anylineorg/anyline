@@ -65,10 +65,33 @@ public class DefaultConfigStore implements ConfigStore {
 	protected List<Run> runs				= new ArrayList<>()		; // 执行过的命令 包括ddl dml
 	protected KeyAdapter.KEY_CASE kc 		= null					; //
 	protected boolean execute				= true  				;
-	protected String dest;
-	protected String priarmy;
+	protected String datasource				= null					; // 查询或操作的数据源
+	protected String dest					= null					; // 查询或操作的目标(表,存储过程,sql等)
+	protected List<String> keys				= new ArrayList<>();
+
+
 	/**
-	 * 设置要查询或操作的目标(表,存储过程,sql等)
+	 * 设置查询或操作的数据源
+	 * @param datasource 查询或操作的数据源
+	 * @return ConfigStore
+	 */
+	@Override
+	public ConfigStore datasource(String datasource) {
+		this.datasource = datasource;
+		return this;
+	}
+
+	/**
+	 * 查询或操作的数据源
+	 * @return String
+	 */
+	@Override
+	public String datasource() {
+		return datasource;
+	}
+
+	/**
+	 * 设置查询或操作的目标(表,存储过程,sql等)
 	 * @param dest 查询或操作的目标
 	 * @return ConfigStore
 	 */
@@ -87,15 +110,31 @@ public class DefaultConfigStore implements ConfigStore {
 		return dest;
 	}
 
+	/**
+	 * 设置虚拟主键，主要是用作为更新条件
+	 * @param keys keys
+	 * @return this
+	 */
 	@Override
-	public ConfigStore primary(String primary) {
-		this.priarmy = primary;
+	public ConfigStore keys(String ... keys) {
+		if(null == this.keys){
+			this.keys = new ArrayList<>();
+		}else {
+			this.keys.clear();
+		}
+		for(String key:keys){
+			this.keys.add(key);
+		}
 		return this;
 	}
 
+	/**
+	 * 虚拟主键，主要是用作为更新条件
+	 * @return List
+	 */
 	@Override
-	public String primary() {
-		return priarmy;
+	public List<String> keys() {
+		return keys;
 	}
 
 	public DefaultConfigStore init(){
