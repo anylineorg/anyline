@@ -128,7 +128,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
     public ForeignKey clone(){
         ForeignKey copy = super.clone();
         copy.reference = this.reference.clone();
-        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);

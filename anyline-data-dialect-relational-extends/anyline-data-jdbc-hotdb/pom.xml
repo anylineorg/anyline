@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-hotdb</name>
     <url>http://www.anyline.org/hotdb</url>
-    <description>热璞,基于MySQL,https://www.hotdb.com</description>
+    <description>热璞, 基于MySQL, https://www.hotdb.com</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

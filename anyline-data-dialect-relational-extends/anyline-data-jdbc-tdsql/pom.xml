@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-tdsql</name>
     <url>http://www.anyline.org/tdsql</url>
-    <description>腾讯TDSQL PostgreSQL(TBase),基于postgresql</description>
+    <description>腾讯TDSQL PostgreSQL(TBase), 基于postgresql</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

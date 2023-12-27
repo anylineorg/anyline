@@ -27,7 +27,7 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
         PRIMARY_KEY, UNIQUE, NOT_NULL, FOREIGN_KEY, DEFAULT
     }
     protected TYPE type;
-    protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     public Constraint(){
     }
 
@@ -149,7 +149,7 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
     public E clone(){
         E copy = super.clone();
 
-        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);

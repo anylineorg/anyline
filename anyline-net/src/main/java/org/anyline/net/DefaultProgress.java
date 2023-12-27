@@ -49,12 +49,12 @@ public class DefaultProgress implements DownloadProgress{
 		this.start = System.currentTimeMillis(); 
 		this.start = System.currentTimeMillis(); 
 	} 
-	public void init(String url, String thread, long total, long past){
+	public void init(String url, String thread,  long total,  long past){
 		this.length = total; 
 		this.past = past; 
 	} 
 	@Override 
-	public void step(String url, String thread, long finish) {
+	public void step(String url,  String thread,  long finish) {
 		this.finish += finish; 
 		rate = (this.finish+this.past)*100.00/(this.length+this.past); 
  
@@ -78,22 +78,22 @@ public class DefaultProgress implements DownloadProgress{
 	 * 设置已完成 
 	 */ 
 	@Override 
-	public void finish(String url, String thread) {
+	public void finish(String url,  String thread) {
 		this.rate= 100.00; 
 	} 
 	 
 	private void log(){
 		if(rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){
 			long time = System.currentTimeMillis() - start; 
-			message = "[进度:"+FileUtil.progress(length, finish)+"]" 
+			message = "[进度:"+FileUtil.progress(length,  finish)+"]"
     				+ "[耗时:"+DateUtil.conversion(time)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(finish*1000/time)+"/s)]"; 
-    		log.warn("[文件下载]{}[url:{}][local:{}]",message, url, local.getAbsolutePath()); 
+    		log.warn("[文件下载]{}[url:{}][local:{}]", message,  url,  local.getAbsolutePath());
     		lastLogRate = rate; 
     		lastLogTime = System.currentTimeMillis(); 
 		} 
 	} 
 	@Override 
-	public void error(String url, String thread, int code, String message) {
+	public void error(String url,  String thread,  int code,  String message) {
 		 
 	} 
 	@Override 

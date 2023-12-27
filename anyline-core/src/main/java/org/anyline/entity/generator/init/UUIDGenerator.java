@@ -30,25 +30,25 @@ import java.util.UUID;
 
 public class UUIDGenerator implements PrimaryGenerator {
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
+    public boolean create(Object entity, DatabaseType type, String table,  List<String> columns,  String other) {
         if(null == columns){
             if(entity instanceof DataRow){
                 columns = ((DataRow)entity).getPrimaryKeys();
             }else{
-                columns = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
+                columns = EntityAdapterProxy.primaryKeys(entity.getClass(),  true);
             }
         }
         for(String column:columns){
-            if(null != BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity,  column)) {
                 continue;
             }
             String value = UUID.randomUUID().toString();
-            BeanUtil.setFieldValue(entity, column, value, true);
+            BeanUtil.setFieldValue(entity,  column,  value,  true);
         }
         return true;
     }
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
+    public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column> columns,  String other) {
         if(null == columns){
             if(entity instanceof DataRow){
                 columns = ((DataRow)entity).getPrimaryColumns();
@@ -57,11 +57,11 @@ public class UUIDGenerator implements PrimaryGenerator {
             }
         }
         for(Column column:columns.values()){
-            if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+            if(null != BeanUtil.getFieldValue(entity,  column.getName())) {
                 continue;
             }
             String value = UUID.randomUUID().toString();
-            BeanUtil.setFieldValue(entity, column.getName(), value, true);
+            BeanUtil.setFieldValue(entity,  column.getName(),  value,  true);
         }
         return true;
     }

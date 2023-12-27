@@ -84,32 +84,32 @@ public interface ColumnType {
         }
 
         @Override
-        public Object convert(Object value, Class target, boolean array, Object def) {
+        public Object convert(Object value,  Class target,  boolean array,  Object def) {
             return null;
         }
 
         @Override
-        public Object convert(Object value, Object obj, Field field) {
+        public Object convert(Object value,  Object obj,  Field field) {
             return null;
         }
 
         @Override
-        public Object read(Object value, Object def, Class clazz) {
+        public Object read(Object value,  Object def,  Class clazz) {
             return null;
         }
 
         @Override
-        public Object read(Object value, Object def, Class clazz, boolean array) {
+        public Object read(Object value,  Object def,  Class clazz,  boolean array) {
             return null;
         }
 
         @Override
-        public Object write(Object value, Object def, boolean placeholder) {
+        public Object write(Object value,  Object def,  boolean placeholder) {
             return null;
         }
 
         @Override
-        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder) {
             return null;
         }
     };
@@ -141,23 +141,23 @@ public interface ColumnType {
      */
     DatabaseType[] dbs();
 
-    Object convert(Object value, Object def);
-    default Object convert(Object value, Class target){
-        return convert(value, target, false);
+    Object convert(Object value,  Object def);
+    default Object convert(Object value,  Class target){
+        return convert(value,  target,  false);
     }
-    Object convert(Object value, Class target, boolean array);
-    default Object convert(Object value, Class target, Object def){
-        return convert(value, target, false, def);
+    Object convert(Object value,  Class target,  boolean array);
+    default Object convert(Object value,  Class target,  Object def){
+        return convert(value,  target,  false,  def);
     }
-    Object convert(Object value, Class target, boolean array, Object def);
-    Object convert(Object value, Object obj, Field field);
+    Object convert(Object value,  Class target,  boolean array,  Object def);
+    Object convert(Object value,  Object obj,  Field field);
 
-    default Object read(Object value, Object def, Class clazz){
-        return read(value, def, clazz, false);
+    default Object read(Object value,  Object def,  Class clazz){
+        return read(value,  def,  clazz,  false);
     }
-    Object read(Object value, Object def, Class clazz, boolean array);
-    default Object write(Object value, Object def, boolean placeholder){
-        return write(value, def, false, placeholder);
+    Object read(Object value,  Object def,  Class clazz,  boolean array);
+    default Object write(Object value,  Object def,  boolean placeholder){
+        return write(value,  def,  false,  placeholder);
     }
-    Object write(Object value, Object def, boolean array, boolean placeholder);
+    Object write(Object value,  Object def,  boolean array,  boolean placeholder);
 }

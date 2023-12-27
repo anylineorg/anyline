@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-yidb</name>
     <url>http://www.anyline.org/yidb</url>
-    <description>天翼数智,基于TiDB</description>
+    <description>天翼数智, 基于TiDB</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

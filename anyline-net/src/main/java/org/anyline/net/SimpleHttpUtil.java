@@ -27,14 +27,14 @@ import java.nio.charset.StandardCharsets;
 
 public class SimpleHttpUtil {
 	public static String post(String url, String param) {
-		return request(url, "POST", param); 
+		return request(url, "POST", param);
 	} 
  
 	public static String get(String url, String param) {
-		return request(url, "GET", param); 
+		return request(url,  "GET",  param);
 	} 
  
-	public static String request(String url, String method, String param) {
+	public static String request(String url,  String method,  String param) {
 		HttpURLConnection conn = null; 
 		InputStream is = null; 
 		InputStreamReader isr = null; 
@@ -45,7 +45,7 @@ public class SimpleHttpUtil {
 			conn.setDoInput(true); 
 			conn.setUseCaches(false); 
 			conn.setRequestMethod(method); 
-            conn.setRequestProperty("content-type", "application/x-www-form-urlencoded"); 
+            conn.setRequestProperty("content-type",  "application/x-www-form-urlencoded");
 			if (null != param) {
 				OutputStream os = conn.getOutputStream(); 
 				os.write(param.getBytes(StandardCharsets.UTF_8));
@@ -54,7 +54,7 @@ public class SimpleHttpUtil {
 			} 
 			// 从输入流读取返回内容 
 			is = conn.getInputStream(); 
-			isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+			isr = new InputStreamReader(is,  StandardCharsets.UTF_8);
 			br = new BufferedReader(isr); 
 			String str = null; 
 			StringBuilder buffer = new StringBuilder();

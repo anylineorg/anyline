@@ -263,7 +263,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * [调用入口]
 	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
 	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
@@ -324,7 +324,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
@@ -380,7 +380,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
-		return super.update(runtime, random,  dest, data, configs, run);
+		return super.update(runtime, random, dest, data, configs, run);
 	}
 
 
@@ -414,16 +414,16 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.save(runtime, random,  dest, data, configs, columns);
+		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
 	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
-		return super.saveCollection(runtime, random,  dest, data, configs, columns);
+		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.saveObject(runtime, random,  dest, data, configs, columns);
+		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected Boolean checkOverride(Object obj){
@@ -465,7 +465,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
 	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -821,12 +821,12 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.execute(runtime, random,  prepare, configs, conditions);
+		return super.execute(runtime, random, prepare, configs, conditions);
 	}
 
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random,  batch, configs, cmd, values);
+		return super.execute(runtime, random, batch, configs, cmd, values);
 	}
 	/**
 	 * procedure [命令执行]<br/>
@@ -884,7 +884,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		return super.execute(runtime, random,  configs, run);
+		return super.execute(runtime, random, configs, run);
 	}
 
 	/* *****************************************************************************************************************
@@ -918,7 +918,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		return super.deletes(runtime, random,  batch, table, configs, key, values);
+		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
 	/**
@@ -933,7 +933,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
-		return super.delete(runtime, random,  dest, configs, obj, columns);
+		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
 	/**

@@ -194,7 +194,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		dest = DataSourceUtil.parseDataSource(dest, data);
+		configs = DataSourceUtil.parseDest(dest, data, configs);
+		dest = configs.dest();
 		if(null == random){
 			random = random(runtime);
 		}
@@ -231,7 +232,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		Table table = new Table(dest);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(IS_AUTO_CHECK_METADATA(configs)){
-			table.setColumns(columns(runtime, random,  false, table, false));
+			table.setColumns(columns(runtime, random, false, table, false));
 		}
 		if(null == run){
 			return 0;
@@ -563,7 +564,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
 	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
@@ -598,7 +599,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		dest = DataSourceUtil.parseDataSource(dest, data);
+		configs = DataSourceUtil.parseDest(dest, data, configs);
+		dest = configs.dest();
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
 		if(null == random){
@@ -671,7 +673,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		cmd_success = true;
 		millis = System.currentTimeMillis() - fr;
 		if (null != dmListener) {
-			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, cmd_success, result,  millis);
+			dmListener.afterUpdate(runtime, random, run, result, dest, data, columns, cmd_success, result, millis);
 		}
 		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, cmd_success, result, System.currentTimeMillis() - fr);
 		return result;
@@ -700,13 +702,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
 		Run run = null;
 		if(null == obj){
 			return null;
 		}
 		if(null == dest){
-			dest = DataSourceUtil.parseDataSource(null,obj);
+			configs = DataSourceUtil.parseDest(null,obj, configs);
+			dest = configs.dest();
 		}
 		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		if(null != columns){
@@ -1305,7 +1308,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		boolean isNew = BeanUtil.checkIsNew(data);
 		if(isNew){
-			return insert(runtime, random, 0,  dest, data, configs, columns);
+			return insert(runtime, random, 0, dest, data, configs, columns);
 		}else{
 			//是否覆盖(null:不检测直接执行update有可能影响行数=0)
 			Boolean override = checkOverride(data);
@@ -1418,7 +1421,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
 	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -1452,7 +1455,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	@Override
 	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		DataSet set = null;
-		Long fr = System.currentTimeMillis();
+		Long fr = 0L;
 		boolean cmd_success = false;
 		Run run = null;
 		PageNavi navi = null;
@@ -1756,7 +1759,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			log.warn(tmp);
 		}
 		if (run.isValid()) {
-			swt = InterceptorProxy.beforeQuery(runtime, random,  run, null);
+			swt = InterceptorProxy.beforeQuery(runtime, random, run, null);
 			if(swt == ACTION.SWITCH.BREAK){
 				return new ArrayList<>();
 			}
@@ -2187,7 +2190,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		result = execute(runtime, random, configs, run);
 		cmd_success = true;
 		if (null != dmListener) {
-			dmListener.afterExecute(runtime, random, run,  cmd_success, result, millis);
+			dmListener.afterExecute(runtime, random, run, cmd_success, result, millis);
 		}
 		InterceptorProxy.afterExecute(runtime, random, run, cmd_success, result, System.currentTimeMillis()-fr);
 		return result;
@@ -2348,7 +2351,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		table = DataSourceUtil.parseDataSource(table, null);
+		configs = DataSourceUtil.parseDest(table, null, configs);
+		table = configs.dest();
 		if(null == random){
 			random = random(runtime);
 		}
@@ -2385,7 +2389,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
-		dest = DataSourceUtil.parseDataSource(dest,obj);
+		configs = DataSourceUtil.parseDest(dest, obj, configs);
+		dest = configs.dest();
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		long size = 0;
 		if(null != obj){
@@ -2438,7 +2443,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
-		table = DataSourceUtil.parseDataSource(table, null);
+		configs = DataSourceUtil.parseDest(table, null, configs);
+		table = configs.dest();
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
@@ -2470,7 +2476,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, String table){
-		table = DataSourceUtil.parseDataSource(table);
+		table = DataSourceUtil.parseDest(table, null, null).dest();
 		List<Run> runs = buildTruncateRun(runtime, table);
 		if(null != runs && runs.size()>0) {
 			RunPrepare prepare = new DefaultTextPrepare(runs.get(0).getFinalUpdate());
@@ -2495,7 +2501,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		Run run = null;
 		if(null == dest){
-			dest = DataSourceUtil.parseDataSource(dest,obj);
+			dest = DataSourceUtil.parseDest(dest, obj, null).dest();
 		}
 		if(null == dest){
 			Object entity = obj;
@@ -2633,7 +2639,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(null != dmListener){
 			dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
 		}
-		InterceptorProxy.afterDelete(runtime, random, run,  cmd_success, result, millis);
+		InterceptorProxy.afterDelete(runtime, random, run, cmd_success, result, millis);
 		return result;
 	}
 
@@ -2737,7 +2743,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[product][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[product][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if(null == product){
@@ -2783,7 +2789,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[version][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[version][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if(null == version){
@@ -2831,7 +2837,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33),  e.toString());
+					log.warn("{}[databases][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
@@ -6402,7 +6408,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action,  meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action,  meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -7003,7 +7009,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action,  meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action,  meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -7050,7 +7056,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action,  meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action,  meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -7344,7 +7350,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -7695,7 +7701,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][master:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getMasterName(), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][master:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getMasterName(), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -8046,7 +8052,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -8115,7 +8121,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -8846,7 +8852,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -8906,7 +8912,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -9235,7 +9241,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -9308,7 +9314,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -9529,7 +9535,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -9601,7 +9607,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -9825,7 +9831,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -9897,7 +9903,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10143,7 +10149,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10215,7 +10221,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10428,7 +10434,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10475,7 +10481,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10801,7 +10807,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10851,7 +10857,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, origin.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, origin.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -10980,7 +10986,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			long millis = System.currentTimeMillis() - fr;
 			swt = ACTION.SWITCH.CONTINUE;
 			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 
 			if(null != ddListener){
@@ -11028,7 +11034,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -11079,7 +11085,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, meta.getName(), runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -11132,7 +11138,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}finally {
 			long millis = System.currentTimeMillis() - fr;
 			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}ms]" , random, action, origin.getName(), name, runs.size(), result, millis);
+				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, origin.getName(), name, runs.size(), result, millis);
 			}
 			swt = ACTION.SWITCH.CONTINUE;
 			if(null != ddListener){
@@ -11495,14 +11501,14 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return table;
 		}
 		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
-		table = DataSourceUtil.parseDataSource(table, null);
+		table = DataSourceUtil.parseDest(table, null, null).dest();
 		if(table.contains(".")){
 			String tmps[] = table.split("\\.");
-			table = SQLUtil.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
+			table = SQLUtil.delimiter(tmps[0],getDelimiterFr(), getDelimiterTo())
 					+ "."
-					+ SQLUtil.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
+					+ SQLUtil.delimiter(tmps[1],getDelimiterFr(), getDelimiterTo());
 		}else{
-			table = SQLUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
+			table = SQLUtil.delimiter(table,getDelimiterFr(), getDelimiterTo());
 		}
 		return table;
 	}

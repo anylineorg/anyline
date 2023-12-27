@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-gaiadb</name>
     <url>http://www.anyline.org/gaiadb</url>
-    <description>百度GaiaDB-X,基于MySQL</description>
+    <description>百度GaiaDB-X, 基于MySQL</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

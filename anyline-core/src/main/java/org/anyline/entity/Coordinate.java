@@ -24,8 +24,8 @@ import org.anyline.util.GISUtil;
 import java.util.List;
 
 public class Coordinate {
-	private Point point						; // 坐标点[lng,lat][经度,纬度]
-	private Point center 					; // 最小级别行政区中心坐标点[lng,lat][经度,纬度]
+	private Point point						; // 坐标点[lng, lat][经度, 纬度]
+	private Point center 					; // 最小级别行政区中心坐标点[lng, lat][经度, 纬度]
 	private SRS srs							; // 坐标系
 	private String provinceCode				; // 省编号
 	private String provinceName				; // 省中文名
@@ -38,10 +38,10 @@ public class Coordinate {
 	private String villageCode				; // 社区(村)编号
 	private String villageName				; // 社区(村)中文名
 	private String street					; // 道路
-	private String streetNumber				; // 门牌,号
+	private String streetNumber				; // 门牌, 号
 	private List<Double[]> border			; // 最小级别行政区边界点
 	private String code						; // 当前地区最小级别行政区编号
-	private int level						; // 级别(国家:0,省:1)
+	private int level						; // 级别(国家:0, 省:1)
 	private String address					; // 详细地址
 	private boolean success = true			; // 执行结果
 	private String message = null			; // 执行结果说明
@@ -52,9 +52,9 @@ public class Coordinate {
 
 	public Coordinate(String location){
 		if(BasicUtil.isNotEmpty(location)){
-			String[] tmps = location.split(",");
+			String[] tmps = location.split(", ");
 			if(tmps.length > 1){
-				point = new Point(BasicUtil.parseDouble(tmps[0],null), BasicUtil.parseDouble(tmps[1],null));
+				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
 	}
@@ -62,21 +62,21 @@ public class Coordinate {
 	}
 	public Coordinate(SRS srs, String lng, String lat){
 		this.srs = srs;
-		point = new Point(BasicUtil.parseDouble(lng, null),BasicUtil.parseDouble(lat, null));
+		point = new Point(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
 	}
-	public Coordinate(SRS srs, Double lng, Double lat){
+	public Coordinate(SRS srs,  Double lng,  Double lat){
 		this.srs = srs;
+		point = new Point(lng,  lat);
+	}
+	public Coordinate(String lng,  String lat){
+		point = new Point(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
+	}
+	public Coordinate(Double lng,  Double lat){
 		point = new Point(lng, lat);
 	}
-	public Coordinate(String lng, String lat){
-		point = new Point(BasicUtil.parseDouble(lng,null),BasicUtil.parseDouble(lat,null));
-	}
-	public Coordinate(Double lng, Double lat){
-		point = new Point(lng,lat);
-	}
 	public Coordinate convert(SRS srs){
-		Double[] loc = GISUtil.convert(this.srs, point.x(), point.y(), srs);
-		point = new Point(loc[0], loc[1]);
+		Double[] loc = GISUtil.convert(this.srs,  point.x(),  point.y(),  srs);
+		point = new Point(loc[0],  loc[1]);
 		this.setSrs(srs);
 		return this;
 	}
@@ -88,9 +88,9 @@ public class Coordinate {
 	}
 	public void setLocation(String location){
 		if(BasicUtil.isNotEmpty(location)){
-			String[] tmps = location.split(",");
+			String[] tmps = location.split(", ");
 			if(tmps.length > 1){
-				point = new Point(BasicUtil.parseDouble(tmps[0],null),BasicUtil.parseDouble(tmps[1],null));
+				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
 	}
@@ -145,7 +145,7 @@ public class Coordinate {
 		this.point.x(lng);
 	}
 	public void setLng(String lng) {
-		setLng(BasicUtil.parseDouble(lng, null));
+		setLng(BasicUtil.parseDouble(lng,  null));
 	}
 
 	public Double getLat() {
@@ -159,7 +159,7 @@ public class Coordinate {
 		point.y(lat);
 	}
 	public void setLat(String lat) {
-		setLat(BasicUtil.parseDouble(lat, null));
+		setLat(BasicUtil.parseDouble(lat,  null));
 	}
 
 	public String getProvinceCode() {
@@ -213,7 +213,7 @@ public class Coordinate {
 		this.address = address;
 	}
 	public String toString(){
-		return "["+point.x()+","+point.y()+"]";
+		return "["+point.x()+", "+point.y()+"]";
 	}
 
 	public SRS getSrs() {
@@ -316,7 +316,7 @@ public class Coordinate {
 		if(correct){
 			return this;
 		}
-		String code = BasicUtil.evl(getVillageCode(), getTownCode(), getCountyCode(), getCityCode(), getProvinceCode());
+		String code = BasicUtil.evl(getVillageCode(),  getTownCode(),  getCountyCode(),  getCityCode(),  getProvinceCode());
 		if(null == code){
 			return this;
 		}

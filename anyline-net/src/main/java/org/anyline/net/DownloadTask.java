@@ -42,9 +42,9 @@ public class DownloadTask {
 	private long finish ; // 本次已下载长度
 	private long start	; // 开始时间
 	private long end	; // 结束时间
-	private Map<String, String> headers; 
-	private Map<String,Object> params; 
-	private Map<String,Object> extras = new HashMap<String,Object>();	// 扩展属性(回调时原样返回) 
+	private Map<String, String> headers;
+	private Map<String, Object> params;
+	private Map<String, Object> extras = new HashMap<String, Object>();	// 扩展属性(回调时原样返回)
 	private int index		; // 任务下标从0开始
 	private long expend		; // 本次已耗时
 	private long expect		; // 本次预计剩余时间
@@ -57,7 +57,7 @@ public class DownloadTask {
 	private int action =1		; // 1正常执行 0中断
 	private int status = 0		; // 0初始 1执行中 2暂停 -1异常 9已完成
 	 
-	private Map<Long,Long> records = new LinkedHashMap<Long,Long>(); // 下载记录
+	private Map<Long, Long> records = new LinkedHashMap<Long, Long>(); // 下载记录
 	private DownloadProgress progress = new DefaultProgress(); 
 	private DownloadListener listener; 
 	private boolean override = false; 
@@ -84,9 +84,9 @@ public class DownloadTask {
 	public long getAvgSpeed(){
 		Long sum = 0L; 
 		Long fr = 0L; 
-		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();   
+		Iterator<Entry<Long,  Long>> entries = records.entrySet().iterator();
 		while (entries.hasNext()) {
-			Map.Entry<Long,Long> entry =  entries.next();    
+			Map.Entry<Long, Long> entry =  entries.next();
 			Long key = entry.getKey(); // 记录时间
 			Long value = entry.getValue();//记录值 
 			if(System.currentTimeMillis() - key> 1000*10){//10秒内的值 
@@ -116,9 +116,9 @@ public class DownloadTask {
 		Long len = 0L;	// 最后一次下载长度 
 		Long time = 0L; 
 		Long curTime = 0L; 
-		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();   
+		Iterator<Entry<Long,  Long>> entries = records.entrySet().iterator();
 		while (entries.hasNext()) {
-			Map.Entry<Long,Long> entry =  entries.next();    
+			Map.Entry<Long, Long> entry =  entries.next();
 			Long key = entry.getKey(); // 记录时间
 			Long value = entry.getValue();//记录值 
 			curTime = key; 
@@ -150,25 +150,25 @@ public class DownloadTask {
 		long speed = getSpeed(); 
 		return FileUtil.length(speed)+"/s"; 
 	} 
-	public DownloadTask(String url, File local){
+	public DownloadTask(String url,  File local){
 		this.url = url; 
 		this.local = local; 
 	} 
-	public DownloadTask(String url, File local, Map<String, String> headers, Map<String,Object> params, Map<String,Object> extras){
+	public DownloadTask(String url,  File local,  Map<String,  String> headers,  Map<String, Object> params,  Map<String, Object> extras){
 		this.url = url; 
 		this.local = local; 
 		this.headers = headers; 
 		this.params = params; 
 		this.extras = extras; 
 	} 
-	public DownloadTask(String url, File local, Map<String, String> headers, Map<String,Object> params){
+	public DownloadTask(String url,  File local,  Map<String,  String> headers,  Map<String, Object> params){
 		this.url = url; 
 		this.local = local; 
 		this.headers = headers; 
 		this.params = params; 
 	} 
  
-	public void init(long length, long past){
+	public void init(long length,  long past){
 		this.length = length; 
 		this.past = past; 
 		this.start = System.currentTimeMillis(); 
@@ -176,7 +176,7 @@ public class DownloadTask {
 	} 
 	public void step(long len){
 		this.finish +=  len; 
-		rate = new BigDecimal((this.finish+this.past)*100.0/(this.length+this.past)).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue(); // 完成比例
+		rate = new BigDecimal((this.finish+this.past)*100.0/(this.length+this.past)).setScale(2,  BigDecimal.ROUND_HALF_DOWN).doubleValue(); // 完成比例
  
     	if(this.finish >= length){
     		this.finish = length; 
@@ -200,15 +200,15 @@ public class DownloadTask {
 				log(); 
 			} 
 		} 
-		records.put(System.currentTimeMillis(), len); 
+		records.put(System.currentTimeMillis(),  len);
 		if(rate >=100){
 			finish(); 
 		} 
 	} 
-	public void error(int code, String message){
+	public void error(int code,  String message){
 		try{
 			status = -1; 
-			log.error("[文件下载][下载异常][url:{}][code:{}][message:{}]",url,code,message);
+			log.error("[文件下载][下载异常][url:{}][code:{}][message:{}]", url, code, message);
 			this.errorCode = code; 
 			this.errorMsg = message; 
 			if(null != listener){
@@ -225,7 +225,7 @@ public class DownloadTask {
 			this.end = System.currentTimeMillis(); 
 			log(); 
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				log.info("[文件下载]"+"[下载完成][耗时:{}][url:{}][local:{}]",getExpendFormat(),url, getLocal().getAbsolutePath()); 
+				log.info("[文件下载]"+"[下载完成][耗时:{}][url:{}][local:{}]", getExpendFormat(), url,  getLocal().getAbsolutePath());
 			} 
 			if(null != listener){
 				listener.finish(this); 
@@ -368,14 +368,14 @@ public class DownloadTask {
 		this.end = end; 
 	} 
  
-	public Map<String, Object> getExtras() {
+	public Map<String,  Object> getExtras() {
 		return extras; 
 	} 
-	public void setExtras(Map<String, Object> extras) {
+	public void setExtras(Map<String,  Object> extras) {
 		this.extras = extras; 
 	} 
-	public void addExtras(String key, Object value){
-		extras.put(key, value); 
+	public void addExtras(String key,  Object value){
+		extras.put(key,  value);
 	} 
 	/** 
 	 * 耗时 
@@ -402,7 +402,7 @@ public class DownloadTask {
 	} 
 	/** 
 	 * 预计剩余时间 
-	 * 没有实际速度时,使用预计速度 
+	 * 没有实际速度时, 使用预计速度
 	 * @param speed speed
 	 * @return long
 	 */ 
@@ -434,26 +434,26 @@ public class DownloadTask {
 		this.expect = expect; 
 	} 
  
-	public Map<String, String> getHeaders() {
+	public Map<String,  String> getHeaders() {
 		return headers; 
 	} 
  
-	public void setHeaders(Map<String, String> headers) {
+	public void setHeaders(Map<String,  String> headers) {
 		this.headers = headers; 
 	} 
  
-	public Map<String, Object> getParams() {
+	public Map<String,  Object> getParams() {
 		return params; 
 	} 
  
-	public void setParams(Map<String, Object> params) {
+	public void setParams(Map<String,  Object> params) {
 		this.params = params; 
 	} 
-	public void addParam(String key, String value) {
+	public void addParam(String key,  String value) {
 		if(null == params){
-			params = new HashMap<String,Object>(); 
+			params = new HashMap<String, Object>();
 		} 
-		params.put(key, value); 
+		params.put(key,  value);
 	} 
 //	public boolean isFinish(){
 //		return rate == 100; 

@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-cudb</name>
     <url>http://www.anyline.org/cudb</url>
-    <description>中国联通,基于opengauss</description>
+    <description>中国联通, 基于opengauss</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

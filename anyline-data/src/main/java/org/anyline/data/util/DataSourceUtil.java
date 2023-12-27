@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -17,6 +17,8 @@
 
 package org.anyline.data.util;
 
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.BaseMetadata;
@@ -28,23 +30,27 @@ import java.util.Collection;
 public class DataSourceUtil {
 
     /**
-     * 解析数据源,并返回修改后的SQL
+     * 解析数据源, 并返回修改后的SQL
      * &lt;mysql_ds&gt;crm_user
      * @param src  src
      * @return String
      */
-    public static String parseDataSource(String src){
+    public static ConfigStore parseDest(String src, ConfigStore configs){
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
         if(null != src && src.startsWith("<")){
             int fr = src.indexOf("<");
             int to = src.indexOf(">");
             if(fr != -1){
-                //String ds = src.substring(fr+1,to);
+                //String ds = src.substring(fr+1, to);
                 src = src.substring(to+1);
-                //不要切换,在service中切换到另一个service
+                //不要切换, 在service中切换到另一个service
                 //ClientHolder.setDataSource(ds, true);
             }
         }
-        return src;
+        configs.dest(src);
+        return configs;
     }
     public static String[] parseRuntime(BaseMetadata meta){
         if(null != meta){
@@ -60,7 +66,7 @@ public class DataSourceUtil {
             int fr = src.indexOf("<");
             int to = src.indexOf(">");
             if(fr != -1){
-                runtime = src.substring(fr+1,to);
+                runtime = src.substring(fr+1, to);
                 src = src.substring(to+1);
                 result[0] = runtime;
                 result[1] = src;
@@ -69,34 +75,40 @@ public class DataSourceUtil {
         return result;
     }
 
-    public static String parseDataSource(String dest, Object obj){
+    public static ConfigStore parseDest(String dest, Object obj, ConfigStore configs){
         if(BasicUtil.isNotEmpty(dest) || null == obj){
-            return parseDataSource(dest);
+            return parseDest(dest, configs);
         }
-        String result = "";
+        if(null == configs){
+            configs = new DefaultConfigStore();
+        }
+        String table = "";
         if(obj instanceof DataRow){
             DataRow row = (DataRow)obj;
             String link = row.getDataLink();
             if(BasicUtil.isNotEmpty(link)){
                 //DatasourceHolder.setDataSource(link, true);
             }
-            result = row.getDataSource();
+            table = row.getDataSource();
+            configs.dest(table);
         }else if(obj instanceof DataSet){
             DataSet set = (DataSet)obj;
             if(set.size()>0){
-                result = parseDataSource(dest, set.getRow(0));
+                configs = parseDest(dest, set.getRow(0), configs);
             }
         } else if (obj instanceof Collection) {
             Object first = ((Collection)obj).iterator().next();
             if(first instanceof DataRow){
-                result = parseDataSource(dest, first);
+                configs = parseDest(dest, first, configs);
             }else {
-                result = EntityAdapterProxy.table(first.getClass(), true);
+                table = EntityAdapterProxy.table(first.getClass(), true);
+                configs.dest(table);
             }
         } else{
-            result = EntityAdapterProxy.table(obj.getClass(), true);
+            table = EntityAdapterProxy.table(obj.getClass(), true);
+            configs.dest(table);
         }
-        result = parseDataSource(result);
-        return result;
+        configs = parseDest(table, configs);
+        return configs;
     }
 }

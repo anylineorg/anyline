@@ -56,7 +56,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
             String version = runtime.getVersion();
             //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
             if(null != version ){
-                version = RegularUtil.cut(version, "release","-");
+                version = RegularUtil.cut(version, "release", "-");
                 if(null != version){
                     //11.2.0.1.0
                     version = version.split("\\.")[0];
@@ -91,7 +91,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
         }else{
             // 分页
             builder.append("SELECT "+cols+" FROM( \n");
-            builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
+            builder.append("SELECT TAB_I.*, ROWNUM AS PAGE_ROW_NUMBER_ \n");
             builder.append("FROM( \n");
             builder.append(sql);
             builder.append("\n").append(order);

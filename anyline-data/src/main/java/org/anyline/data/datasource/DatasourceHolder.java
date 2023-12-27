@@ -1,15 +1,15 @@
 /*  
  * Copyright 2006-2023 www.anyline.org
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0 
  * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  * 
@@ -28,7 +28,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -65,10 +65,10 @@ public abstract class DatasourceHolder {
 		return factory;
 	}
 	//数据源对应的数据库类型
-	protected static Map<String, DatabaseType> types = new HashMap<>();
+	protected static Map<String,  DatabaseType> types = new HashMap<>();
 
 	//注册数据源的参数
-	public static Map<String, Map<String, Object>> params = new HashMap<>();
+	public static Map<String,  Map<String,  Object>> params = new HashMap<>();
 
 	/**
 	 * 已注册成功的所有数据源
@@ -81,8 +81,8 @@ public abstract class DatasourceHolder {
 	public static DatabaseType dialect(String datasource){
 		return types.get(datasource);
 	}
-	public static void dialect(String ds, DatabaseType type){
-		types.put(ds, type);
+	public static void dialect(String ds,  DatabaseType type){
+		types.put(ds,  type);
 	}
 
 	/**
@@ -94,19 +94,19 @@ public abstract class DatasourceHolder {
 		return RuntimeHolder.contains(ds);
 	}
 
-	public static Object value(Environment env, String prefix, String name){
-		return value(env, prefix, name, Object.class, null);
+	public static Object value(Environment env,  String prefix,  String name){
+		return value(env,  prefix,  name,  Object.class,  null);
 	}
-	public static <T> T value(Environment env, String prefix, String name, Class<T> clazz, T def){
+	public static <T> T value(Environment env,  String prefix,  String name,  Class<T> clazz,  T def){
 		T result = null;
 		if(null != env && null != prefix && null != name) {
-			String value = BeanUtil.value(prefix, env, name);
+			String value = BeanUtil.value(prefix,  env,  name);
 			if (null == value) {
 				HashSet<String> alias = DataSourceKeyMap.alias(name);
 				if (null != alias) {
 					for (String item : alias) {
 						if (null == value) {
-							value = BeanUtil.value(prefix, env, item);
+							value = BeanUtil.value(prefix,  env,  item);
 						}
 						if (null != value) {
 							break;
@@ -115,7 +115,7 @@ public abstract class DatasourceHolder {
 				}
 			}
 			if(null != value){
-				result = (T) ConvertAdapter.convert(value, clazz, false);
+				result = (T) ConvertAdapter.convert(value,  clazz,  false);
 			}
 			if(null == result){
 				result = def;
@@ -124,10 +124,10 @@ public abstract class DatasourceHolder {
 		return result;
 	}
 
-	public static Object value(Map map, String name){
-		return value(map, name, Object.class, null);
+	public static Object value(Map map,  String name){
+		return value(map,  name,  Object.class,  null);
 	}
-	public static <T> T value(Map map, String name, Class<T> clazz, T def){
+	public static <T> T value(Map map,  String name,  Class<T> clazz,  T def){
 		T result = null;
 		Object value = map.get(name);
 		if(null == value) {
@@ -144,7 +144,7 @@ public abstract class DatasourceHolder {
 			}
 		}
 		if(null != value){
-			result = (T) ConvertAdapter.convert(value, clazz, false);
+			result = (T) ConvertAdapter.convert(value,  clazz,  false);
 		}
 		if(null == result){
 			result = def;
@@ -152,7 +152,7 @@ public abstract class DatasourceHolder {
 		return result;
 	}
 
-	protected static void check(String key, boolean override) throws Exception{
+	protected static void check(String key,  boolean override) throws Exception{
 		if(contains(key)){
 			if(!override){
 				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
@@ -162,10 +162,10 @@ public abstract class DatasourceHolder {
 			}
 		}
 	}
-	public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
-		return DatasourceHolderProxy.temporary(datasource, database,adapter);
+	public static DataRuntime temporary(Object datasource,  String database,  DriverAdapter adapter) throws Exception{
+		return DatasourceHolderProxy.temporary(datasource,  database, adapter);
 	}
-	public abstract DataRuntime callTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception;
+	public abstract DataRuntime callTemporary(Object datasource,  String database,  DriverAdapter adapter) throws Exception;
 
 	/**
 	 * 验证数据源可用性

@@ -119,13 +119,13 @@ public interface Condition extends Cloneable{
 	void setValue(String key, Object value);
 	void setTest(String test);
 	String getTest();
-	Map<String,Object> getRunValuesMap();
+	Map<String, Object> getRunValuesMap();
 	List<Variable> getVariables();
 	Variable getVariable(String name);
 
 	/**
 	 * 是否只是用来给变量赋值的
-	 * 用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
+	 * 用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 	 * @return boolean
 	 */
 	boolean isVariableSlave();

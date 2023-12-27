@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -35,8 +35,8 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param conditions 执行条件
      * @return RESULT
      */
-    default ACTION.SWITCH prepare(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){ return SWITCH.CONTINUE;}
-    default SWITCH prepare(DataRuntime runtime, String random, Procedure procedure){ return SWITCH.CONTINUE;}
+    default ACTION.SWITCH prepare(DataRuntime runtime, String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){ return SWITCH.CONTINUE;}
+    default SWITCH prepare(DataRuntime runtime,  String random,  Procedure procedure){ return SWITCH.CONTINUE;}
 
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
@@ -44,7 +44,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @return RESULT
      */
-    default SWITCH before(DataRuntime runtime, String random, Run run){ return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime,  String random,  Run run){ return SWITCH.CONTINUE;}
 
 
     /**
@@ -53,7 +53,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param procedure 存储过程
      * @return RESULT
      */
-    default SWITCH before(DataRuntime runtime, String random, Procedure procedure){ return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime,  String random,  Procedure procedure){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -62,7 +62,7 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, String random, Run run, boolean success, long result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime,  String random,  Run run,  boolean success,  long result,  long millis){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -71,5 +71,5 @@ public interface ExecuteInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, String random, Procedure procedure, boolean success, boolean result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime,  String random,  Procedure procedure,  boolean success,  boolean result,  long millis){ return SWITCH.CONTINUE;}
 }

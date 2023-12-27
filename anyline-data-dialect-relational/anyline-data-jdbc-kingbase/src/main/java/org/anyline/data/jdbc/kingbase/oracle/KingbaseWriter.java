@@ -32,7 +32,7 @@ public enum KingbaseWriter {
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
                 Date date = (Date)ConvertAdapter.convert(value, Date.class, false);
-                value = " to_date ( '"+DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
+                value = " to_date ( '"+DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";
             }
             return value;
         }

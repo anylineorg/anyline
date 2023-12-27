@@ -44,25 +44,25 @@ public class HttpBuilder {
     private CloseableHttpClient client;
     private Map<String, String> headers = new HashMap<>();
     private HttpEntity entity;
-    private Map<String, Object> params = new HashMap<>();
+    private Map<String,  Object> params = new HashMap<>();
     private List<NameValuePair> pairs = new ArrayList<>();
     private String userAgent;
     private String url;
     private String charset = "UTF-8";
     private DownloadTask task;
-    private Map<String, Object> files;    //可以是文件或byte[]
+    private Map<String,  Object> files;    //可以是文件或byte[]
     private String returnType = "text";
 
     public HttpClient build() {
         HttpClient client = new HttpClient();
         try {
             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-            sslContext.init(null,null,null);
+            sslContext.init(null, null, null);
             SSLContext.setDefault(sslContext);
             Registry<ConnectionSocketFactory> socketFactoryRegistry =
                     RegistryBuilder.<ConnectionSocketFactory>create()
-                            .register("http", PlainConnectionSocketFactory.INSTANCE)
-                            .register("https", new SSLConnectionSocketFactory(sslContext)).build();
+                            .register("http",  PlainConnectionSocketFactory.INSTANCE)
+                            .register("https",  new SSLConnectionSocketFactory(sslContext)).build();
             PoolingHttpClientConnectionManager mananger = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
             mananger.setMaxTotal(100);
             mananger.setDefaultMaxPerRoute(20);
@@ -106,10 +106,10 @@ public class HttpBuilder {
             if(idx_param > 0) {
                 if (idx_session > 0 && idx_session < idx_param) {
                     //jsessionid
-                    base = url.substring(0, idx_session);
+                    base = url.substring(0,  idx_session);
                     sub = url.substring(url.indexOf("?") + 1);
                 } else {
-                    base = url.substring(0, url.indexOf("?"));
+                    base = url.substring(0,  url.indexOf("?"));
                     sub = url.substring(url.indexOf("?") + 1);
                 }
                 builder.setUrl(base);
@@ -120,7 +120,7 @@ public class HttpBuilder {
                     if(p.contains("=")){
                         String[] kv = p.split("=");
                         if(kv.length == 2){
-                            builder.setParam(kv[0], kv[1]);
+                            builder.setParam(kv[0],  kv[1]);
                         }
                     }
                 }
@@ -135,26 +135,26 @@ public class HttpBuilder {
     public static HttpBuilder init(String url){
         return new HttpBuilder().setUrl(url);
     }
-    public static HttpBuilder init(CloseableHttpClient client, String url){
+    public static HttpBuilder init(CloseableHttpClient client,  String url){
         return new HttpBuilder().setClient(client).setUrl(url);
     }
     public static HttpBuilder init(CloseableHttpClient client){
         return new HttpBuilder().setClient(client);
     }
     public HttpBuilder setContentType(String type){
-        headers.put("Content-Type", type);
+        headers.put("Content-Type",  type);
         return this;
     }
     public HttpBuilder setClient(CloseableHttpClient client){
         this.client = client;
         return this;
     }
-    public HttpBuilder setHeaders(Map<String, String> headers){
+    public HttpBuilder setHeaders(Map<String,  String> headers){
         this.headers = headers;
         return this;
     }
-    public HttpBuilder addHeader(String key, String value){
-        headers.put(key, value);
+    public HttpBuilder addHeader(String key,  String value){
+        headers.put(key,  value);
         return this;
     }
     public HttpBuilder setUrl(String url){
@@ -175,15 +175,15 @@ public class HttpBuilder {
     }
     public HttpBuilder setEntity(String entity){
         try {
-            this.entity = new StringEntity(entity, charset);
+            this.entity = new StringEntity(entity,  charset);
         }catch (Exception e){
             e.printStackTrace();
         }
         return this;
     }
-    public HttpBuilder setEntity(Map<String,?> map){
+    public HttpBuilder setEntity(Map<String, ?> map){
         try {
-            entity = new StringEntity(BeanUtil.map2json(map), charset);
+            entity = new StringEntity(BeanUtil.map2json(map),  charset);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -201,30 +201,30 @@ public class HttpBuilder {
         this.task = task;
         return this;
     }
-    public HttpBuilder setUploadFiles(Map<String, Object> files){
+    public HttpBuilder setUploadFiles(Map<String,  Object> files){
         this.files = files;
         return this;
     }
-    public HttpBuilder addUploadFiles(String key, File file){
+    public HttpBuilder addUploadFiles(String key,  File file){
         if(null == files){
             files = new HashMap<>();
         }
-        files.put(key, file);
+        files.put(key,  file);
         return this;
     }
-    public HttpBuilder addUploadFiles(String key, byte[] file){
+    public HttpBuilder addUploadFiles(String key,  byte[] file){
         if(null == files){
             files = new HashMap<>();
         }
-        files.put(key, file);
+        files.put(key,  file);
         return this;
     }
-    public HttpBuilder setParams(Map<String, Object> params){
+    public HttpBuilder setParams(Map<String,  Object> params){
         this.params = params;
         return this;
     }
-    public HttpBuilder addParam(String key, String value){
-        params.put(key, value);
+    public HttpBuilder addParam(String key,  String value){
+        params.put(key,  value);
         return this;
     }
     public HttpBuilder setReturnType(String type){
@@ -242,7 +242,7 @@ public class HttpBuilder {
             return null;
         }
     }
-    public HttpBuilder setParam(String key, Object value){
+    public HttpBuilder setParam(String key,  Object value){
         if(null == params){
             params = new HashMap<>();
         }
@@ -259,9 +259,9 @@ public class HttpBuilder {
             }else{
                 list.add(value);
             }
-            params.put(key, list);
+            params.put(key,  list);
         }else{
-            params.put(key, value);
+            params.put(key,  value);
         }
         return this;
     }

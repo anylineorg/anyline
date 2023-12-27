@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Unless required by applicable law or agreed to in writing,  software
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -32,7 +32,7 @@ import java.util.Map;
 public class AnylineProperty {
     /**
      * 数据源列表，包括JDBC及非JDBC，逗号分隔<br/>
-     * anyline.datasource-list=crm,erp<br/>
+     * anyline.datasource-list=crm, erp<br/>
      * 设置好列表后，为每个数据源设置连接参数<br/>
      * anyline.datasource.crm.url=...<br/>
      * anyline.datasource.erp.url=...<br/>
@@ -42,7 +42,7 @@ public class AnylineProperty {
      * 多数据源配置
      *  anyline.datasource.{数据源key}.url=...
      */
-    protected Map<String, DataSourceProperty> datasource;
+    protected Map<String,  DataSourceProperty> datasource;
     /**
      * 用来配置默认的 mongodb 数据源，如果还有其他数据源(包括JDBC)可以合并到datasource
      */
@@ -71,9 +71,9 @@ public class AnylineProperty {
     protected boolean printExceptionStackTrace					= false			;   // 捕捉但未抛出的异常是否显示详细信息
 
     /**
-     * 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用DMListener.slow
+     * 慢sql, 如果配置了>0的毫秒数, 在sql执行超出时限后会输出日志, 并调用DMListener.slow
      */
-    protected long slowSqlMillis								= 0			    ; 	// 慢sql,如果配置了>0的毫秒数,在sql执行超出时限后会输出日志,并调用dmlistener.slow
+    protected long slowSqlMillis								= 0			    ; 	// 慢sql, 如果配置了>0的毫秒数, 在sql执行超出时限后会输出日志, 并调用dmlistener.slow
     /**
      * 执行sql时是否输出参数日志
      */
@@ -182,9 +182,9 @@ public class AnylineProperty {
      */
     protected boolean insertEmptyField						    = false			;	// Entity是否更新空值的属性
     /**
-     * List/Array转换成String后的格式 concat:A,B,C json:["A","B","C"]
+     * List/Array转换成String后的格式 concat:A, B, C json:["A", "B", "C"]
      */
-    protected String list2stringFormat                          = "concat"		;	// List/Array转换成String后的格式 concat:A,B,C json:["A","B","C"]
+    protected String list2stringFormat                          = "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A", "B", "C"]
     /**
      * 是否禁用查询缓存
      */
@@ -211,9 +211,9 @@ public class AnylineProperty {
     protected String sqlDelimiterPlaceholder					= "`"		    ;   // 界定符的点位符
     protected boolean returnEmptyStringReplaceNull               = false         ;
     /**
-     * service.query() dataset.getRow()返回null时,是否替换成new DataRow(), new entity()
+     * service.query() dataset.getRow()返回null时, 是否替换成new DataRow(),  new entity()
      */
-    protected boolean returnEmptyInstanceReplaceNull			= false			;	// service.query() dataset.getRow()返回null时,是否替换成new DataRow(), new entity()
+    protected boolean returnEmptyInstanceReplaceNull			= false			;	// service.query() dataset.getRow()返回null时, 是否替换成new DataRow(),  new entity()
     /**
      * 更新数据库时，是把自动把数组/集合类型拆分
      */
@@ -228,9 +228,9 @@ public class AnylineProperty {
      */
     protected boolean checkEmptySetMetadata                     = false         ;   // 查询返回空DataSet时，是否检测元数据信息
     /**
-     * DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
+     * DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
      */
-    protected boolean removeEmptyHttpKey                        = false         ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
+    protected boolean removeEmptyHttpKey                        = false         ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
 
 
     /**
@@ -270,9 +270,9 @@ public class AnylineProperty {
      */
     protected String entityColumnAnnotation					    = null			;	// 列名注解
     /**
-     * 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+     * 主键注解(逗号分隔, 不区分大小写, 支持正则匹配) tableId.value, id.name, id(如果不指定注解属性名则依次按name, value解析)
      */
-    protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,id.name,id(如果不指定注解属性名则依次按name,value解析)
+    protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔, 不区分大小写, 支持正则匹配) tableId.value, id.name, id(如果不指定注解属性名则依次按name, value解析)
 
     /**
      * 实体类属性依赖层级 > 0:查询属性关联表
@@ -317,13 +317,13 @@ public class AnylineProperty {
      */
     protected String defaultPrimaryKey							= "id"			;	// 默认主键
     /**
-     * 是否需要提供主事务管理器,多数据源时需要
+     * 是否需要提供主事务管理器, 多数据源时需要
      */
-    protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器,多数据源时需要
+    protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器, 多数据源时需要
     /**
-     * 是否需要提供主管理器,会根据数据源生成相应的事务管理器
+     * 是否需要提供主管理器, 会根据数据源生成相应的事务管理器
      */
-    protected boolean openTransactionManager                    = true         ;   // 是否需要提供主管理器,会根据数据源生成相应的事务管理器
+    protected boolean openTransactionManager                    = true         ;   // 是否需要提供主管理器, 会根据数据源生成相应的事务管理器
     /**
      * 主键生成器机器id
      */
@@ -381,7 +381,7 @@ public class AnylineProperty {
 
     public String generatorTables                               = "*"           ;   // 主键生成器适用的表
 
-    public Map<String, PrimaryGenerator.GENERATOR> generators          = new HashMap();
+    public Map<String,  PrimaryGenerator.GENERATOR> generators          = new HashMap();
 
 
 
@@ -1132,15 +1132,15 @@ public class AnylineProperty {
         ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY = metadataAutoCheckColumnPrimary;
     }
 
-    public Map<String, PrimaryGenerator.GENERATOR> getGenerators() {
+    public Map<String,  PrimaryGenerator.GENERATOR> getGenerators() {
         return generators;
     }
 
-    public void setGenerators(Map<String, PrimaryGenerator.GENERATOR> generators) {
+    public void setGenerators(Map<String,  PrimaryGenerator.GENERATOR> generators) {
         this.generators = generators;
         if(null != generators){
             for(String key:generators.keySet()){
-                ConfigTable.GENERATOR.put(key, generators.get(key));
+                ConfigTable.GENERATOR.put(key,  generators.get(key));
             }
         }
     }
@@ -1171,11 +1171,11 @@ public class AnylineProperty {
     }
 
 
-    public Map<String, DataSourceProperty> getDatasource() {
+    public Map<String,  DataSourceProperty> getDatasource() {
         return datasource;
     }
 
-    public void setDatasource(Map<String, DataSourceProperty> datasource) {
+    public void setDatasource(Map<String,  DataSourceProperty> datasource) {
         this.datasource = datasource;
     }
 

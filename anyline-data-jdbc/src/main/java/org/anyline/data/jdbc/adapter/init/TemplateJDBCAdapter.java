@@ -64,7 +64,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
 
     @Override
     public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource dataSource, T meta){
-        super.checkSchema(runtime, dataSource,meta);
+        super.checkSchema(runtime, dataSource, meta);
     }
 
     @Override
@@ -83,7 +83,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
     }
 
 	/**
-	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 识别根据jdbc返回的catalog与schema, 部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
 	 * @param meta BaseMetadata
 	 * @param catalog catalog
@@ -100,7 +100,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
 		super.correctSchemaFromJDBC(meta, catalog, schema);
 	}
 	/**
-	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * 在调用jdbc接口前处理业务中的catalog, schema, 部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @return String[]
@@ -151,7 +151,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
      * 有表名的情况下可用<br/>
      * 根据jdbc.datasource.connection.DatabaseMetaData获取指定表的列数据
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param columns columns
      * @param dbmd DatabaseMetaData
      * @param table 表
@@ -185,7 +185,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
      * column[结果集封装]<br/>(方法4)<br/>
      * 解析查询结果metadata(0=1)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param columns columns
      * @param table 表
      * @param set SqlRowSet由spring封装过的结果集ResultSet
@@ -216,7 +216,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
 
     /**
      * query[结果集封装-子流程]
-     * 封装查询结果行,在外层遍历中修改rs下标
+     * 封装查询结果行, 在外层遍历中修改rs下标
      * @param system 系统表不检测列属性
      * @param runtime  runtime
      * @param metadatas metadatas

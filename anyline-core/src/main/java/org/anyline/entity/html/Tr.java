@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -29,7 +29,7 @@ public class Tr {
     private Table table;
     private String clazz;
     private List<Td> tds = new ArrayList<>();
-    private Map<String, String> styles = new HashMap();
+    private Map<String,  String> styles = new HashMap();
     private Element src;
     private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
 
@@ -49,15 +49,15 @@ public class Tr {
         this.tds = tds;
     }
 
-    public Map<String, String> getStyles() {
+    public Map<String,  String> getStyles() {
         return styles;
     }
 
-    public void setStyles(Map<String, String> styles) {
+    public void setStyles(Map<String,  String> styles) {
         this.styles = styles;
     }
-    public void addStyle(String key, String value){
-        styles.put(key, value);
+    public void addStyle(String key,  String value){
+        styles.put(key,  value);
     }
     public Td getTd(int index){
         return tds.get(index);
@@ -77,24 +77,24 @@ public class Tr {
         }
         return list;
     }
-    public Tr setTd(int index, Td td){
+    public Tr setTd(int index,  Td td){
         String bg = styles.get("background-color");
         if(null != bg){
-            td.getStyles().put("background-color", bg);
+            td.getStyles().put("background-color",  bg);
         }
-        tds.add(index, td);
+        tds.add(index,  td);
         return this;
     }
-    public Tr setHeight(int index, String height){
-        styles.put("height", height);
+    public Tr setHeight(int index,  String height){
+        styles.put("height",  height);
         return this;
     }
-    public Tr setHeight(int index, int height){
-        styles.put("height", height+widthUnit);
+    public Tr setHeight(int index,  int height){
+        styles.put("height",  height+widthUnit);
         return this;
     }
-    public Tr setHeight(int index, double height){
-        styles.put("height", height+widthUnit);
+    public Tr setHeight(int index,  double height){
+        styles.put("height",  height+widthUnit);
         return this;
     }
     public Tr addTd(String ... tds){
@@ -110,7 +110,7 @@ public class Tr {
 
         String bg = styles.get("background-color");
         if(null != bg){
-            td.getStyles().put("background-color", bg);
+            td.getStyles().put("background-color",  bg);
         }
         td.setTr(this);
         return this;
@@ -172,7 +172,7 @@ public class Tr {
         build(builder);
         return builder.toString();
     }
-    public Tr createCopy(boolean style, boolean content){
+    public Tr createCopy(boolean style,  boolean content){
         Tr copy = new Tr();
         copy.setWidthUnit(widthUnit);
         int offset = 0; // 已追加的偏移
@@ -181,13 +181,13 @@ public class Tr {
                 copy.addTd(new Td());
                 offset++;
             }
-            copy.addTd(td.createCopy(style, content));
+            copy.addTd(td.createCopy(style,  content));
         }
         if(style) {
             copy.setClazz(this.clazz);
             List<String> keys = BeanUtil.getMapKeys(styles);
             for (String key : keys) {
-                copy.addStyle(key, styles.get(key));
+                copy.addStyle(key,  styles.get(key));
             }
         }
 
@@ -195,6 +195,6 @@ public class Tr {
     }
 
     public Tr createCopy(){
-        return createCopy(true, false);
+        return createCopy(true,  false);
     }
 }

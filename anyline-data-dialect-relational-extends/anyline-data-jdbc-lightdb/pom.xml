@@ -15,7 +15,7 @@
 <packaging>jar</packaging>
 <name>anyline-data-jdbc-lightdb</name>
 <url>http://www.anyline.org/lightdb</url>
-<description>恒生电子,基于postgresql</description>
+<description>恒生电子, 基于postgresql</description>
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>

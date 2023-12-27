@@ -16,10 +16,10 @@ public class ProcedureRun extends BasicRun implements Run{
     }
     public ProcedureRun(){
     }
-    public ProcedureRun(Procedure procedure, Object ... inputs){
-        this(null, procedure, inputs);
+    public ProcedureRun(Procedure procedure,  Object ... inputs){
+        this(null,  procedure,  inputs);
     }
-    public ProcedureRun(DataRuntime runtime, Procedure procedure, Object ... inputs){
+    public ProcedureRun(DataRuntime runtime,  Procedure procedure,  Object ... inputs){
         this.runtime = runtime;
         if(null != inputs){
             for(Object input:inputs){

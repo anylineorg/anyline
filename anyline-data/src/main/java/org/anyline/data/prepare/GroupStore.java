@@ -23,9 +23,9 @@ public interface GroupStore{
 	public List<Group> getGroups(); 
 	public void group(Group group) ; 
 	/** 
-	 * 排序多列以,分隔 
+	 * 排序多列以, 分隔
 	 * gropu("CD"); 
-	 * group("CD,NM"); 
+	 * group("CD, NM");
 	 * @param str str
 	 */ 
 	public void group(String str) ; 

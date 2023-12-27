@@ -14,7 +14,7 @@ public class ElasticSearchDataSource implements DataSource {
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException {
+    public Connection getConnection(String username,  String password) throws SQLException {
         return null;
     }
 

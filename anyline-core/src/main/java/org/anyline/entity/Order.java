@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -20,7 +20,7 @@ package org.anyline.entity;
 import java.io.Serializable;
  
  
-public interface Order extends Cloneable,Serializable{
+public interface Order extends Cloneable, Serializable{
 /*	public static final String ORDER_TYPE_ASC = "ASC";
 	public static final String ORDER_TYPE_DESC = "DESC";*/
 	String getColumn() ;
@@ -29,7 +29,7 @@ public interface Order extends Cloneable,Serializable{
 	void setType(TYPE type) ;
 	void setType(String type) ;
 	enum TYPE{
-		ASC				{public String getCode(){return "ASC";} 	public String getName(){return "正序";}},
+		ASC				{public String getCode(){return "ASC";} 	public String getName(){return "正序";}}, 
 		DESC			{public String getCode(){return "DESC";} 	public String getName(){return "倒序";}};
 		public abstract String getName();
 		public abstract String getCode();

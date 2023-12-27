@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -74,13 +74,13 @@ public class Polygon extends Geometry{
 
     /**
      * sql格式
-     * POLYGON((121.415703 31.172893,121.415805 31.172664,121.416127 31.172751,121.41603 31.172976,121.415703 31.172893)<br/>
-     * POLYGON ((30 20, 45 40, 10 40, 30 20), (20 30, 35 35, 30 20, 20 30), (25 25, 30 35, 15 30, 25 25))
+     * POLYGON((121.415703 31.172893, 121.415805 31.172664, 121.416127 31.172751, 121.41603 31.172976, 121.415703 31.172893)<br/>
+     * POLYGON ((30 20, 45 40, 10 40, 30 20), (20 30, 35 35,  30 20,  20 30),  (25 25,  30 35,  15 30,  25 25))
      * @param tag 是否包含tag
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag,  boolean bracket){
         StringBuilder builder = new StringBuilder();
         if(tag){
             builder.append(tag());
@@ -93,9 +93,9 @@ public class Polygon extends Geometry{
         for(Ring ring:rings){
             if(ring.clockwise() == true){
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",  ");
                 }
-                builder.append(ring.sql(false, true));
+                builder.append(ring.sql(false,  true));
                 first = false;
             }
         }
@@ -103,9 +103,9 @@ public class Polygon extends Geometry{
         for(Ring ring:rings){
             if(ring.clockwise() == false){
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",  ");
                 }
-                builder.append(ring.sql(false, true));
+                builder.append(ring.sql(false,  true));
                 first = false;
             }
         }
@@ -115,7 +115,7 @@ public class Polygon extends Geometry{
         return builder.toString();
     }
     public String sql(){
-        return sql(true, true);
+        return sql(true,  true);
     }
 
     public List<Ring> getRings() {

@@ -7,9 +7,9 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Unless required by applicable law or agreed to in writing,  software
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -17,15 +17,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Unless required by applicable law or agreed to in writing,  software
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -47,9 +47,9 @@ public class DateBuilder{
 			throw new RuntimeException(e);
 		}
 	}
-	public DateBuilder(String date, String format){
+	public DateBuilder(String date,  String format){
 		try {
-			this.date = DateUtil.parse(date, format);
+			this.date = DateUtil.parse(date,  format);
 		}catch (Exception e){
 			throw new RuntimeException(e);
 		}
@@ -63,8 +63,8 @@ public class DateBuilder{
 	public static DateBuilder init(String date){
 		return new DateBuilder(date);
 	}
-	public static DateBuilder init(String date, String format){
-		return new DateBuilder(date, format);
+	public static DateBuilder init(String date,  String format){
+		return new DateBuilder(date,  format);
 	}
 	public static DateBuilder init(Date date){
 		return new DateBuilder(date);
@@ -78,23 +78,23 @@ public class DateBuilder{
 	}
 
 	public DateBuilder addYear(int qty){
-		date = DateUtil.addYear(date, qty);
+		date = DateUtil.addYear(date,  qty);
 		return this;
 	}
 	public DateBuilder addMonth(int qty){
-		date = DateUtil.addMonth(date, qty);
+		date = DateUtil.addMonth(date,  qty);
 		return this;
 	}
 	public DateBuilder addDay(int qty){
-		date = DateUtil.addDay(date, qty);
+		date = DateUtil.addDay(date,  qty);
 		return this;
 	}
 	public DateBuilder addHour(int qty){
-		date = DateUtil.addHour(date, qty);
+		date = DateUtil.addHour(date,  qty);
 		return this;
 	}
 	public DateBuilder addMinute(int qty){
-		date = DateUtil.addMinute(date, qty);
+		date = DateUtil.addMinute(date,  qty);
 		return this;
 	}
 
@@ -121,12 +121,12 @@ public class DateBuilder{
 	public boolean equal(Date date){
 		return this.date.getTime() == date.getTime();
 	}
-	public boolean between(Date min, Date max){
+	public boolean between(Date min,  Date max){
 		Long time = date.getTime();
 		return time > min.getTime() && time <max.getTime();
 	}
-	public boolean between(String min, String max) throws Exception{
-		return between(DateUtil.parse(min), DateUtil.parse(max));
+	public boolean between(String min,  String max) throws Exception{
+		return between(DateUtil.parse(min),  DateUtil.parse(max));
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class DateBuilder{
 		return before();
 	}
 	public String format(String format){
-		return DateUtil.format(date, format);
+		return DateUtil.format(date,  format);
 	}
 	public String format(){
 		return format(DateUtil.FORMAT_DATE_TIME);

@@ -47,10 +47,10 @@ public class MixUtil {
         return verify(verify, seed, 6, 8, origin);
     }
     public static boolean verify(String verify, String origin){
-        return verify(verify,ConfigTable.MIX_DEFAULT_SEED, 6, 8, origin);
+        return verify(verify, ConfigTable.MIX_DEFAULT_SEED, 6, 8, origin);
     }
     public static boolean verify(String verify, String seed, int begin, int end, String origin){
-        String result = MD5Util.crypto(seed + MD5Util.crypto(origin).substring(begin) + origin).substring(begin, end);
+        String result = MD5Util.crypto(seed + MD5Util.crypto(origin).substring(begin) + origin).substring(begin,  end);
         return result.equals(verify);
     }
 }

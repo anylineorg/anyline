@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.anyline.data.mongodb.adapter.MongoAdapter,\
-org.anyline.data.mongodb.loader.MongoDatasourceLoader,\
-org.anyline.data.mongodb.datasource.MongoDatasourceHolder,\  
+org.anyline.data.mongodb.adapter.MongoAdapter, \
+org.anyline.data.mongodb.loader.MongoDatasourceLoader, \
+org.anyline.data.mongodb.datasource.MongoDatasourceHolder, \  
 org.anyline.data.mongodb.runtime.MongoRuntimeHolder

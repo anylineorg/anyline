@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 
 public class Index<M extends Index> extends BaseMetadata<M>  implements Serializable {
     protected String type;
-    protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected boolean primary     ; // 是否是主键
     protected boolean cluster     ; // 是否聚簇索引
     protected boolean fulltext    ;

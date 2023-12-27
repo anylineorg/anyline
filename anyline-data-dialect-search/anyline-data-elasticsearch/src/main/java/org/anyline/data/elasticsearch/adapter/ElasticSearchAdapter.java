@@ -37,7 +37,7 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
     public ElasticSearchAdapter(){
         super();
         for (ElasticSearchColumnTypeAlias alias : ElasticSearchColumnTypeAlias.values()) {
-            types.put(alias.name(), alias.standard());
+            types.put(alias.name(),  alias.standard());
         }
     }
 
@@ -61,28 +61,28 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * 													INSERT
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
+     * long insert(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns)
      * [命令合成]
-     * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
-     * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
-     * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
-     * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
+     * public Run buildInsertRun(DataRuntime runtime,  int batch,  String dest,  Object obj,  ConfigStore configs,  List<String> columns)
+     * public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  DataSet set,  ConfigStore configs,  LinkedHashMap<String,  Column> columns)
+     * public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  Collection list,  ConfigStore configs,  LinkedHashMap<String,  Column> columns)
+     * public LinkedHashMap<String,  Column> confirmInsertColumns(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns,  boolean batch)
      * public String batchInsertSeparator()
      * public boolean supportInsertPlaceholder ()
-     * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
-     * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns)
+     * protected Run createInsertRun(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns)
+     * protected Run createInsertRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore configs,  List<String> columns)
      * public String generatedKey()
      * [命令执行]
-     * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
-     * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run);
+     * long insert(DataRuntime runtime,  String random,  Object data,  ConfigStore configs,  Run run,  String[] pks);
+     * long insert(DataRuntime runtime,  String random,  Object data,  ConfigStore configs,  Run run);
      ******************************************************************************************************************/
 
     /**
      * insert [调用入口]<br/>
-     * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+     * 执行前根据主键生成器补充主键值, 执行完成后会补齐自增主键值
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 需要插入入的数据
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      *                列可以加前缀<br/>
@@ -90,33 +90,33 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      *                -:表示必须不插入<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-        return super.insert(runtime, random, batch, dest, data, configs, columns);
+    public long insert(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns){
+        return super.insert(runtime,  random,  batch,  dest,  data,  configs,  columns);
     }
     /**
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 需要插入的数据
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
-        return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
+    public Run buildInsertRun(DataRuntime runtime,  int batch,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){
+        return super.buildInsertRun(runtime,  batch,  dest,  obj,  configs,  columns);
     }
 
     /**
@@ -124,13 +124,13 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        super.fillInsertContent(runtime, run, dest, set, configs, columns);
+    public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  DataSet set,  ConfigStore configs,  LinkedHashMap<String,  Column> columns){
+        super.fillInsertContent(runtime,  run,  dest,  set,  configs,  columns);
     }
 
     /**
@@ -138,20 +138,20 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        super.fillInsertContent(runtime, run, dest, list, configs, columns);
+    public void fillInsertContent(DataRuntime runtime,  Run run,  String dest,  Collection list,  ConfigStore configs,  LinkedHashMap<String,  Column> columns){
+        super.fillInsertContent(runtime,  run,  dest,  list,  configs,  columns);
     }
 
     /**
      * insert [命令合成-子流程]<br/>
      * 确认需要插入的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj  Entity或DataRow
      * @param batch  是否批量，批量时不检测值是否为空
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -160,30 +160,30 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      *                -:表示必须不插入<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
-        return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
+    public LinkedHashMap<String,  Column> confirmInsertColumns(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns,  boolean batch){
+        return super.confirmInsertColumns(runtime,  dest,  obj,  configs,  columns,  batch);
     }
 
     /**
      * insert [命令合成-子流程]<br/>
-     * 批量插入数据时,多行数据之间分隔符
+     * 批量插入数据时, 多行数据之间分隔符
      * @return String
      */
     @Override
     public String batchInsertSeparator (){
-        return ",";
+        return ", ";
     }
 
     /**
@@ -202,35 +202,35 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * @param value value
      */
     @Override
-    protected void setPrimaryValue(Object obj, Object value){
-        super.setPrimaryValue(obj, value);
+    protected void setPrimaryValue(Object obj,  Object value){
+        super.setPrimaryValue(obj,  value);
     }
     /**
      * insert [命令合成-子流程]<br/>
      * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 数据
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
-        return super.createInsertRun(runtime, dest, obj, configs, columns);
+    protected Run createInsertRun(DataRuntime runtime,  String dest,  Object obj,  ConfigStore configs,  List<String> columns){
+        return super.createInsertRun(runtime,  dest,  obj,  configs,  columns);
     }
 
     /**
      * insert [命令合成-子流程]<br/>
      * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 对象集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
-        return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
+    protected Run createInsertRunFromCollection(DataRuntime runtime,  int batch,  String dest,  Collection list,  ConfigStore configs,  List<String> columns){
+        return super.createInsertRunFromCollection(runtime,  batch,  dest,  list,  configs,  columns);
     }
 
     /**
@@ -255,7 +255,7 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+    public long insert(DataRuntime runtime,  String random,  Object data, ConfigStore configs, Run run, String[] pks){
         return super.insert(runtime, random, data, configs, run, pks);
     }
 

@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-goldendb</name>
     <url>http://www.anyline.org/goldendb</url>
-    <description>中兴GoldenDB,基于MySQL</description>
+    <description>中兴GoldenDB, 基于MySQL</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

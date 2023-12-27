@@ -34,7 +34,7 @@ public class SyntaxHelper {
 0.[IN(${TYPE})]			1.[IN(]				2.[${TYPE}]		3.[)]		 <br/>
 0.['${SORT}']			1.[']				2.[${SORT}]		3.[']		 <br/>
 0.['%${NM}%]			1.['%]				2.[${NM}]		3.[%]		 <br/>
-0.[CONTAT('%',{CODE}]	1.[CONTAT('%',]		2.[{CODE}]		3.[null]	 <br/>
+0.[CONTAT('%', {CODE}]	1.[CONTAT('%', ]		2.[{CODE}]		3.[null]	 <br/>
  
 	   @param signType 1:以:区分 2:以{}区分
 	 * @param all  all
@@ -47,7 +47,7 @@ public class SyntaxHelper {
 		int varType = -1;
 		if(null != prefix && null != fullKey){
 			if(prefix.endsWith(":") && fullKey.startsWith(":")){
-				//IN(::IDS) > IN(:,:IDS
+				//IN(::IDS) > IN(:, :IDS
 				prefix = prefix.substring(0, prefix.length()-1);
 				fullKey = ":"+fullKey;
 			}

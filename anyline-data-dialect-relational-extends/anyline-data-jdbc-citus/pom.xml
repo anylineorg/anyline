@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-citus</name>
     <url>http://www.anyline.org/citus</url>
-    <description>基于postgresql,https://docs.citusdata.com/</description>
+    <description>基于postgresql, https://docs.citusdata.com/</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

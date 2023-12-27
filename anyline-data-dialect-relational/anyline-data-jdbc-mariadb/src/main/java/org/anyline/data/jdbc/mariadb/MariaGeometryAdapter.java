@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -27,15 +27,15 @@ import java.util.List;
 import java.util.Map;
 
 public class MariaGeometryAdapter {
-    private static Map<Integer, Geometry.Type> types = new Hashtable<>();
+    private static Map<Integer,  Geometry.Type> types = new Hashtable<>();
     static {
-        types.put(1, Geometry.Type.Point);
-        types.put(2, Geometry.Type.LineString);
-        types.put(3, Geometry.Type.Polygon);
-        types.put(4, Geometry.Type.MultiPoint);
-        types.put(5, Geometry.Type.MultiLine);
-        types.put(6, Geometry.Type.MultiPolygon);
-        types.put(7, Geometry.Type.GeometryCollection);
+        types.put(1,  Geometry.Type.Point);
+        types.put(2,  Geometry.Type.LineString);
+        types.put(3,  Geometry.Type.Polygon);
+        types.put(4,  Geometry.Type.MultiPoint);
+        types.put(5,  Geometry.Type.MultiLine);
+        types.put(6,  Geometry.Type.MultiPolygon);
+        types.put(7,  Geometry.Type.GeometryCollection);
     }
     public static void init(Geometry geometry){
         if(null != geometry){
@@ -80,12 +80,12 @@ public class MariaGeometryAdapter {
         Geometry geometry = null;
         //取字节数组的前4个来解析srid
         byte[] srid_bytes = new byte[4];
-        System.arraycopy(bytes, 0, srid_bytes, 0, 4);
+        System.arraycopy(bytes,  0,  srid_bytes,  0,  4);
         //是否大端格式
         byte endian = bytes[4];
         // 解析SRID
-        int srid = NumberUtil.byte2int(bytes, 0, 4, endian==0);
-        int type = NumberUtil.byte2int(bytes, 5, 4, endian==0);
+        int srid = NumberUtil.byte2int(bytes,  0,  4,  endian==0);
+        int type = NumberUtil.byte2int(bytes,  5,  4,  endian==0);
         if(type == 1){
             geometry = parsePoint(bytes);
         }else if(type == 2){
@@ -110,10 +110,10 @@ public class MariaGeometryAdapter {
     /*
         POINT(120 36.1)
         bytes[25]:
-        00 00 00 00, 01, 01 00 00 00, 00 00 00 00 00 00 5E 40, CD CC CC CC CC 0C 42 40
+        00 00 00 00,  01,  01 00 00 00,  00 00 00 00 00 00 5E 40,  CD CC CC CC CC 0C 42 40
         component	    size(起-止) decimal hex
         SRID            4(0-3)      0       00 00 00 00
-        Endian	        1(4-4)  	1       01(1:小端,0:大端)
+        Endian	        1(4-4)  	1       01(1:小端, 0:大端)
         WKB type	    4(5-8)  	1       01 00 00 00
         X(经度)	        8(9-16) 	120.0   00 00 00 00 00 00 5e 40
         Y(纬度)	        8(17-24)	36.1    cd cc cc cc cc 0c 42 40
@@ -125,16 +125,16 @@ public class MariaGeometryAdapter {
      * @return Point
      */
     public static Point parsePoint(byte[] bytes){
-        Point point = point(bytes, 9);
+        Point point = point(bytes,  9);
         return point;
     }
 
-    public static Point point(byte[] bytes, int offset){
-        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
+    public static Point point(byte[] bytes,  int offset){
+        ByteBuffer buffer = new ByteBuffer(bytes,  bytes[4],  offset);
         return point(buffer);
     }
     public static Point point(ByteBuffer buffer){
-        Point point = new Point(buffer.readDouble(), buffer.readDouble());
+        Point point = new Point(buffer.readDouble(),  buffer.readDouble());
         point.tag("Point");
         point.type(1);
         point.endian(1);
@@ -142,9 +142,9 @@ public class MariaGeometryAdapter {
     }
 
     /*
-        LINESTRING(1 2, 15 15, 11 22)
+        LINESTRING(1 2,  15 15,  11 22)
         bytes[61]:
-        00 00 00 00, 01, 02 00 00 00, 03 00 00 00, 00 00 00 00 00 00 F0 3F, 00 00 00 00 00 00 00 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 26 40 00 00 00 00 00 00 36 40
+        00 00 00 00,  01,  02 00 00 00,  03 00 00 00,  00 00 00 00 00 00 F0 3F,  00 00 00 00 00 00 00 40,  00 00 00 00 00 00 2E 40,  00 00 00 00 00 00 2E 40,  00 00 00 00 00 00 26 40 00 00 00 00 00 00 36 40
         component	    size(起-止) decimal  hex
         SRID            4(0-3)      0       00 00 00 00
         Endian	        1(4-4)      1       01
@@ -165,7 +165,7 @@ public class MariaGeometryAdapter {
      * @return LineString
      */
     public static LineString parseLine(byte[] bytes){
-        LineString line = line(bytes, 9);
+        LineString line = line(bytes,  9);
         return line;
     }
 
@@ -175,8 +175,8 @@ public class MariaGeometryAdapter {
      * @param offset point count的开始位置
      * @return LineString
      */
-    public static LineString line(byte[] bytes, int offset){
-        ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
+    public static LineString line(byte[] bytes,  int offset){
+        ByteBuffer buffer = new ByteBuffer(bytes,  bytes[4],  offset);
         return line(buffer);
     }
     public static LineString line(ByteBuffer buffer){
@@ -207,9 +207,9 @@ public class MariaGeometryAdapter {
             点的数量（Number of Points）：表示每个内部环中点的数量。
             点的坐标（Coordinates）：按照顺序列出每个内部环中每个点的坐标，每个点的坐标由X和Y值组成。
         单个环
-        POLYGON((121.415703 31.172893,121.415805 31.172664,121.416127 31.172751,121.41603 31.172976,121.415703 31.172893)
+        POLYGON((121.415703 31.172893, 121.415805 31.172664, 121.416127 31.172751, 121.41603 31.172976, 121.415703 31.172893)
         bytes[97]:
-        00 00 00 00, 01, 03 00 00 00, 01 00 00 00, 05 00 00 00, 57 76 C1 E0 9A 5A 5E 40, 13 B5 34 B7 42 2C 3F 40, DA 20 93 8C 9C 5A 5E 40, 51 32 39 B5 33 2C 3F 40, E3 FE 23 D3 A1 5A 5E 40, EF 59 D7 68 39 2C 3F 40, EA 09 4B 3C A0 5A 5E 40, 2E FE B6 27 48 2C 3F 40, 57 76 C1 E0 9A 5A 5E 40, 13 B5 34 B7 42 2C 3F 40
+        00 00 00 00,  01,  03 00 00 00,  01 00 00 00,  05 00 00 00,  57 76 C1 E0 9A 5A 5E 40,  13 B5 34 B7 42 2C 3F 40,  DA 20 93 8C 9C 5A 5E 40,  51 32 39 B5 33 2C 3F 40,  E3 FE 23 D3 A1 5A 5E 40,  EF 59 D7 68 39 2C 3F 40,  EA 09 4B 3C A0 5A 5E 40,  2E FE B6 27 48 2C 3F 40,  57 76 C1 E0 9A 5A 5E 40,  13 B5 34 B7 42 2C 3F 40
         component        size(起-止) decimal      hex
         SRID            4(0-3)       0            00 00 00 00
         Endian          1(4-4)       1            01
@@ -230,12 +230,12 @@ public class MariaGeometryAdapter {
 */
     /*
         多个环(含内环)
-        POLYGON ((30 20, 45 40, 10 40, 30 20), (20 30, 35 35, 30 20, 20 30), (25 25, 30 35, 15 30, 25 25))
+        POLYGON ((30 20,  45 40,  10 40,  30 20),  (20 30,  35 35,  30 20,  20 30),  (25 25,  30 35,  15 30,  25 25))
         bytes[217]
-        00 00 00 00, 01, 03 00 00 00, 03 00 00 00,
+        00 00 00 00,  01,  03 00 00 00,  03 00 00 00,
         04 00 00 00, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 80 46 40, 00 00 00 00 00 00 44 40, 00 00 00 00 00 00 24 40, 00 00 00 00 00 00 44 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 34 40,
         04 00 00 00, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 80 41 40, 00 00 00 00 00 80 41 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 34 40, 00 00 00 00 00 00 3E 40,
-        04 00 00 00, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 80 41 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 39 40 ,00 00 00 00 00 00 39 40
+        04 00 00 00, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 39 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 80 41 40, 00 00 00 00 00 00 2E 40, 00 00 00 00 00 00 3E 40, 00 00 00 00 00 00 39 40,00 00 00 00 00 00 39 40
         component        size(起-止)   decimal      hex
         SRID             4(0-3)       0            00 00 00 00
         Endian           1(4-4)       1            01

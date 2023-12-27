@@ -44,15 +44,15 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
     private static Map<String, DataSource> temporary = new HashMap<>();
 
     public JDBCRuntimeHolder(){
-        RuntimeHolderProxy.reg(DataSource.class,this);
-        RuntimeHolderProxy.reg(JdbcTemplate.class,this);
+        RuntimeHolderProxy.reg(DataSource.class, this);
+        RuntimeHolderProxy.reg(JdbcTemplate.class, this);
     }
 
     /**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
-     * @param datasource 数据源,如DruidDataSource,MongoClient
-     * @param database 数据库,jdbc类型数据源不需要
-     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @param datasource 数据源, 如DruidDataSource, MongoClient
+     * @param database 数据库, jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter(), 如果不提供则根据ds检测
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */

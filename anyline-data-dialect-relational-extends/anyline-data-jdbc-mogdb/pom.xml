@@ -15,7 +15,7 @@
 <packaging>jar</packaging>
 <name>anyline-data-jdbc-mogdb</name>
 <url>http://www.anyline.org/mogdb</url>
-<description>云和恩墨,基于openGauss</description>
+<description>云和恩墨, 基于openGauss</description>
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>

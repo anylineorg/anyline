@@ -65,6 +65,38 @@ public class DefaultConfigStore implements ConfigStore {
 	protected List<Run> runs				= new ArrayList<>()		; // 执行过的命令 包括ddl dml
 	protected KeyAdapter.KEY_CASE kc 		= null					; //
 	protected boolean execute				= true  				;
+	protected String dest;
+	protected String priarmy;
+	/**
+	 * 设置要查询或操作的目标(表,存储过程,sql等)
+	 * @param dest 查询或操作的目标
+	 * @return ConfigStore
+	 */
+	@Override
+	public ConfigStore dest(String dest) {
+		this.dest = dest;
+		return this;
+	}
+
+	/**
+	 * 查询或操作的目标(表,存储过程,sql等)
+	 * @return String
+	 */
+	@Override
+	public String dest() {
+		return dest;
+	}
+
+	@Override
+	public ConfigStore primary(String primary) {
+		this.priarmy = primary;
+		return this;
+	}
+
+	@Override
+	public String primary() {
+		return priarmy;
+	}
 
 	public DefaultConfigStore init(){
 		return new DefaultConfigStore();
@@ -701,7 +733,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value, boolean overCondition, boolean overValue) {
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		List<Config> configs = chain.getConfigs();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));

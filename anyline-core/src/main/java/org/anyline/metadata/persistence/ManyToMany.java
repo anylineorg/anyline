@@ -25,8 +25,8 @@ public class ManyToMany {
         HR_DEPARTMENT			:依赖表
          @ManyToMany
          @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                 //中间关联表
-        , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
-        , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
+       , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+       , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
         List<Department> departments;
     */
 

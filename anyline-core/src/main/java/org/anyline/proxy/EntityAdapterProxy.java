@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -35,15 +35,15 @@ import java.util.*;
 @Component("anyline.entity.adapter.proxy")
 public class EntityAdapterProxy {
 
-    public static LinkedHashMap<String, Table> class2table                              = new LinkedHashMap<>();  // class.name > table.name
-    public static LinkedHashMap<String, Column> field2column                            = new LinkedHashMap<>();  // class.name:field.name > column.name
-    public static LinkedHashMap<String, Field> column2field                             = new LinkedHashMap<>();  // column.name > field
-    public static LinkedHashMap<String, LinkedHashMap<String, Column>> primarys         = new LinkedHashMap<>();  // 主键
-    public static LinkedHashMap<String, LinkedHashMap<String, Column>> insert_columns   = new LinkedHashMap<>();
-    public static LinkedHashMap<String, LinkedHashMap<String, Column>> update_columns   = new LinkedHashMap<>();
-    public static LinkedHashMap<String, LinkedHashMap<String, Column>> ddl_columns      = new LinkedHashMap<>();
+    public static LinkedHashMap<String,  Table> class2table                              = new LinkedHashMap<>();  // class.name > table.name
+    public static LinkedHashMap<String,  Column> field2column                            = new LinkedHashMap<>();  // class.name:field.name > column.name
+    public static LinkedHashMap<String,  Field> column2field                             = new LinkedHashMap<>();  // column.name > field
+    public static LinkedHashMap<String,  LinkedHashMap<String,  Column>> primarys         = new LinkedHashMap<>();  // 主键
+    public static LinkedHashMap<String,  LinkedHashMap<String,  Column>> insert_columns   = new LinkedHashMap<>();
+    public static LinkedHashMap<String,  LinkedHashMap<String,  Column>> update_columns   = new LinkedHashMap<>();
+    public static LinkedHashMap<String,  LinkedHashMap<String,  Column>> ddl_columns      = new LinkedHashMap<>();
 
-    public static Map<Class,List<EntityAdapter>> adapters = new HashMap<>();
+    public static Map<Class, List<EntityAdapter>> adapters = new HashMap<>();
     /**
      * 清空缓存
      */
@@ -61,7 +61,7 @@ public class EntityAdapterProxy {
     public static List<EntityAdapter> getAdapters(Class type){
         List<EntityAdapter> list = new ArrayList<>();
         for(Class clazz:adapters.keySet()){
-            if(ClassUtil.isInSub(type, clazz)){
+            if(ClassUtil.isInSub(type,  clazz)){
                 list.addAll(adapters.get(clazz));
             }
         }
@@ -70,7 +70,7 @@ public class EntityAdapterProxy {
 
 
     @Autowired(required = false)
-    public void setAdapter(Map<String, EntityAdapter> adapters) {
+    public void setAdapter(Map<String,  EntityAdapter> adapters) {
         //是否禁用默认adapter
         String defaultKey = "anyline.entity.adapter.default";
         if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ){
@@ -78,11 +78,11 @@ public class EntityAdapterProxy {
         }
         for (EntityAdapter adapter : adapters.values()) {
             Class type = adapter.type();
-            push(type, adapter);
+            push(type,  adapter);
             List<Class> types = adapter.types();
             if(null != types){
                 for(Class t:types){
-                    push(t, adapter);
+                    push(t,  adapter);
                 }
             }
         }
@@ -90,12 +90,12 @@ public class EntityAdapterProxy {
             EntityAdapter.sort(list);
         }
     }
-    private void push(Class type, EntityAdapter adapter){
+    private void push(Class type,  EntityAdapter adapter){
         if(null != type){
             List<EntityAdapter> list = EntityAdapterProxy.adapters.get(type);
             if(null == list){
                 list = new ArrayList<>();
-                EntityAdapterProxy.adapters.put(type, list);
+                EntityAdapterProxy.adapters.put(type,  list);
             }
             list.add(adapter);
         }
@@ -116,7 +116,7 @@ public class EntityAdapterProxy {
         }
         return null;
     }
-    public static String table(Class clazz, boolean simple){
+    public static String table(Class clazz,  boolean simple){
         Table table = table(clazz);
         if(null != table){
             return table.getName();
@@ -129,10 +129,10 @@ public class EntityAdapterProxy {
      * @param mode insert/update/ddl
      * @return List
      */
-    public static LinkedHashMap<String, Column> columns(Class clazz, EntityAdapter.MODE mode){
+    public static LinkedHashMap<String,  Column> columns(Class clazz,  EntityAdapter.MODE mode){
         List<EntityAdapter> list = getAdapters(clazz);
         for(EntityAdapter adapter:list){
-            LinkedHashMap<String, Column> columns = adapter.columns(clazz, mode);
+            LinkedHashMap<String,  Column> columns = adapter.columns(clazz,  mode);
             if(null != columns && !columns.isEmpty()){
                 return columns;
             }
@@ -145,10 +145,10 @@ public class EntityAdapterProxy {
      * @param field 属性
      * @return String
      */
-    public static Column column(Class clazz, Field field){
+    public static Column column(Class clazz,  Field field){
         List<EntityAdapter> list = getAdapters(clazz);
         for(EntityAdapter adapter:list){
-            Column column = adapter.column(clazz, field);
+            Column column = adapter.column(clazz,  field);
             if(null != column){
                 return column;
             }
@@ -156,8 +156,8 @@ public class EntityAdapterProxy {
         return null;
     }
 
-    public static String column(Class clazz, Field field, boolean simple){
-        Column column = column(clazz, field);
+    public static String column(Class clazz,  Field field,  boolean simple){
+        Column column = column(clazz,  field);
         if(null != column){
             return column.getName();
         }
@@ -169,20 +169,20 @@ public class EntityAdapterProxy {
      * @param column 列名
      * @return Field
      */
-    public static Field field(Class clazz, String column){
+    public static Field field(Class clazz,  String column){
         List<EntityAdapter> list = getAdapters(clazz);
         for(EntityAdapter adapter:list){
-            Field field = adapter.field(clazz, column);
+            Field field = adapter.field(clazz,  column);
             if(null != field){
                 return field;
             }
         }
         return null;
     }
-    public static Field field(Class clazz, Column column){
+    public static Field field(Class clazz,  Column column){
         List<EntityAdapter> list = getAdapters(clazz);
         for(EntityAdapter adapter:list){
-            Field field = adapter.field(clazz, column);
+            Field field = adapter.field(clazz,  column);
             if(null != field){
                 return field;
             }
@@ -206,7 +206,7 @@ public class EntityAdapterProxy {
         return null;
     }
 
-    public static String primaryKey(Class clazz, boolean simple){
+    public static String primaryKey(Class clazz,  boolean simple){
         Column column = primaryKey(clazz);
         if(null != column){
             return column.getName();
@@ -219,18 +219,18 @@ public class EntityAdapterProxy {
      * @param clazz 类
      * @return List
      */
-    public static LinkedHashMap<String, Column> primaryKeys(Class clazz){
+    public static LinkedHashMap<String,  Column> primaryKeys(Class clazz){
         List<EntityAdapter> list = getAdapters(clazz);
         for(EntityAdapter adapter:list){
-            LinkedHashMap<String, Column> pks = adapter.primaryKeys(clazz);
+            LinkedHashMap<String,  Column> pks = adapter.primaryKeys(clazz);
             if(null != pks && !pks.isEmpty()){
                 return pks;
             }
         }
         return new LinkedHashMap();
     }
-    public static List<String> primaryKeys(Class clazz, boolean simple){
-        LinkedHashMap<String, Column> pks =  primaryKeys(clazz);
+    public static List<String> primaryKeys(Class clazz,  boolean simple){
+        LinkedHashMap<String,  Column> pks =  primaryKeys(clazz);
         List<String> list = new ArrayList<>();
         if(null != pks){
             for(Column col:pks.values()){
@@ -245,10 +245,10 @@ public class EntityAdapterProxy {
      * @param obj obj
      * @return String
      */
-    public static Map<String,Object> primaryValue(Object obj){
+    public static Map<String, Object> primaryValue(Object obj){
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            Map<String,Object> value = adapter.primaryValue(obj);
+            Map<String, Object> value = adapter.primaryValue(obj);
             if(null != value && !value.isEmpty()){
                 return value;
             }
@@ -261,10 +261,10 @@ public class EntityAdapterProxy {
      * @return Map
      */
 
-    public static Map<String,Object> primaryValues(Object obj){
+    public static Map<String, Object> primaryValues(Object obj){
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            Map<String,Object> value = adapter.primaryValues(obj);
+            Map<String, Object> value = adapter.primaryValues(obj);
             if(null != value && !value.isEmpty()){
                 return value;
             }
@@ -275,23 +275,23 @@ public class EntityAdapterProxy {
     /**
      * 生成主键值
      * @param obj entity或DataRow
-     * @param inserts 需要插入的列,注意成功创建主键后需要把主键key添加到inserts中
+     * @param inserts 需要插入的列, 注意成功创建主键后需要把主键key添加到inserts中
      * @return boolean 是否成功
      */
-    public static boolean createPrimaryValue(Object obj, List<String> inserts){
+    public static boolean createPrimaryValue(Object obj,  List<String> inserts){
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            boolean create = adapter.createPrimaryValue(obj, inserts);
+            boolean create = adapter.createPrimaryValue(obj,  inserts);
             if(create){
                 return create;
             }
         }
         return false;
     }
-    public static boolean createPrimaryValue(Object obj, LinkedHashMap<String, Column> inserts){
+    public static boolean createPrimaryValue(Object obj,  LinkedHashMap<String,  Column> inserts){
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            boolean create = adapter.createPrimaryValue(obj, inserts);
+            boolean create = adapter.createPrimaryValue(obj,  inserts);
             if(create){
                 return create;
             }
@@ -300,26 +300,26 @@ public class EntityAdapterProxy {
     }
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param clazz 类
      * @param map map
      * @param <T> T
      * @return T
      */
-    public static <T> T entity(Class<T> clazz, Map<String,Object> map, LinkedHashMap columns){
+    public static <T> T entity(Class<T> clazz,  Map<String, Object> map,  LinkedHashMap columns){
         List<EntityAdapter> list = getAdapters(clazz);
         T entity = null;
         for(EntityAdapter adapter : list){
-            entity = adapter.entity(entity, clazz, map, columns);
+            entity = adapter.entity(entity,  clazz,  map,  columns);
         }
         return entity;
     }
 
-    public static <T> EntitySet<T> entitys(Class<T> clazz, DataSet set, LinkedHashMap columns){
+    public static <T> EntitySet<T> entitys(Class<T> clazz,  DataSet set,  LinkedHashMap columns){
         EntitySet<T> entitys = new EntitySet<>();
         if(null != set){
             for(DataRow row:set){
-                T entity = entity(clazz, row, columns);
+                T entity = entity(clazz,  row,  columns);
                 entitys.add(entity);
             }
             entitys.setNavi(set.getNavi());
@@ -330,29 +330,29 @@ public class EntityAdapterProxy {
 
     /**
      * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param obj obj
      * @param keys keys
      * @return DataRow
      */
-    public static DataRow row(Object obj, String ... keys){
-        return row(null, obj, keys);
+    public static DataRow row(Object obj,  String ... keys){
+        return row(null,  obj,  keys);
     }
-    public static DataRow row(DataRow row, Object obj, String ... keys){
+    public static DataRow row(DataRow row,  Object obj,  String ... keys){
         if(null == obj){
             return row;
         }
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            row = adapter.row(row, obj, keys);
+            row = adapter.row(row,  obj,  keys);
         }
         return row;
     }
-    public static DataSet set(EntitySet entitys, String ... keys){
+    public static DataSet set(EntitySet entitys,  String ... keys){
         DataSet set = new DataSet();
         if(null != entitys){
             for(Object obj:entitys){
-                DataRow row = row(obj, keys);
+                DataRow row = row(obj,  keys);
                 set.addRow(row);
             }
             set.setNavi(entitys.getNavi());
@@ -363,7 +363,7 @@ public class EntityAdapterProxy {
 
     /**
      * 列名转换成http参数时调用
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param metadatas metadatas
      * @return List
      *

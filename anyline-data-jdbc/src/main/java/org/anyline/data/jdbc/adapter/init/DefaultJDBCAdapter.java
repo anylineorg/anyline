@@ -19,7 +19,6 @@ package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.DefaultDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -60,7 +59,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -133,10 +131,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * insert [调用入口]<br/>
-	 * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+	 * 执行前根据主键生成器补充主键值, 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 需要插入入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 *                列可以加前缀<br/>
@@ -144,15 +142,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -163,7 +161,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -175,7 +173,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			return null;
 		}
 		if(null == dest){
-			dest = DataSourceUtil.parseDataSource(dest, obj);
+			configs = DataSourceUtil.parseDest(dest, obj, configs);
+			dest = configs.dest();
 		}
 
 		if(obj instanceof Collection){
@@ -195,7 +194,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -208,7 +207,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setBuilder(builder);
 		}
 		LinkedHashMap<String, Column> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
 		if(null != generator){
 			pks = set.getRow(0).getPrimaryColumns();
 			columns.putAll(pks);
@@ -219,7 +218,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		boolean first = true;
 		for(Column column:columns.values()){
 			if(!first){
-				builder.append(",");
+				builder.append(", ");
 			}
 			first = false;
 			String key = column.getName();
@@ -233,7 +232,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setVol(size);
 			for(int i=0; i<size; i++){
 				if(i>0){
-					builder.append(",");
+					builder.append(", ");
 				}
 				builder.append("?");
 			}
@@ -249,9 +248,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				if(null != generator){
 					generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
 				}
-				//createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				//createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
-			builder.append(insertValue(runtime, run, row, true,true, false,true, columns));
+			builder.append(insertValue(runtime, run, row, true, true, false, true, columns));
 			if(batch <=1) {
 				if (i < dataSize - 1) {
 					//多行数据之间的分隔符
@@ -267,7 +266,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -297,7 +296,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		boolean first = true;
 		for(Column column:columns.values()){
 			if(!first){
-				builder.append(",");
+				builder.append(", ");
 			}
 			first = false;
 			delimiter(builder, column.getName());
@@ -312,7 +311,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setVol(size);
 			for(int i=0; i<size; i++){
 				if(i>0){
-					builder.append(",");
+					builder.append(", ");
 				}
 				builder.append("?");
 			}
@@ -324,14 +323,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
                     createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 }
-                insertValue(template, run, row, true, false,true, keys);
+                insertValue(template, run, row, true, false, true, keys);
             }else{*/
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, BeanUtil.getMapKeys(columns));
 			if(!create && null != generator){
-				generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-				//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+				generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				//createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
-			builder.append(insertValue(runtime, run, obj, true,true, false, true, columns));
+			builder.append(insertValue(runtime, run, obj, true, true, false, true, columns));
 			//}
 			if(idx<dataSize-1 && batch <= 1){
 				//多行数据之间的分隔符
@@ -346,7 +345,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj  Entity或DataRow
 	 * @param batch  是否批量，批量时不检测值是否为空
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -355,15 +354,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
@@ -373,12 +372,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 	/**
 	 * insert [命令合成-子流程]<br/>
-	 * 批量插入数据时,多行数据之间分隔符
+	 * 批量插入数据时, 多行数据之间分隔符
 	 * @return String
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ",";
+		return ", ";
 	}
 
 	/**
@@ -404,7 +403,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * insert [命令合成-子流程]<br/>
 	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -418,7 +417,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
 
-		PrimaryGenerator generator = checkPrimaryGenerator(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
 
 		int from = 1;
 		StringBuilder valuesBuilder = new StringBuilder();
@@ -431,21 +430,21 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(obj instanceof DataRow){
 			row = (DataRow)obj;
 			if(row.hasPrimaryKeys() && null != generator){
-				generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-				//createPrimaryValue(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				//createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 			}
 		}else{
 			from = 2;
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
-			LinkedHashMap<String,Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
+			LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
 			if(!create && null != generator){
-				generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-				//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+				generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				//createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 		}
 		run.setFrom(from);
 		/*确定需要插入的列*/
-		LinkedHashMap<String,Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
+		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
 		if(null == cols || cols.size() == 0){
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
 		}
@@ -464,8 +463,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		boolean first = true;
 		for(Column column:cols.values()){
 			if(!first){
-				builder.append(",");
-				valuesBuilder.append(",");
+				builder.append(", ");
+				valuesBuilder.append(", ");
 			}
 			first = false;
 			String key = column.getName();
@@ -518,7 +517,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * insert [命令合成-子流程]<br/>
 	 * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 对象集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -530,21 +529,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null == list || list.isEmpty()){
 			throw new org.anyline.exception.SQLException("空数据");
 		}
-		Object first = null;
-		if(list instanceof DataSet){
-			DataSet set = (DataSet)list;
-			first = set.getRow(0);
-			if(BasicUtil.isEmpty(dest)){
-				dest = DataSourceUtil.parseDataSource(dest,set);
-			}
-			if(BasicUtil.isEmpty(dest)){
-				dest = DataSourceUtil.parseDataSource(dest,first);
-			}
-		}else{
-			first = list.iterator().next();
-			if(BasicUtil.isEmpty(dest)) {
-				dest = EntityAdapterProxy.table(first.getClass(), true);
-			}
+		Object first = list.iterator().next();
+		configs = DataSourceUtil.parseDest(dest, first, configs);
+		if(BasicUtil.isEmpty(dest)){
+			dest = configs.dest();
 		}
 		if(BasicUtil.isEmpty(dest)){
 			throw new org.anyline.exception.SQLException("未指定表");
@@ -691,7 +679,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
-				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
+				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
@@ -789,10 +777,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				e.printStackTrace();
 			}
 			if(IS_LOG_SQL_WHEN_ERROR(configs)){
-				log.error("{}[{}][action:{}][table:{}]{}", random, action , run.getTable(), LogUtil.format("插入异常:", 33)+e.toString(), run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:{}][table:{}]{}", random, action, run.getTable(), LogUtil.format("插入异常:", 33)+e.toString(), run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
-				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(),e);
+				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
 				ex.setSql(sql);
 				ex.setValues(values);
 				throw ex;
@@ -811,10 +799,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * [命令合成]
 	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
 	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
@@ -822,7 +810,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -831,15 +819,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -849,7 +837,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	/**
 	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj Entity或DtaRow
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -858,15 +846,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
@@ -878,11 +866,11 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 	/**
@@ -896,30 +884,30 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 	/**
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
@@ -936,7 +924,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		String sql = null;
 		sql = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(sql)){
-			log.warn("[不具备更新条件][dest:{}]",dest);
+			log.warn("[不具备更新条件][dest:{}]", dest);
 			return -1;
 		}
 		if(null != configs){
@@ -985,7 +973,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					slow = true;
 					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.UPDATE, IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
-						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, sql, values, null, true , result, millis);
+						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, sql, values, null, true, result, millis);
 					}
 				}
 			}
@@ -1024,7 +1012,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -1033,15 +1021,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -1062,7 +1050,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		return super.checkOverride(obj);
 	}
 	@Override
-	protected Map<String,Object> checkPv(Object obj){
+	protected Map<String, Object> checkPv(Object obj){
 		return super.checkPv(obj);
 	}
 
@@ -1100,7 +1088,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
@@ -1111,10 +1099,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1179,7 +1167,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					for(int i=0; i<size; i++){
 						sql += "?";
 						if(i < size-1){
-							sql += ",";
+							sql += ", ";
 						}
 					}
 					sql += ")}";
@@ -1250,7 +1238,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 
 					set.setDatalink(rt.datasource());
 					if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
-						log.info("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());
+						log.info("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid, set.size());
 					}
 					return set;
 				}
@@ -1333,7 +1321,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	/**
 	 * query [调用入口]<br/>
 	 * <br/>
-	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+	 * 对性能有要求的场景调用，返回java原生map集合, 结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -1342,7 +1330,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 	/**
@@ -1419,7 +1407,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					column = column.substring(2, column.length()-1);
 					builder.append(column);
 				}else{
-					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
+					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(", ")){
 						builder.append(column);
 					}else if("*".equals(column)){
 						builder.append("*");
@@ -1428,7 +1416,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					}
 				}
 				if(i<size-1){
-					builder.append(",");
+					builder.append(", ");
 				}
 			}
 			builder.append(BR);
@@ -1507,9 +1495,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		// NOT A%  151
 		// NOT %A  152
 		if(code == 50){
-			builder.append(" LIKE ").append(concat(runtime, "'%'", "?" , "'%'"));
+			builder.append(" LIKE ").append(concat(runtime, "'%'", "?", "'%'"));
 		}else if(code == 51){
-			builder.append(" LIKE ").append(concat(runtime, "?" , "'%'"));
+			builder.append(" LIKE ").append(concat(runtime, "?", "'%'"));
 		}else if(code == 52){
 			builder.append(" LIKE ").append(concat(runtime, "'%'", "?"));
 		}
@@ -1553,7 +1541,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			for(int i=0; i<size; i++){
 				builder.append("?");
 				if(i < size-1){
-					builder.append(",");
+					builder.append(", ");
 				}
 			}
 			builder.append(")");
@@ -1594,8 +1582,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		List<Map<String,Object>> maps = null;
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+		List<Map<String, Object>> maps = null;
 		if(null == random){
 			random = random(runtime);
 		}
@@ -1673,7 +1661,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					slow = true;
 					log.warn("{}[slow cmd][action:select][执行耗时:{}ms]{}", random, mid[0]-fr, run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
-						dmListener.slow(runtime, random, ACTION.DML.SELECT,null, sql, values, null, true, maps, mid[0]-fr);
+						dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
 					}
 				}
 			}
@@ -1689,7 +1677,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				e.printStackTrace();
 			}
 			if(IS_LOG_SQL_WHEN_ERROR(configs)){
-				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(IS_THROW_SQL_QUERY_EXCEPTION(configs)){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
@@ -1709,7 +1697,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return map
 	 */
 	@Override
-	public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		Map<String, Object> map = null;
 		String sql = run.getFinalExists();
 		List<Object> values = run.getValues();
@@ -1748,7 +1736,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				if(IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 					e.printStackTrace();
 				}
-				log.error("{}[{}][action:select][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
+				log.error("{}[{}][action:select][sql:\n{}\n]\n[param:{}]", random,  LogUtil.format("查询异常:",  33)+e,  sql,  LogUtil.param(values));
 			}
 		}
 		//}
@@ -1758,14 +1746,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
 			if(millis > SLOW_SQL_MILLIS){
 				slow = true;
-				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]",  random,  millis,  sql,  LogUtil.param(values));
 				if(null != dmListener){
-					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql,  values, null, true, map, millis);
+					dmListener.slow(runtime,  random,  ACTION.DML.EXISTS,  run,  sql,   values,  null,  true,  map,  millis);
 				}
 			}
 		}
 		if (!slow && log.isInfoEnabled() && IS_LOG_SQL_TIME(configs)) {
-			log.info("{}[action:select][执行耗时:{}ms][封装行数:{}]", random, millis, LogUtil.format(map == null ?0:1, 34));
+			log.info("{}[action:select][执行耗时:{}ms][封装行数:{}]",  random,  millis,  LogUtil.format(map == null ?0:1,  34));
 		}
 		return map;
 	}
@@ -1779,8 +1767,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return DataRow 保存序列查询结果 以存储过程name作为key
 	 */
 	@Override
-	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
-		List<Run> runs = buildQuerySequence(runtime, next, names);
+	public DataRow sequence(DataRuntime runtime,  String random,  boolean next,  String ... names){
+		List<Run> runs = buildQuerySequence(runtime,  next,  names);
 		if (null != runs && runs.size() > 0) {
 			Run run = runs.get(0);
 			if(!run.isValid()){
@@ -1789,7 +1777,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				}
 				return new DataRow();
 			}
-			DataSet set = select(runtime, random, true, null, null, run);
+			DataSet set = select(runtime,  random,  true,  null,  null,  run);
 			if (set.size() > 0) {
 				return set.getRow(0);
 			}
@@ -1805,19 +1793,19 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
-		return super.process(runtime, list);
+	public List<Map<String, Object>> process(DataRuntime runtime,  List<Map<String, Object>> list){
+		return super.process(runtime,  list);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * long count(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
 	 * [命令合成]
-	 * String mergeFinalTotal(DataRuntime runtime, Run run)
+	 * String mergeFinalTotal(DataRuntime runtime,  Run run)
 	 * [命令执行]
-	 * long count(DataRuntime runtime, String random, Run run)
+	 * long count(DataRuntime runtime,  String random,  Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * count [调用入口]<br/>
@@ -1829,8 +1817,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.count(runtime, random, prepare, configs, conditions);
+	public long count(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.count(runtime,  random,  prepare,  configs,  conditions);
 	}
 	/**
 	 * count [命令合成]<br/>
@@ -1840,9 +1828,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return String
 	 */
 	@Override
-	public String mergeFinalTotal(DataRuntime runtime, Run run){
+	public String mergeFinalTotal(DataRuntime runtime,  Run run){
 		//select * from user
-		//select (select id from a) as a, id as b from (select * from suer) where a in (select a from b)
+		//select (select id from a) as a,  id as b from (select * from suer) where a in (select a from b)
 		String base = run.getBuilder().toString();
 		StringBuilder builder = new StringBuilder();
 		boolean simple= false;
@@ -1861,7 +1849,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder.append("SELECT COUNT(*) AS CNT FROM (\n").append(base).append("\n) F");
 		}
 		String sql = builder.toString();
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND",  "WHERE ");
 		return sql;
 	}
 
@@ -1873,10 +1861,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, Run run){
+	public long count(DataRuntime runtime,  String random,  Run run){
 		long total = 0;
-		DataSet set = select(runtime, random, false, ACTION.DML.COUNT, null, null, run, run.getTotalQuery(), run.getValues());
-		total = set.toUpperKey().getInt(0,"CNT",0);
+		DataSet set = select(runtime,  random,  false,  ACTION.DML.COUNT,  null,  null,  run,  run.getTotalQuery(),  run.getValues());
+		total = set.toUpperKey().getInt(0, "CNT", 0);
 		return total;
 	}
 
@@ -1884,8 +1872,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	/* *****************************************************************************************************************
 	 * 													EXISTS
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * String mergeFinalExists(DataRuntime runtime, Run run)
+	 * boolean exists(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * String mergeFinalExists(DataRuntime runtime,  Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1898,45 +1886,45 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return boolean
 	 */
 	@Override
-	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public boolean exists(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
 		boolean result = false;
 		if(null == random){
 			random = random(runtime);
 		}
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		if (null != dmListener) {
-			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
+			swt = dmListener.prepareQuery(runtime,  random,  prepare,  configs,  conditions);
 		}
 		if(swt == ACTION.SWITCH.BREAK){
 			return false;
 		}
-		Run run = buildQueryRun(runtime, prepare, configs, conditions);
+		Run run = buildQueryRun(runtime,  prepare,  configs,  conditions);
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
-				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTable(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
+				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false,  false,  prepare.getTable(),  configs,  conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
 			}
 			return false;
 		}
 		if(null != dmListener){
-			dmListener.beforeExists(runtime, random, run);
+			dmListener.beforeExists(runtime,  random,  run);
 		}
 		long fr = System.currentTimeMillis();
-		Map<String, Object> map = map(runtime, random, configs, run);
+		Map<String,  Object> map = map(runtime,  random,  configs,  run);
 		if (null == map) {
 			result = false;
 		} else {
-			result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+			result = BasicUtil.parseBoolean(map.get("IS_EXISTS"),  false);
 		}
 		Long millis = System.currentTimeMillis() - fr;
 		if(null != dmListener){
-			dmListener.afterExists(runtime, random, run, true, result, millis);
+			dmListener.afterExists(runtime,  random,  run,  true,  result,  millis);
 		}
 		return result;
 	}
 	@Override
-	public String mergeFinalExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime,  Run run){
 		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND",  "WHERE ");
 		return sql;
 	}
 
@@ -1945,14 +1933,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 													EXECUTE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
-	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
+	 * long execute(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * long execute(DataRuntime runtime,  String random,  int batch,  ConfigStore configs,  String sql,  List<Object> values)
+	 * boolean execute(DataRuntime runtime,  String random,  Procedure procedure)
 	 * [命令合成]
-	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * void fillExecuteContent(DataRuntime runtime, Run run)
+	 * Run buildExecuteRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * void fillExecuteContent(DataRuntime runtime,  Run run)
 	 * [命令执行]
-	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * long execute(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1965,13 +1953,13 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return 影响行数
 	 */
 	@Override
-	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.execute(runtime, random,  prepare, configs, conditions);
+	public long execute(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.execute(runtime,  random,   prepare,  configs,  conditions);
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random,  batch, configs, cmd, values);
+	public long execute(DataRuntime runtime,  String random,  int batch,  ConfigStore configs,  String cmd,  List<Object> values){
+		return super.execute(runtime,  random,   batch,  configs,  cmd,  values);
 	}
 	/**
 	 * procedure [命令执行]<br/>
@@ -1981,7 +1969,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return 影响行数
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+	public boolean execute(DataRuntime runtime,  String random,  Procedure procedure){
 		boolean result = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
@@ -2004,13 +1992,13 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		for(int i=0; i<size; i++){
 			sql += "?";
 			if(i < size-1){
-				sql += ",";
+				sql += ", ";
 			}
 		}
 		sql += ")}";
 
 		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
-			log.info("{}[action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, LogUtil.param(inputs), LogUtil.param(outputs));
+			log.info("{}[action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]",  random,  sql,  LogUtil.param(inputs),  LogUtil.param(outputs));
 		}
 		long millis= -1;
 		try{
@@ -2018,14 +2006,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(null == jdbc){
 				return false;
 			}
-			list = (List<Object>) jdbc.execute(sql, new CallableStatementCallback<Object>() {
-				public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
+			list = (List<Object>) jdbc.execute(sql,  new CallableStatementCallback<Object>() {
+				public Object doInCallableStatement(final CallableStatement cs) throws SQLException,  DataAccessException {
 					final List<Object> result = new ArrayList<Object>();
 					// 带有返回参数
 					int returnIndex = 0;
 					if (procedure.hasReturn()) {
 						returnIndex = 1;
-						cs.registerOutParameter(1, Types.VARCHAR);
+						cs.registerOutParameter(1,  Types.VARCHAR);
 					}
 					for (int i = 1; i <= sizeIn; i++) {
 						Parameter param = inputs.get(i - 1);
@@ -2033,14 +2021,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 						if (null == value || "NULL".equalsIgnoreCase(value.toString())) {
 							value = null;
 						}
-						cs.setObject(i + returnIndex, value, param.getType());
+						cs.setObject(i + returnIndex,  value,  param.getType());
 					}
 					for (int i = 1; i <= sizeOut; i++) {
 						Parameter param = outputs.get(i - 1);
 						if (null == param.getValue()) {
-							cs.registerOutParameter(i + sizeIn + returnIndex, param.getType());
+							cs.registerOutParameter(i + sizeIn + returnIndex,  param.getType());
 						} else {
-							cs.setObject(i + sizeIn + returnIndex, param.getValue(), param.getType());
+							cs.setObject(i + sizeIn + returnIndex,  param.getValue(),  param.getType());
 						}
 					}
 					cs.execute();
@@ -2067,17 +2055,17 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]",  random,  millis,  sql,  LogUtil.param(inputs),  LogUtil.param(list));
 					if(null != dmListener){
-						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE,null, sql, inputs,  list, true, result, millis);
+						dmListener.slow(runtime,  random,  ACTION.DML.PROCEDURE, null,  sql,  inputs,   list,  true,  result,  millis);
 					}
 				}
 			}
 			if (null != dmListener) {
-				dmListener.afterExecute(runtime, random, procedure, result, millis);
+				dmListener.afterExecute(runtime,  random,  procedure,  result,  millis);
 			}
 			if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:procedure][执行耗时:{}ms]\n[output param:{}]", random, millis, list);
+				log.info("{}[action:procedure][执行耗时:{}ms]\n[output param:{}]",  random,  millis,  list);
 			}
 
 		}catch(Exception e){
@@ -2086,12 +2074,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				e.printStackTrace();
 			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(),e);
+				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(), e);
 				ex.setSql(sql);
 				throw ex;
 			}else{
 				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-					log.error("{}[{}][action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, LogUtil.param(inputs), LogUtil.param(outputs));
+					log.error("{}[{}][action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]",  random,  LogUtil.format("存储过程执行异常:",  33)+e.toString(),  sql,  LogUtil.param(inputs),  LogUtil.param(outputs));
 				}
 			}
 		}
@@ -2107,23 +2095,23 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.buildExecuteRun(runtime, prepare, configs, conditions);
+	public Run buildExecuteRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.buildExecuteRun(runtime,  prepare,  configs,  conditions);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
-		super.fillExecuteContent(runtime, run);
+	protected void fillExecuteContent(DataRuntime runtime,  XMLRun run){
+		super.fillExecuteContent(runtime,  run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
-		replaceVariable(runtime,run);
+	protected void fillExecuteContent(DataRuntime runtime,  TextRun run){
+		replaceVariable(runtime, run);
 		run.appendCondition();
 		run.appendGroup();
 		run.checkValid();
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
-		super.fillExecuteContent(runtime, run);
+	protected void fillExecuteContent(DataRuntime runtime,  TableRun run){
+		super.fillExecuteContent(runtime,  run);
 	}
 
 	/**
@@ -2133,8 +2121,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillExecuteContent(DataRuntime runtime, Run run){
-		super.fillExecuteContent(runtime, run);
+	public void fillExecuteContent(DataRuntime runtime,  Run run){
+		super.fillExecuteContent(runtime,  run);
 	}
 	/**
 	 * execute [命令执行]<br/>
@@ -2144,7 +2132,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return 影响行数
 	 */
 	@Override
-	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public long execute(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
 		long result = -1;
 		if(null == random){
 			random = random(runtime);
@@ -2159,9 +2147,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		if(log.isInfoEnabled() && IS_LOG_SQL(configs)){
 			if(batch >1 && !IS_LOG_BATCH_SQL_PARAM(configs)) {
-				log.info("{}[action:{}][sql:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
+				log.info("{}[action:{}][sql:\n{}\n]\n[param size:{}]",  random,  action,  sql,  values.size());
 			}else {
-				log.info("{}[action:{}][sql:\n{}\n]", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.info("{}[action:{}][sql:\n{}\n]",  random,  action,  run.log(ACTION.DML.EXECUTE,  IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 		}
 		if(null != configs){
@@ -2181,10 +2169,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				return -1;
 			}
 			if(batch>1){
-				result = batch(jdbc, sql, batch, run.getVol(), values);
+				result = batch(jdbc,  sql,  batch,  run.getVol(),  values);
 			}else {
 				if (null != values && values.size() > 0) {
-					result = jdbc.update(sql, values.toArray());
+					result = jdbc.update(sql,  values.toArray());
 				} else {
 					result = jdbc.update(sql);
 				}
@@ -2195,9 +2183,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, action, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]",  random,  action,  millis,  sql,  LogUtil.param(values));
 					if(null != dmListener){
-						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
+						dmListener.slow(runtime,  random,  ACTION.DML.EXECUTE,  run,  sql,  values,  null,  true,  result,  millis);
 					}
 				}
 			}
@@ -2206,14 +2194,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				if(batch>1){
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][执行耗时:{}ms][影响行数:{}]", random, action, millis, LogUtil.format(qty, 34));
+				log.info("{}[action:{}][执行耗时:{}ms][影响行数:{}]",  random,  action,  millis,  LogUtil.format(qty,  34));
 			}
 		}catch(Exception e){
 			if(IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 				e.printStackTrace();
 			}
 			if(IS_LOG_SQL_WHEN_ERROR(configs)){
-				log.error("{}[{}][action:{}]{}" , random, LogUtil.format("SQL执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:{}]{}",  random,  LogUtil.format("SQL执行异常:",  33)+e,  action,  run.log(ACTION.DML.EXECUTE,  IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
 				throw e;
@@ -2227,19 +2215,19 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
-	 * long truncate(DataRuntime runtime, String random, String table)
+	 * <T> long deletes(DataRuntime runtime,  String random,  int batch,  String table,  ConfigStore configs,  String column,  Collection<T> values)
+	 * long delete(DataRuntime runtime,  String random,  String table,  ConfigStore configs,  Object obj,  String... columns)
+	 * long delete(DataRuntime runtime,  String random,  String table,  ConfigStore configs,  String... conditions)
+	 * long truncate(DataRuntime runtime,  String random,  String table)
 	 * [命令合成]
-	 * Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns)
-	 * Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values)
-	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
-	 * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values)
-	 * Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String ... columns)
-	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
+	 * Run buildDeleteRun(DataRuntime runtime,  String table,  Object obj,  String ... columns)
+	 * Run buildDeleteRun(DataRuntime runtime,  int batch,  String table,  String column,  Object values)
+	 * List<Run> buildTruncateRun(DataRuntime runtime,  String table)
+	 * Run buildDeleteRunFromTable(DataRuntime runtime,  int batch,  String table,  String column,  Object values)
+	 * Run buildDeleteRunFromEntity(DataRuntime runtime,  String table,  Object obj,  String ... columns)
+	 * void fillDeleteRunContent(DataRuntime runtime,  Run run)
 	 * [命令执行]
-	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * long delete(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * delete [调用入口]<br/>
@@ -2247,13 +2235,13 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param values 列对应的值
 	 * @return 影响行数
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime,  String random,  int batch, String table, ConfigStore configs, String key, Collection<T> values){
 		return super.deletes(runtime, random,  batch, table, configs, key, values);
 	}
 
@@ -10229,7 +10217,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}else{
 			// 分页
 			builder.append("SELECT "+cols+" FROM( \n");
-			builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
+			builder.append("SELECT TAB_I.*,ROWNUM AS PAGE_ROW_NUMBER_ \n");
 			builder.append("FROM( \n");
 			builder.append(sql);
 			builder.append("\n").append(order);
@@ -10393,7 +10381,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
 			}
 			builder.append("SELECT "+cols+" FROM( \n");
-			builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(")
+			builder.append("SELECT _TAB_I.*,ROW_NUMBER() OVER(")
 					.append(order)
 					.append(") AS PAGE_ROW_NUMBER_ \n");
 			builder.append("FROM( \n");

@@ -36,15 +36,15 @@ import java.util.Map;
  * 
  */ 
 public abstract class DefaultCondition implements Condition {
-	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
+	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE		;   // 遇到空值处理方式
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)
 	protected Boolean vaild = null;
 	protected int variableType = VARIABLE_PLACEHOLDER_TYPE_NONE				;	// 变量标记方式
 	protected List<RunValue> runValues = new ArrayList<>()				;	// 运行时参数
 	protected List<RunValue> runOrValues = new ArrayList<>()			;	// 运行时参数(or)
-	protected Map<String,Object> runValuesMap = new HashMap<String,Object>()		;	// 运行时参数
-	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>()		;	// 运行时参数(or)
+	protected Map<String, Object> runValuesMap = new HashMap<String, Object>()		;	// 运行时参数
+	protected Map<String, Object> runOrValuesMap = new HashMap<String, Object>()		;	// 运行时参数(or)
 	protected String join = Condition.CONDITION_JOIN_TYPE_AND			;	// 连接方式
 	protected ConditionChain container									;	// 当前条件所处容器
 	protected String id													; 	// ID
@@ -156,7 +156,7 @@ public abstract class DefaultCondition implements Condition {
 		return test;
 	}
 	@Override
-	public Map<String,Object> getRunValuesMap(){
+	public Map<String, Object> getRunValuesMap(){
 		return runValuesMap;
 	}
 	@Override

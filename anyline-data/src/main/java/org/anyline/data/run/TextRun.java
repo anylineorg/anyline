@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Unless required by applicable law or agreed to in writing,  software
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -66,19 +66,19 @@ public class TextRun extends BasicRun implements Run {
 					//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
 					List<Variable> vars = this.getVariables(con.getId());
 					if(vars.size() > 0){
-						//用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
+						//用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 						con.setVariableSlave(true);
 						for(Variable var:vars){
-							var.setValue(false, con.getValues());
+							var.setValue(false,  con.getValues());
 						}
 					} else{
 						//查询条件和SQL体变量赋值
-						setConditionValue(con.getSwitch(), con.getCompare(), con.getId(), null, con.getValues());
+						setConditionValue(con.getSwitch(),  con.getCompare(),  con.getId(),  null,  con.getValues());
 					}
 				}
 			} 
 		}
-		//configStore解析与Table不一样,txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
+		//configStore解析与Table不一样, txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
 		if(null != configStore){
 			List<Config> confs = configStore.getConfigChain().getConfigs();
 			for(Config conf:confs){
@@ -105,7 +105,7 @@ public class TextRun extends BasicRun implements Run {
 							if (!isConVarSetValue || overValue) {
 								isUse = true;
 								con.setVariableSlave(true);
-								setConditionValue(conf.getSwitch(), conf.getCompare(), varKey, varKey, values);
+								setConditionValue(conf.getSwitch(),  conf.getCompare(),  varKey,  varKey,  values);
 							}
 						}
 					}
@@ -114,7 +114,7 @@ public class TextRun extends BasicRun implements Run {
 				for (Variable var : vars) {
 					if(overValue || !var.isSetValue()) {
 						isUse = true;
-						var.setValue(false, values);
+						var.setValue(false,  values);
 					}
 				}
 				if(compare != Compare.NONE) {
@@ -154,19 +154,19 @@ public class TextRun extends BasicRun implements Run {
 			int type = 0;
 			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
 			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-			keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+			keys = RegularUtil.fetchs(text,  RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL,  Regular.MATCH_MODE.CONTAIN);
 			type = Variable.KEY_TYPE_SIGN_V2 ;
 			if(keys.size() == 0){
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+				keys = RegularUtil.fetchs(text,  RunPrepare.SQL_PARAM_VARIABLE_REGEX,  Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
-			if(BasicUtil.isNotEmpty(true, keys)){
+			if(BasicUtil.isNotEmpty(true,  keys)){
 				// AND CD = :CD 
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i);
 
-					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+					Variable var = SyntaxHelper.buildVariable(type,  keyItem.get(0),  keyItem.get(1),  keyItem.get(2),  keyItem.get(3));
 					if(null == var){
 						continue;
 					}
@@ -175,8 +175,8 @@ public class TextRun extends BasicRun implements Run {
 				}// end for 
 			}else{
 				// AND CD = ? 
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)){
+				List<String> idxKeys = RegularUtil.fetch(text,  "\\?", Regular.MATCH_MODE.CONTAIN, 0); 
+				if(BasicUtil.isNotEmpty(true, idxKeys)){
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
@@ -222,7 +222,7 @@ public class TextRun extends BasicRun implements Run {
 		if(!where){
 			builder.append(" WHERE 1=1"); 
 		}
-		builder.append(conditionChain.getRunText(null, runtime));
+		builder.append(conditionChain.getRunText(null,  runtime));
 		addValues(conditionChain.getRunValues());
 	}
 	 
@@ -235,8 +235,8 @@ public class TextRun extends BasicRun implements Run {
 	} 
 
 	@Override 
-	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
-		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
+	public Run setConditionValue(EMPTY_VALUE_SWITCH swt,  Compare compare,  String condition,  String variable,  Object value) {
+		/*不指定变量名时, 根据condition为SQL主体变量赋值*/ 
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
 				if(null == v){
@@ -255,8 +255,8 @@ public class TextRun extends BasicRun implements Run {
 		if(null == con){
 			return this; 
 		} 
-		variable = BasicUtil.nvl(variable, condition).toString(); 
-		con.setValue(variable, value); 
+		variable = BasicUtil.nvl(variable,  condition).toString(); 
+		con.setValue(variable,  value); 
 		return this; 
 	} 
 
@@ -269,8 +269,8 @@ public class TextRun extends BasicRun implements Run {
 	 * @param obj  obj
 	 * @return TextRun
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
-	public TextRun addValues(String key, Object obj){
+	@SuppressWarnings({"rawtypes",  "unchecked" })
+	public TextRun addValues(String key,  Object obj){
 		if(null == obj){
 			return this; 
 		} 
@@ -283,10 +283,10 @@ public class TextRun extends BasicRun implements Run {
 		if(obj instanceof Collection){
 			Collection list = (Collection)obj;
 			for(Object item:list){
-				addValues(key,item);
+				addValues(key, item);
 			}
 		}else{
-			addValues(new RunValue(key, obj));
+			addValues(new RunValue(key,  obj));
 		} 
 		return this; 
 	} 
@@ -326,7 +326,7 @@ public class TextRun extends BasicRun implements Run {
 	 * @param value value
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	public Run addCondition(String condition, String variable, Object value) {
+	public Run addCondition(String condition,  String variable,  Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
 				if(null == v){
@@ -345,8 +345,8 @@ public class TextRun extends BasicRun implements Run {
 		if(null == con){
 			return this; 
 		} 
-		variable = BasicUtil.nvl(variable, condition).toString(); 
-		con.setValue(variable, value); 
+		variable = BasicUtil.nvl(variable,  condition).toString(); 
+		con.setValue(variable,  value); 
 		return this; 
 	} 
  
@@ -359,8 +359,8 @@ public class TextRun extends BasicRun implements Run {
 	 * @param compare  比较方式
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
-		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
+	public Run addCondition(EMPTY_VALUE_SWITCH swt,  Compare compare,  String prefix,  String var,  Object value){
+		Condition condition = new DefaultAutoCondition(swt,  compare,  prefix,  var,  value);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		} 

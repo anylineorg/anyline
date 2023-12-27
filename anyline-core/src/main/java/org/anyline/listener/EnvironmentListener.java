@@ -43,7 +43,7 @@ public class EnvironmentListener implements EnvironmentAware {
                 if(Modifier.isFinal(field.getModifiers())){
                     continue;
                 }
-                BeanUtil.setFieldValue(null, field, value);
+                BeanUtil.setFieldValue(null,  field,  value);
             }
         }
     }

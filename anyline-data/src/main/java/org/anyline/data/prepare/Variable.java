@@ -22,7 +22,7 @@ import org.anyline.entity.Compare;
 import java.io.Serializable;
 import java.util.List;
 
-public interface Variable extends Cloneable,Serializable{
+public interface Variable extends Cloneable, Serializable{
 	int VAR_TYPE_INDEX			= 0;		// 根据下标区分 CD = ? 
 	int VAR_TYPE_KEY			= 1;		// 根据KEY区分  CD = :CD  CD = #{CD}
 	int VAR_TYPE_KEY_REPLACE	= 2;		// 字符替换 CD=':CD'  符合1但需要替换 如在''内
@@ -54,7 +54,7 @@ public interface Variable extends Cloneable,Serializable{
 	List<Object> getValues() ;
 	void setValue(Object value) ;
 	boolean isSetValue();
-	void setValue(boolean chkNull, Object value) ; 
+	void setValue(boolean chkNull, Object value) ;
 	int getType() ; 
 	void setType(int type) ;
 	Object clone() throws CloneNotSupportedException;

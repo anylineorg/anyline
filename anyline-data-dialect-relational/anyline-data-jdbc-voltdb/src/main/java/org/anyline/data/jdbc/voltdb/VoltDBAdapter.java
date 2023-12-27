@@ -290,7 +290,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * [调用入口]
 	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
 	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
@@ -351,7 +351,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
@@ -407,7 +407,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
-		return super.update(runtime, random,  dest, data, configs, run);
+		return super.update(runtime, random, dest, data, configs, run);
 	}
 
 
@@ -441,16 +441,16 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.save(runtime, random,  dest, data, configs, columns);
+		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
 	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
-		return super.saveCollection(runtime, random,  dest, data, configs, columns);
+		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.saveObject(runtime, random,  dest, data, configs, columns);
+		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected Boolean checkOverride(Object obj){
@@ -492,7 +492,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
 	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -848,12 +848,12 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.execute(runtime, random,  prepare, configs, conditions);
+		return super.execute(runtime, random, prepare, configs, conditions);
 	}
 
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random,  batch, configs, cmd, values);
+		return super.execute(runtime, random, batch, configs, cmd, values);
 	}
 	/**
 	 * procedure [命令执行]<br/>
@@ -911,7 +911,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		return super.execute(runtime, random,  configs, run);
+		return super.execute(runtime, random, configs, run);
 	}
 
 	/* *****************************************************************************************************************
@@ -945,7 +945,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		return super.deletes(runtime, random,  batch, table, configs, key, values);
+		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
 	/**
@@ -960,7 +960,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
-		return super.delete(runtime, random,  dest, configs, obj, columns);
+		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
 	/**
@@ -976,7 +976,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
-		return super.delete(runtime, random,  table, configs, conditions);
+		return super.delete(runtime, random, table, configs, conditions);
 	}
 
 	/**
@@ -988,7 +988,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, String table){
-		return super.truncate(runtime, random,  table);
+		return super.truncate(runtime, random, table);
 	}
 
 	/**
@@ -1002,7 +1002,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
-		return super.buildDeleteRun(runtime, dest,  obj, columns);
+		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
 	/**
@@ -2127,7 +2127,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		return super.buildQueryPartitionTablesRun(runtime,  master, tags, name);
+		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
 	}
 	/**
 	 * partition table[命令合成]<br/>
@@ -2140,7 +2140,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
-		return super.buildQueryPartitionTablesRun(runtime,  master, tags);
+		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
 	/**
 	 * partition table[结果集封装]<br/>
@@ -2841,7 +2841,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
 	/**
@@ -2856,7 +2856,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random,  Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
 	/**
@@ -5359,7 +5359,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean drop(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
 
@@ -5373,7 +5373,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception{
+	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
 

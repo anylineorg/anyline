@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -39,14 +39,14 @@ public interface QueryInterceptor extends DMInterceptor{
 
     default SWITCH prepare(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){ return SWITCH.CONTINUE;}
     /**
-     * 合计总数之后调用，行数页数等信息在navi中,到这一步SQL已创建完成
+     * 合计总数之后调用，行数页数等信息在navi中, 到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 查询SQL(包含SQL体，查询条件，查询参数值)
      * @param navi 分页
      * @return RESULT
      */
-    default SWITCH before(DataRuntime runtime, String random, Run run, PageNavi navi){ return SWITCH.CONTINUE;}
-    default SWITCH before(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){ return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime,  String random,  Run run,  PageNavi navi){ return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime,  String random,  Procedure procedure,  PageNavi navi){ return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -56,6 +56,6 @@ public interface QueryInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    default SWITCH after(DataRuntime runtime, String random, Run run, boolean success, Object result, PageNavi navi, long millis){ return SWITCH.CONTINUE;}
-    default SWITCH after(DataRuntime runtime, String random, Procedure procedure, PageNavi navi, boolean success, Object result, long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime,  String random,  Run run,  boolean success,  Object result,  PageNavi navi,  long millis){ return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime,  String random,  Procedure procedure,  PageNavi navi,  boolean success,  Object result,  long millis){ return SWITCH.CONTINUE;}
 }

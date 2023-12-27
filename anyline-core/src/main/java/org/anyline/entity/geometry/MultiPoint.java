@@ -63,7 +63,7 @@ public class MultiPoint extends Geometry{
         boolean first = true;
         for(Point point:points){
             if(!first){
-                builder.append(",");
+                builder.append(", ");
             }
             first = false;
             builder.append(point.toString(false));
@@ -78,8 +78,8 @@ public class MultiPoint extends Geometry{
     /**
      * sql格式
      * @param tag 是否包含tag<br/>
-     *             false:((1 1),(2 2))<br/>
-     *             true: MULTIPOINT((1 1),(2 2))
+     *             false:((1 1), (2 2))<br/>
+     *             true: MULTIPOINT((1 1), (2 2))
      * @param bracket 是否包含()
      * @return String
      */
@@ -94,7 +94,7 @@ public class MultiPoint extends Geometry{
         boolean first = true;
         for(Point point:points){
             if(!first){
-                builder.append(",");
+                builder.append(", ");
             }
             first = false;
             builder.append(point.sql(false, false));
@@ -105,7 +105,7 @@ public class MultiPoint extends Geometry{
         return builder.toString();
     }
     public String sql(){
-        return sql(true, true);
+        return sql(true,  true);
     }
 
     public List<Point> getPoints() {

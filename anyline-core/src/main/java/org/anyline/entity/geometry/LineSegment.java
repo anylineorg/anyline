@@ -70,7 +70,7 @@ public class LineSegment extends Geometry{
         }
         builder.append("(");
         builder.append(p1.toString(false));
-        builder.append(",");
+        builder.append(", ");
         builder.append(p2.toString(false));
         builder.append(")");
         return builder.toString();
@@ -87,7 +87,7 @@ public class LineSegment extends Geometry{
             builder.append("(");
         }
         builder.append(p1.sql(false, false));
-        builder.append(",");
+        builder.append(", ");
         builder.append(p2.sql(false, false));
         if(bracket){
             builder.append(")");

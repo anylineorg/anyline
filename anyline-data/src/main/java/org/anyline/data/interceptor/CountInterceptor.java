@@ -50,5 +50,5 @@ public interface CountInterceptor extends DMInterceptor{
      * @param millis 耗时
      * @return RESULT
      */
-    SWITCH after(DataRuntime runtime, String random, Run run, boolean success, long result, long millis);
+    SWITCH after(DataRuntime runtime, String random, Run run,  boolean success,  long result,  long millis);
 }

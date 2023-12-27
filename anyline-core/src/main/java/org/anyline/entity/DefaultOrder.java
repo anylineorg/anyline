@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -36,10 +36,10 @@ public class DefaultOrder implements Order{
 		// ID ASC
 		// ORDER BY CONVERT(id USING gbk) COLLATE gbk_chinese_ci DESC
 		if(up.endsWith(" ASC")){
-			this.column = str.substring(0,str.length()-4);
+			this.column = str.substring(0, str.length()-4);
 			typ = "ASC";
 		}else if(up.endsWith(" DESC")){
-			this.column = str.substring(0,str.length()-5);
+			this.column = str.substring(0, str.length()-5);
 			typ = "DESC";
 		} else {
 			this.column  = str;
@@ -51,11 +51,11 @@ public class DefaultOrder implements Order{
 			this.type = TYPE.DESC;
 		} 
 	}
-	public DefaultOrder(String column, TYPE type){
+	public DefaultOrder(String column,  TYPE type){
 		setColumn(column);
 		setType(type);
 	}
-	public DefaultOrder(String column, String type){
+	public DefaultOrder(String column,  String type){
 		setColumn(column);
 		setType(type);
 	} 

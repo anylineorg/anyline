@@ -49,7 +49,7 @@ public class SHA1Util {
 			e.printStackTrace(); 
 		} 
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-			log.warn("[SHA1 SIGN][src:{}][sign:{}]",src,result);
+			log.warn("[SHA1 SIGN][src:{}][sign:{}]", src, result);
 		} 
 		return result; 
 	} 

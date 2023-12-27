@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-greatdb</name>
     <url>http://www.anyline.org/greatdb</url>
-    <description>万里数据库,基于MySQL,https://greatdb.com/</description>
+    <description>万里数据库, 基于MySQL, https://greatdb.com/</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

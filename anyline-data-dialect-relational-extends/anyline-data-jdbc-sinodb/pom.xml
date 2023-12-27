@@ -15,7 +15,7 @@
 <packaging>jar</packaging>
 <name>anyline-data-jdbc-sinodb</name>
 <url>http://www.anyline.org/sinodb</url>
-<description>星瑞格,基于TiDB</description>
+<description>星瑞格, 基于TiDB</description>
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>

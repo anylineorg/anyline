@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -23,7 +23,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -52,7 +52,7 @@ public class DomUtil {
      * @param tags 标签名(不含namespace)
      * @return Element
      */
-    public static Element element(Element root,List<String> tags){
+    public static Element element(Element root, List<String> tags){
         Element result = null;
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result){
@@ -73,7 +73,7 @@ public class DomUtil {
      * @return Element
      */
     public static Element element(Element root, String tags){
-        return element(root, BeanUtil.array2list(tags.split(",")));
+        return element(root, BeanUtil.array2list(tags.split(", ")));
     }
     /**
      * 根据标签name搜索element
@@ -99,13 +99,13 @@ public class DomUtil {
     }
 
     public static List<Element> elements(Element root, String tags, boolean recursion){
-        return elements(root, BeanUtil.array2list(tags.split(",")), recursion);
+        return elements(root, BeanUtil.array2list(tags.split(", ")), recursion);
     }
     public static List<Element> elements(Element root, List<String> tags){
-        return elements(root, tags,true);
+        return elements(root, tags, true);
     }
     public static List<Element> elements(Element root, String tags){
-        return elements(root, tags,true);
+        return elements(root, tags, true);
     }
     /**
      * 根据标签name以及属性值搜索element
@@ -115,7 +115,7 @@ public class DomUtil {
      * @param value 属性值
      * @return Element
      */
-    public static Element element(Element root,List<String> tags, String attribute, String value){
+    public static Element element(Element root, List<String> tags, String attribute, String value){
         Element result = null;
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result){
@@ -130,8 +130,8 @@ public class DomUtil {
         return result;
     }
 
-    public static Element element(Element root, String tags, String attribute, String value){
-        return element(root, BeanUtil.array2list(tags.split(",")), attribute, value);
+    public static Element element(Element root, String tags,  String attribute,  String value){
+        return element(root,  BeanUtil.array2list(tags.split(", ")),  attribute,  value);
     }
     /**
      * 根据标签name以及属性值搜索element
@@ -141,7 +141,7 @@ public class DomUtil {
      * @param value 属性值
      * @return List
      */
-    public static List<Element> elements(Element root, List<String> tags, String attribute, String value){
+    public static List<Element> elements(Element root,  List<String> tags,  String attribute,  String value){
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()){
@@ -149,14 +149,14 @@ public class DomUtil {
             if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))){
                 list.add(e);
             }
-            List<Element> items = elements(e, tags, attribute, value);
+            List<Element> items = elements(e,  tags,  attribute,  value);
             list.addAll(items);
         }
         return list;
     }
 
-    public static List<Element> elements(Element root, String tags, String attribute, String value){
-        return elements(root, BeanUtil.array2list(tags.split(",")), attribute, value);
+    public static List<Element> elements(Element root,  String tags,  String attribute,  String value){
+        return elements(root,  BeanUtil.array2list(tags.split(", ")),  attribute,  value);
     }
     /**
      * 根据属性值搜索element
@@ -165,7 +165,7 @@ public class DomUtil {
      * @param value 属性值
      * @return Element
      */
-    public static Element element(Element root, String attribute, String value){
+    public static Element element(Element root,  String attribute,  String value){
         Element result = null;
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result){
@@ -174,7 +174,7 @@ public class DomUtil {
                 result = e;
                 break;
             }else{
-                result = element(e, attribute, value);
+                result = element(e,  attribute,  value);
             }
         }
         return result;
@@ -186,7 +186,7 @@ public class DomUtil {
      * @param value 属性值
      * @return List
      */
-    public static List<Element> elements(Element root, String attribute, String value){
+    public static List<Element> elements(Element root,  String attribute,  String value){
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()){
@@ -194,7 +194,7 @@ public class DomUtil {
             if (value.equals(e.attributeValue(attribute))){
                 list.add(e);
             }
-            List<Element> items = elements(e,  attribute, value);
+            List<Element> items = elements(e,   attribute,  value);
             list.addAll(items);
         }
         return list;
@@ -216,8 +216,8 @@ public class DomUtil {
         XMLWriter writer = null;
         try {
             StringWriter stringWriter = new StringWriter();
-            OutputFormat format = new OutputFormat("\t", true);
-            writer = new XMLWriter(stringWriter, format);
+            OutputFormat format = new OutputFormat("\t",  true);
+            writer = new XMLWriter(stringWriter,  format);
             writer.write(document);
             writer.flush();
             result = stringWriter.getBuffer().toString();
@@ -240,7 +240,7 @@ public class DomUtil {
      * @param tag 过滤标签
      * @return List
      */
-    public static List<Element> afters(Element element, String tag){
+    public static List<Element> afters(Element element,  String tag){
         List<Element> list = new ArrayList<>();
         List<Element> elements = element.getParent().elements();
         int index = elements.indexOf(element);
@@ -258,7 +258,7 @@ public class DomUtil {
      * @param tag 过滤标签
      * @return List
      */
-    public static List<Element> befores(Element element, String tag){
+    public static List<Element> befores(Element element,  String tag){
         List<Element> list = new ArrayList<>();
         List<Element> elements = element.getParent().elements();
         int index = elements.indexOf(element);
@@ -278,7 +278,7 @@ public class DomUtil {
      * @param tags 过滤
      * @return List
      */
-    public static List<Element> betweens(Element start,Element end, String ... tags){
+    public static List<Element> betweens(Element start, Element end,  String ... tags){
         List<Element> list = new ArrayList<>();
         List<Element> elements = start.getParent().elements();
         int fr = elements.indexOf(start);
@@ -286,7 +286,7 @@ public class DomUtil {
         int index = elements.indexOf(start);
         for(int i=fr+1; i<to; i++){
             Element item = elements.get(i);
-            if(null == tags || tags.length ==0 || BasicUtil.contains(tags, item.getName())) {
+            if(null == tags || tags.length ==0 || BasicUtil.contains(tags,  item.getName())) {
                 list.add(item);
             }
         }
@@ -298,7 +298,7 @@ public class DomUtil {
      * @param parent parent
      * @param removes removes
      */
-    public static void remove(Element parent, List<Element> removes){
+    public static void remove(Element parent,  List<Element> removes){
         List<Element> elements = parent.elements();
         for(Element remove:removes){
             elements.remove(remove);

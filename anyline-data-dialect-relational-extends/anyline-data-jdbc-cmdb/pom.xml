@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-cmdb</name>
     <url>http://www.anyline.org/cmdb</url>
-    <description>中国移动磐维数据库,基于opengauss</description>
+    <description>中国移动磐维数据库, 基于opengauss</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

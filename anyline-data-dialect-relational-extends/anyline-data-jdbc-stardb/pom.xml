@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-stardb</name>
     <url>http://www.anyline.org/stardb</url>
-    <description>京东StarDB,基于MySQL</description>
+    <description>京东StarDB, 基于MySQL</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

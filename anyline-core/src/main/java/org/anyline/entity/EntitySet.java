@@ -123,7 +123,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
     }
 
     public DataSet set(String ... keys){
-        return EntityAdapterProxy.set(this, keys);
+        return EntityAdapterProxy.set(this,  keys);
     }
 
     public boolean isResult() {

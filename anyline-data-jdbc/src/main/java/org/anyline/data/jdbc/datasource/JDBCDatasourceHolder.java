@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -56,13 +56,13 @@ import java.util.*;
 public class JDBCDatasourceHolder extends DatasourceHolder {
 	private static Logger log = LoggerFactory.getLogger(JDBCDatasourceHolder.class);
 
-	protected static Map<String,DataSource> caches = new HashMap<>();
+	protected static Map<String, DataSource> caches = new HashMap<>();
 	private static Map<TransactionStatus, String> transactionStatus = new Hashtable<>();
 	public static final String DATASOURCE_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
 	public JDBCDatasourceHolder(){
-		DatasourceHolderProxy.reg(DataSource.class,this);
-		DatasourceHolderProxy.reg(JdbcTemplate.class,this);
+		DatasourceHolderProxy.reg(DataSource.class, this);
+		DatasourceHolderProxy.reg(JdbcTemplate.class, this);
 		ConvertAdapter.reg(new Convert() {
 			@Override
 			public Class getOrigin() {
@@ -96,7 +96,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	 * transaction:事务相关
 	 *
 	 * 执行线路:
-	 * 1.加载配置文件，转发给各个DatasourceLoader,各个DatasourceLoder过滤适用的数据源(主要根据url和type)
+	 * 1.加载配置文件，转发给各个DatasourceLoader, 各个DatasourceLoder过滤适用的数据源(主要根据url和type)
 	 *   1.1 检测数据源列表(包含默认数据源)
 	 *   1.2 逐个数据源调用注册数(reg)
 	 *      1.2.1 解析配置文件
@@ -141,12 +141,12 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		return reg(key, DATASOURCE_TYPE_DEFAULT, type.driver(), url, user, password);
 	}
 
-	public static String reg(String key, Map<String,Object> param, boolean override) throws Exception{
+	public static String reg(String key, Map<String, Object> param, boolean override) throws Exception{
 		String ds_id = inject(key, param, override);
 		return init(key, ds_id, override);
 	}
 
-	public static String reg(String key, Map<String,Object> param) throws Exception{
+	public static String reg(String key, Map<String, Object> param) throws Exception{
 		return reg(key, param, true);
 	}
 	public static DataSource reg(String key, DataSource ds, boolean override) throws Exception{
@@ -176,7 +176,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 				//只注册jdbc驱动
 				return null;
 			}
-			Map<String,Object> map = new HashMap<>();
+			Map<String, Object> map = new HashMap<>();
 			map.put("type", type);
 			String ds = inject(key, prefix, map, env, true);
 			if(null == ds){//创建数据源失败
@@ -190,7 +190,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		return null;
 	}
 	/**
-	 * 根据params创建数据源,同时注入到spring上下文
+	 * 根据params创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(key)
 	 * @param params 帐号密码等参数
 	 * @return bean.id
@@ -201,7 +201,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	}
 
 	/**
-	 * 根据params与配置文件创建数据源,同时注入到spring上下文
+	 * 根据params与配置文件创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(“sso”)
 	 * @param prefix 配置文件前缀 如 anyline.datasource.sso
 	 * @param params map格式参数
@@ -221,7 +221,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		try {
 			String url =  value(params, "url", String.class, null);
 			if(BasicUtil.isEmpty(url)){
-				url = value(env, prefix,"url", String.class, null);
+				url = value(env, prefix, "url", String.class, null);
 			}
 			if(BasicUtil.isEmpty(url)){
 				return null;
@@ -233,7 +233,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 
 			String type = value(params, "type", String.class, null);
 			if(BasicUtil.isEmpty(type)){
-				type = value(env, prefix,"type", String.class, null);
+				type = value(env, prefix, "type", String.class, null);
 			}
 			if (type == null) {
 				type = DATASOURCE_TYPE_DEFAULT;
@@ -440,7 +440,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		//查看结果
 		AnylineService service = ServiceProxy.service(runtime.datasource());
 		LinkedHashMap<String, Database> databases = service.metadata().databases();
-		Map<String,Object> map = params.get(runtime.datasource());
+		Map<String, Object> map = params.get(runtime.datasource());
 		if(null == map){
 			log.warn("不是从anyline创建的数据源获取不到数据源参数");
 			return list;

@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-tidb</name>
     <url>http://www.anyline.org/tidb</url>
-    <description>TiDB,兼容MySQL,https://cn.pingcap.com/</description>
+    <description>TiDB, 兼容MySQL, https://cn.pingcap.com/</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

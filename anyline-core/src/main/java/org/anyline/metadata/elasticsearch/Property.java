@@ -19,8 +19,8 @@ package org.anyline.metadata.elasticsearch;
 
 public class Property {
     public static enum TYPE{
-        BINARY ,BOOLEAN ,BYTE, DATE ,DOUBLE, FLOAT, GEO_POINT,GEO_SHAPE, HALF_FLOAT ,
-        INTEGER, KEYWORD, LONG ,NESTED, OBJECT, SCALED_FLOAT, SHORT,TEXT
+        BINARY, BOOLEAN, BYTE, DATE, DOUBLE, FLOAT, GEO_POINT, GEO_SHAPE, HALF_FLOAT,
+        INTEGER, KEYWORD, LONG, NESTED, OBJECT, SCALED_FLOAT, SHORT, TEXT
     }
     /**
      * 用于控制倒排索引记录的内容，有如下四种配置：
@@ -32,7 +32,7 @@ public class Property {
      *
      */
     public static enum OPTION{
-        DOCS,FREQS,POSITIONS,OFFSETS
+        DOCS, FREQS, POSITIONS, OFFSETS
     }
 
     protected TYPE type;

@@ -54,10 +54,10 @@ public class CodeUtil {
 				tmp.append("%"); 
 				if (j < 16) 
 					tmp.append("0"); 
-				tmp.append(Integer.toString(j, 16)); 
+				tmp.append(Integer.toString(j, 16));
 			} else {
 				tmp.append("%u"); 
-				tmp.append(Integer.toString(j, 16)); 
+				tmp.append(Integer.toString(j, 16));
 			} 
 		} 
 		return tmp.toString(); 
@@ -69,19 +69,19 @@ public class CodeUtil {
 		} 
 		StringBuffer tmp = new StringBuffer(); 
 		tmp.ensureCapacity(src.length()); 
-		int lastPos = 0, pos = 0; 
+		int lastPos = 0, pos = 0;
 		char ch; 
 		while (lastPos < src.length()) {
-			pos = src.indexOf("%", lastPos); 
+			pos = src.indexOf("%", lastPos);
 			if (pos == lastPos) {
 				if (src.charAt(pos + 1) == 'u') {
 					ch = (char) Integer.parseInt( 
-							src.substring(pos + 2, pos + 6), 16); 
+							src.substring(pos + 2,  pos + 6),  16);
 					tmp.append(ch); 
 					lastPos = pos + 6; 
 				} else {
 					ch = (char) Integer.parseInt( 
-							src.substring(pos + 1, pos + 3), 16); 
+							src.substring(pos + 1,  pos + 3),  16);
 					tmp.append(ch); 
 					lastPos = pos + 3; 
 				} 
@@ -90,7 +90,7 @@ public class CodeUtil {
 					tmp.append(src.substring(lastPos)); 
 					lastPos = src.length(); 
 				} else {
-					tmp.append(src.substring(lastPos, pos)); 
+					tmp.append(src.substring(lastPos,  pos));
 					lastPos = pos; 
 				} 
 			} 
@@ -117,7 +117,7 @@ public class CodeUtil {
 		StringBuilder string = new StringBuilder(); 
 		String[] hex = unicode.split("\\\\u"); 
 		for (int i = 1; i < hex.length; i++) {
-			int data = Integer.parseInt(hex[i], 16); 
+			int data = Integer.parseInt(hex[i],  16);
 			string.append((char) data); 
 		} 
 		return string.toString(); 
@@ -131,7 +131,7 @@ public class CodeUtil {
 		char[] chars = str.toCharArray(); 
 		for (int i = 0; i < chars.length; i++) {
 			if (i != chars.length - 1) {
-				sbu.append((int) chars[i]).append(","); 
+				sbu.append((int) chars[i]).append(", ");
 			} else {
 				sbu.append((int) chars[i]); 
 			} 
@@ -144,7 +144,7 @@ public class CodeUtil {
 			return ""; 
 		} 
 		StringBuffer sbu = new StringBuffer(); 
-		String[] chars = str.split(","); 
+		String[] chars = str.split(", ");
 		for (int i = 0; i < chars.length; i++) {
 			sbu.append((char) Integer.parseInt(chars[i])); 
 		} 
@@ -156,13 +156,13 @@ public class CodeUtil {
 	 * @param encode  encode
 	 * @return String
 	 */ 
-	public static String urlDecode(String url, String encode) {
+	public static String urlDecode(String url,  String encode) {
 		if (BasicUtil.isEmpty(url)) {
 			return ""; 
 		} 
 		String result = ""; 
 		try {
-			result = java.net.URLDecoder.decode(url, encode); 
+			result = java.net.URLDecoder.decode(url,  encode);
 		} catch (Exception e) {
 			e.printStackTrace(); 
 		} 
@@ -170,7 +170,7 @@ public class CodeUtil {
 	} 
  
 	public static String urlDecode(String url) {
-		return urlDecode(url, "utf-8"); 
+		return urlDecode(url,  "utf-8");
 	} 
 	/** 
 	 * 整个url编码 
@@ -179,30 +179,30 @@ public class CodeUtil {
 	 * @param len  保留长度
 	 * @return String
 	 */ 
-	public static String urlEncode(String url, String encode, int len) {
+	public static String urlEncode(String url,  String encode,  int len) {
 		if (BasicUtil.isEmpty(url)) {
 			return ""; 
 		}
 		if(len >= 0 && len<url.length()){
-			url = url.substring(0, len);
+			url = url.substring(0,  len);
 		}
 		String result = ""; 
 		try {
-			result = java.net.URLEncoder.encode(url, encode); 
+			result = java.net.URLEncoder.encode(url,  encode);
 		} catch (Exception e) {
 			e.printStackTrace(); 
 		} 
 		return result; 
 	}
 
-	public static String urlEncode(String url, String encode) {
-		return urlEncode(url, encode, -1);
+	public static String urlEncode(String url,  String encode) {
+		return urlEncode(url,  encode,  -1);
 	}
 	public static String urlEncode(String url) {
-		return urlEncode(url, "utf-8", -1);
+		return urlEncode(url,  "utf-8",  -1);
 	}
-	public static String urlEncode(String url, int len) {
-		return urlEncode(url, "utf-8", len);
+	public static String urlEncode(String url,  int len) {
+		return urlEncode(url,  "utf-8",  len);
 	}
 
 	/** 
@@ -211,7 +211,7 @@ public class CodeUtil {
 	 * @param encode  encode
 	 * @return String
 	 */
-	public static String urlParamEncode(String url, String encode) {
+	public static String urlParamEncode(String url,  String encode) {
 		if (BasicUtil.isEmpty(url)) {
 			return ""; 
 		} 
@@ -220,8 +220,8 @@ public class CodeUtil {
 			int idx = url.indexOf("?"); 
 			if(idx != -1){
 				String param = url.substring(idx+1); 
-				url = url.substring(0,idx+1); 
-				param = java.net.URLEncoder.encode(param, encode); 
+				url = url.substring(0, idx+1);
+				param = java.net.URLEncoder.encode(param,  encode);
 				result = url + param; 
 			} 
 		} catch (Exception e) {
@@ -230,7 +230,7 @@ public class CodeUtil {
 		return result; 
 	} 
 	public static String urlParamEncode(String url) {
-		return urlParamEncode(url, "utf-8"); 
+		return urlParamEncode(url,  "utf-8");
 	} 
  
 	/** 
@@ -244,7 +244,7 @@ public class CodeUtil {
 		} 
 		String result = url; 
 		try {
-			result = result.replace(" ", "%20"); 
+			result = result.replace(" ",  "%20");
 			result = new URI(result).toASCIIString(); 
 		} catch (Exception e) {
 			e.printStackTrace(); 
@@ -260,9 +260,9 @@ public class CodeUtil {
 		char ch; 
 		while (matcher.find()) {
 			String group = matcher.group(2); 
-			ch = (char) Integer.parseInt(group, 16); 
+			ch = (char) Integer.parseInt(group,  16);
 			String group1 = matcher.group(1); 
-			str = str.replace(group1, ch + ""); 
+			str = str.replace(group1,  ch + "");
 		} 
 		return str; 
 	} 
@@ -303,7 +303,7 @@ public class CodeUtil {
 			byte[] b = null; 
 			int length = src.length(); 
 			for (int i = 0; i < length; i++) {
-				str = src.substring(i, i + 1); 
+				str = src.substring(i,  i + 1);
 				// 全角空格转换成半角空格
 				if (str.equals("　")) {
 					outStrBuf.append(" "); 
@@ -315,7 +315,7 @@ public class CodeUtil {
 					// 表示全角?
 					b[3] = (byte) (b[3] + 32); 
 					b[2] = 0; 
-					outStrBuf.append(new String(b, "unicode")); 
+					outStrBuf.append(new String(b,  "unicode"));
 				} else {
 					outStrBuf.append(str); 
 				} 

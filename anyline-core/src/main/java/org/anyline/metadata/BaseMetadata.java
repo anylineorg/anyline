@@ -19,8 +19,8 @@ public class BaseMetadata<T extends BaseMetadata> {
 
     protected T origin;
     protected T update;
-    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table,catalog, schema,name,drop,action)
-    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table,catalog, schema,name,drop,action)
+    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table, catalog, schema, name, drop, action)
+    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table, catalog, schema, name, drop, action)
 
     protected boolean drop = false                ;
     protected ACTION.DDL action = null            ; //ddl命令 add drop alter
@@ -30,7 +30,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     protected Date checkSchemaTime                ;
     public String getIdentity(){
         if(null == identity){
-            identity = BasicUtil.nvl(catalog,"")+"_"+BasicUtil.nvl(schema,"")+"_"+BasicUtil.nvl(getTableName(false),"")+"_"+BasicUtil.nvl(getName(),"") ;
+            identity = BasicUtil.nvl(catalog, "")+"_"+BasicUtil.nvl(schema, "")+"_"+BasicUtil.nvl(getTableName(false), "")+"_"+BasicUtil.nvl(getName(), "") ;
             identity = identity.toUpperCase();
             //identity = MD5Util.crypto(identity.toUpperCase());
         }

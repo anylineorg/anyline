@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -29,7 +29,7 @@ public class Procedure extends BaseMetadata<Procedure> implements Serializable {
 	private String returnType;
 	private List<Parameter> parameters = new ArrayList<Parameter>();
 	private List<Parameter> inputs = new ArrayList<Parameter>();
-	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数,输入输出参数
+	private List<Parameter> outputs = new ArrayList<Parameter>();//输出参数, 输入输出参数
 	private List<Object> result;	// 输出参数结果
 	private boolean hasReturn = false;
 	private PageNavi navi;

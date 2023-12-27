@@ -192,7 +192,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     public LinkedHashMap<String, Column> primarys(){
         LinkedHashMap<String, Column> pks = new LinkedHashMap<>();
-        for(Map.Entry<String,Column> item:columns.entrySet()){
+        for(Map.Entry<String, Column> item:columns.entrySet()){
             Column column = item.getValue();
             String key = item.getKey();
             if(column.isPrimaryKey() == 1){
@@ -211,7 +211,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     }
     public E clone(){
         E copy = super.clone();
-        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);
@@ -291,7 +291,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                     column.primary(true);
                     primaryKey.addColumn(column);
                 } else {
-                    throw new AnylineException("未匹配到" + key + ",请诜添加到columns");
+                    throw new AnylineException("未匹配到" + key + ", 请诜添加到columns");
                 }
             }
         } else {

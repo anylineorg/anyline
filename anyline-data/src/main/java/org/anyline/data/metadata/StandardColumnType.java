@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -47,7 +47,7 @@ public enum StandardColumnType implements ColumnType {
 /*
 
 -- DROP TABLE "public"."chk_column";
-,kingbase
+, kingbase
 CREATE TABLE "public"."chk_column" (
 	"c2" aclitem NULL,
 	"c6" binary_integer NULL,
@@ -92,7 +92,7 @@ CREATE TABLE "public"."chk_column" (
 	"c57" interval minute(2) to second(6) NULL,
 	"c58" interval month(2) NULL,
 	"c59" interval month(2) NULL,
-	"c60" interval second(2,6) NULL,
+	"c60" interval second(2, 6) NULL,
 	"c61" interval year(2) NULL,
 	"c62" interval year(2) to month NULL,
 	"c65" jsonpath NULL,
@@ -173,10 +173,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *
      * ****************************************************************************************************************/
     /**
-     * mysql,pg
+     * mysql, pg
      */
-    CHAR("CHAR", new DatabaseType[]{MySQL, PostgreSQL, Informix, HANA, Derby}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    CHAR("CHAR",  new DatabaseType[]{MySQL,  PostgreSQL,  Informix,  HANA,  Derby},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -193,91 +193,91 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         }
     }
     /**
-     * oracle,MSSQL
+     * oracle, MSSQL
      */
-    ,NCHAR("NCHAR", new DatabaseType[]{ORACLE, MSSQL, Informix}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NCHAR("NCHAR",  new DatabaseType[]{ORACLE,  MSSQL,  Informix},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,CLOB("CLOB", new DatabaseType[]{ORACLE, Informix, Derby, KingBase}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , CLOB("CLOB",  new DatabaseType[]{ORACLE,  Informix,  Derby,  KingBase},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,NCLOB("NCLOB", new DatabaseType[]{ORACLE, HANA}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NCLOB("NCLOB",  new DatabaseType[]{ORACLE,  HANA},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,NVARCHAR("NVARCHAR", new DatabaseType[]{MSSQL, Informix, HANA, KingBase}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NVARCHAR("NVARCHAR",  new DatabaseType[]{MSSQL,  Informix,  HANA,  KingBase},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,NVARCHAR2("NVARCHAR2", new DatabaseType[]{ORACLE}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NVARCHAR2("NVARCHAR2",  new DatabaseType[]{ORACLE},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * mysql
      */
-    ,LONGTEXT("LONGTEXT", new DatabaseType[]{MySQL}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , LONGTEXT("LONGTEXT",  new DatabaseType[]{MySQL},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * mysql
      */
-    ,MEDIUMTEXT("MEDIUMTEXT", new DatabaseType[]{MySQL}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , MEDIUMTEXT("MEDIUMTEXT",  new DatabaseType[]{MySQL},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
-     * mysql,pg,sqlite
+     * mysql, pg, sqlite
      */
-    ,TEXT("TEXT", new DatabaseType[]{MySQL, PostgreSQL, SQLite, Informix, IoTDB, KingBase}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , TEXT("TEXT",  new DatabaseType[]{MySQL,  PostgreSQL,  SQLite,  Informix,  IoTDB,  KingBase},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,NTEXT("NTEXT", new DatabaseType[]{MSSQL}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NTEXT("NTEXT",  new DatabaseType[]{MSSQL},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * mysql
      */
-    ,TINYTEXT("TINYTEXT", new DatabaseType[]{MySQL}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , TINYTEXT("TINYTEXT",  new DatabaseType[]{MySQL},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
-     * mysql,pg,oracle,Informix(长度不超过 255 )
+     * mysql, pg, oracle, Informix(长度不超过 255 )
      */
-    ,VARCHAR("VARCHAR", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, Informix, HANA, Derby, KingBase}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , VARCHAR("VARCHAR",  new DatabaseType[]{MySQL,  PostgreSQL,  ORACLE,  Informix,  HANA,  Derby,  KingBase},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
-    ,LVARCHAR("LVARCHAR", new DatabaseType[]{Informix}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , LVARCHAR("LVARCHAR",  new DatabaseType[]{Informix},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,VARCHAR2("VARCHAR2", new DatabaseType[]{ORACLE}, String.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , VARCHAR2("VARCHAR2",  new DatabaseType[]{ORACLE},  String.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,SYSNAME("SYSNAME", new DatabaseType[]{MSSQL}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , SYSNAME("SYSNAME",  new DatabaseType[]{MSSQL},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
      * pg
      */
-    ,UUID("UUID", new DatabaseType[]{PostgreSQL,KingBase}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , UUID("UUID",  new DatabaseType[]{PostgreSQL, KingBase},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -293,17 +293,17 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * MSSQL
      */
-    ,UNIQUEIDENTIFIER("UNIQUEIDENTIFIER", new DatabaseType[]{MSSQL}, String.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , UNIQUEIDENTIFIER("UNIQUEIDENTIFIER",  new DatabaseType[]{MSSQL},  String.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return CHAR.write(value,  def,  placeholder);}
     }
     /**
-     * mysql(byte[]),MSSQL
+     * mysql(byte[]), MSSQL
      */
-    ,BINARY("BINARY", new DatabaseType[]{MySQL, MSSQL, HANA, ElasticSearch}, byte[].class, false, true)
+   , BINARY("BINARY",  new DatabaseType[]{MySQL,  MSSQL,  HANA,  ElasticSearch},  byte[].class,  false,  true)
     /**
-     * mysql(byte[]),MSSQL
+     * mysql(byte[]), MSSQL
      */
-    ,VARBINARY("VARBINARY", new DatabaseType[]{MySQL, MSSQL, HANA}, byte[].class, false, true)
+   , VARBINARY("VARBINARY",  new DatabaseType[]{MySQL,  MSSQL,  HANA},  byte[].class,  false,  true)
 
 
     /* *****************************************************************************************************************
@@ -313,12 +313,12 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * ****************************************************************************************************************/
 
     /**
-     * mysql,pg
+     * mysql, pg
      */
-    ,JSON("JSON", new DatabaseType[]{MySQL, PostgreSQL, KingBase}, String.class, true, true){
+   , JSON("JSON",  new DatabaseType[]{MySQL,  PostgreSQL,  KingBase},  String.class,  true,  true){
 
         @Override
-        public Object convert(Object value, Class target, Object def) {
+        public Object convert(Object value,  Class target,  Object def) {
             if(null == value){
                 return def;
             }
@@ -333,15 +333,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                         value = DataRow.parseJson(node);
                     }
                 }else{
-                    value = super.convert(value, target, def);
+                    value = super.convert(value,  target,  def);
                 }
             }catch (Exception e){
                 //不能转成DataSet的List
-                value = super.convert(value, target, def);
+                value = super.convert(value,  target,  def);
             }
             return value;
         }
-        public Object read(Object value, Object def, Class clazz){
+        public Object read(Object value,  Object def,  Class clazz){
             if(null == value){
                 return value;
             }
@@ -359,7 +359,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                         boolean isDataRow = true;
                         while (items.hasNext()) {
                             JsonNode item = items.next();
-                            Object row = DataRow.parseJsonObject(KeyAdapter.KEY_CASE.CONFIG, item);
+                            Object row = DataRow.parseJsonObject(KeyAdapter.KEY_CASE.CONFIG,  item);
                             if(row instanceof DataRow){
                             }else{
                                 isDataRow = false;
@@ -385,108 +385,108 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * MSSQL
      */
-    ,XML("XML", new DatabaseType[]{MSSQL,KingBase}, String.class, true, true){}
+   , XML("XML",  new DatabaseType[]{MSSQL, KingBase},  String.class,  true,  true){}
     /* *****************************************************************************************************************
      *
      *                                              number-int/long
      *
      * ****************************************************************************************************************/
     /**
-     * mysql(Boolean),pg(Boolean),MSSQL
+     * mysql(Boolean), pg(Boolean), MSSQL
      */
-    ,BIT("BIT", new DatabaseType[]{MySQL, MSSQL}, Boolean.class, true, true)
+   , BIT("BIT",  new DatabaseType[]{MySQL,  MSSQL},  Boolean.class,  true,  true)
     /**
      * pg
      */
-    ,VARBIT("VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true)
-    ,SHORT("SHORT", new DatabaseType[]{}, Short.class, true, true)
+   , VARBIT("VARBIT",  new DatabaseType[]{PostgreSQL},  Byte[].class,  true,  true)
+   , SHORT("SHORT",  new DatabaseType[]{},  Short.class,  true,  true)
 
     /**
-     * mysql,MSSQL,kingbase
+     * mysql, MSSQL, kingbase
      */
-    ,INT("INT", new DatabaseType[]{MySQL, MSSQL, Informix, Derby}, Integer.class, true, true)
+   , INT("INT",  new DatabaseType[]{MySQL,  MSSQL,  Informix,  Derby},  Integer.class,  true,  true)
     /**
      * IoTDB
      */
-    ,INT32("INT32", new DatabaseType[]{IoTDB}, Integer.class, true, true)
+   , INT32("INT32",  new DatabaseType[]{IoTDB},  Integer.class,  true,  true)
     /**
      * IoTDB
      */
-    ,INT64("INT64", new DatabaseType[]{IoTDB}, Integer.class, true, true)
+   , INT64("INT64",  new DatabaseType[]{IoTDB},  Integer.class,  true,  true)
     /**
      * Informix
      */
-    ,INFORMIX_INTEGER("INTEGER", new DatabaseType[]{Informix}, Integer.class, true, true)
+   , INFORMIX_INTEGER("INTEGER",  new DatabaseType[]{Informix},  Integer.class,  true,  true)
     /**
      * oracle
      */
-    ,LONG("LONG", new DatabaseType[]{ORACLE,ElasticSearch}, String.class, true, true){}
+   , LONG("LONG",  new DatabaseType[]{ORACLE, ElasticSearch},  String.class,  true,  true){}
     /**
-     * pg, informix
+     * pg,  informix
      */
-    ,SERIAL("SERIAL", new DatabaseType[]{PostgreSQL, Informix}, Integer.class, true, true)
-    /**
-     * pg
-     */
-    ,SERIAL2("SERIAL2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
+   , SERIAL("SERIAL",  new DatabaseType[]{PostgreSQL,  Informix},  Integer.class,  true,  true)
     /**
      * pg
      */
-    ,SERIAL4("SERIAL4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
+   , SERIAL2("SERIAL2",  new DatabaseType[]{PostgreSQL},  Integer.class,  true,  true)
     /**
      * pg
      */
-    ,SERIAL8("SERIAL8", new DatabaseType[]{PostgreSQL, Informix}, Long.class, true, true)
+   , SERIAL4("SERIAL4",  new DatabaseType[]{PostgreSQL},  Integer.class,  true,  true)
     /**
      * pg
      */
-    ,SMALLSERIAL("SERIAL2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
+   , SERIAL8("SERIAL8",  new DatabaseType[]{PostgreSQL,  Informix},  Long.class,  true,  true)
     /**
      * pg
      */
-    ,BIGSERIAL("SERIAL8", new DatabaseType[]{PostgreSQL, Informix}, Long.class, true, true)
+   , SMALLSERIAL("SERIAL2",  new DatabaseType[]{PostgreSQL},  Integer.class,  true,  true)
     /**
      * pg
      */
-    ,INT2("INT2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
+   , BIGSERIAL("SERIAL8",  new DatabaseType[]{PostgreSQL,  Informix},  Long.class,  true,  true)
     /**
      * pg
      */
-    ,INT4("INT4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
+   , INT2("INT2",  new DatabaseType[]{PostgreSQL},  Integer.class,  true,  true)
     /**
      * pg
      */
-    ,INT8("INT8", new DatabaseType[]{PostgreSQL, Informix}, Long.class, true, true)
+   , INT4("INT4",  new DatabaseType[]{PostgreSQL},  Integer.class,  true,  true)
+    /**
+     * pg
+     */
+   , INT8("INT8",  new DatabaseType[]{PostgreSQL,  Informix},  Long.class,  true,  true)
     /**
      * mysql
      */
-    ,BIGINT("BIGINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase}, Long.class, true, true)
+   , BIGINT("BIGINT",  new DatabaseType[]{MySQL,  Informix,  HANA,  Derby,  KingBase},  Long.class,  true,  true)
     /**
      * mysql
      */
-    ,MEDIUMINT("MEDIUMINT", new DatabaseType[]{MySQL}, Integer.class, true, true)
+   , MEDIUMINT("MEDIUMINT",  new DatabaseType[]{MySQL},  Integer.class,  true,  true)
     /**
-     * mysql,sqlite
+     * mysql, sqlite
      */
-    ,INTEGER("INTEGER", new DatabaseType[]{MySQL, SQLite, HANA, ElasticSearch, Derby, KingBase}, Integer.class, true, true)
-    /**
-     * mysql
-     */
-    ,SMALLINT("SMALLINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase}, Integer.class, true, true)
+   , INTEGER("INTEGER",  new DatabaseType[]{MySQL,  SQLite,  HANA,  ElasticSearch,  Derby,  KingBase},  Integer.class,  true,  true)
     /**
      * mysql
      */
-    ,TINYINT("TINYINT", new DatabaseType[]{MySQL, HANA, KingBase}, Integer.class, true, true){
+   , SMALLINT("SMALLINT",  new DatabaseType[]{MySQL,  Informix,  HANA,  Derby,  KingBase},  Integer.class,  true,  true)
+    /**
+     * mysql
+     */
+   , TINYINT("TINYINT",  new DatabaseType[]{MySQL,  HANA,  KingBase},  Integer.class,  true,  true){
     }
     /**
      * pg
      */
-    ,BOOLEAN("BOOLEAN", new DatabaseType[]{PostgreSQL, Informix, HANA, ElasticSearch, KingBase}, Boolean.class, true, true)
+   , BOOLEAN("BOOLEAN",  new DatabaseType[]{PostgreSQL,  Informix,  HANA,  ElasticSearch,  KingBase},  Boolean.class,  true,  true)
     /**
      * pg
      */
-    ,BOOL("BOOLEAN", new DatabaseType[]{PostgreSQL}, Boolean.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BOOLEAN.write(value, def, placeholder);}
+   , BOOL("BOOLEAN",  new DatabaseType[]{PostgreSQL},  Boolean.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return BOOLEAN.write(value,  def,  placeholder);}
     }
     /* *****************************************************************************************************************
      *
@@ -495,131 +495,131 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * ****************************************************************************************************************/
 
     /**
-     * mysql,pg,oracle
+     * mysql, pg, oracle
      */
-    ,DECIMAL("DECIMAL", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, Informix, HANA, Derby}, BigDecimal.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , DECIMAL("DECIMAL",  new DatabaseType[]{MySQL,  PostgreSQL,  ORACLE,  Informix,  HANA,  Derby},  BigDecimal.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
-            BigDecimal result = BasicUtil.parseDecimal(value, null);
+            BigDecimal result = BasicUtil.parseDecimal(value,  null);
             if(null != def && null == result){
-                result = BasicUtil.parseDecimal(def, null);
+                result = BasicUtil.parseDecimal(def,  null);
             }
             return result;
         }
     }
-    ,SMALLDECIMAL("SMALLDECIMAL", new DatabaseType[]{HANA}, BigDecimal.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return DECIMAL.write(value, def, placeholder);
+   , SMALLDECIMAL("SMALLDECIMAL",  new DatabaseType[]{HANA},  BigDecimal.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return DECIMAL.write(value,  def,  placeholder);
         }
     }
     //
     /**
      * mysql
      */
-    ,DOUBLE("DOUBLE", new DatabaseType[]{MySQL, Informix, HANA, IoTDB, ElasticSearch, Derby}, Double.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , DOUBLE("DOUBLE",  new DatabaseType[]{MySQL,  Informix,  HANA,  IoTDB,  ElasticSearch,  Derby},  Double.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
-            Double result = BasicUtil.parseDouble(value, null);
+            Double result = BasicUtil.parseDouble(value,  null);
             if(null != def && null == result){
-                result = BasicUtil.parseDouble(def, null);
+                result = BasicUtil.parseDouble(def,  null);
             }
             return result;
         }
     }
     /**
-     * mysql(p,s)
+     * mysql(p, s)
      * pg:
      * informix(p)
      * oracle(p)
-     * mysql,  ,oracle(BigDecimal)
+     * mysql,  , oracle(BigDecimal)
      */
-    ,FLOAT_MySQL("FLOAT", new DatabaseType[]{MySQL}, Float.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , FLOAT_MySQL("FLOAT",  new DatabaseType[]{MySQL},  Float.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
-            Float result = BasicUtil.parseFloat(value, null);
+            Float result = BasicUtil.parseFloat(value,  null);
             if(null != def && null == result){
-                result = BasicUtil.parseFloat(def, null);
+                result = BasicUtil.parseFloat(def,  null);
             }
             return result;
         }
     }
-    ,FLOAT_INFORMIX("FLOAT", new DatabaseType[]{Informix}, Float.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , FLOAT_INFORMIX("FLOAT",  new DatabaseType[]{Informix},  Float.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
-    ,FLOAT_ORACLE("FLOAT", new DatabaseType[]{ORACLE}, Float.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , FLOAT_ORACLE("FLOAT",  new DatabaseType[]{ORACLE},  Float.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
-    ,SMALLFLOAT("SMALLFLOAT", new DatabaseType[]{Informix}, Float.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , SMALLFLOAT("SMALLFLOAT",  new DatabaseType[]{Informix},  Float.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
     /**
      * ms
      */
-    ,FLOAT_MSSQL("FLOAT", new DatabaseType[]{MSSQL}, Float.class, false, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , FLOAT_MSSQL("FLOAT",  new DatabaseType[]{MSSQL},  Float.class,  false,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
     /**
      * pg
      */
-    ,FLOAT4("FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , FLOAT4("FLOAT4",  new DatabaseType[]{PostgreSQL},  Float.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
-    ,FLOAT("FLOAT", new DatabaseType[]{IoTDB, ElasticSearch, Derby}, Float.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , FLOAT("FLOAT",  new DatabaseType[]{IoTDB,  ElasticSearch,  Derby},  Float.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
     /**
      * pg
      */
-    ,FLOAT8("FLOAT8", new DatabaseType[]{PostgreSQL}, Double.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+   , FLOAT8("FLOAT8",  new DatabaseType[]{PostgreSQL},  Double.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DOUBLE.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,BINARY_DOUBLE("BINARY_DOUBLE", new DatabaseType[]{ORACLE}, Double.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+   , BINARY_DOUBLE("BINARY_DOUBLE",  new DatabaseType[]{ORACLE},  Double.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DOUBLE.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,BINARY_FLOAT("BINARY_FLOAT", new DatabaseType[]{ORACLE}, Float.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+   , BINARY_FLOAT("BINARY_FLOAT",  new DatabaseType[]{ORACLE},  Float.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DOUBLE.write(value,  def,  placeholder);}
     }
     /**
      * pg
      */
-    ,MONEY("MONEY", new DatabaseType[]{PostgreSQL, Informix, KingBase}, BigDecimal.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , MONEY("MONEY",  new DatabaseType[]{PostgreSQL,  Informix,  KingBase},  BigDecimal.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DECIMAL.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,SMALLMONEY("SMALLMONEY", new DatabaseType[]{MSSQL}, BigDecimal.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , SMALLMONEY("SMALLMONEY",  new DatabaseType[]{MSSQL},  BigDecimal.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DECIMAL.write(value,  def,  placeholder);}
     }
     /**
-     * mysql,sqlite
+     * mysql, sqlite
      */
-    ,NUMERIC("NUMERIC", new DatabaseType[]{MySQL, SQLite, Informix, KingBase}, BigDecimal.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , NUMERIC("NUMERIC",  new DatabaseType[]{MySQL,  SQLite,  Informix,  KingBase},  BigDecimal.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DECIMAL.write(value,  def,  placeholder);}
     }
     /**
      * oracle
      */
-    ,NUMBER("NUMBER", new DatabaseType[]{ORACLE}, BigDecimal.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , NUMBER("NUMBER",  new DatabaseType[]{ORACLE},  BigDecimal.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DECIMAL.write(value,  def,  placeholder);}
     }
     /**
-     * mysql(Double),sqlite
+     * mysql(Double), sqlite
      */
-    ,REAL("REAL", new DatabaseType[]{MySQL, SQLite, Informix, HANA, Derby, KingBase}, Double.class, false, false){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+   , REAL("REAL",  new DatabaseType[]{MySQL,  SQLite,  Informix,  HANA,  Derby,  KingBase},  Double.class,  false,  false){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return FLOAT_MySQL.write(value,  def,  placeholder);}
     }
     /* *****************************************************************************************************************
      *
@@ -628,10 +628,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *
      * ****************************************************************************************************************/
     /**
-     * mysql,pg
+     * mysql, pg
      */
-    ,DATE("DATE", new DatabaseType[]{MySQL, PostgreSQL, Informix, HANA, Derby}, java.sql.Date.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , DATE("DATE",  new DatabaseType[]{MySQL,  PostgreSQL,  Informix,  HANA,  Derby},  java.sql.Date.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -643,7 +643,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                 if(placeholder){
                     value = new java.sql.Date(date.getTime());
                 }else{
-                    value = "'" + DateUtil.format(date, "yyyy-MM-dd");
+                    value = "'" + DateUtil.format(date,  "yyyy-MM-dd");
                 }
             }
             return value;
@@ -652,8 +652,8 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(LocalDateTime)
      */
-    ,DATETIME("DATETIME", new DatabaseType[]{MySQL, Informix}, LocalDateTime.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , DATETIME("DATETIME",  new DatabaseType[]{MySQL,  Informix},  LocalDateTime.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -676,39 +676,39 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * MSSQL
      */
-    ,DATETIME2("DATETIME2", new DatabaseType[]{MSSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , DATETIME2("DATETIME2",  new DatabaseType[]{MSSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DATETIME.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL<br/>
      * 2020-01-01 15:10:10.0000011
      */
-    ,DATETIMEOFFSET("DATETIMEOFFSET", new DatabaseType[]{MSSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , DATETIMEOFFSET("DATETIMEOFFSET",  new DatabaseType[]{MSSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DATETIME.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,SMALLDATETIME("SMALLDATETIME", new DatabaseType[]{MSSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , SMALLDATETIME("SMALLDATETIME",  new DatabaseType[]{MSSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DATETIME.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,SQL_DATETIMEOFFSET("SQL_DATETIMEOFFSET", new DatabaseType[]{MSSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , SQL_DATETIMEOFFSET("SQL_DATETIMEOFFSET",  new DatabaseType[]{MSSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DATETIME.write(value,  def,  placeholder);}
     }
     /**
      * MSSQL
      */
-    ,SECONDDATE("SECONDDATE", new DatabaseType[]{HANA}, java.util.Date.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , SECONDDATE("SECONDDATE",  new DatabaseType[]{HANA},  java.util.Date.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return DATETIME.write(value,  def,  placeholder);}
     }
     /**
-     * mysql,pg
+     * mysql, pg
      */
-    ,TIME("TIME", new DatabaseType[]{MySQL, PostgreSQL, HANA, Derby}, java.sql.Time.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , TIME("TIME",  new DatabaseType[]{MySQL,  PostgreSQL,  HANA,  Derby},  java.sql.Time.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -720,7 +720,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                 if(placeholder){
                     value = new Time(date.getTime());
                 }else{
-                    value = "'" + DateUtil.format(date, "HH:mm:ss") + "'";
+                    value = "'" + DateUtil.format(date,  "HH:mm:ss") + "'";
                 }
             }else{
                 value = null;
@@ -731,43 +731,43 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * pg
      */
-    ,TIMEZ("TIMEZ", new DatabaseType[]{PostgreSQL}, java.sql.Time.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return TIME.write(value, def, placeholder);
+   , TIMEZ("TIMEZ",  new DatabaseType[]{PostgreSQL},  java.sql.Time.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return TIME.write(value,  def,  placeholder);
         }
     }
     /**
-     * mysql,pg,oracle
+     * mysql, pg, oracle
      */
-    ,TIMESTAMP("TIMESTAMP", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, HANA, Derby}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return DATETIME.write(value, def, placeholder);
+   , TIMESTAMP("TIMESTAMP",  new DatabaseType[]{MySQL,  PostgreSQL,  ORACLE,  HANA,  Derby},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return DATETIME.write(value,  def,  placeholder);
         }
     }
-    ,TIMESTAMP_ZONE("TIMESTAMP", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return DATETIME.write(value, def, placeholder);
+   , TIMESTAMP_ZONE("TIMESTAMP",  new DatabaseType[]{PostgreSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return DATETIME.write(value,  def,  placeholder);
         }
     }
-    ,TIMESTAMP_LOCAL_ZONE("TIMESTAMP", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return DATETIME.write(value, def, placeholder);
+   , TIMESTAMP_LOCAL_ZONE("TIMESTAMP",  new DatabaseType[]{PostgreSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return DATETIME.write(value,  def,  placeholder);
         }
     }
     /**
      * timestamp with time zone
      */
-    ,TIMESTAMPTZ("TIMESTAMPTZ", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return DATETIME.write(value, def, placeholder);
+   , TIMESTAMPTZ("TIMESTAMPTZ",  new DatabaseType[]{PostgreSQL},  java.sql.Timestamp.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return DATETIME.write(value,  def,  placeholder);
         }
     }
     /**
      * mysql
      */
-    ,YEAR("YEAR", new DatabaseType[]{MySQL}, java.sql.Date.class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return DATE.write(value, def, placeholder);
+   , YEAR("YEAR",  new DatabaseType[]{MySQL},  java.sql.Date.class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return DATE.write(value,  def,  placeholder);
         }
     }
     /* *****************************************************************************************************************
@@ -776,10 +776,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *
      * ****************************************************************************************************************/
     /**
-     * mysql(byte[]),  ,oracle,sqlite
+     * mysql(byte[]),  , oracle, sqlite
      */
-    ,BLOB("BLOB", new DatabaseType[]{MySQL, ORACLE, SQLite, Informix, HANA, Derby, KingBase}, byte[].class, true, true){
-        public Object read(Object value, Object def, Class clazz){
+   , BLOB("BLOB",  new DatabaseType[]{MySQL,  ORACLE,  SQLite,  Informix,  HANA,  Derby,  KingBase},  byte[].class,  true,  true){
+        public Object read(Object value,  Object def,  Class clazz){
             if(clazz == byte[].class){
 
             }else if(clazz == String.class){
@@ -787,7 +787,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             }
             return value;
         }
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -813,35 +813,35 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql
      */
-    ,LONGBLOB("LONGBLOB", new DatabaseType[]{MySQL}, byte[].class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , LONGBLOB("LONGBLOB",  new DatabaseType[]{MySQL},  byte[].class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return BLOB.write(value,  def,  placeholder);}
     }
     /**
      * mysql
      */
-    ,MEDIUMBLOB("MEDIUMBLOB", new DatabaseType[]{MySQL}, byte[].class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , MEDIUMBLOB("MEDIUMBLOB",  new DatabaseType[]{MySQL},  byte[].class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return BLOB.write(value,  def,  placeholder);}
     }
     /**
      * mysql
      */
-    ,TINYBLOB("TINYBLOB", new DatabaseType[]{MySQL}, byte[].class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , TINYBLOB("TINYBLOB",  new DatabaseType[]{MySQL},  byte[].class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return BLOB.write(value,  def,  placeholder);}
     }
     /**
      * mysql
      */
-    ,MULTILINESTRING("MULTILINESTRING", new DatabaseType[]{MySQL}, byte[].class, true, true)
+   , MULTILINESTRING("MULTILINESTRING",  new DatabaseType[]{MySQL},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,BYTEA("BYTEA", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
-    ,BYTE("BYTE", new DatabaseType[]{Informix,ElasticSearch}, byte[].class, true, true)
+   , BYTEA("BYTEA",  new DatabaseType[]{PostgreSQL},  byte[].class,  true,  true)
+   , BYTE("BYTE",  new DatabaseType[]{Informix, ElasticSearch},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,JSONB("JSONB", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , JSONB("JSONB",  new DatabaseType[]{PostgreSQL,  KingBase},  byte[].class,  true,  true){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){return BLOB.write(value,  def,  placeholder);}
     }
     /* *****************************************************************************************************************
      *
@@ -851,27 +851,27 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * MSSQL
      */
-    ,IMAGE("IMAGE", new DatabaseType[]{MSSQL}, byte[].class, true, true)
+   , IMAGE("IMAGE",  new DatabaseType[]{MSSQL},  byte[].class,  true,  true)
     /**
      * oracle
      */
-    ,BFILE("BFILE", new DatabaseType[]{ORACLE, KingBase}, byte[].class, true, true)
+   , BFILE("BFILE",  new DatabaseType[]{ORACLE,  KingBase},  byte[].class,  true,  true)
     /* *****************************************************************************************************************
      *
      *                                              byte[]-geometry
      *
      * ****************************************************************************************************************/
     /**
-     * mysql,pg
+     * mysql, pg
      */
-    ,POINT("POINT", new DatabaseType[]{MySQL, PostgreSQL, KingBase}, Point.class, byte[].class, true, true){
-        public Object read(Object value, Object def, Class clazz){
+   , POINT("POINT",  new DatabaseType[]{MySQL,  PostgreSQL,  KingBase},  Point.class,  byte[].class,  true,  true){
+        public Object read(Object value,  Object def,  Class clazz){
             if(null == value){
                 return value;
             }
             return value;
         }
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
             if(null == value){
                 value = def;
             }
@@ -881,76 +881,76 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-    ,ST_POINT("ST_POINT", new DatabaseType[]{MySQL, PostgreSQL}, Point.class, byte[].class, true, true){
-        public Object read(Object value, Object def, Class clazz){
-            return POINT.read(value, def, clazz);
+   , ST_POINT("ST_POINT",  new DatabaseType[]{MySQL,  PostgreSQL},  Point.class,  byte[].class,  true,  true){
+        public Object read(Object value,  Object def,  Class clazz){
+            return POINT.read(value,  def,  clazz);
         }
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            return POINT.write(value, def, placeholder);
+        public Object write(Object value,  Object def,  boolean array,  boolean placeholder){
+            return POINT.write(value,  def,  placeholder);
         }
     }
-    ,GEOGRAPHY_POINT("GEOGRAPHY_POINT", new DatabaseType[]{VoltDB}, Point.class, byte[].class, true, true)
+   , GEOGRAPHY_POINT("GEOGRAPHY_POINT",  new DatabaseType[]{VoltDB},  Point.class,  byte[].class,  true,  true)
     /**
      * mysql
      */
-    ,MULTIPOLYGON("MULTIPOLYGON", new DatabaseType[]{MySQL}, MultiPolygon.class, byte[].class, true, true)
+   , MULTIPOLYGON("MULTIPOLYGON",  new DatabaseType[]{MySQL},  MultiPolygon.class,  byte[].class,  true,  true)
     /**
      * mysql
      */
-    ,MULTIPOINT("MULTIPOINT", new DatabaseType[]{MySQL}, MultiPoint.class, byte[].class, true, true)
+   , MULTIPOINT("MULTIPOINT",  new DatabaseType[]{MySQL},  MultiPoint.class,  byte[].class,  true,  true)
     /**
-     * mysql,pg
+     * mysql, pg
      */
-    ,POLYGON("POLYGON", new DatabaseType[]{MySQL, PostgreSQL, KingBase}, Polygon.class, byte[].class, true, true)
-    /**
-     * mysql
-     */
-    ,GEOMETRY("GEOMETRY", new DatabaseType[]{MySQL}, byte[].class, true, true)
-    ,ST_GEOMETRY("ST_GEOMETRY", new DatabaseType[]{HANA}, byte[].class, true, true)
+   , POLYGON("POLYGON",  new DatabaseType[]{MySQL,  PostgreSQL,  KingBase},  Polygon.class,  byte[].class,  true,  true)
     /**
      * mysql
      */
-    ,GEOMETRYCOLLECTION("GEOMETRYCOLLECTION", new DatabaseType[]{MySQL}, byte[].class, true, true)
+   , GEOMETRY("GEOMETRY",  new DatabaseType[]{MySQL},  byte[].class,  true,  true)
+   , ST_GEOMETRY("ST_GEOMETRY",  new DatabaseType[]{HANA},  byte[].class,  true,  true)
+    /**
+     * mysql
+     */
+   , GEOMETRYCOLLECTION("GEOMETRYCOLLECTION",  new DatabaseType[]{MySQL},  byte[].class,  true,  true)
     /**
      * MSSQL
      */
-    ,HIERARCHYID("HIERARCHYID", new DatabaseType[]{MSSQL}, byte[].class, true, true)
+   , HIERARCHYID("HIERARCHYID",  new DatabaseType[]{MSSQL},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,LINE("LINE", new DatabaseType[]{PostgreSQL, KingBase}, LineString.class, byte[].class, true, true)
+   , LINE("LINE",  new DatabaseType[]{PostgreSQL,  KingBase},  LineString.class,  byte[].class,  true,  true)
     /**
      * mysql
      */
-    ,LINESTRING("LINESTRING", new DatabaseType[]{MySQL}, LineString.class, byte[].class, true, true)
+   , LINESTRING("LINESTRING",  new DatabaseType[]{MySQL},  LineString.class,  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,PATH("PATH",  new DatabaseType[]{PostgreSQL, KingBase},LineString.class, true, true)
+   , PATH("PATH",   new DatabaseType[]{PostgreSQL,  KingBase}, LineString.class,  true,  true)
     /**
      * pg
      */
-    ,LSEG("LSEG", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
+   , LSEG("LSEG",  new DatabaseType[]{PostgreSQL,  KingBase},  byte[].class,  true,  true)
     /**
      * MSSQL
      */
-    ,GEOGRAPHY("GEOGRAPHY", new DatabaseType[]{MSSQL, PostgreSQL}, byte[].class, true, true)
+   , GEOGRAPHY("GEOGRAPHY",  new DatabaseType[]{MSSQL,  PostgreSQL},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,BOX("BOX", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
+   , BOX("BOX",  new DatabaseType[]{PostgreSQL,  KingBase},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,CIDR("CIDR", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
+   , CIDR("CIDR",  new DatabaseType[]{PostgreSQL,  KingBase},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,CIRCLE("CIRCLE", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
+   , CIRCLE("CIRCLE",  new DatabaseType[]{PostgreSQL},  byte[].class,  true,  true)
     /**
      * pg
      */
-    ,INET("INET", new DatabaseType[]{PostgreSQL, KingBase}, byte[].class, true, true)
+   , INET("INET",  new DatabaseType[]{PostgreSQL,  KingBase},  byte[].class,  true,  true)
 
 
     /* *****************************************************************************************************************
@@ -962,56 +962,56 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql
      */
-    ,ENUM("ENUM", new DatabaseType[]{MySQL}, String.class, true, true)
+   , ENUM("ENUM",  new DatabaseType[]{MySQL},  String.class,  true,  true)
     /**
      * pg
      */
-    ,INTERVAL("INTERVAL", new DatabaseType[]{PostgreSQL, Informix}, null, true, true)
+   , INTERVAL("INTERVAL",  new DatabaseType[]{PostgreSQL,  Informix},  null,  true,  true)
     /**
      * oracle
      */
-    ,RAW("RAW",  new DatabaseType[]{ORACLE},byte[].class, true, true)
+   , RAW("RAW",   new DatabaseType[]{ORACLE}, byte[].class,  true,  true)
     /**
      * oracle
      */
-    ,ROWID("ROWID",  new DatabaseType[]{ORACLE},null, true, true)
+   , ROWID("ROWID",   new DatabaseType[]{ORACLE}, null,  true,  true)
     /**
      * mysql
      */
-    ,SET("SET",  new DatabaseType[]{MySQL}, String.class, true, true)
+   , SET("SET",   new DatabaseType[]{MySQL},  String.class,  true,  true)
     /**
      * pg
      */
-    ,TSQUERY("TSQUERY",  new DatabaseType[]{PostgreSQL, KingBase},null, true, true)
+   , TSQUERY("TSQUERY",   new DatabaseType[]{PostgreSQL,  KingBase}, null,  true,  true)
     /**
      * pg
      */
-    ,TSVECTOR("TSVECTOR",  new DatabaseType[]{PostgreSQL, KingBase},null, true, true)
+   , TSVECTOR("TSVECTOR",   new DatabaseType[]{PostgreSQL,  KingBase}, null,  true,  true)
     /**
      * pg
      */
-    ,MACADDR("MACADDR", new DatabaseType[]{PostgreSQL, KingBase}, null, true, true)
+   , MACADDR("MACADDR",  new DatabaseType[]{PostgreSQL,  KingBase},  null,  true,  true)
     /**
      * pg
      */
-    ,PG_SNAPSHOT("PG_SNAPSHOT", new DatabaseType[]{PostgreSQL}, null, true, true)
+   , PG_SNAPSHOT("PG_SNAPSHOT",  new DatabaseType[]{PostgreSQL},  null,  true,  true)
     /**
      * pg
      * 弃用 换成pg_snapshot
      */
-    ,TXID_SNAPSHOT("TXID_SNAPSHOT", new DatabaseType[]{PostgreSQL, KingBase}, null, true, true)
+   , TXID_SNAPSHOT("TXID_SNAPSHOT",  new DatabaseType[]{PostgreSQL,  KingBase},  null,  true,  true)
     /**
      * oracle
      */
-    ,UROWID("UROWID",  new DatabaseType[]{ORACLE},null, true, true)
+   , UROWID("UROWID",   new DatabaseType[]{ORACLE}, null,  true,  true)
     /**
      * MSSQL
      */
-    ,SQL_VARIANT("SQL_VARIANT",  new DatabaseType[]{MSSQL},null, true, true)
+   , SQL_VARIANT("SQL_VARIANT",   new DatabaseType[]{MSSQL}, null,  true,  true)
 
-    ,KEYWORD("KEYWORD",  new DatabaseType[]{ElasticSearch},null, true, true)
+   , KEYWORD("KEYWORD",   new DatabaseType[]{ElasticSearch}, null,  true,  true)
 
-    ,OBJECT("OBJECT",  new DatabaseType[]{ElasticSearch},null, true, true)
+   , OBJECT("OBJECT",   new DatabaseType[]{ElasticSearch}, null,  true,  true)
 
     ;
     private final DatabaseType[] dbs;
@@ -1021,7 +1021,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     private final Boolean ignorePrecision;
     private final Boolean ignoreScale;
     private boolean array;
-    StandardColumnType(String name, DatabaseType[] dbs, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    StandardColumnType(String name,  DatabaseType[] dbs,  Class transfer,  Class compatible,  Boolean ignorePrecision,  Boolean ignoreScale){
         this.name = name;
         this.dbs = dbs;
         this.transfer = transfer;
@@ -1029,7 +1029,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    StandardColumnType(String name, DatabaseType[] dbs,  Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    StandardColumnType(String name,  DatabaseType[] dbs,   Class compatible,  Boolean ignorePrecision,  Boolean ignoreScale){
         this.name = name;
         this.dbs = dbs;
         this.compatible = compatible;
@@ -1037,18 +1037,18 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         this.ignoreScale = ignoreScale;
     }
     @Override
-    public Object convert(Object value, Object def){
-        return convert(value, null, def);
+    public Object convert(Object value,  Object def){
+        return convert(value,  null,  def);
     }
 
     @Override
-    public Object convert(Object value, Class target, boolean array){
+    public Object convert(Object value,  Class target,  boolean array){
         Object def = null;
-        return convert(value, target, array, def);
+        return convert(value,  target,  array,  def);
     }
 
     @Override
-    public Object convert(Object value, Class target, boolean array, Object def) {
+    public Object convert(Object value,  Class target,  boolean array,  Object def) {
         if(null == target){
             target = compatible;
         }
@@ -1057,27 +1057,27 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                 return value;
             }
             if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, array, def);
+                value = ConvertAdapter.convert(value,  transfer,  array,  def);
             }
-            value = ConvertAdapter.convert(value, target, array, def);
+            value = ConvertAdapter.convert(value,  target,  array,  def);
         }
         return value;
     }
 
     @Override
-    public Object convert(Object value, Object obj, Field field) {
-        return convert(value, field.getType());
+    public Object convert(Object value,  Object obj,  Field field) {
+        return convert(value,  field.getType());
     }
 
     @Override
-    public Object read(Object value, Object def, Class clazz, boolean array) {
+    public Object read(Object value,  Object def,  Class clazz,  boolean array) {
         if(null == clazz){
             clazz = transfer;
         }
         if(null == clazz){
             clazz = compatible;
         }
-        value = ConvertAdapter.convert(value, clazz, array, def);
+        value = ConvertAdapter.convert(value,  clazz,  array,  def);
         return value;
     }
 
@@ -1091,13 +1091,13 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * @return Object
      */
     @Override
-    public Object write(Object value, Object def, boolean array, boolean placeholder) {
+    public Object write(Object value,  Object def,  boolean array,  boolean placeholder) {
         if(null != value){
             if(value.getClass() != compatible) {
                 if (null != transfer) {
-                    value = ConvertAdapter.convert(value, transfer, array, def);
+                    value = ConvertAdapter.convert(value,  transfer,  array,  def);
                 }
-                value = ConvertAdapter.convert(value, compatible, array, def);
+                value = ConvertAdapter.convert(value,  compatible,  array,  def);
             }
             if(null != value && compatible == String.class && !placeholder){
                 value = "'" + value + "'";

@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -28,51 +28,51 @@ import java.util.regex.Pattern;
  
 public class IDCardUtil {
  
-	private static Map<String, String> CODE_NM =  new HashMap<String, String>(); 
+	private static Map<String, String> CODE_NM =  new HashMap<String, String>();
 	private static String CITY_CODE[] = {"11", "12", "13", "14", "15", "21", "22",
-			"23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", 
-			"44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", 
-			"64", "65", "71", "81", "82", "91" }; 
+			"23", "31", "32", "33", "34",  "35",  "36",  "37",  "41",  "42",  "43",
+			"44",  "45",  "46",  "50",  "51",  "52",  "53",  "54",  "61",  "62",  "63",  
+			"64",  "65",  "71",  "81",  "82",  "91" }; 
 	// 每位加权因子
-	private static int power[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+	private static int power[] = {7,  9,  10,  5,  8,  4,  2,  1,  6,  3,  7,  9,  10,  5,  8,  4,  2 };
 	// 第18位校检码
-	private static String verifyCode[] = {"1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
+	private static String verifyCode[] = {"1",  "0",  "X",  "9",  "8",  "7",  "6",  "5",  "4",  "3",  "2" };
 	static{
-		CODE_NM.put( "11", "北京" ); 
-		CODE_NM.put( "12", "天津" ); 
-		CODE_NM.put( "13", "河北" ); 
-		CODE_NM.put( "14", "山西" ); 
-		CODE_NM.put( "15", "内蒙古" ); 
-		CODE_NM.put( "21", "辽宁" ); 
-		CODE_NM.put( "22", "吉林" ); 
-		CODE_NM.put( "23", "黑龙江" ); 
-		CODE_NM.put( "31", "上海" ); 
-		CODE_NM.put( "32", "江苏" ); 
-		CODE_NM.put( "33", "浙江" ); 
-		CODE_NM.put( "34", "安徽" ); 
-		CODE_NM.put( "35", "福建" ); 
-		CODE_NM.put( "36", "江西" ); 
-		CODE_NM.put( "37", "山东" ); 
-		CODE_NM.put( "41", "河南" ); 
-		CODE_NM.put( "42", "湖北" ); 
-		CODE_NM.put( "43", "湖南" ); 
-		CODE_NM.put( "44", "广东" ); 
-		CODE_NM.put( "45", "广西" ); 
-		CODE_NM.put( "46", "海南" ); 
-		CODE_NM.put( "50", "重庆" ); 
-		CODE_NM.put( "51", "四川" ); 
-		CODE_NM.put( "52", "贵州" ); 
-		CODE_NM.put( "53", "云南" ); 
-		CODE_NM.put( "54", "西藏" ); 
-		CODE_NM.put( "61", "陕西" ); 
-		CODE_NM.put( "62", "甘肃" ); 
-		CODE_NM.put( "63", "青海" ); 
-		CODE_NM.put( "64", "宁夏" ); 
-		CODE_NM.put( "65", "新疆" ); 
-		CODE_NM.put( "71", "台湾" ); 
-		CODE_NM.put( "81", "香港" ); 
-		CODE_NM.put( "82", "澳门" ); 
-		CODE_NM.put( "91", "国外" ); 
+		CODE_NM.put( "11",  "北京" ); 
+		CODE_NM.put( "12",  "天津" ); 
+		CODE_NM.put( "13",  "河北" ); 
+		CODE_NM.put( "14",  "山西" ); 
+		CODE_NM.put( "15",  "内蒙古" ); 
+		CODE_NM.put( "21",  "辽宁" ); 
+		CODE_NM.put( "22",  "吉林" ); 
+		CODE_NM.put( "23",  "黑龙江" ); 
+		CODE_NM.put( "31",  "上海" ); 
+		CODE_NM.put( "32",  "江苏" ); 
+		CODE_NM.put( "33",  "浙江" ); 
+		CODE_NM.put( "34",  "安徽" ); 
+		CODE_NM.put( "35",  "福建" ); 
+		CODE_NM.put( "36",  "江西" ); 
+		CODE_NM.put( "37",  "山东" ); 
+		CODE_NM.put( "41",  "河南" ); 
+		CODE_NM.put( "42",  "湖北" ); 
+		CODE_NM.put( "43",  "湖南" ); 
+		CODE_NM.put( "44",  "广东" ); 
+		CODE_NM.put( "45",  "广西" ); 
+		CODE_NM.put( "46",  "海南" ); 
+		CODE_NM.put( "50",  "重庆" ); 
+		CODE_NM.put( "51",  "四川" ); 
+		CODE_NM.put( "52",  "贵州" ); 
+		CODE_NM.put( "53",  "云南" ); 
+		CODE_NM.put( "54",  "西藏" ); 
+		CODE_NM.put( "61",  "陕西" ); 
+		CODE_NM.put( "62",  "甘肃" ); 
+		CODE_NM.put( "63",  "青海" ); 
+		CODE_NM.put( "64",  "宁夏" ); 
+		CODE_NM.put( "65",  "新疆" ); 
+		CODE_NM.put( "71",  "台湾" ); 
+		CODE_NM.put( "81",  "香港" ); 
+		CODE_NM.put( "82",  "澳门" ); 
+		CODE_NM.put( "91",  "国外" ); 
 	} 
 	/** 
 	 * 验证所有的身份证的合法性 
@@ -91,16 +91,16 @@ public class IDCardUtil {
 	 * <p> 
 	 * 判断18位身份证的合法性 
 	 * </p> 
-	 * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定,公民身份号码是特征组合码,由十七位数字本体码和一位数字校验码组成. 
-	 * 排列顺序从左至右依次为:六位数字地址码,八位数字出生日期码,三位数字顺序码和一位数字校验码. 
+	 * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定, 公民身份号码是特征组合码, 由十七位数字本体码和一位数字校验码组成. 
+	 * 排列顺序从左至右依次为:六位数字地址码, 八位数字出生日期码, 三位数字顺序码和一位数字校验码. 
 	 * <p> 
-	 * 顺序码: 表示在同一地址码所标识的区域范围内,对同年、同月、同 日出生的人编定的顺序号,顺序码的奇数分配给男性,偶数分配 给女性. 
+	 * 顺序码: 表示在同一地址码所标识的区域范围内, 对同年、同月、同 日出生的人编定的顺序号, 顺序码的奇数分配给男性, 偶数分配 给女性. 
 	 * </p> 
 	 * <p> 
 	 * 1.前1、2位数字表示:所在省份的代码; 2.第3、4位数字表示:所在城市的代码; 3.第5、6位数字表示:所在区县的代码; 
 	 * 4.第7~14位数字表示:出生年、月、日; 5.第15、16位数字表示:所在地的派出所的代码; 
-	 * 6.第17位数字表示性别:奇数表示男性,偶数表示女性; 
-	 * 7.第18位数字是校检码:也有的说是个人信息码,一般是随计算机的随机产生,用来检验身份证的正确性.校检码可以是0~9的数字,有时也用x表示. 
+	 * 6.第17位数字表示性别:奇数表示男性, 偶数表示女性; 
+	 * 7.第18位数字是校检码:也有的说是个人信息码, 一般是随计算机的随机产生, 用来检验身份证的正确性.校检码可以是0~9的数字, 有时也用x表示. 
 	 * </p> 
 	 * <p> 
 	 * 第十八位数字(校验码)的计算方法为: 1.将前面的身份证号码17位数分别乘以不同的系数.从第一位到第十七位的系数分别为:7 9 10 5 8 4 
@@ -110,12 +110,12 @@ public class IDCardUtil {
 	 * 2.将这17位数字和系数相乘的结果相加. 
 	 * </p> 
 	 * <p> 
-	 * 3.用加出来和除以11,看余数是多少? 
+	 * 3.用加出来和除以11, 看余数是多少? 
 	 * </p> 
 	 * 4.余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字.其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 
 	 * 2. 
 	 * <p> 
-	 * 5.通过上面得知如果余数是2,就会在身份证的第18位数字上出现罗马数字的Ⅹ.如果余数是10,身份证的最后一位号码就是2. 
+	 * 5.通过上面得知如果余数是2, 就会在身份证的第18位数字上出现罗马数字的Ⅹ.如果余数是10, 身份证的最后一位号码就是2. 
 	 * </p> 
 	 *  
 	 * @param idcard  idcard
@@ -127,9 +127,9 @@ public class IDCardUtil {
 			return false; 
 		} 
 		// 获取前17位
-		String idcard17 = idcard.substring(0, 17); 
+		String idcard17 = idcard.substring(0,  17); 
 		// 获取第18位
-		String idcard18Code = idcard.substring(17, 18); 
+		String idcard18Code = idcard.substring(17,  18); 
 		char c[] = null; 
 		String checkCode = ""; 
 		// 是否都为数字
@@ -153,7 +153,7 @@ public class IDCardUtil {
 			if (null == checkCode) {
 				return false; 
 			} 
-			// 将身份证的第18位与算出来的校码进行匹配,不相等就为假
+			// 将身份证的第18位与算出来的校码进行匹配, 不相等就为假
 			if (!idcard18Code.equalsIgnoreCase(checkCode)) {
 				return false; 
 			} 
@@ -162,7 +162,7 @@ public class IDCardUtil {
 	} 
  
 	/** 
-	 * 验证15位身份证的合法性,该方法验证不准确,最好是将15转为18位后再判断,该类中已提供. 
+	 * 验证15位身份证的合法性, 该方法验证不准确, 最好是将15转为18位后再判断, 该类中已提供. 
 	 *  
 	 * @param idcard  idcard
 	 * @return boolean
@@ -175,11 +175,11 @@ public class IDCardUtil {
  
 		// 是否全都为数字
 		if (isDigital(idcard)) {
-			String provinceid = idcard.substring(0, 2); 
-			String birthday = idcard.substring(6, 12); 
-			int year = Integer.parseInt(idcard.substring(6, 8)); 
-			int month = Integer.parseInt(idcard.substring(8, 10)); 
-			int day = Integer.parseInt(idcard.substring(10, 12)); 
+			String provinceid = idcard.substring(0,  2); 
+			String birthday = idcard.substring(6,  12); 
+			int year = Integer.parseInt(idcard.substring(6,  8)); 
+			int month = Integer.parseInt(idcard.substring(8,  10)); 
+			int day = Integer.parseInt(idcard.substring(10,  12)); 
  
 			// 判断是否为合法的省份
 			boolean flag = false; 
@@ -209,7 +209,7 @@ public class IDCardUtil {
 			int year2bit = Integer.parseInt(String.valueOf(curYear) 
 					.substring(2)); 
  
-			// 判断该年份的两位表示法,小于50的和大于当前年份的,为假
+			// 判断该年份的两位表示法, 小于50的和大于当前年份的, 为假
 			if ((year < 50 && year > year2bit)) {
 				return false; 
 			} 
@@ -232,7 +232,7 @@ public class IDCardUtil {
 			case 12: 
 				mflag = (day >= 1 && day <= 31); 
 				break; 
-			case 2: // 公历的2月非闰年有28天,闰年的2月是29天. 
+			case 2: // 公历的2月非闰年有28天, 闰年的2月是29天. 
 				if (curDay.isLeapYear(curDay.get(Calendar.YEAR))) {
 					mflag = (day >= 1 && day <= 29); 
 				} else {
@@ -270,7 +270,7 @@ public class IDCardUtil {
  
 		if (isDigital(idcard)) {
 			// 获取出生年月日
-			String birthday = idcard.substring(6, 12); 
+			String birthday = idcard.substring(6,  12); 
 			Date birthdate = null; 
 			try {
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
@@ -281,7 +281,7 @@ public class IDCardUtil {
 			cday.setTime(birthdate); 
 			String year = String.valueOf(cday.get(Calendar.YEAR)); 
  
-			idcard17 = idcard.substring(0, 6) + year + idcard.substring(8); 
+			idcard17 = idcard.substring(0,  6) + year + idcard.substring(8); 
  
 			char c[] = idcard17.toCharArray(); 
 			String checkCode = ""; 
@@ -318,7 +318,7 @@ public class IDCardUtil {
 	 */ 
 	public static boolean isIdcard(String idcard) {
 		return idcard == null || idcard.isEmpty() ? false : Pattern.matches(
-				"(^\\d{15}$)|(\\d{17}(?:\\d|x|X)$)", idcard); 
+				"(^\\d{15}$)|(\\d{17}(?:\\d|x|X)$)",  idcard); 
 	} 
  
 	/** 
@@ -329,7 +329,7 @@ public class IDCardUtil {
 	 */ 
 	public static boolean is15Idcard(String idcard) {
 		return idcard == null || idcard.isEmpty() ? false : Pattern.matches(
-				"^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$", 
+				"^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$",  
 				idcard); 
 	} 
  
@@ -342,7 +342,7 @@ public class IDCardUtil {
 	public static boolean is18Idcard(String idcard) {
 		return Pattern 
 				.matches( 
-						"^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([\\d|x|X]{1})$", 
+						"^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([\\d|x|X]{1})$",  
 						idcard); 
 	} 
  
@@ -357,7 +357,7 @@ public class IDCardUtil {
 	} 
  
 	/** 
-	 * 将身份证的每位和对应位的加权因子相乘之后,再得到和值 
+	 * 将身份证的每位和对应位的加权因子相乘之后, 再得到和值 
 	 *  
 	 * @param bit  bit
 	 * @return int
@@ -449,9 +449,9 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		result = idcard.substring(6, 14);
+		result = idcard.substring(6,  14);
 		try {
-			result = DateUtil.format(result, "yyyy-MM-dd");
+			result = DateUtil.format(result,  "yyyy-MM-dd");
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -466,7 +466,7 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		result = idcard.substring(0, 2); 
+		result = idcard.substring(0,  2); 
 		return result; 
 	} 
 	public static String getProvince(String idcard){
@@ -488,7 +488,7 @@ public class IDCardUtil {
 		if (idcard.length() == 15) {
             idcard = convertIdcarBy15bit(idcard);   
         } 
-		String id17 = idcard.substring(16, 17);   
+		String id17 = idcard.substring(16,  17);   
         if (Integer.parseInt(id17) % 2 != 0) {
             result = "1";   
         } else {
@@ -513,7 +513,7 @@ public class IDCardUtil {
 		String birthday = getBirthday(idcard); 
 		if(BasicUtil.isNotEmpty(birthday)){
 			try {
-				age = (int) DateUtil.diff(Calendar.YEAR, birthday);
+				age = (int) DateUtil.diff(Calendar.YEAR,  birthday);
 			}catch (Exception e){
 				e.printStackTrace();
 			}

@@ -113,10 +113,10 @@ public class BeanUtil {
 	}
 
 	public static boolean setFieldValue(Object obj, Field field, Object value){
-		return setFieldValue(obj, field, null, value);
+		return setFieldValue(obj, field,  null,  value);
 	}
-	public static boolean setFieldValue(Object obj, Field field, Object value, boolean alert){
-		return setFieldValue(obj, field, null, value, alert);
+	public static boolean setFieldValue(Object obj,  Field field,  Object value,  boolean alert){
+		return setFieldValue(obj,  field,  null,  value,  alert);
 	}
 	private static List<String> arr = new ArrayList<>();
 
@@ -127,7 +127,7 @@ public class BeanUtil {
 	 * @return Collection&lt;Entity&gt;
 	 * @throws Exception
 	 */
-	public static Collection maps2object(Field field, Collection value) throws Exception{
+	public static Collection maps2object(Field field,  Collection value) throws Exception{
 		Class clazz = field.getType();
 		Collection list = null;
 		Class itemClass = ClassUtil.getComponentClass(field);
@@ -137,7 +137,7 @@ public class BeanUtil {
 			list = (Collection)ClassUtil.newInstance(clazz);
 			for (Object item : value) {
 				if (item instanceof Map) {
-					Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
+					Object oitem = BeanUtil.map2object((Map) item,  itemClass, null,  true,  true,  true);
 					list.add(oitem);
 				}
 			}
@@ -159,7 +159,7 @@ public class BeanUtil {
 				Class itemClass = (Class) args[0];
 				for (Object item : value) {
 					if (item instanceof Map) {
-						Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
+						Object oitem = BeanUtil.map2object((Map) item,  itemClass, null,  true,  true,  true);
 						list.add(oitem);
 					}
 				}
@@ -171,11 +171,11 @@ public class BeanUtil {
 	}
 	/**
 	 * 根据field集合条目泛型类转换
-	 * @param value Map&lt;?,Map&gt;
-	 * @return Map&lt;?,Entity&gt;
+	 * @param value Map&lt;?, Map&gt;
+	 * @return Map&lt;?, Entity&gt;
 	 * @throws Exception
 	 */
-	public static Map maps2object(Field field, Map value) throws Exception{
+	public static Map maps2object(Field field,  Map value) throws Exception{
 		Map map = value.getClass().newInstance();
 		Type type = field.getGenericType();
 		if(type instanceof ParameterizedType) {
@@ -186,8 +186,8 @@ public class BeanUtil {
 				for (Object key : value.keySet()) {
 					Object item = value.get(key);
 					if (item instanceof Map) {
-						Object oitem = BeanUtil.map2object((Map) item, itemClass, null, true, true, true);
-						map.put(key, oitem);
+						Object oitem = BeanUtil.map2object((Map) item,  itemClass,  null,  true,  true,  true);
+						map.put(key,  oitem);
 					}
 				}
 			}
@@ -196,22 +196,22 @@ public class BeanUtil {
 		}
 		return map;
 	}
-	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value){
-		return setFieldValue(obj, field, metadata, value, true);
+	public static boolean setFieldValue(Object obj,  Field field,  Column metadata,  Object value){
+		return setFieldValue(obj,  field,  metadata,  value,  true);
 	}
 
-	public static Collection convertList(Object v, Class component){
+	public static Collection convertList(Object v,  Class component){
 		Collection result = new ArrayList();
 		if(v instanceof String){
 			if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)){
-				String[] tmps = v.toString().split(",");
+				String[] tmps = v.toString().split(", ");
 				for(String tmp:tmps){
 					result.add(tmp);
 				}
  			}else if("json".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)) {
 				try {
-					JavaType type = JSON_MAPPER.getTypeFactory().constructParametricType(List.class, component);
-					result = JSON_MAPPER.readValue(v.toString(), type);
+					JavaType type = JSON_MAPPER.getTypeFactory().constructParametricType(List.class,  component);
+					result = JSON_MAPPER.readValue(v.toString(),  type);
 				}catch (Exception e){
 					e.printStackTrace();
 				}
@@ -223,25 +223,25 @@ public class BeanUtil {
 		if(v.getClass().isArray()){
 			Object[] list = (Object[])v;
 			for(Object item:list){
-				result.add(ConvertAdapter.convert(item, component, false));
+				result.add(ConvertAdapter.convert(item,  component,  false));
 			}
 		}else if(v instanceof Collection){
 			Collection list = (Collection) v;
 			for(Object item:list){
-				result.add(ConvertAdapter.convert(item, component, false));
+				result.add(ConvertAdapter.convert(item,  component,  false));
 			}
 		}
 		return result;
 	}
 	/**
 	 * 属性赋值
-	 * @param obj 对象 如果给类静态属性赋值,传null
+	 * @param obj 对象 如果给类静态属性赋值, 传null
 	 * @param field 属性
 	 * @param value 值
 	 * @param alert 失败提醒
 	 * @return boolean
 	 */
-	public static boolean setFieldValue(Object obj, Field field, Column metadata, Object value, boolean alert){
+	public static boolean setFieldValue(Object obj,  Field field,  Column metadata,  Object value,  boolean alert){
 		if(null == field){
 			return false;
 		}
@@ -273,38 +273,38 @@ public class BeanUtil {
 				if(targetClass == Object.class){
 
 				}else if(!srcTypeKey.equals(tarTypeKey)) {
-					Convert convert =  ConvertAdapter.getConvert(value.getClass(), targetClass);
+					Convert convert =  ConvertAdapter.getConvert(value.getClass(),  targetClass);
 					try {
 						//数组 集合 Map
 						//entity
 						//基础类型
 						if(null == convert) {
 							if (targetClass.isArray()) {
-								Collection converts = convertList(value, componentClass);
-								result = BeanUtil.collection2array(converts, componentClass);
-							} else if (ClassUtil.isInSub(targetClass, Collection.class)) {
+								Collection converts = convertList(value,  componentClass);
+								result = BeanUtil.collection2array(converts,  componentClass);
+							} else if (ClassUtil.isInSub(targetClass,  Collection.class)) {
 								Collection list = (Collection) ClassUtil.newInstance(targetClass);
-								Collection converts = convertList(value, componentClass);
+								Collection converts = convertList(value,  componentClass);
 								list.addAll(converts);
 								result = list;
-							} else if (ClassUtil.isInSub(targetClass, Map.class)) {
+							} else if (ClassUtil.isInSub(targetClass,  Map.class)) {
 								Map map = (Map) ClassUtil.newInstance(targetClass);
-								map = object2map(map, value);
+								map = object2map(map,  value);
 								result = map;
 							} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
 								//entity
-								List<Field> fields = ClassUtil.getFields(targetClass, false, false);
+								List<Field> fields = ClassUtil.getFields(targetClass,  false,  false);
 								Object entity = ClassUtil.newInstance(targetClass);
 								if (null != entity) {
 									for (Field f : fields) {
-										Object fv = getFieldValue(result, f.getName());
-										setFieldValue(entity, f, fv);
+										Object fv = getFieldValue(result,  f.getName());
+										setFieldValue(entity,  f,  fv);
 									}
 									result = entity;
 								}
 							}
 						}else{
-							result = ConvertAdapter.convert(value, targetClass, false);
+							result = ConvertAdapter.convert(value,  targetClass,  false);
 						}
 
 					}catch (Exception e){
@@ -327,18 +327,18 @@ public class BeanUtil {
 			if(compatible) {
 				if (field.isAccessible()) {
 					// 可访问属性
-					field.set(obj, result);
+					field.set(obj,  result);
 				} else {
 					// 不可访问属性
 					field.setAccessible(true);
-					field.set(obj, result);
+					field.set(obj,  result);
 					field.setAccessible(false);
 				}
 			}
 		}catch(Exception e){
 			if(alert) {
 				e.printStackTrace();
-				log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, result, srcTypeKey, columnType, e.toString());
+				log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]",  field,  tarTypeKey,  result,  srcTypeKey,  columnType,  e.toString());
 			}
 			return false;
 		}
@@ -355,7 +355,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static double[] Double2double(Double[] array, double def){
+	public static double[] Double2double(Double[] array,  double def){
 		if(null == array){
 			return null;
 		}
@@ -381,7 +381,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static long[] Long2long(Long[] array, long def){
+	public static long[] Long2long(Long[] array,  long def){
 		if(null == array){
 			return null;
 		}
@@ -407,7 +407,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static int[] Integer2int(Integer[] array, int def){
+	public static int[] Integer2int(Integer[] array,  int def){
 		if(null == array){
 			return null;
 		}
@@ -433,7 +433,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static float[] Float2float(Float[] array, float def){
+	public static float[] Float2float(Float[] array,  float def){
 		if(null == array){
 			return null;
 		}
@@ -473,28 +473,28 @@ public class BeanUtil {
 	 * @param alert 设备失败是否提示日期
 	 * @return boolean
 	 */
-	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion, boolean alert){
+	public static boolean setFieldValue(Object obj,  String field,  Object value,  boolean recursion,  boolean alert){
 		if(null == obj || null == field){
 			return false;
 		}
 		if(obj instanceof Map){
 			Map tmp = (Map)obj;
-			tmp.put(field, value);
+			tmp.put(field,  value);
 		}else{
-			Field f = ClassUtil.getField(obj.getClass(), field, recursion);
-			setFieldValue(obj, f, value, alert);
+			Field f = ClassUtil.getField(obj.getClass(),  field,  recursion);
+			setFieldValue(obj,  f,  value,  alert);
 		}
 		return true;
 	}
 
-	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){
-		return setFieldValue(obj, field, value, recursion, true);
+	public static boolean setFieldValue(Object obj,  String field,  Object value,  boolean recursion){
+		return setFieldValue(obj,  field,  value,  recursion,  true);
 	}
-	public static boolean setFieldValue(Object obj, String field, Object value){
-		return setFieldValue(obj, field, value, true);
+	public static boolean setFieldValue(Object obj,  String field,  Object value){
+		return setFieldValue(obj,  field,  value,  true);
 	}
 
-	public static Object getFieldValue(Object obj, Field field){
+	public static Object getFieldValue(Object obj,  Field field){
 		Object value = null;
 		if(null == obj || null == field){
 			return null;
@@ -515,7 +515,7 @@ public class BeanUtil {
 		return value;
 	}
 	@SuppressWarnings("rawtypes")
-	public static Object getFieldValue(Object obj, String field, boolean recursion){
+	public static Object getFieldValue(Object obj,  String field,  boolean recursion){
 		if(null == obj){
 			return null;
 		}
@@ -527,21 +527,21 @@ public class BeanUtil {
 			Map map = (Map)obj;
 			value = map.get(field);
 		}else if(obj instanceof Class){
-			Field f = ClassUtil.getField((Class)obj, field, recursion);
-			value = getFieldValue(obj, f);
+			Field f = ClassUtil.getField((Class)obj,  field,  recursion);
+			value = getFieldValue(obj,  f);
 		}else{
-			Field f = ClassUtil.getField(obj.getClass(), field, recursion);
+			Field f = ClassUtil.getField(obj.getClass(),  field,  recursion);
 			if(null == f){
-				f = ClassUtil.getField(obj.getClass(), camel(field), recursion);
+				f = ClassUtil.getField(obj.getClass(),  camel(field),  recursion);
 			}
-			value = getFieldValue(obj, f);
+			value = getFieldValue(obj,  f);
 		}
 		return value;
 
 	}
 
-	public static Object getFieldValue(Object obj, String field){
-		return getFieldValue(obj, field, false);
+	public static Object getFieldValue(Object obj,  String field){
+		return getFieldValue(obj,  field,  false);
 	}
 	@SuppressWarnings("rawtypes")
 	public static List<String> getMapKeys(Map map){
@@ -558,53 +558,53 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String,Object> toMap(Object obj, String ... keys){
+	public static Map<String, Object> toMap(Object obj,  String ... keys){
 		if(null == obj){
 			return null;
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		if(null == keys || keys.length ==0){
 			if(obj instanceof Map){
 				// map to map
-				Map<String,Object> tmp = (Map<String,Object>)obj;
+				Map<String, Object> tmp = (Map<String, Object>)obj;
 				for(String key:tmp.keySet()){
-					map.put(key, tmp.get(key));
+					map.put(key,  tmp.get(key));
 				}
 			}else{
 				// object to map
 				List<Field> fields = ClassUtil.getFields(obj.getClass());
 				for(Field field:fields){
 					String key = field.getName();
-					Object value = getFieldValue(obj, field);
+					Object value = getFieldValue(obj,  field);
 					if(null == value){
 						value = "";
 					}
-					map.put(key, value);
+					map.put(key,  value);
 				}
 			}
 		}else{
 			for(String key:keys){
 				Object value = null;
 				if(obj instanceof Map){
-					value = ((Map<String,Object>)obj).get(key);
+					value = ((Map<String, Object>)obj).get(key);
 				}else{
-					value = getFieldValue(obj, key);
+					value = getFieldValue(obj,  key);
 					if(null == value){
 						value = "";
 					}
 				}
-				map.put(key, value);
+				map.put(key,  value);
 			}
 		}
 		return map;
 	}
-	public static List<Map<String,Object>> toMaps(Collection<?> objs, String ... keys){
+	public static List<Map<String, Object>> toMaps(Collection<?> objs,  String ... keys){
 		if(null == objs){
 			return null;
 		}
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		for(Object obj:objs){
-			list.add(toMap(obj,keys));
+			list.add(toMap(obj, keys));
 		}
 		return list;
 	}
@@ -613,23 +613,23 @@ public class BeanUtil {
 	 * @param objs  objs
 	 * @param keys  keys
 	 */
-	public static void removeProperty(Collection<Object> objs, String ... keys){
+	public static void removeProperty(Collection<Object> objs,  String ... keys){
 		if(null == keys || null == objs){
 			return;
 		}
 		for(String key:keys){
-			removeProperty(objs, key);
+			removeProperty(objs,  key);
 		}
 	}
 	@SuppressWarnings("rawtypes")
-	public static void removeProperty(Object obj, String key){
+	public static void removeProperty(Object obj,  String key){
 		if(null == obj || null == key){
 			return;
 		}
 		if(obj instanceof Map){
 			((Map) obj).remove(key);
 		}else{
-			setFieldValue(obj, key, null);
+			setFieldValue(obj,  key,  null);
 		}
 	}
 
@@ -639,18 +639,18 @@ public class BeanUtil {
 	 * @param keys  keys
 	 * @return Collection
 	 */
-	public static Collection<Object> fetch(Collection<Object> objs, String ... keys){
+	public static Collection<Object> fetch(Collection<Object> objs,  String ... keys){
 		if(null == objs){
 			return null;
 		}
 		Collection<Object> list = new ArrayList<Object>();
 		for(Object obj: objs){
-			list.add(fetch(obj, keys));
+			list.add(fetch(obj,  keys));
 		}
 		return list;
 	}
-	@SuppressWarnings({"unchecked", "rawtypes" })
-	public static Object fetch(Object obj, String ... keys){
+	@SuppressWarnings({"unchecked",  "rawtypes" })
+	public static Object fetch(Object obj,  String ... keys){
 		if(null == obj){
 			return null;
 		}
@@ -661,10 +661,10 @@ public class BeanUtil {
 				for(String key:keys){
 					if(obj instanceof Map){
 						Object value = ((Map)obj).get(key);
-						((Map)obj).put(key, value);
+						((Map)obj).put(key,  value);
 					}else{
-						Object value = getFieldValue(obj, key);
-						setFieldValue(obj, key, value);
+						Object value = getFieldValue(obj,  key);
+						setFieldValue(obj,  key,  value);
 					}
 				}
 			}
@@ -679,14 +679,14 @@ public class BeanUtil {
 	 * @param params  params
 	 * @return Collection
 	 */
-	public static Collection<?> select(Collection<?> list, String ... params){
+	public static Collection<?> select(Collection<?> list,  String ... params){
 		if(null == list || null == params || params.length==0){
 			return list;
 		}
 		if(list instanceof DataSet){
 			return ((DataSet)list).getRows(params);
 		}
-		Map<String, String> kvs = new HashMap<String, String>();
+		Map<String,  String> kvs = new HashMap<String,  String>();
 		int len = params.length;
 		int i = 0;
 		while(i<len){
@@ -696,19 +696,19 @@ public class BeanUtil {
 				continue;
 			}else if(p1.contains(":")){
 				String ks[] = parseKeyValue(p1);
-				kvs.put(ks[0], ks[1]);
+				kvs.put(ks[0],  ks[1]);
 				i++;
 				continue;
 			}else{
 				if(i+1<len){
 					String p2 = params[i+1];
 					if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
-						kvs.put(p1, p2);
+						kvs.put(p1,  p2);
 						i+=2;
 						continue;
 					}else{
 						String ks[] = parseKeyValue(p2);
-						kvs.put(ks[0], ks[1]);
+						kvs.put(ks[0],  ks[1]);
 						i+=2;
 						continue;
 					}
@@ -725,7 +725,7 @@ public class BeanUtil {
 			boolean chk = true;//对比结果
 			for(String k : kvs.keySet()){
 				String v = kvs.get(k);
-				Object value = getFieldValue(obj, k);
+				Object value = getFieldValue(obj,  k);
 
 				if(null == v){
 					if(null != value){
@@ -746,12 +746,12 @@ public class BeanUtil {
 		return list;
 	}
 	/**
-	 * @param params key1,value1,key2:value2,key3,value3
-	 *               "NM:zh%","AGE:&gt;20","NM","%zh%"
+	 * @param params key1, value1, key2:value2, key3, value3
+	 *               "NM:zh%", "AGE:&gt;20", "NM", "%zh%"
 	 * @return Map
 	 */
-	public static Map<String, String> array2map(String ... params){
-		Map<String, String> map = new HashMap<>();
+	public static Map<String,  String> array2map(String ... params){
+		Map<String,  String> map = new HashMap<>();
 		int len = params.length;
 		int i = 0;
 		while (i < len) {
@@ -761,19 +761,19 @@ public class BeanUtil {
 				continue;
 			} else if (p1.contains(":")) {
 				String ks[] = parseKeyValue(p1);
-				map.put(ks[0], ks[1]);
+				map.put(ks[0],  ks[1]);
 				i++;
 				continue;
 			} else {
 				if (i + 1 < len) {
 					String p2 = params[i + 1];
 					if (BasicUtil.isEmpty(p2) || !p2.contains(":")) {
-						map.put(p1, p2);
+						map.put(p1,  p2);
 						i += 2;
 						continue;
 					} else {
 						String ks[] = parseKeyValue(p2);
-						map.put(ks[0], ks[1]);
+						map.put(ks[0],  ks[1]);
 						i += 2;
 						continue;
 					}
@@ -787,7 +787,7 @@ public class BeanUtil {
 
 	/**
 	 * map转实现
-	 * @param obj 在此基础上执行,如果不提供则新创建
+	 * @param obj 在此基础上执行, 如果不提供则新创建
 	 * @param map 源数据
 	 * @param clazz Entity class
 	 * @param metadatas metadatas
@@ -799,7 +799,7 @@ public class BeanUtil {
 	 * @param <T> T
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+	public static <T> T map2object(T obj,  Map<String, ?> map,  Class<T> clazz,  Map metadatas,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit,  String ... keys){
 		try {
 			if(null == obj) {
 				if(Map.class.isAssignableFrom(clazz)){
@@ -821,7 +821,7 @@ public class BeanUtil {
 				Map.Entry entry = (Map.Entry) it.next();
 				String k = (String) entry.getKey();
 				Object v = entry.getValue();
-				Field field = ClassUtil.getField(fields, k, ignoreCase, ignoreSplit);
+				Field field = ClassUtil.getField(fields,  k,  ignoreCase,  ignoreSplit);
 				Column metadata = null;
 				if(map instanceof DataRow){
 					metadata = ((DataRow)map).getMetadata(k);
@@ -829,7 +829,7 @@ public class BeanUtil {
 				if(null == metadata && null != metadatas){
 					metadata = (Column) metadatas.get(k.toUpperCase());
 				}
-				setFieldValue(obj, field, metadata, v);
+				setFieldValue(obj,  field,  metadata,  v);
 			}
 			if(null != keys){
 				for(String key:keys){
@@ -841,7 +841,7 @@ public class BeanUtil {
 						k = tmp[1];
 					}
 					Object v = map.get(k);
-					setFieldValue(obj, f, v, true);
+					setFieldValue(obj,  f,  v,  true);
 				}
 			}
 		}catch(Exception e){
@@ -850,73 +850,73 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
-		return map2object(null, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit, keys);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,  Map metadatas,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit,  String ... keys){
+		return map2object(null,  map,  clazz,  metadatas,  recursion,  ignoreCase,  ignoreSplit,  keys);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		obj = map2object(obj, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit);
+	public static <T> T map2object(T obj,  Map<String, ?> map,  Class<T> clazz,  Map metadatas,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit,   Map<Field,  String> fields){
+		obj = map2object(obj,  map,  clazz,  metadatas,  recursion,  ignoreCase,  ignoreSplit);
 		for(Map.Entry item:fields.entrySet()){
 			Field field = (Field)item.getKey();
 			String column = (String)item.getValue();
 			Object value = map.get(column);
-			setFieldValue(obj, field, value);
+			setFieldValue(obj,  field,  value);
 		}
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		return map2object(null, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit, fields);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,  Map metadatas,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit,   Map<Field,  String> fields){
+		return map2object(null,  map,  clazz,  metadatas,  recursion,  ignoreCase,  ignoreSplit,  fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		return map2object(null, map, clazz, null, recursion, ignoreCase, ignoreSplit, fields);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit,   Map<Field,  String> fields){
+		return map2object(null,  map,  clazz,  null,  recursion,  ignoreCase,  ignoreSplit,  fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
-		return map2object(obj, map, clazz, metadatas, false, false, false, fields);
+	public static <T> T map2object(T obj,  Map<String, ?> map,  Class<T> clazz,  Map metadatas,  Map<Field,  String> fields){
+		return map2object(obj,  map,  clazz,  metadatas,  false,  false,  false,  fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz,  Map<Field, String> fields){
-		return map2object(obj, map, clazz, null, false, false, false, fields);
+	public static <T> T map2object(T obj,  Map<String, ?> map,  Class<T> clazz,   Map<Field,  String> fields){
+		return map2object(obj,  map,  clazz,  null,  false,  false,  false,  fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
-		return map2object(null, map, clazz, metadatas, false, false, false, fields);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,  Map metadatas,  Map<Field,  String> fields){
+		return map2object(null,  map,  clazz,  metadatas,  false,  false,  false,  fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
-		return map2object(null, map, clazz, null, false, false, false, fields);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,  Map<Field,  String> fields){
+		return map2object(null,  map,  clazz,  null,  false,  false,  false,  fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, String ... keys){
-		return map2object(obj, map, clazz, metadatas, false, false, false);
+	public static <T> T map2object(T obj,  Map<String, ?> map,  Class<T> clazz,  Map metadatas,  String ... keys){
+		return map2object(obj,  map,  clazz,  metadatas,  false,  false,  false);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, String ... keys){
-		return map2object(obj, map, clazz, null, false, false, false);
+	public static <T> T map2object(T obj,  Map<String, ?> map,  Class<T> clazz,  String ... keys){
+		return map2object(obj,  map,  clazz,  null,  false,  false,  false);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, String ... keys){
-		return map2object(null, map, clazz, metadatas, false, false, false);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,  Map metadatas,  String ... keys){
+		return map2object(null,  map,  clazz,  metadatas,  false,  false,  false);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz,  String ... keys){
-		return map2object(null, map, clazz, null, false, false, false);
+	public static <T> T map2object(Map<String, ?> map,  Class<T> clazz,   String ... keys){
+		return map2object(null,  map,  clazz,  null,  false,  false,  false);
 	}
 
-	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
+	public static <T> T json2oject(String json,  Class<T> clazz,  JsonInclude.Include include){
 		try {
 			if(null != include){
-				return newObjectMapper(include).readValue(json, clazz);
+				return newObjectMapper(include).readValue(json,  clazz);
 			}
-			return  JSON_MAPPER.readValue(json, clazz);
+			return  JSON_MAPPER.readValue(json,  clazz);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public static <T> T json2oject(String json, Class<T> clazz){
-		return json2oject(json, clazz, null);
+	public static <T> T json2oject(String json,  Class<T> clazz){
+		return json2oject(json,  clazz,  null);
 	}
 	@SuppressWarnings("rawtypes")
-	public static String map2xml(Map<String,?> map, boolean border, boolean order){
+	public static String map2xml(Map<String, ?> map,  boolean border,  boolean order){
 		StringBuffer builder = new StringBuffer();
 		if(border){
 			builder.append("<xml>");
 		}
 		if(order){
-			SortedMap<String, Object> sort = new TreeMap<String, Object>(map);
+			SortedMap<String,  Object> sort = new TreeMap<String,  Object>(map);
 			Set es = sort.entrySet();
 			Iterator it = es.iterator();
 			while (it.hasNext()) {
@@ -946,17 +946,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String map2xml(Map<String,?> map){
-		return map2xml(map, true, false);
+	public static String map2xml(Map<String, ?> map){
+		return map2xml(map,  true,  false);
 	}
-	public static String map2json(Map<String,?> map){
+	public static String map2json(Map<String, ?> map){
 		return object2json(map);
 	}
-	public static String map2json(Map<String,?> map, JsonInclude.Include include){
-		return object2json(map,include);
+	public static String map2json(Map<String, ?> map,  JsonInclude.Include include){
+		return object2json(map, include);
 	}
-	public static Map<String,Object> xml2map(String xml){
-		Map<String,Object> map = new HashMap<String,Object>();
+	public static Map<String, Object> xml2map(String xml){
+		Map<String, Object> map = new HashMap<String, Object>();
 		Document document;
 		try {
 			document =  DocumentHelper.parseText(xml);
@@ -965,7 +965,7 @@ public class BeanUtil {
 				Element element = itrProperty.next();
 				String key = element.getName();
 				String value = element.getTextTrim();
-				map.put(key, value);
+				map.put(key,  value);
 			}
 		} catch (DocumentException e) {
 			e.printStackTrace();
@@ -976,18 +976,18 @@ public class BeanUtil {
 	/**
 	 * 按key升序拼接
 	 * @param map  数据源
-	 * @param join key,value之间的拼接符(默认=)
+	 * @param join key, value之间的拼接符(默认=)
 	 * @param separator  separator 多个kv的分隔符(默认&amp;)
 	 * @param ignoreEmpty 是否忽略空值
 	 * @param order 是否排序
 	 * @return String(a=1&amp;b=2&amp;b=3)
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
-	public static String map2string(Map map, String join, String separator, boolean ignoreEmpty, boolean order){
+	@SuppressWarnings({"rawtypes",  "unchecked" })
+	public static String map2string(Map map,  String join,  String separator,  boolean ignoreEmpty,  boolean order){
 		StringBuilder result = new StringBuilder();
 		Set es = null;
 		if(order){
-			SortedMap<String, Object> wrap = new TreeMap<String, Object>(map);
+			SortedMap<String,  Object> wrap = new TreeMap<String,  Object>(map);
 			es = wrap.entrySet();
 		}else{
 			es = map.entrySet();
@@ -1035,36 +1035,36 @@ public class BeanUtil {
 		return result.toString();
 	}
 
-	public static String map2string(Map map, boolean ignoreEmpty, boolean order){
-		return map2string(map, "=" , "&", ignoreEmpty, order);
+	public static String map2string(Map map,  boolean ignoreEmpty,  boolean order){
+		return map2string(map,  "=",  "&",  ignoreEmpty,  order);
 	}
 	public static String map2string(Map map){
-		return map2string(map, "=","&",true, true);
+		return map2string(map,  "=", "&", true,  true);
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
-		return xml2object(xml, clazz, null, recursion, ignoreCase, ignoreSplit);
+	public static <T> T xml2object(String xml,  Class<T> clazz,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit){
+		return xml2object(xml,  clazz,  null,  recursion,  ignoreCase,  ignoreSplit);
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
+	public static <T> T xml2object(String xml,  Class<T> clazz,  Map columns,  boolean recursion,  boolean ignoreCase,  boolean ignoreSplit){
 		T obj = null;
 		try {
-			Map<String,?> map = xml2map(xml);
-			obj = map2object(map, clazz, columns, recursion, ignoreCase, ignoreSplit);
+			Map<String, ?> map = xml2map(xml);
+			obj = map2object(map,  clazz,  columns,  recursion,  ignoreCase,  ignoreSplit);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return obj;
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz, Map columns, boolean recursion){
-		return xml2object(xml, clazz, columns, recursion, false, false);
+	public static <T> T xml2object(String xml,  Class<T> clazz,  Map columns,  boolean recursion){
+		return xml2object(xml,  clazz,  columns,  recursion,  false,  false);
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion){
-		return xml2object(xml, clazz, null, recursion, false, false);
+	public static <T> T xml2object(String xml,  Class<T> clazz,  boolean recursion){
+		return xml2object(xml,  clazz,  null,  recursion,  false,  false);
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz, Map columns){
-		return xml2object(xml,  clazz, columns,true);
+	public static <T> T xml2object(String xml,  Class<T> clazz,  Map columns){
+		return xml2object(xml,   clazz,  columns, true);
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz){
-		return xml2object(xml,  clazz, null, true);
+	public static <T> T xml2object(String xml,  Class<T> clazz){
+		return xml2object(xml,   clazz,  null,  true);
 	}
 	public static String object2xml(Object obj){
 		if(null == obj){
@@ -1074,7 +1074,7 @@ public class BeanUtil {
 		builder.append("<xml>");
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields){
-			Object value = getFieldValue(obj, field);
+			Object value = getFieldValue(obj,  field);
 			if(null == value){
 				value = "";
 			}
@@ -1085,29 +1085,29 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
-	public static Map<String,Object> object2map(Object obj){
+	public static Map<String, Object> object2map(Object obj){
 		if(null == obj){
 			return null;
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields){
-			Object value = getFieldValue(obj, field);
+			Object value = getFieldValue(obj,  field);
 			if(null == value){
 				value = "";
 			}
-			map.put(field.getName(), value);
+			map.put(field.getName(),  value);
 		}
 		return map;
 	}
-	public static Map<String,Object> object2map(Object obj, List<String> keys){
-		return object2map(new HashMap(), obj, keys);
+	public static Map<String, Object> object2map(Object obj,  List<String> keys){
+		return object2map(new HashMap(),  obj,  keys);
 	}
 
-	public static Map<String,Object> object2map(Map map, Object obj){
-		return object2map(map, obj, null);
+	public static Map<String, Object> object2map(Map map,  Object obj){
+		return object2map(map,  obj,  null);
 	}
-	public static Map<String,Object> object2map(Map map, Object obj, List<String> keys){
+	public static Map<String, Object> object2map(Map map,  Object obj,  List<String> keys){
 		if(null == obj){
 			return null;
 		}
@@ -1119,7 +1119,7 @@ public class BeanUtil {
 					}
 					Map objmap = (Map)obj;
 					for (Object key:objmap.keySet()) {
-						map.put(key, objmap.get(key));
+						map.put(key,  objmap.get(key));
 					}
 				}catch (Exception e){
 					e.printStackTrace();
@@ -1130,11 +1130,11 @@ public class BeanUtil {
 				}
 				List<Field> fields = ClassUtil.getFields(obj.getClass());
 				for(Field field:fields){
-					Object value = getFieldValue(obj, field);
+					Object value = getFieldValue(obj,  field);
 					if (null == value) {
 						value = "";
 					}
-					map.put(field.getName(), value);
+					map.put(field.getName(),  value);
 				}
 			}
 		}else {
@@ -1146,34 +1146,34 @@ public class BeanUtil {
 				map=(Map)obj;
 			}else {
 				for (String key : keys) {
-					Object value = getFieldValue(obj, key);
+					Object value = getFieldValue(obj,  key);
 					if (null == value) {
 						value = "";
 					}
-					map.put(key, value);
+					map.put(key,  value);
 				}
 			}
 		}
 		return map;
 	}
-	public static <T> List<Map<String,Object>> objects2maps(Collection<T> objs, List<String> keys){
-		List<Map<String,Object>> maps = new ArrayList<>();
+	public static <T> List<Map<String, Object>> objects2maps(Collection<T> objs,  List<String> keys){
+		List<Map<String, Object>> maps = new ArrayList<>();
 		if(null != objs)
 			for(T obj:objs){
 				if(obj instanceof Map){
-					Map<String,Object> item = new HashMap<>();
+					Map<String, Object> item = new HashMap<>();
 					for(String key:keys){
-						item.put(key, ((Map)obj).get(key));
+						item.put(key,  ((Map)obj).get(key));
 					}
 					maps.add(item);
 				}else {
-					maps.add(object2map(obj, keys));
+					maps.add(object2map(obj,  keys));
 				}
 			}
 		return maps;
 	}
-	public static <T> List<Map<String,Object>> objects2maps(Collection<T> objs){
-		List<Map<String,Object>> maps = new ArrayList<>();
+	public static <T> List<Map<String, Object>> objects2maps(Collection<T> objs){
+		List<Map<String, Object>> maps = new ArrayList<>();
 		if(null != objs)
 			for(T obj:objs){
 				if(obj instanceof Map){
@@ -1184,7 +1184,7 @@ public class BeanUtil {
 			}
 		return maps;
 	}
-	public static String object2json(Object obj, JsonInclude.Include include){
+	public static String object2json(Object obj,  JsonInclude.Include include){
 		if(null != obj) {
 			//json类型直接返回
 			if(obj.getClass().getName().toUpperCase().contains("JSON")){
@@ -1202,22 +1202,22 @@ public class BeanUtil {
 		return null;
 	}
 	public static String object2json(Object obj){
-		return object2json(obj,null);
+		return object2json(obj, null);
 	}
 
 	/**
 	 * 参数转map
 	 * 参数格式a=1&amp;b=2&amp;b=3
-	 * 如果是多个值,以String的List形式保存
+	 * 如果是多个值, 以String的List形式保存
 	 * 如果是url将根据问号分割
 	 * @param url 参数或url
-	 * @param empty 结果中是否包含空值,所有空值以""形式保存
+	 * @param empty 结果中是否包含空值, 所有空值以""形式保存
 	 * @param decode 是否需要解码
 	 * @param charset 解码编码
 	 * @return Map
 	 */
-	public static Map<String,Object> param2map(String url, boolean empty, boolean decode, String charset){
-		Map<String,Object> params = new HashMap<String,Object>();
+	public static Map<String, Object> param2map(String url,  boolean empty,  boolean decode,  String charset){
+		Map<String, Object> params = new HashMap<String, Object>();
 		if(null != url){
 			int index = url.indexOf("?");
 			if(index != -1) {
@@ -1230,7 +1230,7 @@ public class BeanUtil {
 
 				int idx = kv.indexOf("=");
 				if(idx != -1){
-					k = kv.substring(0, idx);
+					k = kv.substring(0,  idx);
 					v = kv.substring(idx+1);
 				}
 				if("null".equals(v)){
@@ -1242,7 +1242,7 @@ public class BeanUtil {
 					continue;
 				}
 				if(decode){
-					v = urlDecode(v,charset);
+					v = urlDecode(v, charset);
 				}
 				if(params.containsKey(k)){
 					Object olds = params.get(k);
@@ -1255,9 +1255,9 @@ public class BeanUtil {
 						vs = (ArrayList)olds;
 					}
 					vs.add(v);
-					params.put(k,vs);
+					params.put(k, vs);
 				}else{
-					params.put(k,v);
+					params.put(k, v);
 				}
 
 			}
@@ -1265,14 +1265,14 @@ public class BeanUtil {
 		return params;
 	}
 
-	public static String urlDecode(String src, String charset){
+	public static String urlDecode(String src,  String charset){
 		String result = null;
 		if(null != src){
 			try{
 				if(null == charset){
 					result = URLDecoder.decode(src);
 				}else {
-					result = URLDecoder.decode(src, charset);
+					result = URLDecoder.decode(src,  charset);
 				}
 			}catch (Exception e){
 				result = src;
@@ -1280,11 +1280,11 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static Map<String,Object> param2map(String url, boolean empty){
-		return param2map(url, empty, false, "UTF-8");
+	public static Map<String, Object> param2map(String url,  boolean empty){
+		return param2map(url,  empty,  false,  "UTF-8");
 	}
-	public static Map<String,Object> param2map(String url, boolean empty, boolean decode){
-		return param2map(url, empty, decode, "UTF-8");
+	public static Map<String, Object> param2map(String url,  boolean empty,  boolean decode){
+		return param2map(url,  empty,  decode,  "UTF-8");
 	}
 	/**
 	 * 提取集合中每个条目的key属性的值
@@ -1293,11 +1293,11 @@ public class BeanUtil {
 	 * @param key  key
 	 * @return List
 	 */
-	public static List<Object> extract(Collection<?> list, String key){
+	public static List<Object> extract(Collection<?> list,  String key){
 		List<Object> values = new ArrayList<Object>();
 		if(null != list){
 			for(Object obj:list){
-				Object value = getFieldValue(obj, key);
+				Object value = getFieldValue(obj,  key);
 				values.add(value);
 			}
 		}
@@ -1305,20 +1305,20 @@ public class BeanUtil {
 	}
 	/**
 	 * 提取集合中每个条目的多个key属性的值
-	 * 如提取用户列表中的所有用户ID,CODE
+	 * 如提取用户列表中的所有用户ID, CODE
 	 * @param list  list
 	 * @param keys  keys
 	 * @return List
 	 */
-	public static List<Map<String,Object>> extracts(Collection<?> list, String ... keys){
-		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
+	public static List<Map<String, Object>> extracts(Collection<?> list,  String ... keys){
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		if(null != list){
 			for(Object obj:list){
-				Map<String,Object> map = new HashMap<String,Object>();
+				Map<String, Object> map = new HashMap<String, Object>();
 				if(null !=keys){
 					for(String key:keys){
-						Object value = getFieldValue(obj, key);
-						map.put(key, value);
+						Object value = getFieldValue(obj,  key);
+						map.put(key,  value);
 					}
 					result.add(map);
 				}
@@ -1333,7 +1333,7 @@ public class BeanUtil {
 	 * @param keys 根据keys列或属性值比较
 	 * @return   return
 	 */
-	public static <T> Collection<T> distinct(Collection<T> list, String ... keys){
+	public static <T> Collection<T> distinct(Collection<T> list,  String ... keys){
 		List<T> result = new ArrayList<T>();
 		if(null != list){
 			for(T obj:list){
@@ -1342,7 +1342,7 @@ public class BeanUtil {
 						result.add(obj);
 					}
 				}else{
-					if(contain(result, obj, keys)){
+					if(contain(result,  obj,  keys)){
 						result.add(obj);
 					}
 				}
@@ -1350,7 +1350,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static <T> Collection<T> distinct(Collection<T> list, List<String> keys){
+	public static <T> Collection<T> distinct(Collection<T> list,  List<String> keys){
 		List<T> result = new ArrayList<T>();
 		if(null != list){
 			for(T obj:list){
@@ -1359,7 +1359,7 @@ public class BeanUtil {
 						result.add(obj);
 					}
 				}else{
-					if(!contain(result, obj, keys)){
+					if(!contain(result,  obj,  keys)){
 						result.add(obj);
 					}
 				}
@@ -1372,27 +1372,27 @@ public class BeanUtil {
 	 * @param <T> T
 	 * @param list  list
 	 * @param obj  obj
-	 * @param keys 只比较keys列,基础类型不需要指定列
+	 * @param keys 只比较keys列, 基础类型不需要指定列
 	 * @return T
 	 */
-	public static <T> boolean contain(Collection<T> list, T obj, String ... keys){
+	public static <T> boolean contain(Collection<T> list,  T obj,  String ... keys){
 		for(T item:list){
-			if(equals(item, obj)){
+			if(equals(item,  obj)){
 				return true;
 			}
 		}
 		return false;
 	}
-	public static <T> boolean contain(Collection<T> list, T obj, List<String> keys){
+	public static <T> boolean contain(Collection<T> list,  T obj,  List<String> keys){
 		for(T item:list){
-			if(equals(item, obj, keys)){
+			if(equals(item,  obj,  keys)){
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static <T> boolean equals(T obj1, T obj2, List<String> keys){
+	public static <T> boolean equals(T obj1,  T obj2,  List<String> keys){
 		if(null == keys || keys.size() == 0){
 			if(null == obj1){
 				if(null == obj2){
@@ -1413,9 +1413,9 @@ public class BeanUtil {
 		}
 
 		for(String key:keys){
-			Object v1 = getFieldValue(obj1, key);
-			Object v2 = getFieldValue(obj2, key);
-			if(!equals(v1,v2)){
+			Object v1 = getFieldValue(obj1,  key);
+			Object v2 = getFieldValue(obj2,  key);
+			if(!equals(v1, v2)){
 				return false;
 			}
 
@@ -1423,8 +1423,8 @@ public class BeanUtil {
 		return true;
 	}
 
-	public static <T> boolean equals(T obj1, T obj2, String ... keys){
-		return equals(obj1, obj2, array2list(keys));
+	public static <T> boolean equals(T obj1,  T obj2,  String ... keys){
+		return equals(obj1,  obj2,  array2list(keys));
 	}
 
 	/*
@@ -1440,7 +1440,7 @@ public class BeanUtil {
  *//*
 
 
-	public static String concat(List<?> list, String field, String split) {
+	public static String concat(List<?> list,  String field,  String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1450,12 +1450,12 @@ public class BeanUtil {
 				if (builder.length() > 0) {
 					builder.append(split);
 				}
-				builder.append(getFieldValue(item, field));
+				builder.append(getFieldValue(item,  field));
 			}
 		}
 		return builder.toString();
 	}
-	public static String concat(List<?> list, String split) {
+	public static String concat(List<?> list,  String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1471,7 +1471,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static String concat(List<?> list) {
-		return concat(list,",");
+		return concat(list, ", ");
 	}
 */
 
@@ -1484,7 +1484,7 @@ public class BeanUtil {
 	 * @param recursion 是否递归提交父类属性
 	 * @return String
 	 */
-	public static String concat(Collection<?> list, String field, String split, boolean required, boolean recursion) {
+	public static String concat(Collection<?> list,  String field,  String split,  boolean required,  boolean recursion) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1494,16 +1494,16 @@ public class BeanUtil {
 				if (builder.length() > 0) {
 					builder.append(split);
 				}
-				builder.append(getFieldValue(item, field, recursion));
+				builder.append(getFieldValue(item,  field,  recursion));
 			}
 		}
 		return builder.toString();
 	}
-	public static String concat(Collection<?> list, String field, String split, boolean required) {
-		return concat(list, field, split, required, false);
+	public static String concat(Collection<?> list,  String field,  String split,  boolean required) {
+		return concat(list,  field,  split,  required,  false);
 	}
-	public static String concat(Collection<?> list, String field, String split) {
-		return concat(list, field, split, false);
+	public static String concat(Collection<?> list,  String field,  String split) {
+		return concat(list,  field,  split,  false);
 	}
 
 	/**
@@ -1513,7 +1513,7 @@ public class BeanUtil {
 	 * @param required 是否必须(遇到宿舍是否忽略)
 	 * @return String
 	 */
-	public static String concat(Collection<?> list, String split, boolean required) {
+	public static String concat(Collection<?> list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1528,18 +1528,18 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Collection<?> list, String split) {
-		return concat(list, split, false);
+	public static String concat(Collection<?> list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(Collection<?> list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(Collection<?> list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(Collection<?> list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
 
-	public static <T> String concat(T[] list, String key, String split, boolean required) {
+	public static <T> String concat(T[] list,  String key,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1554,10 +1554,10 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static <T> String concat(T[] list, String key, String split) {
-		return concat(list, key, split, false);
+	public static <T> String concat(T[] list,  String key,  String split) {
+		return concat(list,  key,  split,  false);
 	}
-	public static <T> String concat(T[] list, String split, boolean required) {
+	public static <T> String concat(T[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1572,18 +1572,18 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static <T> String concat(T[] list, String split) {
-		return concat(list, split, false);
+	public static <T> String concat(T[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static <T> String concat(T[] list, boolean required) {
-		return concat(list,",", required);
+	public static <T> String concat(T[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static <T> String concat(T[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
 
-	public static String concat(Integer[] list, String split, boolean required) {
+	public static String concat(Integer[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1598,17 +1598,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Integer[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(Integer[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(Integer[] list, boolean required) {
-		return concat(list, ",", required);
+	public static String concat(Integer[] list,  boolean required) {
+		return concat(list,  ", ",  required);
 	}
 	public static String concat(Integer[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(Long[] list, String split, boolean required) {
+	public static String concat(Long[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1623,17 +1623,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Long[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(Long[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(Long[] list, boolean required) {
-		return concat(list, ",", required);
+	public static String concat(Long[] list,  boolean required) {
+		return concat(list,  ", ",  required);
 	}
 	public static String concat(Long[] list) {
-		return concat(list,false);
+		return concat(list, false);
 	}
 
-	public static String concat(Double[] list, String split, boolean required) {
+	public static String concat(Double[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1648,17 +1648,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Double[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(Double[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(Double[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(Double[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(Double[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(Float[] list, String split,  boolean required) {
+	public static String concat(Float[] list,  String split,   boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1673,17 +1673,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Float[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(Float[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(Float[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(Float[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(Float[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(Short[] list, String split, boolean required) {
+	public static String concat(Short[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1698,17 +1698,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(Short[] list, String split){
-		return concat(list, split, false);
+	public static String concat(Short[] list,  String split){
+		return concat(list,  split,  false);
 	}
-	public static String concat(Short[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(Short[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(Short[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(Byte[] list, String split, boolean required) {
+	public static String concat(Byte[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1724,43 +1724,18 @@ public class BeanUtil {
 		return builder.toString();
 	}
 
-	public static String concat(Byte[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(Byte[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(Byte[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(Byte[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(Byte[] list) {
-		return concat(list,false);
-	}
-
-
-	public static String concat(int[] list, String split, boolean required) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			for(Object item:list){
-				if(!required && BasicUtil.isEmpty(item)){
-					continue;
-				}
-				if (builder.length() > 0) {
-					builder.append(split);
-				}
-				builder.append(item);
-			}
-		}
-		return builder.toString();
-	}
-	public static String concat(int[] list, String split) {
-		return concat(list, split, false);
-	}
-	public static String concat(int[] list, boolean required) {
-		return concat(list, ",", required);
-	}
-	public static String concat(int[] list) {
 		return concat(list, false);
 	}
 
-	public static String concat(long[] list, String split, boolean required) {
+
+	public static String concat(int[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1775,17 +1750,42 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(long[] list, String split) {
-		return concat(list, split);
+	public static String concat(int[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(long[] list, boolean required) {
-		return concat(list, ",", required);
+	public static String concat(int[] list,  boolean required) {
+		return concat(list,  ", ",  required);
 	}
-	public static String concat(long[] list) {
-		return concat(list,false);
+	public static String concat(int[] list) {
+		return concat(list,  false);
 	}
 
-	public static String concat(double[] list, String split, boolean required) {
+	public static String concat(long[] list,  String split,  boolean required) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(!required && BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
+		return builder.toString();
+	}
+	public static String concat(long[] list,  String split) {
+		return concat(list,  split);
+	}
+	public static String concat(long[] list,  boolean required) {
+		return concat(list,  ", ",  required);
+	}
+	public static String concat(long[] list) {
+		return concat(list, false);
+	}
+
+	public static String concat(double[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1800,17 +1800,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(double[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(double[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(double[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(double[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(double[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(float[] list, String split,  boolean required) {
+	public static String concat(float[] list,  String split,   boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1825,17 +1825,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(float[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(float[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(float[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(float[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(float[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(short[] list, String split, boolean required) {
+	public static String concat(short[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1850,17 +1850,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String concat(short[] list, String split){
-		return concat(list, split, false);
+	public static String concat(short[] list,  String split){
+		return concat(list,  split,  false);
 	}
-	public static String concat(short[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(short[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(short[] list) {
-		return concat(list, false);
+		return concat(list,  false);
 	}
 
-	public static String concat(byte[] list, String split, boolean required) {
+	public static String concat(byte[] list,  String split,  boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1876,17 +1876,17 @@ public class BeanUtil {
 		return builder.toString();
 	}
 
-	public static String concat(byte[] list, String split) {
-		return concat(list, split, false);
+	public static String concat(byte[] list,  String split) {
+		return concat(list,  split,  false);
 	}
-	public static String concat(byte[] list, boolean required) {
-		return concat(list,",", required);
+	public static String concat(byte[] list,  boolean required) {
+		return concat(list, ", ",  required);
 	}
 	public static String concat(byte[] list) {
-		return concat(list,false);
+		return concat(list, false);
 	}
 
-	public static List wrap(Collection list, String wrap){
+	public static List wrap(Collection list,  String wrap){
 		List result = new ArrayList<>();
 		for(Object obj:list){
 			if(null == obj){
@@ -1902,7 +1902,7 @@ public class BeanUtil {
 		return result;
 	}
 	public static List<String> toUpperCase(List<String> list){
-		return toUpperCase(list,false);
+		return toUpperCase(list, false);
 	}
 
 	/**
@@ -1911,7 +1911,7 @@ public class BeanUtil {
 	 * @param update 是否更新原集合 或创建新集合
 	 * @return List
 	 */
-	public static List<String> toUpperCase(List<String> list, boolean update){
+	public static List<String> toUpperCase(List<String> list,  boolean update){
 		if(null == list){
 			return list;
 		}
@@ -1929,7 +1929,7 @@ public class BeanUtil {
 			for(int i=0; i<size; i++){
 				String value = list.get(i);
 				if(null != value){
-					result.set(i, value.toUpperCase());
+					result.set(i,  value.toUpperCase());
 				}
 			}
 			result = list;
@@ -1943,15 +1943,15 @@ public class BeanUtil {
 			for(int i=0; i<size; i++){
 				String value = list.get(i);
 				if(null != value){
-					list.set(i, value.toLowerCase());
+					list.set(i,  value.toLowerCase());
 				}
 			}
 		}
 		return list;
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked" })
-	public static Object toUpperCaseKey(Object obj, String ... keys){
+	@SuppressWarnings({"rawtypes",  "unchecked" })
+	public static Object toUpperCaseKey(Object obj,  String ... keys){
 		if(null == obj){
 			return null;
 		}
@@ -1959,33 +1959,33 @@ public class BeanUtil {
 			return obj;
 		}
 		if(obj instanceof Map){
-			obj = toUpperCaseKey((Map<String,Object>)obj, keys);
+			obj = toUpperCaseKey((Map<String, Object>)obj,  keys);
 		}else if(obj instanceof Collection){
-			obj = toUpperCaseKey((Collection)obj, keys);
+			obj = toUpperCaseKey((Collection)obj,  keys);
 		}
 		return obj;
 	}
 	@SuppressWarnings("rawtypes")
-	public static Collection toUpperCaseKey(Collection con, String ... keys){
+	public static Collection toUpperCaseKey(Collection con,  String ... keys){
 		if(null == con){
 			return con;
 		}
 		for(Object obj :con){
-			obj = toUpperCaseKey(obj, keys);
+			obj = toUpperCaseKey(obj,  keys);
 		}
 		return con;
 	}
-	public static Map<String,Object> toUpperCaseKey(Map<String,Object> map, String ... keys){
+	public static Map<String, Object> toUpperCaseKey(Map<String, Object> map,  String ... keys){
 		if(null == map){
 			return map;
 		}
 		List<String> ks = getMapKeys(map);
 		for(String k:ks){
-			if(null == keys || keys.length == 0 || BasicUtil.containsString(keys, k)){
+			if(null == keys || keys.length == 0 || BasicUtil.containsString(keys,  k)){
 				Object v = map.get(k);
 				String key = k.toUpperCase();
 				map.remove(k);
-				map.put(key, v);
+				map.put(key,  v);
 			}
 		}
 		return map;
@@ -2001,7 +2001,7 @@ public class BeanUtil {
 		if(null == list || list.isEmpty()){
 			return null;
 		}
-		T[] result = (T[]) Array.newInstance(list.get(0).getClass(), list.size());
+		T[] result = (T[]) Array.newInstance(list.get(0).getClass(),  list.size());
 		int index = 0;
 		for(T item:list){
 			result[index++] = item;
@@ -2014,7 +2014,7 @@ public class BeanUtil {
 			return null;
 		}
 		Class clazz = ClassUtil.getComponentClass(list);
-		T[] result = (T[]) Array.newInstance(clazz, list.size());
+		T[] result = (T[]) Array.newInstance(clazz,  list.size());
 		int index = 0;
 		for(T item:list){
 			result[index++] = item;
@@ -2022,7 +2022,7 @@ public class BeanUtil {
 		return result;
 	}
 
-	public static <T> Object collection2array(Collection list, Class<T> clazz){
+	public static <T> Object collection2array(Collection list,  Class<T> clazz){
 		if(null == list || list.isEmpty()){
 			return null;
 		}
@@ -2032,42 +2032,42 @@ public class BeanUtil {
 			int[] ints = new int[size];
 			int index = 0;
 			for(Object item:list){
-				ints[index++] = BasicUtil.parseInt(item, 0).intValue();
+				ints[index++] = BasicUtil.parseInt(item,  0).intValue();
 			}
 			result = ints;
 		}else if(clazz == double.class){
 			double[] doubles = new double[size];
 			int index = 0;
 			for(Object item:list){
-				doubles[index++] = BasicUtil.parseDouble(item, 0d).doubleValue();
+				doubles[index++] = BasicUtil.parseDouble(item,  0d).doubleValue();
 			}
 			result = doubles;
 		}else if(clazz == float.class){
 			float[] floats = new float[size];
 			int index = 0;
 			for(Object item:list){
-				floats[index++] = BasicUtil.parseFloat(item, 0f).floatValue();
+				floats[index++] = BasicUtil.parseFloat(item,  0f).floatValue();
 			}
 			result = floats;
 		}else if(clazz == long.class){
 			long[] longs = new long[size];
 			int index = 0;
 			for(Object item:list){
-				longs[index++] = BasicUtil.parseLong(item, 0L).longValue();
+				longs[index++] = BasicUtil.parseLong(item,  0L).longValue();
 			}
 			result = longs;
 		}else {
-			T[] array = (T[]) Array.newInstance(clazz, list.size());
+			T[] array = (T[]) Array.newInstance(clazz,  list.size());
 			int index = 0;
 			for (Object item : list) {
-				array[index++] = (T) ConvertAdapter.convert(item, clazz, false);
+				array[index++] = (T) ConvertAdapter.convert(item,  clazz,  false);
 			}
 			result = array;
 		}
 		return result;
 	}
 	/**
-	 * 与toString不同的是 中间没有空格与引号[1,2,3]而不是[1, 2, 3]
+	 * 与toString不同的是 中间没有空格与引号[1, 2, 3]而不是[1,  2,  3]
 	 * @param list List
 	 * @return String
 	 */
@@ -2151,17 +2151,17 @@ public class BeanUtil {
 	 * @return 新数组
 	 * @param <T> 数据类型
 	 */
-	public static <T> T[] cut(T[] array, int fr, int to){
+	public static <T> T[] cut(T[] array,  int fr,  int to){
 		if(null == array || array.length == 0){
 			return array;
 		}
-		T[] result = (T[]) Array.newInstance(array[0].getClass(), to - fr + 1);
+		T[] result = (T[]) Array.newInstance(array[0].getClass(),  to - fr + 1);
 		for(int i=fr; i<=to; i++){
 			result[i-fr] = array[i];
 		}
 		return result;
 	}
-	public static byte[] cut(byte[] array, int fr, int to){
+	public static byte[] cut(byte[] array,  int fr,  int to){
 		if(null == array || array.length == 0){
 			return array;
 		}
@@ -2171,7 +2171,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static short[] cut(short[] array, int fr, int to){
+	public static short[] cut(short[] array,  int fr,  int to){
 		if(null == array || array.length == 0){
 			return array;
 		}
@@ -2181,7 +2181,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static int[] cut(int[] array, int fr, int to){
+	public static int[] cut(int[] array,  int fr,  int to){
 		if(null == array || array.length == 0){
 			return array;
 		}
@@ -2198,7 +2198,7 @@ public class BeanUtil {
 	 * @param len len
 	 * @return bytes
 	 */
-	public static byte[] fill(byte[] bytes, int len){
+	public static byte[] fill(byte[] bytes,  int len){
 		byte[] result = new byte[len];
 		for(int i=0; i<bytes.length && i<len; i++){
 			result[len + i - bytes.length] = bytes[i];
@@ -2208,40 +2208,40 @@ public class BeanUtil {
 
 	/**
 	 * String 转map
-	 * @param str name:zhang,age:20
+	 * @param str name:zhang, age:20
 	 * @return Map
 	 */
-	public static Map<String, String> string2map(String str){
-		Map<String, String> map = new HashMap<String, String>();
+	public static Map<String,  String> string2map(String str){
+		Map<String,  String> map = new HashMap<String,  String>();
 		if(BasicUtil.isNotEmpty(str)){
 			//if(str.startsWith("${") && str.endsWith("}")){
 			if(BasicUtil.checkEl(str)){
-				str = str.substring(2, str.length()-1);
+				str = str.substring(2,  str.length()-1);
 			}else if(str.startsWith("{") && str.endsWith("}")){
-				str = str.substring(1, str.length()-1);
+				str = str.substring(1,  str.length()-1);
 			}
-			String[] list = str.split(",");
+			String[] list = str.split(", ");
 			for(String item:list){
 				String[] kv = item.split(":");
 				if(kv.length ==2){
 					String k = kv[0];
 					if(k.startsWith("\"") && k.endsWith("\"")){
-						k = k.substring(1,k.length()-1);
+						k = k.substring(1, k.length()-1);
 					}
 					String v = kv[1];
 					if(v.startsWith("\"") && v.endsWith("\"")){
-						v = v.substring(1,v.length()-1);
+						v = v.substring(1, v.length()-1);
 					}
-					map.put(k,v);
+					map.put(k, v);
 				}else{
-					map.put(item.replace(":", ""), null);
+					map.put(item.replace(":",  ""),  null);
 				}
 			}
 		}
 		return map;
 	}
-	public static Map<String, String> createMap(String... params) {
-		Map<String, String> result = new HashMap<>();
+	public static Map<String,  String> createMap(String... params) {
+		Map<String,  String> result = new HashMap<>();
 		if (null != params) {
 			int size = params.length;
 			for (int i = 0; i < size - 1; i += 2) {
@@ -2250,7 +2250,7 @@ public class BeanUtil {
 				if (null == value) {
 					value = "";
 				}
-				result.put(key.toString(), value);
+				result.put(key.toString(),  value);
 			}
 		}
 		return result;
@@ -2260,39 +2260,39 @@ public class BeanUtil {
 	 * @param map  map
 	 * @param recursion  是否递归检测集合map类型值的长度
 	 */
-	public static void clearEmpty(Map<String, Object> map, boolean recursion ){
+	public static void clearEmpty(Map<String,  Object> map,  boolean recursion ){
 		if(null == map){
 			return;
 		}
 		List<String> keys = BasicUtil.getMapKeys(map);
 		for(String key:keys){
 			Object value = map.get(key);
-			if(BasicUtil.isEmpty(recursion,value)){
+			if(BasicUtil.isEmpty(recursion, value)){
 				map.remove(key);
 			}
 		}
 	}
-	public static void clearEmpty(Map<String, Object> map){
-		clearEmpty(map,true);
+	public static void clearEmpty(Map<String,  Object> map){
+		clearEmpty(map, true);
 	}
 	/**
 	 * 删除空值
 	 * @param list  list
 	 * @param recursion  是否递归检测集合map类型值的长度
 	 */
-	public static void clearEmpty(List<Object> list, boolean recursion){
+	public static void clearEmpty(List<Object> list,  boolean recursion){
 		if(null == list){
 			return;
 		}
 		int size = list.size();
 		for(int i=size-1;i>=0;i--){
-			if(BasicUtil.isEmpty(recursion,list.get(i))){
+			if(BasicUtil.isEmpty(recursion, list.get(i))){
 				list.remove(i);
 			}
 		}
 	}
 	public static void clearEmpty(List<Object> list){
-		clearEmpty(list, true);
+		clearEmpty(list,  true);
 	}
 	/**
 	 * 多个数组合并成一个数组(二维数组合成一维数组)
@@ -2302,15 +2302,15 @@ public class BeanUtil {
 	 * @return T
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T[] union(T[] first, T[]... rest) {
+	public static <T> T[] union(T[] first,  T[]... rest) {
 		int len = first.length;
 		for (T[] array : rest) {
 			len += array.length;
 		}
-		T[] result = Arrays.copyOf(first, len);
+		T[] result = Arrays.copyOf(first,  len);
 		int offset = first.length;
 		for (T[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
+			System.arraycopy(array,  0,  result,  offset,  array.length);
 			offset += array.length;
 		}
 		return result;
@@ -2323,7 +2323,7 @@ public class BeanUtil {
 	 * @param value  value
 	 * @return int
 	 */
-	public static int closest(short[] array, short value){
+	public static int closest(short[] array,  short value){
 		int index = 0;
 		int dif = -1;
 		int len = array.length;
@@ -2340,7 +2340,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(Short[] array, short value){
+	public static int closest(Short[] array,  short value){
 		int index = 0;
 		int dif = -1;
 		int len = array.length;
@@ -2357,7 +2357,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(List<Short> array, short value){
+	public static int closest(List<Short> array,  short value){
 		int index = 0;
 		int dif = -1;
 		int len = array.size();
@@ -2375,7 +2375,7 @@ public class BeanUtil {
 		return index;
 	}
 
-	public static int closest(int[] array, int value){
+	public static int closest(int[] array,  int value){
 		int index = 0;
 		int dif = -1;
 		int len = array.length;
@@ -2392,7 +2392,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(Integer[] array, int value){
+	public static int closest(Integer[] array,  int value){
 		int index = 0;
 		int dif = -1;
 		int len = array.length;
@@ -2409,7 +2409,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(List<Integer> array, int value){
+	public static int closest(List<Integer> array,  int value){
 		int index = 0;
 		int dif = -1;
 		int len = array.size();
@@ -2427,7 +2427,7 @@ public class BeanUtil {
 		return index;
 	}
 
-	public static int closest(long[] array, long value){
+	public static int closest(long[] array,  long value){
 		int index = 0;
 		long dif = -1;
 		int len = array.length;
@@ -2444,7 +2444,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(Long[] array, long value){
+	public static int closest(Long[] array,  long value){
 		int index = 0;
 		long dif = -1;
 		int len = array.length;
@@ -2461,7 +2461,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(List<Long> array, long value){
+	public static int closest(List<Long> array,  long value){
 		int index = 0;
 		long dif = -1;
 		int len = array.size();
@@ -2479,7 +2479,7 @@ public class BeanUtil {
 		return index;
 	}
 
-	public static int closest(float[] array, float value){
+	public static int closest(float[] array,  float value){
 		int index = 0;
 		float dif = -1;
 		int len = array.length;
@@ -2496,7 +2496,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(Float[] array, float value){
+	public static int closest(Float[] array,  float value){
 		int index = 0;
 		float dif = -1;
 		int len = array.length;
@@ -2514,7 +2514,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(List<Float> array, float value){
+	public static int closest(List<Float> array,  float value){
 		int index = 0;
 		float dif = -1;
 		int len = array.size();
@@ -2532,7 +2532,7 @@ public class BeanUtil {
 		return index;
 	}
 
-	public static int closest(double[] array, double value){
+	public static int closest(double[] array,  double value){
 		int index = 0;
 		double dif = -1;
 		int len = array.length;
@@ -2549,7 +2549,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(Double[] array, double value){
+	public static int closest(Double[] array,  double value){
 		int index = 0;
 		double dif = -1;
 		int len = array.length;
@@ -2567,7 +2567,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(List<Double> array, double value){
+	public static int closest(List<Double> array,  double value){
 		int index = 0;
 		double dif = -1;
 		int len = array.size();
@@ -2585,7 +2585,7 @@ public class BeanUtil {
 		return index;
 	}
 
-	public static int closest(BigDecimal[] array, BigDecimal value){
+	public static int closest(BigDecimal[] array,  BigDecimal value){
 		int index = 0;
 		double dif = -1;
 		int len = array.length;
@@ -2602,7 +2602,7 @@ public class BeanUtil {
 		}
 		return index;
 	}
-	public static int closest(List<BigDecimal> array, BigDecimal value){
+	public static int closest(List<BigDecimal> array,  BigDecimal value){
 		int index = 0;
 		double dif = -1;
 		int len = array.size();
@@ -2620,10 +2620,10 @@ public class BeanUtil {
 		return index;
 	}
 
-	public static String parseFinalValue(Object obj, String key){
-		return parseFinalValue(obj, key, "");
+	public static String parseFinalValue(Object obj,  String key){
+		return parseFinalValue(obj,  key,  "");
 	}
-	public static String parseFinalValue(Object obj, String key, String def){
+	public static String parseFinalValue(Object obj,  String key,  String def){
 		if(null == obj){
 			return key;
 		}
@@ -2631,19 +2631,19 @@ public class BeanUtil {
 		if(BasicUtil.isNotEmpty(key)){
 			if(key.contains("${")){
 				try{
-					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+					List<String> ks =RegularUtil.fetch(key,  "\\${\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
 					for(String k:ks){
-						Object v = getFieldValue(obj,k.replace("${", "").replace("}", ""));
+						Object v = getFieldValue(obj, k.replace("${",  "").replace("}",  ""));
 						if(null == v){
 							v = "";
 						}
-						value = value.replace(k, v.toString());
+						value = value.replace(k,  v.toString());
 					}
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 			} else {
-				Object val = getFieldValue(obj, key);
+				Object val = getFieldValue(obj,  key);
 				if(null != val){
 					value = val.toString();
 				}
@@ -2662,7 +2662,7 @@ public class BeanUtil {
 	 * @param end  end
 	 * @return List
 	 */
-	public static <T> List<T> cuts(Collection<T> list, int begin, int end){
+	public static <T> List<T> cuts(Collection<T> list,  int begin,  int end){
 		List<T> result = new ArrayList<T>();
 		if(null != list){
 			if(begin <=0){
@@ -2699,11 +2699,11 @@ public class BeanUtil {
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
 			String g = matcher.group();
-			matcher.appendReplacement(sb, "_" + g.toLowerCase());
+			matcher.appendReplacement(sb,  "_" + g.toLowerCase());
 		}
 		matcher.appendTail(sb);
 		if (sb.charAt(0) == '_') {
-			sb.delete(0, 1);
+			sb.delete(0,  1);
 		}
 		return sb.toString();
 	}
@@ -2714,7 +2714,7 @@ public class BeanUtil {
 	 * @param hold 是否保留分隔符
 	 * @return String
 	 */
-	public static String camel(String key, boolean hold){
+	public static String camel(String key,  boolean hold){
 		if(!key.contains("-") && !key.contains("_")){
 			return key;
 		}
@@ -2735,9 +2735,9 @@ public class BeanUtil {
 
 
 	public static String camel(String key){
-		return camel(key, false);
+		return camel(key,  false);
 	}
-	public static String Camel(String key, boolean hold){
+	public static String Camel(String key,  boolean hold){
 		if(!key.contains("-") && !key.contains("_")){
 			return key;
 		}
@@ -2757,13 +2757,13 @@ public class BeanUtil {
 	}
 
 	public static String Camel(String key){
-		return Camel(key, false);
+		return Camel(key,  false);
 	}
 	/**
 	 * 解析 key:vlue形式参数age:20
-	 * 返回数组["age","20"]
-	 * 如果值为空返回["age",""]
-	 * 如果没有分隔符返回["age","age"]
+	 * 返回数组["age", "20"]
+	 * 如果值为空返回["age", ""]
+	 * 如果没有分隔符返回["age", "age"]
 	 * @param src  src
 	 * @return String
 	 */
@@ -2777,7 +2777,7 @@ public class BeanUtil {
 		String key2 = src;
 		if(src.contains(":")){
 			String tmp[] = src.split(":");
-			len = NumberUtil.max(len, tmp.length);
+			len = NumberUtil.max(len,  tmp.length);
 			result = new String[len];
 			key1 = tmp[0];
 			if(tmp.length>1){
@@ -2833,12 +2833,12 @@ public class BeanUtil {
 	 * {
 	 *     key1:{
 	 *         key11:{
-	 *             key111:111   // 提取111 recursion(map,key1,key11,key111)
+	 *             key111:111   // 提取111 recursion(map, key1, key11, key111)
 	 *         },
 	 *         key12:{
 	 *             key121:{
 	 *                 key1211:1211,
-	 *                 key1212:1212 // 提取1212 recursion(map,key1, key12, key121, key1212)
+	 *                 key1212:1212 // 提取1212 recursion(map, key1,  key12,  key121,  key1212)
 	 *             }
 	 *         }
 	 *     }
@@ -2850,7 +2850,7 @@ public class BeanUtil {
 	 * @param keys keys 一级key.二级key.三级key
 	 * @return Object
 	 */
-	public static Object extract(Object src, boolean voluntary, String ... keys) {
+	public static Object extract(Object src,  boolean voluntary,  String ... keys) {
 		if(null == keys || keys.length ==0){
 			return null;
 		}
@@ -2858,7 +2858,7 @@ public class BeanUtil {
 		for (String key : keys) {
 			if(null != result) {
 				if (ClassUtil.isWrapClass(result) && !(result instanceof String)) {
-					result = getFieldValue(result, key);
+					result = getFieldValue(result,  key);
 				}else{
 					if(voluntary){
 						return result;
@@ -2870,8 +2870,8 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static Object extract(Object src, String ... keys) {
-		return extract(src, false, keys);
+	public static Object extract(Object src,  String ... keys) {
+		return extract(src,  false,  keys);
 	}
 	/**
 	 * 取第一个不为空的值
@@ -2879,13 +2879,13 @@ public class BeanUtil {
 	 * @param keys keys
 	 * @return Object
 	 */
-	public static Object nvl(Object src, String ... keys){
+	public static Object nvl(Object src,  String ... keys){
 		Object value = null;
 		if(null == src || null == keys){
 			return value;
 		}
 		for(String key:keys){
-			value = getFieldValue(src, key);
+			value = getFieldValue(src,  key);
 			if(null != value){
 				return value;
 			}
@@ -2894,13 +2894,13 @@ public class BeanUtil {
 		return value;
 	}
 
-	public static Object evl(Object src, String ... keys){
+	public static Object evl(Object src,  String ... keys){
 		Object value = null;
 		if(null == src || null == keys){
 			return value;
 		}
 		for(String key:keys){
-			value = getFieldValue(src, key);
+			value = getFieldValue(src,  key);
 			if(BasicUtil.isNotEmpty(value)){
 				return value;
 			}
@@ -2913,7 +2913,7 @@ public class BeanUtil {
 	 * @param keys keys
 	 * @return String
 	 */
-	public static Object propertyNvl(Map<String,?> map, String ... keys){
+	public static Object propertyNvl(Map<String, ?> map,  String ... keys){
 		Object value = null;
 		if(null == map || null == keys){
 			return value;
@@ -2960,20 +2960,20 @@ public class BeanUtil {
 	 * @param map map
 	 * @param alert 赋值失败时是否提示异常信息
 	 */
-	public static void setFieldsValue(Object obj, Map<String,?> map , boolean alert){
+	public static void setFieldsValue(Object obj,  Map<String, ?> map,  boolean alert){
 		if(null != map && null != obj) {
 			List<String> fields = ClassUtil.getFieldsName(obj.getClass());
 			for (String field : fields) {
-				Object value = propertyNvl(map, field);
+				Object value = propertyNvl(map,  field);
 				if (BasicUtil.isNotEmpty(value)) {
-					setFieldValue(obj, field, value, true, alert);
+					setFieldValue(obj,  field,  value,  true,  alert);
 				}
 			}
 		}
 	}
 
-	public static void setFieldsValue(Object obj, Map<String,?> map){
-		setFieldsValue(obj, map, true);
+	public static void setFieldsValue(Object obj,  Map<String, ?> map){
+		setFieldsValue(obj,  map,  true);
 	}
 	public static byte[] serialize(Object value) {
 		byte[] rv=new byte[0];
@@ -3075,18 +3075,18 @@ public class BeanUtil {
 	 * @param <T> t
 	 * @return List
 	 * 输入:
-	 * [[A,B,C],[1,2,3]]
+	 * [[A, B, C], [1, 2, 3]]
 	 * 输出:
-	 *  [[A, 1], [A, 2], [A, 3]
-	 * , [B, 1], [B, 2], [B, 3]
-	 * , [C, 1], [C, 2], [C, 3]]
+	 *  [[A,  1],  [A,  2],  [A,  3]
+	 *,  [B,  1],  [B,  2],  [B,  3]
+	 *,  [C,  1],  [C,  2],  [C,  3]]
 	 *
 	 * 输入:
-	 * [[A,B,C],[1,2,3],[一,二,三]]
+	 * [[A, B, C], [1, 2, 3], [一, 二, 三]]
 	 * 输出:
-	 *  [[A, 1, 一], [A, 1, 二], [A, 1, 三], [A, 2, 一], [A, 2, 二], [A, 2, 三], [A, 3, 一], [A, 3, 二], [A, 3, 三]
-	 * , [B, 1, 一], [B, 1, 二], [B, 1, 三], [B, 2, 一], [B, 2, 二], [B, 2, 三], [B, 3, 一], [B, 3, 二], [B, 3, 三]
-	 * , [C, 1, 一], [C, 1, 二], [C, 1, 三], [C, 2, 一], [C, 2, 二], [C, 2, 三], [C, 3, 一], [C, 3, 二], [C, 3, 三]
+	 *  [[A,  1,  一],  [A,  1,  二],  [A,  1,  三],  [A,  2,  一],  [A,  2,  二],  [A,  2,  三],  [A,  3,  一],  [A,  3,  二],  [A,  3,  三]
+	 *,  [B,  1,  一],  [B,  1,  二],  [B,  1,  三],  [B,  2,  一],  [B,  2,  二],  [B,  2,  三],  [B,  3,  一],  [B,  3,  二],  [B,  3,  三]
+	 *,  [C,  1,  一],  [C,  1,  二],  [C,  1,  三],  [C,  2,  一],  [C,  2,  二],  [C,  2,  三],  [C,  3,  一],  [C,  3,  二],  [C,  3,  三]
 	 * ]
 	 */
 	public static <T> List<List<T>> descartes(List<List<T>> lists) {
@@ -3130,7 +3130,7 @@ public class BeanUtil {
 	 * @param <T> 数据类型
 	 * @return 合并后数组
 	 */
-	public static <T> T[] merge(T[] array, T[]... items) {
+	public static <T> T[] merge(T[] array,  T[]... items) {
 		T[] result = null;
 		int len = array.length;
 		Class clazz = null;
@@ -3150,10 +3150,10 @@ public class BeanUtil {
 			}
 		}
 		if(null != array) {
-			result = Arrays.copyOf(array, len);
+			result = Arrays.copyOf(array,  len);
 		}else{
 			if(null != clazz) {
-				result = (T[]) Array.newInstance(clazz, len);
+				result = (T[]) Array.newInstance(clazz,  len);
 			}else{
 				return null;
 			}
@@ -3164,7 +3164,7 @@ public class BeanUtil {
 		if(null != items) {
 			for (T[] item : items) {
 				if (null != item) {
-					System.arraycopy(item, 0, result, offset, item.length);
+					System.arraycopy(item,  0,  result,  offset,  item.length);
 					offset += item.length;
 				}
 			}
@@ -3180,11 +3180,11 @@ public class BeanUtil {
 	 * @param <K> k
 	 * @param <V> v
 	 */
-	public static <K,V> Map<K,V> merge(Map<K,V> ... maps){
-		Map<K,V> result = new HashMap<>();
+	public static <K, V> Map<K, V> merge(Map<K, V> ... maps){
+		Map<K, V> result = new HashMap<>();
 		if(null != maps){
-			for(Map<K,V> map:maps){
-				join(result, map, true);
+			for(Map<K, V> map:maps){
+				join(result,  map,  true);
 			}
 		}
 		return result;
@@ -3199,7 +3199,7 @@ public class BeanUtil {
 	 * @param <K> k
 	 * @param <V> v
 	 */
-	public static <K,V> Map<K,V>  join(Map<K,V> src, Map<K,V> copy, boolean over){
+	public static <K, V> Map<K, V>  join(Map<K,V> src, Map<K,V> copy, boolean over){
 		if(null == src){
 			src = new HashMap<K,V>();
 		}

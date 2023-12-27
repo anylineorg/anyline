@@ -22,7 +22,7 @@
 ***一个字都不想看，就想直接启动项目的下载这个源码:***  
 [https://gitee.com/anyline/anyline-simple-clear](https://gitee.com/anyline/anyline-simple-clear)
 
-有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致,有问题请联系
+有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致, 有问题请联系
 
 [<img src="http://cdn.anyline.org/img/user/alq.png" width="150">](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="http://cdn.anyline.org/img/user/alvg.png" width="150">  
@@ -30,12 +30,12 @@
 或&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 微信群
 ## 简介
-AnyLine的核心是一个基于spring生态的D-ORM(动态对象关系影射),其重点是:
+AnyLine的核心是一个基于spring生态的D-ORM(动态对象关系影射), 其重点是:
 - 以最简单、快速方式操作 ***数据库*** 与 ***结果集***
 - 兼容各种数据库，统一生成或执行DML/DDL，读写表结构、索引等元数据
 - 一切基于动态、基于运行时(包括数据源、数据结构等)
 
-常用于动态结构场景的底层支持，作为SQL解析引擎或适配器出现 ,
+常用于动态结构场景的底层支持，作为SQL解析引擎或适配器出现, 
 如:数据中台、可视化、低代码、SAAS、自定义表单、异构数据库迁移同步、 物联网车联网数据处理、
 数据清洗、运行时自定义报表/查询条件/数据结构、 爬虫数据解析等。
 参考【[适用场景](http://doc.anyline.org/ss/ed_14)】  
@@ -45,7 +45,7 @@ AnyLine的核心是一个基于spring生态的D-ORM(动态对象关系影射),�
 - 查询、操作元数据(如表结构、索引等)  
 - 屏蔽不同数据库的语法差异(主要是DDL差异)  
 
-### 已经有ORM了 为什么还要有AnyLine,与ORM有什么区别
+### 已经有ORM了 为什么还要有AnyLine, 与ORM有什么区别
 - ***面向场景不同***  
 anyline主要面向动态场景，就是运行时随时可变的场景。  
 如我们常用的动态数据源，不是在部署时可以固定在配置文件中，  
@@ -75,7 +75,7 @@ ORM的用户基本上看看文档复制个模板就可以开工了，
   要关注元数据，不要关注姓名、年龄等具体属性  
   强化针对结果集的数据二次处理能力  
   如结果集的聚合、过滤、行列转换、格式化及各种数学计算尽量作到一键...一键...  
-  而不要像ORM提供的entity,map,list除了提供个get/set/foreach，稍微有点用的又要麻烦程序员各种判断各种遍历  
+  而不要像ORM提供的entity, map, list除了提供个get/set/foreach，稍微有点用的又要麻烦程序员各种判断各种遍历  
   参考【[疑问与优劣对比](http://doc.anyline.org/ss/ae_1196)】
 ### 与如何实现
 数据操作的两个阶段，1.针对数据库中数据 2.针对数据库查询的结果集(内存中的数据)
@@ -101,7 +101,7 @@ ORM的用户基本上看看文档复制个模板就可以开工了，
 ### 简单快速的操作结果集
 数据库负责的是存储，其结构肯定是与业务需要不一样的。所以结果集需要处理。当我们需要用Map处理数据或数学计算时，  
 如最常见的数据格式化、筛选、分组、平均值、合计、方差等聚合计算    
-再如空值的处理包括,"",null,"null","\n","\r","\t","   "全角、半角等各种乱七八糟的情况  
+再如空值的处理包括, "", null, "null", "\n", "\r", "\t", "   "全角、半角等各种乱七八糟的情况  
 这时就会发现Map太抽象了，除了get/set/forearch好像也没别的可施展了。  
 要处理的细节太多了，if都不够用了。  
 
@@ -139,17 +139,17 @@ AnyLine希望程序员手中多一个数据库操作的利器，而不是被各�
 默认的service已经提供了大部分的数据库操作功能。  
 操作过程大致如下:
 ```
-DataSet set = service.querys("HR_USER(ID,NM)", 
-    condition(true,"anyline根据约定自动生成的=,in,like等查询条件"));  
+DataSet set = service.querys("HR_USER(ID, NM)", 
+    condition(true, "anyline根据约定自动生成的=, in, like等查询条件"));  
 ```
-这里的查询条件不再需要各种配置,各种if else foreach标签  
-Anyline会自动生成,生成规则可以【参考】这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
+这里的查询条件不再需要各种配置, 各种if else foreach标签  
+Anyline会自动生成, 生成规则可以【参考】这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
 分页也不需要另外的插件，更不需要繁琐的计算和配置，指定true或false即可
 
 
 ## 如何集成
 
-只需要一个依赖、一个注解即可实现与springboot,netty等框架项目完美整合，参考【入门系列】
+只需要一个依赖、一个注解即可实现与springboot, netty等框架项目完美整合，参考【入门系列】
 大概的方式就是在需要操作数据库的地方注入AnylineService
 接下来service就可以完成大部分的数据库操作了。常用示例可以参考【[示例代码](https://gitee.com/anyline/anyline-simple)】
 
@@ -159,17 +159,17 @@ DataSet与Entity之间可以相互转换
 或者这样:
 ```
 EntitySet<User> = service.querys(User.class, 
-    condition(true,"anyline根据约定自动生成的查询条件")); 
+    condition(true, "anyline根据约定自动生成的查询条件")); 
 //true：表示需要分页
 //为什么不用返回的是一个EntitySet而不是List?
-//因为分页情况下,EntitySet中包含了分页数据,而List不行。
+//因为分页情况下, EntitySet中包含了分页数据, 而List不行。
 //无论是否分页都返回相同的数据结构，而不需要根据是否分页实现两个接口返回不同的数据结构
 
 
 
-//也可以这样(如果真要这样就不要用anyline了,还是用MyBatis,Hibernate之类吧)
+//也可以这样(如果真要这样就不要用anyline了, 还是用MyBatis, Hibernate之类吧)
 public class UserService extends AnylinseService<User> 
-userService.querys(condition(true,"anyline根据约定自动生成的查询条件")); 
+userService.querys(condition(true, "anyline根据约定自动生成的查询条件")); 
 ```
 
 ## 适用场景
@@ -198,12 +198,12 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
   各种结构的数据、更多的是不符合标准甚至是错误的结构  
   这种场景下需要一个灵活的数据结构来统一处理各种结构的数据    
   再想像一下临时有几个数据需要处理一下(如补齐或替换几个字符)  
-  这个时候先去创建个Entity,XML,Service,Dao吗  
+  这个时候先去创建个Entity, XML, Service, Dao吗  
   [【示例】](https://gitee.com/anyline/service)
 
 
 - **报表输出，特别是用户自定义报表**  
-  类似于可视化环境,样式相对简单一点，但精度要求极高，需要控制到像素、字体等  
+  类似于可视化环境, 样式相对简单一点，但精度要求极高，需要控制到像素、字体等  
   如检验检测报告、资质证书等，当然这需要配合 anyline-office  
   [【office示例】](http://office.anyline.org/v/b6_3797)
 
@@ -220,14 +220,14 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 
 
 - **异构数据库迁移同步**  
-  动态的数据结构可以灵活的适配多种不同的表,需不需要反复的get/set    
+  动态的数据结构可以灵活的适配多种不同的表, 需不需要反复的get/set    
   兼容多种数据库的DDL也可以方便的在不同类型的数据库中执行  
   [【核心代码示例(Mysql到Apache Ignite)】](http://doc.anyline.org/aa/08_3842)  
   [【基础应用项目】](https://gitee.com/anyline/anyline-database-sync)
   [【完整应用代替datax】](https://gitee.com/czarea/devops)
 
 - **还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成**  
-  别说设计了，需求都有可能还没结束就催交付了,Entity哪里找  
+  别说设计了，需求都有可能还没结束就催交付了, Entity哪里找  
   [【示例】](https://gitee.com/anyline/service)
 
 ##  关于数据库的适配  [【更多查看】](http://doc.anyline.org/dbs)  

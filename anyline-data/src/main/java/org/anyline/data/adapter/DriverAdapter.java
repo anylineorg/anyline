@@ -91,7 +91,7 @@ public interface DriverAdapter {
 	 * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
 	 * @return 数据源特征中包含上以任何一项都可以通过
 	 */
-	default boolean match(String feature, List<String> keywords,  boolean compensate){
+	default boolean match(String feature, List<String> keywords, boolean compensate){
 		feature = feature.toLowerCase();
 		if(null != keywords){
 			for (String k:keywords){
@@ -590,7 +590,7 @@ public interface DriverAdapter {
 	 * @param conditions  简单过滤条件
 	 * @return DataSet
 	 */
-	DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions);
+	DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
 	 * query procedure [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2302,7 +2302,7 @@ public interface DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	<T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern);
+	<T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -4142,7 +4142,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean alter(DataRuntime runtime,  Trigger meta) throws Exception;
+	boolean alter(DataRuntime runtime, Trigger meta) throws Exception;
 
 	/**
 	 * trigger[调用入口]<br/>

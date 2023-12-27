@@ -39,9 +39,9 @@ public abstract class RuntimeHolder {
 
     /**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
-     * @param datasource 数据源,如DruidDataSource,MongoClient,es.RestClient
-     * @param database 数据库,jdbc类型数据源不需要
-     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @param datasource 数据源, 如DruidDataSource, MongoClient, es.RestClient
+     * @param database 数据库, jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter(), 如果不提供则根据ds检测
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
@@ -54,13 +54,13 @@ public abstract class RuntimeHolder {
     }
     public abstract void callDestroy(String datasource);
     public static void reg(String key, DataRuntime runtime){
-        runtimes.put(key, runtime);
+        runtimes.put(key,  runtime);
     }
     public static DataRuntime runtime(){
         return runtime(null);
     }
 
-    public static Map<String, DataRuntime> all(){
+    public static Map<String,  DataRuntime> all(){
         return runtimes;
     }
     /**
@@ -68,12 +68,12 @@ public abstract class RuntimeHolder {
      * @param origin 源
      * @return Map
      */
-    public static Map<String, DataRuntime> runtimes(String origin){
-        Map<String, DataRuntime> map = new Hashtable<>();
+    public static Map<String,  DataRuntime> runtimes(String origin){
+        Map<String,  DataRuntime> map = new Hashtable<>();
         for(String key:runtimes.keySet()){
            DataRuntime runtime = runtimes.get(key);
            if(origin.equals(runtime.origin())){
-               map.put(key, runtime);
+               map.put(key,  runtime);
            }
         }
         return map;

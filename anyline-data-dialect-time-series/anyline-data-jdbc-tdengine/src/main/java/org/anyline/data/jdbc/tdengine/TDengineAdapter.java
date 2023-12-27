@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -42,7 +42,7 @@ import java.sql.*;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.tdengine")
-public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter,  InitializingBean {
 	
 	public DatabaseType type(){
 		return DatabaseType.TDengine;
@@ -52,7 +52,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (TDengineColumnTypeAlias alias: TDengineColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			types.put(alias.name(),  alias.standard());
 		}
 	}
 
@@ -86,9 +86,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
+	 * long insert(DataRuntime runtime,  String random,  int batch,  String dest,  Object data,  ConfigStore configs,  List<String> columns)
 	 * [命令合成]
-	 * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * public Run buildInsertRun(DataRuntime runtime,  int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)

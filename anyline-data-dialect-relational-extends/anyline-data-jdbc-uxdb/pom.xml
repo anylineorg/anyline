@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-uxdb</name>
     <url>http://www.anyline.org/uxdb</url>
-    <description>优炫数据库,基于postgresql</description>
+    <description>优炫数据库, 基于postgresql</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

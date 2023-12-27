@@ -283,20 +283,20 @@ public class NumberUtil {
 		result = fr + r.nextDouble() * (to - fr);
 		return result;
 	}
-	public static long random(long fr, long to) {
+	public static long random(long fr,  long to) {
 		long result = 0;
 		Random r = new Random();
 		result = fr + r.nextLong() * (to - fr);
 		return result;
 	}
-	public static float random(float fr, float to) {
+	public static float random(float fr,  float to) {
 		float result = 0;
 		Random r = new Random();
 		result = fr + r.nextFloat() * (to - fr);
 		return result;
 	}
 
-	public static List<Integer> random(int fr, int to, int qty) {
+	public static List<Integer> random(int fr,  int to,  int qty) {
 		List<Integer> list = new ArrayList<Integer>();
 		Random r = new Random();
 		while(true){
@@ -311,7 +311,7 @@ public class NumberUtil {
 		}
 		return list;
 	}
-	public static List<Double> random(double fr, double to, int qty) {
+	public static List<Double> random(double fr,  double to,  int qty) {
 		List<Double> list = new ArrayList<Double>();
 		Random r = new Random();
 		while(true){
@@ -326,7 +326,7 @@ public class NumberUtil {
 		}
 		return list;
 	}
-	public static List<Float> random(float fr, float to, int qty) {
+	public static List<Float> random(float fr,  float to,  int qty) {
 		List<Float> list = new ArrayList<Float>();
 		Random r = new Random();
 		while(true){
@@ -341,7 +341,7 @@ public class NumberUtil {
 		}
 		return list;
 	}
-	public static List<Long> random(long fr, long to, int qty) {
+	public static List<Long> random(long fr,  long to,  int qty) {
 		List<Long> list = new ArrayList<Long>();
 		Random r = new Random();
 		while(true){
@@ -371,7 +371,7 @@ public class NumberUtil {
 	 * @return int
 	 */
 	public static int bin2dec(String number) {
-		return Integer.parseInt(number,2);
+		return Integer.parseInt(number, 2);
 	}
 
 
@@ -389,7 +389,7 @@ public class NumberUtil {
 	 * @param big 是否大端
 	 * @return 4个字节的byte数组
 	 */
-	public static byte[] int2bytes(int in, boolean big){
+	public static byte[] int2bytes(int in,  boolean big){
 		byte[] bytes = new byte[4];
 		int idx = 0;
 		if(big) {
@@ -415,7 +415,7 @@ public class NumberUtil {
 		}*/
 		return bytes;
 	}
-	public static byte[] short2bytes(short in, boolean big){
+	public static byte[] short2bytes(short in,  boolean big){
 		byte[] bytes = new byte[2];
 		int idx = 0;
 		if(big) {
@@ -436,7 +436,7 @@ public class NumberUtil {
 	 * @param big 是否大端
 	 * @return 8个字节的byte数组
 	 */
-	public static byte[] long2bytes(long in, boolean big) {
+	public static byte[] long2bytes(long in,  boolean big) {
 		byte[] bytes = new byte[8];
 		int idx = 0;
 		if(big) {
@@ -467,7 +467,7 @@ public class NumberUtil {
 		}
 		if (n.toByteArray().length == 33) {
 			bytes = new byte[32];
-			System.arraycopy(n.toByteArray(), 1, bytes, 0, 32);
+			System.arraycopy(n.toByteArray(),  1,  bytes,  0,  32);
 		} else if (n.toByteArray().length == 32) {
 			bytes = n.toByteArray();
 		} else {
@@ -475,7 +475,7 @@ public class NumberUtil {
 			for (int i = 0; i < 32 - n.toByteArray().length; i++) {
 				bytes[i] = 0;
 			}
-			System.arraycopy(n.toByteArray(), 0, bytes, 32 - n.toByteArray().length, n.toByteArray().length);
+			System.arraycopy(n.toByteArray(),  0,  bytes,  32 - n.toByteArray().length,  n.toByteArray().length);
 		}
 		return bytes;
 	}
@@ -489,7 +489,7 @@ public class NumberUtil {
 		if (bytes[0] < 0) {
 			byte[] temp = new byte[bytes.length + 1];
 			temp[0] = 0;
-			System.arraycopy(bytes, 0, temp, 1, bytes.length);
+			System.arraycopy(bytes,  0,  temp,  1,  bytes.length);
 			return new BigInteger(temp);
 		}
 		return new BigInteger(bytes);
@@ -500,7 +500,7 @@ public class NumberUtil {
 	 * @return int
 	 */
 	public static int hex2dec(String hex){
-		return Integer.parseInt(hex,16);
+		return Integer.parseInt(hex, 16);
 	}
 
 	/**
@@ -510,25 +510,25 @@ public class NumberUtil {
 	 * @param len 长度
 	 * @return int
 	 */
-	public static int hex2dec(String[] hex, int start, int len){
+	public static int hex2dec(String[] hex,  int start,  int len){
 		StringBuilder builder = new StringBuilder();
 		int end = hex.length;
 		for(int i=start; i<end && i<start+len; i++){
 			builder.append(hex[i]);
 		}
-		return Integer.valueOf(builder.toString(), 16);
+		return Integer.valueOf(builder.toString(),  16);
 	}
 
-	public static String byte2hex(byte[] bytes, String split) {
-		return byte2hex(bytes, bytes.length, split);
+	public static String byte2hex(byte[] bytes,  String split) {
+		return byte2hex(bytes,  bytes.length,  split);
 	}
-	public static String byte2hex(byte[] bytes,int len) {
-		return byte2hex(bytes, len, null);
+	public static String byte2hex(byte[] bytes, int len) {
+		return byte2hex(bytes,  len,  null);
 	}
-	public static String byte2hex(byte[] bytes, int len, String split) {
-		return byte2hex(bytes, 0, len, split);
+	public static String byte2hex(byte[] bytes,  int len,  String split) {
+		return byte2hex(bytes,  0,  len,  split);
 	}
-	public static String byte2hex(byte[] bytes, int start, int len, String split) {
+	public static String byte2hex(byte[] bytes,  int start,  int len,  String split) {
 		StringBuffer builder = new StringBuffer();
 		int size = 0;
 		for(int i = start; i < start+len; i++) {
@@ -545,7 +545,7 @@ public class NumberUtil {
 		return builder.toString();
 	}
 	public static String byte2hex(byte[] bytes) {
-		return byte2hex(bytes,null);
+		return byte2hex(bytes, null);
 	}
 	public static String[] byte2hexs(byte[] bytes) {
 		String[] hexs = new String[bytes.length];
@@ -584,26 +584,26 @@ public class NumberUtil {
 	 * @param charset 编码
 	 * @return String
 	 */
-	public static String byte2string(byte[] bytes, int start, int len, Charset charset){
+	public static String byte2string(byte[] bytes,  int start,  int len,  Charset charset){
 		byte[] bts = new byte[len];
 		int max =bytes.length;
 		int idx = 0;
 		for(int i=start; i<=max && i<start+len; i++){
 			bts[idx++] = bytes[i];
 		}
-		return new String(bts, charset);
+		return new String(bts,  charset);
 	}
-	public static String byte2string(byte[] bytes, int start, int len){
-		return byte2string(bytes, start, len, Charset.forName("UTF-8"));
+	public static String byte2string(byte[] bytes,  int start,  int len){
+		return byte2string(bytes,  start,  len,  Charset.forName("UTF-8"));
 	}
 	public static String byte2string(byte[] bytes){
-		return byte2string(bytes, 0, bytes.length, Charset.forName("UTF-8"));
+		return byte2string(bytes,  0,  bytes.length,  Charset.forName("UTF-8"));
 	}
-	public static String byte2string(byte[] bytes, int start){
-		return byte2string(bytes, start, bytes.length-start, Charset.forName("UTF-8"));
+	public static String byte2string(byte[] bytes,  int start){
+		return byte2string(bytes,  start,  bytes.length-start,  Charset.forName("UTF-8"));
 	}
-	public static String byte2string(byte[] bytes, Charset charset){
-		return byte2string(bytes, 0, bytes.length, charset);
+	public static String byte2string(byte[] bytes,  Charset charset){
+		return byte2string(bytes,  0,  bytes.length,  charset);
 	}
 
 	public static byte[] hex2bytes(String hex){
@@ -620,14 +620,14 @@ public class NumberUtil {
 		}
 		int j=0;
 		for (int i = 0; i < hexlen; i+=2){
-			result[j]=hex2byte(hex.substring(i,i+2));
+			result[j]=hex2byte(hex.substring(i, i+2));
 			j++;
 		}
 		return result;
 	}
 
 	public static byte hex2byte(String hex){
-		return (byte)Integer.parseInt(hex,16);
+		return (byte)Integer.parseInt(hex, 16);
 	}
 
 	public static byte[] dec2bcd(long num) {
@@ -706,13 +706,13 @@ public class NumberUtil {
 	 * @return hex
 	 */
 
-	public static String string2hex(String origin, String charset) {
+	public static String string2hex(String origin,  String charset) {
 		byte[] bytes = origin.getBytes(Charset.forName(charset));
 		String hex = byte2hex(bytes);
 		return hex;
 	}
 	public static String string2hex(String origin) {
-		return string2hex(origin, "UTF-8");
+		return string2hex(origin,  "UTF-8");
 	}
 
 	/**
@@ -721,17 +721,17 @@ public class NumberUtil {
 	 * @param hex hex
 	 * @return String
 	 */
-	public static String hex2string(String hex, String charset) {
+	public static String hex2string(String hex,  String charset) {
 		byte[] bytes = NumberUtil.hex2bytes(hex);
-		return new String(bytes, Charset.forName(charset));
+		return new String(bytes,  Charset.forName(charset));
 	}
 	public static String hex2string(String hex) {
-		return hex2string(hex, "UTF-8");
+		return hex2string(hex,  "UTF-8");
 	}
 
 	/**
 	 * 16进制string拆分<br/>
-	 * 0102 &gt; ["01","02"]
+	 * 0102 &gt; ["01", "02"]
 	 * @param hex hex
 	 * @return strings
 	 */
@@ -739,12 +739,12 @@ public class NumberUtil {
 		String[] array = new String[hex.length() / 2];
 		int k = 2;
 		for (int i = 0; i < array.length; i++) {
-			array[i] = hex.substring(i * 2, k);
+			array[i] = hex.substring(i * 2,  k);
 			k += 2;
 		}
 		return array;
 	}
-	public static byte[] string2bytes(String src, String charset){
+	public static byte[] string2bytes(String src,  String charset){
 		return src.getBytes(Charset.forName(charset));
 	}
 	public static byte[] string2bytes(String src){
@@ -778,7 +778,7 @@ public class NumberUtil {
 		String result = "";
 		int length = content.length() / 2;
 		for (int i = 0; i < length; i++) {
-			String c = content.substring(i * 2, i * 2 + 2);
+			String c = content.substring(i * 2,  i * 2 + 2);
 			int a = hex2dec(c);
 			char b = (char) a;
 			String d = String.valueOf(b);
@@ -794,12 +794,12 @@ public class NumberUtil {
 	 * @param integer 是否压缩成整数 1|1.0
 	 * @return String
 	 */
-	public static String compress(String src, boolean integer) {
+	public static String compress(String src,  boolean integer) {
 		if (null != src) {
 			int idx = src.indexOf(".");
 			if(idx != -1){
-				src = src.replaceAll("^0+","");
-				src = src.replaceAll("0+$","");
+				src = src.replaceAll("^0+", "");
+				src = src.replaceAll("0+$", "");
 			}
 			if(".".equals(src)){
 				if(integer){
@@ -809,7 +809,7 @@ public class NumberUtil {
 				}
 			}else if(src.endsWith(".")){
 				if(integer){
-					src = src.substring(0, src.length()-1);
+					src = src.substring(0,  src.length()-1);
 				}else{
 					src = src + "0";
 				}
@@ -822,18 +822,18 @@ public class NumberUtil {
 	}
 
 	public static double compress(double src) {
-		String str = compress(src+"", false);
-		src = BasicUtil.parseDouble(str, src);
+		String str = compress(src+"",  false);
+		src = BasicUtil.parseDouble(str,  src);
 		return src;
 	}
 	public static String compress(String src) {
-		return compress(src, false);
+		return compress(src,  false);
 	}
 
 
 
 	/**
-	 * byte转double[],可用于把数据库中的point(JDBC取出byte[])转成double[]
+	 * byte转double[], 可用于把数据库中的point(JDBC取出byte[])转成double[]
 	 * @param bytes bytes
 	 * @return double[]
 	 */
@@ -841,18 +841,18 @@ public class NumberUtil {
 		int len=(bytes.length-13)/8;
 		double[] result=new double[len];
 		for(int i=0;i<len; i++){
-			result[i]=byte2double(bytes,13+i*8);
+			result[i]=byte2double(bytes, 13+i*8);
 		}
 		return result;
 	}
 
 	/**
-	 * byte数组转double,默认Double占用8个字节（64位）
+	 * byte数组转double, 默认Double占用8个字节（64位）
 	 * @param bytes byte数组
 	 * @param start 开始位置
 	 * @return double
 	 */
-	public static double byte2double(byte[] bytes, int start) {
+	public static double byte2double(byte[] bytes,  int start) {
 		long value = 0;
 		for (int i = 0; i < 8; i++) {
 			value |= ((long) (bytes[start+i] & 0xff)) << (8 * i);
@@ -884,7 +884,7 @@ public class NumberUtil {
 	 * @param big 是否Big Endian
 	 * @return int
 	 */
-	public static int byte2int(byte[] bytes, int start, int length, boolean big) {
+	public static int byte2int(byte[] bytes,  int start,  int length,  boolean big) {
 		int value = 0;
 		if (big) {// Big Endian
 			for (int i = start; i < start + length; i++) {
@@ -897,24 +897,24 @@ public class NumberUtil {
 		}
 		return value;
 	}
-	public static int byte2int(byte[] bytes, int start, int length) {
-		return byte2int(bytes, start, length, true);
+	public static int byte2int(byte[] bytes,  int start,  int length) {
+		return byte2int(bytes,  start,  length,  true);
 	}
-	public static int byte2int(byte[] bytes, int start) {
-		return byte2int(bytes, start, min(4, bytes.length), true);
+	public static int byte2int(byte[] bytes,  int start) {
+		return byte2int(bytes,  start,  min(4,  bytes.length),  true);
 	}
-	public static int byte2int(byte[] bytes, int start, boolean big) {
-		return byte2int(bytes, start, min(4, bytes.length), big);
+	public static int byte2int(byte[] bytes,  int start,  boolean big) {
+		return byte2int(bytes,  start,  min(4,  bytes.length),  big);
 	}
 
-	public static short byte2short(byte[] bytes, int start, int length) {
-		return (short) byte2int(bytes, start, length, true);
+	public static short byte2short(byte[] bytes,  int start,  int length) {
+		return (short) byte2int(bytes,  start,  length,  true);
 	}
-	public static short byte2short(byte[] bytes, int start) {
-		return (short)byte2int(bytes, start, min(2, bytes.length), true);
+	public static short byte2short(byte[] bytes,  int start) {
+		return (short)byte2int(bytes,  start,  min(2,  bytes.length),  true);
 	}
-	public static short byte2short(byte[] bytes, int start, boolean big) {
-		return (short)byte2int(bytes, start, min(2, bytes.length), big);
+	public static short byte2short(byte[] bytes,  int start,  boolean big) {
+		return (short)byte2int(bytes,  start,  min(2,  bytes.length),  big);
 	}
 	/**
 	 * 平均值
@@ -922,19 +922,19 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 平均值
 	 */
-	public static BigDecimal avg(List<BigDecimal> list, int scale, int round) {
+	public static BigDecimal avg(List<BigDecimal> list,  int scale,  int round) {
 		int qty = 0;
 		BigDecimal sum = BigDecimal.ZERO;
 		for (BigDecimal item:list) {        //求和
@@ -946,11 +946,11 @@ public class NumberUtil {
 			}
 		}
 		if(qty > 0){
-			return sum.divide(new BigDecimal(qty), scale, round);
+			return sum.divide(new BigDecimal(qty),  scale,  round);
 		}
 		return null;
 	}
-	public static BigDecimal avga(List<BigDecimal> list, int scale, int round) {
+	public static BigDecimal avga(List<BigDecimal> list,  int scale,  int round) {
 		int qty = list.size();
 		BigDecimal sum = BigDecimal.ZERO;
 		for (BigDecimal item:list) {        //求和
@@ -959,7 +959,7 @@ public class NumberUtil {
 			}
 		}
 		if(qty > 0){
-			return sum.divide(new BigDecimal(qty), scale, round);
+			return sum.divide(new BigDecimal(qty),  scale,  round);
 		}
 		return null;
 	}
@@ -970,21 +970,21 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 方差
 	 */
-	public static BigDecimal var(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal var(List<BigDecimal> list,   int scale,  int round) {
 		int qty = 0;
-		BigDecimal avg = avg(list, scale, round);
+		BigDecimal avg = avg(list,  scale,  round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
 			if(null != item){
@@ -996,13 +996,13 @@ public class NumberUtil {
 			}
 		}
 		if(qty > 1){
-			return var.divide(new BigDecimal(qty-1), scale, round);
+			return var.divide(new BigDecimal(qty-1),  scale,  round);
 		}
 		return null;
 	}
-	public static BigDecimal vara(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal vara(List<BigDecimal> list,   int scale,  int round) {
 		int qty = list.size();
-		BigDecimal avg = avga(list, scale, round);
+		BigDecimal avg = avga(list,  scale,  round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
 			if(null != item){
@@ -1011,7 +1011,7 @@ public class NumberUtil {
 			}
 		}
 		if(qty > 1){
-			return var.divide(new BigDecimal(qty-1), scale, round);
+			return var.divide(new BigDecimal(qty-1),  scale,  round);
 		}
 		return null;
 	}
@@ -1023,21 +1023,21 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 方差
 	 */
-	public static BigDecimal varp(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal varp(List<BigDecimal> list,   int scale,  int round) {
 		int qty = 0;
-		BigDecimal avg = avg(list, scale, round);
+		BigDecimal avg = avg(list,  scale,  round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
 			if(null != item){
@@ -1049,13 +1049,13 @@ public class NumberUtil {
 			}
 		}
 		if(qty > 0){
-			return var.divide(new BigDecimal(qty), scale, round);
+			return var.divide(new BigDecimal(qty),  scale,  round);
 		}
 		return null;
 	}
-	public static BigDecimal varpa(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal varpa(List<BigDecimal> list,   int scale,  int round) {
 		int qty = list.size();
-		BigDecimal avg = avga(list, scale, round);
+		BigDecimal avg = avga(list,  scale,  round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
 			if(null != item){
@@ -1064,7 +1064,7 @@ public class NumberUtil {
 			}
 		}
 		if(qty > 0){
-			return var.divide(new BigDecimal(qty), scale, round);
+			return var.divide(new BigDecimal(qty),  scale,  round);
 		}
 		return null;
 	}
@@ -1075,29 +1075,29 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 标准差
 	 */
-	public static BigDecimal stdev(List<BigDecimal> list, int scale, int round) {
-		BigDecimal var = var(list, scale, round);
+	public static BigDecimal stdev(List<BigDecimal> list,  int scale,  int round) {
+		BigDecimal var = var(list,  scale,  round);
 		if(null != var){
-			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
+			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale,  round);
 		}
 		return  null;
 	}
-	public static BigDecimal stdeva(List<BigDecimal> list, int scale, int round) {
-		BigDecimal var = vara(list, scale, round);
+	public static BigDecimal stdeva(List<BigDecimal> list,  int scale,  int round) {
+		BigDecimal var = vara(list,  scale,  round);
 		if(null != var){
-			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
+			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale,  round);
 		}
 		return  null;
 	}
@@ -1108,29 +1108,29 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 标准差
 	 */
-	public static BigDecimal stdevp(List<BigDecimal> list, int scale, int round) {
-		BigDecimal var = varp(list, scale, round);
+	public static BigDecimal stdevp(List<BigDecimal> list,  int scale,  int round) {
+		BigDecimal var = varp(list,  scale,  round);
 		if(null != var){
-			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
+			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale,  round);
 		}
 		return  null;
 	}
-	public static BigDecimal stdevpa(List<BigDecimal> list, int scale, int round) {
-		BigDecimal var = varpa(list, scale, round);
+	public static BigDecimal stdevpa(List<BigDecimal> list,  int scale,  int round) {
+		BigDecimal var = varpa(list,  scale,  round);
 		if(null != var){
-			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
+			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale,  round);
 		}
 		return  null;
 	}

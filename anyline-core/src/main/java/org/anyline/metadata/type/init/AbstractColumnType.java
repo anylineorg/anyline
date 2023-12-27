@@ -7,9 +7,9 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -32,7 +32,7 @@ public class AbstractColumnType implements ColumnType {
     private Class compatible                ; //从数据库中读写数据的类型
     private Boolean ignorePrecision;
     private Boolean ignoreScale;
-    public AbstractColumnType(String name, DatabaseType db, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    public AbstractColumnType(String name,  DatabaseType db,  Class transfer,  Class compatible,  Boolean ignorePrecision,  Boolean ignoreScale){
         this.name = name;
         this.dbs = new DatabaseType[]{db};
         this.transfer = transfer;
@@ -40,7 +40,7 @@ public class AbstractColumnType implements ColumnType {
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    public AbstractColumnType(String name, DatabaseType db,  Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    public AbstractColumnType(String name,  DatabaseType db,   Class compatible,  Boolean ignorePrecision,  Boolean ignoreScale){
         this.name = name;
         this.dbs = new DatabaseType[]{db};
         this.compatible = compatible;
@@ -48,24 +48,24 @@ public class AbstractColumnType implements ColumnType {
         this.ignoreScale = ignoreScale;
     }
     @Override
-    public Object convert(Object value, Object def){
-        return convert(value, null, def);
+    public Object convert(Object value,  Object def){
+        return convert(value,  null,  def);
     }
 
     @Override
-    public Object convert(Object value, Class target){
+    public Object convert(Object value,  Class target){
         Object def = null;
-        return convert(value, target, def);
+        return convert(value,  target,  def);
     }
 
     @Override
-    public Object convert(Object value, Class target, boolean array){
+    public Object convert(Object value,  Class target,  boolean array){
         Object def = null;
-        return convert(value, target, array, def);
+        return convert(value,  target,  array,  def);
     }
 
     @Override
-    public Object convert(Object value, Class target, boolean array, Object def) {
+    public Object convert(Object value,  Class target,  boolean array,  Object def) {
         if(null == target){
             target = compatible;
         }
@@ -74,46 +74,46 @@ public class AbstractColumnType implements ColumnType {
                 return value;
             }
             if(null != transfer) {
-                value = ConvertAdapter.convert(value, transfer, array, def);
+                value = ConvertAdapter.convert(value,  transfer,  array,  def);
             }
-            value = ConvertAdapter.convert(value, target, array, def);
+            value = ConvertAdapter.convert(value,  target,  array,  def);
         }
         return value;
     }
 
     @Override
-    public Object convert(Object value, Object obj, Field field) {
-        return convert(value, field.getType());
+    public Object convert(Object value,  Object obj,  Field field) {
+        return convert(value,  field.getType());
     }
 
     @Override
-    public Object read(Object value, Object def, Class clazz) {
-        return read(value, def, clazz, false);
+    public Object read(Object value,  Object def,  Class clazz) {
+        return read(value,  def,  clazz,  false);
     }
     @Override
-    public Object read(Object value, Object def, Class clazz, boolean array) {
+    public Object read(Object value,  Object def,  Class clazz,  boolean array) {
         if(null == clazz){
             clazz = transfer;
         }
         if(null == clazz){
             clazz = compatible;
         }
-        value = ConvertAdapter.convert(value, clazz, array, def);
+        value = ConvertAdapter.convert(value,  clazz,  array,  def);
         return value;
     }
 
     @Override
-    public Object write(Object value, Object def, boolean placeholder) {
-        return write(value, def, false, placeholder);
+    public Object write(Object value,  Object def,  boolean placeholder) {
+        return write(value,  def,  false,  placeholder);
     }
     @Override
-    public Object write(Object value, Object def, boolean array, boolean placeholder) {
+    public Object write(Object value,  Object def,  boolean array,  boolean placeholder) {
         if(null != value){
             if(value.getClass() != compatible){
                 if(null != transfer) {
-                    value = ConvertAdapter.convert(value, transfer, array, def);
+                    value = ConvertAdapter.convert(value,  transfer,  array,  def);
                 }
-                value = ConvertAdapter.convert(value, compatible, array, def);
+                value = ConvertAdapter.convert(value,  compatible,  array,  def);
             }
         }
         if(null != value){

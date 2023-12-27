@@ -113,7 +113,7 @@ public class Line extends Geometry{
         }
         builder.append("(");
         builder.append(p1.toString(false));
-        builder.append(",");
+        builder.append(", ");
         builder.append(p2.toString(false));
         builder.append(")");
         return builder.toString();
@@ -130,8 +130,8 @@ public class Line extends Geometry{
             builder.append("(");
         }
         builder.append(p1.sql(false, false));
-        builder.append(",");
-        builder.append(p2.sql(false, false));
+        builder.append(", ");
+        builder.append(p2.sql(false,  false));
         if(bracket){
             builder.append(")");
         }
@@ -140,7 +140,7 @@ public class Line extends Geometry{
 
     @Override
     public String sql() {
-        return sql(true, true);
+        return sql(true,  true);
     }
 
     public void slope(){
@@ -168,19 +168,19 @@ public class Line extends Geometry{
         if (b != 0) {
             double x1 = 0;
             double y1 = (-a * x1 - c) / b;
-            p1 = new Point(x1, y1);
+            p1 = new Point(x1,  y1);
 
             double x2 = 1;
             double y2 = (-a * x2 - c) / b;
-            p2 = new Point(x2, y2);
+            p2 = new Point(x2,  y2);
         } else {
             double y1 = 0;
             double x1 = -c / a;
-            p1 = new Point(x1, y1);
+            p1 = new Point(x1,  y1);
 
             double y2 = 1;
             double x2 = -c / a;
-            p2 = new Point(x2, y2);
+            p2 = new Point(x2,  y2);
         }
     }
 

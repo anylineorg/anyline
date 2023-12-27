@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -32,21 +32,21 @@ public enum KingbaseWriter {
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_date( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD')";
+                value = " to_date( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD')";
             }
             return value;
         }
-    }),
+    }), 
     DateTimeWriter(new Object[]{Timestamp.class, Date.class, LocalDateTime.class}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_timestamp( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
+                value = " to_timestamp( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";
             }
             return value;
         }
-    }),
+    }), 
     ;
     public Object[] supports(){
         return supports;

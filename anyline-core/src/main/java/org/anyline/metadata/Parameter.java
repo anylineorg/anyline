@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class Parameter extends BaseMetadata<Parameter> implements Serializable {
     private boolean input;
     private boolean output;
-    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; // 小数部分的长度
 
     private Object value;
@@ -92,7 +92,7 @@ public class Parameter extends BaseMetadata<Parameter> implements Serializable {
     }
 
     public String toString(){
-        return "{value:"+value+",type:"+type+"}";
+        return "{value:"+value+", type:"+type+"}";
     }
 
 }

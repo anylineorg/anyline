@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -35,18 +35,18 @@ import org.springframework.stereotype.Component;
 public class MongoRuntimeHolder extends RuntimeHolder {
 
     public MongoRuntimeHolder(){
-        RuntimeHolderProxy.reg(MongoClient.class,this);
+        RuntimeHolderProxy.reg(MongoClient.class, this);
     }
 
     /**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
-     * @param datasource 数据源,如DruidDataSource,MongoClient
-     * @param database 数据库,jdbc类型数据源不需要
-     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @param datasource 数据源, 如DruidDataSource, MongoClient
+     * @param database 数据库, jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter(), 如果不提供则根据ds检测
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object datasource,  String database,  DriverAdapter adapter) throws Exception{
         MongoRuntime runtime = new MongoRuntime();
         if(datasource instanceof MongoClient){
             String key = "temporary_mongo";
@@ -56,7 +56,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
             runtime.setClient(client);
             MongoDatabase db = client.getDatabase(database);
             runtime.setDatabase(db);
-            log.warn("[注册数据源][key:{}][type:{}]", key, datasource.getClass().getSimpleName());
+            log.warn("[注册数据源][key:{}][type:{}]",  key,  datasource.getClass().getSimpleName());
         }else{
             throw new Exception("请提供:com.mongodb.client.MongoClient");
         }
@@ -64,8 +64,8 @@ public class MongoRuntimeHolder extends RuntimeHolder {
     }
 
     @Override
-    public DataRuntime callTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
-        return temporary( datasource, database, adapter);
+    public DataRuntime callTemporary(Object datasource,  String database,  DriverAdapter adapter) throws Exception {
+        return temporary( datasource,  database,  adapter);
     }
 
     /**
@@ -77,14 +77,14 @@ public class MongoRuntimeHolder extends RuntimeHolder {
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         String database_key = DataRuntime.ANYLINE_DATABASE_BEAN_PREFIX + key;
 
-        MongoClient client = factory.getBean(datasource_key, MongoClient.class);
-        MongoDatabase database = factory.getBean(database_key, MongoDatabase.class);
-        reg(key, client, database, null);
+        MongoClient client = factory.getBean(datasource_key,  MongoClient.class);
+        MongoDatabase database = factory.getBean(database_key,  MongoDatabase.class);
+        reg(key,  client,  database,  null);
     }
 
 
-    public static void reg(String key, DataRuntime runtime){
-        runtimes.put(key, runtime);
+    public static void reg(String key,  DataRuntime runtime){
+        runtimes.put(key,  runtime);
     }
 
     /**
@@ -93,40 +93,40 @@ public class MongoRuntimeHolder extends RuntimeHolder {
      * @param database MongoDatabase
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-    public static void reg(String datasource, MongoClient client, MongoDatabase database, DriverAdapter adapter){
-        log.info("[create mongo runtime][key:{}]", datasource);
-        DataRuntime runtime = new MongoRuntime(datasource, client, database, adapter);
+    public static void reg(String datasource,  MongoClient client,  MongoDatabase database,  DriverAdapter adapter){
+        log.info("[create mongo runtime][key:{}]",  datasource);
+        DataRuntime runtime = new MongoRuntime(datasource,  client,  database,  adapter);
         if(runtimes.containsKey(datasource)){
             destroy(datasource);
         }
-        runtimes.put(datasource, runtime);
+        runtimes.put(datasource,  runtime);
         if(!ConfigTable.IS_MULTIPLE_SERVICE){
             return;
         }
         String dao_key = DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  datasource;
         String service_key = DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  datasource;
-        log.info("[instance service][data source:{}][instance id:{}]", datasource, service_key);
+        log.info("[instance service][data source:{}][instance id:{}]",  datasource,  service_key);
 
         //dao
         BeanDefinitionBuilder daoBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultDao.class);
         //daoBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-        daoBuilder.addPropertyValue("runtime", runtime);
-        daoBuilder.addPropertyValue("datasource", datasource);
-        //daoBuilder.addPropertyValue("listener", SpringContextUtil.getBean(DMListener.class));
+        daoBuilder.addPropertyValue("runtime",  runtime);
+        daoBuilder.addPropertyValue("datasource",  datasource);
+        //daoBuilder.addPropertyValue("listener",  SpringContextUtil.getBean(DMListener.class));
         //daoBuilder.addAutowiredProperty("listener");
         daoBuilder.setLazyInit(true);
         BeanDefinition daoDefinition = daoBuilder.getBeanDefinition();
-        factory.registerBeanDefinition(dao_key, daoDefinition);
+        factory.registerBeanDefinition(dao_key,  daoDefinition);
 
         //service
         BeanDefinitionBuilder serviceBuilder = BeanDefinitionBuilder.genericBeanDefinition(DefaultService.class);
         //serviceBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-        serviceBuilder.addPropertyValue("datasource", datasource);
-        serviceBuilder.addPropertyReference("dao", dao_key);
+        serviceBuilder.addPropertyValue("datasource",  datasource);
+        serviceBuilder.addPropertyReference("dao",  dao_key);
         //serviceBuilder.addAutowiredProperty("cacheProvider");
         serviceBuilder.setLazyInit(true);
         BeanDefinition serviceDefinition = serviceBuilder.getBeanDefinition();
-        factory.registerBeanDefinition(service_key, serviceDefinition);
+        factory.registerBeanDefinition(service_key,  serviceDefinition);
 
 
     }

@@ -33,7 +33,7 @@ public interface PageNavi extends Serializable{
 	 * 计算分页变量 
 	 */ 
 	public void calculate() ; 
-	public String createHidParam(String name, Object values); 
+	public String createHidParam(String name,  Object values);
  
 	/** 
 	 * 第一行 
@@ -66,11 +66,11 @@ public interface PageNavi extends Serializable{
 	 */ 
 	public void setDisplayPageLast(long displayPageLast) ;
  
-	public void addParam(String key, Object value); 
+	public void addParam(String key,  Object value);
 	public Object getParams(String key); 
 	public Object getParam(String key); 
 	public String getOrderText(boolean require); 
-	// public String getOrderText(boolean require, OrderStore store); 
+	// public String getOrderText(boolean require,  OrderStore store);
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
@@ -84,16 +84,16 @@ public interface PageNavi extends Serializable{
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return PageNavi
 	 */
-	public PageNavi order(String order, String type, boolean override);
-	public PageNavi order(String order, String type);
+	public PageNavi order(String order,  String type,  boolean override);
+	public PageNavi order(String order,  String type);
 
-	public PageNavi order(String order, Order.TYPE type, boolean override);
-	public PageNavi order(String order, Order.TYPE type);
+	public PageNavi order(String order,  Order.TYPE type,  boolean override);
+	public PageNavi order(String order,  Order.TYPE type);
 
-	public PageNavi order(String order, boolean override);
+	public PageNavi order(String order,  boolean override);
 	public PageNavi order(String order);
 
-	public PageNavi order(Order order, boolean override);
+	public PageNavi order(Order order,  boolean override);
 	public PageNavi order(Order order);
 
 	/** 
@@ -199,6 +199,6 @@ public interface PageNavi extends Serializable{
 	public String getHtml();
 	public String getForm();
 
-	public PageNavi scope(long first, long last);
-	public PageNavi limit(long offset, int rows);
+	public PageNavi scope(long first,  long last);
+	public PageNavi limit(long offset,  int rows);
 }

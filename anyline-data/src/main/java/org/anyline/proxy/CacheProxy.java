@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * Unless required by applicable law or agreed to in writing,  software
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -44,39 +44,39 @@ public class CacheProxy {
     }
 
 
-    private static Map<String,DataRow> cache_columns = new HashMap<>();
-    private static Map<String,Map<String, String>>  cache_names = new HashMap<>();
-    private static Map<String,DataRow> cache_table_maps = new HashMap<>();
-    private static Map<String,DataRow> cache_view_maps = new HashMap<>();
+    private static Map<String, DataRow> cache_columns = new HashMap<>();
+    private static Map<String, Map<String,  String>>  cache_names = new HashMap<>();
+    private static Map<String, DataRow> cache_table_maps = new HashMap<>();
+    private static Map<String, DataRow> cache_view_maps = new HashMap<>();
     public static void name(List<Table> tables){
         if(null != tables) {
             for (Table table : tables) {
-                name(table.getCatalog(), table.getSchema(), table.getName(), table.getName());
+                name(table.getCatalog(),  table.getSchema(),  table.getName(),  table.getName());
             }
         }
     }
-    public static void name(Catalog catalog, Schema schema, String name, String origin){
+    public static void name(Catalog catalog,  Schema schema,  String name,  String origin){
         String group_key = catalog + "_" + schema;
         group_key = group_key.toUpperCase();
-        Map<String, String> maps = cache_names.get(group_key);
+        Map<String,  String> maps = cache_names.get(group_key);
         if(null == maps){
             maps = new HashMap<>();
-            cache_names.put(group_key, maps);
+            cache_names.put(group_key,  maps);
         }
         String name_key = group_key + ":" + name.toUpperCase();
-        maps.put(name_key, origin);
+        maps.put(name_key,  origin);
     }
-    public static Map<String, String> names(Catalog catalog, Schema schema){
+    public static Map<String,  String> names(Catalog catalog,  Schema schema){
         String key = catalog + "_" + schema;
         return cache_names.get(key.toUpperCase());
     }
-    public static String name(boolean greedy, Catalog catalog, Schema schema, String name){
+    public static String name(boolean greedy,  Catalog catalog,  Schema schema,  String name){
         if(null == name){
             return null;
         }
         String group_key = catalog + "_" + schema;
         group_key = group_key.toUpperCase();
-        Map<String, String> maps = cache_names.get(group_key);
+        Map<String,  String> maps = cache_names.get(group_key);
         if(null != maps){
             String name_key = group_key + ":" + name.toUpperCase();
             String origin = maps.get(name_key);
@@ -85,7 +85,7 @@ public class CacheProxy {
             }
         }
         if(greedy) {
-            for (Map<String, String> names : cache_names.values()) {
+            for (Map<String,  String> names : cache_names.values()) {
                 for(String item:names.keySet()){
                     if(item.endsWith(":"+name.toUpperCase())){
                         return names.get(item);
@@ -105,25 +105,25 @@ public class CacheProxy {
         return datasource.toUpperCase();
     }
 
-    public static String tableName(String datasource, String name){
+    public static String tableName(String datasource,  String name){
         DataRow row = cache_table_maps.get(datasource(datasource));
         if(null != row){
             return row.getString(name);
         }
         return name;
     }
-    public static String viewName(String datasource, String name){
+    public static String viewName(String datasource,  String name){
         DataRow row = cache_view_maps.get(datasource(datasource));
         if(null != row){
             return row.getString(name);
         }
         return name;
     }
-    public static void setTableMaps(String datasource, DataRow maps){
-        cache_table_maps.put(datasource(datasource), maps);
+    public static void setTableMaps(String datasource,  DataRow maps){
+        cache_table_maps.put(datasource(datasource),  maps);
     }
-    public static void setViewMaps(String datasource, DataRow maps){
-        cache_view_maps.put(datasource(datasource), maps);
+    public static void setViewMaps(String datasource,  DataRow maps){
+        cache_view_maps.put(datasource(datasource),  maps);
     }
 
     /**
@@ -135,7 +135,7 @@ public class CacheProxy {
         DataRow row = cache_table_maps.get(datasource(datasource));
         if(null == row){
             row = new DataRow();
-            cache_table_maps.put(datasource(datasource), row);
+            cache_table_maps.put(datasource(datasource),  row);
         }
         return row;
     }
@@ -148,7 +148,7 @@ public class CacheProxy {
         DataRow row = cache_view_maps.get(datasource(datasource));
         if(null == row){
             row = new DataRow();
-            cache_view_maps.put(datasource(datasource), row);
+            cache_view_maps.put(datasource(datasource),  row);
         }
         return row;
     }
@@ -158,24 +158,24 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public  static  <T extends Column> LinkedHashMap<String, T> columns(String datasource, Table table){
+    public  static  <T extends Column> LinkedHashMap<String,  T> columns(String datasource,  Table table){
         if(null == table){
             return null;
         }
-        LinkedHashMap<String, T> columns = null;
+        LinkedHashMap<String,  T> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = datasource(datasource)+"_COLUMNS_" + table.getCatalog() + "_" + table.getSchema() + ":" + table.getName();
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
-            CacheElement cacheElement = provider.get(cache, key);
+            CacheElement cacheElement = provider.get(cache,  key);
             if(null != cacheElement){
-                columns = (LinkedHashMap<String, T>) cacheElement.getValue();
+                columns = (LinkedHashMap<String,  T>) cacheElement.getValue();
             }
         }else{
             // 通过静态变量缓存
             DataRow static_cache = cache_columns.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                columns = (LinkedHashMap<String, T>) static_cache.get("keys");
+                columns = (LinkedHashMap<String,  T>) static_cache.get("keys");
             }
         }
         if(null == columns){
@@ -189,7 +189,7 @@ public class CacheProxy {
      * @param table 表
      * @param columns 列
      */
-    public static  <T extends Column> void columns(String datasource, Table table, LinkedHashMap<String, T> columns){
+    public static  <T extends Column> void columns(String datasource,  Table table,  LinkedHashMap<String,  T> columns){
         if(null == table){
             return;
         }
@@ -197,11 +197,11 @@ public class CacheProxy {
         String key = datasource(datasource)+"_COLUMNS_" + table.getCatalog() + "_" + table.getSchema() + ":" + table.getName();
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
-            provider.put(cache, key, columns);
+            provider.put(cache,  key,  columns);
         }else{
             DataRow static_cache = new DataRow();
-            static_cache.put("keys", columns);
-            cache_columns.put(key, static_cache);
+            static_cache.put("keys",  columns);
+            cache_columns.put(key,  static_cache);
         }
     }
 
@@ -212,23 +212,23 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public static <T extends Tag> LinkedHashMap<String, T> tags(String datasource, Table table){
+    public static <T extends Tag> LinkedHashMap<String,  T> tags(String datasource,  Table table){
         if(null == table){
             return null;
         }
-        LinkedHashMap<String, T> tags = null;
+        LinkedHashMap<String,  T> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = datasource(datasource)+"_TAGS_" + table.getCatalog() + "_" + table.getSchema() + ":" + table.getName();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
-            CacheElement cacheElement = provider.get(cache, key);
+            CacheElement cacheElement = provider.get(cache,  key);
             if(null != cacheElement){
-                tags = (LinkedHashMap<String, T>) cacheElement.getValue();
+                tags = (LinkedHashMap<String,  T>) cacheElement.getValue();
             }
         }else{
             // 通过静态变量缓存
             DataRow static_cache = cache_columns.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                tags = (LinkedHashMap<String, T>) static_cache.get("keys");
+                tags = (LinkedHashMap<String,  T>) static_cache.get("keys");
             }
         }
         if(null == tags){
@@ -242,18 +242,18 @@ public class CacheProxy {
      * @param table 表
      * @param tags Tag
      */
-    public static <T extends Tag> void tags(String datasource, Table table, LinkedHashMap<String, T> tags){
+    public static <T extends Tag> void tags(String datasource,  Table table,  LinkedHashMap<String,  T> tags){
         if(null == table){
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
         String key = datasource(datasource)+"_TAGS_" + table.getCatalog() + "_" + table.getSchema() + ":" + table.getName();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
-            provider.put(cache, key, tags);
+            provider.put(cache,  key,  tags);
         }else{
             DataRow static_cache = new DataRow();
-            static_cache.put("keys", tags);
-            cache_columns.put(key, static_cache);
+            static_cache.put("keys",  tags);
+            cache_columns.put(key,  static_cache);
         }
     }
 

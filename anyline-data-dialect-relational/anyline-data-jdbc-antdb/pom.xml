@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-antdb</name>
     <url>http://www.anyline.org/antdb</url>
-    <description>亚信AntDB,基于postgresql,http://www.antdb.net/</description>
+    <description>亚信AntDB, 基于postgresql, http://www.antdb.net/</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>

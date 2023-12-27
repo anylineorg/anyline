@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -111,10 +111,10 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * insert [调用入口]<br/>
-	 * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+	 * 执行前根据主键生成器补充主键值, 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 需要插入入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 *                列可以加前缀<br/>
@@ -122,15 +122,15 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -141,7 +141,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -156,7 +156,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -170,7 +170,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -183,7 +183,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj  Entity或DataRow
 	 * @param batch  是否批量，批量时不检测值是否为空
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -192,15 +192,15 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
@@ -210,12 +210,12 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * insert [命令合成-子流程]<br/>
-	 * 批量插入数据时,多行数据之间分隔符
+	 * 批量插入数据时, 多行数据之间分隔符
 	 * @return String
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ",";
+		return ", ";
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * insert [命令合成-子流程]<br/>
 	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -255,7 +255,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * insert [命令合成-子流程]<br/>
 	 * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 对象集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -301,10 +301,10 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * [命令合成]
 	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
 	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
@@ -312,7 +312,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -321,15 +321,15 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -339,7 +339,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	/**
 	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj Entity或DtaRow
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -348,15 +348,15 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
@@ -368,11 +368,11 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 	/**
@@ -386,30 +386,30 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 	/**
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
@@ -428,7 +428,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -437,15 +437,15 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -466,7 +466,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 		return super.checkOverride(obj);
 	}
 	@Override
-	protected Map<String,Object> checkPv(Object obj){
+	protected Map<String, Object> checkPv(Object obj){
 		return super.checkPv(obj);
 	}
 
@@ -504,7 +504,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
@@ -515,10 +515,10 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
 
 	/**
@@ -585,7 +585,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	/**
 	 * query [调用入口]<br/>
 	 * <br/>
-	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+	 * 对性能有要求的场景调用，返回java原生map集合, 结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -594,7 +594,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 	/**
@@ -679,8 +679,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) {
-		return super.createConditionFindInSet(runtime, builder, column, compare, value);
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column,  Compare compare,  Object value) {
+		return super.createConditionFindInSet(runtime,  builder,  column,  compare,  value);
 	}
 	/**
 	 * select[命令合成-子流程] <br/>
@@ -692,8 +692,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return builder
 	 */
 	@Override
-	public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
-		return super.createConditionIn(runtime, builder, compare, value);
+	public StringBuilder createConditionIn(DataRuntime runtime,  StringBuilder builder,  Compare compare,  Object value) {
+		return super.createConditionIn(runtime,  builder,  compare,  value);
 	}
 	/**
 	 * select [命令执行]<br/>
@@ -705,8 +705,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
-		return super.select(runtime, random, system, table, configs, run);
+	public DataSet select(DataRuntime runtime,  String random,  boolean system,  String table,  ConfigStore configs,  Run run) {
+		return super.select(runtime,  random,  system,  table,  configs,  run);
 	}
 
 
@@ -718,8 +718,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		return super.maps(runtime, random, configs, run);
+	public List<Map<String, Object>> maps(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
+		return super.maps(runtime,  random,  configs,  run);
 	}
 	/**
 	 * select [命令执行]<br/>
@@ -729,8 +729,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return map
 	 */
 	@Override
-	public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		return super.map(runtime, random, configs, run);
+	public Map<String, Object> map(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
+		return super.map(runtime,  random,  configs,  run);
 	}
 
 	/**
@@ -742,8 +742,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return DataRow 保存序列查询结果 以存储过程name作为key
 	 */
 	@Override
-	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
-		return super.sequence(runtime, random, next, names);
+	public DataRow sequence(DataRuntime runtime,  String random,  boolean next,  String ... names){
+		return super.sequence(runtime,  random,  next,  names);
 	}
 
 	/**
@@ -754,19 +754,19 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
-		return super.process(runtime, list);
+	public List<Map<String, Object>> process(DataRuntime runtime,  List<Map<String, Object>> list){
+		return super.process(runtime,  list);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * long count(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
 	 * [命令合成]
-	 * String mergeFinalTotal(DataRuntime runtime, Run run)
+	 * String mergeFinalTotal(DataRuntime runtime,  Run run)
 	 * [命令执行]
-	 * long count(DataRuntime runtime, String random, Run run)
+	 * long count(DataRuntime runtime,  String random,  Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * count [调用入口]<br/>
@@ -778,8 +778,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.count(runtime, random, prepare, configs, conditions);
+	public long count(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.count(runtime,  random,  prepare,  configs,  conditions);
 	}
 	/**
 	 * count [命令合成]<br/>
@@ -789,8 +789,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String mergeFinalTotal(DataRuntime runtime, Run run){
-		return super.mergeFinalTotal(runtime, run);
+	public String mergeFinalTotal(DataRuntime runtime,  Run run){
+		return super.mergeFinalTotal(runtime,  run);
 	}
 
 	/**
@@ -801,16 +801,16 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, Run run){
-		return super.count(runtime, random, run);
+	public long count(DataRuntime runtime,  String random,  Run run){
+		return super.count(runtime,  random,  run);
 	}
 
 
 	/* *****************************************************************************************************************
 	 * 													EXISTS
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * String mergeFinalExists(DataRuntime runtime, Run run)
+	 * boolean exists(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * String mergeFinalExists(DataRuntime runtime,  Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -823,12 +823,12 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return boolean
 	 */
 	@Override
-	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.exists(runtime, random, prepare, configs, conditions);
+	public boolean exists(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.exists(runtime,  random,  prepare,  configs,  conditions);
 	}
 	@Override
-	public String mergeFinalExists(DataRuntime runtime, Run run){
-		return super.mergeFinalExists(runtime, run);
+	public String mergeFinalExists(DataRuntime runtime,  Run run){
+		return super.mergeFinalExists(runtime,  run);
 	}
 
 
@@ -836,14 +836,14 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * 													EXECUTE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
-	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
+	 * long execute(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * long execute(DataRuntime runtime,  String random,  int batch,  ConfigStore configs,  String sql,  List<Object> values)
+	 * boolean execute(DataRuntime runtime,  String random,  Procedure procedure)
 	 * [命令合成]
-	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * void fillExecuteContent(DataRuntime runtime, Run run)
+	 * Run buildExecuteRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions)
+	 * void fillExecuteContent(DataRuntime runtime,  Run run)
 	 * [命令执行]
-	 * long execute(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * long execute(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
 	 ******************************************************************************************************************/
 
 	/**
@@ -856,13 +856,13 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return 影响行数
 	 */
 	@Override
-	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.execute(runtime, random,  prepare, configs, conditions);
+	public long execute(DataRuntime runtime,  String random,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.execute(runtime,  random,   prepare,  configs,  conditions);
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random,  batch, configs, cmd, values);
+	public long execute(DataRuntime runtime,  String random,  int batch,  ConfigStore configs,  String cmd,  List<Object> values){
+		return super.execute(runtime,  random,   batch,  configs,  cmd,  values);
 	}
 	/**
 	 * procedure [命令执行]<br/>
@@ -872,8 +872,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return 影响行数
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
-		return super.execute(runtime, random, procedure);
+	public boolean execute(DataRuntime runtime,  String random,  Procedure procedure){
+		return super.execute(runtime,  random,  procedure);
 	}
 	/**
 	 * execute [命令合成]<br/>
@@ -885,20 +885,20 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.buildExecuteRun(runtime, prepare, configs, conditions);
+	public Run buildExecuteRun(DataRuntime runtime,  RunPrepare prepare,  ConfigStore configs,  String ... conditions){
+		return super.buildExecuteRun(runtime,  prepare,  configs,  conditions);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
-		super.fillExecuteContent(runtime, run);
+	protected void fillExecuteContent(DataRuntime runtime,  XMLRun run){
+		super.fillExecuteContent(runtime,  run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
-		super.fillExecuteContent(runtime, run);
+	protected void fillExecuteContent(DataRuntime runtime,  TextRun run){
+		super.fillExecuteContent(runtime,  run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
-		super.fillExecuteContent(runtime, run);
+	protected void fillExecuteContent(DataRuntime runtime,  TableRun run){
+		super.fillExecuteContent(runtime,  run);
 	}
 
 	/**
@@ -908,8 +908,8 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillExecuteContent(DataRuntime runtime, Run run){
-		super.fillExecuteContent(runtime, run);
+	public void fillExecuteContent(DataRuntime runtime,  Run run){
+		super.fillExecuteContent(runtime,  run);
 	}
 	/**
 	 * execute [命令执行]<br/>
@@ -919,27 +919,27 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return 影响行数
 	 */
 	@Override
-	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		return super.execute(runtime, random,  configs, run);
+	public long execute(DataRuntime runtime,  String random,  ConfigStore configs,  Run run){
+		return super.execute(runtime,  random,   configs,  run);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
-	 * long truncate(DataRuntime runtime, String random, String table)
+	 * <T> long deletes(DataRuntime runtime,  String random,  int batch,  String table,  ConfigStore configs,  String column,  Collection<T> values)
+	 * long delete(DataRuntime runtime,  String random,  String table,  ConfigStore configs,  Object obj,  String... columns)
+	 * long delete(DataRuntime runtime,  String random,  String table,  ConfigStore configs,  String... conditions)
+	 * long truncate(DataRuntime runtime,  String random,  String table)
 	 * [命令合成]
-	 * Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns)
-	 * Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values)
-	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
-	 * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values)
-	 * Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String ... columns)
-	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
+	 * Run buildDeleteRun(DataRuntime runtime,  String table,  Object obj,  String ... columns)
+	 * Run buildDeleteRun(DataRuntime runtime,  int batch,  String table,  String column,  Object values)
+	 * List<Run> buildTruncateRun(DataRuntime runtime,  String table)
+	 * Run buildDeleteRunFromTable(DataRuntime runtime,  int batch,  String table,  String column,  Object values)
+	 * Run buildDeleteRunFromEntity(DataRuntime runtime,  String table,  Object obj,  String ... columns)
+	 * void fillDeleteRunContent(DataRuntime runtime,  Run run)
 	 * [命令执行]
-	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * long delete(DataRuntime runtime,  String random,  ConfigStore configs,  Run run)
 	 ******************************************************************************************************************/
 	/**
 	 * delete [调用入口]<br/>
@@ -947,14 +947,14 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param values 列对应的值
 	 * @return 影响行数
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		return super.deletes(runtime, random,  batch, table, configs, key, values);
+	public <T> long deletes(DataRuntime runtime,  String random,  int batch,  String table,  ConfigStore configs,  String key,  Collection<T> values){
+		return super.deletes(runtime,  random,   batch,  table,  configs,  key,  values);
 	}
 
 	/**
@@ -968,7 +968,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+	public long delete(DataRuntime runtime,  String random, String dest, ConfigStore configs, Object obj, String... columns){
 		return super.delete(runtime, random,  dest, configs, obj, columns);
 	}
 

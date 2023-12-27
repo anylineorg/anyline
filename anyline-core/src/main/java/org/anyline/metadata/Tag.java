@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -47,19 +47,19 @@ public class Tag extends Column implements Serializable {
         return setNewName(newName, true, true);
     }
 
-    public Tag setNewName(String newName, boolean setmap, boolean getmap) {
+    public Tag setNewName(String newName, boolean setmap,  boolean getmap) {
         if(null == update){
-            update(setmap, getmap);
+            update(setmap,  getmap);
         }
         update.setName(newName);
         return update;
     }
 
     public Tag update(){
-        return update(true, true);
+        return update(true,  true);
     }
 
-    public Tag update(boolean setmap, boolean getmap){
+    public Tag update(boolean setmap,  boolean getmap){
         this.setmap = setmap;
         this.getmap = getmap;
         update = clone();
@@ -67,7 +67,7 @@ public class Tag extends Column implements Serializable {
         return update;
     }
 
-    public Tag setUpdate(Tag update, boolean setmap, boolean getmap) {
+    public Tag setUpdate(Tag update,  boolean setmap,  boolean getmap) {
         this.update = update;
         this.setmap = setmap;
         this.getmap = getmap;
@@ -85,7 +85,7 @@ public class Tag extends Column implements Serializable {
         if(null != precision && precision > 0){
             builder.append("(").append(precision);
             if(null != scale && scale > 0){
-                builder.append(",").append(scale);
+                builder.append(", ").append(scale);
             }
             builder.append(")");
         }
@@ -96,7 +96,7 @@ public class Tag extends Column implements Serializable {
     }
     public Tag clone(){
         Tag copy = new Tag();
-        BeanUtil.copyFieldValue(copy, this);
+        BeanUtil.copyFieldValue(copy,  this);
         return copy;
     }
     public String getKeyword() {

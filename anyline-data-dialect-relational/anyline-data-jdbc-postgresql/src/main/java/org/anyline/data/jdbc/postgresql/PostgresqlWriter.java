@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -30,29 +30,29 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public enum PostgresqlWriter {
-    DateWriter(new Object[]{java.sql.Date.class, LocalDate.class}, new DataWriter() {
+    DateWriter(new Object[]{java.sql.Date.class,  LocalDate.class},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(!placeholder && null != value) {
-                Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_date( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD')";
+                Date date = (Date) ConvertAdapter.convert(value,  Date.class,  false);
+                value = " to_date( '"+ DateUtil.format(date)+"',  'YYYY-MM-DD')";
             }
             return value;
         }
     }),
-    DateTimeWriter(new Object[]{Timestamp.class, java.util.Date.class, LocalDateTime.class}, new DataWriter() {
+    DateTimeWriter(new Object[]{Timestamp.class,  java.util.Date.class,  LocalDateTime.class},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(!placeholder && null != value) {
-                Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_timestamp( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
+                Date date = (Date) ConvertAdapter.convert(value,  Date.class,  false);
+                value = " to_timestamp( '"+ DateUtil.format(date)+"',  'YYYY-MM-DD HH24:MI:SS')";
             }
             return value;
         }
     }),
-    PointWriter(new Object[]{Point.class, StandardColumnType.POINT}, new DataWriter() {
+    PointWriter(new Object[]{Point.class,  StandardColumnType.POINT},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(value instanceof Point) {
                 Point point = (Point) value;
                 PGpoint pg = PostgresqlGeometryAdapter.convert(point);
@@ -65,9 +65,9 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    LineSegmentWriter(new Object[]{LineSegment.class, StandardColumnType.LSEG}, new DataWriter() {
+    LineSegmentWriter(new Object[]{LineSegment.class,  StandardColumnType.LSEG},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(value instanceof LineSegment) {
                 LineSegment segment = (LineSegment) value;
                 PGlseg pg = PostgresqlGeometryAdapter.convert(segment);
@@ -80,9 +80,9 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    PathWriter(new Object[]{LineString.class, StandardColumnType.PATH}, new DataWriter() {
+    PathWriter(new Object[]{LineString.class,  StandardColumnType.PATH},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(value instanceof LineString) {
                 LineString string = (LineString) value;
                 PGpath pg = PostgresqlGeometryAdapter.convert(string);
@@ -95,9 +95,9 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    LineWriter(new Object[]{Line.class, StandardColumnType.LINE}, new DataWriter() {
+    LineWriter(new Object[]{Line.class,  StandardColumnType.LINE},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(value instanceof Line) {
                 Line line = (Line) value;
                 PGline pg = PostgresqlGeometryAdapter.convert(line);
@@ -110,9 +110,9 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    BoxWriter(new Object[]{Box.class, StandardColumnType.BOX}, new DataWriter() {
+    BoxWriter(new Object[]{Box.class,  StandardColumnType.BOX},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(value instanceof Box) {
                 Box box = (Box) value;
                 PGbox pg = PostgresqlGeometryAdapter.convert(box);
@@ -125,9 +125,9 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    CircleWriter(new Object[]{Circle.class, StandardColumnType.CIRCLE}, new DataWriter() {
+    CircleWriter(new Object[]{Circle.class,  StandardColumnType.CIRCLE},  new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value,  boolean placeholder) {
             if(value instanceof Circle) {
                 Circle circle = (Circle) value;
                 PGcircle pg = PostgresqlGeometryAdapter.convert(circle);
@@ -149,7 +149,7 @@ public enum PostgresqlWriter {
     }
     private final Object[] supports;
     private final DataWriter writer;
-    PostgresqlWriter(Object[] supports, DataWriter writer){
+    PostgresqlWriter(Object[] supports,  DataWriter writer){
         this.supports = supports;
         this.writer = writer;
     }

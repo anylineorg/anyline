@@ -52,7 +52,7 @@ public class PersistenceAdapter {
         }
         //检测joinField对应的列表
         if(null != join.joinField){
-            Column column = EntityAdapterProxy.column(join.dependencyClass,join.joinField);
+            Column column = EntityAdapterProxy.column(join.dependencyClass, join.joinField);
             if(null != column){
                 join.joinColumn = column.getName();
             }
@@ -68,21 +68,21 @@ public class PersistenceAdapter {
          *     //多对多关系  一个在多个部门任职
          *     @ManyToMany
          *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
-         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
-         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
+         *            ,  joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+         *            ,  inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
          *     private List<Department> departments;//查部门完整信息
          *
          *
          *     @ManyToMany
          *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
-         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
-         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
+         *            ,  joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+         *            ,  inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
          *     @Transient
          *     private List<Long> departmentIds;//只查部门主键
          * */
         ManyToMany join = new ManyToMany();
-        join.joinTable = ClassUtil.parseAnnotationFieldValue(field, "JoinTable.name");
-        Annotation anJoinTable = ClassUtil.getFieldAnnotation(field, "JoinTable");
+        join.joinTable = ClassUtil.parseAnnotationFieldValue(field,  "JoinTable.name");
+        Annotation anJoinTable = ClassUtil.getFieldAnnotation(field,  "JoinTable");
         if (null != anJoinTable) {
             Method methodJoinColumns = anJoinTable.annotationType().getMethod("joinColumns");
             if (null != methodJoinColumns) {

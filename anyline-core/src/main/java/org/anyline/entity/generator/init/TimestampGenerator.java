@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -31,24 +31,24 @@ import java.util.List;
 
 public class TimestampGenerator implements PrimaryGenerator {
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
+    public boolean create(Object entity,  DatabaseType type,  String table,  List<String> columns,  String other) {
         if(null == columns){
             if(entity instanceof DataRow){
                 columns = ((DataRow)entity).getPrimaryKeys();
             }else{
-                columns = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
+                columns = EntityAdapterProxy.primaryKeys(entity.getClass(),  true);
             }
         }
         for(String column:columns){
-            if(null != BeanUtil.getFieldValue(entity, column)) {
+            if(null != BeanUtil.getFieldValue(entity,  column)) {
                 continue;
             }
-            create(entity, type, table, column, other);
+            create(entity,  type,  table,  column,  other);
         }
         return true;
     }
     @Override
-    public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
+    public boolean create(Object entity,  DatabaseType type,  String table,  LinkedHashMap<String,  Column> columns,  String other) {
         if(null == columns){
             if(entity instanceof DataRow){
                 columns = ((DataRow)entity).getPrimaryColumns();
@@ -57,19 +57,19 @@ public class TimestampGenerator implements PrimaryGenerator {
             }
         }
         for(Column column:columns.values()){
-            if(null != BeanUtil.getFieldValue(entity, column.getName())) {
+            if(null != BeanUtil.getFieldValue(entity,  column.getName())) {
                 continue;
             }
-            create(entity, type, table, column.getName(), other);
+            create(entity,  type,  table,  column.getName(),  other);
         }
         return true;
     }
-    public boolean create(Object entity, DatabaseType type, String table, String column, String other) {
+    public boolean create(Object entity,  DatabaseType type,  String table,  String column,  String other) {
         String value = System.currentTimeMillis()+"";
         if(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH > 0){
             value += BasicUtil.getRandomNumberString(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH);
         }
-        BeanUtil.setFieldValue(entity, column, value, true);
+        BeanUtil.setFieldValue(entity,  column,  value,  true);
         return true;
     }
 }

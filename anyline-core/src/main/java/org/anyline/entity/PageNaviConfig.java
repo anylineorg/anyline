@@ -36,7 +36,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	public static String DEFAULT_KEY_GUIDE				= "_anyline_navi_guide"			; // 设置分页样式的key
 	public static String DEFAULT_KEY_ID_FLAG 			= "_anyline_navi_conf_"			; // 生成配置文件标识
 	public static int DEFAULT_VAR_PAGE_DEFAULT_VOL				= 10					; // 每页多少条
-	public static int DEFAULT_VAR_PAGE_MAX_VOL					= 100					; // 每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
+	public static int DEFAULT_VAR_PAGE_MAX_VOL					= 100					; // 每页最多多少条(只针对从http传过来的vol, 后台设置的不影响)
 	public static boolean DEFAULT_VAR_CLIENT_SET_VOL_ENABLE		= false					; // 前端是否可设置每页多少条
 
 
@@ -59,7 +59,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	// 变量 
 	public int VAR_PAGE_RANGE					= 5										; // 下标数量
 	public int VAR_PAGE_DEFAULT_VOL				= DEFAULT_VAR_PAGE_DEFAULT_VOL			; // 每页多少条
-	public int VAR_PAGE_MAX_VOL					= DEFAULT_VAR_PAGE_MAX_VOL				; // 每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
+	public int VAR_PAGE_MAX_VOL					= DEFAULT_VAR_PAGE_MAX_VOL				; // 每页最多多少条(只针对从http传过来的vol, 后台设置的不影响)
 	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= DEFAULT_VAR_CLIENT_SET_VOL_ENABLE		; // 前端是否可设置每页多少条
 	public boolean VAR_SHOW_STAT				= false					; // 是否显示分布统计 
 	public boolean VAR_SHOW_JUMP				= false					; // 是否显示跳转 
@@ -91,37 +91,37 @@ public class PageNaviConfig extends AnylineConfig  {
 	// STYLE_PAGE_VOL_INDEX会引用STYLE_PAGE_VOL_CLASS所以要先设置STYLE_PAGE_VOL_CLASS 
 	public String STYLE_PAGE_VOL			= "<select class='navi-vol-set' id='navi_vol_set_{navi-conf-key}' onchange='_navi_change_vol({navi-conf-key})'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>"; 
 	public String VAR_PAGE_VOL_CLASS		= "navi-vol-set"	; 
-	public String VAR_PAGE_VOL_NUMBERS		= ""				; // 用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select> 
+	public String VAR_PAGE_VOL_NUMBERS		= ""				; // 用户选择每页多少条 10, 20, 30, 40, 50, 100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
 		 
-	// 位置分布 index:下标,stat:统计,jump:跳转到,vol:每页多少条 
+	// 位置分布 index:下标, stat:统计, jump:跳转到, vol:每页多少条
 	public String VAR_COMPONENT_LAYOUT		= "${stat}${index}${vol}${jump}";
 	 
 	public String EVENT_BEFORE				= ""; 
 	public String EVENT_AFTER				= ""; 
 	public String EVENT_REFRESH				= ""; 
  
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<>(); 
+	private static Hashtable<String, AnylineConfig> instances = new Hashtable<>();
  
 	// 兼容上一版本  
 	// 最后一版key:倒数第二版key:倒数第三版key 
 	protected static String[] compatibles = {
 		"STYLE_BUTTON_FIRST:NAVI_TAG_FIRST" 
-		,"STYLE_BUTTON_PREV:NAVI_TAG_PREV" 
-		,"STYLE_BUTTON_NEXT:NAVI_TAG_NEXT" 
-		,"STYLE_BUTTON_LAST:NAVI_TAG_LAST" 
-		,"STYLE_BUTTON_GO:NAVI_TAG_GO" 
-		,"STYLE_LOAD_MORE_FORMAT:NAVI_LOAD_MORE_FORMAT" 
-		,"STYLE_STAT_FORMAT:NAVI_STAT_FORMAT" 
-		,"STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH" 
-		,"VAR_PAGE_RANGE:NAVI_PAGE_RANGE" 
-		,"VAR_SHOW_BUTTON:NAVI_SHOW_BUTTON" 
-		,"VAR_SHOW_INDEX:NAVI_SHOW_INDEX" 
-		,"VAR_SHOW_STAT:NAVI_SHOW_STAT" 
-		,"VAR_SHOW_JUMP:NAVI_SHOW_JUMP" 
-		,"VAR_PAGE_DEFAULT_VOL:PAGE_DEFAULT_VOL" 
-		,"VAR_CLIENT_SET_VOL_ENABLE:CLIENT_SET_PAGE_VOL_ENABLE" 
-		,"SCRIPT_FILE_PATH:NAVI_SCRIPT_FILE_PATH" 
-		,"STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH"}; 
+		, "STYLE_BUTTON_PREV:NAVI_TAG_PREV"
+		, "STYLE_BUTTON_NEXT:NAVI_TAG_NEXT"
+		, "STYLE_BUTTON_LAST:NAVI_TAG_LAST"
+		, "STYLE_BUTTON_GO:NAVI_TAG_GO"
+		, "STYLE_LOAD_MORE_FORMAT:NAVI_LOAD_MORE_FORMAT"
+		, "STYLE_STAT_FORMAT:NAVI_STAT_FORMAT"
+		, "STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH"
+		, "VAR_PAGE_RANGE:NAVI_PAGE_RANGE"
+		, "VAR_SHOW_BUTTON:NAVI_SHOW_BUTTON"
+		, "VAR_SHOW_INDEX:NAVI_SHOW_INDEX"
+		, "VAR_SHOW_STAT:NAVI_SHOW_STAT"
+		, "VAR_SHOW_JUMP:NAVI_SHOW_JUMP"
+		, "VAR_PAGE_DEFAULT_VOL:PAGE_DEFAULT_VOL"
+		, "VAR_CLIENT_SET_VOL_ENABLE:CLIENT_SET_PAGE_VOL_ENABLE"
+		, "SCRIPT_FILE_PATH:NAVI_SCRIPT_FILE_PATH"
+		, "STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH"};
 	  
  
 	static{
@@ -133,7 +133,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	 * @param content 配置文件内容
 	 */
 	public static void parse(String content){
-		parse(PageNaviConfig.class, content, instances ,compatibles); 
+		parse(PageNaviConfig.class, content, instances, compatibles);
 	}
 	/**
 	 * 初始化默认配置文件
@@ -159,12 +159,12 @@ public class PageNaviConfig extends AnylineConfig  {
 	} 
  
 	public static PageNaviConfig parse(String key, DataRow row){
-		return parse(PageNaviConfig.class, key, row, instances,compatibles); 
+		return parse(PageNaviConfig.class,  key,  row,  instances, compatibles);
 	} 
-	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
+	public static Hashtable<String, AnylineConfig> parse(String column,  DataSet set){
 		for(DataRow row:set){
 			String key = row.getString(column); 
-			parse(key, row); 
+			parse(key,  row);
 		} 
 		return instances; 
 	} 
@@ -172,11 +172,11 @@ public class PageNaviConfig extends AnylineConfig  {
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() {
-		load(instances, PageNaviConfig.class, CONFIG_NAME, compatibles);
+		load(instances,  PageNaviConfig.class,  CONFIG_NAME,  compatibles);
 		PageNaviConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
  
-	protected void afterParse(String key, String value){
+	protected void afterParse(String key,  String value){
  
 		if("VAR_PAGE_VOL_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){
 			CONFIG_PAGE_VAL_SET_SORT = 1; 

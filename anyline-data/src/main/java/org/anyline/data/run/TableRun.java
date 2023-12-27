@@ -1,15 +1,15 @@
 /*
  * Copyright 2006-2023 www.anyline.org
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License,  Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing,  software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,  either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class TableRun extends BasicRun implements Run {
 
-	public TableRun(DataRuntime runtime, String table){
+	public TableRun(DataRuntime runtime,  String table){
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
@@ -40,9 +40,9 @@ public class TableRun extends BasicRun implements Run {
 		if(null != prepare) {
 			table = prepare.getTable();
 		}
-		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
+		table = table.replace(delimiterFr,  "").replace(delimiterTo,  "");
 		if(table.contains(".")){
-			this.schema = table.substring(0, table.indexOf("."));
+			this.schema = table.substring(0,  table.indexOf("."));
 			this.table = table.substring(table.indexOf(".") + 1); 
 		} else{
 			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())){
@@ -112,7 +112,7 @@ public class TableRun extends BasicRun implements Run {
 		if(null != prepare){
 			alias = prepare.getAlias();
 		}
-		builder.append(conditionChain.getRunText(alias, runtime));
+		builder.append(conditionChain.getRunText(alias,  runtime));
 		List<RunValue> values = conditionChain.getRunValues();
 		addValues(values);
 	} 
@@ -125,7 +125,7 @@ public class TableRun extends BasicRun implements Run {
 	}
 
 	@Override
-	public Run setConditionValue(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
+	public Run setConditionValue(Compare.EMPTY_VALUE_SWITCH swt,  Compare compare,  String condition,  String variable,  Object value) {
 		return this;
 	}
 

@@ -60,10 +60,10 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * insert [调用入口]<br/>
-     * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+     * 执行前根据主键生成器补充主键值, 执行完成后会补齐自增主键值
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 需要插入入的数据
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      *                列可以加前缀<br/>
@@ -71,15 +71,15 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      *                -:表示必须不插入<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return 影响行数
      */
     @Override
@@ -90,7 +90,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * insert [命令合成]<br/>
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 需要插入的数据
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -105,7 +105,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param set 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
@@ -119,7 +119,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 填充inset命令内容(创建批量INSERT RunPrepare)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 需要插入的数据集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
@@ -132,7 +132,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * insert [命令合成-子流程]<br/>
      * 确认需要插入的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj  Entity或DataRow
      * @param batch  是否批量，批量时不检测值是否为空
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -141,15 +141,15 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      *                -:表示必须不插入<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return List
      */
     @Override
@@ -159,12 +159,12 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 
     /**
      * insert [命令合成-子流程]<br/>
-     * 批量插入数据时,多行数据之间分隔符
+     * 批量插入数据时, 多行数据之间分隔符
      * @return String
      */
     @Override
     public String batchInsertSeparator (){
-        return ",";
+        return ", ";
     }
 
     /**
@@ -190,7 +190,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * insert [命令合成-子流程]<br/>
      * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 数据
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -204,7 +204,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * insert [命令合成-子流程]<br/>
      * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 对象集合
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -251,10 +251,10 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * [命令合成]
      * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
      * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-     * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-     * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-     * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
-     * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+     * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
+     * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
      * [命令执行]
      * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
      ******************************************************************************************************************/
@@ -262,7 +262,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * UPDATE [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 数据
      * @param configs 条件
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -271,15 +271,15 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      *                -:表示必须不更新<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return 影响行数
      */
     @Override
@@ -289,7 +289,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     /**
      * update [命令合成]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj Entity或DtaRow
      * @param configs 更新条件
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -298,15 +298,15 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      *                -:表示必须不更新<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
@@ -318,11 +318,11 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
     /**
@@ -336,30 +336,30 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      *                -:表示必须不更新<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return List
      */
     @Override
-    public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
     @Override
-    public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
     /**
      * update [命令执行]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 数据
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @return 影响行数
@@ -378,7 +378,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 执行完成后会补齐自增主键值
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 数据
      * @param configs 更新条件
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -387,15 +387,15 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      *                -:表示必须不更新<br/>
      *                ?:根据是否有值<br/>
      *
-     *        如果没有提供columns,长度为0也算没有提供<br/>
+     *        如果没有提供columns, 长度为0也算没有提供<br/>
      *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
      *
      *        如果提供了columns则根据columns获取insert列<br/>
      *
-     *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+     *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
      *
-     *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-     *        则把执行结果与表结构对比,删除表中没有的列<br/>
+     *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+     *        则把执行结果与表结构对比, 删除表中没有的列<br/>
      * @return 影响行数
      */
     @Override
@@ -416,7 +416,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         return super.checkOverride(obj);
     }
     @Override
-    protected Map<String,Object> checkPv(Object obj){
+    protected Map<String, Object> checkPv(Object obj){
         return super.checkPv(obj);
     }
 
@@ -454,7 +454,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
      * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
      * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-     * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+     * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * [命令合成]
      * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
      * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
@@ -465,10 +465,10 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
      * [命令执行]
      * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-     * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-     * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+     * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+     * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
      * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-     * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+     * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
      ******************************************************************************************************************/
 
     /**
@@ -535,7 +535,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     /**
      * query [调用入口]<br/>
      * <br/>
-     * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+     * 对性能有要求的场景调用，返回java原生map集合, 结果中不包含元数据信息
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -544,7 +544,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return maps 返回map集合
      */
     @Override
-    public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
         return super.maps(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -654,7 +654,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             if(!first){
                 builder.append(" OR ");
             }
-            builder.append("FIND_IN_SET(?,").append(column).append(")");
+            builder.append("FIND_IN_SET(?, ").append(column).append(")");
             first = false;
         }
         if(values.size() > 1){
@@ -698,7 +698,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return maps
      */
     @Override
-    public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
         return super.maps(runtime, random, configs, run);
     }
     /**
@@ -709,7 +709,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return map
      */
     @Override
-    public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
         return super.map(runtime, random, configs, run);
     }
 
@@ -734,7 +734,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return  maps
      */
     @Override
-    public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
+    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
         return super.process(runtime, list);
     }
 
@@ -927,7 +927,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 合成 where column in (values)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param values 列对应的值
      * @return 影响行数
      * @param <T> T
@@ -984,7 +984,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * delete[命令合成]<br/>
      * 合成 where k1 = v1 and k2 = v2
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj entity或DataRow
      * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -998,7 +998,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * delete[命令合成]<br/>
      * 合成 where column in (values)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param key 根据属性解析出列
      * @param values values
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1018,7 +1018,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * delete[命令合成-子流程]<br/>
      * 合成 where column in (values)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param column 列
      * @param values values
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1032,7 +1032,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * delete[命令合成-子流程]<br/>
      * 合成 where k1 = v1 and k2 = v2
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
+     * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
      * @param obj entity或DataRow
      * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1185,7 +1185,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * database[结果集封装]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param databases 上一步查询结果
      * @param set 查询结果集
      * @return LinkedHashMap
@@ -1205,7 +1205,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     }
     @Override
     public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
-        return super.databases(runtime, index, create, databases, set);
+        return super.databases(runtime, index, create,  databases,  set);
     }
 
     /**
@@ -1213,14 +1213,14 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 当前database 根据查询结果集
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param database 上一步查询结果
      * @param set 查询结果集
      * @return database
      * @throws Exception 异
      */
     @Override
-    public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
+    public Database database(DataRuntime runtime,  int index,  boolean create,  Database database,  DataSet set) throws Exception{
         if(null == database) {
             for (DataRow row : set) {
                 database = new Database();
@@ -1235,84 +1235,84 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * database[结果集封装]<br/>
      * 当前database 根据驱动内置接口补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param database 上一步查询结果
      * @return database
      * @throws Exception 异常
      */
     @Override
-    public Database database(DataRuntime runtime, boolean create, Database database) throws Exception{
-        return super.database(runtime, create, database);
+    public Database database(DataRuntime runtime,  boolean create,  Database database) throws Exception{
+        return super.database(runtime,  create,  database);
     }
 
     /**
      * database[结果集封装]<br/>
      * 根据查询结果集构造 product
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param product 上一步查询结果
      * @param set 查询结果集
      * @return product
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
-        return super.product(runtime, index, create, product, set);
+    public String product(DataRuntime runtime,  int index,  boolean create,  String product,  DataSet set){
+        return super.product(runtime,  index,  create,  product,  set);
     }
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 product
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param product 上一步查询结果
      * @return product
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, boolean create, String product){
-        return super.product(runtime, create, product);
+    public String product(DataRuntime runtime,  boolean create,  String product){
+        return super.product(runtime,  create,  product);
     }
     /**
      * database[结果集封装]<br/>
      * 根据查询结果集构造 version
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param version 上一步查询结果
      * @param set 查询结果集
      * @return version
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
-        return super.version(runtime, index, create, version, set);
+    public String version(DataRuntime runtime,  int index,  boolean create,  String version,  DataSet set){
+        return super.version(runtime,  index,  create,  version,  set);
     }
     /**
      * database[结果集封装]<br/>
      * 根据JDBC内置接口 version
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param version 上一步查询结果
      * @return version
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, boolean create, String version){
-        return super.version(runtime, create, version);
+    public String version(DataRuntime runtime,  boolean create,  String version){
+        return super.version(runtime,  create,  version);
     }
     /* *****************************************************************************************************************
      * 													catalog
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
-     * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
+     * LinkedHashMap<String,  Catalog> catalogs(DataRuntime runtime,  String random,  String name)
+     * List<Catalog> catalogs(DataRuntime runtime,  String random,  boolean greedy,  String name)
      * [命令合成]
-     * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+     * List<Run> buildQueryCatalogsRun(DataRuntime runtime,  boolean greedy,  String name)
      * [结果集封装]<br/>
-     * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
-     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
-     * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs, DataSet set)
-     * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
-     * Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set)
+     * List<Catalog> catalogs(DataRuntime runtime,  int index,  boolean create,  List<Catalog> catalogs,  DataSet set)
+     * LinkedHashMap<String,  Catalog> catalogs(DataRuntime runtime,  int index,  boolean create,  LinkedHashMap<String,  Catalog> catalogs,  DataSet set)
+     * List<Catalog> catalogs(DataRuntime runtime,  boolean create,  List<Catalog> catalogs,  DataSet set)
+     * LinkedHashMap<String,  Catalog> catalogs(DataRuntime runtime,  boolean create,  LinkedHashMap<String,  Catalog> catalogs,  DataSet set)
+     * Catalog catalog(DataRuntime runtime,  int index,  boolean create,  DataSet set)
      ******************************************************************************************************************/
     /**
      * catalog[调用入口]<br/>
@@ -1322,8 +1322,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
-        return super.catalogs(runtime, random, name);
+    public LinkedHashMap<String,  Catalog> catalogs(DataRuntime runtime,  String random,  String name){
+        return super.catalogs(runtime,  random,  name);
     }
     /**
      * catalog[调用入口]<br/>
@@ -1333,8 +1333,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
-        return super.catalogs(runtime, random, greedy, name);
+    public List<Catalog> catalogs(DataRuntime runtime,  String random,  boolean greedy,  String name){
+        return super.catalogs(runtime,  random,  greedy,  name);
     }
 
     /**
@@ -1347,92 +1347,92 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-        return super.buildQueryCatalogsRun(runtime, greedy, name);
+    public List<Run> buildQueryCatalogsRun(DataRuntime runtime,  boolean greedy,  String name) throws Exception{
+        return super.buildQueryCatalogsRun(runtime,  greedy,  name);
     }
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param catalogs 上一步查询结果
      * @param set 查询结果集
      * @return databases
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set) throws Exception{
-        return super.catalogs(runtime, index, create, catalogs, set);
+    public LinkedHashMap<String,  Catalog> catalogs(DataRuntime runtime,  int index,  boolean create,  LinkedHashMap<String,  Catalog> catalogs,  DataSet set) throws Exception{
+        return super.catalogs(runtime,  index,  create,  catalogs,  set);
     }
     /**
      * catalog[结果集封装]<br/>
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param catalogs 上一步查询结果
      * @param set 查询结果集
      * @return databases
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set) throws Exception{
-        return super.catalogs(runtime, index, create, catalogs, set);
+    public List<Catalog> catalogs(DataRuntime runtime,  int index,  boolean create,  List<Catalog> catalogs,  DataSet set) throws Exception{
+        return super.catalogs(runtime,  index,  create,  catalogs,  set);
     }/**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param catalogs 上一步查询结果
      * @return databases
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs) throws Exception {
-        return super.catalogs(runtime, create, catalogs);
+    public LinkedHashMap<String,  Catalog> catalogs(DataRuntime runtime,  boolean create,  LinkedHashMap<String,  Catalog> catalogs) throws Exception {
+        return super.catalogs(runtime,  create,  catalogs);
     }
 
     /**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param catalogs 上一步查询结果
      * @return databases
      * @throws Exception 异常
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
-        return super.catalogs(runtime, create, catalogs);
+    public List<Catalog> catalogs(DataRuntime runtime,  boolean create,  List<Catalog> catalogs) throws Exception {
+        return super.catalogs(runtime,  create,  catalogs);
     }
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalog 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
-		return super.catalog(runtime, index, create, catalog, set);
+	public Catalog catalog(DataRuntime runtime,  int index,  boolean create,  Catalog catalog,  DataSet set) throws Exception{
+		return super.catalog(runtime,  index,  create,  catalog,  set);
 	}
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalog 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception{
-		return super.catalog(runtime, create, catalog);
+	public Catalog catalog(DataRuntime runtime,  boolean create,  Catalog catalog) throws Exception{
+		return super.catalog(runtime,  create,  catalog);
 	}
 
 
@@ -1440,31 +1440,31 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 													schema
      * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
-	 * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
-	 * Database database(DataRuntime runtime, String random, String name)
-	 * Database database(DataRuntime runtime, String random)
-	 * String String product(DataRuntime runtime, String random);
-	 * String String version(DataRuntime runtime, String random);
+	 * LinkedHashMap<String,  Database> databases(DataRuntime runtime,  String random,  String name)
+	 * List<Database> databases(DataRuntime runtime,  String random,  boolean greedy,  String name)
+	 * Database database(DataRuntime runtime,  String random,  String name)
+	 * Database database(DataRuntime runtime,  String random)
+	 * String String product(DataRuntime runtime,  String random);
+	 * String String version(DataRuntime runtime,  String random);
 	 * [命令合成]
-	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
-	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime,  boolean greedy,  String name)
+	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime,  boolean greedy,  String name)
+	 * List<Run> buildQueryProductRun(DataRuntime runtime,  boolean greedy,  String name)
+	 * List<Run> buildQueryVersionRun(DataRuntime runtime,  boolean greedy,  String name)
 	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)
-	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase)
-	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
-	 * String product(DataRuntime runtime, boolean create, String product)
-	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
-	 * String version(DataRuntime runtime, boolean create, String version)
-	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
-	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
-	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
-	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
-	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 * LinkedHashMap<String,  Database> databases(DataRuntime runtime,  int index,  boolean create,  LinkedHashMap<String,  Database> databases,  DataSet set)
+	 * List<Database> databases(DataRuntime runtime,  int index,  boolean create,  List<Database> databases,  DataSet set)
+	 * Database database(DataRuntime runtime,  boolean create,  Database dataase,  DataSet set)
+	 * Database database(DataRuntime runtime,  boolean create,  Database dataase)
+	 * String product(DataRuntime runtime,  boolean create,  Database product,  DataSet set)
+	 * String product(DataRuntime runtime,  boolean create,  String product)
+	 * String version(DataRuntime runtime,  int index,  boolean create,  String version,  DataSet set)
+	 * String version(DataRuntime runtime,  boolean create,  String version)
+	 * Catalog catalog(DataRuntime runtime,  boolean create,  Catalog catalog,  DataSet set)
+	 * Catalog catalog(DataRuntime runtime,  boolean create,  Catalog catalog)
+	 * Schema schema(DataRuntime runtime,  boolean create,  Schema schema,  DataSet set)
+	 * Schema schema(DataRuntime runtime,  boolean create,  Schema schema)
+	 * Database database(DataRuntime runtime,  boolean create,  Database dataase)
 	 ******************************************************************************************************************/
     /**
      * schema[调用入口]<br/>
@@ -1475,8 +1475,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
-        return super.schemas(runtime, random, catalog, name);
+    public LinkedHashMap<String,  Schema> schemas(DataRuntime runtime,  String random,  Catalog catalog,  String name){
+        return super.schemas(runtime,  random,  catalog,  name);
     }
     /**
      * schema[调用入口]<br/>
@@ -1487,8 +1487,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
-        return super.schemas(runtime, random, greedy, catalog, name);
+    public List<Schema> schemas(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  String name){
+        return super.schemas(runtime,  random,  greedy,  catalog,  name);
     }
 
     /**
@@ -1501,7 +1501,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
+    public List<Run> buildQuerySchemasRun(DataRuntime runtime,  boolean greedy,  Catalog catalog,  String name) throws Exception{
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -1517,27 +1517,27 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * 根据查询结果集构造 Database
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param create 上一步没有查到的, 这一步是否需要新创建
      * @param schemas 上一步查询结果
      * @param set 查询结果集
      * @return databases
      * @throws Exception 异常
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set) throws Exception{
+    public LinkedHashMap<String,  Schema> schemas(DataRuntime runtime,  int index,  boolean create,  LinkedHashMap<String,  Schema> schemas,  DataSet set) throws Exception{
         if(null == schemas){
             schemas = new LinkedHashMap<>();
         }
         for(DataRow row:set){
             Schema schema = new Schema();
             schema.setName(row.getString("DATABASE"));
-            schemas.put(schema.getName().toUpperCase(), schema);
+            schemas.put(schema.getName().toUpperCase(),  schema);
         }
         return schemas;
     }
     @Override
-    public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception{
-        return super.schemas(runtime, index, create, schemas, set);
+    public List<Schema> schemas(DataRuntime runtime,  int index,  boolean create,  List<Schema> schemas,  DataSet set) throws Exception{
+        return super.schemas(runtime,  index,  create,  schemas,  set);
     }
 
 	/**
@@ -1545,52 +1545,52 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
 	 * 当前schema 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param schema 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception{
-		return super.schema(runtime, index, create, schema, set);
+	public Schema schema(DataRuntime runtime,  int index,  boolean create,  Schema schema,  DataSet set) throws Exception{
+		return super.schema(runtime,  index,  create,  schema,  set);
 	}
 
 	/**
 	 * schema[结果集封装]<br/>
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param schema 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
 	 */
 	@Override
-	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception{
-		return super.schema(runtime, create, schema);
+	public Schema schema(DataRuntime runtime,  boolean create,  Schema schema) throws Exception{
+		return super.schema(runtime,  create,  schema);
 	}
 
     /* *****************************************************************************************************************
      * 													table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
+     * <T extends Table> List<T> tables(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String pattern,  String types,  boolean strut)
+     * <T extends Table> LinkedHashMap<String,  T> tables(DataRuntime runtime,  String random,  Catalog catalog,  Schema schema,  String pattern,  String types,  boolean strut)
      * [命令合成]
-     * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-     * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+     * List<Run> buildQueryTablesRun(DataRuntime runtime,  boolean greedy,  Catalog catalog,  Schema schema,  String pattern,  String types)
+     * List<Run> buildQueryTablesCommentRun(DataRuntime runtime,  Catalog catalog,  Schema schema,  String pattern,  String types)
      * [结果集封装]<br/>
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
-     * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
-     * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
-     * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
-     * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
+     * <T extends Table> LinkedHashMap<String,  T> tables(DataRuntime runtime,  int index,  boolean create,  Catalog catalog,  Schema schema,  LinkedHashMap<String,  T> tables,  DataSet set)
+     * <T extends Table> List<T> tables(DataRuntime runtime,  int index,  boolean create,  Catalog catalog,  Schema schema,  List<T> tables,  DataSet set)
+     * <T extends Table> LinkedHashMap<String,  T> tables(DataRuntime runtime,  boolean create,  LinkedHashMap<String,  T> tables,  Catalog catalog,  Schema schema,  String pattern,  String ... types)
+     * <T extends Table> List<T> tables(DataRuntime runtime,  boolean create,  List<T> tables,  Catalog catalog,  Schema schema,  String pattern,  String ... types)
+     * <T extends Table> LinkedHashMap<String,  T> comments(DataRuntime runtime,  int index,  boolean create,  Catalog catalog,  Schema schema,  LinkedHashMap<String,  T> tables,  DataSet set)
      * [调用入口]
-     * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
+     * List<String> ddl(DataRuntime runtime,  String random,  Table table,  boolean init)
      * [命令合成]
-     * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+     * List<Run> buildQueryDdlsRun(DataRuntime runtime,  Table table)
      * [结果集封装]<br/>
-     * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
+     * List<String> ddl(DataRuntime runtime,  int index,  Table table,  List<String> ddls,  DataSet set)
      ******************************************************************************************************************/
 
     /**
@@ -1602,14 +1602,14 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types  "TABLE",  "VIEW",  "SYSTEM TABLE",  "GLOBAL TEMPORARY",  "LOCAL TEMPORARY",  "ALIAS",  "SYNONYM".
      * @param strut 是否查询表结构
      * @return List
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut){
-        return super.tables(runtime, random, greedy, catalog, schema, pattern, types, strut);
+    public <T extends Table> List<T> tables(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema,  String pattern,  String types,  boolean strut){
+        return super.tables(runtime,  random,  greedy,  catalog,  schema,  pattern,  types,  strut);
     }
 
     /**
@@ -1621,8 +1621,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
-        super.tableMap(runtime, random, greedy, catalog, schema);
+    protected void tableMap(DataRuntime runtime,  String random,  boolean greedy,  Catalog catalog,  Schema schema){
+        super.tableMap(runtime,  random,  greedy,  catalog, schema);
     }
 
     @Override

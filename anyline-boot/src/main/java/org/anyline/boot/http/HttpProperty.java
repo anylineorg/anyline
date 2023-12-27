@@ -17,25 +17,25 @@ public class HttpProperty {
      */
     private int connectTimeout = 2 * 1000;
     /**
-     * 指客户端从服务器读取数据包的间隔超时时间,不是总读取时间，默认30s
+     * 指客户端从服务器读取数据包的间隔超时时间, 不是总读取时间，默认30s
      */
     private int readTimeout = 30 * 1000;
 
     private String charset = "UTF-8";
     /**
-     * 重试次数,默认2次
+     * 重试次数, 默认2次
      */
     private int retryTimes = 2;
     /**
-     * 从连接池获取连接的超时时间,不宜过长,单位ms
+     * 从连接池获取连接的超时时间, 不宜过长, 单位ms
      */
     private int connectionRequestTimout = 200;
     /**
-     * 针对不同的地址,特别设置不同的长连接保持时间
+     * 针对不同的地址, 特别设置不同的长连接保持时间
      */
-    private Map<String, Integer> keepAliveTargetHost;
+    private Map<String,  Integer> keepAliveTargetHost;
     /**
-     * 针对不同的地址,特别设置不同的长连接保持时间,单位 s
+     * 针对不同的地址, 特别设置不同的长连接保持时间, 单位 s
      */
     private int keepAliveTime = 10;
 
@@ -95,11 +95,11 @@ public class HttpProperty {
         this.connectionRequestTimout = connectionRequestTimout;
     }
 
-    public Map<String, Integer> getKeepAliveTargetHost() {
+    public Map<String,  Integer> getKeepAliveTargetHost() {
         return keepAliveTargetHost;
     }
 
-    public void setKeepAliveTargetHost(Map<String, Integer> keepAliveTargetHost) {
+    public void setKeepAliveTargetHost(Map<String,  Integer> keepAliveTargetHost) {
         this.keepAliveTargetHost = keepAliveTargetHost;
     }
 
