@@ -344,7 +344,7 @@ public class ConfigTable {
 				InputStream in;
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
 					// 遍历jar
-					List<JarEntry> list = new ArrayList<JarEntry>();
+					List<JarEntry> list = new ArrayList<>();
 					JarFile jFile = new JarFile(System.getProperty("java.class.path"));
 					Enumeration<JarEntry> jarEntrys = jFile.entries();
 					while (jarEntrys.hasMoreElements()) {
