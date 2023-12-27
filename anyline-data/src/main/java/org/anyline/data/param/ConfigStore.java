@@ -42,6 +42,20 @@ import java.util.*;
  * 
  */
 public interface ConfigStore {
+	/**
+	 * 设置要查询或操作的目标(表,存储过程,sql等)
+	 * @param dest 查询或操作的目标
+	 * @return ConfigStore
+	 */
+	ConfigStore dest(String dest);
+
+	/**
+	 * 查询或操作的目标(表,存储过程,sql等)
+	 * @return String
+	 */
+	String dest();
+	ConfigStore primary(String primary);
+	String primary();
 
 	boolean execute();
 	ConfigStore execute(boolean execute);
@@ -852,10 +866,10 @@ public interface ConfigStore {
 	 * @return ConfigStore
 	 */
 	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
-		return and(swt, Compare.NONE,  id, var, value);
+		return and(swt, Compare.NONE, id, var, value);
 	}
 	default ConfigStore param(String id, String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE,  id, var, value);
+		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, id, var, value);
 	}
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
@@ -869,7 +883,7 @@ public interface ConfigStore {
 		return and(swt, Compare.NONE, var, value);
 	}
 	default ConfigStore param(String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE,  Compare.NONE, var, value);
+		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, var, value);
 	}
 	/**
 	 * 与ConfigStore中前一个条件合成or
