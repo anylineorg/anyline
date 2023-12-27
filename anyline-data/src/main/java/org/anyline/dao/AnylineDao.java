@@ -191,7 +191,9 @@ public interface AnylineDao<E>{
 	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return int
 	 */
-	long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime, random, batch, new Table(dest), data, configs, columns);
+	}
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
 	}
@@ -208,16 +210,16 @@ public interface AnylineDao<E>{
 		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, String ... columns){
-		return insert(batch, null, data, BeanUtil.array2list(columns));
+		return insert(batch, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, ConfigStore configs, String ... columns){
-		return insert(batch, null, data, configs, BeanUtil.array2list(columns));
+		return insert(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, List<String> columns){
-		return insert(batch, null, data, columns);
+		return insert(batch, (String)null, data, columns);
 	}
 	default long insert(int batch, Object data, ConfigStore configs, List<String> columns){
-		return insert(batch, null, data, configs, columns);
+		return insert(batch, (String)null, data, configs, columns);
 	}
 
 	default long insert(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
@@ -239,18 +241,52 @@ public interface AnylineDao<E>{
 		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, String ... columns){
-		return insert(0, null, data, BeanUtil.array2list(columns));
+		return insert(0, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long insert( Object data, ConfigStore configs, String ... columns){
-		return insert(0, null, data, configs, BeanUtil.array2list(columns));
+		return insert(0, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, List<String> columns){
-		return insert(0, null, data, columns);
+		return insert(0, (String)null, data, columns);
 	}
 	default long insert(Object data, ConfigStore configs, List<String> columns){
-		return insert(0, null, data, configs, columns);
+		return insert(0, (String)null, data, configs, columns);
 	}
 
+	long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){
+		return insert(runtime, random, batch, dest, data, null, columns);
+	}
+	default long insert(int batch, Table dest, Object data, List<String> columns){
+		return insert(runtime(), null, batch, dest, data, columns);
+	}
+	default long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime(), null, batch, dest, data, configs, columns);
+	}
+	default long insert(int batch, Table dest, Object data, String ... columns){
+		return insert(batch, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
+		return insert(runtime, random, 0, dest, data, columns);
+	}
+	default long insert(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime, random, 0, dest, data, configs, columns);
+	}
+	default long insert(Table dest, Object data, List<String> columns){
+		return insert(runtime(), null, 0, dest, data, columns);
+	}
+	default long insert(Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime(), null, 0, dest, data, configs, columns);
+	}
+	default long insert(Table dest, Object data, String ... columns){
+		return insert(0, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(Table dest, Object data, ConfigStore configs, String ... columns){
+		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
+	}
 	/** 
 	 * 保存(insert|update)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
