@@ -415,7 +415,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(log.isDebugEnabled()) {
 				log.debug("[confirm insert columns][ignores:{}]", ignores);
 			}
-			List<String> keys = BeanUtil.getMapKeys(cols);
+			List<String> keys = Column.names(cols);
 			for(String key:keys){
 				key = key.toUpperCase();
 				if(mastKeys.containsKey(key)){
@@ -834,9 +834,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			for (String pk : primaryKeys) {
 				if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
 					Field field = EntityAdapterProxy.field(obj.getClass(), pk);
-					configs.and(pk, BeanUtil.getFieldValue(obj, field));
+					configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, field));
 				} else {
-					configs.and(pk, BeanUtil.getFieldValue(obj, pk));
+					configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk));
 				}
 			}
 
@@ -857,7 +857,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 		// List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/
-		LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
+		LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
 
 		if(null == configs){
 			configs = new DefaultConfigStore();
@@ -872,7 +872,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		for (String pk : primaryKeys) {
 			Object pv = row.get(pk);
 			pv = convert(runtime, cols.get(pk.toUpperCase()), pv); //统一调用
-			configs.and(pk, pv);
+			configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
                 /*builder.append(" AND ");
                 delimiter(builder, pk).append(" = ?");
                 updateColumns.add(pk);
@@ -955,7 +955,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(first instanceof DataRow){
 			DataRow row = (DataRow)first;
 			primaryKeys = row.getPrimaryKeys();
-			cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
+			cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
 			replaceEmptyNull = row.isReplaceEmptyNull();
 		}else{
 			List<String> ll = new ArrayList<>();
@@ -1115,7 +1115,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			// 是否更新null及""列
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();
 			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
-			List<String> keys = BeanUtil.getMapKeys(cols);
+			List<String> keys = Column.names(cols);
 			int size = keys.size();
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);
@@ -1200,7 +1200,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			// 是否更新null及""列
 			boolean isUpdateNullColumn = IS_UPDATE_NULL_FIELD(configs);
 			boolean isUpdateEmptyColumn = IS_UPDATE_EMPTY_FIELD(configs);
-			List<String> keys = BeanUtil.getMapKeys(cols);
+			List<String> keys = Column.names(cols);
 			int size = keys.size();
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);

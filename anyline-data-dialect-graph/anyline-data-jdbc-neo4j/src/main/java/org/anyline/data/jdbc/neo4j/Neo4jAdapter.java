@@ -938,7 +938,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         StringBuilder builder = new StringBuilder();
         // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
-        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
+        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
             throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");

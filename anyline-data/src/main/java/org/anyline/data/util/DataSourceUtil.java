@@ -29,6 +29,29 @@ import java.util.Collection;
 
 public class DataSourceUtil {
 
+    public static String[] parseRuntime(BaseMetadata meta){
+        if(null != meta){
+            return parseRuntime(meta.getName());
+        }
+        return new String[2];
+    }
+    public static String[] parseRuntime(String src){
+        String result[] = new String[2];
+        result[1] = src;
+        String runtime = null;
+        if(null != src && src.startsWith("<")){
+            int fr = src.indexOf("<");
+            int to = src.indexOf(">");
+            if(fr != -1){
+                runtime = src.substring(fr+1, to);
+                src = src.substring(to+1);
+                result[0] = runtime;
+                result[1] = src;
+            }
+        }
+        return result;
+    }
+
     /**
      * 解析数据源, 并返回修改后的SQL
      * &lt;mysql_ds&gt;crm_user
@@ -64,29 +87,6 @@ public class DataSourceUtil {
         configs.dest(src);
         return configs;
     }
-    public static String[] parseRuntime(BaseMetadata meta){
-        if(null != meta){
-            return parseRuntime(meta.getName());
-        }
-        return new String[2];
-    }
-    public static String[] parseRuntime(String src){
-        String result[] = new String[2];
-        result[1] = src;
-        String runtime = null;
-        if(null != src && src.startsWith("<")){
-            int fr = src.indexOf("<");
-            int to = src.indexOf(">");
-            if(fr != -1){
-                runtime = src.substring(fr+1, to);
-                src = src.substring(to+1);
-                result[0] = runtime;
-                result[1] = src;
-            }
-        }
-        return result;
-    }
-
     public static ConfigStore parseDest(String dest, Object obj, ConfigStore configs){
         if(BasicUtil.isNotEmpty(dest) || null == obj){
             return parseDest(dest, configs);

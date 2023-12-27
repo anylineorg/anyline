@@ -325,7 +325,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
                 }
                 insertValue(template, run, row, true, false, true, keys);
             }else{*/
-			boolean create = EntityAdapterProxy.createPrimaryValue(obj, BeanUtil.getMapKeys(columns));
+			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(columns));
 			if(!create && null != generator){
 				generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 				//createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);

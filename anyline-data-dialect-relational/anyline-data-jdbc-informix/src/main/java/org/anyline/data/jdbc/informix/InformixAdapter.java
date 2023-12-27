@@ -248,7 +248,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
 				if(null != generator){
-					generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
+					generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
 				}
 				//createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
@@ -357,9 +357,9 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				}
 			}else{*/
-			boolean create = EntityAdapterProxy.createPrimaryValue(obj, BeanUtil.getMapKeys(pks));
+			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
 			if(!create && null != generator){
-				generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
+				generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
 				//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 			//}

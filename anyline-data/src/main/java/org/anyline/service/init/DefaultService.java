@@ -1994,7 +1994,7 @@ public class DefaultService<E> implements AnylineService<E> {
              Collections.sort(columns);
             String id = BeanUtil.concat(columns).toUpperCase();
             for(ForeignKey foreign:foreigns.values()){
-                List<String> fcols = BeanUtil.getMapKeys(foreign.getColumns());
+                List<String> fcols = Column.names(foreign.getColumns());
                 Collections.sort(fcols);
                 if(id.equals(BeanUtil.concat(fcols).toUpperCase())){
                     return foreign;
