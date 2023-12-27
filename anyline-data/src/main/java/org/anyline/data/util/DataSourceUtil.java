@@ -39,14 +39,26 @@ public class DataSourceUtil {
         if(null == configs){
             configs = new DefaultConfigStore();
         }
-        if(null != src && src.startsWith("<")){
+        if(null == src){
+            return configs;
+        }
+        //<sso>pw_user
+        if(src.startsWith("<")){
             int fr = src.indexOf("<");
             int to = src.indexOf(">");
             if(fr != -1){
-                //String ds = src.substring(fr+1, to);
+                String datasource = src.substring(fr+1, to);
                 src = src.substring(to+1);
-                //不要切换, 在service中切换到另一个service
-                //ClientHolder.setDataSource(ds, true);
+                configs.datasource(datasource);
+            }
+        }
+        //pw_user<id,code>
+        if(src.endsWith(">")){
+            int fr = src.lastIndexOf("<");
+            if(fr != -1) {
+                String[] keys = src.substring(fr + 1, src.length() - 1).split(",");
+                src = src.substring(0, fr);
+                configs.keys(keys);
             }
         }
         configs.dest(src);
