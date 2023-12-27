@@ -41,7 +41,7 @@ public interface Regular {
 		*/
 		, IMG{
 			public String getName(){return "图片";}
-			public String getCode(){return "^(/{0, 1}\\w){1, }\\.(gif|dmp|png|jpg|ico)$|^\\w{1, }\\.(gif|dmp|png|jpg|ico)$";}
+			public String getCode(){return "^(/{0, 1}\\w){1,}\\.(gif|dmp|png|jpg|ico)$|^\\w{1,}\\.(gif|dmp|png|jpg|ico)$";}
 		}
 		/**   
 		* 匹配匹配并提取url 

@@ -655,7 +655,7 @@ public class BasicUtil {
 	 */ 
 	public static String compress(String str) {
 		if (null != str) {
-			str = str.replaceAll("\\s{2, }", " ").trim();
+			str = str.replaceAll("\\s{2,}", " ").trim();
 		} 
 		return str; 
 	}
@@ -682,7 +682,7 @@ public class BasicUtil {
 	public static String compressXml(String xml) {
 		xml = compress(xml);
 		xml = xml.replaceAll("<\\!--[\\s\\S]*-->", "");
-		xml = xml.replaceAll("\\s{1, }<", "<");
+		xml = xml.replaceAll("\\s{1,}<", "<");
 		return xml;
 	}
 
