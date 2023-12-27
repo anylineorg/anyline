@@ -22,8 +22,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.entity.geometry.Point;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
@@ -50,8 +53,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private List<String> primaryKeys                = null  ; // 主键
     private String datalink                         = null  ; // 数据连接
     private String dataSource                       = null  ; // 数据源(表|视图|XML定义SQL)
-    private String schema                           = null  ; //
-    private String table                            = null  ; //
+    private Catalog catalog                         = null  ;
+    private Schema schema                           = null  ; //
+    private Table table                             = null  ; //
     private long createTime                         = 0     ; // 创建时间
     private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                     = false ; // 是否来自缓存
@@ -2925,18 +2929,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public <T> EntitySet<T> entitys(Class<T> clazz){
         return EntityAdapterProxy.entitys(clazz, this, metadatas);
     }
-    public DataSet setDataSource(String dataSource) {
-        if (null == dataSource) {
+    public DataSet setDest(String dest) {
+        if (null == dest) {
             return this;
         }
-        this.dataSource = dataSource;
-        if (dataSource.contains(".") && !dataSource.contains(":")) {
-            schema = dataSource.substring(0, dataSource.indexOf("."));
-            table = dataSource.substring(dataSource.indexOf(".") + 1);
+        if (dest.contains(".") && !dest.contains(":")) {
+            String[] tmps = dest.split("\\.");
+            if(tmps.length == 2){
+                setSchema(tmps[0]);
+                setTable(tmps[1]);
+            }else if(tmps.length == 3){
+                setCatalog(tmps[0]);
+                setSchema(tmps[1]);
+                setTable(tmps[2]);
+            }
+        }else{
+            setTable(dest);
         }
         for (DataRow row : rows) {
-            if (BasicUtil.isEmpty(row.getDataSource())) {
-                row.setDataSource(dataSource);
+            if (BasicUtil.isEmpty(row.getDest())) {
+                row.setDest(dest);
             }
         }
         return this;
@@ -3976,26 +3988,84 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return rows.toArray(a);
     }
 
-    public String getSchema() {
-        return schema;
+    public Catalog getCatalog() {
+        return catalog;
     }
 
-    public DataSet setSchema(String schema) {
-        this.schema = schema;
+    public String getCatalogName() {
+        if(null != catalog){
+            return catalog.getName();
+        }
+        return null;
+    }
+
+    public DataSet setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+        return this;
+    }
+    public DataSet setCatalog(String catalog) {
+        if(BasicUtil.isNotEmpty(catalog)) {
+            this.catalog = new Catalog(catalog);
+        }else{
+            this.catalog = null;
+        }
         return this;
     }
 
-    public String getTable() {
-        return table;
+    public Schema getSchema() {
+        return schema;
     }
 
+    public String getSchemaName() {
+        if(null != schema){
+            return schema.getName();
+        }
+        return null;
+    }
+
+    public DataSet setSchema(Schema schema) {
+        this.schema = schema;
+        return this;
+    }
+    public DataSet setSchema(String schema) {
+        if(BasicUtil.isNotEmpty(schema)) {
+            this.schema = new Schema(schema);
+        }else{
+            this.schema = null;
+        }
+        return this;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+    public String getTableName() {
+        if(null != table){
+            return table.getName();
+        }
+        return null;
+    }
+    public DataSet setTable(Table table){
+        this.table = table;
+        return this;
+    }
     public DataSet setTable(String table) {
-        if (null != table && table.contains(".")) {
-            String[] tbs = table.split("\\.");
-            this.table = tbs[1];
-            this.schema = tbs[0];
-        } else {
-            this.table = table;
+        if(null != table) {
+            if (table.contains(".")) {
+                String[] tbs = table.split("\\.");
+                if (tbs.length == 2) {
+                    this.table = new Table(tbs[1]);
+                    this.schema = new Schema(tbs[0]);
+                } else if (tbs.length == 3) {
+                    this.table = new Table(tbs[2]);
+                    this.schema = new Schema(tbs[1]);
+                    this.catalog = new Catalog(tbs[0]);
+                }
+            } else {
+                this.table = new Table(table);
+            }
+        }else{
+            this.table = null;
         }
         return this;
     }
@@ -4107,15 +4177,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public String getDataSource() {
-        String ds = table;
-        if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
-            ds = schema + "." + ds;
+    public String getDest() {
+        String dest = null;
+        String catalogName = getCatalogName();
+        String schemaName = getSchemaName();
+        String tableName = getTableName();
+        if(BasicUtil.isNotEmpty(catalogName)){
+            dest = catalogName;
         }
-        if (BasicUtil.isEmpty(ds)) {
-            ds = dataSource;
+        if(BasicUtil.isNotEmpty(schemaName)){
+            if(null == dest){
+                dest = schemaName;
+            }else{
+                dest += "." + schemaName;
+            }
         }
-        return ds;
+        if(BasicUtil.isNotEmpty(tableName)){
+            if(null == dest){
+                dest = tableName;
+            }else{
+                dest += "." + tableName;
+            }
+        }
+        return dest;
     }
 
     public DataSet order(String... keys) {
