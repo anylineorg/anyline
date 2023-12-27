@@ -344,7 +344,7 @@ public class TableBuilder {
         for(String union:unions){
             if(union.contains("(")){
                 union = union.trim();
-                String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(", ");
+                String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(",");
                 union = union.substring(0, union.indexOf("("));
                 unionRefs.put(union, refs);
 
