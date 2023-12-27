@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -66,7 +66,7 @@ public class TextRun extends BasicRun implements Run {
 					//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
 					List<Variable> vars = this.getVariables(con.getId());
 					if(vars.size() > 0){
-						//用来给java/xml定义SQL中变量赋值,本身并不拼接到最终SQL
+						//用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 						con.setVariableSlave(true);
 						for(Variable var:vars){
 							var.setValue(false, con.getValues());
@@ -78,7 +78,7 @@ public class TextRun extends BasicRun implements Run {
 				}
 			} 
 		}
-		//configStore解析与Table不一样,txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
+		//configStore解析与Table不一样, txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
 		if(null != configStore){
 			List<Config> confs = configStore.getConfigChain().getConfigs();
 			for(Config conf:confs){
@@ -175,8 +175,8 @@ public class TextRun extends BasicRun implements Run {
 				}// end for 
 			}else{
 				// AND CD = ? 
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)){
+				List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
+				if(BasicUtil.isNotEmpty(true, idxKeys)){
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
@@ -236,7 +236,7 @@ public class TextRun extends BasicRun implements Run {
 
 	@Override 
 	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
-		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
+		/*不指定变量名时, 根据condition为SQL主体变量赋值*/ 
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(Variable v:variables){
 				if(null == v){
@@ -255,8 +255,8 @@ public class TextRun extends BasicRun implements Run {
 		if(null == con){
 			return this; 
 		} 
-		variable = BasicUtil.nvl(variable, condition).toString(); 
-		con.setValue(variable, value); 
+		variable = BasicUtil.nvl(variable, condition).toString();
+		con.setValue(variable, value);
 		return this; 
 	} 
 
@@ -283,7 +283,7 @@ public class TextRun extends BasicRun implements Run {
 		if(obj instanceof Collection){
 			Collection list = (Collection)obj;
 			for(Object item:list){
-				addValues(key,item);
+				addValues(key, item);
 			}
 		}else{
 			addValues(new RunValue(key, obj));
@@ -345,8 +345,8 @@ public class TextRun extends BasicRun implements Run {
 		if(null == con){
 			return this; 
 		} 
-		variable = BasicUtil.nvl(variable, condition).toString(); 
-		con.setValue(variable, value); 
+		variable = BasicUtil.nvl(variable, condition).toString();
+		con.setValue(variable, value);
 		return this; 
 	} 
  

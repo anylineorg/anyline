@@ -27,6 +27,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BeanUtil;
 
 import java.math.BigDecimal;
@@ -71,7 +72,7 @@ public interface AnylineService<E>{
 	 * EXECUTE			: 执行(原生SQL及存储过程)
 	 * DELETE			: 删除
 	 * CACHE			: 缓存
-	 * METADATA			: 简单格式元数据,只返回NAME
+	 * METADATA			: 简单格式元数据, 只返回NAME
 	 ******************************************************************************************************************/
 
 	/* *****************************************************************************************************************
@@ -80,7 +81,7 @@ public interface AnylineService<E>{
 	/**
 	 * 插入数据
 	 * @param batch 批量执行每批最多数量
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data entity或list或DataRow或DataSet
 	 * @param columns 需要插入哪些列
 	 * @return 影响行数
@@ -108,10 +109,10 @@ public interface AnylineService<E>{
 		return insert(0, dest, data, configs, columns);
 	}
 	default long insert(String dest, Object data, String ... columns){
-		return insert(dest, data,  BeanUtil.array2list(columns));
+		return insert(dest, data, BeanUtil.array2list(columns));
 	}
 	default long insert(String dest, Object data, ConfigStore configs, String ... columns){
-		return insert(dest, data, configs,  BeanUtil.array2list(columns));
+		return insert(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, String ... columns){
 		return insert(null, data, BeanUtil.array2list(columns));
@@ -124,20 +125,20 @@ public interface AnylineService<E>{
 	 ******************************************************************************************************************/
 	/**
 	 * 更新记录
-	 * 默认情况下以主键为更新条件,需在更新的数据保存在data中
-	 * 如果提供了dest则更新dest表,如果没有提供则根据data解析出表名
-	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
+	 * 默认情况下以主键为更新条件, 需在更新的数据保存在data中
+	 * 如果提供了dest则更新dest表, 如果没有提供则根据data解析出表名
+	 * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键, 则根据TYPE_CODE更新
 	 * 可以提供了ConfigStore以实现更复杂的更新条件
 	 * 需要更新的列通过 columns提供
 	 * @param batch 批量执行每批最多数量
 	 * @param columns	需要更新的列
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 		更新的数据及更新条件(如果有ConfigStore则以ConfigStore为准)
 	 * @param configs 	更新条件
 	 * @return int 影响行数
 	 */
 
-	long update(int batch, String dest, Object data, ConfigStore configs,  List<String>columns);
+	long update(int batch, String dest, Object data, ConfigStore configs, List<String>columns);
 	default long update(int batch, String dest, Object data, String ... columns){
 		return update(batch, dest, data, null, BeanUtil.array2list(columns));
 	}
@@ -151,7 +152,7 @@ public interface AnylineService<E>{
 		return update(batch, null, data, configs, BeanUtil.array2list(columns));
 	}
 
-	default long update(String dest, Object data, ConfigStore configs,  List<String>columns){
+	default long update(String dest, Object data, ConfigStore configs, List<String>columns){
 		return update(0, dest, data, configs, columns);
 	}
 	default long update(String dest, Object data, String ... columns){
@@ -175,14 +176,14 @@ public interface AnylineService<E>{
 	 * 在操作集合时区别:
 	 * save会循环操作数据库每次都会判断insert|update
 	 * save 集合中的数据可以是不同的表不同的结构
-	 * insert 集合中的数据必须保存到相同的表,结构必须相同
+	 * insert 集合中的数据必须保存到相同的表, 结构必须相同
 	 * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
 	 *
 	 * 保存(insert|update)根据是否有主键值确定insert或update
 	 * @param batch 批量执行每批最多数量
 	 * @param data  数据
 	 * @param columns 指定更新或保存的列
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return 影响行数
 	 */
 	long save(int batch, String dest, Object data, ConfigStore configs, List<String> columns);
@@ -241,7 +242,7 @@ public interface AnylineService<E>{
 	 * 			CD:null 忽略<br/>
 	 * 			CD:NULL 生成SQL:CD IS NULL<br/>
 	 * 			原生SQL(包括GROUP、ORDER、HAVING等)如 ID > 1 AND ID < 10<br/>
-	 * 			${原生SQL}:${}之内的SQL不全处理 如果原生SQL比较复杂(如出现小时格式)可能与以上几种格式混淆,可以用${}表示不解析按原文执行<br/>
+	 * 			${原生SQL}:${}之内的SQL不全处理 如果原生SQL比较复杂(如出现小时格式)可能与以上几种格式混淆, 可以用${}表示不解析按原文执行<br/>
 	 * 			
 	 * @return DataSet
 	 */
@@ -303,13 +304,13 @@ public interface AnylineService<E>{
 		configs.stream(handler);
 		querys(src, configs, conditions);
 	}
-	default DataSet querys(String src, PageNavi navi,  String ... conditions){
+	default DataSet querys(String src, PageNavi navi, String ... conditions){
 		return querys(src, navi, null, conditions);
 	}
-	default DataSet querys(String src, long first, long last,  String ... conditions){
+	default DataSet querys(String src, long first, long last, String ... conditions){
 		return querys(src, first, last, null, conditions);
 	}
-	default DataSet querys(String src, StreamHandler handler, long first, long last,  String ... conditions){
+	default DataSet querys(String src, StreamHandler handler, long first, long last, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		ConfigStore configs = new DefaultConfigStore();
 		navi.scope(first, last);
@@ -321,18 +322,18 @@ public interface AnylineService<E>{
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
 	default DataRow query(String src, Object obj, String ... conditions){
-		return query(src,  null, obj, conditions);
+		return query(src, null, obj, conditions);
 	}
-	default DataRow query(String src, ConfigStore configs,  String ... conditions){
+	default DataRow query(String src, ConfigStore configs, String ... conditions){
 		return query(src, configs, null, conditions);
 	}
 	default DataRow query(String src, String ... conditions){
 		return query(src, (ConfigStore) null, conditions);
 	}
-	default DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions){
+	default DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return query(prepare, configs, null, conditions);
 	}
-	default DataRow query(RunPrepare prepare, Object obj,  String ... conditions){
+	default DataRow query(RunPrepare prepare, Object obj, String ... conditions){
 		return query(prepare, null, obj, conditions);
 	}
 	default DataRow query(RunPrepare prepare, String ... conditions){
@@ -383,7 +384,7 @@ public interface AnylineService<E>{
 	default <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
 		return selects(src, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String src,  Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String src, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		return selects(src, clazz, configs, entity, conditions);
@@ -499,43 +500,43 @@ public interface AnylineService<E>{
 	}
 
 	/**
-	 * 直接返回Map集合不封装,不分页
+	 * 直接返回Map集合不封装, 不分页
 	 * @param src			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions	固定查询条件
 	 * @return List
 	 */
-	List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
+	List<Map<String, Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
 	default void maps(String src, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
 		maps(src, configs, obj, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(String src, Object obj, String ... conditions){
 		return maps(src, (ConfigStore) null, obj, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, long first, long last, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(String src, long first, long last, Object obj, String ... conditions){
 		return maps(src, new DefaultConfigStore(first, last), obj, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions){
+	default List<Map<String, Object>> maps(String src, ConfigStore configs, String ... conditions){
 		return maps(src, configs, null, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, String ... conditions){
-		return maps(src, (ConfigStore) null,null, conditions);
+	default List<Map<String, Object>> maps(String src, String ... conditions){
+		return maps(src, (ConfigStore) null, null, conditions);
 	}
 	default void maps(String src, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		maps(src, configs,null, conditions);
+		maps(src, configs, null, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, PageNavi navi, String ... conditions){
-		return maps(src,new DefaultConfigStore().setPageNavi(navi), null, conditions);
+	default List<Map<String, Object>> maps(String src, PageNavi navi, String ... conditions){
+		return maps(src, new DefaultConfigStore().setPageNavi(navi), null, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(String src, long first, long last, String ... conditions){
 		return maps(src, first, last, null, conditions);
 	}
-	default List<Map<String,Object>> maps(String src, StreamHandler handler, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(String src, StreamHandler handler, long first, long last, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		configs.stream(handler);
 		return maps(src, first, last, conditions, conditions);
@@ -543,7 +544,7 @@ public interface AnylineService<E>{
 
 	/**
 	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return List
 	 */
 	List<String> column2param(String table);
@@ -586,10 +587,10 @@ public interface AnylineService<E>{
 	default DataRow cache(String cache, String src, Object obj, String ... conditions){
 		return cache(cache, src, null, obj, conditions);
 	}
-	default DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions){
+	default DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
 		return caches(cache, src, configs, (Object) null, conditions);
 	}
-	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs,  String ... conditions){
+	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){
 			configs = new DefaultConfigStore();
@@ -612,7 +613,7 @@ public interface AnylineService<E>{
 	}
 
 
-	/*多表查询,左右连接时使用*/
+	/*多表查询, 左右连接时使用*/
 
 	/**
 	 *
@@ -645,10 +646,10 @@ public interface AnylineService<E>{
 		return querys(prepare, configs, obj, conditions);
 	}
 
-	default DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions){
+	default DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return querys(prepare, configs, null, conditions);
 	}
-	default DataSet querys(RunPrepare prepare,  String ... conditions){
+	default DataSet querys(RunPrepare prepare, String ... conditions){
 		return querys(prepare, (ConfigStore) null, null, conditions);
 	}
 	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
@@ -656,7 +657,7 @@ public interface AnylineService<E>{
 		configs.stream(handler);
 		querys(prepare, configs, null, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
+	default DataSet querys(RunPrepare prepare, long first, long last, String ... conditions){
 		return querys(prepare, first, last, null, conditions);
 	}
 	/**
@@ -814,7 +815,7 @@ public interface AnylineService<E>{
 	 * @param conditions  conditions
 	 * @return int
 	 */ 
-	long execute(String src, ConfigStore configs, String ... conditions); 
+	long execute(String src, ConfigStore configs, String ... conditions);
 	default long execute(String src, String ... conditions){
 		return execute(src, null, conditions);
 	}
@@ -841,7 +842,7 @@ public interface AnylineService<E>{
 	 * @param inputs 输入参数
 	 * @return DataSet
 	 */
-	DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
+	DataSet querys(Procedure procedure, PageNavi navi, String ... inputs);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
@@ -850,12 +851,12 @@ public interface AnylineService<E>{
 	 * @param inputs  inputs
 	 * @return DataSet
 	 */
-	default DataSet querysProcedure(String procedure, long first, long last , String ... inputs){
+	default DataSet querysProcedure(String procedure, long first, long last, String ... inputs){
 		PageNavi navi = new DefaultPageNavi();
 		navi.scope(first, last);
 		return querysProcedure(procedure, navi, inputs);
 	}
-	default DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs){
+	default DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs){
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
 		if (null != inputs) {
@@ -871,7 +872,7 @@ public interface AnylineService<E>{
 	default DataSet querys(Procedure procedure, String ... inputs){
 		return querys(procedure, null, inputs);
 	}
-	default DataSet querys(Procedure procedure, long first, long last,  String ... inputs){
+	default DataSet querys(Procedure procedure, long first, long last, String ... inputs){
 		PageNavi navi = new DefaultPageNavi();
 		navi.scope(first, last);
 		return querys(procedure, navi, inputs);
@@ -890,7 +891,7 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据ConfigStore中的条件+conditions条件删除
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param configs 匹配条件
 	 * @param conditions  匹配条件
 	 * @return 影响行数
@@ -898,48 +899,48 @@ public interface AnylineService<E>{
 	long delete(String table, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据columns列删除 可设置复合主键<br/>
-	 * 注意:为了避免整表删除,columns必须提供否则会抛出异常 <br/>
+	 * 注意:为了避免整表删除, columns必须提供否则会抛出异常 <br/>
 	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 数据
-	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
+	 * @param columns 生成删除条件的列, 如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
 	long delete(String dest, DataSet set, String ... columns);
 	default long delete(DataSet set, String ... columns){
-		String dest = DataSourceUtil.parseDataSource(null, set);
+		String dest = DataSourceUtil.parseDest(null, set, null).dest();
 		return delete(dest, set, columns);
 	}
 	long delete(String dest, DataRow row, String ... columns);
 
 	/**
 	 * 根据columns列删除 <br/>
-	 * 注意:为了避免整表删除,columns必须提供否则会抛出异常 <br/>
+	 * 注意:为了避免整表删除, columns必须提供否则会抛出异常 <br/>
 	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
-	 * delete(User/DataRow, "TYPE","AGE")<br/>
+	 * delete(User/DataRow, "TYPE", "AGE")<br/>
 	 * DELETE FROM USER WHERE TYPE = ? AND AGE = ?
 	 * @param obj 实体对象或DataRow/Dataset
-	 * @param columns 生成删除条件的列,如果不设置则根据主键删除
+	 * @param columns 生成删除条件的列, 如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
 	long delete(Object obj, String ... columns);
 
 	/**
 	 * 根据多列条件删除<br/>
-	 * 注意:为了避免整表删除,values必须提供否则会抛出异常<br/>
+	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>
 	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
-	 * 以k,v,k,v或"k:v"形式提供参数<br/>
-	 * delete("HR_EMPLOYEE","type","1", "age:20");<br/>
+	 * 以k, v, k, v或"k:v"形式提供参数<br/>
+	 * delete("HR_EMPLOYEE", "type", "1", "age:20");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE TYPE = 1 AND AGE = 20<br/>
 	 *<br/>
-	 * 注意以下两咱情况,并不会忽略空值
+	 * 注意以下两咱情况, 并不会忽略空值
 	 *<br/>
-	 * service.delete("HR_EMPLOYEE","ID","", "CODE:20");<br/>
+	 * service.delete("HR_EMPLOYEE", "ID", "", "CODE:20");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE ID = '' AND CODE = 20<br/>
 	 *<br/>
-	 * service.delete("HR_EMPLOYEE","ID","1", "CODE:");<br/>
+	 * service.delete("HR_EMPLOYEE", "ID", "1", "CODE:");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE ID = 1 AND CODE = ''<br/>
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param kvs key-value
 	 * @return 影响行数
 	 */
@@ -947,11 +948,11 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据一列的多个值删除<br/>
-	 * 注意:为了避免整表删除,values必须提供否则会抛出异常<br/>
+	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>
 	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
-	 * delete("USER", "TYPE", [1,2,3])<br/>
-	 * DELETE FROM USER WHERE TYPE IN(1,2,3)
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * delete("USER", "TYPE", [1, 2, 3])<br/>
+	 * DELETE FROM USER WHERE TYPE IN(1, 2, 3)
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 列
 	 * @param values 值集合
 	 * @return 影响行数
@@ -963,11 +964,11 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据一列的多个值删除<br/>
-	 * 注意:为了避免整表删除,values必须提供否则会抛出异常<br/>
+	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>
 	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
-	 * delete("USER", "TYPE", "1","2","3")<br/>
-	 * DELETE FROM USER WHERE TYPE IN(1,2,3)
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * delete("USER", "TYPE", "1", "2", "3")<br/>
+	 * DELETE FROM USER WHERE TYPE IN(1, 2, 3)
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 名
 	 * @param values 值集合
 	 * @return 影响行数
@@ -1111,14 +1112,14 @@ public interface AnylineService<E>{
 	MetaDataService metadata();
 
 	/**
-	 * 根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+	 * 根据sql获取列结构, 如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
 	 * @param sql sql
 	 * @param comment 是否需要列注释
-	 * @param condition 是否需要拼接查询条件,如果需要会拼接where 1=0 条件(默认不添加，通常情况下SQL自带查询条件，给参数赋值NULL达到相同的效果)
+	 * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件(默认不添加，通常情况下SQL自带查询条件，给参数赋值NULL达到相同的效果)
 	 * @return LinkedHashMap
 	 */
-	LinkedHashMap<String,Column> metadata(String sql, boolean comment, boolean condition);
-	default LinkedHashMap<String,Column> metadata(String sql){
+	LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition);
+	default LinkedHashMap<String, Column> metadata(String sql){
 		return metadata(sql, false, false);
 	}
 	ConfigStore condition();
@@ -1147,8 +1148,25 @@ public interface AnylineService<E>{
 		/* *************************************************************************************************************
 		 * 													database
 		 **************************************************************************************************************/
+
 		/**
-		 * 查询所有数据库
+		 * 当前数据源 数据库类型
+		 * @return DatabaseType
+		 */
+		DatabaseType type();
+		/**
+		 * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+		 * @return String
+		 */
+		String version();
+		/**
+		 * 当前数据源 数据库描述(产品名称+版本号)
+		 * @return String
+		 */
+		String product();
+		Database database();
+		/**
+		 * 查询全部数据库
 		 * @return databases
 		 */
 		LinkedHashMap<String, Database> databases(String name);
@@ -1164,7 +1182,7 @@ public interface AnylineService<E>{
 		/* *************************************************************************************************************
 		 * 													catalog
 		 **************************************************************************************************************/
-
+		Catalog catalog();
 		LinkedHashMap<String, Catalog> catalogs(String name);
 		default LinkedHashMap<String, Catalog> catalogs(){
 			return catalogs(null);
@@ -1179,6 +1197,7 @@ public interface AnylineService<E>{
 		/* *************************************************************************************************************
 		 * 													schema
 		 **************************************************************************************************************/
+		Schema schema();
 		LinkedHashMap<String, Schema> schemas(Catalog catalog, String name);
 		default LinkedHashMap<String, Schema> schemas(Catalog catalog){
 			return schemas(catalog, null);
@@ -1191,13 +1210,13 @@ public interface AnylineService<E>{
 		}
 		List<Schema> schemas(boolean greedy, Catalog catalog, String name);
 		default List<Schema> schemas(boolean greedy){
-			return schemas(greedy, null,null);
+			return schemas(greedy, null, null);
 		}
 		default List<Schema> schemas(boolean greedy, Catalog catalog){
-			return schemas(greedy, catalog,null);
+			return schemas(greedy, catalog, null);
 		}
 		default List<Schema> schemas(boolean greedy, String name){
-			return schemas(greedy, null,name);
+			return schemas(greedy, null, name);
 		}
 		/* *************************************************************************************************************
 		 * 													table
@@ -1205,7 +1224,7 @@ public interface AnylineService<E>{
 
 		/**
 		 * 表是否存在
-		 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+		 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @return boolean
 		 */
@@ -1220,9 +1239,9 @@ public interface AnylineService<E>{
 		/**
 		 * tables
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-		 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-		 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
-		 * @param name 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
+		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
 		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 		 * @return tables
 		 */
@@ -1288,9 +1307,9 @@ public interface AnylineService<E>{
 
 		/**
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-		 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-		 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
-		 * @param name 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
+		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
 		 * @param struct 是否查询详细结构(列、索引、主外键、约束等)
 		 * @return Table
 		 */
@@ -1435,13 +1454,13 @@ public interface AnylineService<E>{
 			return mtables(false, catalog, schema, name, types);
 		}
 		default <T extends MasterTable> LinkedHashMap<String, T> mtables(Schema schema, String name, String types){
-			return mtables(false,  schema, name, types);
+			return mtables(false, schema, name, types);
 		}
 		default <T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types){
-			return mtables(false,  name, types);
+			return mtables(false, name, types);
 		}
 		default <T extends MasterTable> LinkedHashMap<String, T> mtables(String types){
-			return mtables(false,  types);
+			return mtables(false, types);
 		}
 		default <T extends MasterTable> LinkedHashMap<String, T> mtables(){
 			return mtables(false);
@@ -1627,7 +1646,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 查询所有表的列
+		 * 查询全部表的列
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param catalog catalog
 		 * @param schema schema

@@ -9,7 +9,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -44,7 +44,7 @@ public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	private static boolean IS_LOG = false;
 	private static Environment environment;
-	private static Map<String,Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名,最后加载时间>
+	private static Map<String, Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名, 最后加载时间>
 	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
@@ -52,7 +52,7 @@ public class ConfigTable {
 	protected static Hashtable<String, Object> configs;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
-	protected static final String version 				= "8.7.1-jdk17-SNAPSHOT"	;	// 版本号
+	protected static final String version 				= "8.7.1-SNAPSHOT"	;	// 版本号
 	protected static final String minVersion 			= "000"				;	// 版本号
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
@@ -71,7 +71,7 @@ public class ConfigTable {
 	public static boolean IS_LOG_SQL_TIME								= true			;	// 执行SQL时是否输出日志
 	public static boolean IS_THROW_CONVERT_EXCEPTION					= false			;   // 是否抛出convert异常提示()
 	public static boolean IS_PRINT_EXCEPTION_STACK_TRACE				= false			;   // 捕捉但未抛出的异常是否显示详细信息
-	public static long SLOW_SQL_MILLIS									= 0				; 	// 慢SQL,如果配置了>0的毫秒数,在SQL执行超出时限后会输出日志,并调用DMListener.slow
+	public static long SLOW_SQL_MILLIS									= 0				; 	// 慢SQL, 如果配置了>0的毫秒数, 在SQL执行超出时限后会输出日志, 并调用DMListener.slow
 	public static boolean IS_LOG_SQL_PARAM								= true			;	// 执行SQL时是否输出参数日志
 	public static boolean IS_LOG_BATCH_SQL_PARAM						= false 		;   // 执行批量SQL是是否输出参数日志
 	public static boolean IS_LOG_SQL_WHEN_ERROR							= true			;	// 执行SQL异常时是否输出日志
@@ -84,6 +84,7 @@ public class ConfigTable {
 	public static boolean IS_IGNORE_EMPTY_HTTP_KEY						= true			;	// AnylineController.entity(String ck)是否忽略http未提交的key
 	public static int HTTP_PARAM_ENCODE									= 0				;   // http参数是否解码0:自动识别 1:确认编码 -1:确认未编码
 	public static boolean IS_MULTIPLE_SERVICE							= true			;	// 如果有多数据源为每个数据源生成独立的service
+	public static boolean IS_ENABLE_COMMON_JDBC_ADAPTER					= false			;   // 是否开启通用的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
 	public static boolean IS_AUTO_CONVERT_BYTES							= true			;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
 	public static boolean IS_AUTO_SPLIT_ARRAY							= true			;	// 更新数据库时，是把自动把数组/集合类型拆分
 	public static boolean IS_METADATA_IGNORE_CASE						= true			;   // 查询元数据时忽略大小写
@@ -101,22 +102,22 @@ public class ConfigTable {
 	public static boolean IS_INSERT_NULL_FIELD							= false			;	// Entity是否更新nul值的属性
 	public static boolean IS_INSERT_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
 	public static boolean IS_KEYHOLDER_IDENTITY							= true			;   // 是否返回自增ID(一般在批量操作时才需要在ConfigStore中定义)
-	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A,B,C json:["A","B","C"]
+	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A", "B", "C"]
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符
 	public static boolean IS_AUTO_CHECK_KEYWORD							= false			;   // 自动检测关键字
-	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false			;	// 是否开启 界定符的占位符(用来实现自定义SQL根据不同的数据库添加不同的界定符,写SQL时统一写成SQL_DELIMITER_PLACEHOLDER)
+	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 			= false			;	// 是否开启 界定符的占位符(用来实现自定义SQL根据不同的数据库添加不同的界定符, 写SQL时统一写成SQL_DELIMITER_PLACEHOLDER)
 	public static String SQL_DELIMITER_PLACEHOLDER						= "`"			;	// 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_STRING_REPLACE_NULL			= false			;  // DataRow.getString返回null时替换成""
-	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false			;	// service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
+	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false			;	// service.query() DataSet.getRow()返回null时, 是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false			; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
 	public static boolean IS_CHECK_EMPTY_SET_METADATA					= false			;   // 查询返回空DataSet时，是否检测元数据信息
 	public static boolean IS_DISABLED_DEFAULT_ENTITY_ADAPTER			= false			; 	// 禁用默认的entity adapter
-	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时,row中是否清空ID属性
+	public static boolean IS_REMOVE_EMPTY_HTTP_KEY						= true			;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
 	public static boolean IS_CACHE_DISABLED								= false			; 	// 是否禁用查询缓存
 	public static String DEFAULT_PRIMARY_KEY							= "ID"			;	// 默认主键
-	public static boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供事务管理器,会根据数据源生成相应的事务管理器
-	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要设置一个主事务管理器,多数据源时为注解事务指定一个事务管理器
+	public static boolean IS_OPEN_TRANSACTION_MANAGER 					= true			;	// 是否需要提供事务管理器, 会根据数据源生成相应的事务管理器
+	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要设置一个主事务管理器, 多数据源时为注解事务指定一个事务管理器
 
 
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000			;   // DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
@@ -126,9 +127,9 @@ public class ConfigTable {
 	public static boolean IS_OPEN_PARSE_MYBATIS							= true			; 	// 是否开始解析mybatis定义的SQL
 	public static String ENTITY_FIELD_COLUMN_MAP						= "camel_"  	;	// 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
 	public static String ENTITY_CLASS_TABLE_MAP							= "Camel_"  	;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
-	public static String ENTITY_TABLE_ANNOTATION						= null			;   // 表名注解(逗号分隔,不区分大小写,支持正则匹配)
-	public static String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解(逗号分隔,不区分大小写,支持正则匹配)column.name,column.value, TableField.name, TableField.value, tableId.name, tableId.value,Id.name,Id.value
-	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔,不区分大小写,支持正则匹配) tableId.value,Id.name,Id(如果不指定注解属性名则依次按name,value解析)
+	public static String ENTITY_TABLE_ANNOTATION						= null			;   // 表名注解(逗号分隔, 不区分大小写, 支持正则匹配)
+	public static String ENTITY_COLUMN_ANNOTATION						= null			;	// 列名注解(逗号分隔, 不区分大小写, 支持正则匹配)column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value
+	public static String ENTITY_PRIMARY_KEY_ANNOTATION					= null			;   // 主键注解(逗号分隔, 不区分大小写, 支持正则匹配) tableId.value, Id.name, Id(如果不指定注解属性名则依次按name, value解析)
 	public static int ENTITY_FIELD_SELECT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:查询属性关联表
 	public static int ENTITY_FIELD_INSERT_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:插入属性关联表
 	public static int ENTITY_FIELD_UPDATE_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:更新属性关联表
@@ -186,7 +187,7 @@ public class ConfigTable {
 						}
 					}
 
-					if(getInt("RELOAD",0) != 0){
+					if(getInt("RELOAD", 0) != 0){
 						listener_running = false;
 						break;
 					}
@@ -214,7 +215,7 @@ public class ConfigTable {
 	public static String version(){
 		return version + "-" + minVersion;
 	}
-	public static Hashtable<String,Object> getConfigs(){
+	public static Hashtable<String, Object> getConfigs(){
 		return configs;
 	}
 	public static String getWebRoot() {
@@ -270,7 +271,7 @@ public class ConfigTable {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		log.debug("path={}",path);
+		log.debug("path={}", path);
 		Properties props=System.getProperties();
 		String osName = props.getProperty("os.name");
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
@@ -279,35 +280,35 @@ public class ConfigTable {
 		}
 		path = path.replace("file:", "");//jar项目
 		// file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
-		// log.debug("root={}",root);
+		// log.debug("root={}", root);
 		if(null == root && null != path){
 			root = path;
 			if(root.contains(".jar")){
 				root = root.substring(0, root.indexOf(".jar"));
-				root = root.substring(0,root.lastIndexOf("/"));
+				root = root.substring(0, root.lastIndexOf("/"));
 			}
 			if(path.indexOf("bin") > 0){
-				root = path.substring(0,path.indexOf("bin")-1);
+				root = path.substring(0, path.indexOf("bin")-1);
 			}
 			if(path.indexOf("target") > 0){
-				root = path.substring(0,path.indexOf("target")-1);
+				root = path.substring(0, path.indexOf("target")-1);
 			}
 		}
-		// log.debug("root={}",root);
+		// log.debug("root={}", root);
 		if(null == webRoot && null != path){
 			webRoot = path;
 			if(path.indexOf("WEB-INF") > 0){
-				webRoot = path.substring(0,path.indexOf("WEB-INF")-1);
+				webRoot = path.substring(0, path.indexOf("WEB-INF")-1);
 			}
 			/*
 			if(path.indexOf("!/BOOT-INF") > 0){
-				webRoot = path.substring(0,path.indexOf("!/BOOT-INF"));
+				webRoot = path.substring(0, path.indexOf("!/BOOT-INF"));
 			}
 			if(path.indexOf("bin") > 0){
-				webRoot = path.substring(0,path.indexOf("bin")-1);
+				webRoot = path.substring(0, path.indexOf("bin")-1);
 			}
 			if(path.indexOf("target") > 0){
-				webRoot = path.substring(0,path.indexOf("target")-1);
+				webRoot = path.substring(0, path.indexOf("target")-1);
 			}*/
 		}
 		if(path.contains("classes")){
@@ -332,14 +333,14 @@ public class ConfigTable {
 	protected synchronized static void loadConfig(String flag) {
 		try {
 			if(null == configs){
-				configs = new Hashtable<String,Object>();
+				configs = new Hashtable<String, Object>();
 			}
 			if(null != root){
 				configs.put("HOME_DIR", root);
 			}
 
 			if("jar".equals(getPackageType())){
-				log.info("[加载配置文件][type:jar][file:{}]",flag+"-config.xml");
+				log.info("[加载配置文件][type:jar][file:{}]", flag+"-config.xml");
 				InputStream in;
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
 					// 遍历jar
@@ -375,14 +376,14 @@ public class ConfigTable {
 					parse(txt);
 				}
 				// 加载jar文件同目录的config
-				File dir = new File(FileUtil.merge(root,"config"));
-				loadConfigDir(dir,flag);
+				File dir = new File(FileUtil.merge(root, "config"));
+				loadConfigDir(dir, flag);
 				//加载当前目录下的 config.xml
 				loadConfig(new File(root, flag+"-config.xml"));
 			}else{
 				// classpath根目录
 				File dir = new File(classpath);
-				loadConfigDir(dir,flag);
+				loadConfigDir(dir, flag);
 			}
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
@@ -398,7 +399,7 @@ public class ConfigTable {
 		}
 	}
 	protected synchronized static void loadConfigDir(File dir, String flag) {
-		log.info("[加载配置文件][dir:{}]",dir.getAbsolutePath());
+		log.info("[加载配置文件][dir:{}]", dir.getAbsolutePath());
 		List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 		for(File f:files){
 			String name = f.getName();
@@ -471,10 +472,10 @@ public class ConfigTable {
 	protected static void loadConfig(File file){
 		try{
 			if(IS_DEBUG){
-				log.info("[加载配置文件] [file:{}]",file);
+				log.info("[加载配置文件] [file:{}]", file);
 			}
 			if(null != file && !file.exists()){
-				log.info("[配置文件不存在] [file:{}]",file.getAbsolutePath());
+				log.info("[配置文件不存在] [file:{}]", file.getAbsolutePath());
 				return;
 			}
 			if(file.isDirectory()){
@@ -484,8 +485,8 @@ public class ConfigTable {
 				}
 			}else {
 				parse(file);
-				// 如果未设置重新加载时间,则实现监听文件更新
-				if(getInt("RELOAD",0) == 0){
+				// 如果未设置重新加载时间, 则实现监听文件更新
+				if(getInt("RELOAD", 0) == 0){
 					listener();
 				}
 			}
@@ -510,7 +511,7 @@ public class ConfigTable {
 			val = environment.getProperty(key);
 			if(null == val){
 				if(key.startsWith("anyline.")){
-					key = key.replace("anyline.","");
+					key = key.replace("anyline.", "");
 				}else{
 					key = "anyline." + key;
 				}
@@ -544,13 +545,13 @@ public class ConfigTable {
 		return val;
 	}
 	public static boolean getBoolean(String key){
-		return getBoolean(key,false);
+		return getBoolean(key, false);
 	}
 	public static boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(get(key), def);
 	}
 	public static int getInt(String key) {
-		return BasicUtil.parseInt(get(key),0);
+		return BasicUtil.parseInt(get(key), 0);
 	}
 	public static int getInt(String key, int def){
 		return BasicUtil.parseInt(get(key), def);
@@ -558,7 +559,7 @@ public class ConfigTable {
 	public static void put(String key, String value){
 		configs.put(key, value);
 		if(IS_DEBUG){
-			log.info("[ConfigTable动态更新][{}={}]",key,value);
+			log.info("[ConfigTable动态更新][{}={}]", key, value);
 		}
 	}
 	public static void put(String key, Object value){
@@ -568,18 +569,18 @@ public class ConfigTable {
 			int i = 0;
 			for(Object col:cols){
 				configs.put(key + "[" + i++ + "]", col);
-				configs.put(key + "." + i++ , col);
+				configs.put(key + "." + i++, col);
 			}
 		}
 		if(value instanceof Map){
 			Map map = (Map)value;
 			for(Object k: map.keySet()){
 				configs.put(key + "[" + k + "]", map.get(k));
-				configs.put(key + "." + k , map.get(k));
+				configs.put(key + "." + k, map.get(k));
 			}
 		}
 		if(IS_DEBUG){
-			log.info("[ConfigTable动态更新][{}={}]",key,value);
+			log.info("[ConfigTable动态更新][{}={}]", key, value);
 		}
 	}
 	public static String getVersion(){
@@ -642,7 +643,7 @@ public class ConfigTable {
 					path = path.substring(1);
 				}
 				if(path.contains("!")){
-					path = path.substring(0,path.indexOf("!"));
+					path = path.substring(0, path.indexOf("!"));
 				}
 				if(path.contains("/WEB-INF")){
 					project = path.substring(0, path.indexOf("/WEB-INF"));
@@ -654,7 +655,7 @@ public class ConfigTable {
 					String anylineJarName = new File(anylineJarPath).getName();
 					if(anylineJarName.endsWith("jar") || anylineJarName.endsWith("jar!")){
 						if(anylineJarName.contains("-")){
-							version = anylineJarName.replace("anyline-","").replace(".jar","").replace("!","");
+							version = anylineJarName.replace("anyline-", "").replace(".jar", "").replace("!", "");
 							version = version.substring(version.indexOf("-")+1);
 						}
 					}
@@ -666,24 +667,24 @@ public class ConfigTable {
 			}
 
 			System.out.println();
-			line("","*", 0,true);
-			line("Anyline Core [" + version + "]", " ",0, true);
+			line("", "*", 0, true);
+			line("Anyline Core [" + version + "]", " ", 0, true);
 			line("http://doc.anyline.org ", " ", 0, true);
-			line(""," ", 0, true);
+			line("", " ", 0, true);
 			if(null != time && time.startsWith("2")){
 				line("Last Modified " + "[" + time +"] ", " ", 0, true);
 			}else{
 				line("MinVersion " +  "[" + minVersion + "]", " ", 0, true);
 			}
-			line(""," ", 0, true);
-			line("","*", 0, true);
-			//line("","*", 0, true);
+			line("", " ", 0, true);
+			line("", "*", 0, true);
+			//line("", "*", 0, true);
 			if(null != project){
 			//	line(" project root > " + project, "", 0, false);
 			}
 			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", 0, false);
 			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", 0, false);
-			//line("","*", 0, true);
+			//line("", "*", 0, true);
 			System.out.println();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -755,6 +756,9 @@ public class ConfigTable {
 		return IS_MULTIPLE_SERVICE;
 	}
 
+	public boolean IS_ENABLE_COMMON_JDBC_ADAPTER(){
+		return IS_ENABLE_COMMON_JDBC_ADAPTER;
+	}
 	public boolean  IS_AUTO_CONVERT_BYTES() {
 		return IS_AUTO_CONVERT_BYTES;
 	}

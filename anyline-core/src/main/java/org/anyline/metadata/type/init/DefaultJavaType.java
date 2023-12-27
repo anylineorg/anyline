@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -64,7 +64,8 @@ public enum DefaultJavaType implements DataType {
             }
             if(value instanceof String){
                 String str = (String)value;
-                if(str.startsWith("${") && str.endsWith("}")){
+                //if(str.startsWith("${") && str.endsWith("}")){
+                if(BasicUtil.checkEl(str)){
                     value = str.substring(2, str.length()-1);
                 }
             }else if(value instanceof Date){
@@ -84,7 +85,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_BOOLEAN("BOOLEAN", Boolean.class, true, true){
+   , JAVA_BOOLEAN("BOOLEAN", Boolean.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -97,7 +98,7 @@ public enum DefaultJavaType implements DataType {
             return result;
         }
     }
-    ,JAVA_INTEGER("INT", Integer.class, true, true){
+   , JAVA_INTEGER("INT", Integer.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -110,7 +111,7 @@ public enum DefaultJavaType implements DataType {
             return result;
         }
     }
-    ,JAVA_LONG("LONG", Long.class, true, true){
+   , JAVA_LONG("LONG", Long.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -123,7 +124,7 @@ public enum DefaultJavaType implements DataType {
             return result;
         }
     }
-    ,JAVA_FLOAT("FLOAT", Float.class, false, false){
+   , JAVA_FLOAT("FLOAT", Float.class, false, false){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -136,7 +137,7 @@ public enum DefaultJavaType implements DataType {
             return result;
         }
     }
-    ,JAVA_DOUBLE("DOUBLE", Double.class, false, false){
+   , JAVA_DOUBLE("DOUBLE", Double.class, false, false){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -149,7 +150,7 @@ public enum DefaultJavaType implements DataType {
             return result;
         }
     }
-    ,JAVA_DECIMAL("DECIMAL", BigDecimal.class, false, false){
+   , JAVA_DECIMAL("DECIMAL", BigDecimal.class, false, false){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(null == value){
@@ -164,7 +165,7 @@ public enum DefaultJavaType implements DataType {
     }
 
 
-    ,JAVA_DATE("DATETIME", Date.class, true, true){
+   , JAVA_DATE("DATETIME", Date.class, true, true){
         public Object read(Object value, Object def, Class clazz){
             Convert convert = convert(clazz);
             if(null != convert){
@@ -192,7 +193,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_SQL_TIMESTAMP("TIMESTAMP", java.sql.Timestamp.class, true, true){
+   , JAVA_SQL_TIMESTAMP("TIMESTAMP", java.sql.Timestamp.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             Date date = DateUtil.parse(value);
@@ -206,7 +207,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_SQL_TIME("TIME", Time.class, true, true){
+   , JAVA_SQL_TIME("TIME", Time.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             Date date = DateUtil.parse(value);
@@ -220,7 +221,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_SQL_DATE("DATE", java.sql.Date.class, true, true){
+   , JAVA_SQL_DATE("DATE", java.sql.Date.class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null != value && value.getClass() != clazz){
                 Date date = DateUtil.parse(value);
@@ -244,7 +245,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_LOCAL_DATE("DATE", LocalDate.class, true, true){
+   , JAVA_LOCAL_DATE("DATE", LocalDate.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(value instanceof Time){
@@ -261,7 +262,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_LOCAL_TIME("TIME", LocalTime.class, true, true){
+   , JAVA_LOCAL_TIME("TIME", LocalTime.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(value instanceof Time){
@@ -278,7 +279,7 @@ public enum DefaultJavaType implements DataType {
             return value;
         }
     }
-    ,JAVA_LOCAL_DATE_TIME("DATETIME", LocalDateTime.class, true, true){
+   , JAVA_LOCAL_DATE_TIME("DATETIME", LocalDateTime.class, true, true){
         public Object read(Object value, Object def, Class clazz){return value;}
         public Object write(Object value, Object def, boolean placeholder){
             if(value instanceof Time){
@@ -296,7 +297,7 @@ public enum DefaultJavaType implements DataType {
         }
     }
 
-    ,JAVA_BYTES("", Byte[].class, true, true){
+   , JAVA_BYTES("", Byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
@@ -305,7 +306,7 @@ public enum DefaultJavaType implements DataType {
         }
         public Object write(Object value, Object def, boolean placeholder){return value;}
     }
-    ,BYTES("", byte[].class, true, true){
+   , BYTES("", byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
@@ -314,7 +315,7 @@ public enum DefaultJavaType implements DataType {
         }
         public Object write(Object value, Object def, boolean placeholder){return value;}
     }
-    ,JAVA_BYTE("", Byte.class, true, true){
+   , JAVA_BYTE("", Byte.class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
@@ -323,7 +324,7 @@ public enum DefaultJavaType implements DataType {
         }
         public Object write(Object value, Object def, boolean placeholder){return value;}
     }
-    ,BYTE("", byte.class, true, true){
+   , BYTE("", byte.class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
@@ -332,7 +333,7 @@ public enum DefaultJavaType implements DataType {
         }
         public Object write(Object value, Object def, boolean placeholder){return value;}
     }
-    ,ANYLINE_DATAROW("", DataRow.class, true, true){
+   , ANYLINE_DATAROW("", DataRow.class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
@@ -342,7 +343,7 @@ public enum DefaultJavaType implements DataType {
         public Object write(Object value, Object def, boolean placeholder){return value;}
     }
 
-    ,ANYLINE_DATASET("", DataRow.class, true, true){
+   , ANYLINE_DATASET("", DataRow.class, true, true){
         public Object read(Object value, Object def, Class clazz){
             if(null == value){
                 return null;
@@ -355,7 +356,7 @@ public enum DefaultJavaType implements DataType {
 
     ;
 
-    private LinkedHashMap<Class,Convert> converts = new LinkedHashMap<>();
+    private LinkedHashMap<Class, Convert> converts = new LinkedHashMap<>();
     private final  String name;
     private final  Class clazz;
     private final  Boolean ignorePrecision;

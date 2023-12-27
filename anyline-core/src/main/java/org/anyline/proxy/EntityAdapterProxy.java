@@ -43,7 +43,7 @@ public class EntityAdapterProxy {
     public static LinkedHashMap<String, LinkedHashMap<String, Column>> update_columns   = new LinkedHashMap<>();
     public static LinkedHashMap<String, LinkedHashMap<String, Column>> ddl_columns      = new LinkedHashMap<>();
 
-    public static Map<Class,List<EntityAdapter>> adapters = new HashMap<>();
+    public static Map<Class, List<EntityAdapter>> adapters = new HashMap<>();
     /**
      * 清空缓存
      */
@@ -245,10 +245,10 @@ public class EntityAdapterProxy {
      * @param obj obj
      * @return String
      */
-    public static Map<String,Object> primaryValue(Object obj){
+    public static Map<String, Object> primaryValue(Object obj){
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            Map<String,Object> value = adapter.primaryValue(obj);
+            Map<String, Object> value = adapter.primaryValue(obj);
             if(null != value && !value.isEmpty()){
                 return value;
             }
@@ -261,10 +261,10 @@ public class EntityAdapterProxy {
      * @return Map
      */
 
-    public static Map<String,Object> primaryValues(Object obj){
+    public static Map<String, Object> primaryValues(Object obj){
         List<EntityAdapter> list = getAdapters(obj.getClass());
         for(EntityAdapter adapter:list){
-            Map<String,Object> value = adapter.primaryValues(obj);
+            Map<String, Object> value = adapter.primaryValues(obj);
             if(null != value && !value.isEmpty()){
                 return value;
             }
@@ -275,7 +275,7 @@ public class EntityAdapterProxy {
     /**
      * 生成主键值
      * @param obj entity或DataRow
-     * @param inserts 需要插入的列,注意成功创建主键后需要把主键key添加到inserts中
+     * @param inserts 需要插入的列, 注意成功创建主键后需要把主键key添加到inserts中
      * @return boolean 是否成功
      */
     public static boolean createPrimaryValue(Object obj, List<String> inserts){
@@ -300,13 +300,13 @@ public class EntityAdapterProxy {
     }
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param clazz 类
      * @param map map
      * @param <T> T
      * @return T
      */
-    public static <T> T entity(Class<T> clazz, Map<String,Object> map, LinkedHashMap columns){
+    public static <T> T entity(Class<T> clazz, Map<String, Object> map, LinkedHashMap columns){
         List<EntityAdapter> list = getAdapters(clazz);
         T entity = null;
         for(EntityAdapter adapter : list){
@@ -330,7 +330,7 @@ public class EntityAdapterProxy {
 
     /**
      * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param obj obj
      * @param keys keys
      * @return DataRow
@@ -363,7 +363,7 @@ public class EntityAdapterProxy {
 
     /**
      * 列名转换成http参数时调用
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param metadatas metadatas
      * @return List
      *

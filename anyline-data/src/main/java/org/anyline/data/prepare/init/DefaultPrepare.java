@@ -74,7 +74,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 
  
 	/** 
-	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
+	 * 添加排序条件, 在之前的基础上添加新排序条件, 有重复条件则覆盖
 	 * @param order  order
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
@@ -108,7 +108,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 		return ""; 
 	} 
 	/** 
-	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
+	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
 	 * @param group  group
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
@@ -258,7 +258,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 			return this;
 		}
 		
-		/*没有处于容器中时,设置自身主键*/
+		/*没有处于容器中时, 设置自身主键*/
 		if(null == this.primaryKeys){
 			this.primaryKeys = new ArrayList<>();
 		}
@@ -275,7 +275,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	}
 	/**
 	 * 设置主键 先清空之前设置过和主键
-	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
+	 * 当前对象处于容器中时, 设置容器主键, 否则设置自身主键
 	 * @param primaryKeys primaryKeys
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
@@ -294,7 +294,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 			return this;
 		}
 		
-		/*没有处于容器中时,设置自身主键*/
+		/*没有处于容器中时, 设置自身主键*/
 		if(null == this.primaryKeys){
 			this.primaryKeys = new ArrayList<>();
 		}else{
@@ -305,7 +305,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	}
 	/**
 	 * 读取主键
-	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
+	 * 主键为空时且容器有主键时, 读取容器主键, 否则返回默认主键
 	 * @return List
 	 */
 	public List<String> getPrimaryKeys(){

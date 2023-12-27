@@ -53,7 +53,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	}
 	/**
 	 * 设置数据源
-	 * table(c1,c2)[pk1,pk2]
+	 * table(c1, c2)[pk1, pk2]
 	 * @param table 表
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
@@ -96,7 +96,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		if(condition.contains(":")){
 			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
-			addCondition(parser.getSwitch(), parser.getCompare(), parser.getVar(),value);
+			addCondition(parser.getSwitch(), parser.getCompare(), parser.getVar(), value);
 		}else{
 			Condition con = new DefaultAutoCondition(condition);
 			chain.addCondition(con);
@@ -118,7 +118,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	/**
 	 * 添加列
 	 * CD
-	 * CD,NM
+	 * CD, NM
 	 * @param columns  columns
 	 */
 	@Override
@@ -129,7 +129,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		if(null == this.queryColumns){
 			this.queryColumns = new ArrayList<>();
 		}
-		if(columns.contains(",")){
+		if(columns.contains(", ")){
 			// 多列
 			parseMultColumns(false, columns);
 		}else{
@@ -153,7 +153,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		if(null == this.excludeColumns){
 			this.excludeColumns = new ArrayList<>();
 		}
-		if(columns.contains(",")){
+		if(columns.contains(", ")){
 			// 多列
 			parseMultColumns(true, columns);
 		}else{
@@ -173,7 +173,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 */
 	protected void parseMultColumns(boolean exclude, String src){
 		List<String> cols = new ArrayList<>();
-		// 拆分转义字段(${}) CD, ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
+		// 拆分转义字段(${}) CD, ${ISNULL(NM, '') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 		while(src.contains("${")){
 			src = src.trim();
 			int fr = src.indexOf("${");
@@ -183,7 +183,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 				src = src.substring(src.indexOf("}")+1);
 			}else{
 				tmp = src.substring(0, fr);  // 先把 ${之前的部分拆出: CD,
-				src = src.substring(fr);     // 剩余部分: ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
+				src = src.substring(fr);     // 剩余部分: ${ISNULL(NM, '') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 			}
 			cols.add(tmp);
 		}
@@ -197,7 +197,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 					addColumn(c);
 				}
 			}else{
-				String[] cs = c.split(",");
+				String[] cs = c.split(", ");
 				for(String item:cs){
 					item = item.trim();
 					if(item.length()>0)
@@ -210,10 +210,10 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 * 解析name
 	 * 支持的格式(以下按先后顺序即可)
 	 * user
-	 * user(id,nm)
+	 * user(id, nm)
 	 * user as u
-	 * user as u(id,nm)
-	 * &lt;ds_hr&gt;user as u(id,nm)
+	 * user as u(id, nm)
+	 * &lt;ds_hr&gt;user as u(id, nm)
 	 */
 	public void parseTable(){
 		if(null != table){
@@ -230,7 +230,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 					// 列别名中的as
 				}else{
 					alias = table.substring(tagIdx+tag.length()).trim();
-					table = table.substring(0,tagIdx).trim();
+					table = table.substring(0, tagIdx).trim();
 				}
 			}
 			if(table.contains("(")){
@@ -267,7 +267,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 				sql = sql.trim();
 				String pre = sql.substring(0, sql.indexOf("${"));
 				if (BasicUtil.isNotEmpty(pre)) {
-					String[] pres = pre.split(",");
+					String[] pres = pre.split(", ");
 					for (String item : pres) {
 						item = item.trim();
 						addColumn(item);
@@ -280,7 +280,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 				sql = sql.substring(sql.indexOf("}") + 1).trim();
 			}
 		}else{
-			String[] cols = sql.split(",");
+			String[] cols = sql.split(", ");
 			for (String item : cols) {
 				item = item.trim();
 				addColumn(item);

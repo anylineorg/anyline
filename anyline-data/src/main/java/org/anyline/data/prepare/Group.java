@@ -20,7 +20,7 @@ package org.anyline.data.prepare;
 import java.io.Serializable;
  
  
-public interface Group extends Cloneable,Serializable{
+public interface Group extends Cloneable, Serializable{
 	public String getColumn() ; 
 	public void setColumn(String column) ; 
 } 

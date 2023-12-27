@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -46,9 +46,9 @@ public class DESUtil {
 	private Cipher decryptCipher = null;							// 解密
 	private String salt = DEFAULT_SALT;
 	 
-	private static Map<String,DESUtil> instances = new Hashtable<String,DESUtil>(); 
+	private static Map<String, DESUtil> instances = new Hashtable<String, DESUtil>(); 
 	/** 
-	 * 频繁加密解密时,使用单例模式,减少new耗时 
+	 * 频繁加密解密时, 使用单例模式, 减少new耗时 
 	 * @return DESUtil
 	 */ 
 	public static DESUtil getInstance(){
@@ -57,7 +57,7 @@ public class DESUtil {
 			instance = new DESUtil();
 			instances.put(DEFAULT_SECRET_KEY, instance); 
 		}catch(Exception e){
-			 log.warn("[des insance][result:fail][msg:{}]",e.toString());
+			 log.warn("[des insance][result:fail][msg:{}]", e.toString());
 		} 
 		return instance; 
 	} 
@@ -76,10 +76,10 @@ public class DESUtil {
 		} 
 		return instance; 
 	} 
-	protected DESUtil() throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
+	protected DESUtil() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException{
 		this(DEFAULT_SECRET_KEY); 
 	} 
-	protected DESUtil(String key) throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
+	protected DESUtil(String key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException{
 
 		//Security.addProvider(new SunJCE());
 		java.security.Security.getProvider("SunJCE");
@@ -101,10 +101,10 @@ public class DESUtil {
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  BadPaddingException
 	 */ 
-	private byte[] encrypt(byte[] bytes) throws BadPaddingException,IllegalBlockSizeException{
+	private byte[] encrypt(byte[] bytes) throws BadPaddingException, IllegalBlockSizeException{
 		return encryptCipher.doFinal(bytes);
 	} 
-	public String encrypt(String str) throws BadPaddingException,IllegalBlockSizeException{
+	public String encrypt(String str) throws BadPaddingException, IllegalBlockSizeException{
 		if(null == str || ignores.contains(str)){
 			return str;
 		}
@@ -155,7 +155,7 @@ public class DESUtil {
 			return str;
 		}
 		String result = "";
-		result = new String(decrypt(NumberUtil.hex2bytes(str)), ConfigTable.getString("DES_ENCODE","UTF-8"));
+		result = new String(decrypt(NumberUtil.hex2bytes(str)), ConfigTable.getString("DES_ENCODE", "UTF-8"));
 		result = result.substring(salt.length());
 		return result;
 	}
@@ -227,7 +227,7 @@ public class DESUtil {
 		try {
 			String ignoreList = ConfigTable.getString("DES_IGNORE");
 			if(null != ignoreList){
-				String[] tmps = ignoreList.split(",");
+				String[] tmps = ignoreList.split(", ");
 				for(String tmp:tmps){
 					ignores.add(tmp);
 				}
@@ -432,7 +432,7 @@ public class DESUtil {
 	}
 
 	/**
-	 * 是否已加密 (应该根据规则判断,而不是解一次密)
+	 * 是否已加密 (应该根据规则判断, 而不是解一次密)
 	 * 
 	 * @param src src
 	 * @param type type
@@ -468,7 +468,7 @@ public class DESUtil {
 		result = decrypt(src, defaultDesKey, type); // 默认版本解密
 
 		if (null == result) {
-			// 没有对应版本号,逐个版本解密
+			// 没有对应版本号, 逐个版本解密
 			for (Iterator<String> versions = deskeys.keySet().iterator(); versions
 					.hasNext();) {
 				DESKey key = deskeys.get(versions.next());
@@ -570,7 +570,7 @@ public class DESUtil {
 		return url;
 	}
 
-	public static String encryptUrl(String url, boolean union,
+	public static String encryptUrl(String url, boolean union, 
 			boolean encryptKey, boolean encryptValue) {
 		if (null == url || !url.contains("?")) {
 			return url;

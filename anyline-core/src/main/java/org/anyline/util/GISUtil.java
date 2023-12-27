@@ -37,7 +37,7 @@ public class GISUtil {
 
     /*
      * WGS-84 GPS坐标（谷歌地图国外）
-     * GCJ-02 国测局坐标（谷歌地图国内,高德地图,腾讯地图）
+     * GCJ-02 国测局坐标（谷歌地图国内, 高德地图, 腾讯地图）
      * BD-09 百度坐标（百度地图）
      */
     private static Double rad(Double d) {
@@ -131,14 +131,14 @@ public class GISUtil {
     public static String distanceFormat(Double distance){
         String result = distance+"m";
         if(distance > 1000){
-            result = NumberUtil.format(distance/1000,"0.00") +"km";
+            result = NumberUtil.format(distance/1000, "0.00") +"km";
         }
         return result;
     }
     public static String distanceFormatCn(Double distance){
         String result = distance+"米";
         if(distance > 1000){
-            result = NumberUtil.format(distance/1000,"0.00") +"千米";
+            result = NumberUtil.format(distance/1000, "0.00") +"千米";
         }
         return result;
     }
@@ -156,7 +156,7 @@ public class GISUtil {
         String d = gps.substring(0, gps.indexOf("."));
         String m = "";
         int idx = d.length() - 2;
-        d = gps.substring(0,idx);
+        d = gps.substring(0, idx);
         m = gps.substring(idx);
         BigDecimal dd = BasicUtil.parseDecimal(d, 0d);
         BigDecimal dm = BasicUtil.parseDecimal(m, 0d).divide(new BigDecimal(60), 7, BigDecimal.ROUND_UP);
@@ -166,10 +166,10 @@ public class GISUtil {
 
      /*
      * WGS-84 GPS坐标（谷歌地图国外）
-     * GCJ-02 国测局坐标（谷歌地图国内,高德地图,腾讯地图）
+     * GCJ-02 国测局坐标（谷歌地图国内, 高德地图, 腾讯地图）
      * BD-09 百度坐标（百度地图）
       */
-    /* 地球半径,单位米（北京54 长半轴） */
+    /* 地球半径, 单位米（北京54 长半轴） */
     private static final Double RADIUS = 6378245D;
 
     /* 扁率 */
@@ -217,7 +217,7 @@ public class GISUtil {
     }
 
     public static Double[] convert(SRS src, String lng, String lat, SRS tar){
-        return convert(src, BasicUtil.parseDouble(lng,null),BasicUtil.parseDouble(lat,null), tar );
+        return convert(src, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null), tar );
     }
 
     public static Double[] convert(SRS src, String[] location, SRS tar){
@@ -236,7 +236,7 @@ public class GISUtil {
     }
 
     public static Double[] bd2gcj(String lng, String lat) {
-        return bd2gcj(BasicUtil.parseDouble(lng,null),BasicUtil.parseDouble(lat,null));
+        return bd2gcj(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     public static Double[] bd2gcj(Double lng, Double lat) {
         Double x = lng - 0.0065;
@@ -258,7 +258,7 @@ public class GISUtil {
     }
 
     public static Double[] bd2wgs(String lng, String lat) {
-        return bd2wgs(BasicUtil.parseDouble(lng,null),BasicUtil.parseDouble(lat,null));
+        return bd2wgs(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     public static Double[] bd2wgs(Double lng, Double lat) {
         return gcj2wgs(bd2gcj(lng, lat));
@@ -275,7 +275,7 @@ public class GISUtil {
         return gcj2bd(location[0], location[1]);
     }
     public static Double[] gcj2bd(String lng, String lat) {
-        return gcj2bd(BasicUtil.parseDouble(lng, null),BasicUtil.parseDouble(lat, null));
+        return gcj2bd(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     public static Double[] gcj2bd(Double lng, Double lat) {
         Double z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * X_PI);
@@ -309,7 +309,7 @@ public class GISUtil {
     }
 
     public static Double[] wgs2gcj(String lng, String lat) {
-        return wgs2gcj(BasicUtil.parseDouble(lng, null),BasicUtil.parseDouble(lat, null));
+        return wgs2gcj(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     public static Double[] wgs2gcj(Double lng, Double lat) {
         if (inChina(lng, lat)) {
@@ -338,7 +338,7 @@ public class GISUtil {
     }
 
     public static Double[] gcj2wgs(String lng, String lat) {
-        return gcj2wgs(BasicUtil.parseDouble(lng, 0d),BasicUtil.parseDouble(lat, 0d));
+        return gcj2wgs(BasicUtil.parseDouble(lng, 0d), BasicUtil.parseDouble(lat, 0d));
     }
     public static Double[] gcj2wgs(Double lng, Double lat) {
         if (inChina(lng, lat)) {
@@ -375,7 +375,7 @@ public class GISUtil {
     }
 
     public static boolean inChina(Double lng, Double lat) {
-        // 纬度3.86~53.55,经度73.66~135.05
+        // 纬度3.86~53.55, 经度73.66~135.05
         return (lng > 73.66 && lng < 135.05 && lat > 3.86 && lat < 53.55);
     }
 

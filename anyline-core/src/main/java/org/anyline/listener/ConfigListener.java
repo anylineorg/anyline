@@ -37,7 +37,7 @@ public class ConfigListener {
         for (Convert convert : converts.values()) {
             Class origin = convert.getOrigin();
             Class target = convert.getTarget();
-            Map<Class,Convert> map = ConvertAdapter.converts.get(origin);
+            Map<Class, Convert> map = ConvertAdapter.converts.get(origin);
             if(null == map){
                 map = new Hashtable<>();
                 ConvertAdapter.converts.put(origin, map);

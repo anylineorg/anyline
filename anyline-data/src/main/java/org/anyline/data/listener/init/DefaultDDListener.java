@@ -52,7 +52,7 @@ public class DefaultDDListener implements DDListener {
      * @param table 表
      * @param column 修改的列
      * @param exception 异常
-     * @return boolean 如果返回true(如处理完异常数据后),dao中会再执行一次ddl
+     * @return boolean 如果返回true(如处理完异常数据后), dao中会再执行一次ddl
      */
     @Override
     public ACTION.SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, Exception exception) {
@@ -137,7 +137,7 @@ public class DefaultDDListener implements DDListener {
         return ACTION.SWITCH.CONTINUE;
     }
     private String char2number(String value){
-        value = value.replaceAll("\\s","");
+        value = value.replaceAll("\\s", "");
         try {
             value = RegularUtil.fetchNumber(value);
         }catch (Exception e){

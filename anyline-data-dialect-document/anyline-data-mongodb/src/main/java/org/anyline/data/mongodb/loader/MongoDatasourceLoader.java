@@ -43,15 +43,15 @@ public class MongoDatasourceLoader implements DatasourceLoader {
         SpringContextUtil.init(context);
         MongoRuntimeHolder.init(factory);
         boolean loadDefault = true;
-        list.addAll(load(env,"spring.datasource", loadDefault));
-        list.addAll(load(env,"anyline.datasource", loadDefault));
+        list.addAll(load(env, "spring.datasource", loadDefault));
+        list.addAll(load(env, "anyline.datasource", loadDefault));
         //TODO 项目指定一个前缀
         return list;
     }
 
     //加载配置文件
     private List<String> load(Environment env, String head, boolean loadDefault){
-        //加载成功的前缀 crm,sso
+        //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
             String def = MongoDatasourceHolder.reg("mongodb", head, env);
@@ -68,7 +68,7 @@ public class MongoDatasourceLoader implements DatasourceLoader {
             prefixs = env.getProperty(head + "-list");
         }
         if(null != prefixs){
-            for (String prefix : prefixs.split(",")) {
+            for (String prefix : prefixs.split(", ")) {
                 // 多个数据源
                 try {
                     //返回 datasource的bean id

@@ -43,6 +43,43 @@ import java.util.*;
  */
 public interface ConfigStore {
 
+	/**
+	 * 设置查询或操作的数据源
+	 * @param datasource 查询或操作的数据源
+	 * @return ConfigStore
+	 */
+	ConfigStore datasource(String datasource);
+
+	/**
+	 * 查询或操作的数据源
+	 * @return String
+	 */
+	String datasource();
+	/**
+	 * 设置查询或操作的目标(表,存储过程,sql等)
+	 * @param dest 查询或操作的目标
+	 * @return ConfigStore
+	 */
+	ConfigStore dest(String dest);
+
+	/**
+	 * 查询或操作的目标(表,存储过程,sql等)
+	 * @return String
+	 */
+	String dest();
+
+	/**
+	 * 设置虚拟主键，主要是用作为更新条件
+	 * @param keys keys
+	 * @return this
+	 */
+	ConfigStore keys(String ... keys);
+	/**
+	 * 虚拟主键，主要是用作为更新条件
+	 * @return List
+	 */
+	List<String> keys();
+
 	boolean execute();
 	ConfigStore execute(boolean execute);
 	ConfigStore stream(StreamHandler hanlder);
@@ -852,10 +889,10 @@ public interface ConfigStore {
 	 * @return ConfigStore
 	 */
 	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
-		return and(swt, Compare.NONE,  id, var, value);
+		return and(swt, Compare.NONE, id, var, value);
 	}
 	default ConfigStore param(String id, String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE,  id, var, value);
+		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, id, var, value);
 	}
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
@@ -869,7 +906,7 @@ public interface ConfigStore {
 		return and(swt, Compare.NONE, var, value);
 	}
 	default ConfigStore param(String var, Object value){
-		return and(EMPTY_VALUE_SWITCH.NONE,  Compare.NONE, var, value);
+		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, var, value);
 	}
 	/**
 	 * 与ConfigStore中前一个条件合成or

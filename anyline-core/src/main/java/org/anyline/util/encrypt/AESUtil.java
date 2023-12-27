@@ -1,15 +1,15 @@
 /*  
  * Copyright 2006-2023 www.anyline.org
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0 
  * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  * 
@@ -96,18 +96,18 @@ public class AESUtil {
 		try {
 			// 实例化
 			Cipher cipherInstance = Cipher.getInstance(cipher.getCode());
-			// 使用密钥初始化,设置为解密模式
+			// 使用密钥初始化, 设置为解密模式
 			if(BasicUtil.isNotEmpty(vector)){
 				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(KEY);
 				algorithmParameters.init(new IvParameterSpec(Base64Util.decode(vector)));
 				Key key = new SecretKeySpec(Base64Util.decode(password), KEY);
-				cipherInstance.init(Cipher.DECRYPT_MODE, key,algorithmParameters);
+				cipherInstance.init(Cipher.DECRYPT_MODE, key, algorithmParameters);
 			}else {
 				cipherInstance.init(Cipher.DECRYPT_MODE, getSecretKey(password));
 			}
 			// 执行操作
 			byte[] result = cipherInstance.doFinal(Base64Util.decode(content));
-			return new String(result, "utf-8"); 
+			return new String(result, "utf-8");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			log.error(ex.getMessage()); 

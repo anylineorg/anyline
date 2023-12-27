@@ -31,10 +31,10 @@ public class TableBuilder {
     private String footer = null;
     private String clazz = null;
     private List<String> fields = new ArrayList<>();
-    private List<String> unions = new ArrayList<>();//需要合并字段,值相同的几行合并(如里相关列合并的情况下才会合并,如前一列学校合并时,后一列班级才有可能合并,班级列名(学校列名,其他列名))
-    private Map<String,Map<String, String>> styles = new HashMap<>();
+    private List<String> unions = new ArrayList<>();//需要合并字段, 值相同的几行合并(如里相关列合并的情况下才会合并, 如前一列学校合并时, 后一列班级才有可能合并, 班级列名(学校列名, 其他列名))
+    private Map<String, Map<String, String>> styles = new HashMap<>();
     private Map<String, String[]> unionRefs = new HashMap<>();
-    private Map<String,Map<String, String>> options = new HashMap<>();   // 外键对应关系
+    private Map<String, Map<String, String>> options = new HashMap<>();   // 外键对应关系
     private List<String> ignoreUnionValues = new ArrayList<>();         // 不参与合并的值(如一些空值)
     private String width = "100%";                                      // 整个表格宽度
     private String widthUnit = "px";                                    // 默认长度单位 px pt cm/厘米
@@ -116,7 +116,7 @@ public class TableBuilder {
 
         Map<String, String> map = cells[r][c];
         String value = map.get("value");
-        map.put("checked","1");
+        map.put("checked", "1");
         int rowspan = 1;
         if(null != unions && unions.contains(field)) {
             // 向上查看相同值
@@ -147,7 +147,7 @@ public class TableBuilder {
             }
         }
 
-        map.put("rowspan",  rowspan+ "");
+        map.put("rowspan", rowspan+ "");
     }
     private void checkNum(int c, String field){
         int rows = cells.length;
@@ -160,7 +160,7 @@ public class TableBuilder {
             if(refCol != -1) {
                 Map<String, String> refCell = cells[r][refCol];
                 if(null != refCell){
-                    int rowspan = BasicUtil.parseInt(refCell.get("rowspan"),1);
+                    int rowspan = BasicUtil.parseInt(refCell.get("rowspan"), 1);
                     if(rowspan > 1) {
                         cell.put("merge", "1");  // 合并
                         cell.put("rowspan", rowspan+"");
@@ -191,16 +191,16 @@ public class TableBuilder {
         table.setClazz(clazz);
         table.setHeader(header);
         if(null != header){
-            List<String> strs = RegularUtil.cuts(header,"<tr",">","</tr>");
+            List<String> strs = RegularUtil.cuts(header, "<tr", ">", "</tr>");
             for(String str:strs){
-                List<String> stds = RegularUtil.cuts(str,"<td","</td>");
+                List<String> stds = RegularUtil.cuts(str, "<td", "</td>");
                 Tr tr = new Tr();
                 for(String std:stds){
                     Td td = new Td();
-                    String text = RegularUtil.cut(std,">",RegularUtil.TAG_END);
-                    String style = RegularUtil.fetchAttributeValue(std,"style");
-                    int colspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"colspan"),1);
-                    int rowspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"rowspan"),1);
+                    String text = RegularUtil.cut(std, ">", RegularUtil.TAG_END);
+                    String style = RegularUtil.fetchAttributeValue(std, "style");
+                    int colspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std, "colspan"), 1);
+                    int rowspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std, "rowspan"), 1);
                     td.setColspan(colspan);
                     td.setRowspan(rowspan);
                     td.setText(text);
@@ -277,7 +277,7 @@ public class TableBuilder {
                     String value = map.get("value");
                     String merge = map.get("merge");    // 合并其他行
                     String merged = map.get("merged");  // 被其他行合并
-                    int rowspan = BasicUtil.parseInt(map.get("rowspan"),1);
+                    int rowspan = BasicUtil.parseInt(map.get("rowspan"), 1);
                     if(!"1".equals(merged)){
                         Td td = new Td();
                         td.setText(value);
@@ -314,17 +314,17 @@ public class TableBuilder {
         // 需要检测变量如合计
         table.setFooter(footer);
         if(null != footer){
-            List<String> strs = RegularUtil.cuts(footer,"<tr",">","</tr>");
+            List<String> strs = RegularUtil.cuts(footer, "<tr", ">", "</tr>");
             for(String str:strs){
-                List<String> stds = RegularUtil.cuts(str,"<td","</td>");
+                List<String> stds = RegularUtil.cuts(str, "<td", "</td>");
                 Tr tr = new Tr();
                 for(String std:stds){
                     Td td = new Td();
-                    String text = RegularUtil.cut(std,">",RegularUtil.TAG_END);
-                    String style = RegularUtil.fetchAttributeValue(std,"style");
+                    String text = RegularUtil.cut(std, ">", RegularUtil.TAG_END);
+                    String style = RegularUtil.fetchAttributeValue(std, "style");
                     td.setStyles(StyleParser.parse(style));
-                    int colspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"colspan"),1);
-                    int rowspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"rowspan"),1);
+                    int colspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std, "colspan"), 1);
+                    int rowspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std, "rowspan"), 1);
                     td.setColspan(colspan);
                     td.setRowspan(rowspan);
                     td.setText(text);
@@ -344,8 +344,8 @@ public class TableBuilder {
         for(String union:unions){
             if(union.contains("(")){
                 union = union.trim();
-                String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(",");
-                union = union.substring(0,union.indexOf("("));
+                String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(", ");
+                union = union.substring(0, union.indexOf("("));
                 unionRefs.put(union, refs);
 
             }
@@ -483,7 +483,7 @@ public class TableBuilder {
         return this;
     }
 
-    public Map<String,Map<String, String>> getStyles() {
+    public Map<String, Map<String, String>> getStyles() {
         return styles;
     }
 
@@ -632,7 +632,7 @@ public class TableBuilder {
 
     /**
      * 设置 不参与合并的值
-     * @param values 不参合合并的值,如空值
+     * @param values 不参合合并的值, 如空值
      * @return TableBuilder
      */
     public TableBuilder setIgnoreUnionValues(List<String> values) {
@@ -642,7 +642,7 @@ public class TableBuilder {
 
     /**
      * 追加 不参与合并的值
-     * @param values 不参合合并的值,如空值
+     * @param values 不参合合并的值, 如空值
      * @return TableBuilder
      */
     public TableBuilder addIgnoreUnionValue(String ... values){
@@ -774,7 +774,7 @@ public class TableBuilder {
     /**
      * 追加下拉列表数据源
      * @param field 属性(定位列)
-     * @param kvs 数据源 k1,v1,k2,v2
+     * @param kvs 数据源 k1, v1, k2, v2
      * @return TableBuilder
      */
     public TableBuilder addOptions(String field, String ... kvs){
@@ -794,7 +794,7 @@ public class TableBuilder {
     /**
      * 设置下拉列表数据源
      * @param field 属性(定位列)
-     * @param kvs 数据源 k1,v1,k2,v2
+     * @param kvs 数据源 k1, v1, k2, v2
      * @return TableBuilder
      */
     public TableBuilder setOptions(String field, String ... kvs){

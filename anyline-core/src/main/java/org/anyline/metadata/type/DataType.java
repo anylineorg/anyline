@@ -61,7 +61,7 @@ public interface DataType {
         }
     };
     /**
-     * 从数据库中读取数据,常用的基本类型可以自动转换,不常用的如json/point/polygon/blob等转换成anyline对应的类型
+     * 从数据库中读取数据, 常用的基本类型可以自动转换, 不常用的如json/point/polygon/blob等转换成anyline对应的类型
      * @param value value
      * @param def 默认值
      * @param clazz 目标数据类型(给entity赋值时可以根据class, DataRow赋值时可以指定class，否则按检测metadata类型转换 转换不不了的原样返回)

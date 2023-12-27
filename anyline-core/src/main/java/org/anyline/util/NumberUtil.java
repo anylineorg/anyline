@@ -371,7 +371,7 @@ public class NumberUtil {
 	 * @return int
 	 */
 	public static int bin2dec(String number) {
-		return Integer.parseInt(number,2);
+		return Integer.parseInt(number, 2);
 	}
 
 
@@ -500,7 +500,7 @@ public class NumberUtil {
 	 * @return int
 	 */
 	public static int hex2dec(String hex){
-		return Integer.parseInt(hex,16);
+		return Integer.parseInt(hex, 16);
 	}
 
 	/**
@@ -522,7 +522,7 @@ public class NumberUtil {
 	public static String byte2hex(byte[] bytes, String split) {
 		return byte2hex(bytes, bytes.length, split);
 	}
-	public static String byte2hex(byte[] bytes,int len) {
+	public static String byte2hex(byte[] bytes, int len) {
 		return byte2hex(bytes, len, null);
 	}
 	public static String byte2hex(byte[] bytes, int len, String split) {
@@ -545,7 +545,7 @@ public class NumberUtil {
 		return builder.toString();
 	}
 	public static String byte2hex(byte[] bytes) {
-		return byte2hex(bytes,null);
+		return byte2hex(bytes, null);
 	}
 	public static String[] byte2hexs(byte[] bytes) {
 		String[] hexs = new String[bytes.length];
@@ -620,14 +620,14 @@ public class NumberUtil {
 		}
 		int j=0;
 		for (int i = 0; i < hexlen; i+=2){
-			result[j]=hex2byte(hex.substring(i,i+2));
+			result[j]=hex2byte(hex.substring(i, i+2));
 			j++;
 		}
 		return result;
 	}
 
 	public static byte hex2byte(String hex){
-		return (byte)Integer.parseInt(hex,16);
+		return (byte)Integer.parseInt(hex, 16);
 	}
 
 	public static byte[] dec2bcd(long num) {
@@ -731,7 +731,7 @@ public class NumberUtil {
 
 	/**
 	 * 16进制string拆分<br/>
-	 * 0102 &gt; ["01","02"]
+	 * 0102 &gt; ["01", "02"]
 	 * @param hex hex
 	 * @return strings
 	 */
@@ -798,8 +798,8 @@ public class NumberUtil {
 		if (null != src) {
 			int idx = src.indexOf(".");
 			if(idx != -1){
-				src = src.replaceAll("^0+","");
-				src = src.replaceAll("0+$","");
+				src = src.replaceAll("^0+", "");
+				src = src.replaceAll("0+$", "");
 			}
 			if(".".equals(src)){
 				if(integer){
@@ -833,7 +833,7 @@ public class NumberUtil {
 
 
 	/**
-	 * byte转double[],可用于把数据库中的point(JDBC取出byte[])转成double[]
+	 * byte转double[], 可用于把数据库中的point(JDBC取出byte[])转成double[]
 	 * @param bytes bytes
 	 * @return double[]
 	 */
@@ -841,13 +841,13 @@ public class NumberUtil {
 		int len=(bytes.length-13)/8;
 		double[] result=new double[len];
 		for(int i=0;i<len; i++){
-			result[i]=byte2double(bytes,13+i*8);
+			result[i]=byte2double(bytes, 13+i*8);
 		}
 		return result;
 	}
 
 	/**
-	 * byte数组转double,默认Double占用8个字节（64位）
+	 * byte数组转double, 默认Double占用8个字节（64位）
 	 * @param bytes byte数组
 	 * @param start 开始位置
 	 * @return double
@@ -922,15 +922,15 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 平均值
 	 */
@@ -970,19 +970,19 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 方差
 	 */
-	public static BigDecimal var(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal var(List<BigDecimal> list, int scale, int round) {
 		int qty = 0;
 		BigDecimal avg = avg(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
@@ -1000,7 +1000,7 @@ public class NumberUtil {
 		}
 		return null;
 	}
-	public static BigDecimal vara(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal vara(List<BigDecimal> list, int scale, int round) {
 		int qty = list.size();
 		BigDecimal avg = avga(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
@@ -1023,19 +1023,19 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 方差
 	 */
-	public static BigDecimal varp(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal varp(List<BigDecimal> list, int scale, int round) {
 		int qty = 0;
 		BigDecimal avg = avg(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
@@ -1053,7 +1053,7 @@ public class NumberUtil {
 		}
 		return null;
 	}
-	public static BigDecimal varpa(List<BigDecimal> list,  int scale, int round) {
+	public static BigDecimal varpa(List<BigDecimal> list, int scale, int round) {
 		int qty = list.size();
 		BigDecimal avg = avga(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
@@ -1075,15 +1075,15 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 标准差
 	 */
@@ -1108,15 +1108,15 @@ public class NumberUtil {
 	 * @param scale 小数位
 	 * @param round 舍入模式 参考BigDecimal静态常量
 	 *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+	 *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+	 *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+	 *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
 	 *       ROUND_HALF_UP   = 4 四舍五入<br/>
 	 *       ROUND_HALF_DOWN = 5 五舍六入<br/>
 	 *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-	 *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-	 *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-	 *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+	 *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+	 *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+	 *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
 	 *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
 	 * @return 标准差
 	 */

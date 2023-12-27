@@ -76,7 +76,7 @@ public interface MapClient {
     /**
      * 逆地址解析 根据坐标返回详细地址及各级地区编号
      * @param srs 坐标系
-     * @param point lng,lat 经度,纬度
+     * @param point lng, lat 经度, 纬度
      * @return Coordinate
      */
     Coordinate regeo(SRS srs, String point);

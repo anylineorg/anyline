@@ -1,15 +1,15 @@
 /*  
  * Copyright 2006-2023 www.anyline.org
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0 
  * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  * 
@@ -71,8 +71,8 @@ public class DefaultPageNavi implements PageNavi{
 	protected String flag  					= ""		; // 一个jsp中有多个分页时用来区分
 	protected long lazyPeriod 				= 0			; // 总条数懒加载时间间隔(秒)
 	protected String lazyKey 				= null		; // 懒加载
-	protected int type 						= 0			; // 分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
-	protected Map<String,List<Object>> params= null		; // 查询参数
+	protected int type 						= 0			; // 分页方式(0:下标 1:流式 2:根据浏览器状态 web:0, wap:1)
+	protected Map<String, List<Object>> params= null		; // 查询参数
 	protected String method					= "post"	; 
 	protected String style					= ""		; // 样式标记对应anyline-navi.xml中的config.key
  
@@ -161,7 +161,7 @@ public class DefaultPageNavi implements PageNavi{
 		}
 
 		setTotalPage(totalPage);					// 总页数 
-		setDisplayPageFirst(NumberUtil.min(curPage,totalPage) - pageRange/2);				// 显示的第一页
+		setDisplayPageFirst(NumberUtil.min(curPage, totalPage) - pageRange/2);				// 显示的第一页
 		if(displayPageFirst > totalPage - pageRange){
 			setDisplayPageFirst(totalPage - pageRange + 1); 
 		} 
@@ -240,7 +240,7 @@ public class DefaultPageNavi implements PageNavi{
 			return; 
 		} 
 		if(null == this.params){
-			this.params = new HashMap<String,List<Object>>(); 
+			this.params = new HashMap<String, List<Object>>();
 		} 
 		List<Object> values = params.get(key); 
 		if(null == values){
@@ -251,7 +251,7 @@ public class DefaultPageNavi implements PageNavi{
 		}else{
 			values.add(value); 
 		} 
-		params.put(key, values); 
+		params.put(key, values);
 	} 
 	public Object getParams(String key){
 		Object result = null; 
@@ -274,7 +274,7 @@ public class DefaultPageNavi implements PageNavi{
 		return result; 
 	} 
 	public String getOrderText(boolean require){
-		// return getOrderText(require, null); 
+		// return getOrderText(require, null);
 		return null; 
 	} 
 	public String getOrderText(boolean require, OrderStore store, String delimiter){
@@ -590,7 +590,7 @@ public class DefaultPageNavi implements PageNavi{
 			stat.append(statFormat).append("\n"); 
 		} 
 		int range = config.VAR_PAGE_RANGE;
-		long fr = NumberUtil.max(1,curPage - range/2);
+		long fr = NumberUtil.max(1, curPage - range/2);
 		long to = fr + range - 1;
 		boolean match = false; 
 		if(totalPage > range && curPage>range/2){
@@ -602,19 +602,19 @@ public class DefaultPageNavi implements PageNavi{
 		if(totalPage - curPage < range/2){
 			fr = totalPage - range; 
 		} 
-		fr = NumberUtil.max(fr, 1); 
-		to = NumberUtil.min(to, totalPage); 
+		fr = NumberUtil.max(fr, 1);
+		to = NumberUtil.min(to, totalPage);
 		 
 		if(type ==0){// 下标导航
 			// 每页多少条 
 			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-				log.info("[vol set][enable:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
+				log.info("[vol set][enable:{}][vol:{}][sort:{}]", config.VAR_CLIENT_SET_VOL_ENABLE, pageRows, config.CONFIG_PAGE_VAL_SET_SORT);
 			} 
 			if(config.VAR_CLIENT_SET_VOL_ENABLE){
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){
-					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag)); 
+					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
 				}else{
-					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(","); 
+					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(", ");
 					String clazz = config.VAR_PAGE_VOL_CLASS; 
 					if(BasicUtil.isEmpty(clazz)){
 						clazz = "navi-rows-set"; 
@@ -636,7 +636,7 @@ public class DefaultPageNavi implements PageNavi{
 			// 1 .. 3 4 5 6 7 8 .. 10 
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(index, method,"navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
+					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1, 1), configVarKey);
 				} 
 				// 下标 
 				if(config.VAR_SHOW_INDEX){
@@ -670,7 +670,7 @@ public class DefaultPageNavi implements PageNavi{
 				// 上一页  第一页 
 				if(config.VAR_SHOW_BUTTON){
 					createPageTag(index, method, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
-					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
+					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1, 1), configVarKey);
 				} 
 				// 下标 
 				if(config.VAR_SHOW_INDEX){
@@ -766,7 +766,7 @@ public class DefaultPageNavi implements PageNavi{
 				if(!get) {//post
 					builder.append(" onclick='_navi_go(").append(page);
 					if (BasicUtil.isNotEmpty(configFlag)) {
-						builder.append(",").append(configFlag);
+						builder.append(", ").append(configFlag);
 					}
 					builder.append(")'");
 				}
@@ -798,11 +798,11 @@ public class DefaultPageNavi implements PageNavi{
 				for(Iterator<String> itrKey=params.keySet().iterator(); itrKey.hasNext();){
 					String key = itrKey.next(); 
 					Object values = params.get(key); 
-					html += createHidParam(key,values); 
+					html += createHidParam(key, values);
 				} 
 			} 
-			html += createHidParam(config.KEY_SHOW_STAT,showStat); 
-			html += createHidParam(config.KEY_SHOW_JUMP,showJump); 
+			html += createHidParam(config.KEY_SHOW_STAT, showStat);
+			html += createHidParam(config.KEY_SHOW_JUMP, showJump);
 		}catch(Exception e){
 			e.printStackTrace(); 
 		} 

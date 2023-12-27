@@ -269,14 +269,14 @@ public class HttpClient {
 		}else{
 		}
 		/*
-		0,100,40  开始,结束,已完成
-		101,200
+		0, 100, 40  开始, 结束, 已完成
+		101, 200
 		 表示头500个字节:bytes=0-499
 		表示第二个500字节:bytes=500-999
 		表示最后500个字节:bytes=-500
 		表示500字节以后的范围:bytes=500-
-		第一个和最后一个字节:bytes=0-0,-1
-		同时指定几个范围:bytes=500-600,601-999
+		第一个和最后一个字节:bytes=0-0, -1
+		同时指定几个范围:bytes=500-600, 601-999
 		 */
 		long start=0;
 		if(tmpFile.exists()){//继上次进度下载
@@ -292,7 +292,7 @@ public class HttpClient {
 				get.removeHeaders("Range");
 				response = client.execute(get);
 				code = response.getStatusLine().getStatusCode();
-				log.warn("[http download][断点设置异常][url:{}]",url);
+				log.warn("[http download][断点设置异常][url:{}]", url);
 			}
 			if(code != 200 && code !=206){
 				// progress.error(url, "", code, "状态异常");
@@ -316,7 +316,7 @@ public class HttpClient {
 				int len = -1;
 				while((len = is.read(buffer) )!= -1){
 					if(task.getAction() !=1){
-						log.warn("[http download][break][url:{}]",url);
+						log.warn("[http download][break][url:{}]", url);
 						break;
 					}
 					raf.write(buffer, 0, len);
@@ -329,7 +329,7 @@ public class HttpClient {
 		} catch (Exception e) {
 			// progress.error(url, "", 0, e.toString());
 			task.error(-1, e.toString());
-			log.warn("[http download][下载异常][url:{}]",url);
+			log.warn("[http download][下载异常][url:{}]", url);
 			e.printStackTrace();
 		}finally{
 			if(null != raf){
@@ -400,7 +400,7 @@ public class HttpClient {
 			}
 		}
 		if(ConfigTable.IS_HTTP_LOG && log.isWarnEnabled()){
-			log.warn("[http upload][url:{}]"+fileLog,url);
+			log.warn("[http upload][url:{}]"+fileLog, url);
 		}
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
@@ -472,7 +472,7 @@ public class HttpClient {
 	 * @param method  method
 	 * @param headers  headers
 	 */
-	public static void setHeader(HttpRequestBase method,  Map<String, String> headers) {
+	public static void setHeader(HttpRequestBase method, Map<String, String> headers) {
 		if (null != headers) {
 			Iterator<String> keys = headers.keySet().iterator();
 			while (keys.hasNext()) {
@@ -502,10 +502,10 @@ public class HttpClient {
 			}
 			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
-			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信                  
-			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
-			// STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols, null,
+			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证, 允许和所有的host建立SSL通信                  
+			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略, 即通配符能够匹配所有子域名
+			// STRICT_HOSTNAME_VERIFIER  严格匹配模式, hostname必须匹配第一个CN或者任何一个subject-alts
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}catch(Exception e){

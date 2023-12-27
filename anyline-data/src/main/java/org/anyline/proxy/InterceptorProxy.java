@@ -226,7 +226,7 @@ public class InterceptorProxy {
     public static SWITCH prepareUpdate(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(UpdateInterceptor interceptor:updateInterceptors){
-            swt = interceptor.prepare(runtime, random, batch,  dest, data, configs, columns);
+            swt = interceptor.prepare(runtime, random, batch, dest, data, configs, columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;
@@ -261,7 +261,7 @@ public class InterceptorProxy {
     public static SWITCH prepareInsert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors){
-            swt = interceptor.prepare(runtime, random, batch, dest, data,  columns);
+            swt = interceptor.prepare(runtime, random, batch, dest, data, columns);
             if(swt == SWITCH.SKIP){
                 //跳过后续的 prepare
                 return swt;

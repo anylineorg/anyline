@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface Run {
-	void setRuntime(DataRuntime runtime);
+	Run setRuntime(DataRuntime runtime);
 	void init();
 	DriverAdapter adapter();
 	/** 
@@ -81,7 +81,7 @@ public interface Run {
 	Condition getCondition(String name);
 
 	/**
-	 * 根据key查询条件,包括sql主体部分,有可能有多个相同key的条件
+	 * 根据key查询条件, 包括sql主体部分, 有可能有多个相同key的条件
 	 * @param name name
 	 * @return List
 	 */

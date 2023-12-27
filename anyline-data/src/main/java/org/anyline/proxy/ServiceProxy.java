@@ -20,19 +20,23 @@ package org.anyline.proxy;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.springjdbc.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.init.DefaultRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +67,7 @@ public class ServiceProxy {
     }
 
     public static AnylineService service(){
-        return service(null);
+        return service("default");
     }
     public static AnylineService service(String key){
         if(null == key){
@@ -75,12 +79,32 @@ public class ServiceProxy {
         }*/
         return service;
     }
+    public static AnylineService service(DatabaseType type, DriverAdapter adapter){
+        if(null == adapter){
+            return null;
+        }
+        DataRuntime runtime = new DefaultRuntime();
+        runtime.setAdapter(adapter);
+        runtime.setKey("virtual("+type+")");
+        AnylineService service = new DefaultService();
+        AnylineDao dao = new DefaultDao();
+        service.setDao(dao);
+        dao.setRuntime(runtime);
+        return service;
+    }
+    public static AnylineService service(DatabaseType type){
+        DriverAdapter adapter = DriverAdapterHolder.getAdapter(type);
+        if(null == adapter && type.url().contains("jdbc:") && ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER){
+           adapter = (DriverAdapter)SpringContextUtil.getBean("anyline.data.jdbc.adapter.common");
+        }
+        return service(type, adapter);
+    }
 
     /**
      * 临时数据源
-     * @param datasource 数据源,如DruidDataSource,MongoClient
-     * @param database 数据库,jdbc类型数据源不需要
-     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter() ,如果不提供则根据ds检测
+     * @param datasource 数据源, 如DruidDataSource, MongoClient
+     * @param database 数据库, jdbc类型数据源不需要
+     * @param adapter 如果确认数据库类型可以提供如 new MySQLAdapter(), 如果不提供则根据ds检测
      * @return service
      * @throws Exception 异常 Exception
      */
@@ -125,14 +149,14 @@ public class ServiceProxy {
      * EXECUTE			: 执行(原生SQL及存储过程)
      * DELETE			: 删除
      * CACHE			: 缓存
-     * METADATA			: 简单格式元数据,只返回NAME
+     * METADATA			: 简单格式元数据, 只返回NAME
      ******************************************************************************************************************/
 
     /* *****************************************************************************************************************
      * 													INSERT
      ******************************************************************************************************************/
 
-    public static long insert(int batch, String dest, Object data,  List<String>  columns){
+    public static long insert(int batch, String dest, Object data, List<String>  columns){
         return service.insert(batch, dest, data, columns);
     }
     public static long insert(int batch, String dest, Object data, String ... columns){
@@ -175,20 +199,20 @@ public class ServiceProxy {
 
     /**
      * 更新记录
-     * 默认情况下以主键为更新条件,需在更新的数据保存在data中
-     * 如果提供了dest则更新dest表,如果没有提供则根据data解析出表名
-     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
+     * 默认情况下以主键为更新条件, 需在更新的数据保存在data中
+     * 如果提供了dest则更新dest表, 如果没有提供则根据data解析出表名
+     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键, 则根据TYPE_CODE更新
      * 可以提供了ConfigStore以实现更复杂的更新条件
      * 需要更新的列通过 columns提供
      * @param columns	需要更新的列
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data 		更新的数据及更新条件(如果有ConfigStore则以ConfigStore为准)
      * @param configs 	更新条件
      * @return int 影响行数
      */
 
     public static long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-        return service.update(batch, dest, data, configs,  columns);
+        return service.update(batch, dest, data, configs, columns);
     }
     public static long update(int batch, String dest, Object data, String ... columns){
         return service.update(batch, dest, data, columns);
@@ -229,13 +253,13 @@ public class ServiceProxy {
      * 在操作集合时区别:
      * save会循环操作数据库每次都会判断insert|update
      * save 集合中的数据可以是不同的表不同的结构
-     * insert 集合中的数据必须保存到相同的表,结构必须相同
+     * insert 集合中的数据必须保存到相同的表, 结构必须相同
      * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
      *
      * 保存(insert|update)根据是否有主键值确定insert或update
      * @param data  数据
      * @param columns 指定更新或保存的列
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @return 影响行数
      */
     public static long save(int batch, String dest, Object data, List<String>  columns){
@@ -300,7 +324,7 @@ public class ServiceProxy {
     public static DataSet querys(String src, Object obj, String ... conditions){
         return service.querys(src, obj, conditions);
     }
-    public static void querys(String src, StreamHandler handler,  Object obj, String ... conditions){
+    public static void querys(String src, StreamHandler handler, Object obj, String ... conditions){
         service.querys(src, handler, obj, conditions);
     }
     public static DataSet querys(String src, PageNavi navi, Object obj, String ... conditions){
@@ -335,7 +359,7 @@ public class ServiceProxy {
     public static void querys(String src, StreamHandler handler, String ... conditions){
         service.querys(src, handler, conditions);
     }
-    public static DataSet querys(String src, PageNavi navi,  String ... conditions){
+    public static DataSet querys(String src, PageNavi navi, String ... conditions){
         return service.querys(src, navi, conditions);
     }
 
@@ -347,10 +371,10 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String src, long first, long last,  String ... conditions){
+    public static DataSet querys(String src, long first, long last, String ... conditions){
         return service.querys(src, first, last, conditions);
     }
-    public static DataRow query(String src, ConfigStore configs,  String ... conditions){
+    public static DataRow query(String src, ConfigStore configs, String ... conditions){
         return service.query(src, configs, conditions);
     }
     public static DataRow query(String src, String ... conditions){
@@ -462,35 +486,35 @@ public class ServiceProxy {
 
 
     /**
-     * 直接返回Map集合不封装,不分页
+     * 直接返回Map集合不封装, 不分页
      * @param src			数据源(表或自定义SQL或SELECT语句)
      * @param configs		根据http等上下文构造查询条件
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions	固定查询条件
      * @return List
      */
-    public static List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions){
         return service.maps(src, configs, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(String src, Object obj, String ... conditions){
         return service.maps(src, obj, conditions);
     }
-    public static void maps(String src, StreamHandler handler,  Object obj, String ... conditions){
+    public static void maps(String src, StreamHandler handler, Object obj, String ... conditions){
         service.maps(src, handler, obj, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, long first, long last, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(String src, long first, long last, Object obj, String ... conditions){
         return service.maps(src, first, last, obj, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions){
+    public static List<Map<String, Object>> maps(String src, ConfigStore configs, String ... conditions){
         return service.maps(src, configs, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, String ... conditions){
+    public static List<Map<String, Object>> maps(String src, String ... conditions){
         return service.maps(src, conditions);
     }
-    public static void maps(String src, StreamHandler handler,  String ... conditions){
+    public static void maps(String src, StreamHandler handler, String ... conditions){
         service.maps(src, handler, conditions);
     }
-    public static List<Map<String,Object>> maps(String src, long first, long last, String ... conditions){
+    public static List<Map<String, Object>> maps(String src, long first, long last, String ... conditions){
         return service.maps(src, first, last, conditions);
     }
 
@@ -532,7 +556,7 @@ public class ServiceProxy {
         return service.cache(cache, src, obj, conditions);
     }
 
-    public static DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions){
+    public static DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
         return service.caches(cache, src, configs, conditions);
     }
     public static DataSet caches(String cache, String src, String ... conditions){
@@ -548,7 +572,7 @@ public class ServiceProxy {
         return service.cache(cache, src, conditions);
     }
 
-    /*多表查询,左右连接时使用*/
+    /*多表查询, 左右连接时使用*/
     public static DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
         return service.querys(prepare, configs, obj, conditions);
     }
@@ -568,7 +592,7 @@ public class ServiceProxy {
         return service.query(prepare, obj, conditions);
     }
 
-    public static DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions){
+    public static DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions){
         return service.querys(prepare, configs, conditions);
     }
     public static DataSet querys(RunPrepare prepare, String ... conditions){
@@ -577,10 +601,10 @@ public class ServiceProxy {
     public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
         service.querys(prepare, handler, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, long first, long last,  String ... conditions){
+    public static DataSet querys(RunPrepare prepare, long first, long last, String ... conditions){
         return service.querys(prepare, first, last, conditions);
     }
-    public static DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions){
+    public static DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions){
         return service.query(prepare, configs, conditions);
     }
     public static DataRow query(RunPrepare prepare, String ... conditions){
@@ -734,10 +758,10 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return DataSet
      */
-    public static DataSet querysProcedure(String procedure, long first, long last , String ... inputs){
+    public static DataSet querysProcedure(String procedure, long first, long last, String ... inputs){
         return service.querysProcedure(procedure, first, last, inputs);
     }
-    public static DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs){
+    public static DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs){
         return service.querysProcedure(procedure, navi, inputs);
     }
     public static DataSet querysProcedure(String procedure, String ... inputs){
@@ -746,7 +770,7 @@ public class ServiceProxy {
     public static DataSet querys(Procedure procedure, long first, long last, String ... inputs){
         return service.querys(procedure, first, last, inputs);
     }
-    public static DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs){
+    public static DataSet querys(Procedure procedure, PageNavi navi, String ... inputs){
         return service.querys(procedure, navi, inputs);
     }
 
@@ -766,9 +790,9 @@ public class ServiceProxy {
     }
     /**
      * 删除 根据columns列删除 可设置复合主键
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param set 数据
-     * @param columns 生成删除条件的列,如果不设置则根据主键删除
+     * @param columns 生成删除条件的列, 如果不设置则根据主键删除
      * @return 影响行数
      */
     public static long delete(String dest, DataSet set, String ... columns){
@@ -784,7 +808,7 @@ public class ServiceProxy {
     /**
      * 根据columns列删除
      * @param obj obj
-     * @param columns 生成删除条件的列,如果不设置则根据主键删除
+     * @param columns 生成删除条件的列, 如果不设置则根据主键删除
      * @return 影响行数
      */
     public static long delete(Object obj, String ... columns){
@@ -792,7 +816,7 @@ public class ServiceProxy {
     }
 
     /**
-     * 根据多列条件删除 delete("user","type","1", "age:20");
+     * 根据多列条件删除 delete("user", "type", "1", "age:20");
      * @param table 表
      * @param kvs key-value
      * @return 影响行数
@@ -926,7 +950,7 @@ public class ServiceProxy {
          ******************************************************************************************************************/
 
         /**
-         * 查询所有数据库
+         * 查询全部数据库
          * @return databases
          */
         public static LinkedHashMap<String, Database> databases(){
@@ -951,9 +975,9 @@ public class ServiceProxy {
         }
         /**
          * tables
-         * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-         * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
-         * @param name 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
+         * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+         * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+         * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
          * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
          * @return tables
          */
@@ -1058,7 +1082,7 @@ public class ServiceProxy {
          * @param tags 标签值
          * @return PartitionTables
          */
-        public static LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String,Object> tags){
+        public static LinkedHashMap<String, PartitionTable> ptables(MasterTable master, Map<String, Object> tags){
             return service.metadata().ptables(master, tags);
         }
 
@@ -1095,17 +1119,17 @@ public class ServiceProxy {
             return service.metadata().exists(catalog, schema, table, name);
         }
         /**
-         * 查询表中所有的表,注意这里的map.KEY全部转大写
+         * 查询表中所有的表, 注意这里的map.KEY全部转大写
          * @param table 表
          * @return map
          */
-        public static LinkedHashMap<String,Column> columns(Table table){
+        public static LinkedHashMap<String, Column> columns(Table table){
             return service.metadata().columns(table);
         }
-        public static LinkedHashMap<String,Column> columns(String table){
+        public static LinkedHashMap<String, Column> columns(String table){
             return service.metadata().columns(table);
         }
-        public static LinkedHashMap<String,Column> columns(Catalog catalog, Schema schema, String table){
+        public static LinkedHashMap<String, Column> columns(Catalog catalog, Schema schema, String table){
             return service.metadata().columns(catalog, schema, table);
         }
 
@@ -1133,10 +1157,10 @@ public class ServiceProxy {
         public static LinkedHashMap<String, Tag> tags(Table table){
             return service.metadata().tags(table);
         }
-        public static LinkedHashMap<String,Tag> tags(String table){
+        public static LinkedHashMap<String, Tag> tags(String table){
             return service.metadata().tags(table);
         }
-        public static LinkedHashMap<String,Tag> tags(Catalog catalog, Schema schema, String table){
+        public static LinkedHashMap<String, Tag> tags(Catalog catalog, Schema schema, String table){
             return service.metadata().tags(catalog, schema, table);
         }
 
@@ -1148,10 +1172,10 @@ public class ServiceProxy {
         public static LinkedHashMap<String, Index> indexs(Table table){
             return service.metadata().indexs(table);
         }
-        public static LinkedHashMap<String,Index> indexs(String table){
+        public static LinkedHashMap<String, Index> indexs(String table){
             return service.metadata().indexs(table);
         }
-        public static LinkedHashMap<String,Index> indexs(Catalog catalog, Schema schema, String table){
+        public static LinkedHashMap<String, Index> indexs(Catalog catalog, Schema schema, String table){
             return service.metadata().indexs(catalog, schema, table);
         }
 
@@ -1163,10 +1187,10 @@ public class ServiceProxy {
         public static LinkedHashMap<String, Constraint> constraints(Table table){
             return service.metadata().constraints(table);
         }
-        public static LinkedHashMap<String,Constraint> constraints(String table){
+        public static LinkedHashMap<String, Constraint> constraints(String table){
             return service.metadata().constraints(table);
         }
-        public static LinkedHashMap<String,Constraint> constraints(Catalog catalog, Schema schema, String table){
+        public static LinkedHashMap<String, Constraint> constraints(Catalog catalog, Schema schema, String table){
             return service.metadata().constraints(catalog, schema, table);
         }
 

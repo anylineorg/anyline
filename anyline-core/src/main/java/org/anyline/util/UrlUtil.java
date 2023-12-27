@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -40,7 +40,7 @@ public class UrlUtil {
 		url = url.toLowerCase(); 
 		int p = url.indexOf("%"); 
 		if (p != -1 && url.length() - p > 9) {
-			url = url.substring(p, p + 9); 
+			url = url.substring(p, p + 9);
 		} 
 		return checkUTF8(url); 
 	} 
@@ -55,7 +55,7 @@ public class UrlUtil {
 		String sign = ""; 
 		if (text.startsWith("%e")) 
 			for (int i = 0, p = 0; p != -1; i++) {
-				p = text.indexOf("%", p); 
+				p = text.indexOf("%", p);
 				if (p != -1) 
 					p++; 
 				sign += p; 
@@ -73,11 +73,11 @@ public class UrlUtil {
 		String result; 
 		if (checkUTF8(text)) {
 			byte[] code = new byte[3]; 
-			code[0] = (byte) (Integer.parseInt(text.substring(1, 3), 16) - 256); 
-			code[1] = (byte) (Integer.parseInt(text.substring(4, 6), 16) - 256); 
-			code[2] = (byte) (Integer.parseInt(text.substring(7, 9), 16) - 256); 
+			code[0] = (byte) (Integer.parseInt(text.substring(1, 3), 16) - 256);
+			code[1] = (byte) (Integer.parseInt(text.substring(4, 6), 16) - 256);
+			code[2] = (byte) (Integer.parseInt(text.substring(7, 9), 16) - 256);
 			try {
-				result = new String(code, "UTF-8"); 
+				result = new String(code, "UTF-8");
 			} catch (UnsupportedEncodingException ex) {
 				result = null; 
 			} 
@@ -102,12 +102,12 @@ public class UrlUtil {
 			if (p == -1) 
 				return url; 
 			while (p != -1) {
-				result += url.substring(0, p); 
-				url = url.substring(p, url.length()); 
+				result += url.substring(0, p);
+				url = url.substring(p, url.length());
 				if ("".equals(url) || url.length() < 9) 
 					return result; 
-				result += UTF82Word(url.substring(0, 9)); 
-				url = url.substring(9, url.length()); 
+				result += UTF82Word(url.substring(0, 9));
+				url = url.substring(9, url.length());
 				p = url.indexOf("%e"); 
 			} 
 		} 

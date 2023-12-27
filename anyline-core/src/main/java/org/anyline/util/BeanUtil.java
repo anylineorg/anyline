@@ -137,7 +137,7 @@ public class BeanUtil {
 			list = (Collection)ClassUtil.newInstance(clazz);
 			for (Object item : value) {
 				if (item instanceof Map) {
-					Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
+					Object oitem = BeanUtil.map2object((Map) item, itemClass, null, true, true, true);
 					list.add(oitem);
 				}
 			}
@@ -159,7 +159,7 @@ public class BeanUtil {
 				Class itemClass = (Class) args[0];
 				for (Object item : value) {
 					if (item instanceof Map) {
-						Object oitem = BeanUtil.map2object((Map) item, itemClass,null, true, true, true);
+						Object oitem = BeanUtil.map2object((Map) item, itemClass, null, true, true, true);
 						list.add(oitem);
 					}
 				}
@@ -171,8 +171,8 @@ public class BeanUtil {
 	}
 	/**
 	 * 根据field集合条目泛型类转换
-	 * @param value Map&lt;?,Map&gt;
-	 * @return Map&lt;?,Entity&gt;
+	 * @param value Map&lt;?, Map&gt;
+	 * @return Map&lt;?, Entity&gt;
 	 * @throws Exception
 	 */
 	public static Map maps2object(Field field, Map value) throws Exception{
@@ -204,7 +204,7 @@ public class BeanUtil {
 		Collection result = new ArrayList();
 		if(v instanceof String){
 			if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)){
-				String[] tmps = v.toString().split(",");
+				String[] tmps = v.toString().split(", ");
 				for(String tmp:tmps){
 					result.add(tmp);
 				}
@@ -235,7 +235,7 @@ public class BeanUtil {
 	}
 	/**
 	 * 属性赋值
-	 * @param obj 对象 如果给类静态属性赋值,传null
+	 * @param obj 对象 如果给类静态属性赋值, 传null
 	 * @param field 属性
 	 * @param value 值
 	 * @param alert 失败提醒
@@ -558,15 +558,15 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String,Object> toMap(Object obj, String ... keys){
+	public static Map<String, Object> toMap(Object obj, String ... keys){
 		if(null == obj){
 			return null;
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		if(null == keys || keys.length ==0){
 			if(obj instanceof Map){
 				// map to map
-				Map<String,Object> tmp = (Map<String,Object>)obj;
+				Map<String, Object> tmp = (Map<String, Object>)obj;
 				for(String key:tmp.keySet()){
 					map.put(key, tmp.get(key));
 				}
@@ -586,7 +586,7 @@ public class BeanUtil {
 			for(String key:keys){
 				Object value = null;
 				if(obj instanceof Map){
-					value = ((Map<String,Object>)obj).get(key);
+					value = ((Map<String, Object>)obj).get(key);
 				}else{
 					value = getFieldValue(obj, key);
 					if(null == value){
@@ -598,13 +598,13 @@ public class BeanUtil {
 		}
 		return map;
 	}
-	public static List<Map<String,Object>> toMaps(Collection<?> objs, String ... keys){
+	public static List<Map<String, Object>> toMaps(Collection<?> objs, String ... keys){
 		if(null == objs){
 			return null;
 		}
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		for(Object obj:objs){
-			list.add(toMap(obj,keys));
+			list.add(toMap(obj, keys));
 		}
 		return list;
 	}
@@ -746,8 +746,8 @@ public class BeanUtil {
 		return list;
 	}
 	/**
-	 * @param params key1,value1,key2:value2,key3,value3
-	 *               "NM:zh%","AGE:&gt;20","NM","%zh%"
+	 * @param params key1, value1, key2:value2, key3, value3
+	 *               "NM:zh%", "AGE:&gt;20", "NM", "%zh%"
 	 * @return Map
 	 */
 	public static Map<String, String> array2map(String ... params){
@@ -787,7 +787,7 @@ public class BeanUtil {
 
 	/**
 	 * map转实现
-	 * @param obj 在此基础上执行,如果不提供则新创建
+	 * @param obj 在此基础上执行, 如果不提供则新创建
 	 * @param map 源数据
 	 * @param clazz Entity class
 	 * @param metadatas metadatas
@@ -799,7 +799,7 @@ public class BeanUtil {
 	 * @param <T> T
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+	public static <T> T map2object(T obj, Map<String, ?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		try {
 			if(null == obj) {
 				if(Map.class.isAssignableFrom(clazz)){
@@ -850,10 +850,10 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		return map2object(null, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit, keys);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+	public static <T> T map2object(T obj, Map<String, ?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, Map<Field, String> fields){
 		obj = map2object(obj, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit);
 		for(Map.Entry item:fields.entrySet()){
 			Field field = (Field)item.getKey();
@@ -864,34 +864,34 @@ public class BeanUtil {
 		return obj;
 	}
 
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, Map metadatas, boolean recursion, boolean ignoreCase, boolean ignoreSplit, Map<Field, String> fields){
 		return map2object(null, map, clazz, metadatas, recursion, ignoreCase, ignoreSplit, fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, Map<Field, String> fields){
 		return map2object(null, map, clazz, null, recursion, ignoreCase, ignoreSplit, fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
+	public static <T> T map2object(T obj, Map<String, ?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
 		return map2object(obj, map, clazz, metadatas, false, false, false, fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz,  Map<Field, String> fields){
+	public static <T> T map2object(T obj, Map<String, ?> map, Class<T> clazz, Map<Field, String> fields){
 		return map2object(obj, map, clazz, null, false, false, false, fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, Map metadatas, Map<Field, String> fields){
 		return map2object(null, map, clazz, metadatas, false, false, false, fields);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, Map<Field, String> fields){
 		return map2object(null, map, clazz, null, false, false, false, fields);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map metadatas, String ... keys){
+	public static <T> T map2object(T obj, Map<String, ?> map, Class<T> clazz, Map metadatas, String ... keys){
 		return map2object(obj, map, clazz, metadatas, false, false, false);
 	}
-	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, String ... keys){
+	public static <T> T map2object(T obj, Map<String, ?> map, Class<T> clazz, String ... keys){
 		return map2object(obj, map, clazz, null, false, false, false);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map metadatas, String ... keys){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, Map metadatas, String ... keys){
 		return map2object(null, map, clazz, metadatas, false, false, false);
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz,  String ... keys){
+	public static <T> T map2object(Map<String, ?> map, Class<T> clazz, String ... keys){
 		return map2object(null, map, clazz, null, false, false, false);
 	}
 
@@ -910,7 +910,7 @@ public class BeanUtil {
 		return json2oject(json, clazz, null);
 	}
 	@SuppressWarnings("rawtypes")
-	public static String map2xml(Map<String,?> map, boolean border, boolean order){
+	public static String map2xml(Map<String, ?> map, boolean border, boolean order){
 		StringBuffer builder = new StringBuffer();
 		if(border){
 			builder.append("<xml>");
@@ -946,17 +946,17 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String map2xml(Map<String,?> map){
+	public static String map2xml(Map<String, ?> map){
 		return map2xml(map, true, false);
 	}
-	public static String map2json(Map<String,?> map){
+	public static String map2json(Map<String, ?> map){
 		return object2json(map);
 	}
-	public static String map2json(Map<String,?> map, JsonInclude.Include include){
-		return object2json(map,include);
+	public static String map2json(Map<String, ?> map, JsonInclude.Include include){
+		return object2json(map, include);
 	}
-	public static Map<String,Object> xml2map(String xml){
-		Map<String,Object> map = new HashMap<String,Object>();
+	public static Map<String, Object> xml2map(String xml){
+		Map<String, Object> map = new HashMap<String, Object>();
 		Document document;
 		try {
 			document =  DocumentHelper.parseText(xml);
@@ -976,7 +976,7 @@ public class BeanUtil {
 	/**
 	 * 按key升序拼接
 	 * @param map  数据源
-	 * @param join key,value之间的拼接符(默认=)
+	 * @param join key, value之间的拼接符(默认=)
 	 * @param separator  separator 多个kv的分隔符(默认&amp;)
 	 * @param ignoreEmpty 是否忽略空值
 	 * @param order 是否排序
@@ -1036,10 +1036,10 @@ public class BeanUtil {
 	}
 
 	public static String map2string(Map map, boolean ignoreEmpty, boolean order){
-		return map2string(map, "=" , "&", ignoreEmpty, order);
+		return map2string(map, "=", "&", ignoreEmpty, order);
 	}
 	public static String map2string(Map map){
-		return map2string(map, "=","&",true, true);
+		return map2string(map, "=", "&", true, true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
 		return xml2object(xml, clazz, null, recursion, ignoreCase, ignoreSplit);
@@ -1047,7 +1047,7 @@ public class BeanUtil {
 	public static <T> T xml2object(String xml, Class<T> clazz, Map columns, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
 		T obj = null;
 		try {
-			Map<String,?> map = xml2map(xml);
+			Map<String, ?> map = xml2map(xml);
 			obj = map2object(map, clazz, columns, recursion, ignoreCase, ignoreSplit);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1061,10 +1061,10 @@ public class BeanUtil {
 		return xml2object(xml, clazz, null, recursion, false, false);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz, Map columns){
-		return xml2object(xml,  clazz, columns,true);
+		return xml2object(xml, clazz, columns, true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz){
-		return xml2object(xml,  clazz, null, true);
+		return xml2object(xml, clazz, null, true);
 	}
 	public static String object2xml(Object obj){
 		if(null == obj){
@@ -1085,11 +1085,11 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
-	public static Map<String,Object> object2map(Object obj){
+	public static Map<String, Object> object2map(Object obj){
 		if(null == obj){
 			return null;
 		}
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields){
 			Object value = getFieldValue(obj, field);
@@ -1100,14 +1100,14 @@ public class BeanUtil {
 		}
 		return map;
 	}
-	public static Map<String,Object> object2map(Object obj, List<String> keys){
+	public static Map<String, Object> object2map(Object obj, List<String> keys){
 		return object2map(new HashMap(), obj, keys);
 	}
 
-	public static Map<String,Object> object2map(Map map, Object obj){
+	public static Map<String, Object> object2map(Map map, Object obj){
 		return object2map(map, obj, null);
 	}
-	public static Map<String,Object> object2map(Map map, Object obj, List<String> keys){
+	public static Map<String, Object> object2map(Map map, Object obj, List<String> keys){
 		if(null == obj){
 			return null;
 		}
@@ -1156,12 +1156,12 @@ public class BeanUtil {
 		}
 		return map;
 	}
-	public static <T> List<Map<String,Object>> objects2maps(Collection<T> objs, List<String> keys){
-		List<Map<String,Object>> maps = new ArrayList<>();
+	public static <T> List<Map<String, Object>> objects2maps(Collection<T> objs, List<String> keys){
+		List<Map<String, Object>> maps = new ArrayList<>();
 		if(null != objs)
 			for(T obj:objs){
 				if(obj instanceof Map){
-					Map<String,Object> item = new HashMap<>();
+					Map<String, Object> item = new HashMap<>();
 					for(String key:keys){
 						item.put(key, ((Map)obj).get(key));
 					}
@@ -1172,8 +1172,8 @@ public class BeanUtil {
 			}
 		return maps;
 	}
-	public static <T> List<Map<String,Object>> objects2maps(Collection<T> objs){
-		List<Map<String,Object>> maps = new ArrayList<>();
+	public static <T> List<Map<String, Object>> objects2maps(Collection<T> objs){
+		List<Map<String, Object>> maps = new ArrayList<>();
 		if(null != objs)
 			for(T obj:objs){
 				if(obj instanceof Map){
@@ -1202,22 +1202,22 @@ public class BeanUtil {
 		return null;
 	}
 	public static String object2json(Object obj){
-		return object2json(obj,null);
+		return object2json(obj, null);
 	}
 
 	/**
 	 * 参数转map
 	 * 参数格式a=1&amp;b=2&amp;b=3
-	 * 如果是多个值,以String的List形式保存
+	 * 如果是多个值, 以String的List形式保存
 	 * 如果是url将根据问号分割
 	 * @param url 参数或url
-	 * @param empty 结果中是否包含空值,所有空值以""形式保存
+	 * @param empty 结果中是否包含空值, 所有空值以""形式保存
 	 * @param decode 是否需要解码
 	 * @param charset 解码编码
 	 * @return Map
 	 */
-	public static Map<String,Object> param2map(String url, boolean empty, boolean decode, String charset){
-		Map<String,Object> params = new HashMap<String,Object>();
+	public static Map<String, Object> param2map(String url, boolean empty, boolean decode, String charset){
+		Map<String, Object> params = new HashMap<String, Object>();
 		if(null != url){
 			int index = url.indexOf("?");
 			if(index != -1) {
@@ -1242,7 +1242,7 @@ public class BeanUtil {
 					continue;
 				}
 				if(decode){
-					v = urlDecode(v,charset);
+					v = urlDecode(v, charset);
 				}
 				if(params.containsKey(k)){
 					Object olds = params.get(k);
@@ -1255,9 +1255,9 @@ public class BeanUtil {
 						vs = (ArrayList)olds;
 					}
 					vs.add(v);
-					params.put(k,vs);
+					params.put(k, vs);
 				}else{
-					params.put(k,v);
+					params.put(k, v);
 				}
 
 			}
@@ -1280,10 +1280,10 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static Map<String,Object> param2map(String url, boolean empty){
+	public static Map<String, Object> param2map(String url, boolean empty){
 		return param2map(url, empty, false, "UTF-8");
 	}
-	public static Map<String,Object> param2map(String url, boolean empty, boolean decode){
+	public static Map<String, Object> param2map(String url, boolean empty, boolean decode){
 		return param2map(url, empty, decode, "UTF-8");
 	}
 	/**
@@ -1305,16 +1305,16 @@ public class BeanUtil {
 	}
 	/**
 	 * 提取集合中每个条目的多个key属性的值
-	 * 如提取用户列表中的所有用户ID,CODE
+	 * 如提取用户列表中的所有用户ID, CODE
 	 * @param list  list
 	 * @param keys  keys
 	 * @return List
 	 */
-	public static List<Map<String,Object>> extracts(Collection<?> list, String ... keys){
-		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
+	public static List<Map<String, Object>> extracts(Collection<?> list, String ... keys){
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		if(null != list){
 			for(Object obj:list){
-				Map<String,Object> map = new HashMap<String,Object>();
+				Map<String, Object> map = new HashMap<String, Object>();
 				if(null !=keys){
 					for(String key:keys){
 						Object value = getFieldValue(obj, key);
@@ -1372,7 +1372,7 @@ public class BeanUtil {
 	 * @param <T> T
 	 * @param list  list
 	 * @param obj  obj
-	 * @param keys 只比较keys列,基础类型不需要指定列
+	 * @param keys 只比较keys列, 基础类型不需要指定列
 	 * @return T
 	 */
 	public static <T> boolean contain(Collection<T> list, T obj, String ... keys){
@@ -1415,7 +1415,7 @@ public class BeanUtil {
 		for(String key:keys){
 			Object v1 = getFieldValue(obj1, key);
 			Object v2 = getFieldValue(obj2, key);
-			if(!equals(v1,v2)){
+			if(!equals(v1, v2)){
 				return false;
 			}
 
@@ -1471,7 +1471,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static String concat(List<?> list) {
-		return concat(list,",");
+		return concat(list, ", ");
 	}
 */
 
@@ -1532,7 +1532,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Collection<?> list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Collection<?> list) {
 		return concat(list, false);
@@ -1576,7 +1576,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static <T> String concat(T[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static <T> String concat(T[] list) {
 		return concat(list, false);
@@ -1602,7 +1602,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Integer[] list, boolean required) {
-		return concat(list, ",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Integer[] list) {
 		return concat(list, false);
@@ -1627,10 +1627,10 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Long[] list, boolean required) {
-		return concat(list, ",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Long[] list) {
-		return concat(list,false);
+		return concat(list, false);
 	}
 
 	public static String concat(Double[] list, String split, boolean required) {
@@ -1652,13 +1652,13 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Double[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Double[] list) {
 		return concat(list, false);
 	}
 
-	public static String concat(Float[] list, String split,  boolean required) {
+	public static String concat(Float[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1677,7 +1677,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Float[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Float[] list) {
 		return concat(list, false);
@@ -1702,7 +1702,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Short[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Short[] list) {
 		return concat(list, false);
@@ -1728,10 +1728,10 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Byte[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(Byte[] list) {
-		return concat(list,false);
+		return concat(list, false);
 	}
 
 
@@ -1754,7 +1754,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(int[] list, boolean required) {
-		return concat(list, ",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(int[] list) {
 		return concat(list, false);
@@ -1779,10 +1779,10 @@ public class BeanUtil {
 		return concat(list, split);
 	}
 	public static String concat(long[] list, boolean required) {
-		return concat(list, ",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(long[] list) {
-		return concat(list,false);
+		return concat(list, false);
 	}
 
 	public static String concat(double[] list, String split, boolean required) {
@@ -1804,13 +1804,13 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(double[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(double[] list) {
 		return concat(list, false);
 	}
 
-	public static String concat(float[] list, String split,  boolean required) {
+	public static String concat(float[] list, String split, boolean required) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			for(Object item:list){
@@ -1829,7 +1829,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(float[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(float[] list) {
 		return concat(list, false);
@@ -1854,7 +1854,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(short[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(short[] list) {
 		return concat(list, false);
@@ -1880,10 +1880,10 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(byte[] list, boolean required) {
-		return concat(list,",", required);
+		return concat(list, ", ", required);
 	}
 	public static String concat(byte[] list) {
-		return concat(list,false);
+		return concat(list, false);
 	}
 
 	public static List wrap(Collection list, String wrap){
@@ -1902,7 +1902,7 @@ public class BeanUtil {
 		return result;
 	}
 	public static List<String> toUpperCase(List<String> list){
-		return toUpperCase(list,false);
+		return toUpperCase(list, false);
 	}
 
 	/**
@@ -1959,7 +1959,7 @@ public class BeanUtil {
 			return obj;
 		}
 		if(obj instanceof Map){
-			obj = toUpperCaseKey((Map<String,Object>)obj, keys);
+			obj = toUpperCaseKey((Map<String, Object>)obj, keys);
 		}else if(obj instanceof Collection){
 			obj = toUpperCaseKey((Collection)obj, keys);
 		}
@@ -1975,7 +1975,7 @@ public class BeanUtil {
 		}
 		return con;
 	}
-	public static Map<String,Object> toUpperCaseKey(Map<String,Object> map, String ... keys){
+	public static Map<String, Object> toUpperCaseKey(Map<String, Object> map, String ... keys){
 		if(null == map){
 			return map;
 		}
@@ -2067,7 +2067,7 @@ public class BeanUtil {
 		return result;
 	}
 	/**
-	 * 与toString不同的是 中间没有空格与引号[1,2,3]而不是[1, 2, 3]
+	 * 与toString不同的是 中间没有空格与引号[1, 2, 3]而不是[1, 2, 3]
 	 * @param list List
 	 * @return String
 	 */
@@ -2208,30 +2208,31 @@ public class BeanUtil {
 
 	/**
 	 * String 转map
-	 * @param str name:zhang,age:20
+	 * @param str name:zhang, age:20
 	 * @return Map
 	 */
 	public static Map<String, String> string2map(String str){
 		Map<String, String> map = new HashMap<String, String>();
 		if(BasicUtil.isNotEmpty(str)){
-			if(str.startsWith("${") && str.endsWith("}")){
+			//if(str.startsWith("${") && str.endsWith("}")){
+			if(BasicUtil.checkEl(str)){
 				str = str.substring(2, str.length()-1);
 			}else if(str.startsWith("{") && str.endsWith("}")){
 				str = str.substring(1, str.length()-1);
 			}
-			String[] list = str.split(",");
+			String[] list = str.split(", ");
 			for(String item:list){
 				String[] kv = item.split(":");
 				if(kv.length ==2){
 					String k = kv[0];
 					if(k.startsWith("\"") && k.endsWith("\"")){
-						k = k.substring(1,k.length()-1);
+						k = k.substring(1, k.length()-1);
 					}
 					String v = kv[1];
 					if(v.startsWith("\"") && v.endsWith("\"")){
-						v = v.substring(1,v.length()-1);
+						v = v.substring(1, v.length()-1);
 					}
-					map.put(k,v);
+					map.put(k, v);
 				}else{
 					map.put(item.replace(":", ""), null);
 				}
@@ -2266,13 +2267,13 @@ public class BeanUtil {
 		List<String> keys = BasicUtil.getMapKeys(map);
 		for(String key:keys){
 			Object value = map.get(key);
-			if(BasicUtil.isEmpty(recursion,value)){
+			if(BasicUtil.isEmpty(recursion, value)){
 				map.remove(key);
 			}
 		}
 	}
 	public static void clearEmpty(Map<String, Object> map){
-		clearEmpty(map,true);
+		clearEmpty(map, true);
 	}
 	/**
 	 * 删除空值
@@ -2285,7 +2286,7 @@ public class BeanUtil {
 		}
 		int size = list.size();
 		for(int i=size-1;i>=0;i--){
-			if(BasicUtil.isEmpty(recursion,list.get(i))){
+			if(BasicUtil.isEmpty(recursion, list.get(i))){
 				list.remove(i);
 			}
 		}
@@ -2630,9 +2631,9 @@ public class BeanUtil {
 		if(BasicUtil.isNotEmpty(key)){
 			if(key.contains("${")){
 				try{
-					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
 					for(String k:ks){
-						Object v = getFieldValue(obj,k.replace("${", "").replace("}", ""));
+						Object v = getFieldValue(obj, k.replace("${", "").replace("}", ""));
 						if(null == v){
 							v = "";
 						}
@@ -2760,9 +2761,9 @@ public class BeanUtil {
 	}
 	/**
 	 * 解析 key:vlue形式参数age:20
-	 * 返回数组["age","20"]
-	 * 如果值为空返回["age",""]
-	 * 如果没有分隔符返回["age","age"]
+	 * 返回数组["age", "20"]
+	 * 如果值为空返回["age", ""]
+	 * 如果没有分隔符返回["age", "age"]
 	 * @param src  src
 	 * @return String
 	 */
@@ -2832,12 +2833,12 @@ public class BeanUtil {
 	 * {
 	 *     key1:{
 	 *         key11:{
-	 *             key111:111   // 提取111 recursion(map,key1,key11,key111)
+	 *             key111:111   // 提取111 recursion(map, key1, key11, key111)
 	 *         },
 	 *         key12:{
 	 *             key121:{
 	 *                 key1211:1211,
-	 *                 key1212:1212 // 提取1212 recursion(map,key1, key12, key121, key1212)
+	 *                 key1212:1212 // 提取1212 recursion(map, key1, key12, key121, key1212)
 	 *             }
 	 *         }
 	 *     }
@@ -2912,7 +2913,7 @@ public class BeanUtil {
 	 * @param keys keys
 	 * @return String
 	 */
-	public static Object propertyNvl(Map<String,?> map, String ... keys){
+	public static Object propertyNvl(Map<String, ?> map, String ... keys){
 		Object value = null;
 		if(null == map || null == keys){
 			return value;
@@ -2959,7 +2960,7 @@ public class BeanUtil {
 	 * @param map map
 	 * @param alert 赋值失败时是否提示异常信息
 	 */
-	public static void setFieldsValue(Object obj, Map<String,?> map , boolean alert){
+	public static void setFieldsValue(Object obj, Map<String, ?> map, boolean alert){
 		if(null != map && null != obj) {
 			List<String> fields = ClassUtil.getFieldsName(obj.getClass());
 			for (String field : fields) {
@@ -2971,7 +2972,7 @@ public class BeanUtil {
 		}
 	}
 
-	public static void setFieldsValue(Object obj, Map<String,?> map){
+	public static void setFieldsValue(Object obj, Map<String, ?> map){
 		setFieldsValue(obj, map, true);
 	}
 	public static byte[] serialize(Object value) {
@@ -3074,18 +3075,18 @@ public class BeanUtil {
 	 * @param <T> t
 	 * @return List
 	 * 输入:
-	 * [[A,B,C],[1,2,3]]
+	 * [[A, B, C], [1, 2, 3]]
 	 * 输出:
 	 *  [[A, 1], [A, 2], [A, 3]
-	 * , [B, 1], [B, 2], [B, 3]
-	 * , [C, 1], [C, 2], [C, 3]]
+	 *, [B, 1], [B, 2], [B, 3]
+	 *, [C, 1], [C, 2], [C, 3]]
 	 *
 	 * 输入:
-	 * [[A,B,C],[1,2,3],[一,二,三]]
+	 * [[A, B, C], [1, 2, 3], [一, 二, 三]]
 	 * 输出:
 	 *  [[A, 1, 一], [A, 1, 二], [A, 1, 三], [A, 2, 一], [A, 2, 二], [A, 2, 三], [A, 3, 一], [A, 3, 二], [A, 3, 三]
-	 * , [B, 1, 一], [B, 1, 二], [B, 1, 三], [B, 2, 一], [B, 2, 二], [B, 2, 三], [B, 3, 一], [B, 3, 二], [B, 3, 三]
-	 * , [C, 1, 一], [C, 1, 二], [C, 1, 三], [C, 2, 一], [C, 2, 二], [C, 2, 三], [C, 3, 一], [C, 3, 二], [C, 3, 三]
+	 *, [B, 1, 一], [B, 1, 二], [B, 1, 三], [B, 2, 一], [B, 2, 二], [B, 2, 三], [B, 3, 一], [B, 3, 二], [B, 3, 三]
+	 *, [C, 1, 一], [C, 1, 二], [C, 1, 三], [C, 2, 一], [C, 2, 二], [C, 2, 三], [C, 3, 一], [C, 3, 二], [C, 3, 三]
 	 * ]
 	 */
 	public static <T> List<List<T>> descartes(List<List<T>> lists) {
@@ -3179,10 +3180,10 @@ public class BeanUtil {
 	 * @param <K> k
 	 * @param <V> v
 	 */
-	public static <K,V> Map<K,V> merge(Map<K,V> ... maps){
-		Map<K,V> result = new HashMap<>();
+	public static <K, V> Map<K, V> merge(Map<K, V> ... maps){
+		Map<K, V> result = new HashMap<>();
 		if(null != maps){
-			for(Map<K,V> map:maps){
+			for(Map<K, V> map:maps){
 				join(result, map, true);
 			}
 		}
@@ -3198,7 +3199,7 @@ public class BeanUtil {
 	 * @param <K> k
 	 * @param <V> v
 	 */
-	public static <K,V> Map<K,V>  join(Map<K,V> src, Map<K,V> copy, boolean over){
+	public static <K, V> Map<K, V>  join(Map<K,V> src, Map<K,V> copy, boolean over){
 		if(null == src){
 			src = new HashMap<K,V>();
 		}
@@ -3412,7 +3413,8 @@ public class BeanUtil {
 						kvs.put(p1, p2);
 						i += 2;
 						continue;
-					} else if (p2.startsWith("${") && p2.endsWith("}")) {
+					//} else if (p2.startsWith("${") && p2.endsWith("}")) {
+					} else if (BasicUtil.checkEl(p2)) {
 						p2 = p2.substring(2, p2.length() - 1);
 						kvs.put(p1, p2);
 						kvs.put(p1 + srcFlagTag, "true");

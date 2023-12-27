@@ -35,10 +35,10 @@ import java.util.*;
 
 /**
  * DriverAdapter主要用来构造和执行不同数据库的命令,一般会分成3步,以insert为例<br/>
- * 1.insert[调用入口]提供为上一步调用的方法,方法内部再调用[命令合成]生成具体命令，最后调用[命令执行]执行命令<br/>
- * 2.insert[命令合成]根据不同的数据库生成具体的insert命令<br/>
- * 3.insert[命令执行]执行[命令合成]生成的命令<br/>
- * 其中[调用入口],[命令执行]大部分通用，重点是[命令合成]需要由每个数据库的适配器各自生成<br/>
+ * 1.insert[调用入口]<br/>提供为上一步调用的方法,方法内部再调用[命令合成]<br/>生成具体命令，最后调用[命令执行]执行命令<br/>
+ * 2.insert[命令合成]<br/>根据不同的数据库生成具体的insert命令<br/>
+ * 3.insert[命令执行]执行[命令合成]<br/>生成的命令<br/>
+ * 其中[调用入口]<br/>,[命令执行]大部分通用，重点是[命令合成]<br/>需要由每个数据库的适配器各自生成<br/>
  * [命令执行]过程注意数据库是否支持占位符，是否支持返回自增值，是否支持批量量插入<br/>
  * 以上3步在子类中要全部实现，如果不实现，需要输出日志或调用super方法(用于异常堆栈输出)<br/>
  */
@@ -69,31 +69,29 @@ public interface DriverAdapter {
 	 */
 	DatabaseType type();
 
-	/**
-	 * 支持的数据库版本
-	 * @return String
-	 */
-	String version();
 
 	/**
 	 * 验证运行环境与当前适配器是否匹配<br/>
 	 * 默认不连接只根据连接参数<br/>
 	 * 只有同一个库区分不同版本(如mmsql2000/mssql2005)或不同模式(如kingbase的oracle/pg模式)时才需要单独实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
 	 * @return boolean
 	 */
-	default boolean match(DataRuntime runtime){
+	default boolean match(DataRuntime runtime, boolean compensate){
 		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
-		return match(feature, keywords);
+		return match(feature, keywords, compensate);
 	}
 
 	/**
 	 *
 	 * @param feature 当前运行环境特征
 	 * @param keywords 关键字+jdbc-url前缀+驱动类
+	 * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
 	 * @return 数据源特征中包含上以任何一项都可以通过
 	 */
-	default boolean match(String feature, List<String> keywords){
+	default boolean match(String feature, List<String> keywords, boolean compensate){
 		feature = feature.toLowerCase();
 		if(null != keywords){
 			for (String k:keywords){
@@ -127,10 +125,12 @@ public interface DriverAdapter {
 	 */
 	DatabaseType compatible();
 
+
 	/**
-	 * 转换成相应数据库支持类型
-	 * @param type type
-	 * @return ColumnType
+	 * 转换成相应数据库类型<br/>
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
+	 * @param type 编码时输入的类型
+	 * @return 具体数据库中对应的数据类型
 	 */
 	ColumnType type(String type);
 
@@ -385,7 +385,7 @@ public interface DriverAdapter {
 	 * 													UPDATE
 	 ******************************************************************************************************************/
 	/**
-	 * UPDATE [调用入口]
+	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -461,7 +461,7 @@ public interface DriverAdapter {
 		return update(runtime, random, 0, null, data, BeanUtil.array2string(columns));
 	}
 	/**
-	 * update [命令合成]
+	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj Entity或DtaRow
@@ -537,7 +537,7 @@ public interface DriverAdapter {
 	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns);
 	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns);
 	/**
-	 * update [命令执行]
+	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -549,7 +549,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * save [调用入口]
+	 * save [调用入口]<br/>
 	 * <br/>
 	 * 根据是否有主键值确认insert | update<br/>
 	 * 执行完成后会补齐自增主键值
@@ -580,7 +580,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * <br/>
 	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -590,9 +590,9 @@ public interface DriverAdapter {
 	 * @param conditions  简单过滤条件
 	 * @return DataSet
 	 */
-	DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions);
+	DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * query procedure [调用入口]
+	 * query procedure [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param procedure 存储过程
@@ -602,7 +602,7 @@ public interface DriverAdapter {
 	DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi);
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param clazz 类
@@ -614,7 +614,7 @@ public interface DriverAdapter {
 	 */
 	<T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) ;
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * <br/>
 	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -626,7 +626,7 @@ public interface DriverAdapter {
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * select[命令合成] <br/>
+	 * select[命令合成]<br/> <br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
@@ -635,7 +635,7 @@ public interface DriverAdapter {
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * select[命令合成] <br/>
+	 * select[命令合成]<br/> <br/>
 	 * 创建 select sequence 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param next  是否生成返回下一个序列 false:cur true:next
@@ -696,7 +696,7 @@ public interface DriverAdapter {
 	StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value);
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param system 系统表不检测列属性
@@ -707,7 +707,7 @@ public interface DriverAdapter {
 	DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run);
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -715,7 +715,7 @@ public interface DriverAdapter {
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run);
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -724,7 +724,7 @@ public interface DriverAdapter {
 	Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run);
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param next 是否查下一个序列值
@@ -734,7 +734,7 @@ public interface DriverAdapter {
 	DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names);
 
 	/**
-	 * select [命令执行-子流程]
+	 * select [命令执行-子流程]<br/>
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param list JDBC执行返回的结果集
@@ -746,7 +746,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * count [调用入口]
+	 * count [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -756,7 +756,7 @@ public interface DriverAdapter {
 	 */
 	long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * count [命令执行]
+	 * count [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -779,7 +779,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * exists [调用入口]
+	 * exists [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -790,7 +790,7 @@ public interface DriverAdapter {
 	boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
-	 * exists [命令合成]
+	 * exists [命令合成]<br/>
 	 * 合成最终 exists 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -803,7 +803,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * execute [调用入口]
+	 * execute [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -815,7 +815,7 @@ public interface DriverAdapter {
 
 	long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values);
 	/**
-	 * procedure [命令执行]
+	 * procedure [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @param random  random
@@ -840,7 +840,7 @@ public interface DriverAdapter {
 	void fillExecuteContent(DataRuntime runtime, Run run);
 
 	/**
-	 * execute [命令执行]
+	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -886,7 +886,7 @@ public interface DriverAdapter {
 	}
 
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -899,7 +899,7 @@ public interface DriverAdapter {
 	long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns);
 
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 根据configs和conditions过滤条件
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -912,7 +912,7 @@ public interface DriverAdapter {
 	long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions);
 
 	/**
-	 * truncate [调用入口]
+	 * truncate [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -1006,7 +1006,49 @@ public interface DriverAdapter {
 	 * function         : 函数
 	 ******************************************************************************************************************/
 
+	/**
+	 * 根据运行环境识别 catalog与schema
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta BaseMetadata
+	 * @param <T> BaseMetadata
+	 */
 	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta);
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param override 如果meta中有值，是否覆盖
+	 * @param <T> BaseMetadata
+	 */
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
+		if(override || BasicUtil.isEmpty(meta.getCatalogName())) {
+			meta.setCatalog(catalog);
+		}
+		if(override || BasicUtil.isEmpty(meta.getSchemaName())) {
+			meta.setSchema(schema);
+		}
+	}
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
+		if(BasicUtil.isEmpty(meta.getCatalogName())) {
+			meta.setCatalog(catalog);
+		}
+		if(BasicUtil.isEmpty(meta.getSchemaName())) {
+			meta.setSchema(schema);
+		}
+	}
+
+	/**
+	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @return String[]
+	 */
+	default String[] correctSchemaFromJDBC(String catalog, String schema){
+		return new String[]{catalog, schema};
+	}
 
 	/**
 	 *  根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
@@ -1019,8 +1061,35 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/
+
 	/**
-	 * database[调用入口]
+	 * database[调用入口]<br/>
+	 * 当前数据库
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return Database
+	 */
+	Database database(DataRuntime runtime, String random);
+	/**
+	 * database[调用入口]<br/>
+	 * 当前数据源 数据库描述(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	String product(DataRuntime runtime, String random);
+
+	/**
+	 * database[调用入口]<br/>
+	 * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	String version(DataRuntime runtime, String random);
+
+	/**
+	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1035,26 +1104,83 @@ public interface DriverAdapter {
 		}
 		return null;
 	}
-
 	/**
 	 * database[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询当前数据源 数据库产品说明(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception;
+	/**
+	 * database[命令合成]<br/>
+	 * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception;
+	/**
+	 * database[命令合成]<br/>
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name) throws Exception;
+	List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception;
 	default List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy) throws Exception{
-		return buildQueryDatabaseRun(runtime, false, null);
+		return buildQueryDatabasesRun(runtime, false, null);
 	}
 	default List<Run> buildQueryDatabaseRun(DataRuntime runtime, String name) throws Exception{
-		return buildQueryDatabaseRun(runtime, false, name);
+		return buildQueryDatabasesRun(runtime, false, name);
 	}
 	default List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception{
-		return buildQueryDatabaseRun(runtime, false, null);
+		return buildQueryDatabasesRun(runtime, false, null);
 	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @param set 查询结果集
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	String product(DataRuntime runtime, int index, boolean create, String product, DataSet set);
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	String product(DataRuntime runtime, boolean create, String product);
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @param set 查询结果集
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	String version(DataRuntime runtime, int index, boolean create, String version, DataSet set);
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	String version(DataRuntime runtime, boolean create, String version);
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
@@ -1068,13 +1194,44 @@ public interface DriverAdapter {
 	 */
 	LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception;
 	List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception;
-	Database database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception;
+
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @param set 查询结果集
+	 * @return database
+	 * @throws Exception 异常
+	 */
+	Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception;
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @return database
+	 * @throws Exception 异常
+	 */
+	Database database(DataRuntime runtime, boolean create, Database database) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													catalog
 	 ******************************************************************************************************************/
 	/**
-	 * catalog[调用入口]
+	 * catalog[调用入口]<br/>
+	 * 当前catalog
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return Catalog
+	 */
+	Catalog catalog(DataRuntime runtime, String random);
+	/**
+	 * catalog[调用入口]<br/>
+	 * 全部catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1091,16 +1248,24 @@ public interface DriverAdapter {
 	}
 	/**
 	 * catalog[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询当前catalog
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	List<Run> buildQueryCatalogRun(DataRuntime runtime, String random) throws Exception;
+	/**
+	 * catalog[命令合成]<br/>
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name) throws Exception;
-	default List<Run> buildQueryCatalogRun(DataRuntime runtime) throws Exception{
-		return buildQueryCatalogRun(runtime, false, null);
+	List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception;
+	default List<Run> buildQueryCatalogsRun(DataRuntime runtime) throws Exception{
+		return buildQueryCatalogsRun(runtime, false, null);
 	}
 
 	/**
@@ -1111,7 +1276,7 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @param set 查询结果集
-	 * @return databases
+	 * @return catalogs
 	 * @throws Exception 异常
 	 */
 	LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set) throws Exception;
@@ -1123,7 +1288,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
-	 * @return databases
+	 * @return catalogs
 	 * @throws Exception 异常
 	 */
 	LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs) throws Exception;
@@ -1134,18 +1299,47 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
-	 * @return databases
+	 * @return catalogs
 	 * @throws Exception 异常
 	 */
 	List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception;
 
-	Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception;
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @param set 查询结果集
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
+	Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception;
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
+	Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													schema
 	 ******************************************************************************************************************/
 	/**
-	 * schema[调用入口]
+	 * schema[调用入口]<br/>
+	 * 当前schema
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return LinkedHashMap
+	 */
+	Schema schema(DataRuntime runtime, String random);
+	/**
+	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param catalog catalog
@@ -1171,7 +1365,15 @@ public interface DriverAdapter {
 
 	/**
 	 * schema[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询当前schema
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	List<Run> buildQuerySchemaRun(DataRuntime runtime, String random) throws Exception;
+	/**
+	 * schema[命令合成]<br/>
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
 	 * @param name 名称统配符或正则
@@ -1179,12 +1381,12 @@ public interface DriverAdapter {
 	 * @return sqls
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception;
-	default List<Run> buildQuerySchemaRun(DataRuntime runtime, String name) throws Exception{
-		return buildQuerySchemaRun(runtime, false, null, name);
+	List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception;
+	default List<Run> buildQuerySchemasRun(DataRuntime runtime, String name) throws Exception{
+		return buildQuerySchemasRun(runtime, false, null, name);
 	}
-	default List<Run> buildQuerySchemaRun(DataRuntime runtime, Catalog catalog) throws Exception{
-		return buildQuerySchemaRun(runtime, false, catalog,null);
+	default List<Run> buildQuerySchemasRun(DataRuntime runtime, Catalog catalog) throws Exception{
+		return buildQuerySchemasRun(runtime, false, catalog,null);
 	}
 
 	/**
@@ -1195,7 +1397,7 @@ public interface DriverAdapter {
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param schemas 上一步查询结果
 	 * @param set 查询结果集
-	 * @return databases
+	 * @return schemas
 	 * @throws Exception 异常
 	 */
 	LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set) throws Exception;
@@ -1208,7 +1410,7 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param schemas 上一步查询结果
-	 * @return databases
+	 * @return schemas
 	 * @throws Exception 异常
 	 */
 	LinkedHashMap<String, Schema> schemas(DataRuntime runtime, boolean create, LinkedHashMap<String, Schema> schemas) throws Exception;
@@ -1218,17 +1420,39 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param schemas 上一步查询结果
-	 * @return databases
+	 * @return schemas
 	 * @throws Exception 异常
 	 */
 	List<Schema> schemas(DataRuntime runtime, boolean create, List<Schema> schemas) throws Exception;
-	Schema schema(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception;
+
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @param set 查询结果集
+	 * @return schema
+	 * @throws Exception 异常
+	 */
+	Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception;
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @return schema
+	 * @throws Exception 异常
+	 */
+	Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
 	/**
-	 * table[调用入口]
+	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1260,7 +1484,7 @@ public interface DriverAdapter {
 	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
@@ -1272,12 +1496,12 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
-	List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 	/**
 	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1322,7 +1546,7 @@ public interface DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1336,7 +1560,7 @@ public interface DriverAdapter {
 
 	/**
 	 *
-	 * table[调用入口]
+	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table 表
@@ -1352,13 +1576,13 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1393,13 +1617,13 @@ public interface DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return List
 	 */
-	List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 
 	/**
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1426,7 +1650,7 @@ public interface DriverAdapter {
 	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception;
 
 	/**
-	 * view[调用入口]
+	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
@@ -1441,13 +1665,13 @@ public interface DriverAdapter {
 	 * @param view view
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception;
 
 	/**
 	 * view[结果集封装]<br/>
 	 * 查询 view DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1481,13 +1705,13 @@ public interface DriverAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 
 	/**
 	 * master table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1512,7 +1736,7 @@ public interface DriverAdapter {
 	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception;
 
 	/**
-	 * master table[调用入口]
+	 * master table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table MasterTable
@@ -1526,12 +1750,12 @@ public interface DriverAdapter {
 	 * @param table MasterTable
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception;
 	/**
 	 * master table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1565,7 +1789,7 @@ public interface DriverAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -1576,7 +1800,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern) throws Exception;
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -1586,7 +1810,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception;
 
 
 	/**
@@ -1594,7 +1818,7 @@ public interface DriverAdapter {
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -1620,7 +1844,7 @@ public interface DriverAdapter {
 	 */
 	<T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception;
 	/**
-	 * partition table[调用入口]
+	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table PartitionTable
@@ -1635,13 +1859,13 @@ public interface DriverAdapter {
 	 * @param table PartitionTable
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception;
 
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1657,7 +1881,7 @@ public interface DriverAdapter {
 	 * (4)SPRING.queryForRowSet.SqlRowSetMetaData(与2类似)
 	 ******************************************************************************************************************/
 	/**
-	 * column[调用入口](多方法合成)<br/>
+	 * column[调用入口]<br/>(多方法合成)<br/>
 	 * 查询表结构
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -1670,14 +1894,14 @@ public interface DriverAdapter {
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
 
 	/**
-	 * column[调用入口](方法1)<br/>
-	 * 查询所有表的列
+	 * column[调用入口]<br/>(方法1)<br/>
+	 * 查询全部表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param table 查询所有表时 输入null
+	 * @param table 查询全部表时 输入null
 	 * @return List
 	 * @param <T> Column
 	 */
@@ -1687,7 +1911,7 @@ public interface DriverAdapter {
 	}
 
 	/**
-	 * column[调用入口](方法3)<br/>
+	 * column[调用入口]<br/>(方法3)<br/>
 	 * DatabaseMetaData
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1700,21 +1924,21 @@ public interface DriverAdapter {
 
 
 	/**
-	 * column[命令合成](方法1)<br/>
+	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询表上的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
-	List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
 	/**
-	 * column[结果集封装](方法1)<br/>
+	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
 	 *  根据查询结果集构造Column
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
@@ -1725,11 +1949,11 @@ public interface DriverAdapter {
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 
 	/**
-	 * column[结果集封装](方法1)<br/>
+	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
 	 * 根据查询结果集构造Column
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
@@ -1762,13 +1986,13 @@ public interface DriverAdapter {
 	 * @param metadata 是否需要根据metadata
 	 * @return sqls
 	 */
-	List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
 	/**
 	 * tag[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -1821,7 +2045,7 @@ public interface DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -1860,13 +2084,13 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
-	List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
 
 	/**
 	 * foreign[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryForeignRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
 	 * @param set sql查询结果
@@ -1911,13 +2135,13 @@ public interface DriverAdapter {
 	 * @param name 名称
 	 * @return sqls
 	 */
-	List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name);
+	List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name);
 
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -1984,19 +2208,19 @@ public interface DriverAdapter {
 	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
 
 	/**
-	 * constraint[命令合成]
+	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param pattern 名称通配符或正则
 	 * @return sqls
 	 */
-	List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern);
+	List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern);
 	/**
-	 * constraint[结果集封装]
+	 * constraint[结果集封装]<br/>
 	 *  根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
@@ -2007,10 +2231,10 @@ public interface DriverAdapter {
 	<T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
 
 	/**
-	 * constraint[结果集封装]
+	 * constraint[结果集封装]<br/>
 	 *  根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param column 列
@@ -2039,19 +2263,19 @@ public interface DriverAdapter {
 	 */
 	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events);
 	/**
-	 * trigger[命令合成]
+	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) ;
+	List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) ;
 	/**
-	 * trigger[结果集封装]
+	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param triggers 上一步查询结果
@@ -2078,7 +2302,7 @@ public interface DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	<T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern);
+	<T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -2092,7 +2316,7 @@ public interface DriverAdapter {
 	 */
 	<T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	/**
-	 * procedure[命令合成]
+	 * procedure[命令合成]<br/>
 	 * 查询表上的 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
@@ -2100,13 +2324,13 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return sqls
 	 */
-	List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param procedures 上一步查询结果
 	 * @param set 查询结果集
@@ -2115,10 +2339,10 @@ public interface DriverAdapter {
 	 */
 	<T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param procedures 上一步查询结果
 	 * @param set 查询结果集
@@ -2129,7 +2353,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2139,7 +2363,7 @@ public interface DriverAdapter {
 	 */
 	<T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures) throws Exception;
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2164,12 +2388,12 @@ public interface DriverAdapter {
 	 * @param procedure 存储过程
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
 	 * @param ddls 上一步查询结果
 	 * @param set 查询结果集
@@ -2205,7 +2429,7 @@ public interface DriverAdapter {
 	 */
 	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 查询表上的 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
@@ -2213,13 +2437,13 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return sqls
 	 */
-	List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param functions 上一步查询结果
 	 * @param set 查询结果集
@@ -2229,10 +2453,10 @@ public interface DriverAdapter {
 	<T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception;
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param functions 上一步查询结果
 	 * @param set 查询结果集
@@ -2242,7 +2466,7 @@ public interface DriverAdapter {
 	<T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2253,7 +2477,7 @@ public interface DriverAdapter {
 	<T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception;
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2278,12 +2502,12 @@ public interface DriverAdapter {
 	 * @param function 函数
 	 * @return List
 	 */
-	List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception;
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
 	/**
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
 	 * @param ddls 上一步查询结果
 	 * @param set 查询结果集
@@ -2449,7 +2673,7 @@ public interface DriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
@@ -2479,6 +2703,14 @@ public interface DriverAdapter {
 	 */
 	StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists);
 
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 */
+	void checkPrimary(DataRuntime runtime, Table table);
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -2757,7 +2989,7 @@ public interface DriverAdapter {
 
 	/**
 	 * master table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
@@ -2838,7 +3070,7 @@ public interface DriverAdapter {
 
 	/**
 	 * partition table[命令合成]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @return sql
@@ -3081,7 +3313,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return sql
@@ -3438,6 +3670,7 @@ public interface DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * boolean add(DataRuntime runtime, PrimaryKey meta) throws Exception
 	 * boolean alter(DataRuntime runtime, PrimaryKey meta) throws Exception
+	 * boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception
 	 * boolean drop(DataRuntime runtime, PrimaryKey meta) throws Exception
 	 * boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception;
 	 ******************************************************************************************************************/
@@ -3466,12 +3699,25 @@ public interface DriverAdapter {
 	 * primary[调用入口]<br/>
 	 * 修改主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 * @param origin 原主键
+	 * @param meta 新主键
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception;
+
+	/**
+	 * primary[调用入口]<br/>
+	 * 修改主键
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean alter(DataRuntime runtime, Table table, PrimaryKey meta) throws Exception;
-
+	default boolean alter(DataRuntime runtime, Table table, PrimaryKey meta) throws Exception{
+		return alter(runtime, table, table.getPrimaryKey(), meta);
+	}
 	/**
 	 * primary[调用入口]<br/>
 	 * 删除主键
@@ -3497,9 +3743,10 @@ public interface DriverAdapter {
 	 * 添加主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
-	List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, PrimaryKey primary, boolean slice) throws Exception;
 	/**
 	 * primary[命令合成]<br/>
 	 * 创建完表后，添加主键，与列主键标识，表主键标识三选一<br/>
@@ -3518,19 +3765,24 @@ public interface DriverAdapter {
 	 * 修改主键
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param primary 主键
+	 * @param origin 原主键
+	 * @param meta 新主键
 	 * @return List
 	 */
-	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception;
+	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
+		return buildAlterRun(runtime, null, meta);
+	}
 
 	/**
 	 * primary[命令合成]<br/>
 	 * 删除主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
-	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary, boolean slice) throws Exception;
 
 	/**
 	 * primary[命令合成]<br/>
@@ -3554,7 +3806,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -3564,7 +3816,7 @@ public interface DriverAdapter {
 	boolean add(DataRuntime runtime, ForeignKey meta) throws Exception;
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -3574,7 +3826,7 @@ public interface DriverAdapter {
 	boolean alter(DataRuntime runtime, ForeignKey meta) throws Exception;
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -3584,7 +3836,7 @@ public interface DriverAdapter {
 	boolean alter(DataRuntime runtime, Table table, ForeignKey meta) throws Exception;
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -3594,7 +3846,7 @@ public interface DriverAdapter {
 	boolean drop(DataRuntime runtime, ForeignKey meta) throws Exception;
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 重命名外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 外键
@@ -3606,7 +3858,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -3615,7 +3867,7 @@ public interface DriverAdapter {
 	List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta) throws Exception;
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 修改外键
 	 * @param meta 外键
 	 * @return List
@@ -3624,7 +3876,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -3634,7 +3886,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 修改外键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3890,7 +4142,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean alter(DataRuntime runtime,  Trigger meta) throws Exception;
+	boolean alter(DataRuntime runtime, Trigger meta) throws Exception;
 
 	/**
 	 * trigger[调用入口]<br/>
@@ -3900,7 +4152,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean drop(DataRuntime runtime,  Trigger meta) throws Exception;
+	boolean drop(DataRuntime runtime, Trigger meta) throws Exception;
 
 	/**
 	 * trigger[调用入口]<br/>
@@ -3911,7 +4163,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception;
+	boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception;
 
 	/**
 	 * trigger[命令合成]<br/>
@@ -4070,7 +4322,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -4080,7 +4332,7 @@ public interface DriverAdapter {
 	boolean create(DataRuntime runtime, Function meta) throws Exception;
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 修改函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -4090,7 +4342,7 @@ public interface DriverAdapter {
 	boolean alter(DataRuntime runtime, Function meta) throws Exception;
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 删除函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -4100,7 +4352,7 @@ public interface DriverAdapter {
 	boolean drop(DataRuntime runtime, Function meta) throws Exception;
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 重命名函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 函数
@@ -4112,7 +4364,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -4121,7 +4373,7 @@ public interface DriverAdapter {
 	List<Run> buildCreateRun(DataRuntime runtime, Function meta) throws Exception;
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 修改函数
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4132,7 +4384,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 删除函数
 	 * @param meta 函数
 	 * @return String
@@ -4140,7 +4392,7 @@ public interface DriverAdapter {
 	List<Run> buildDropRun(DataRuntime runtime, Function meta) throws Exception;
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 修改函数名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

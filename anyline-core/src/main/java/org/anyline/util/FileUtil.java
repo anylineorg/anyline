@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -24,7 +24,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -159,10 +159,10 @@ public class FileUtil {
              int size = 0;
              while ((size=in.read(by)) != -1 ){
             	if(null == encode){
-            		buffer.append(new String(by,0,size));
+            		buffer.append(new String(by, 0, size));
             	}
             	else{
-            		buffer.append(new String(by,0,size,encode));
+            		buffer.append(new String(by, 0, size, encode));
             	}
             }
          }catch(Exception ex){
@@ -208,7 +208,7 @@ public class FileUtil {
 			char [] by = new char [BUFFER_SIZE];
 			int size = 0;
 			while ((size=reader.read(by)) != -1 ){
-				buffer.append(new String(by,0,size));
+				buffer.append(new String(by, 0, size));
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -287,7 +287,7 @@ public class FileUtil {
 	 * @param encode  encode
 	 * @return StringBuffer
 	 */
-	public static StringBuffer read(File file,Charset encode){
+	public static StringBuffer read(File file, Charset encode){
 		StringBuffer buffer = new StringBuffer();
 		if(null != file && file.exists()){
 			try{
@@ -403,7 +403,7 @@ public class FileUtil {
 		}
 	}
 	public static boolean write(InputStream is, OutputStream os){
-		return write(is,os,true);
+		return write(is, os, true);
 	}
 	public static boolean write(InputStream is, OutputStream os, boolean close){
 		BufferedInputStream bis = new BufferedInputStream(is);
@@ -442,7 +442,7 @@ public class FileUtil {
 	 */
 	public static boolean create(String dir, String name, boolean over){
 		String filePath = merge(dir, name);
-		return create(filePath,over);
+		return create(filePath, over);
 	}
 	public static boolean create(String file, boolean over){
 		return create(new File(file), over);
@@ -492,7 +492,7 @@ public class FileUtil {
 	public static String fetchPathByUrl(String url){
 		int to = url.indexOf("?");
 		if(to != -1)
-			url = url.substring(0,to);
+			url = url.substring(0, to);
 		return url;
 	}
 	/**
@@ -506,7 +506,7 @@ public class FileUtil {
 			dir = url;
 		}else if(isHttpFile(url)){
 			int to = url.lastIndexOf("/");
-			dir = url.substring(0,to);
+			dir = url.substring(0, to);
 		}else{
 			dir = url;
 		}
@@ -540,10 +540,10 @@ public class FileUtil {
 	 * @return String
 	 */
 	public static String getHostUrl(String url){
-		url = url.replaceAll("http://","");
+		url = url.replaceAll("http://", "");
 		int idx = url.indexOf("/");
 		if(idx != -1){
-			url = url.substring(0,idx);
+			url = url.substring(0, idx);
 		}
 		url = "http://"+url;
 		return url;
@@ -560,7 +560,7 @@ public class FileUtil {
 		name = file.getName();
 		int idx = name.lastIndexOf(".");
 		if(idx != -1){
-			name = name.substring(0,idx);
+			name = name.substring(0, idx);
 		}
 		return name;
 	}
@@ -679,11 +679,11 @@ public class FileUtil {
 					continue;
 				}
 				if(child.isFile()){
-					if(filterByType(child,subbfixs)){
+					if(filterByType(child, subbfixs)){
 						list.add(child);
 					}
 				}else{
-					List<File> tmpList = getAllChildrenFile(child,subbfixs);
+					List<File> tmpList = getAllChildrenFile(child, subbfixs);
 					list.addAll(tmpList);
 				}
 			}
@@ -730,7 +730,7 @@ public class FileUtil {
 		File files[] = dir.listFiles();
 		if(null != files){
 			for(File file:files){
-				if(file.isFile() && filterByType(file,types))
+				if(file.isFile() && filterByType(file, types))
 					list.add(file);
 			}
 		}
@@ -919,7 +919,7 @@ public class FileUtil {
 		for (File src:srcs) {
 			files.add(src);
 		}
-		return zip(zip,files);
+		return zip(zip, files);
 	}
 	public static boolean zip(File zip, List<File> srcs) {
 		return ZipUtil.zip(srcs, zip);
@@ -1022,15 +1022,15 @@ public class FileUtil {
 		if(b<1024){
 			result = b+ "byte";
 		}else if(b<1024L*1024){
-			result = NumberUtil.format(b/1024.00,"0.00") + "kb";
+			result = NumberUtil.format(b/1024.00, "0.00") + "kb";
 		}else if(b<1024L*1024*1024){
-			result = NumberUtil.format(b/1024.00/1024,"0.00") + "mb";
+			result = NumberUtil.format(b/1024.00/1024, "0.00") + "mb";
 		}else if(b<1024L*1024*1024*1024){
-			result = NumberUtil.format(b/1024.00/1024/1024,"0.00") + "gb";
+			result = NumberUtil.format(b/1024.00/1024/1024, "0.00") + "gb";
 		}else if(b<1024L*1024*1024*1024*1024){
-			result = NumberUtil.format(b/1024.00/1024/1024/1024,"0.00") + "tb";
+			result = NumberUtil.format(b/1024.00/1024/1024/1024, "0.00") + "tb";
 		}else if(b<1024L*1024*1024*1024*1024*1024){
-			result = NumberUtil.format(b/1024.00/1024/1024/1024/1024,"0.00") + "pb";
+			result = NumberUtil.format(b/1024.00/1024/1024/1024/1024, "0.00") + "pb";
 		}
 		return result;
 	}
@@ -1125,15 +1125,15 @@ public class FileUtil {
 
     	}
     }
-	public static void replace(File file,  Charset encode, String fr, String to){
+	public static void replace(File file, Charset encode, String fr, String to){
 		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
-			String content = read(file, encode).toString().replace(fr,to);
+			String content = read(file, encode).toString().replace(fr, to);
 			write(content, file, encode);
 		}
 	}
 	public static void replace(File file, String fr, String to){
 		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
-			String content = read(file).toString().replace(fr,to);
+			String content = read(file).toString().replace(fr, to);
 			write(content, file);
 		}
 	}
@@ -1242,15 +1242,15 @@ public class FileUtil {
 	        FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F");  // Outlook Express (dbx)
 	        FILE_TYPE_MAP.put("pst", "2142444E");  // Outlook (pst)
 	        FILE_TYPE_MAP.put("xls", "D0CF11E0");  // MS Word
-			FILE_TYPE_MAP.put("xlsx","504B0304");
+			FILE_TYPE_MAP.put("xlsx", "504B0304");
 			FILE_TYPE_MAP.put("doc", "D0CF11E0");  // MS Excel 注意:word 和 excel的文件头一样
-			FILE_TYPE_MAP.put("docx","504B0304");
+			FILE_TYPE_MAP.put("docx", "504B0304");
 			FILE_TYPE_MAP.put("ppt", "D0CF11E0");
-			FILE_TYPE_MAP.put("pptx","504B0304");
+			FILE_TYPE_MAP.put("pptx", "504B0304");
 	        FILE_TYPE_MAP.put("mdb", "5374616E64617264204A");  // MS Access (mdb)
 	        FILE_TYPE_MAP.put("wpd", "FF575043"); // WordPerfect (wpd)
 	        FILE_TYPE_MAP.put("eps", "252150532D41646F6265");
-	        FILE_TYPE_MAP.put("ps",  "252150532D41646F6265");
+	        FILE_TYPE_MAP.put("ps", "252150532D41646F6265");
 	        FILE_TYPE_MAP.put("pdf", "255044462D312E");  // Adobe Acrobat (pdf)
 	        FILE_TYPE_MAP.put("qdf", "AC9EBD8F");  // Quicken (qdf)
 	        FILE_TYPE_MAP.put("pwl", "E3828596");  // Windows Password (pwl)

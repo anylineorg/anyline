@@ -39,8 +39,8 @@ public interface RunPrepare extends Cloneable {
 	// NAME = ':NM' 
 	// NM IN (:NM)
 	// LIMIT :LIMIT OFFSET :OFFSET
-    // 占位符前面的标识,中间可能有空格,占位符以字母开头(避免CODE='A:1'但避免不了'A:A1'这时应该换成$#),后面可能是 ' ) % ,
-	static final String SQL_PARAM_VARIABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+[A-Za-z]\\w+)(\\s|'|\\)|%|\\,)?";
+    // 占位符前面的标识, 中间可能有空格, 占位符以字母开头(避免CODE='A:1'但避免不了'A:A1'这时应该换成$#), 后面可能是 ' ) %,
+	static final String SQL_PARAM_VARIABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+[A-Za-z]\\w+)(\\s|'|\\)|%|\\, )?";
 	// 与上一种方式　二选一不能同时支持
 	//新版本中不要用{key} 避免与json格式冲突
 	// 以${}标识的执行时直接替换
@@ -66,14 +66,14 @@ public interface RunPrepare extends Cloneable {
 	 * 设置数据源(这里的数据源是指表)
 	 * <p> 
 	 * 查询全部列 : setDataSource("V_ADMIN")<br> 
-	 * 查询指定列 : setDataSource(ADMIN(CD,ACCOUNT,NAME,REG_TIME))<br> 
-	 * 查询指定列 : setDataSource(ADMIN(DISTINCT CD,ACCOUNT,NAME,REG_TIME))<br> 
-	 * 查询指定列 : setDataSource(ADMIN(DISTINCT {NEWID()},{getDate()},CD,ACCOUNT,NAME,REG_TIME))<br> 
-	 * {}中内容按原样拼接到运行时SQL,其他列将添加[]以避免关键重复 
+	 * 查询指定列 : setDataSource(ADMIN(CD, ACCOUNT, NAME, REG_TIME))<br>
+	 * 查询指定列 : setDataSource(ADMIN(DISTINCT CD, ACCOUNT, NAME, REG_TIME))<br>
+	 * 查询指定列 : setDataSource(ADMIN(DISTINCT {NEWID()}, {getDate()}, CD, ACCOUNT, NAME, REG_TIME))<br>
+	 * {}中内容按原样拼接到运行时SQL, 其他列将添加[]以避免关键重复
 	 * </p> 
 	 * <p> 
 	 * 	根据XML定义SQL : setDataSource("admin.power:S_POWER")<br> 
-	 *  admin.power : XML文件路径,文件目录以.分隔<br> 
+	 *  admin.power : XML文件路径, 文件目录以.分隔<br>
 	 *  S_POWER : 自定义SQL的id 
 	 * </p>
 	 * @param ds  数据源 : 表|视图|自定义SQL.id
@@ -93,7 +93,7 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare setRuntime(String runtime);
 	String getRuntime();
 	/** 
-	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
+	 * 添加排序条件, 在之前的基础上添加新排序条件, 有重复条件则覆盖
 	 * @param order  order
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
@@ -102,7 +102,7 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare order(Order order);
  
 	/** 
-	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
+	 * 添加分组条件, 在之前的基础上添加新分组条件, 有重复条件则覆盖
 	 * @param group  group
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
@@ -179,7 +179,7 @@ public interface RunPrepare extends Cloneable {
 	/**
 	 * 添加列
 	 * CD
-	 * CD,NM
+	 * CD, NM
 	 * @param columns  columns
 	 */
 	RunPrepare addColumn(String columns);

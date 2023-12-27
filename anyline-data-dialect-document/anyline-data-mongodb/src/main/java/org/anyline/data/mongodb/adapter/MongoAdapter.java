@@ -53,6 +53,7 @@ import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
@@ -77,7 +78,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     /**
      * 根据entity创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 数据
      * @param columns 需要插入的列
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -101,9 +102,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     /**
      * 根据collection创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param list 对象集合
-     * @param columns 需要插入的列,如果不指定则全部插入
+     * @param columns 需要插入的列, 如果不指定则全部插入
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
@@ -140,7 +141,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         String collection = run.getTable();
         if(null == value){
             if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
-                log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]",run.getTable());
+                log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]", run.getTable());
             }
             return -1;
         }
@@ -161,7 +162,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 cnt = set.size();
             }else if(value instanceof EntitySet){
                 List<Object> datas = ((EntitySet)value).getDatas();
-                cons = database.getCollection(run.getTable(),datas.get(0).getClass());
+                cons = database.getCollection(run.getTable(), datas.get(0).getClass());
                 cons.insertMany(datas);
                 cnt = datas.size();
             }else if(value instanceof Collection){
@@ -441,7 +442,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs,  Run run) {
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
@@ -459,7 +460,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 slow = true;
                 log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(result, 34));
                 if(null != dmListener){
-                    dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true , result, millis);
+                    dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true, result, millis);
                 }
             }
         }
@@ -493,7 +494,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     /**
-     * UPDATE [调用入口]
+     * UPDATE [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -549,7 +550,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
                 }
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                 }else{
@@ -599,7 +601,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(1);
         /*确定需要更新的列*/
-        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, BeanUtil.getMapKeys(columns));
+        LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
             throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
@@ -623,7 +625,8 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             for(Column col:cols.values()){
                 String key = col.getName();
                 Object value = row.get(key);
-                if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") ){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
+                if(BasicUtil.checkEl(value+"")){
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                  }else{
@@ -703,7 +706,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         Run run = null;
         if(null == dest){
-            dest = DataSourceUtil.parseDataSource(dest,obj);
+            dest = DataSourceUtil.parseDest(dest, obj, null).dest();
         }
         if(null == dest){
             Object entity = obj;
@@ -785,7 +788,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(null != dmListener){
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
         }
-        InterceptorProxy.afterDelete(runtime, random, run,  cmd_success, result, millis);
+        InterceptorProxy.afterDelete(runtime, random, run, cmd_success, result, millis);
         return result;
     }
 

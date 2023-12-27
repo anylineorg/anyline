@@ -36,10 +36,10 @@ public class DefaultOrder implements Order{
 		// ID ASC
 		// ORDER BY CONVERT(id USING gbk) COLLATE gbk_chinese_ci DESC
 		if(up.endsWith(" ASC")){
-			this.column = str.substring(0,str.length()-4);
+			this.column = str.substring(0, str.length()-4);
 			typ = "ASC";
 		}else if(up.endsWith(" DESC")){
-			this.column = str.substring(0,str.length()-5);
+			this.column = str.substring(0, str.length()-5);
 			typ = "DESC";
 		} else {
 			this.column  = str;

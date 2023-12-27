@@ -172,11 +172,11 @@ public interface EntityAdapter {
                 }
             }
             if(MODE.INSERT == mode) {
-                EntityAdapterProxy.insert_columns.put(clazz.getName().toUpperCase(),columns);
+                EntityAdapterProxy.insert_columns.put(clazz.getName().toUpperCase(), columns);
             }else if(MODE.UPDATE == mode){
-                EntityAdapterProxy.update_columns.put(clazz.getName().toUpperCase(),columns);
+                EntityAdapterProxy.update_columns.put(clazz.getName().toUpperCase(), columns);
             }else if(MODE.DDL == mode){
-                EntityAdapterProxy.ddl_columns.put(clazz.getName().toUpperCase(),columns);
+                EntityAdapterProxy.ddl_columns.put(clazz.getName().toUpperCase(), columns);
             }
         }
         LinkedHashMap<String, Column> list = new LinkedHashMap();
@@ -187,8 +187,8 @@ public interface EntityAdapter {
      * 获取指定类.属性关联的列名
      * @param clazz 类
      * @param field 属性
-     * @param annotations 根据指定的注解 ,以第一个成功取值的注解为准<br/>
-     *                    不指定则按默认规则 column.name,column.value, TableField.name, TableField.value, tableId.name, tableId.value,Id.name,Id.value
+     * @param annotations 根据指定的注解, 以第一个成功取值的注解为准<br/>
+     *                    不指定则按默认规则 column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value
      *
      * @return String
      */
@@ -204,9 +204,9 @@ public interface EntityAdapter {
         // 2.注解
         if(null == annotations || annotations.length ==0 ){
             if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
-                annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
+                annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(", ");
             }else {
-                annotations = "column.name,column.value, TableField.name, TableField.value, tableId.name, tableId.value,Id.name,Id.value".split(",");
+                annotations = "column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value".split(", ");
             }
         }
         name = ClassUtil.parseAnnotationFieldValue(field, annotations);
@@ -236,7 +236,7 @@ public interface EntityAdapter {
             String type = ClassUtil.parseAnnotationFieldValue(field, "column.columnDefinition");
             if(BasicUtil.isNotEmpty(type)){
                 if(type.contains("[]")){
-                    type = type.replace("[]","");
+                    type = type.replace("[]", "");
                     column.setArray(true);
                 }
                 column.setType(type);
@@ -355,8 +355,8 @@ public interface EntityAdapter {
     }
     /**
      * 检测主键(是主键名不是值)<br/>
-     * 根据注解检测主键名s(注解名不区分大小写,支持模糊匹配如Table*)<br/>
-     * 先根据配置文件中的ENTITY_PRIMARY_KEY_ANNOTATION,如果出现多种主键标识方式可以逗号分隔以先取到的为准<br/>
+     * 根据注解检测主键名s(注解名不区分大小写, 支持模糊匹配如Table*)<br/>
+     * 先根据配置文件中的ENTITY_PRIMARY_KEY_ANNOTATION, 如果出现多种主键标识方式可以逗号分隔以先取到的为准<br/>
      * 如果没有检测到再检测注解中带tableId或Id的属性名<br/>
      * 如果没有检测到按默认主键DataRow.DEFAULT_PRIMARY_KEY<br/>
      * @param clazz 类
@@ -370,13 +370,13 @@ public interface EntityAdapter {
             String annotations = ConfigTable.ENTITY_PRIMARY_KEY_ANNOTATION;
             if(BasicUtil.isEmpty(annotations)){
                 //如果配置文件中没有指定
-                annotations = "tableId,Id";
+                annotations = "tableId, Id";
             }
             //根据注解提取属性s
-            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(","));
+            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(", "));
             for (Field field : fields) {
                 //根据属性获取相应的列名
-                Column column = column(clazz, field, annotations.split(","));
+                Column column = column(clazz, field, annotations.split(", "));
                 if (null != column) {
                     list.put(column.getName().toUpperCase(), column);
                 }
@@ -386,7 +386,7 @@ public interface EntityAdapter {
                 fields = ClassUtil.getFields(clazz, false, false);
                 Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
                 if (null != field) {
-                    Column column = column(clazz, field, annotations.split(","));
+                    Column column = column(clazz, field, annotations.split(", "));
                     if (null != column) {
                         list.put(column.getName().toUpperCase(), column);
                     }
@@ -413,7 +413,7 @@ public interface EntityAdapter {
         Column primary = primaryKey(obj.getClass());
         Field field = EntityAdapterProxy.column2field.get(obj.getClass().getName().toUpperCase()+":"+primary.getName().toUpperCase());
         Object value = BeanUtil.getFieldValue(obj, field);
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put(primary.getName().toUpperCase(), value);
         return map;
     }
@@ -421,7 +421,7 @@ public interface EntityAdapter {
     /**
      * 生成主键值
      * @param obj entity或DataRow
-     * @param inserts 需要插入的列,注意成功创建主键后需要把主键key添加到inserts中
+     * @param inserts 需要插入的列, 注意成功创建主键后需要把主键key添加到inserts中
      * @return boolean 是否成功
      */
     default boolean createPrimaryValue(Object obj, List<String> inserts) {
@@ -438,7 +438,7 @@ public interface EntityAdapter {
 
     default Map<String, Object> primaryValues(Object obj) {
         LinkedHashMap<String, Column> primarys = primaryKeys(obj.getClass());
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         for(String primary:primarys.keySet()){
             Field field = EntityAdapterProxy.column2field.get(obj.getClass().getName().toUpperCase()+":"+primary.toUpperCase());
             Object value = BeanUtil.getFieldValue(obj, field);
@@ -450,7 +450,7 @@ public interface EntityAdapter {
 
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<br/>
-     * 如果不实现当前可以返回null,将继续执行默认处理方式<br/>
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式<br/>
      * @param clazz 类
      * @param map map
      * @return T
@@ -463,8 +463,8 @@ public interface EntityAdapter {
 
     /**
      * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity<<br/>
-     * 如果不实现当前可以返回null,将继续执行默认处理方式<br/>
-     * @param entity 在此基础上执行,如果不提供则新创建
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式<br/>
+     * @param entity 在此基础上执行, 如果不提供则新创建
      * @param clazz 类
      * @param map map
      * @param metadatas 列属性
@@ -534,7 +534,7 @@ public interface EntityAdapter {
 
     /**
      * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param obj obj
      * @param keys keys
      * @return DataRow
@@ -548,9 +548,9 @@ public interface EntityAdapter {
 
     /**
      * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * 注意实现时不要调用 DataRow.public static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param obj obj
      * @param keys keys
      * @return DataRow
@@ -562,7 +562,7 @@ public interface EntityAdapter {
 
     /**
      * 列名转换成http参数时调用
-     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 如果不实现当前可以返回null, 将继续执行默认处理方式
      * @param metadatas metadata
      * @return List
      *
@@ -578,7 +578,7 @@ public interface EntityAdapter {
     default String column2param(String metadata){
         String param = null;
         // 注意这里只支持下划线转驼峰
-        // 如果数据库中已经是驼峰,不要配置这个参数
+        // 如果数据库中已经是驼峰, 不要配置这个参数
         String keyCase = ConfigTable.HTTP_PARAM_KEY_CASE;
         if("camel".equals(keyCase)){
             param = metadata + ":" + BeanUtil.camel(metadata.toLowerCase());

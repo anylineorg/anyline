@@ -115,10 +115,10 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * insert [调用入口]<br/>
-	 * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+	 * 执行前根据主键生成器补充主键值, 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 需要插入入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 *                列可以加前缀<br/>
@@ -126,15 +126,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -145,7 +145,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -160,7 +160,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -174,7 +174,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -187,7 +187,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj  Entity或DataRow
 	 * @param batch  是否批量，批量时不检测值是否为空
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -196,15 +196,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
@@ -214,12 +214,12 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * insert [命令合成-子流程]<br/>
-	 * 批量插入数据时,多行数据之间分隔符
+	 * 批量插入数据时, 多行数据之间分隔符
 	 * @return String
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ",";
+		return ", ";
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * insert [命令合成-子流程]<br/>
 	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -259,7 +259,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * insert [命令合成-子流程]<br/>
 	 * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 对象集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -303,20 +303,20 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
 	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 	/**
-	 * UPDATE [调用入口]
+	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -325,15 +325,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -341,9 +341,9 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.update(runtime, random, batch, dest, data, configs, columns);
 	}
 	/**
-	 * update [命令合成]
+	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj Entity或DtaRow
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -352,19 +352,19 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
@@ -372,11 +372,11 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 	/**
@@ -390,49 +390,49 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 	/**
-	 * update [命令执行]
+	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
 	 */
 	@Override
 	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
-		return super.update(runtime,random,  dest, data, configs, run);
+		return super.update(runtime, random, dest, data, configs, run);
 	}
 
 
 
 	/**
-	 * save [调用入口]
+	 * save [调用入口]<br/>
 	 * <br/>
 	 * 根据是否有主键值确认insert | update<br/>
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -441,36 +441,36 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
 	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.save(runtime, random,  dest, data, configs, columns);
+		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
 	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
-		return super.saveCollection(runtime, random,  dest, data, configs, columns);
+		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.saveObject(runtime, random,  dest, data, configs, columns);
+		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected Boolean checkOverride(Object obj){
 		return super.checkOverride(obj);
 	}
 	@Override
-	protected Map<String,Object> checkPv(Object obj){
+	protected Map<String, Object> checkPv(Object obj){
 		return super.checkPv(obj);
 	}
 
@@ -505,10 +505,10 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
@@ -519,14 +519,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * <br/>
 	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -542,7 +542,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * query procedure [调用入口]
+	 * query procedure [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param procedure 存储过程
@@ -555,7 +555,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param clazz 类
@@ -587,9 +587,9 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * <br/>
-	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+	 * 对性能有要求的场景调用，返回java原生map集合, 结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -598,11 +598,11 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 	/**
-	 * select[命令合成] 最终可执行命令
+	 * select[命令合成]<br/> 最终可执行命令<br/>
 	 * 创建查询SQL
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
@@ -700,7 +700,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.createConditionIn(runtime, builder, compare, value);
 	}
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param system 系统表不检测列属性
@@ -715,30 +715,30 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.maps(runtime, random, configs, run);
 	}
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return map
 	 */
 	@Override
-	public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.map(runtime, random, configs, run);
 	}
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param next 是否查下一个序列值
@@ -751,14 +751,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * select [命令执行-子流程]
+	 * select [结果集封装-子流程]<br/>
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param list JDBC执行返回的结果集
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
+	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
 		return super.process(runtime, list);
 	}
 
@@ -773,7 +773,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * long count(DataRuntime runtime, String random, Run run)
 	 ******************************************************************************************************************/
 	/**
-	 * count [调用入口]
+	 * count [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -786,7 +786,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.count(runtime, random, prepare, configs, conditions);
 	}
 	/**
-	 * count [命令合成]
+	 * count [命令合成]<br/>
 	 * 合成最终 select count 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -798,7 +798,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * count [命令执行]
+	 * count [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -818,7 +818,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 ******************************************************************************************************************/
 
 	/**
-	 * exists [调用入口]
+	 * exists [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -851,7 +851,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 ******************************************************************************************************************/
 
 	/**
-	 * execute [调用入口]
+	 * execute [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -861,15 +861,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.execute(runtime, random,  prepare, configs, conditions);
+		return super.execute(runtime, random, prepare, configs, conditions);
 	}
 
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random,  batch, configs, cmd, values);
+		return super.execute(runtime, random, batch, configs, cmd, values);
 	}
 	/**
-	 * procedure [命令执行]
+	 * procedure [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @param random  random
@@ -880,7 +880,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.execute(runtime, random, procedure);
 	}
 	/**
-	 * execute [命令合成]
+	 * execute [命令合成]<br/>
 	 * 创建执行SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -906,7 +906,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * execute [命令合成-子流程]
+	 * execute [命令合成-子流程]<br/>
 	 * 填充 execute 命令内容
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -916,7 +916,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		super.fillExecuteContent(runtime, run);
 	}
 	/**
-	 * execute [命令执行]
+	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -927,7 +927,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		if(null != run){
 			run.supportBr(false);
 		}
-		return super.execute(runtime, random,  configs, run);
+		return super.execute(runtime, random, configs, run);
 	}
 
 	/* *****************************************************************************************************************
@@ -949,23 +949,23 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param values 列对应的值
 	 * @return 影响行数
 	 * @param <T> T
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		return super.deletes(runtime, random,  batch, table, configs, key, values);
+		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -976,11 +976,11 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
-		return super.delete(runtime, random,  dest, configs, obj, columns);
+		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 根据configs和conditions过滤条件
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -992,11 +992,11 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
-		return super.delete(runtime, random,  table, configs, conditions);
+		return super.delete(runtime, random, table, configs, conditions);
 	}
 
 	/**
-	 * truncate [调用入口]
+	 * truncate [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table 表
@@ -1004,28 +1004,28 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, String table){
-		return super.truncate(runtime, random,  table);
+		return super.truncate(runtime, random, table);
 	}
 
 	/**
 	 * delete[命令合成]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
-		return super.buildDeleteRun(runtime, dest,  obj, columns);
+		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
 	/**
 	 * delete[命令合成]<br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 根据属性解析出列
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1045,7 +1045,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param column 列
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1059,7 +1059,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1119,15 +1119,63 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
 	 * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
 	 * Database database(DataRuntime runtime, String random, String name)
+	 * Database database(DataRuntime runtime, String random)
+	 * String String product(DataRuntime runtime, String random);
+	 * String String version(DataRuntime runtime, String random);
 	 * [命令合成]
+	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
 	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-	 * [结果集封装]
+	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
+	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)
 	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)
-	 * Database database(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+	 * String product(DataRuntime runtime, boolean create, String product)
+	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+	 * String version(DataRuntime runtime, boolean create, String version)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
 	 ******************************************************************************************************************/
+
 	/**
-	 * database[调用入口]
+	 * database[调用入口]<br/>
+	 * 当前数据库
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return Database
+	 */
+	@Override
+	public Database database(DataRuntime runtime, String random){
+		return super.database(runtime, random);
+	}
+	/**
+	 * database[调用入口]<br/>
+	 * 当前数据源 数据库描述(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	public String product(DataRuntime runtime, String random){
+		return super.product(runtime, random);
+	}
+	/**
+	 * database[调用入口]<br/>
+	 * 当前数据源 数据库类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	public String version(DataRuntime runtime, String random){
+		return super.version(runtime, random);
+	}
+	/**
+	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1139,7 +1187,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.databases(runtime, random, greedy, name);
 	}
 	/**
-	 * database[调用入口]
+	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1149,9 +1197,31 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
 		return super.databases(runtime, random, name);
 	}
+
 	/**
 	 * database[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询当前数据源 数据库产品说明(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception{
+		return super.buildQueryProductRun(runtime);
+	}
+	/**
+	 * database[命令合成]<br/>
+	 * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
+		return super.buildQueryVersionRun(runtime);
+	}	/**
+	 * database[命令合成]<br/>
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1159,14 +1229,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-		return super.buildQueryDatabaseRun(runtime, greedy, name);
+	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
+		return super.buildQueryDatabasesRun(runtime, greedy, name);
 	}
 	/**
-	 * database[结果集封装]
+	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param databases 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
@@ -1180,9 +1250,88 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
 		return super.databases(runtime, index, create, databases, set);
 	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @param set 查询结果集
+	 * @return database
+	 * @throws Exception 异常
+	 */
 	@Override
-	public Database database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-		return super.database(runtime, index, create, set);
+	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
+		return super.database(runtime, index, create, database, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @return database
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Database database(DataRuntime runtime, boolean create, Database database) throws Exception{
+		return super.database(runtime, create, database);
+	}
+
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @param set 查询结果集
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+		return super.product(runtime, index, create, product, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String product(DataRuntime runtime, boolean create, String product){
+		return super.product(runtime, create, product);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @param set 查询结果集
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+		return super.version(runtime, index, create, version, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String version(DataRuntime runtime, boolean create, String version){
+		return super.version(runtime, create, version);
 	}
 
 	/* *****************************************************************************************************************
@@ -1192,16 +1341,17 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
 	 * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
 	 * [命令合成]
-	 * List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name)
-	 * [结果集封装]
+	 * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+	 * [结果集封装]<br/>
 	 * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
 	 * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs, DataSet set)
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
-	 * Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog)
 	 ******************************************************************************************************************/
 	/**
-	 * catalog[调用入口]
+	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1212,7 +1362,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.catalogs(runtime, random, name);
 	}
 	/**
-	 * catalog[调用入口]
+	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1225,7 +1375,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * catalog[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1233,15 +1383,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-		return super.buildQueryCatalogRun(runtime, greedy, name);
+	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
+		return super.buildQueryCatalogsRun(runtime, greedy, name);
 	}
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
@@ -1256,7 +1406,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
@@ -1269,7 +1419,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * catalog[结果集封装]<br/>
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @return databases
 	 * @throws Exception 异常
@@ -1283,18 +1433,42 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * catalog[结果集封装]<br/>
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
-	 * @return databases
+	 * @return catalogs
 	 * @throws Exception 异常
 	 */
 	@Override
 	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
 		return super.catalogs(runtime, create, catalogs);
 	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @param set 查询结果集
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-		return super.catalog(runtime, index, create, set);
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
+		return super.catalog(runtime, index, create, catalog, set);
+	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception{
+		return super.catalog(runtime, create, catalog);
 	}
 
 
@@ -1305,14 +1479,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
 	 * List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
 	 * [命令合成]
-	 * List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
-	 * [结果集封装]
+	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
+	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set)
 	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set)
-	 * Schema schema(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema)
 	 ******************************************************************************************************************/
 	/**
-	 * schema[调用入口]
+	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param catalog catalog
@@ -1324,7 +1499,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.schemas(runtime, random, catalog, name);
 	}
 	/**
-	 * schema[调用入口]
+	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param catalog catalog
@@ -1338,7 +1513,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * catalog[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1346,15 +1521,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
-		return super.buildQuerySchemaRun(runtime, greedy, catalog, name);
+	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
+		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
 	}
 	/**
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param schemas 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
@@ -1368,9 +1543,34 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception{
 		return super.schemas(runtime, index, create, schemas, set);
 	}
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @param set 查询结果集
+	 * @return schema
+	 * @throws Exception 异常
+	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-		return super.schema(runtime, index, create, set);
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception{
+		return super.schema(runtime, index, create, schema, set);
+	}
+
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @return schema
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception{
+		return super.schema(runtime, create, schema);
 	}
 
 	/* *****************************************************************************************************************
@@ -1380,9 +1580,9 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
 	 * [命令合成]
-	 * List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]
+	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * [结果集封装]<br/>
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
@@ -1391,14 +1591,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Table table)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
 	 *
-	 * table[调用入口]
+	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1445,8 +1645,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableRun(runtime, greedy, catalog, schema, pattern, types);
+	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 
@@ -1461,15 +1661,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * table[结果集封装] <br/>
+	 * table[结果集封装]<br/> <br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1484,10 +1684,10 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * table[结果集封装] <br/>
+	 * table[结果集封装]<br/> <br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1501,7 +1701,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
 	/**
-	 * table[结果集封装] <br/>
+	 * table[结果集封装]<br/> <br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1541,7 +1741,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1559,7 +1759,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1595,15 +1795,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryDDLRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildQueryDdlsRun(runtime, table);
 	}
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1620,15 +1820,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * [命令合成]
-	 * List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, View view)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
@@ -1662,8 +1862,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryViewRun(runtime, greedy, catalog, schema, pattern, types);
+	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 
@@ -1671,7 +1871,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1703,7 +1903,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * view[调用入口]
+	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
@@ -1722,15 +1922,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception{
-		return super.buildQueryDDLRun(runtime, view);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildQueryDdlsRun(runtime, view);
 	}
 
 	/**
 	 * view[结果集封装]<br/>
 	 * 查询 view DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1746,16 +1946,16 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
-	 * [结果集封装]
+	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
@@ -1787,15 +1987,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryMasterTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
 	 * master table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1825,7 +2025,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * master table[调用入口]
+	 * master table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table MasterTable
@@ -1843,14 +2043,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception{
-		return super.buildQueryDDLRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildQueryDdlsRun(runtime, table);
 	}
 	/**
 	 * master table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1866,17 +2066,17 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
-	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
-	 * [结果集封装]
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
+	 * [结果集封装]<br/>
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
@@ -1906,8 +2106,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryPartitionTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
 	}
 	/**
 	 * partition table[命令合成]<br/>
@@ -1920,8 +2120,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
-		return super.buildQueryPartitionTableRun(runtime,  master, tags, name);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
+		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
 	}
 	/**
 	 * partition table[命令合成]<br/>
@@ -1933,15 +2133,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
-		return super.buildQueryPartitionTableRun(runtime,  master, tags);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
+		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
 	/**
 	 * partition table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -1972,7 +2172,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.ptables(runtime, create, tables, catalog, schema, master);
 	}
 	/**
-	 * partition table[调用入口]
+	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table PartitionTable
@@ -1991,15 +2191,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception{
-		return super.buildQueryDDLRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildQueryDdlsRun(runtime, table);
 	}
 
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -2016,8 +2216,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
 	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
 	 * [命令合成]
-	 * List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
-	 * [结果集封装]
+	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	 * [结果集封装]<br/>
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
@@ -2040,13 +2240,13 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * column[调用入口]<br/>
-	 * 查询所有表的列
+	 * 查询全部表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param table 查询所有表时 输入null
+	 * @param table 查询全部表时 输入null
 	 * @return List
 	 * @param <T> Column
 	 */
@@ -2063,7 +2263,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -2100,7 +2300,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
@@ -2141,8 +2341,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
 	 * [命令合成]
-	 * List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata)
-	 * [结果集封装]
+	 * List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata)
+	 * [结果集封装]<br/>
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
 	 ******************************************************************************************************************/
@@ -2170,15 +2370,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
-		return super.buildQueryTagRun(runtime, table, metadata);
+	public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+		return super.buildQueryTagsRun(runtime, table, metadata);
 	}
 
 	/**
 	 * tag[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -2247,7 +2447,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * primary[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -2264,7 +2464,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
 	 * [命令合成]
-	 * List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception;
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
 	 * [结构集封装]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
 	 ******************************************************************************************************************/
@@ -2290,14 +2490,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryForeignRun(runtime, table);
+	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildQueryForeignsRun(runtime, table);
 	}
 	/**
 	 * foreign[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryForeignRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
 	 * @param set sql查询结果
@@ -2317,8 +2517,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
 	 * <T extends Index> LinkedHashMap<T, Index> indexs(DataRuntime runtime, String random, Table table, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name)
-	 * [结果集封装]
+	 * List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name)
+	 * [结果集封装]<br/>
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
 	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)
@@ -2362,15 +2562,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name){
-		return super.buildQueryIndexRun(runtime, table, name);
+	public List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name){
+		return super.buildQueryIndexsRun(runtime, table, name);
 	}
 
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -2386,7 +2586,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -2438,8 +2638,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern) ;
-	 * [结果集封装]
+	 * List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) ;
+	 * [结果集封装]<br/>
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
 	 ******************************************************************************************************************/
@@ -2475,7 +2675,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * constraint[命令合成]
+	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
@@ -2483,15 +2683,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintRun(runtime, table, column, pattern);
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
 	}
 
 	/**
-	 * constraint[结果集封装]
+	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
@@ -2504,10 +2704,10 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.constraints(runtime, index, create, table, constraints, set);
 	}
 	/**
-	 * constraint[结果集封装]
+	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param column 列
@@ -2529,8 +2729,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
 	 * [命令合成]
-	 * List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
-	 * [结果集封装]
+	 * List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+	 * [结果集封装]<br/>
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 
@@ -2549,21 +2749,21 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.triggers(runtime, random, greedy, table, events);
 	}
 	/**
-	 * trigger[命令合成]
+	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	public List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
-		return super.buildQueryTriggerRun(runtime, table, events);
+	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+		return super.buildQueryTriggersRun(runtime, table, events);
 	}
 	/**
-	 * trigger[结果集封装]
+	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param triggers 上一步查询结果
@@ -2584,8 +2784,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
-	 * [结果集封装]
+	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures, DataSet set) throws Exception;
@@ -2593,8 +2793,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception;
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
 	 ******************************************************************************************************************/
 	/**
@@ -2610,7 +2810,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
 	/**
@@ -2625,11 +2825,11 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random,  Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
 	/**
-	 * procedure[命令合成]
+	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
@@ -2638,14 +2838,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-		return super.buildQueryProcedureRun(runtime, catalog, schema, pattern);
+	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
+		return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
 	}
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param procedures 上一步查询结果
 	 * @param set 查询结果集
@@ -2658,7 +2858,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2672,7 +2872,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2704,15 +2904,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception{
-		return super.buildQueryDDLRun(runtime, procedure);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		return super.buildQueryDdlsRun(runtime, procedure);
 	}
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
 	 * @param ddls 上一步查询结果
 	 * @param set 查询结果集
@@ -2731,8 +2931,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
-	 * [结果集封装]
+	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
 	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception;
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 	 * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions, DataSet set) throws Exception;
@@ -2740,8 +2940,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Function function);
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception;
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
@@ -2776,7 +2976,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.functions(runtime, random, catalog, schema, pattern);
 	}
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
@@ -2785,15 +2985,15 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQueryFunctionRun(runtime, catalog, schema, name);
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
+		return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
 	}
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param functions 上一步查询结果
 	 * @param set 查询结果集
@@ -2805,10 +3005,10 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.functions(runtime, index, create, functions, set);
 	}
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param functions 上一步查询结果
 	 * @param set 查询结果集
@@ -2821,7 +3021,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2855,14 +3055,14 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, Function meta) throws Exception{
-		return super.buildQueryDDLRun(runtime, meta);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception{
+		return super.buildQueryDdlsRun(runtime, meta);
 	}
 	/**
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
 	 * @param ddls 上一步查询结果
 	 * @param set 查询结果集
@@ -3123,7 +3323,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -3171,6 +3371,17 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.checkTableExists(runtime, builder, exists);
 	}
 
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 */
+	@Override
+	public void checkPrimary(DataRuntime runtime, Table table){
+		super.checkPrimary(runtime, table);
+	}
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -3223,7 +3434,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 备注
+	 * 备注 创建表的完整DDL拼接COMMENT部分，与buildAppendCommentRun二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -3567,7 +3778,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * master table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -3677,7 +3888,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * partition table[命令合成]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -4016,14 +4227,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 添加列备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	/**
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param meta 列
 	 * @return sql
 	 * @throws Exception 异常
@@ -4364,7 +4569,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-		return super.alter(runtime, table, meta);
+		return super.alter(runtime, table, meta, trigger);
 	}
 
 
@@ -4571,6 +4776,19 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * primary[调用入口]<br/>
 	 * 修改主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param origin 原主键
+	 * @param meta 新主键
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	@Override
+	public boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception{
+		return super.alter(runtime, table, origin, meta);
+	}
+	/**
+	 * primary[调用入口]<br/>
+	 * 修改主键
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
 	 * @return 是否执行成功
 	 * @throws Exception 异常
@@ -4611,34 +4829,37 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * 添加主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-		return super.buildAddRun(runtime, meta);
+	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
+		return super.buildAddRun(runtime, meta, slice);
 	}
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 主键
+	 * @param origin 原主键
+	 * @param meta 新主键
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-		return super.buildAlterRun(runtime, meta);
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception{
+		return super.buildAlterRun(runtime, origin, meta);
 	}
 	/**
 	 * primary[命令合成]<br/>
 	 * 删除主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-		return super.buildDropRun(runtime, meta);
+	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
+		return super.buildDropRun(runtime, meta, slice);
 	}
 	/**
 	 * primary[命令合成]<br/>
@@ -4670,7 +4891,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 ******************************************************************************************************************/
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -4683,7 +4904,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -4696,7 +4917,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -4709,7 +4930,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -4722,7 +4943,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 重命名外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 外键
@@ -4737,7 +4958,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -4748,7 +4969,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return super.buildAddRun(runtime, meta);
 	}
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 修改外键
 	 * @param meta 外键
 	 * @return List
@@ -4765,7 +4986,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -4777,7 +4998,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 修改外键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5120,7 +5341,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean drop(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
 
@@ -5134,7 +5355,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception{
+	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
 
@@ -5319,16 +5540,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("RENAME PROCEDURE ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog.getName()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema.getName()).append(".");
-		}
-		delimiter(builder, meta);
+		name(runtime, builder, meta);
 		builder.append(" TO ");
 		delimiter(builder, meta.getUpdate());
 		return runs;
@@ -5364,7 +5577,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 ******************************************************************************************************************/
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5377,7 +5590,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 修改函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5390,7 +5603,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 删除函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5403,7 +5616,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 重命名函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 函数
@@ -5418,7 +5631,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5430,7 +5643,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 修改函数
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5443,7 +5656,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 删除函数
 	 * @param meta 函数
 	 * @return String
@@ -5454,7 +5667,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 修改函数名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5467,16 +5680,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
 		builder.append("RENAME FUNCTION ");
-		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog.getName()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema.getName()).append(".");
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		builder.append(" TO ");
 		delimiter(builder, meta.getUpdate().getName());
 		return runs;
@@ -5499,9 +5704,43 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
 		super.checkSchema(runtime, con, meta);
 	}
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta BaseMetadata
+     * @param <T> BaseMetadata
+     */
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
-		super.checkSchema(runtime, meta);
+    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+        super.checkSchema(runtime, meta);
+    }
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param override 如果meta中有值，是否覆盖
+	 * @param <T> BaseMetadata
+	 */
+	@Override
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
+        super.correctSchemaFromJDBC(meta, catalog, schema, override);
+    }
+	@Override
+	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
+		super.correctSchemaFromJDBC(meta, catalog, schema);
+	}
+	/**
+	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @return String[]
+	 */
+	@Override
+	public String[] correctSchemaFromJDBC(String catalog, String schema){
+		return super.correctSchemaFromJDBC(catalog, schema);
 	}
 	/**
 	 * insert[命令执行后]
@@ -5540,7 +5779,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 
 	/**
-	 * column[结果集封装](方法3)<br/>
+	 * column[结果集封装]<br/>(方法3)<br/>
 	 * 有表名的情况下可用<br/>
 	 * 根据jdbc.datasource.connection.DatabaseMetaData获取指定表的列数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5575,7 +5814,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 
 
 	/**
-	 * column[结果集封装](方法4)<br/>
+	 * column[结果集封装]<br/>(方法4)<br/>
 	 * 解析查询结果metadata(0=1)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建

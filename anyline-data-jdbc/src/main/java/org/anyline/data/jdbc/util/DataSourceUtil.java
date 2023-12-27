@@ -55,19 +55,19 @@ public class DataSourceUtil {
                 throw new Exception("未设置数据源类型(如:pool=com.zaxxer.hikari.HikariDataSource)");
             }
             Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
-            Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
-            Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
-            Object user =  BeanUtil.propertyNvl(params,"user","username");
+            Object driver =  BeanUtil.propertyNvl(params, "driver", "driver-class", "driver-class-name");
+            Object url =  BeanUtil.propertyNvl(params, "url", "jdbc-url");
+            Object user =  BeanUtil.propertyNvl(params, "user", "username");
             DataSource ds =  poolClass.newInstance();
-            Map<String,Object> map = new HashMap<String,Object>();
+            Map<String, Object> map = new HashMap<String, Object>();
             map.putAll(params);
             map.put("url", url);
             map.put("jdbcUrl", url);
-            map.put("driver",driver);
-            map.put("driverClass",driver);
-            map.put("driverClassName",driver);
-            map.put("user",user);
-            map.put("username",user);
+            map.put("driver", driver);
+            map.put("driverClass", driver);
+            map.put("driverClassName", driver);
+            map.put("user", user);
+            map.put("username", user);
             BeanUtil.setFieldsValue(ds, map, false);
             return ds;
         } catch (Exception e) {

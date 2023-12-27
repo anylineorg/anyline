@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -43,9 +43,9 @@ public class RegularMatchPrefix implements Regular{
 	public boolean match(String src, String regx){
 		boolean result = false; 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
-			result = matcher.matchesPrefix(src, pattern); 
+			result = matcher.matchesPrefix(src, pattern);
 		}catch(Exception e){
 			result = false;
 			log.error("[match error][src:{}][regx:{}]", src, regx);
@@ -62,7 +62,7 @@ public class RegularMatchPrefix implements Regular{
 	public List<List<String>> fetchs(String src, String regx){
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			while(matcher.matchesPrefix(input, pattern)){
@@ -92,7 +92,7 @@ public class RegularMatchPrefix implements Regular{
 		List<String> list = new ArrayList<>();
 		 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			while(matcher.matchesPrefix(input, pattern)){

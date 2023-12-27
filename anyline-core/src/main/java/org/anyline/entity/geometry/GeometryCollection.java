@@ -41,7 +41,7 @@ public class GeometryCollection extends Geometry{
         boolean first = true;
         for(Geometry geometry:collection){
             if(!first){
-                builder.append(",");
+                builder.append(", ");
             }
             first = false;
             builder.append(geometry.toString(true));
@@ -81,7 +81,7 @@ public class GeometryCollection extends Geometry{
         boolean first = true;
         for(Geometry geometry:collection){
             if(!first){
-                builder.append(",");
+                builder.append(", ");
             }
             first = false;
             builder.append(geometry.sql(true, true));

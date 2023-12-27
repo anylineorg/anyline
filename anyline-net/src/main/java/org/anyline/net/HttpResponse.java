@@ -40,10 +40,10 @@ public class HttpResponse {
 	private String parser			; // 解析器CD
 	private String host				;
 	private Map<String, String> headers = new HashMap<String, String>();
-	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>();
+	private Map<String, HttpCookie> cookies = new HashMap<String, HttpCookie>();
 	private InputStream inputStream;
  
-	private Map<String, String> seed; 
+	private Map<String, String> seed;
 	 
 	public String getContentType() {
 		return contentType; 
@@ -54,7 +54,7 @@ public class HttpResponse {
 			fileType = contentType.split(";")[0]; 
 		}catch(Exception e){
 			fileType = "text/html"; 
-			log.error("setContentType$parse content type({})",contentType); 
+			log.error("setContentType$parse content type({})", contentType);
 		} 
 		try{
 			String tmps[] = contentType.split("="); 

@@ -35,12 +35,12 @@ import java.util.List;
 
 public class CacheUtil {
 	private static final Logger log = LoggerFactory.getLogger(CacheUtil.class);
-	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		// 缓存刷新标记
+	private static Hashtable<String, Long> reflushFlag = new Hashtable<String, Long>();		// 缓存刷新标记
 
 
 	/*
 	 * 辅助缓存刷新控制, N秒内只接收一次刷新操作
-	 * 调用刷新方法前,先调用start判断是否可刷新,刷新完成后调用stop
+	 * 调用刷新方法前, 先调用start判断是否可刷新, 刷新完成后调用stop
 	 * start与stop使用同一个key,
 	 * 其中两次刷新间隔时间在anyline-config中设置单位秒<property key="key">sec</property>
 	 */
@@ -88,7 +88,7 @@ public class CacheUtil {
     	Long fr = reflushFlag.get(key);
     	if(null == fr){
     		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
-    			log.info("[频率控制还原完成 有可能key拼写有误][key:{}]",key);
+    			log.info("[频率控制还原完成 有可能key拼写有误][key:{}]", key);
     		}
     		return;
     	}
@@ -103,7 +103,7 @@ public class CacheUtil {
     }
     public static void stop(String key){
     	int period = ConfigTable.getInt(key, 120);					// 两次刷新最小间隔
-    	stop(key,period);
+    	stop(key, period);
     }
     public static boolean isRun(String key){
     	if(null == reflushFlag.get(key)){
@@ -191,7 +191,7 @@ public class CacheUtil {
 			}
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
-			log.info("[create cache key][key:{}]",result);
+			log.info("[create cache key][key:{}]", result);
 		}
 		return MD5Util.crypto(result);
 	} 

@@ -35,7 +35,7 @@ public enum PostgresqlWriter {
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_date( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD')";
+                value = " to_date( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD')";
             }
             return value;
         }
@@ -45,7 +45,7 @@ public enum PostgresqlWriter {
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertAdapter.convert(value, Date.class, false);
-                value = " to_timestamp( '"+ DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
+                value = " to_timestamp( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";
             }
             return value;
         }

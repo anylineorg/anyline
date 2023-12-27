@@ -31,6 +31,7 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.persistence.ManyToMany;
 import org.anyline.metadata.persistence.OneToMany;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ import java.util.*;
 public class DefaultDao<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultDao.class);
 
-	//默认环境,如果没有值则根据当前线程动态获取
+	//默认环境, 如果没有值则根据当前线程动态获取
 	//用于ServiceProxy中生成多个service/dao/jdbc
 	protected DataRuntime runtime = null;
 
@@ -85,7 +86,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return mpas
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -94,7 +95,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	/**
 	 * 查询<br/>
-	 * 注意:如果设置了自动还原,querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载),而select不会
+	 * 注意:如果设置了自动还原, querys会自动还原数据源(dao内部执行过程中不要调用除非是一些重载), 而select不会
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
 	 * @param conditions  简单过滤条件
@@ -186,7 +187,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 更新
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data		需要更新的数据
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @param columns	需要更新的列 如果没有提供则解析data解析
@@ -422,7 +423,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}else if(Compare.IN == compare){
 					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
-					Map<T,Object> idmap = new HashMap<>();
+					Map<T, Object> idmap = new HashMap<>();
 					for(T entity:set){
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						Object pv = primaryValueMap.get(pk.toUpperCase());
@@ -431,10 +432,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 					if (null == join.dependencyTable) {
 						//只通过中间表查主键 List<Long> departmentIds
-						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?,?,?)
+						//SELECT * FROM HR_EMPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID IN(?, ?, ?)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
-						DataSet allItems = runtime.getAdapter().querys(runtime, random,   new DefaultTablePrepare(join.joinTable), conditions);
+						DataSet allItems = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
 						for(T entity:set){
 							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
@@ -442,11 +443,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						}
 					} else {
 						//通过子表完整查询 List<Department> departments
-						//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
+						//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1, 2)
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
-						DataSet alls = runtime.getAdapter().querys(runtime, random,   new DefaultTextPrepare(sql), conditions);
+						DataSet alls = runtime.getAdapter().querys(runtime, random, new DefaultTextPrepare(sql), conditions);
 						for(T entity:set){
 							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
@@ -481,7 +482,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
-				runtime.getAdapter().deletes(runtime, random,  join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
+				runtime.getAdapter().deletes(runtime, random, join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
 
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -555,7 +556,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}else if(Compare.IN == compare){
 					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
-					Map<T,Object> idmap = new HashMap<>();
+					Map<T, Object> idmap = new HashMap<>();
 					for(T entity:set){
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						Object pv = primaryValueMap.get(pk.toUpperCase());
@@ -563,7 +564,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						idmap.put(entity, pv);
 					}
 					//通过子表完整查询 List<Department> departments
-					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1,2)
+					//SELECT M.*, F.EMPLOYEE_ID FROM hr_department AS M RIGHT JOIN hr_employee_department AS F ON M.ID = F.DEPARTMENT_ID WHERE F.EMPLOYEE_ID IN (1, 2)
 					ConfigStore conditions = new DefaultConfigStore();
 					conditions.and(join.joinColumn, pvs);
 					EntitySet<T> alls = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, conditions);
@@ -588,7 +589,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 保存(insert|upate)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data  data
 	 * @param columns  columns
 	 * @return 影响行数
@@ -610,7 +611,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 添加
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 需要插入的数据
 	 * @param columns  需要插入的列
 	 * @return int 影响行数
@@ -704,7 +705,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 *
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 列
 	 * @param values 值集合
 	 * @return long
@@ -779,16 +780,45 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, Database> databases()
 	 ******************************************************************************************************************/
 
+	@Override
+	public DatabaseType type() {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().type();
+	}
+
+	@Override
+	public String version(DataRuntime runtime, String random) {
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().version(runtime, random);
+	}
+
+	@Override
+	public String product(DataRuntime runtime, String random) {
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().product(runtime, random);
+	}
+
 	/**
-	 * 根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+	 * 根据sql获取列结构, 如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
 	 * @param prepare RunPrepare
 	 * @return LinkedHashMap
 	 */
-	public LinkedHashMap<String,Column> metadata(RunPrepare prepare, boolean comment){
+	public LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment){
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().metadata(runtime, prepare, comment);
 	}
 
+	@Override
+	public Database database(DataRuntime runtime, String random){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().database(runtime, random);
+	}
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
 		if(null == runtime){
@@ -813,6 +843,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
+	public Catalog catalog(DataRuntime runtime, String random){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().catalog(runtime, random);
+	}
+	@Override
 	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
 		if(null == runtime){
 			runtime = runtime();
@@ -834,6 +871,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().schemas(runtime, random, catalog, name);
 	}
 	@Override
+	public Schema schema(DataRuntime runtime, String random){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().schema(runtime, random);
+	}
+	@Override
 	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
 		if(null == runtime){
 			runtime = runtime();
@@ -853,9 +897,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * tables
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
-	 * @param pattern 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
 	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 	 * @return List
 	 */
@@ -903,9 +947,9 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/**
 	 * views
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param catalog 对于MySQL,则对应相应的数据库,对于Oracle来说,则是对应相应的数据库实例,可以不填,也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-	 * @param schema 可以理解为数据库的登录名,而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意,其登陆名必须是大写,不然的话是无法获取到相应的数据,而MySQL则不做强制要求。
-	 * @param pattern 一般情况下如果要获取所有的表的话,可以直接设置为null,如果设置为特定的表名称,则返回该表的具体信息。
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
 	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 	 * @return List
 	 */
@@ -944,7 +988,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().mtables(runtime, random, greedy,  catalog, schema, pattern, types);
+		return runtime.getAdapter().mtables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -971,7 +1015,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -1038,7 +1082,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	/**
 	 * 索引
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return map
 	 */
 	@Override
@@ -1053,7 +1097,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
@@ -1165,7 +1209,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().functions(runtime, random, greedy, catalog, schema, name);
 	}
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random,  Catalog catalog, Schema schema, String name){
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}

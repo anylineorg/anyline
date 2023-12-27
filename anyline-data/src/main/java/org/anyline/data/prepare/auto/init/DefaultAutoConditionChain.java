@@ -70,7 +70,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 			}
 			List<RunValue> values = condition.getRunValues();
 			if(condition.getVariableType() == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE 
-					|| !BasicUtil.isEmpty(true, values) 
+					|| !BasicUtil.isEmpty(true, values)
 					|| condition.isActive()
 					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.NULL
 					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.SRC
@@ -86,7 +86,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 				// if(i>0 /*&& !condition.isContainer()*/){
 
 				if(joinSize>0){
-					String chk = txt.toLowerCase().trim().replace("\n"," ").replace("\t", " ");
+					String chk = txt.toLowerCase().trim().replace("\n", " ").replace("\t", " ");
 					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")){
 						subBuilder.append(condition.getJoin());
 					}
@@ -163,7 +163,7 @@ public class DefaultAutoConditionChain extends DefaultConditionChain implements 
 			if(i==0){
 				txt += conditions.get(i).toString();
 			}else{
-				txt += ","+conditions.get(i).toString();
+				txt += ", "+conditions.get(i).toString();
 			}
 		}
 		txt += "]";

@@ -85,8 +85,9 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public void setRuntime(DataRuntime runtime){
+	public Run setRuntime(DataRuntime runtime){
 		this.runtime = runtime;
+		return this;
 	}
 
 	@Override
@@ -434,35 +435,38 @@ public abstract class BasicRun implements Run {
 	} 
 	@Override 
 	public String getFinalQuery(boolean placeholder) {
-		String text = runtime.getAdapter().mergeFinalQuery(runtime,this);
+		String text = runtime.getAdapter().mergeFinalQuery(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	} 
 	@Override 
 	public String getTotalQuery(boolean placeholder) {
-		String text = runtime.getAdapter().mergeFinalTotal(runtime,this);
+		String text = runtime.getAdapter().mergeFinalTotal(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override
 	public String getFinalExists(boolean placeholder){
-		String text =  runtime.getAdapter().mergeFinalExists(runtime,this);
+		String text =  runtime.getAdapter().mergeFinalExists(runtime, this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override 
@@ -525,7 +529,7 @@ public abstract class BasicRun implements Run {
 	 */
 	@Override
 	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
-		Condition condition = new DefaultAutoCondition(swt, compare, prefix,var, value);
+		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
 		if(null == conditionChain){
 			conditionChain = new DefaultAutoConditionChain();
 		}
@@ -577,6 +581,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override
@@ -588,6 +593,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 	@Override
@@ -599,6 +605,7 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		return text;
 	}
 
@@ -619,8 +626,9 @@ public abstract class BasicRun implements Run {
 		if(!placeholder){
 			text = replace(text);
 		}
+		text = format(text);
 		if(!supportBr()){
-			text = text.replace("\r\n"," ").replace("\n"," ");
+			text = text.replace("\r\n", " ").replace("\n", " ");
 		}
 		return text;
 	}
@@ -752,7 +760,7 @@ public abstract class BasicRun implements Run {
 				if(up.startsWith("ORDER BY")){
 					// 排序条件
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
-					String orders[] = orderStr.split(",");
+					String orders[] = orderStr.split(", ");
 					for(String item:orders){
 						order(item);
 						if(null != configStore){
@@ -766,7 +774,7 @@ public abstract class BasicRun implements Run {
 				}else if(up.startsWith("GROUP BY")){
 					// 分组条件
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
-					String groups[] = groupStr.split(",");
+					String groups[] = groupStr.split(", ");
 					for(String item:groups){
 						if(null == groupStore){
 							groupStore = new DefaultGroupStore();
@@ -785,7 +793,8 @@ public abstract class BasicRun implements Run {
 //				}
 
 
-				if(condition.startsWith("${") && condition.endsWith("}")){
+				//if(condition.startsWith("${") && condition.endsWith("}")){
+				if(BasicUtil.checkEl(condition)){
 					// 原生SQL  不处理
 					Condition con = new DefaultAutoCondition(condition.substring(2, condition.length()-1));
 					addCondition(con);
@@ -802,9 +811,9 @@ public abstract class BasicRun implements Run {
 					}
 					if(!isTime){
 						// 需要解析的SQL
-						ParseResult parser = ConfigParser.parse(condition,false);
+						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.getSwitch(),parser.getCompare(), parser.getPrefix(),parser.getVar(),value);
+						addCondition(parser.getSwitch(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
 						continue;
 					}
 				}
@@ -842,11 +851,11 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return result;*/
-		txt = txt.replaceAll("\\s"," ")
-				.replaceAll("'[\\S\\s]*?'","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}")
-				.replaceAll("\\([^\\(\\)]+?\\)","{}")
+		txt = txt.replaceAll("\\s", " ")
+				.replaceAll("'[\\S\\s]*?'", "{}")
+				.replaceAll("\\([^\\(\\)]+?\\)", "{}")
+				.replaceAll("\\([^\\(\\)]+?\\)", "{}")
+				.replaceAll("\\([^\\(\\)]+?\\)", "{}")
 				.toUpperCase();
 		if(txt.contains("UNION")){
 			boolean result = false;
@@ -1042,9 +1051,9 @@ public abstract class BasicRun implements Run {
 				for(String col:cols){
 					if(null == result){
 
-						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
+						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}else{
-						result += "," + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr() , runtime.getAdapter().getDelimiterTo());
+						result += ", " + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}
 				}
 			}
@@ -1070,7 +1079,7 @@ public abstract class BasicRun implements Run {
 				int index = result.indexOf("?");
 				String replacement = null;
 				if(null == value){
-					value = "null";
+					value = "NULL";
 				}
 				DriverAdapter adapter = adapter();
 				if(null != adapter){
@@ -1087,6 +1096,16 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return result;
+	}
+	private String format(String sql){
+		if(null != sql) {
+			sql = sql.replaceAll("\n ", "\n\t")
+					.replaceAll("\n\t\n", "\n")
+					.replaceAll("\n{2,}", "\n")
+					.replaceAll(" {2,}", " ")
+					.trim();
+		}
+		return sql;
 	}
 	public String log(ACTION.DML action, boolean placeholder){
 		StringBuilder builder = new StringBuilder();

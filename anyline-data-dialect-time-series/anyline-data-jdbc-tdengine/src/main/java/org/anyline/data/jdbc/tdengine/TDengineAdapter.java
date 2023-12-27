@@ -322,7 +322,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
 	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
@@ -332,7 +332,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 	/**
-	 * UPDATE [调用入口]
+	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -360,7 +360,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.update(runtime, random, batch, dest, data, configs, columns);
 	}
 	/**
-	 * update [命令合成]
+	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj Entity或DtaRow
@@ -383,7 +383,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch,  String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
@@ -429,7 +429,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 	/**
-	 * update [命令执行]
+	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -439,13 +439,13 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
-		return super.update(runtime,random,  dest, data, configs, run);
+		return super.update(runtime, random, dest, data, configs, run);
 	}
 
 
 
 	/**
-	 * save [调用入口]
+	 * save [调用入口]<br/>
 	 * <br/>
 	 * 根据是否有主键值确认insert | update<br/>
 	 * 执行完成后会补齐自增主键值
@@ -473,16 +473,16 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.save(runtime, random,  dest, data, configs, columns);
+		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
 	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
-		return super.saveCollection(runtime, random,  dest, data, configs, columns);
+		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return super.saveObject(runtime, random,  dest, data, configs, columns);
+		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
 	protected Boolean checkOverride(Object obj){
@@ -524,7 +524,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * 													QUERY
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * DataSet querys(DataRuntime runtime, String random,  RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
 	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -545,7 +545,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 ******************************************************************************************************************/
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * <br/>
 	 * 返回DataSet中包含元数据信息，如果性能有要求换成maps
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -561,7 +561,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * query procedure [调用入口]
+	 * query procedure [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param procedure 存储过程
@@ -574,7 +574,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param clazz 类
@@ -606,7 +606,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * query [调用入口]
+	 * query [调用入口]<br/>
 	 * <br/>
 	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -621,7 +621,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 	/**
-	 * select[命令合成] 最终可执行命令
+	 * select[命令合成]<br/> 最终可执行命令<br/>
 	 * 创建查询SQL
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
@@ -733,7 +733,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.createConditionIn(runtime, builder, compare, value);
 	}
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param system 系统表不检测列属性
@@ -748,7 +748,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -759,7 +759,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.maps(runtime, random, configs, run);
 	}
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -771,7 +771,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * select [命令执行]
+	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param next 是否查下一个序列值
@@ -784,7 +784,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * select [命令执行-子流程]
+	 * select [结果集封装-子流程]<br/>
 	 * JDBC执行完成后的结果处理
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param list JDBC执行返回的结果集
@@ -806,7 +806,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * long count(DataRuntime runtime, String random, Run run)
 	 ******************************************************************************************************************/
 	/**
-	 * count [调用入口]
+	 * count [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -819,7 +819,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.count(runtime, random, prepare, configs, conditions);
 	}
 	/**
-	 * count [命令合成]
+	 * count [命令合成]<br/>
 	 * 合成最终 select count 命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -831,7 +831,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * count [命令执行]
+	 * count [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -851,7 +851,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 ******************************************************************************************************************/
 
 	/**
-	 * exists [调用入口]
+	 * exists [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -884,7 +884,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 ******************************************************************************************************************/
 
 	/**
-	 * execute [调用入口]
+	 * execute [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -894,15 +894,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		return super.execute(runtime, random,  prepare, configs, conditions);
+		return super.execute(runtime, random, prepare, configs, conditions);
 	}
 
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random,  batch, configs, cmd, values);
+		return super.execute(runtime, random, batch, configs, cmd, values);
 	}
 	/**
-	 * procedure [命令执行]
+	 * procedure [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param procedure 存储过程
 	 * @param random  random
@@ -913,7 +913,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.execute(runtime, random, procedure);
 	}
 	/**
-	 * execute [命令合成]
+	 * execute [命令合成]<br/>
 	 * 创建执行SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -939,7 +939,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * execute [命令合成-子流程]
+	 * execute [命令合成-子流程]<br/>
 	 * 填充 execute 命令内容
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -949,7 +949,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		super.fillExecuteContent(runtime, run);
 	}
 	/**
-	 * execute [命令执行]
+	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
@@ -957,7 +957,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
-		return super.execute(runtime, random,  configs, run);
+		return super.execute(runtime, random, configs, run);
 	}
 
 	/* *****************************************************************************************************************
@@ -979,7 +979,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -991,11 +991,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
-		return super.deletes(runtime, random,  batch, table, configs, key, values);
+		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1006,11 +1006,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
-		return super.delete(runtime, random,  dest, configs, obj, columns);
+		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
 	/**
-	 * delete [调用入口]
+	 * delete [调用入口]<br/>
 	 * <br/>
 	 * 根据configs和conditions过滤条件
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1022,11 +1022,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
-		return super.delete(runtime, random,  table, configs, conditions);
+		return super.delete(runtime, random, table, configs, conditions);
 	}
 
 	/**
-	 * truncate [调用入口]
+	 * truncate [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table 表
@@ -1034,7 +1034,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, String table){
-		return super.truncate(runtime, random,  table);
+		return super.truncate(runtime, random, table);
 	}
 
 	/**
@@ -1048,7 +1048,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
-		return super.buildDeleteRun(runtime, dest,  obj, columns);
+		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
 	/**
@@ -1149,15 +1149,63 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name)
 	 * List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name)
 	 * Database database(DataRuntime runtime, String random, String name)
+	 * Database database(DataRuntime runtime, String random)
+	 * String String product(DataRuntime runtime, String random);
+	 * String String version(DataRuntime runtime, String random);
 	 * [命令合成]
+	 * List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name)
 	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name)
-	 * [结果集封装]
+	 * List<Run> buildQueryProductRun(DataRuntime runtime, boolean greedy, String name)
+	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
+	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)
 	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)
-	 * Database database(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
+	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
+	 * String product(DataRuntime runtime, boolean create, String product)
+	 * String version(DataRuntime runtime, int index, boolean create, String version, DataSet set)
+	 * String version(DataRuntime runtime, boolean create, String version)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, boolean create, Schema schema)
+	 * Database database(DataRuntime runtime, boolean create, Database dataase)
 	 ******************************************************************************************************************/
+
 	/**
-	 * database[调用入口]
+	 * database[调用入口]<br/>
+	 * 当前数据库
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return Database
+	 */
+	@Override
+	public Database database(DataRuntime runtime, String random){
+		return super.database(runtime, random);
+	}
+	/**
+	 * database[调用入口]<br/>
+	 * 当前数据源 数据库描述(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	public String product(DataRuntime runtime, String random){
+		return super.product(runtime, random);
+	}
+	/**
+	 * database[调用入口]<br/>
+	 * 当前数据源 数据库类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	public String version(DataRuntime runtime, String random){
+		return super.version(runtime, random);
+	}
+	/**
+	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1169,7 +1217,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.databases(runtime, random, greedy, name);
 	}
 	/**
-	 * database[调用入口]
+	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1179,9 +1227,31 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
 		return super.databases(runtime, random, name);
 	}
+
 	/**
 	 * database[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询当前数据源 数据库产品说明(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception{
+		return super.buildQueryProductRun(runtime);
+	}
+	/**
+	 * database[命令合成]<br/>
+	 * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return sqls
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
+		return super.buildQueryVersionRun(runtime);
+	}	/**
+	 * database[命令合成]<br/>
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1189,11 +1259,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-		return super.buildQueryDatabaseRun(runtime, greedy, name);
+	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
+		return super.buildQueryDatabasesRun(runtime, greedy, name);
 	}
 	/**
-	 * database[结果集封装]
+	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1210,9 +1280,88 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
 		return super.databases(runtime, index, create, databases, set);
 	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @param set 查询结果集
+	 * @return database
+	 * @throws Exception 异常
+	 */
 	@Override
-	public Database database(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-		return super.database(runtime, index, create, set);
+	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
+		return super.database(runtime, index, create, database, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 当前database 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param database 上一步查询结果
+	 * @return database
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Database database(DataRuntime runtime, boolean create, Database database) throws Exception{
+		return super.database(runtime, create, database);
+	}
+
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @param set 查询结果集
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+		return super.product(runtime, index, create, product, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 product
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param product 上一步查询结果
+	 * @return product
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String product(DataRuntime runtime, boolean create, String product){
+		return super.product(runtime, create, product);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据查询结果集构造 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @param set 查询结果集
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+		return super.version(runtime, index, create, version, set);
+	}
+	/**
+	 * database[结果集封装]<br/>
+	 * 根据JDBC内置接口 version
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param version 上一步查询结果
+	 * @return version
+	 * @throws Exception 异常
+	 */
+	@Override
+	public String version(DataRuntime runtime, boolean create, String version){
+		return super.version(runtime, create, version);
 	}
 
 	/* *****************************************************************************************************************
@@ -1222,16 +1371,17 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name)
 	 * List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name)
 	 * [命令合成]
-	 * List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name)
-	 * [结果集封装]
+	 * List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name)
+	 * [结果集封装]<br/>
 	 * List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
 	 * List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs, DataSet set)
 	 * LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)
-	 * Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set)
+	 * Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog)
 	 ******************************************************************************************************************/
 	/**
-	 * catalog[调用入口]
+	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1242,7 +1392,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.catalogs(runtime, random, name);
 	}
 	/**
-	 * catalog[调用入口]
+	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param name 名称统配符或正则
@@ -1255,7 +1405,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * catalog[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1263,8 +1413,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryCatalogRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-		return super.buildQueryCatalogRun(runtime, greedy, name);
+	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
+		return super.buildQueryCatalogsRun(runtime, greedy, name);
 	}
 	/**
 	 * catalog[结果集封装]<br/>
@@ -1315,16 +1465,40 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
-	 * @return databases
+	 * @return catalogs
 	 * @throws Exception 异常
 	 */
 	@Override
 	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
 		return super.catalogs(runtime, create, catalogs);
 	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @param set 查询结果集
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
 	@Override
-	public Catalog catalog(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-		return super.catalog(runtime, index, create, set);
+	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
+		return super.catalog(runtime, index, create, catalog, set);
+	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 当前catalog 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog 上一步查询结果
+	 * @return Catalog
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception{
+		return super.catalog(runtime, create, catalog);
 	}
 
 
@@ -1335,14 +1509,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name)
 	 * List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name)
 	 * [命令合成]
-	 * List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
-	 * [结果集封装]
+	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
+	 * [结果集封装]<br/>
 	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set)
 	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set)
-	 * Schema schema(DataRuntime runtime, int index, boolean create, DataSet set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set)
+	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema)
 	 ******************************************************************************************************************/
 	/**
-	 * schema[调用入口]
+	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param catalog catalog
@@ -1354,7 +1529,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.schemas(runtime, random, catalog, name);
 	}
 	/**
-	 * schema[调用入口]
+	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param catalog catalog
@@ -1368,7 +1543,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * catalog[命令合成]<br/>
-	 * 查询所有数据库
+	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param name 名称统配符或正则
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1376,8 +1551,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQuerySchemaRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
-		return super.buildQuerySchemaRun(runtime, greedy, catalog, name);
+	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
+		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
 	}
 	/**
 	 * schema[结果集封装]<br/>
@@ -1398,9 +1573,34 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception{
 		return super.schemas(runtime, index, create, schemas, set);
 	}
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据查询结果集
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @param set 查询结果集
+	 * @return schema
+	 * @throws Exception 异常
+	 */
 	@Override
-	public Schema schema(DataRuntime runtime, int index, boolean create, DataSet set) throws Exception{
-		return super.schema(runtime, index, create, set);
+	public Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set) throws Exception{
+		return super.schema(runtime, index, create, schema, set);
+	}
+
+	/**
+	 * schema[结果集封装]<br/>
+	 * 当前schema 根据驱动内置接口补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param schema 上一步查询结果
+	 * @return schema
+	 * @throws Exception 异常
+	 */
+	@Override
+	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception{
+		return super.schema(runtime, create, schema);
 	}
 
 	/* *****************************************************************************************************************
@@ -1410,9 +1610,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
 	 * [命令合成]
-	 * List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]
+	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * [结果集封装]<br/>
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
@@ -1421,14 +1621,14 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Table table)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
 	/**
 	 *
-	 * table[调用入口]
+	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -1475,7 +1675,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -1510,15 +1710,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryTableCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryTableCommentRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
 	}
 
 	/**
-	 * table[结果集封装] <br/>
+	 * table[结果集封装]<br/> <br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1535,7 +1735,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			// SHOW TABLES 只返回一列stable_name
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1555,7 +1755,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			// a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
 
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1568,19 +1768,19 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						continue;
 					}
 				}
-				table.setCatalog(row.getString("db_name"));
-				table.setType(row.getString("type"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setType(row.getString("TYPE"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 			}
 		}
 		return tables;
 	}
 
 	/**
-	 * table[结果集封装] <br/>
+	 * table[结果集封装]<br/> <br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1597,7 +1797,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			// SHOW TABLES 只返回一列stable_name
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1615,7 +1815,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			// a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
 
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1629,9 +1829,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						continue;
 					}
 				}
-				table.setCatalog(row.getString("db_name"));
-				table.setType(row.getString("type"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setType(row.getString("TYPE"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 				if(!contains){
 					tables.add(table);
 				}
@@ -1640,7 +1840,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return tables;
 	}
 	/**
-	 * table[结果集封装] <br/>
+	 * table[结果集封装]<br/> <br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1680,7 +1880,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1698,7 +1898,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryTableRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1734,15 +1934,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryDDLRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildQueryDdlsRun(runtime, table);
 	}
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1759,15 +1959,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * [命令合成]
-	 * List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, View view)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
@@ -1801,8 +2001,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryViewRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryViewRun(runtime, greedy, catalog, schema, pattern, types);
+	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 
@@ -1810,7 +2010,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * view[结果集封装]<br/>
 	 *  根据查询结果集构造View
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照buildQueryViewRun返回顺序
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1842,7 +2042,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * view[调用入口]
+	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
@@ -1861,15 +2061,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, View view) throws Exception{
-		return super.buildQueryDDLRun(runtime, view);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception{
+		return super.buildQueryDdlsRun(runtime, view);
 	}
 
 	/**
 	 * view[结果集封装]<br/>
 	 * 查询 view DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param view view
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -1885,16 +2085,16 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
-	 * [结果集封装]
+	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 
@@ -1926,13 +2126,13 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		String sql = "SHOW STABLES";
 		if (BasicUtil.isNotEmpty(pattern)) {
 			sql += " LIKE '" + pattern + "'";
 		}
-		runs.add(new SimpleRun(sql));
+		runs.add(new SimpleRun(runtime, sql));
 
 		sql = "SELECT * FROM INFORMATION_SCHEMA.INS_STABLES WHERE 1=1 ";
 		if (BasicUtil.isNotEmpty(catalog)) {
@@ -1941,7 +2141,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if (BasicUtil.isNotEmpty(pattern)) {
 			sql += " AND STABLE_NAME LIKE '" + pattern + "'";
 		}
-		runs.add(new SimpleRun(sql));
+		runs.add(new SimpleRun(runtime, sql));
 		return runs;
 	}
 
@@ -1949,7 +2149,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * master table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1966,7 +2166,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			// SHOW STABLES 只返回一列stable_name
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1985,7 +2185,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			// stable_name  |db_name|create_time            |columns|tags|last_update           |table_comment|watermark  |max_delay|rollup|
 			// meters       |simple |yyyy-MM-dd HH:mm:ss.SSS|4      |2   |yyyy-MM-dd HH:mm:ss.SS|NULL         |5000a,5000a|-1a,-1a  |      |
 			for(DataRow row:set){
-				String name = row.getString("stable_name");
+				String name = row.getString("STABLE_NAME");
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
@@ -1998,8 +2198,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						continue;
 					}
 				}
-				table.setCatalog(row.getString("db_name"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 			}
 		}
 		return tables;
@@ -2021,7 +2221,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * master table[调用入口]
+	 * master table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table MasterTable
@@ -2039,14 +2239,14 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, MasterTable table) throws Exception{
-		return super.buildQueryDDLRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception{
+		return super.buildQueryDdlsRun(runtime, table);
 	}
 	/**
 	 * master table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -2062,17 +2262,17 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
-	 * List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
-	 * [结果集封装]
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
+	 * [结果集封装]<br/>
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table)
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table)
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
@@ -2102,8 +2302,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryPartitionTableRun(runtime, catalog, schema, pattern, types);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
+		return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
 	}
 	/**
 	 * partition table[命令合成]<br/>
@@ -2116,7 +2316,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
 		List<Run> runs = new ArrayList<>();
 
 		String stable = null;
@@ -2184,15 +2384,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTableRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
-		return super.buildQueryPartitionTableRun(runtime,  master, tags);
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
+		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
 	/**
 	 * partition table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param total 合计SQL数量
-	 * @param index 第几条SQL 对照 buildQueryMasterTableRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param master 主表
 	 * @param catalog catalog
@@ -2207,26 +2407,26 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		if(index == 0){
 			tables = new LinkedHashMap<>();
 			for(DataRow row:set){
-				String name = row.getString("table_name");
+				String name = row.getString("TABLE_NAME");
 				T table = (T)new PartitionTable(name);
 				tables.put(name, table); //不要转大写 下一步需要交集
 			}
 		}else if(index < total -1){
 			//与此之前的集合求交集
-			tables.keySet().retainAll(set.getStrings("table_name"));
+			tables.keySet().retainAll(set.getStrings("TABLE_NAME"));
 		}
 		if(index == total -1){
 			//最后一步 补充详细信息
 			LinkedHashMap<String, T> result = new LinkedHashMap<>();
 			for (DataRow row:set){
-				String name = row.getString("table_name");
+				String name = row.getString("TABLE_NAME");
 				if(!tables.containsKey(name)){
 					continue;
 				}
 				T table = (T)new PartitionTable(name);
 				result.put(name.toUpperCase(), table);
-				table.setCatalog(row.getString("db_name"));
-				table.setComment(row.getString("table_comment"));
+				table.setCatalog(row.getString("DB_NAME"));
+				table.setComment(row.getString("TABLE_COMMENT"));
 				table.setMaster(master);
 				result.put(name, table);
 			}
@@ -2254,7 +2454,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.ptables(runtime, create, tables, catalog, schema, master);
 	}
 	/**
-	 * partition table[调用入口]
+	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table PartitionTable
@@ -2273,15 +2473,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, PartitionTable table) throws Exception{
-		return super.buildQueryDDLRun(runtime, table);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception{
+		return super.buildQueryDdlsRun(runtime, table);
 	}
 
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param table MasterTable
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
@@ -2298,8 +2498,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
 	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
 	 * [命令合成]
-	 * List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
-	 * [结果集封装]
+	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
+	 * [结果集封装]<br/>
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception;
 	 * <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
@@ -2322,13 +2522,13 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * column[调用入口]<br/>
-	 * 查询所有表的列
+	 * 查询全部表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param table 查询所有表时 输入null
+	 * @param table 查询全部表时 输入null
 	 * @return List
 	 * @param <T> Column
 	 */
@@ -2345,7 +2545,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		Catalog catalog = null;
 		Schema schema = null;
@@ -2359,9 +2559,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		if(metadata){
-			builder.append("SELECT * FROM ");
+			//不支持
+			/*builder.append("SELECT * FROM ");
 			name(runtime, builder, table);
-			builder.append(" WHERE 1=0");
+			builder.append(" WHERE 1=0");*/
 		}else {
 			if(null != name) {
 				builder.append("DESCRIBE ").append(name);
@@ -2374,7 +2575,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryColumnRun返回顺序
+	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param columns 上一步查询结果
@@ -2389,8 +2590,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		}
 		// DESCRIBE
 		for(DataRow row:set){
-			String name = row.getString("field");
-			String note = row.getString("note");
+			String name = row.getString("FIELD");
+			String note = row.getString("NOTE");
 			if(BasicUtil.isEmpty(name)){
 				continue;
 			}
@@ -2409,8 +2610,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			column.setName(name);
 			column.setCatalog(table.getCatalog());
 			column.setSchema(table.getSchema());
-			column.setTypeName(row.getString("type"));
-			column.setPrecision(row.getInt("length", 0));
+			column.setTypeName(row.getString("TYPE"));
+			column.setPrecision(row.getInt("LENGTH", 0));
 			ColumnType columnType = type(column.getTypeName());
 			column.setColumnType(columnType);
 		}
@@ -2445,8 +2646,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table)
 	 * [命令合成]
-	 * List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata)
-	 * [结果集封装]
+	 * List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata)
+	 * [结果集封装]<br/>
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set)
 	 * <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern)
 	 ******************************************************************************************************************/
@@ -2474,14 +2675,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryTagRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
+	public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(metadata){
-			builder.append("SELECT * FROM ");
+			//3.2.1不支持
+			/*builder.append("SELECT * FROM ");
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
-			runs.add(new SimpleRun(builder));
+			runs.add(new SimpleRun(builder));*/
 		}else {
 			if (table instanceof MasterTable) {
 				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
@@ -2490,10 +2692,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 				builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
 				builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
 			}
-			runs.add(new SimpleRun(builder));
+			runs.add(new SimpleRun(runtime, builder));
 			builder = new StringBuilder();
 			builder.append("DESCRIBE ").append(table.getName());
-			runs.add(new SimpleRun(builder));
+			runs.add(new SimpleRun(runtime, builder));
 		}
 		return runs;
 	}
@@ -2502,7 +2704,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * tag[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryTagRun返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryTagsRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param tags 上一步查询结果
@@ -2538,11 +2740,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		}else if(index ==1){
 			// DESCRIBE
 			for(DataRow row:set){
-				String note = row.getString("note");
+				String note = row.getString("NOTE");
 				if(!"TAG".equalsIgnoreCase(note)){
 					continue;
 				}
-				String name = row.getString("field");
+				String name = row.getString("FIELD");
 
 				if(BasicUtil.isEmpty(name)){
 					continue;
@@ -2556,8 +2758,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 					}
 				}
 				item.setName(name);
-				item.setTypeName(row.getString("type"));
-				item.setPrecision(row.getInt("length", 0));
+				item.setTypeName(row.getString("TYPE"));
+				item.setPrecision(row.getInt("LENGTH", 0));
 				item.setValue(row.get("TAG_VALUE"));
 				tags.put(name.toUpperCase(), item);
 			}
@@ -2621,7 +2823,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * primary[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
@@ -2638,7 +2840,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);
 	 * [命令合成]
-	 * List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception;
+	 * List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception;
 	 * [结构集封装]
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
 	 ******************************************************************************************************************/
@@ -2664,14 +2866,14 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryForeignRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryForeignRun(runtime, table);
+	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception{
+		return super.buildQueryForeignsRun(runtime, table);
 	}
 	/**
 	 * foreign[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryForeignRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryForeignsRun 返回顺序
 	 * @param table 表
 	 * @param foreigns 上一步查询结果
 	 * @param set sql查询结果
@@ -2691,8 +2893,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
 	 * <T extends Index> LinkedHashMap<T, Index> indexs(DataRuntime runtime, String random, Table table, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name)
-	 * [结果集封装]
+	 * List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name)
+	 * [结果集封装]<br/>
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
 	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)
 	 * <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)
@@ -2736,15 +2938,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryIndexRun(DataRuntime runtime, Table table, String name){
-		return super.buildQueryIndexRun(runtime, table, name);
+	public List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name){
+		return super.buildQueryIndexsRun(runtime, table, name);
 	}
 
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -2760,7 +2962,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param indexs 上一步查询结果
@@ -2812,8 +3014,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern) ;
-	 * [结果集封装]
+	 * List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) ;
+	 * [结果集封装]<br/>
 	 * <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception;
 	 * <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
 	 ******************************************************************************************************************/
@@ -2849,7 +3051,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * constraint[命令合成]
+	 * constraint[命令合成]<br/>
 	 * 查询表上的约束
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
@@ -2857,15 +3059,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryConstraintRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintRun(runtime, table, column, pattern);
+	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
+		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
 	}
 
 	/**
-	 * constraint[结果集封装]
+	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param constraints 上一步查询结果
@@ -2878,10 +3080,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.constraints(runtime, index, create, table, constraints, set);
 	}
 	/**
-	 * constraint[结果集封装]
+	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param column 列
@@ -2903,8 +3105,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events)
 	 * [命令合成]
-	 * List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
-	 * [结果集封装]
+	 * List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events)
+	 * [结果集封装]<br/>
 	 * <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set)
 	 ******************************************************************************************************************/
 
@@ -2923,21 +3125,21 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.triggers(runtime, random, greedy, table, events);
 	}
 	/**
-	 * trigger[命令合成]
+	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	public List<Run> buildQueryTriggerRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
-		return super.buildQueryTriggerRun(runtime, table, events);
+	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+		return super.buildQueryTriggersRun(runtime, table, events);
 	}
 	/**
-	 * trigger[结果集封装]
+	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @param triggers 上一步查询结果
@@ -2958,8 +3160,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
-	 * [结果集封装]
+	 * List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, int index, boolean create, List<T> procedures, DataSet set) throws Exception;
 	 * <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception;
 	 * <T extends Procedure> List<T> procedures(DataRuntime runtime, boolean create, List<T> procedures, DataSet set) throws Exception;
@@ -2967,8 +3169,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Procedure procedure);
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception;
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception;
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
 	 ******************************************************************************************************************/
 	/**
@@ -2984,7 +3186,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random,  boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
 	/**
@@ -2999,11 +3201,11 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random,  Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
 	/**
-	 * procedure[命令合成]
+	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
@@ -3012,14 +3214,14 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryProcedureRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-		return super.buildQueryProcedureRun(runtime, catalog, schema, pattern);
+	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
+		return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
 	}
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param procedures 上一步查询结果
 	 * @param set 查询结果集
@@ -3032,7 +3234,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3046,7 +3248,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Procedure
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3078,15 +3280,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, Procedure procedure) throws Exception{
-		return super.buildQueryDDLRun(runtime, procedure);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception{
+		return super.buildQueryDdlsRun(runtime, procedure);
 	}
 
 	/**
-	 * procedure[结果集封装]
+	 * procedure[结果集封装]<br/>
 	 * 查询 Procedure DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param procedure Procedure
 	 * @param ddls 上一步查询结果
 	 * @param set 查询结果集
@@ -3105,8 +3307,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
 	 * [命令合成]
-	 * List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
-	 * [结果集封装]
+	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
 	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception;
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
 	 * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions, DataSet set) throws Exception;
@@ -3114,8 +3316,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Function function);
 	 * [命令合成]
-	 * List<Run> buildQueryDDLRun(DataRuntime runtime, Function function) throws Exception;
-	 * [结果集封装]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Function function) throws Exception;
+	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
@@ -3150,7 +3352,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.functions(runtime, random, catalog, schema, pattern);
 	}
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 查询表上的 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param catalog catalog
@@ -3159,15 +3361,15 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryFunctionRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQueryFunctionRun(runtime, catalog, schema, name);
+	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
+		return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
 	}
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param functions 上一步查询结果
 	 * @param set 查询结果集
@@ -3179,10 +3381,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.functions(runtime, index, create, functions, set);
 	}
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryConstraintRun 返回顺序
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param functions 上一步查询结果
 	 * @param set 查询结果集
@@ -3195,7 +3397,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[结果集封装]
+	 * function[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3229,14 +3431,14 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDDLRun(DataRuntime runtime, Function meta) throws Exception{
-		return super.buildQueryDDLRun(runtime, meta);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception{
+		return super.buildQueryDdlsRun(runtime, meta);
 	}
 	/**
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDDLRun 返回顺序
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
 	 * @param function Function
 	 * @param ddls 上一步查询结果
 	 * @param set 查询结果集
@@ -3497,7 +3699,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -3566,7 +3768,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 备注
+	 * 备注 创建表的完整DDL拼接COMMENT部分，与buildAppendCommentRun二选一实现
 	 * 不支持
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -3604,7 +3806,34 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
-		return super.partitionOf(runtime, builder, meta);
+		String stable = meta.getMasterName();
+		if(BasicUtil.isEmpty(stable)){
+			throw new SQLException("未指定主表");
+		}
+		builder.append(" USING ");
+		delimiter(builder, stable);
+		builder.append("(");
+		Collection<Tag> tags = meta.getTags().values();
+		int idx = 0;
+		for(Tag tag:tags){
+			if(idx > 0){
+				builder.append(",");
+			}
+			delimiter(builder, tag.getName());
+			idx ++;
+		}
+		builder.append(") TAGS (");
+		idx = 0;
+		for(Tag tag:tags){
+			if(idx > 0){
+				builder.append(",");
+			}
+			//format(builder, tag.getValue());
+			builder.append(write(runtime,null, tag.getValue(), false));
+			idx ++;
+		}
+		builder.append(")");
+		return builder;
 	}
 
 
@@ -3892,7 +4121,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 					idx ++;
 				}
 				builder.append(")");
-				runs.add(new SimpleRun(builder));
+				runs.add(new SimpleRun(runtime, builder));
 			}else{
 				runs.add(sql);
 			}
@@ -3939,7 +4168,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * master table[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -4044,15 +4273,9 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, PartitionTable meta) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		String stable = meta.getMasterName();
-		if(BasicUtil.isEmpty(stable)){
-			throw new SQLException("未指定主表");
-		}
 		Table tab = meta;
+		return super.buildCreateRun(runtime, tab);
+		/*
 		builder.append(super.buildCreateRun(runtime, tab).get(0).getFinalUpdate());
 		builder.append(" USING ");
 		delimiter(builder, stable);
@@ -4077,12 +4300,12 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			idx ++;
 		}
 		builder.append(")");
-		return runs;
+		return runs;*/
 	}
 
 	/**
 	 * partition table[命令合成]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return sql
@@ -4421,14 +4644,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
+	 * 添加列备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
-	 * @return sql
-	 * @throws Exception 异常
-	 */
-	/**
-	 * 添加表备注(表创建完成后调用,创建过程能添加备注的不需要实现)
 	 * @param meta 列
 	 * @return sql
 	 * @throws Exception 异常
@@ -4792,7 +5009,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception{
-		return super.alter(runtime, table, meta);
+		return super.alter(runtime, table, meta, false);
 	}
 
 
@@ -4999,6 +5216,19 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * primary[调用入口]<br/>
 	 * 修改主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param origin 原主键
+	 * @param meta 新主键
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	@Override
+	public boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception{
+		return super.alter(runtime, table, origin, meta);
+	}
+	/**
+	 * primary[调用入口]<br/>
+	 * 修改主键
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
 	 * @return 是否执行成功
 	 * @throws Exception 异常
@@ -5039,34 +5269,37 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * 添加主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-		return super.buildAddRun(runtime, meta);
+	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
+		return super.buildAddRun(runtime, meta, slice);
 	}
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 主键
+	 * @param origin 原主键
+	 * @param meta 新主键
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-		return super.buildAlterRun(runtime, meta);
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception{
+		return super.buildAlterRun(runtime, origin, meta);
 	}
 	/**
 	 * primary[命令合成]<br/>
 	 * 删除主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
+	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
-		return super.buildDropRun(runtime, meta);
+	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
+		return super.buildDropRun(runtime, meta, slice);
 	}
 	/**
 	 * primary[命令合成]<br/>
@@ -5098,7 +5331,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 ******************************************************************************************************************/
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5111,7 +5344,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5124,7 +5357,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5137,7 +5370,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5150,7 +5383,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 重命名外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 外键
@@ -5165,7 +5398,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5176,7 +5409,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		return super.buildAddRun(runtime, meta);
 	}
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 修改外键
 	 * @param meta 外键
 	 * @return List
@@ -5193,7 +5426,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5205,7 +5438,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * foreign[命令合成]
+	 * foreign[命令合成]<br/>
 	 * 修改外键名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5548,7 +5781,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean drop(DataRuntime runtime,  Trigger meta) throws Exception{
+	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
 
@@ -5562,7 +5795,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean rename(DataRuntime runtime,  Trigger origin, String name) throws Exception{
+	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
 
@@ -5776,7 +6009,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 ******************************************************************************************************************/
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5789,7 +6022,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 修改函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5802,7 +6035,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 删除函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5815,7 +6048,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 重命名函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 函数
@@ -5830,7 +6063,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5842,7 +6075,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 修改函数
 	 * 有可能生成多条SQL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5855,7 +6088,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 删除函数
 	 * @param meta 函数
 	 * @return String
@@ -5866,7 +6099,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	}
 
 	/**
-	 * function[命令合成]
+	 * function[命令合成]<br/>
 	 * 修改函数名
 	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5894,9 +6127,43 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
 		super.checkSchema(runtime, con, meta);
 	}
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta BaseMetadata
+     * @param <T> BaseMetadata
+     */
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
-		super.checkSchema(runtime, meta);
+    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+        super.checkSchema(runtime, meta);
+    }
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param override 如果meta中有值，是否覆盖
+	 * @param <T> BaseMetadata
+	 */
+	@Override
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
+        super.correctSchemaFromJDBC(meta, catalog, schema, override);
+    }
+	@Override
+	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
+		super.correctSchemaFromJDBC(meta, catalog, schema);
+	}
+	/**
+	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @return String[]
+	 */
+	@Override
+	public String[] correctSchemaFromJDBC(String catalog, String schema){
+		return super.correctSchemaFromJDBC(catalog, schema);
 	}
 	/**
 	 * insert[命令执行后]
@@ -5935,7 +6202,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 
 	/**
-	 * column[结果集封装](方法3)<br/>
+	 * column[结果集封装]<br/>(方法3)<br/>
 	 * 有表名的情况下可用<br/>
 	 * 根据jdbc.datasource.connection.DatabaseMetaData获取指定表的列数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5970,7 +6237,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 
 
 	/**
-	 * column[结果集封装](方法4)<br/>
+	 * column[结果集封装]<br/>(方法4)<br/>
 	 * 解析查询结果metadata(0=1)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建

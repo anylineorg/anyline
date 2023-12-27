@@ -29,13 +29,13 @@ import java.util.Date;
 public enum OracleWriter {
 
     DateWriter(new Object[]{java.sql.Date.class, Timestamp.class, java.util.Date.class, LocalDate.class, LocalDateTime.class
-    ,oracle.sql.TIMESTAMP.class, oracle.sql.TIMESTAMPTZ.class, oracle.sql.TIMESTAMPLTZ.class, oracle.sql.TIMEZONETAB.class
-    ,oracle.sql.DATE.class}, new DataWriter() {
+   , oracle.sql.TIMESTAMP.class, oracle.sql.TIMESTAMPTZ.class, oracle.sql.TIMESTAMPLTZ.class, oracle.sql.TIMEZONETAB.class
+   , oracle.sql.DATE.class}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(!placeholder && null != value) {
                 Date date = (Date)ConvertAdapter.convert(value, Date.class, false);
-                value = " to_date ( '"+DateUtil.format(date)+"' , 'YYYY-MM-DD HH24:MI:SS')";
+                value = " to_date ( '"+DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";
             }
             return value;
         }

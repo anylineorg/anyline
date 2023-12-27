@@ -27,7 +27,7 @@ public class NacosProperty {
     public String address       ;
     public int port 			;
     public int timeout 			;
-    public String namespace 	;   // 注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
+    public String namespace 	;   // 注意这里的命名空间要写ID而不是NAME, 如果用默认的public写成空白不要写public
     public String group 		;
     public boolean autoScan 	;
     public String scanPackage	;

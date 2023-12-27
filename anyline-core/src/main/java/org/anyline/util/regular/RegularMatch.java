@@ -43,9 +43,9 @@ public class RegularMatch implements Regular{
 	public boolean match(String src, String regx){
 		boolean result = false; 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
-			result = matcher.matches(src, pattern); 
+			result = matcher.matches(src, pattern);
 		}catch(Exception e){
 			result = false;
 			log.error("[match error][src:{}][regx:{}]", src, regx);
@@ -63,7 +63,7 @@ public class RegularMatch implements Regular{
 	public List<List<String>> fetchs(String src, String regx){
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			while(matcher.matches(input, pattern)){
@@ -93,7 +93,7 @@ public class RegularMatch implements Regular{
 		List<String> list = new ArrayList<>();
 		 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			while(matcher.matches(input, pattern)){

@@ -1,15 +1,15 @@
 /*  
  * Copyright 2006-2023 www.anyline.org
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0 
  * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and 
  * limitations under the License. 
  * 
@@ -63,13 +63,13 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	private static Logger log = LoggerFactory.getLogger(MongoDatasourceHolder.class);
 
 	public MongoDatasourceHolder(){
-		DatasourceHolderProxy.reg(MongoClient.class,this);
-		DatasourceHolderProxy.reg(MongoDatabase.class,this);
+		DatasourceHolderProxy.reg(MongoClient.class, this);
+		DatasourceHolderProxy.reg(MongoDatabase.class, this);
 	}
 
 
 	/* *****************************************************************************************************************
-	 * reg:[调用入口]注册数据源(用户或配置监听调用)
+	 * reg:[调用入口]<br/>注册数据源(用户或配置监听调用)
 	 * inject:创建并注入数据源
 	 * init:初始化数据源周边环境(service, jdbc, 事务管理器)
 	 * destroy:注销数据源及周边环境
@@ -77,7 +77,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * transaction:事务相关
 	 *
 	 * 执行线路:
-	 * 1.加载配置文件，转发给各个DatasourceLoader,各个DatasourceLoder过滤适用的数据源(主要根据url和type)
+	 * 1.加载配置文件，转发给各个DatasourceLoader, 各个DatasourceLoder过滤适用的数据源(主要根据url和type)
 	 *   1.1 检测数据源列表(包含默认数据源)
 	 *   1.2 逐个数据源调用注册数(reg)
 	 *      1.2.1 解析配置文件
@@ -157,8 +157,8 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 				log.warn("缺少Mongo数据库名");
 				return null;
 			}
-			Map<String,Object> map = new HashMap<>();
-			map.put("database",database);
+			Map<String, Object> map = new HashMap<>();
+			map.put("database", database);
 			String client = inject(key, prefix, map, env, true);
 			if(null == client){//创建数据源失败
 				return null;
@@ -192,7 +192,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		try {
  			String uri =  value(params, "url", String.class, null);
 			if(BasicUtil.isEmpty(uri)){
-				uri =  value(env, prefix,"url", String.class, null);
+				uri =  value(env, prefix, "url", String.class, null);
 			}
 			if(BasicUtil.isEmpty(uri)){
 				return null;
@@ -211,7 +211,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 				log.warn("缺少Mongo数据库名");
 				return null;
 			}
-			Map<String,Object> map = new HashMap<>();
+			Map<String, Object> map = new HashMap<>();
 			map.putAll(params);
 			map.put("database", database);
 
@@ -330,7 +330,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		//查看结果
 		AnylineService service = ServiceProxy.service(runtime.datasource());
 		LinkedHashMap<String, Database> databases = service.metadata().databases();
-		Map<String,Object> map = params.get(runtime.datasource());
+		Map<String, Object> map = params.get(runtime.datasource());
 		if(null == map){
 			log.warn("不是从anyline创建的数据源获取不到数据源参数");
 			return list;

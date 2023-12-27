@@ -280,7 +280,7 @@ public class HtmlUtil {
     public static String display(String src){
         String result = src;
         for (ESCAPE item : ESCAPE.values()) {
-            result = result.replace(item.getName(),item.getDisplay()).replace(item.getCode(),item.getDisplay());
+            result = result.replace(item.getName(), item.getDisplay()).replace(item.getCode(), item.getDisplay());
         }
         return result;
     }
@@ -301,7 +301,7 @@ public class HtmlUtil {
 
     /**
      * 根据单元格内容生成表格<br/>
-     * 什么情况下需要,通过OCR识别内容时,如果原文是表格形式,识别出来的结果排列会乱<br/>
+     * 什么情况下需要, 通过OCR识别内容时, 如果原文是表格形式, 识别出来的结果排列会乱<br/>
      * <pre>
      * 如：原文是这样
      * ---------------
@@ -351,11 +351,11 @@ public class HtmlUtil {
      * @return table
      */
     public static String table(String cells, int cols){
-        return table(cells, cols,"\n");
+        return table(cells, cols, "\n");
     }
 
     /**
-     * 截取html,截取to位置所在的第一层标签的结束位置,避免拆破标签,不支持多层嵌套结构
+     * 截取html, 截取to位置所在的第一层标签的结束位置, 避免拆破标签, 不支持多层嵌套结构
      * @param html html
      * @param fr fr
      * @param to to
@@ -368,7 +368,7 @@ public class HtmlUtil {
             return html;
         }
         int result_end = chk.length();
-        //flag <,>,</,>,/,/>
+        //flag <, >, </, >, /, />
         //     0 1 2  3 4 5
         int chk_last_t0 = chk.lastIndexOf("<");
         if(chk_last_t0 > 0){
@@ -389,14 +389,14 @@ public class HtmlUtil {
                         //<之后的位置
                         if(after_src_last_t0.equals("/")){
                             // </a>
-                            //如果是end标签,找到end标签结束位置
-                            int end_tag_tag = html.indexOf(">",chk_last_t0);
+                            //如果是end标签, 找到end标签结束位置
+                            int end_tag_tag = html.indexOf(">", chk_last_t0);
                             chk = html.substring(0, end_tag_tag+1);
                         }else {
                             // <a href=''
-                            //如果是start标签,找到相应的end标签
-                            int start_tag_end = html.indexOf(">",chk_last_t0+1 );
-                            int end_tag_end = html.indexOf(">",start_tag_end+1);
+                            //如果是start标签, 找到相应的end标签
+                            int start_tag_end = html.indexOf(">", chk_last_t0+1 );
+                            int end_tag_end = html.indexOf(">", start_tag_end+1);
                             chk = html.substring(0, end_tag_end+1);
                         }
                     }

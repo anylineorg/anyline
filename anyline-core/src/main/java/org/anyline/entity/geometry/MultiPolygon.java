@@ -59,7 +59,7 @@ public class MultiPolygon extends Geometry{
         boolean first = true;
         for(Polygon polygon:polygons){
             if(!first){
-                builder.append(",");
+                builder.append(", ");
             }
             first = false;
             builder.append(polygon.toString(false));
@@ -95,7 +95,7 @@ public class MultiPolygon extends Geometry{
         boolean first = true;
         for(Polygon polygon:polygons){
             if(!first){
-                builder.append(",");
+                builder.append(", ");
             }
             first = false;
             builder.append(polygon.sql(false, false));

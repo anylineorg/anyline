@@ -62,7 +62,7 @@ public class Join  implements Serializable {
             int tagIdx = lower.indexOf(tag);
             if(tagIdx > 0){
                 alias = name.substring(tagIdx+tag.length()).trim();
-                name = name.substring(0,tagIdx).trim();
+                name = name.substring(0, tagIdx).trim();
             }
             if(name.contains(" ")){
                 String[] tmps = name.split(" ");

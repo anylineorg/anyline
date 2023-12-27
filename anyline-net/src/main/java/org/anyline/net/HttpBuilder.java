@@ -57,7 +57,7 @@ public class HttpBuilder {
         HttpClient client = new HttpClient();
         try {
             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-            sslContext.init(null,null,null);
+            sslContext.init(null, null, null);
             SSLContext.setDefault(sslContext);
             Registry<ConnectionSocketFactory> socketFactoryRegistry =
                     RegistryBuilder.<ConnectionSocketFactory>create()
@@ -181,7 +181,7 @@ public class HttpBuilder {
         }
         return this;
     }
-    public HttpBuilder setEntity(Map<String,?> map){
+    public HttpBuilder setEntity(Map<String, ?> map){
         try {
             entity = new StringEntity(BeanUtil.map2json(map), charset);
         }catch (Exception e){

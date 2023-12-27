@@ -25,10 +25,12 @@ public class SimpleRun extends TextRun implements Run {
     public SimpleRun(DataRuntime runtime){
         this.runtime = runtime;
     }
-    public SimpleRun(StringBuilder builder){
+    public SimpleRun(DataRuntime runtime, StringBuilder builder){
+        this.runtime = runtime;
         this.builder = builder;
     }
-    public SimpleRun(String sql){
+    public SimpleRun(DataRuntime runtime, String sql){
+        this.runtime = runtime;
         this.builder.append(sql);
     }
     public String getFinalQuery() {

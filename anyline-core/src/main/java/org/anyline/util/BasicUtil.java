@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -29,7 +29,7 @@ import java.util.*;
  
 public class BasicUtil {
 
-	public static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() ";
+	public static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789, .?'_-=+!@#$%^&*() ";
 	/** 
 	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象 
 	 *  
@@ -195,7 +195,7 @@ public class BasicUtil {
 	}
 
 	/**
-	 * nvl 取第一个不为null的值,没有符合条件的 则返回null
+	 * nvl 取第一个不为null的值, 没有符合条件的 则返回null
 	 * @param values values
 	 * @return T
 	 * @param <T> T
@@ -234,7 +234,7 @@ public class BasicUtil {
 	} 
  
 	public static <T> T evl(T... values) {
-		return evl(false, values); 
+		return evl(false, values);
 	} 
  
 	/** 
@@ -269,19 +269,19 @@ public class BasicUtil {
 	} 
  
 	public static String getRandomString(int length) {
-		return getRandomString(length,new StringBuffer("012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")); 
+		return getRandomString(length, new StringBuffer("012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")); 
 	} 
  
 	public static String getRandomLowerString(int length) {
-		return getRandomString(length, new StringBuffer("abcdefghijklmnopqrstuvwxyz")); 
+		return getRandomString(length, new StringBuffer("abcdefghijklmnopqrstuvwxyz"));
 	} 
  
 	public static String getRandomUpperString(int length) {
-		return getRandomString(length, new StringBuffer("ABCDEFGHIJKLMNOPQRSTUVWXYZ")); 
+		return getRandomString(length, new StringBuffer("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 	} 
  
 	public static String getRandomNumberString(int length) {
-		return getRandomString(length, new StringBuffer("123567890")); 
+		return getRandomString(length, new StringBuffer("123567890"));
 	}
 	/**
 	 * 随机中文字符(GBK)
@@ -319,7 +319,7 @@ public class BasicUtil {
 		if (null == src || null == key) {
 			return src; 
 		} 
-		src = src.substring(0, idx) + key + src.substring(idx); 
+		src = src.substring(0, idx) + key + src.substring(idx);
 		return src; 
  
 	} 
@@ -451,7 +451,7 @@ public class BasicUtil {
 	}
 
 	public static BigDecimal parseDecimal(Object value, double def) {
-		return parseDecimal(value,new BigDecimal(def));
+		return parseDecimal(value, new BigDecimal(def));
 	}
 
 	public static BigDecimal parseDecimal(Object value, BigDecimal def) {
@@ -597,7 +597,7 @@ public class BasicUtil {
 		int e = 0; 
 		StringBuilder result = new StringBuilder(); 
 		while ((e = src.indexOf(pattern, s)) >= 0) {
-			result.append(src.substring(s, e)); 
+			result.append(src.substring(s, e));
 			result.append(replace); 
 			s = e + pattern.length(); 
 		} 
@@ -655,7 +655,7 @@ public class BasicUtil {
 	 */ 
 	public static String compress(String str) {
 		if (null != str) {
-			str = str.replaceAll("\\s{2,}", " ").trim(); 
+			str = str.replaceAll("\\s{2,}", " ").trim();
 		} 
 		return str; 
 	}
@@ -681,8 +681,8 @@ public class BasicUtil {
 
 	public static String compressXml(String xml) {
 		xml = compress(xml);
-		xml = xml.replaceAll("<\\!--[\\s\\S]*-->","");
-		xml = xml.replaceAll("\\s{1,}<","<");
+		xml = xml.replaceAll("<\\!--[\\s\\S]*-->", "");
+		xml = xml.replaceAll("\\s{1,}<", "<");
 		return xml;
 	}
 
@@ -713,11 +713,11 @@ public class BasicUtil {
 	} 
  
 	public static String fillChar(String src, String chr, int len) {
-		return fillLChar(src, chr, len); 
+		return fillLChar(src, chr, len);
 	} 
  
 	public static String fillChar(String src, int len) {
-		return fillChar(src, "0", len); 
+		return fillChar(src, "0", len);
 	}
 
 
@@ -796,7 +796,7 @@ public class BasicUtil {
 			return null; 
 		} 
 		for (Object item : items) {
-			Object tmpValue = BeanUtil.getFieldValue(item, key); 
+			Object tmpValue = BeanUtil.getFieldValue(item, key);
 			if (null != tmpValue && tmpValue.equals(value)) {
 				return item; 
 			} 
@@ -808,7 +808,7 @@ public class BasicUtil {
 	 * 截取子串
 	 * @param src string
 	 * @param fr 开始位置
-	 * @param to 结束位置 负数表示倒数,如-2表示删除最后2位
+	 * @param to 结束位置 负数表示倒数, 如-2表示删除最后2位
 	 * @return String
 	 */
 	public static String cut(String src, int fr, int to) {
@@ -825,7 +825,7 @@ public class BasicUtil {
 		if(to < 0 || to < fr){
 			return null;
 		}
-		return src.substring(fr, to); 
+		return src.substring(fr, to);
 	}
 
 	/**
@@ -949,22 +949,22 @@ public class BasicUtil {
 		return index(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
 	public static boolean containsString(Object[] objs, String obj){
-		return containsString(false,false,objs, obj);
+		return containsString(false, false, objs, obj);
 	}
 	public static int index(Object[] objs, String obj){
-		return index(false,false,objs, obj);
+		return index(false, false, objs, obj);
 	}
 	public static boolean contains(Object[] objs, Object obj){
 		if(null == objs){
 			return false;
 		}
-		return contains(false,BeanUtil.array2list(objs), obj);
+		return contains(false, BeanUtil.array2list(objs), obj);
 	}
 	public static int index(Object[] objs, Object obj){
 		if(null == objs){
 			return -1;
 		}
-		return index(false,BeanUtil.array2list(objs), obj);
+		return index(false, BeanUtil.array2list(objs), obj);
 	}
 
 	public static int index(boolean ignoreNull, Collection<Object> objs, Object obj){
@@ -1058,10 +1058,10 @@ public class BasicUtil {
 		return -1;
 	}
 	public static boolean containsString(Collection<Object> objs, String obj){
-		return containsString(false,false,objs,obj);
+		return containsString(false, false, objs, obj);
 	}
 	public static int index(Collection<Object> objs, String obj){
-		return index(false,false,objs,obj);
+		return index(false, false, objs, obj);
 	}
 
 	/**
@@ -1117,7 +1117,7 @@ public class BasicUtil {
 		if(right > length - left){
 			right = length - left;
 		}
-		String l = src.substring(0,left);
+		String l = src.substring(0, left);
 		String r = src.substring(length - right);
 		result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
 		return result;
@@ -1202,7 +1202,7 @@ public class BasicUtil {
 	 * v1与v2是否相等
 	 * @param v1 v1
 	 * @param v2 v2
-	 * @param propertys 属性(ID:CD,NM:NAME)(ID,NM)
+	 * @param propertys 属性(ID:CD, NM:NAME)(ID, NM)
 	 * @return boolean
 	 */
 	public static boolean equals(Object v1, Object v2, String propertys){
@@ -1210,7 +1210,7 @@ public class BasicUtil {
 		List<String> propertys1 = new ArrayList<>();
 		List<String> propertys2 = new ArrayList<>();
 		if(BasicUtil.isNotEmpty(propertys)){
-			String[] ps = propertys.split(",");
+			String[] ps = propertys.split(", ");
 			for(String p:ps){
 				if(BasicUtil.isNotEmpty(p)){
 					String p1 = p;
@@ -1256,14 +1256,14 @@ public class BasicUtil {
 	 * @param end 结束
 	 * @param qty 数量
 	 * @param total 总数
-	 * @return [开始,结束]
+	 * @return [开始, 结束]
 	 */
 	public static int[] range(Integer begin, Integer end, Integer qty, Integer total){
 		int[] result = new int[2];
 		if(null != begin && begin < 0){
 			begin = 0;
 		}
-		if(null != end && end < 0){// end<0,取最后-end个
+		if(null != end && end < 0){// end<0, 取最后-end个
 			begin = total + end;
 			end = total;
 		}
@@ -1293,6 +1293,26 @@ public class BasicUtil {
 		result[0] = begin;
 		result[1] = end;
 		return result;
+	}
+
+	/**
+	 * 检测是否符合el格式
+	 * ${body}<br/>
+	 * 主要过滤掉${A}xxx{B}中间不能再再现其他{}或${}格式
+	 * @param str string
+	 * @return boolean
+	 */
+	public static boolean checkEl(String str){
+		if(null != str){
+			if(str.startsWith("${") && str.endsWith("}")){
+				String body = RegularUtil.cut(str, "${", "}");
+				if(body.length() == str.length()-3){
+					//过滤 ${A}XX{B} 格式
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

@@ -27,11 +27,11 @@ public class Table {
     private List<Tr> trs = new ArrayList<>();
     private String header = null; // 复杂的头表直接设置html
     private String footer = null;
-    private boolean isOffset = false;//是否计算过偏移量(多次执行build, merge ,offset等只计算一次,)
+    private boolean isOffset = false;//是否计算过偏移量(多次执行build, merge, offset等只计算一次, )
     private Map<String, String> styles = new HashMap();
     private List<Integer> mergeRows = new ArrayList<>(); // 根据内容合并行依据
     private Map<Integer, List<Integer>> refs = new HashMap<>(); //
-    private List<Integer[]> mergeCols = new ArrayList<>();//根据内容合并列,开始列,合并数量
+    private List<Integer[]> mergeCols = new ArrayList<>();//根据内容合并列, 开始列, 合并数量
     private Element src;
     private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
     public Table(){}
@@ -121,7 +121,7 @@ public class Table {
 
 
     /**
-     * 追加列, 每一行追加,追加的列将复制前一列的样式(背景色、字体等)
+     * 追加列, 每一行追加, 追加的列将复制前一列的样式(背景色、字体等)
      * @param qty 追加数量
      * @return table table
      */
@@ -170,7 +170,7 @@ public class Table {
         return this;
     }
     /**
-     * 追加行,追加的行将复制上一行的样式(背景色、字体等)
+     * 追加行, 追加的行将复制上一行的样式(背景色、字体等)
      * @param index 位置
      * @param qty 追加数量
      * @return table table
@@ -263,7 +263,7 @@ public class Table {
         return build(true);
     }
     /**
-     * 根据内容是否相同,在右侧qty范围内检测需要合并的列数量
+     * 根据内容是否相同, 在右侧qty范围内检测需要合并的列数量
      * @param td 单元格
      * @param qty 检测范围
      * @return colspan 需要合并列的数量
@@ -297,7 +297,7 @@ public class Table {
                 int mergeQty = mergeCol[1];
                 // 如果所有值相同则合并
                 for(int i=mergeIndex; i<mergeIndex+mergeQty; i++){
-                    Td td = getTd(r,mergeIndex);
+                    Td td = getTd(r, mergeIndex);
                     int colspan =checkColspan(td, mergeQty);
                     if(colspan > 1){
                         td.setColspan(colspan);
@@ -433,7 +433,7 @@ public class Table {
     }
     /**
      * 设置需要合并行的列下标
-     * @param cols 依据列1,2,3(1,2) 第1,2,3列值相同时合并行,第3列合并的前提是第1,2列已合并
+     * @param cols 依据列1, 2, 3(1, 2) 第1, 2, 3列值相同时合并行, 第3列合并的前提是第1, 2列已合并
      * @return table table
      */
     public Table setMergeRow(String ... cols){
@@ -442,11 +442,11 @@ public class Table {
             int c = -1;
             if(col.contains("(")){
                 col = col.trim();
-                String[] ref = col.substring(col.indexOf("(")+1, col.length()-1).split(",");
+                String[] ref = col.substring(col.indexOf("(")+1, col.length()-1).split(", ");
                 for(int i=0; i<ref.length; i++){
                     refs.add(Integer.parseInt(ref[i]));
                 }
-                col = col.substring(0,col.indexOf("("));
+                col = col.substring(0, col.indexOf("("));
             }
             c = Integer.parseInt(col);
             mergeRows.add(c);
@@ -908,13 +908,13 @@ public class Table {
         return getTd(rows, cols).setLeftPadding(padding);
     }
     public Td setPadding(int rows, int cols, String side, String padding){
-        return getTd(rows, cols).setPadding(side,padding);
+        return getTd(rows, cols).setPadding(side, padding);
     }
     public Td setPadding(int rows, int cols, String side, int padding){
-        return getTd(rows, cols).setPadding(side,padding);
+        return getTd(rows, cols).setPadding(side, padding);
     }
     public Td setPadding(int rows, int cols, String side, double padding){
-        return getTd(rows, cols).setPadding(side,padding);
+        return getTd(rows, cols).setPadding(side, padding);
     }
 
 }

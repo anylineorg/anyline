@@ -116,7 +116,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
      * @param reference 依赖列
      * @return ForeignKey
      */
-    public ForeignKey addColumn(String column,  Column reference){
+    public ForeignKey addColumn(String column, Column reference){
         if(setmap && null != update){
             update.addColumn(column, reference);
             return this;
@@ -128,7 +128,7 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
     public ForeignKey clone(){
         ForeignKey copy = super.clone();
         copy.reference = this.reference.clone();
-        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);

@@ -62,10 +62,10 @@ public class DefaultOrderStore implements OrderStore{
 		order(col, type, true);
 	}
 	/** 
-	 * 排序多列以,分隔 
-	 * order("CD","DESC"); 
+	 * 排序多列以, 分隔
+	 * order("CD", "DESC");
 	 * order("CD DESC"); 
-	 * order("CD DESC,NM ASC"); 
+	 * order("CD DESC, NM ASC");
 	 * @param str  str
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 */ 
@@ -74,11 +74,11 @@ public class DefaultOrderStore implements OrderStore{
 			return; 
 		}
 		str = str.trim();
-		String up = str.toUpperCase().replaceAll("\\s+", " ").trim(); 
+		String up = str.toUpperCase().replaceAll("\\s+", " ").trim();
 		if (up.startsWith("ORDER BY")) {
 			str = str.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
 		} 
-		String[] tmps = str.split(","); // 多列排序 
+		String[] tmps = str.split(", "); // 多列排序
 		for (String tmp : tmps) {
 			order(new DefaultOrder(tmp), override);
 		} 
@@ -111,7 +111,7 @@ public class DefaultOrderStore implements OrderStore{
 				}
 				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
 				if(i<orders.size()-1){
-					builder.append(","); 
+					builder.append(", ");
 				} 
 			} 
 		} 

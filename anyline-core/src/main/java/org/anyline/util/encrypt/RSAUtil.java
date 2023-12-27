@@ -50,7 +50,7 @@ public class RSAUtil {
 			e.printStackTrace();
 		}
 
-		// 初始化KeyPairGenerator对象,密钥长度
+		// 初始化KeyPairGenerator对象, 密钥长度
 		keys.initialize(size);
 		// 生成密匙对
 		KeyPair pair = keys.generateKeyPair();
@@ -118,8 +118,8 @@ public class RSAUtil {
 				throw new Exception("请提供RRSAPublicKey");
 			}
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
-			cipher.init(Cipher.ENCRYPT_MODE, publicKey); 
-			return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength())); 
+			cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+			return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
 		} catch (Exception e) {
 			throw new Exception("[公钥加密异常][加密数据:" + data + "]", e);
 		} 
@@ -145,8 +145,8 @@ public class RSAUtil {
 				throw new Exception("请提供RSAPrivateKey");
 			}
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
-			cipher.init(Cipher.DECRYPT_MODE, privateKey); 
-			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), privateKey.getModulus().bitLength()), CHARSET); 
+			cipher.init(Cipher.DECRYPT_MODE, privateKey);
+			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), privateKey.getModulus().bitLength()), CHARSET);
 		} catch (Exception e) {
 			throw new Exception("[私钥解密异常][解密数据:" + data + "]", e);
 		} 
@@ -173,8 +173,8 @@ public class RSAUtil {
 				throw new Exception("请提供RSAPrivateKey");
 			}
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
-			cipher.init(Cipher.ENCRYPT_MODE, privateKey); 
-			return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), privateKey.getModulus().bitLength())); 
+			cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+			return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), privateKey.getModulus().bitLength()));
 		} catch (Exception e) {
 			throw new Exception("[私钥加密异常][加密数据:" + data + "]", e);
 		} 
@@ -198,8 +198,8 @@ public class RSAUtil {
 				throw new Exception("请提供RRSAPublicKey");
 			}
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
-			cipher.init(Cipher.DECRYPT_MODE, publicKey); 
-			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET); 
+			cipher.init(Cipher.DECRYPT_MODE, publicKey);
+			return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET);
 		} catch (Exception e) {
 			throw new Exception("[公钥解密异常][解密数据:" + data + "]", e);
 		} 

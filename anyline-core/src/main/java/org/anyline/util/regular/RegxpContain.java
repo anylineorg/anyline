@@ -41,9 +41,9 @@ public class RegxpContain implements Regular{
 	public boolean match(String src, String regx){
 		boolean result = false; 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
-			result = matcher.contains(src, pattern); 
+			result = matcher.contains(src, pattern);
 		}catch(Exception e){
 			result = false; 
 		} 
@@ -58,7 +58,7 @@ public class RegxpContain implements Regular{
 	public List<List<String>> fetchs(String src, String regx){
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			while(matcher.contains(input, pattern)){
@@ -87,7 +87,7 @@ public class RegxpContain implements Regular{
 		List<String> list = new ArrayList<>();
 		 
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK); 
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			 

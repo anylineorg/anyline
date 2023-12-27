@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -32,6 +32,7 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.ServiceProxy;
@@ -50,6 +51,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
+
 @Primary
 @Service("anyline.service")
 public class DefaultService<E> implements AnylineService<E> {
@@ -229,7 +231,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     row.setIsFromCache(true);
                     return row;
                 } else {
-                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                    log.error("[缓存设置错误, 检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
                 }
             }
         }
@@ -444,7 +446,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     row.setIsFromCache(true);
                     return row;
                 } else {
-                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                    log.error("[缓存设置错误, 检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
                 }
             }
         }
@@ -612,13 +614,13 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 插入数据
      * @param batch 批量执行每批最多数量
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data entity或list或DataRow或DataSet重复
      * @param columns 需要插入哪些列
      * @return 影响行数
      */
     @Override
-    public long insert(int batch, String dest, Object data,  ConfigStore configs, List<String> columns) {
+    public long insert(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).insert(batch, ps[1], data, configs, columns);
@@ -631,13 +633,13 @@ public class DefaultService<E> implements AnylineService<E> {
      ******************************************************************************************************************/
     /**
      * 更新记录
-     * 默认情况下以主键为更新条件,需在更新的数据保存在data中
-     * 如果提供了dest则更新dest表,如果没有提供则根据data解析出表名
-     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键,则根据TYPE_CODE更新
+     * 默认情况下以主键为更新条件, 需在更新的数据保存在data中
+     * 如果提供了dest则更新dest表, 如果没有提供则根据data解析出表名
+     * DataRow/DataSet可以临时设置主键 如设置TYPE_CODE为主键, 则根据TYPE_CODE更新
      * 可以提供了ConfigStore以实现更复杂的更新条件
      * 需要更新的列通过fixs/columns提供
      * @param columns 需要更新的列
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data    更新的数据及更新条件(如果有ConfigStore则以ConfigStore为准)
      * @param configs 更新条件
      * @return int 影响行数
@@ -648,7 +650,8 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
         }
-        dest = DataSourceUtil.parseDataSource(dest, data);
+        configs = DataSourceUtil.parseDest(dest, data, configs);
+        dest = configs.dest();
         return dao.update(batch, dest, data, configs, columns);
     }
 
@@ -663,12 +666,12 @@ public class DefaultService<E> implements AnylineService<E> {
      * 在操作集合时区别:
      * save会循环操作数据库每次都会判断insert|update
      * save 集合中的数据可以是不同的表不同的结构
-     * insert 集合中的数据必须保存到相同的表,结构必须相同
+     * insert 集合中的数据必须保存到相同的表, 结构必须相同
      * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
      *
      * 保存(insert|update)根据是否有主键值确定insert或update
      * @param batch 批量执行每批最多数量
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param data  数据
      * @param columns 指定更新或保存的列
      * @return 影响行数
@@ -743,7 +746,8 @@ public class DefaultService<E> implements AnylineService<E> {
     protected long saveObject(String dest, Object data, ConfigStore configs, List<String> columns) {
         if (BasicUtil.isEmpty(dest)) {
             if (data instanceof DataRow || data instanceof DataSet) {
-                dest = DataSourceUtil.parseDataSource(dest, data);
+                configs = DataSourceUtil.parseDest(dest, data, configs);
+                dest = configs.dest();
             } else {
                 dest = EntityAdapterProxy.table(data.getClass(), true);
             }
@@ -758,7 +762,7 @@ public class DefaultService<E> implements AnylineService<E> {
     
     @Override 
     public boolean execute(Procedure procedure, String... inputs) {
-        procedure.setName(DataSourceUtil.parseDataSource(procedure.getName(), null));
+        procedure.setName(DataSourceUtil.parseDest(procedure.getName(), null, null).dest());
         if (null != inputs) {
             for (String input : inputs) {
                 procedure.addInput(input);
@@ -779,7 +783,7 @@ public class DefaultService<E> implements AnylineService<E> {
     public DataSet querys(Procedure procedure, PageNavi navi, String... inputs) {
         DataSet set = null;
         try {
-            procedure.setName(DataSourceUtil.parseDataSource(procedure.getName()));
+            procedure.setName(DataSourceUtil.parseDest(procedure.getName(), null, null).dest());
             if (null != inputs) {
                 for (String input : inputs) {
                     procedure.addInput(input);
@@ -820,7 +824,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         long result = -1;
         src = BasicUtil.compress(src);
-        src = DataSourceUtil.parseDataSource(src);
+        store = DataSourceUtil.parseDest(src, null, store);
+        src = store.dest();
         conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(src);
         if (null == prepare) {
@@ -863,7 +868,7 @@ public class DefaultService<E> implements AnylineService<E> {
         String dest = null;
         if (obj instanceof DataRow) {
             DataRow row = (DataRow) obj;
-            dest = DataSourceUtil.parseDataSource(null, row);
+            dest = DataSourceUtil.parseDest(null, row, null).dest();
             return dao.delete(dest, row, columns);
         } else {
             if (obj instanceof Collection) {
@@ -902,7 +907,25 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
-        return dao.deletes(batch, table, key, values);
+        if(batch >1){
+            long qty = 0;
+            List<T> list = new ArrayList<>();
+            int vol = 0;
+            for(T value:values){
+                list.add(value);
+                vol ++;
+                if(vol >= batch){
+                    qty += dao.deletes(0, table, key, values);
+                    list.clear();
+                }
+            }
+            if(!list.isEmpty()){
+                qty += dao.deletes(0, table, key, values);
+            }
+            return qty;
+        }else {
+            return dao.deletes(batch, table, key, values);
+        }
     }
 
     
@@ -912,7 +935,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
-        return dao.deletes(batch , table, key, values);
+        return dao.deletes(batch, table, key, values);
     }
 
     
@@ -1030,7 +1053,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     /**
-     * 解析SQL中指定的主键table(col1,col2)&lt;pk1,pk2&gt;
+     * 解析SQL中指定的主键table(col1, col2)&lt;pk1, pk2&gt;
      *
      * @param src src
      * @param pks pks
@@ -1043,7 +1066,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if (fr != -1) {
                 String pkstr = src.substring(fr + 1, to);
                 src = src.substring(0, fr);
-                String[] tmps = pkstr.split(",");
+                String[] tmps = pkstr.split(", ");
                 for (String tmp : tmps) {
                     pks.add(tmp);
                     if (ConfigTable.isSQLDebug()) {
@@ -1060,16 +1083,17 @@ public class DefaultService<E> implements AnylineService<E> {
         src = src.trim();
         List<String> pks = new ArrayList<>();
         // 文本sql
-        if (src.startsWith("${") && src.endsWith("}")) {
+        //if (src.startsWith("${") && src.endsWith("}")) {
+        if(BasicUtil.checkEl(src)){
             if (ConfigTable.isSQLDebug()) {
                 log.debug("[解析SQL类型] [类型:{JAVA定义}] [src:{}]", src);
             }
             src = src.substring(2, src.length() - 1);
-            src = DataSourceUtil.parseDataSource(src);//解析数据源
+            src = DataSourceUtil.parseDest(src, null, null).dest();//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
             prepare = new DefaultTextPrepare(src);
         } else {
-            src = DataSourceUtil.parseDataSource(src);//解析数据源
+            src = DataSourceUtil.parseDest(src, null, null).dest();//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
             if (src.replace("\n", "").replace("\r", "").trim().matches("^[a-zA-Z]+\\s+.+")) {
                 if (ConfigTable.isSQLDebug()) {
@@ -1125,7 +1149,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     set = (DataSet) cacheValue;
                     set.setIsFromCache(true);
                 } else {
-                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                    log.error("[缓存设置错误, 检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
                 }
 //       	// 开启新线程提前更新缓存(90%时间)
                 long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
@@ -1197,15 +1221,15 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     /**
-     * 根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+     * 根据sql获取列结构, 如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
      * @param sql sql
      * @param comment 是否需要列注释
-     * @param condition 是否需要拼接查询条件,如果需要会拼接where 1=0 条件
+     * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件
      * @return LinkedHashMap
      */
-    public LinkedHashMap<String,Column> metadata(String sql, boolean comment, boolean condition){
+    public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition){
         if(condition){
-            String up = sql.toUpperCase().replace("\n"," ").replace("\t","");
+            String up = sql.toUpperCase().replace("\n", " ").replace("\t", "");
             String key = " WHERE ";
             boolean split = false;
             if(up.contains(key)){
@@ -1232,7 +1256,7 @@ public class DefaultService<E> implements AnylineService<E> {
             }
         }
         RunPrepare prepare = createRunPrepare(sql);
-        LinkedHashMap<String,Column> metadata = dao.metadata(prepare, comment);
+        LinkedHashMap<String, Column> metadata = dao.metadata(prepare, comment);
         return metadata;
     }
     @Override 
@@ -1362,9 +1386,39 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													database
          * -----------------------------------------------------------------------------------------------------------------
-         * LinkedHashMap<String,Database> databases();
+         * LinkedHashMap<String, Database> databases();
          ******************************************************************************************************************/
 
+        /**
+         * 当前数据源 数据库类型
+         * @return DatabaseType
+         */
+        @Override
+        public DatabaseType type() {
+            return dao.type();
+        }
+
+        /**
+         * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+         * @return String
+         */
+        @Override
+        public String version() {
+            return dao.version();
+        }
+
+        /**
+         * 当前数据源 数据库描述(产品名称+版本号)
+         * @return String
+         */
+        @Override
+        public String product(){
+            return dao.product();
+        }
+        @Override
+        public Database database() {
+            return dao.database();
+        }
         @Override
         public LinkedHashMap<String, Database> databases(String name) {
             return dao.databases(name);
@@ -1380,8 +1434,12 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													catalog
          * -----------------------------------------------------------------------------------------------------------------
-         * LinkedHashMap<String,Database> databases();
+         * LinkedHashMap<String, Database> databases();
          ******************************************************************************************************************/
+        @Override
+        public Catalog catalog() {
+            return dao.catalog();
+        }
         @Override
         public LinkedHashMap<String, Catalog> catalogs(String name) {
             return dao.catalogs(name);
@@ -1398,6 +1456,10 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public LinkedHashMap<String, Schema> schemas(Catalog catalog, String name) {
             return dao.schemas(catalog, name);
+        }
+        @Override
+        public Schema schema() {
+            return dao.schema();
         }
         @Override
         public List<Schema> schemas(boolean greedy, Catalog catalog, String name) {
@@ -1451,7 +1513,6 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         private void struct(Table table){
-            ddl(table);
             LinkedHashMap<String, Column> columns = table.getColumns();
             if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                 columns = columns(table);
@@ -1459,15 +1520,19 @@ public class DefaultService<E> implements AnylineService<E> {
                 table.setTags(tags(table));
                 PrimaryKey pk = primary(table);
                 if (null != pk) {
-                    for (String col : pk.getColumns().keySet()) {
-                        Column column = columns.get(col.toUpperCase());
+                    for (Column col : pk.getColumns().values()) {
+                        Column column = columns.get(col.getName().toUpperCase());
                         if (null != column) {
                             column.primary(true);
+                            BeanUtil.copyFieldValue(col, column);
                         }
                     }
                 }
                 table.setPrimaryKey(pk);
                 table.setIndexs(indexs(table));
+                if(null == table.ddl()){
+                    ddl(table);
+                }
             }
         }
         @Override
@@ -1513,11 +1578,11 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													view
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(View view)
-         * LinkedHashMap<String,View> views(Catalog catalog, Schema schema, String name, String types)
-         * LinkedHashMap<String,View> views(Schema schema, String name, String types)
-         * LinkedHashMap<String,View> views(String name, String types)
-         * LinkedHashMap<String,View> views(String types)
-         * LinkedHashMap<String,View> views()
+         * LinkedHashMap<String, View> views(Catalog catalog, Schema schema, String name, String types)
+         * LinkedHashMap<String, View> views(Schema schema, String name, String types)
+         * LinkedHashMap<String, View> views(String name, String types)
+         * LinkedHashMap<String, View> views(String types)
+         * LinkedHashMap<String, View> views()
          * View view(Catalog catalog, Schema schema, String name)
          * View view(Schema schema, String name)
          * View view(String name)
@@ -1536,7 +1601,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public <T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, String types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
-                return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1],types);
+                return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1], types);
             }
             return dao.views(greedy, catalog, schema, name, types);
         }
@@ -1546,7 +1611,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, String types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
-                return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1],types);
+                return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1], types);
             }
             return dao.views(false, catalog, schema, name, types);
         }
@@ -1771,12 +1836,12 @@ public class DefaultService<E> implements AnylineService<E> {
          * boolean exists(Table table, String name);
          * boolean exists(String table, String name);
          * boolean exists(Catalog catalog, Schema schema, String table, String name);
-         * LinkedHashMap<String,Column> columns(Table table)
-         * LinkedHashMap<String,Column> columns(String table)
-         * LinkedHashMap<String,Column> columns(Catalog catalog, Schema schema, String table)
-         * LinkedHashMap<String,Column> column(Table table, String name);
-         * LinkedHashMap<String,Column> column(String table, String name);
-         * LinkedHashMap<String,Column> column(Catalog catalog, Schema schema, String table, String name);
+         * LinkedHashMap<String, Column> columns(Table table)
+         * LinkedHashMap<String, Column> columns(String table)
+         * LinkedHashMap<String, Column> columns(Catalog catalog, Schema schema, String table)
+         * LinkedHashMap<String, Column> column(Table table, String name);
+         * LinkedHashMap<String, Column> column(String table, String name);
+         * LinkedHashMap<String, Column> column(Catalog catalog, Schema schema, String table, String name);
          ******************************************************************************************************************/
         @Override
         public boolean exists(boolean greedy, Table table, Column column) {
@@ -1839,9 +1904,9 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													tag
          * -----------------------------------------------------------------------------------------------------------------
-         * LinkedHashMap<String,Tag> tags(Catalog catalog, Schema schema, String table)
-         * LinkedHashMap<String,Tag> tags(String table)
-         * LinkedHashMap<String,Tag> tags(Table table)
+         * LinkedHashMap<String, Tag> tags(Catalog catalog, Schema schema, String table)
+         * LinkedHashMap<String, Tag> tags(String table)
+         * LinkedHashMap<String, Tag> tags(Table table)
          ******************************************************************************************************************/
 
         @Override
@@ -1929,7 +1994,7 @@ public class DefaultService<E> implements AnylineService<E> {
              Collections.sort(columns);
             String id = BeanUtil.concat(columns).toUpperCase();
             for(ForeignKey foreign:foreigns.values()){
-                List<String> fcols = BeanUtil.getMapKeys(foreign.getColumns());
+                List<String> fcols = Column.names(foreign.getColumns());
                 Collections.sort(fcols);
                 if(id.equals(BeanUtil.concat(fcols).toUpperCase())){
                     return foreign;
@@ -1989,9 +2054,9 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													constraint
          * -----------------------------------------------------------------------------------------------------------------
-         * LinkedHashMap<String,Constraint> constraints(Table table)
-         * LinkedHashMap<String,Constraint> constraints(String table)
-         * LinkedHashMap<String,Constraint> constraints(Catalog catalog, Schema schema, String table)
+         * LinkedHashMap<String, Constraint> constraints(Table table)
+         * LinkedHashMap<String, Constraint> constraints(String table)
+         * LinkedHashMap<String, Constraint> constraints(Catalog catalog, Schema schema, String table)
          ******************************************************************************************************************/
 
         @Override
@@ -2192,8 +2257,8 @@ public class DefaultService<E> implements AnylineService<E> {
         
         @Override
         public boolean create(Table table) throws Exception{
-            boolean result =  dao.create(table);
-            return result;
+            table.sort();
+            return dao.create(table);
         }
         
         @Override
@@ -2352,7 +2417,7 @@ public class DefaultService<E> implements AnylineService<E> {
             CacheProxy.clear();
             PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
             if(null != otable){
-                otable.setUpdate(table,false, false);
+                otable.setUpdate(table, false, false);
                 result = alter(otable);
             }else{
                 result =  create(table);
@@ -2614,7 +2679,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 tags.remove(original.getName());
 
                 BeanUtil.copyFieldValueWithoutNull(original, update);
-                original.setUpdate(update,false,false);
+                original.setUpdate(update, false, false);
                 BeanUtil.copyFieldValue(tag, original);
                 tags.put(original.getName(), original);
             }

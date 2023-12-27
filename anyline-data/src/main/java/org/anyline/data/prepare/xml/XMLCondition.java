@@ -34,7 +34,7 @@ public interface XMLCondition extends Condition{
 	 * @param variable  variable
 	 * @param values  values
 	 */ 
-	public void setValue(String variable, Object values); 
+	public void setValue(String variable, Object values);
  
  
 	public String getId() ; 

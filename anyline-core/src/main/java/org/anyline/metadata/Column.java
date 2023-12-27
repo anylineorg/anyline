@@ -25,16 +25,29 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Column extends BaseMetadata<Column> implements Serializable {
-    public static  <T extends Column>  void sort(Map<String,T> columns){
+    public static  <T extends Column>  void sort(Map<String, T> columns){
+        sort(columns, false);
+    }
+    public static  <T extends Column>  void sort(Map<String, T> columns, boolean nullFirst){
         List<T> list = new ArrayList<>();
         list.addAll(columns.values());
-        sort(list);
+        sort(list, nullFirst);
         columns.clear();
         for(T column:list){
             columns.put(column.getName().toUpperCase(), column);
         }
     }
     public static  <T extends Column>  void sort(List<T> columns){
+        sort(columns, false);
+    }
+
+    /**
+     * 列排序
+     * @param columns 列集合
+     * @param nullFirst 未设置过位置(setPosition)的列是否排在最前面
+     * @param <T> Column
+     */
+    public static  <T extends Column>  void sort(List<T> columns, boolean nullFirst){
         Collections.sort(columns, new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
@@ -43,11 +56,20 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 if(p1 == p2){
                     return 0;
                 }
-                if(null == p1){
-                    return -1;
-                }
-                if(null == p2){
-                    return 1;
+                if(nullFirst) {
+                    if (null == p1) {
+                        return -1;
+                    }
+                    if (null == p2) {
+                        return 1;
+                    }
+                }else{
+                    if (null == p1) {
+                        return 1;
+                    }
+                    if (null == p2) {
+                        return -1;
+                    }
                 }
                 return p1 > p2 ? 1:-1;
             }
@@ -64,7 +86,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected ColumnType childColumnType          ;
     protected JavaType javaType                   ;
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
-    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5 ,scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
+    protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
     protected String dateScale                    ; // 日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
@@ -93,16 +115,14 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected Integer ignoreAbove                 ; // 可创建索引的最大词长度
 
 
-    protected Integer position                    ; // 在表或索引中的位置,如果需要在第一列 设置成0
+    protected Integer position                    ; // 在表或索引中的位置, 如果需要在第一列 设置成0
     protected String order                        ; // 在索引中的排序方式ASC | DESC
 
     protected String after                        ; // 修改列时 在表中的位置
     protected String before                       ; // 修改列时 在表中的位置
     protected int onUpdate = -1                   ; // 是否在更新行时 更新这一列数据
     protected Object value                        ;
-
-
-
+    protected boolean defaultCurrentDateTime = false;
 
     public Column(){
     }
@@ -294,7 +314,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     }
     /**
      * 设置数据类型 根据数据库定义的数据类型 实际调用了setTypeName(String)
-     * @param type  数据类型 如 int  varchar(10) decimal(18,6)
+     * @param type  数据类型 如 int  varchar(10) decimal(18, 6)
      * @return Column
      */
     public Column setType(String type) {
@@ -330,7 +350,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
 
     /**
      * 设置数据类型 根据数据库定义的数据类型
-     * @param typeName 数据类型 如 int  varchar(10) decimal(18,6)
+     * @param typeName 数据类型 如 int  varchar(10) decimal(18, 6)
      * @return Column
      */
     public Column setTypeName(String typeName) {
@@ -348,7 +368,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 typeName = typeName.substring(1);
                 setArray(true);
             }
-            typeName = typeName.trim().replace("'","");
+            typeName = typeName.trim().replace("'", "");
 
             if(typeName.toUpperCase().contains("IDENTITY")){
                 autoIncrement(true);
@@ -359,13 +379,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             }
 
             if(typeName.contains("(")){
-                //decimal(10,2) varchar(10) geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
+                //decimal(10, 2) varchar(10) geometry(Polygon, 4326) geometry(Polygon) geography(Polygon, 4326)
                 this.precision = 0;
                 this.scale = 0;
                 String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
-                if(tmp.contains(",")){
+                if(tmp.contains(", ")){
                     //有精度或srid
-                    String[] lens = tmp.split("\\,");
+                    String[] lens = tmp.split("\\, ");
                     if(BasicUtil.isNumber(lens[0])) {
                         setPrecision(BasicUtil.parseInt(lens[0], null));
                         setScale(BasicUtil.parseInt(lens[1], null));
@@ -376,12 +396,12 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 }else{
                     //没有精度和srid
                     if(BasicUtil.isNumber(tmp)){
-                        setPrecision(BasicUtil.parseInt(tmp,null));
+                        setPrecision(BasicUtil.parseInt(tmp, null));
                     }else{
                         setChildTypeName(tmp);
                     }
                 }
-                typeName = typeName.substring(0,typeName.indexOf("(") );
+                typeName = typeName.substring(0, typeName.indexOf("(") );
             }
         }
         if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
@@ -621,7 +641,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(null != autoIncrement) {
             if(autoIncrement){
                 this.autoIncrement = 1;
-                this.primary = 1;
                 nullable(false);
             }else{
                 this.autoIncrement = 0;
@@ -738,7 +757,20 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         this.defaultValue = defaultValue;
         return this;
     }
-
+    public Column setDefaultCurrentDateTime(boolean currentDateTime){
+        if(setmap && null != update){
+            update.setDefaultCurrentDateTime(currentDateTime);
+            return this;
+        }
+        this.defaultCurrentDateTime = currentDateTime;
+        return this;
+    }
+    public Column setDefaultCurrentDateTime(){
+        return setDefaultCurrentDateTime(true);
+    }
+    public boolean isDefaultCurrentDateTime(){
+        return this.defaultCurrentDateTime;
+    }
 
     public String getDefaultConstraint() {
         if(getmap && null != update){
@@ -947,7 +979,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 if (precision > 0) {
                     builder.append("(").append(precision);
                     if (null != scale && scale > 0) {
-                        builder.append(",").append(scale);
+                        builder.append(", ").append(scale);
                     }
                     builder.append(")");
                 } else if (precision == -1) {
@@ -960,7 +992,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             builder.append("(");
             builder.append(child);
             if(null != srid){
-                builder.append(",");
+                builder.append(", ");
                 builder.append(srid);
             }
             builder.append(")");
@@ -974,7 +1006,10 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(null == column){
             return false;
         }
-        if(!BasicUtil.equals(typeName, column.getTypeName())){
+        if(!BasicUtil.equals(name, column.getName())){
+            return false;
+        }
+        if(!BasicUtil.equals(columnType, column.getColumnType())){
             return false;
         }
         if(!BasicUtil.equals(precision, column.getPrecision())){
@@ -999,6 +1034,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return false;
         }
         if(!BasicUtil.equals(primary, column.isPrimaryKey())){
+            return false;
+        }
+        if(!BasicUtil.equals(position, column.getPosition())){
             return false;
         }
 

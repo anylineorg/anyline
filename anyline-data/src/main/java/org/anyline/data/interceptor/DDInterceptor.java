@@ -29,14 +29,14 @@ public interface DDInterceptor  extends JDBCInterceptor{
 
     /**
      * 可触发当前拦截器的事件<br/>
-     * 拦截多个事件的实现actions(),拦截一个事件的实现action()
+     * 拦截多个事件的实现actions(), 拦截一个事件的实现action()
      * @return List
      */
     default List<ACTION.DDL> actions(){return null;}
     default ACTION.DDL action(){return null;}
 
     /**
-     * 在创建SQL之前触发，如果需要影响SQL创建可以在这一步修改metadata,类型一般是org.anyline.entity.data.Table/Column等
+     * 在创建SQL之前触发，如果需要影响SQL创建可以在这一步修改metadata, 类型一般是org.anyline.entity.data.Table/Column等
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param action 执行命令

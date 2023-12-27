@@ -39,6 +39,32 @@ public class DriverAdapterHolder {
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
 
+	/**
+	 * 获取支持数据库的适配器,注意有可能获取到多个
+	 * @param type 数据库类型
+	 * @return DriverAdapter
+	 */
+	public static DriverAdapter getAdapter(DatabaseType type){
+		List<DriverAdapter> list = getAdapters(type);
+		if(list.isEmpty()){
+			return null;
+		}
+		return list.get(0);
+	}
+	public static List<DriverAdapter> getAdapters(DatabaseType type){
+		List<DriverAdapter> list = new ArrayList<>();
+		for(DriverAdapter adapter:adapters){
+			if(adapter.type() == type){
+				list.add(adapter);
+			}
+		}
+		return list;
+	}
+	public static List<DriverAdapter> getAdapters(){
+		List<DriverAdapter> list = new ArrayList<>();
+		list.addAll(adapters);
+		return list;
+	}
 	@Autowired(required = false)
 	public void setAdapters(Map<String, DriverAdapter> map){
 		for (DriverAdapter adapter:map.values()){
@@ -52,12 +78,13 @@ public class DriverAdapterHolder {
 	private static DriverAdapter defaultAdapter = null;	// 如果当前项目只有一个adapter则不需要多次识别
 
 	/**
-	 * 定准适配器
+	 * 定位适配器
 	 * @param datasource 数据源名称(配置文件中的key)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return DriverAdapter
 	 */
 	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime){
+		//项目中只有一个适配器时直接返回
 		if(null != defaultAdapter){
 			return defaultAdapter;
 		}
@@ -68,9 +95,17 @@ public class DriverAdapterHolder {
 		DriverAdapter adapter = null;
 		try {
 			for (DriverAdapter item:adapters){
-				if(item.match(runtime)){
+				if(item.match(runtime, false)){
 					adapter = item;
 					break;
+				}
+			}
+			if(null == adapter){
+				for (DriverAdapter item:adapters){
+					if(item.match(runtime, true)){
+						adapter = item;
+						break;
+					}
 				}
 			}
 		} catch (Exception e) {

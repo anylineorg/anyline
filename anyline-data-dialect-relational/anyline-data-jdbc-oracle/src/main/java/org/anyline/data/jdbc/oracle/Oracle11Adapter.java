@@ -39,16 +39,24 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
         return "11";
     }
 
-    @Override
-    public boolean match(DataRuntime runtime) {
+	/**
+	 * 验证运行环境与当前适配器是否匹配<br/>
+	 * 默认不连接只根据连接参数<br/>
+	 * 只有同一个库区分不同版本(如mmsql2000/mssql2005)或不同模式(如kingbase的oracle/pg模式)时才需要单独实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param compensate 是否补偿匹配，第一次失败后，会再匹配一次，第二次传入true
+	 * @return boolean
+	 */
+	@Override
+	public boolean match(DataRuntime runtime, boolean compensate) {
         List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
         String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
-        boolean chk = match(feature, keywords);
+        boolean chk = super.match(feature, keywords, compensate);
         if(chk) {
             String version = runtime.getVersion();
             //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
             if(null != version ){
-                version = RegularUtil.cut(version, "release","-");
+                version = RegularUtil.cut(version, "release", "-");
                 if(null != version){
                     //11.2.0.1.0
                     version = version.split("\\.")[0];
@@ -83,7 +91,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
         }else{
             // 分页
             builder.append("SELECT "+cols+" FROM( \n");
-            builder.append("SELECT TAB_I.* ,ROWNUM AS PAGE_ROW_NUMBER_ \n");
+            builder.append("SELECT TAB_I.*, ROWNUM AS PAGE_ROW_NUMBER_ \n");
             builder.append("FROM( \n");
             builder.append(sql);
             builder.append("\n").append(order);

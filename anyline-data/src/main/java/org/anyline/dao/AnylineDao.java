@@ -25,6 +25,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
@@ -78,8 +79,8 @@ public interface AnylineDao<E>{
 	 * @param conditions 简单过滤条件
 	 * @return mpas
 	 */
-	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
-	default List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	default List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return maps(runtime(), null, prepare, configs, conditions);
 	}
 
@@ -128,7 +129,7 @@ public interface AnylineDao<E>{
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param data		需要更新的数据
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param columns	需要更新的列 如果没有提供则解析data解析
 	 * @param configs	更新条件 如果没提供则根据data主键
 	 * @return int 影响行数
@@ -139,13 +140,13 @@ public interface AnylineDao<E>{
 		return update(runtime(), null, batch, dest, data, configs, columns);
 	}
 	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
-		return update(batch,dest, data, configs, BeanUtil.array2list(columns));
+		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(int batch, Object data, ConfigStore configs, String ... columns){
-		return update(batch,null, data, configs, BeanUtil.array2list(columns));
+		return update(batch, null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(int batch, Object data, ConfigStore configs, List<String> columns){
-		return update(batch,null, data, configs, columns);
+		return update(batch, null, data, configs, columns);
 	}
 	default long update(int batch, String dest, Object data, String ... columns){
 		return update(batch, dest, data, null, BeanUtil.array2list(columns));
@@ -187,11 +188,11 @@ public interface AnylineDao<E>{
 	 * @param random 用来标记同一组命令
 	 * @param data 需要插入的数据
 	 * @param columns  需要插入的列 
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return int
 	 */
 	long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
-	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data,  List<String> columns){
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
 	}
 	default long insert(int batch, String dest, Object data, List<String> columns){
@@ -254,7 +255,7 @@ public interface AnylineDao<E>{
 	 * 保存(insert|update)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data  data
 	 * @param columns  columns
 	 * @return int
@@ -322,7 +323,7 @@ public interface AnylineDao<E>{
 	default long execute(int batch, String sql, List<Object> values){
 		return execute(runtime(), null, batch, sql, values);
 	}
-	default long execute(RunPrepare prepare,  String ... conditions){
+	default long execute(RunPrepare prepare, String ... conditions){
 		return execute(prepare, null, conditions);
 	}
  
@@ -359,7 +360,7 @@ public interface AnylineDao<E>{
 	}
 	/**
 	 * 删除多行
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 列
 	 * @param values 值集合
 	 * @return 影响行数
@@ -397,16 +398,47 @@ public interface AnylineDao<E>{
 	 ******************************************************************************************************************/
 
 	/**
-	 * 根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+	 * 根据sql获取列结构, 如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
 	 * @param prepare RunPrepare
 	 * @param comment 是否需要注释
 	 * @return LinkedHashMap
 	 */
-	LinkedHashMap<String,Column> metadata(RunPrepare prepare, boolean comment);
+	LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment);
 	/* *****************************************************************************************************************
 	 * 													database
 	 ******************************************************************************************************************/
 
+	/**
+	 * 当前数据源 数据库类型
+	 * @return DatabaseType
+	 */
+	DatabaseType type();
+
+	/**
+	 * 当前数据源 数据库版本 版本号比较复杂 不是全数字
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	String version(DataRuntime runtime, String random);
+	default String version(){
+		return version(runtime(), null);
+	}
+
+	/**
+	 * 当前数据源 数据库描述(产品名称+版本号)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @return String
+	 */
+	String product(DataRuntime runtime, String random);
+	default String product(){
+		return product(runtime(), null);
+	}
+	Database database(DataRuntime runtime, String random);
+	default Database database(){
+		return database(runtime(), null);
+	}
 	LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name);
 	default LinkedHashMap<String, Database> databases(String name){
 		return databases(runtime(), null, name);
@@ -425,18 +457,26 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													catalog
 	 ******************************************************************************************************************/
+	Catalog catalog(DataRuntime runtime, String random);
+	default Catalog catalog(){
+		return catalog(runtime(), null);
+	}
 	LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name);
 	default LinkedHashMap<String, Catalog> catalogs(String name){
 		return catalogs(runtime(), null, name);
 	}
 	List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name);
 	default List<Catalog> catalogs(boolean greedy, String name){
-		return catalogs(runtime(),  null, greedy, name);
+		return catalogs(runtime(), null, greedy, name);
 	}
 
 	/* *****************************************************************************************************************
 	 * 													schema
 	 ******************************************************************************************************************/
+	Schema schema(DataRuntime runtime, String random);
+	default Schema schema(){
+		return schema(runtime(), null);
+	}
 	LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name);
 	default LinkedHashMap<String, Schema> schemas(Catalog catalog, String name){
 		return schemas(runtime(), null, catalog, name);
@@ -629,54 +669,54 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	<T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
 
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, Catalog catalog, Schema schema, String master, String name){
 		return ptables(greedy, new MasterTable(catalog, schema, master), null, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, Schema schema, String master, String name){
-		return ptables(greedy,null, schema, master, name);
+		return ptables(greedy, null, schema, master, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master, String name){
-		return ptables(greedy,null, null, master, name);
+		return ptables(greedy, null, null, master, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, String master){
-		return ptables(greedy,null, null, master, null);
+		return ptables(greedy, null, null, master, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master){
 		return ptables(greedy, master, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags, String name){
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name){
 		return ptables(runtime(), null, greedy, master, tags, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String,Object> tags){
-		return ptables(runtime(), null, greedy,master, tags, null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags){
+		return ptables(runtime(), null, greedy, master, tags, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(Catalog catalog, Schema schema, String master, String name){
 		MasterTable mtable = new MasterTable(catalog, schema, master);
-		return ptables(false,mtable, null, name);
+		return ptables(false, mtable, null, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(Schema schema, String master, String name){
-		return ptables(false,null, schema, master, name);
+		return ptables(false, null, schema, master, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master, String name){
-		return ptables(false,null, null, master, name);
+		return ptables(false, null, null, master, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(String master){
-		return ptables(false,null, null, master, null);
+		return ptables(false, null, null, master, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master){
-		return ptables(false,master, null);
+		return ptables(false, master, null);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags, String name){
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags, String name){
 		return ptables(false, master, tags, name);
 	}
-	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String,Object> tags){
-		return ptables(false,master, tags, null);
+	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(MasterTable master, Map<String, Object> tags){
+		return ptables(false, master, tags, null);
 	}
 	List<String> ddl(DataRuntime runtime, String random, PartitionTable table);
 	default List<String> ddl(PartitionTable table){
-		return ddl(runtime(), null,  table);
+		return ddl(runtime(), null, table);
 	}
 
 	/* *****************************************************************************************************************
@@ -736,7 +776,7 @@ public interface AnylineDao<E>{
 		return tags(runtime(), null, greedy, new Table(table));
 	}
 	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Catalog catalog, Schema schema, String table){
-		return tags(runtime(),null, greedy, new Table(catalog, schema, table));
+		return tags(runtime(), null, greedy, new Table(catalog, schema, table));
 	}
 	default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table){
 		return tags(runtime(), null, greedy, table);
@@ -759,7 +799,7 @@ public interface AnylineDao<E>{
 		return primary(runtime(), null, greedy, table);
 	}
 	default PrimaryKey primary(boolean greedy, String table){
-		return primary(greedy,new Table(table));
+		return primary(greedy, new Table(table));
 	}
 	default PrimaryKey primary(boolean greedy, Catalog catalog, Schema schema, String table){
 		return primary(greedy, new Table(catalog, schema, table));
@@ -778,7 +818,7 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * List<Run> buildQueryForeignRun(Table table) throws Exception
+	 * List<Run> buildQueryForeignsRun(Table table) throws Exception
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table);

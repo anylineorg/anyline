@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -34,7 +34,7 @@ public class PageNaviProperty {
     public String keyGuide				    = "_anyline_navi_guide"			; // 设置分页样式的key
     public String keyIdFlag 			    = "_anyline_navi_conf_"			; // 生成配置文件标识
     public int varPageDefaultVol            = 10					        ; // 每页多少条
-    public int varPageMaxVol				= 100					        ; // 每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
+    public int varPageMaxVol				= 100					        ; // 每页最多多少条(只针对从http传过来的vol, 后台设置的不影响)
     public boolean varClientSetVolEnable	= false					        ; // 前端是否可设置每页多少条
 
     public String getKeyPageRows() {

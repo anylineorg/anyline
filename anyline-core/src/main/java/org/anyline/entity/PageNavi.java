@@ -33,7 +33,7 @@ public interface PageNavi extends Serializable{
 	 * 计算分页变量 
 	 */ 
 	public void calculate() ; 
-	public String createHidParam(String name, Object values); 
+	public String createHidParam(String name, Object values);
  
 	/** 
 	 * 第一行 
@@ -66,11 +66,11 @@ public interface PageNavi extends Serializable{
 	 */ 
 	public void setDisplayPageLast(long displayPageLast) ;
  
-	public void addParam(String key, Object value); 
+	public void addParam(String key, Object value);
 	public Object getParams(String key); 
 	public Object getParam(String key); 
 	public String getOrderText(boolean require); 
-	// public String getOrderText(boolean require, OrderStore store); 
+	// public String getOrderText(boolean require, OrderStore store);
 	/** 
 	 * 设置排序方式 
 	 * @param order  order

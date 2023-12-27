@@ -61,8 +61,8 @@ public class PageLazyStore {
 		Long old = lazyTotal.get(key);
 		if(null == old || old != total){
 			// 新计数 或 更新计数 
-			lazyTime.put(key, System.currentTimeMillis()); 
-			lazyTotal.put(key, total); 
+			lazyTime.put(key, System.currentTimeMillis());
+			lazyTotal.put(key, total);
 			if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
 				log.info("[重置记录总数][key:{}][old:{}]" + "[new:{}]", key, old, total);
 			} 

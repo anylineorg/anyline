@@ -59,6 +59,14 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      */
     protected Long dataLength                   ;
     /**
+     * 下一个自增值
+     */
+    protected Long increment                    ;
+    /**
+     * 占用未用空间
+     */
+    protected Long dataFree                     ;
+    /**
      * 索引长度
      */
     protected Long indexLength                  ;
@@ -69,6 +77,8 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
     protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
+    protected boolean sort = false; //列是否排序
+
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
 
 
@@ -182,7 +192,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     public LinkedHashMap<String, Column> primarys(){
         LinkedHashMap<String, Column> pks = new LinkedHashMap<>();
-        for(Map.Entry<String,Column> item:columns.entrySet()){
+        for(Map.Entry<String, Column> item:columns.entrySet()){
             Column column = item.getValue();
             String key = item.getKey();
             if(column.isPrimaryKey() == 1){
@@ -201,7 +211,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     }
     public E clone(){
         E copy = super.clone();
-        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);
@@ -281,7 +291,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                     column.primary(true);
                     primaryKey.addColumn(column);
                 } else {
-                    throw new AnylineException("未匹配到" + key + ",请诜添加到columns");
+                    throw new AnylineException("未匹配到" + key + ", 请诜添加到columns");
                 }
             }
         } else {
@@ -581,6 +591,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         }
 
         this.indexs = (LinkedHashMap<String, Index>) indexs;
+        for(Index index:indexs.values()){
+            index.setTable(this);
+        }
         return this;
     }
     public Table add(Index index){
@@ -698,6 +711,13 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return this;
     }
 
+    public Long getDataFree() {
+        return dataFree;
+    }
+
+    public void setDataFree(Long dataFree) {
+        this.dataFree = dataFree;
+    }
 
     public Table getInherits() {
         return inherits;
@@ -756,6 +776,14 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.dataLength = dataLength;
     }
 
+    public Long getIncrement() {
+        return increment;
+    }
+
+    public void setIncrement(Long increment) {
+        this.increment = increment;
+    }
+
     public Long getIndexLength() {
         return indexLength;
     }
@@ -764,6 +792,29 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.indexLength = indexLength;
     }
 
+    public boolean isSort() {
+        return sort;
+    }
+
+    public void setSort(boolean sort) {
+        this.sort = sort;
+    }
+
+    /**
+     * 列排序
+     * @param nullFirst 未设置位置(setPosition)的列是否排在最前
+     * @return Table
+     */
+    public Table sort(boolean nullFirst){
+        sort = true;
+        if(null != columns){
+            Column.sort(columns, nullFirst);
+        }
+        return this;
+    }
+    public Table sort(){
+        return sort(false);
+    }
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append(keyword).append(":");

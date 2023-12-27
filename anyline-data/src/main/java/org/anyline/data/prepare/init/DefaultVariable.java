@@ -38,7 +38,7 @@ public class DefaultVariable implements Variable {
 	 
 	public String toString(){
 		String str = "";
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("key", this.getKey());
 		map.put("type", type);
 		map.put("sign type", signType);

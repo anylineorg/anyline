@@ -47,21 +47,21 @@ public class VCFUtil {
 
     /**
      * 批量生成
-     * @param mobiles 手机号或手机号,姓名
+     * @param mobiles 手机号或手机号, 姓名
      * @return String
      */
     public static String format(List<String> mobiles){
        StringBuilder builder = new StringBuilder();
        for(String mobile:mobiles){
-            if(mobile.contains(",")){
-                String[] items = mobile.split(",");
+            if(mobile.contains(", ")){
+                String[] items = mobile.split(", ");
                 if(items.length==1){
                     builder.append(format(items[0])).append("\n");
                 }else if(items.length>1){
                     builder.append(format(items[0], items[1])).append("\n");
                 }
             }else{
-                builder.append(format(mobile,mobile)).append("\n");
+                builder.append(format(mobile, mobile)).append("\n");
             }
        }
        return builder.toString();

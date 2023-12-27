@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Trigger extends BaseMetadata<Trigger> implements Serializable {
     public enum EVENT{
-        INSERT,DELETE,UPDATE;
+        INSERT, DELETE, UPDATE;
     }
     public enum TIME{
         BEFORE("BEFORE"),

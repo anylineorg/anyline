@@ -65,6 +65,77 @@ public class DefaultConfigStore implements ConfigStore {
 	protected List<Run> runs				= new ArrayList<>()		; // 执行过的命令 包括ddl dml
 	protected KeyAdapter.KEY_CASE kc 		= null					; //
 	protected boolean execute				= true  				;
+	protected String datasource				= null					; // 查询或操作的数据源
+	protected String dest					= null					; // 查询或操作的目标(表,存储过程,sql等)
+	protected List<String> keys				= new ArrayList<>();
+
+
+	/**
+	 * 设置查询或操作的数据源
+	 * @param datasource 查询或操作的数据源
+	 * @return ConfigStore
+	 */
+	@Override
+	public ConfigStore datasource(String datasource) {
+		this.datasource = datasource;
+		return this;
+	}
+
+	/**
+	 * 查询或操作的数据源
+	 * @return String
+	 */
+	@Override
+	public String datasource() {
+		return datasource;
+	}
+
+	/**
+	 * 设置查询或操作的目标(表,存储过程,sql等)
+	 * @param dest 查询或操作的目标
+	 * @return ConfigStore
+	 */
+	@Override
+	public ConfigStore dest(String dest) {
+		this.dest = dest;
+		return this;
+	}
+
+	/**
+	 * 查询或操作的目标(表,存储过程,sql等)
+	 * @return String
+	 */
+	@Override
+	public String dest() {
+		return dest;
+	}
+
+	/**
+	 * 设置虚拟主键，主要是用作为更新条件
+	 * @param keys keys
+	 * @return this
+	 */
+	@Override
+	public ConfigStore keys(String ... keys) {
+		if(null == this.keys){
+			this.keys = new ArrayList<>();
+		}else {
+			this.keys.clear();
+		}
+		for(String key:keys){
+			this.keys.add(key);
+		}
+		return this;
+	}
+
+	/**
+	 * 虚拟主键，主要是用作为更新条件
+	 * @return List
+	 */
+	@Override
+	public List<String> keys() {
+		return keys;
+	}
 
 	public DefaultConfigStore init(){
 		return new DefaultConfigStore();
@@ -701,7 +772,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix,  String var, Object value, boolean overCondition, boolean overValue) {
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		List<Config> configs = chain.getConfigs();
 		if(null == prefix && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));

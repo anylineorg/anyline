@@ -5,7 +5,7 @@ import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 
-public abstract class DefaultRuntime implements DataRuntime {
+public class DefaultRuntime implements DataRuntime {
 
     /**
      * 复制来源
@@ -37,13 +37,43 @@ public abstract class DefaultRuntime implements DataRuntime {
         this.origin = origin;
     }
 
+    @Override
+    public String getFeature(boolean connection) {
+        return null;
+    }
+
     public void setFeature(String feature) {
         this.feature = feature;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
     }
 
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    @Override
+    public void setDriver(String driver) {
+
+    }
+
+    @Override
+    public String getDriver() {
+        return null;
+    }
+
+    @Override
+    public void setUrl(String url) {
+
+    }
+
+    @Override
+    public String getUrl() {
+        return null;
     }
 
     public String getKey() {
@@ -52,6 +82,16 @@ public abstract class DefaultRuntime implements DataRuntime {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    @Override
+    public Object getProcessor() {
+        return null;
+    }
+
+    @Override
+    public void setProcessor(Object processor) {
+
     }
 
 

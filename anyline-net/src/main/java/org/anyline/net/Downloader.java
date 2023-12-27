@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  
 public class Downloader {
 	private static Logger log = LoggerFactory.getLogger(Downloader.class); 
-	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>(); 
+	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>();
 	private int maxParallel = 5		; // 最大并行下载数量 
 	private int curParallel			; // 当前并行下载数量	 
 	private double lastLogRate		; // 最后一次日志进度 
@@ -45,7 +45,7 @@ public class Downloader {
 	private String errorCode = ""	; // 异常编号 
 	private int status = 0			; // 0初始 1下载中  2结束 
  
-	private static Hashtable<String,Downloader> instances = new Hashtable<String,Downloader>(); 
+	private static Hashtable<String, Downloader> instances = new Hashtable<String, Downloader>();
 	public static Downloader getInstance() {
 		return getInstance(AnylineConfig.DEFAULT_INSTANCE_KEY);
 	} 
@@ -57,7 +57,7 @@ public class Downloader {
 		Downloader util = instances.get(key); 
 		if (null == util) {
 			util = new Downloader(); 
-			instances.put(key, util); 
+			instances.put(key, util);
 		} 
 		return util; 
 	} 
@@ -68,16 +68,16 @@ public class Downloader {
 //		public void init(String url, String thread, long total, long past){
 //			DownloadTask task = getTask(url); 
 //			if(null == task){
-//				log.error("[任务不存在][url:{}]",url); 
+//				log.error("[任务不存在][url:{}]", url);
 //				return ; 
 //			} 
-//			task.init(total, past); 
+//			task.init(total, past);
 //		} 
 //		@Override 
 //		public void step(String url, String thread, long len){
 //			DownloadTask task = getTask(url); 
 //			if(null == task){
-//				log.error("[任务不存在][url:{}]",url); 
+//				log.error("[任务不存在][url:{}]", url);
 //				return ; 
 //			} 
 //			task.step(len); 
@@ -90,7 +90,7 @@ public class Downloader {
 //		public void finish(String url, String thread){
 //			DownloadTask task = getTask(url); 
 //			if(null == task){
-//				log.error("[任务不存在][url:{}]",url); 
+//				log.error("[任务不存在][url:{}]", url);
 //				return ; 
 //			} 
 //			task.finish(); 
@@ -109,19 +109,19 @@ public class Downloader {
 //				log.error("[任务不存在][url:"+url+"]"); 
 //				return ; 
 //			} 
-//			task.error(code, message); 
+//			task.error(code, message);
 //			if(!errorCode.contains(code+"")){
 //				if(errorCode.equals("")){
 //					errorCode += code; 
 //				}else{
-//					errorCode += ","+code; 
+//					errorCode += ", "+code;
 //				} 
 //			} 
 //			if(!errorMsg.contains(message)){
 //				if(errorMsg.equals("")){
 //					errorMsg += message; 
 //				}else{
-//					errorMsg += ","+message; 
+//					errorMsg += ", "+message;
 //				} 
 //			} 
 //			if(null != errorCallback){
@@ -214,7 +214,7 @@ public class Downloader {
 	public void stop(String url){
 		DownloadTask task = getTask(url); 
 		if(null == task){
-			log.error("[任务不存在][url:{}]",url); 
+			log.error("[任务不存在][url:{}]", url);
 			return ; 
 		} 
 		if(null != task){
@@ -229,7 +229,7 @@ public class Downloader {
 		return tasks.size(); 
 	} 
 	public int getTaskSize(String extKey, Object extVal){
-		return getTasks(extKey, extVal).size(); 
+		return getTasks(extKey, extVal).size();
 	} 
 	/** 
 	 * 已完成任务数量 
@@ -246,7 +246,7 @@ public class Downloader {
 	} 
 	public int getFinishTaskSize(String extKey, Object extVal){
 		int size = 0; 
-		Map<String,DownloadTask> tasks = getTasks(extKey,extVal); 
+		Map<String, DownloadTask> tasks = getTasks(extKey, extVal);
 		for(DownloadTask task:tasks.values()){
 			if(task.isFinish()){
 				size ++; 
@@ -254,15 +254,15 @@ public class Downloader {
 		} 
 		return size; 
 	} 
-	public Map<String,DownloadTask> getTasks(String extKey, Object extVal){
-		Map<String, DownloadTask> result = new HashMap<String,DownloadTask>(); 
+	public Map<String, DownloadTask> getTasks(String extKey, Object extVal){
+		Map<String, DownloadTask> result = new HashMap<String, DownloadTask>();
 		synchronized (tasks){
 		for(DownloadTask task:tasks.values()){
-			Map<String,Object> extras = task.getExtras(); 
+			Map<String, Object> extras = task.getExtras();
 			if(null != extras){
 				Object val = extras.get(extKey); 
 				if(val.equals(extVal)){
-					result.put(task.getUrl(), task); 
+					result.put(task.getUrl(), task);
 				} 
 			} 
 		} 
@@ -382,7 +382,7 @@ public class Downloader {
 			rate = (finish+past)*100.00/(length+past); 
 		} 
 		BigDecimal decimal = new BigDecimal(rate); 
-		rate = decimal.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();   
+		rate = decimal.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
 		if(rate ==100 && finish < length){
 			rate = 99.99; 
 		} 
@@ -462,7 +462,7 @@ public class Downloader {
 		long expect = getExpect(); 
 		return DateUtil.conversion(expect); 
 	} 
-	public Map<String,DownloadTask> getTasks(){
+	public Map<String, DownloadTask> getTasks(){
 		return tasks; 
 	} 
 	 
@@ -476,26 +476,26 @@ public class Downloader {
 	 * @param extras extras
 	 * @return Downloader
 	 */
-	public Downloader add(String url, File local, Map<String, String> headers, Map<String, Object> params,Map<String, Object> extras){
+	public Downloader add(String url, File local, Map<String, String> headers, Map<String, Object> params, Map<String, Object> extras){
 		DownloadTask task = getTask(url); 
 		if(null == task){
-			task = new DownloadTask(url, local, headers, params,extras); 
+			task = new DownloadTask(url, local, headers, params, extras);
 			task.setIndex(tasks.size()); 
 		} 
 		return add(task); 
 	} 
 	public Downloader add(String url, File local, Map<String, String> headers, Map<String, Object> params){
-		return add(url, local, null, null, null); 
+		return add(url, local, null, null, null);
 	} 
 	public Downloader add(String url, File local){
-		return add(url, local, null, null); 
+		return add(url, local, null, null);
 	} 
 	public Downloader add(DownloadTask task){
 		String url  = task.getUrl(); 
 		String code = url; 
-		log.warn("[add task][code:{}][url:{}]", code, task.getUrl()); 
+		log.warn("[add task][code:{}][url:{}]", code, task.getUrl());
 		if(null == tasks.get(code)){
-			tasks.put(code, task); 
+			tasks.put(code, task);
 			task.setIndex(tasks.size()); 
 		} 
 		return this; 
@@ -518,12 +518,12 @@ public class Downloader {
 					task.start(); 
 				} 
 			}); 
-			DownloaderThreadPool.execute(thread,threads); 
+			DownloaderThreadPool.execute(thread, threads);
 		} 
 	} 
 	// 线程池
 	public void start(){
-		start(Math.max(4, Math.min(Runtime.getRuntime().availableProcessors() - 1, 5))); 
+		start(Math.max(4, Math.min(Runtime.getRuntime().availableProcessors() - 1, 5)));
 	} 
 	public int getMaxParallel() {
 		return maxParallel; 
@@ -554,25 +554,25 @@ public class Downloader {
 		String code = url; 
 		DownloadTask task = tasks.get(code); 
 		if(null == task){
-			log.error("[任务不存在][code:{}][url:{}]",code,url); 
+			log.error("[任务不存在][code:{}][url:{}]", code, url);
 		} 
 		return task; 
 	} 
 } 
 class DownloaderThreadPool {
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors(); 
-    private static final int CORE_POOL_SIZE = Math.max(4, Math.min(CPU_COUNT - 1, 5)); 
+    private static final int CORE_POOL_SIZE = Math.max(4, Math.min(CPU_COUNT - 1, 5));
     private static final int MAXIMUM_POOL_SIZE =  CPU_COUNT * 2 + 100; 
     private static final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(200000);//超出数量丢弃 
     private static ThreadPoolExecutor threadPoolExecutor; 
     static {
         threadPoolExecutor = new ThreadPoolExecutor( 
-                CORE_POOL_SIZE,  // 核心线程数 
-                MAXIMUM_POOL_SIZE, // 线程池中最大的线程数 
-                30,  // 线程的存活时间,没事干的时候,空闲的时间 
-                TimeUnit.SECONDS, // 线程存活时间的单位 
-                workQueue, // 线程缓存队列 
-                new ThreadFactory() { // 线程创建工厂,如果线程池需要创建线程会调用newThread来创建 
+                CORE_POOL_SIZE, // 核心线程数
+                MAXIMUM_POOL_SIZE, // 线程池中最大的线程数
+                30, // 线程的存活时间, 没事干的时候, 空闲的时间
+                TimeUnit.SECONDS, // 线程存活时间的单位
+                workQueue, // 线程缓存队列
+                new ThreadFactory() { // 线程创建工厂, 如果线程池需要创建线程会调用newThread来创建
                     public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r); 
                         thread.setDaemon(false); 

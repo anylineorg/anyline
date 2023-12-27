@@ -40,7 +40,7 @@ public class AbstractColumnType implements ColumnType {
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    public AbstractColumnType(String name, DatabaseType db,  Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    public AbstractColumnType(String name, DatabaseType db, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
         this.name = name;
         this.dbs = new DatabaseType[]{db};
         this.compatible = compatible;

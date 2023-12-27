@@ -54,7 +54,7 @@ public class ClassUtil {
 	}
 	/**
 	 * 是否是基础类型(不包含String类型)
-	 * @param obj 对象或类,如果是对象先getClass()
+	 * @param obj 对象或类, 如果是对象先getClass()
 	 * @return boolean
 	 */
 	@SuppressWarnings("rawtypes")
@@ -173,7 +173,7 @@ public class ClassUtil {
 	 */
 	private static List<String> getClassNames(String packageName, boolean childPackage) throws IOException {
 		List<String> fileNames = new ArrayList<>();
-		log.warn("[正在加载本地类][package:{}]",packageName);
+		log.warn("[正在加载本地类][package:{}]", packageName);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		String packagePath = packageName.replace(".", "/");
 		Enumeration<URL> urls = loader.getResources(packagePath);
@@ -215,8 +215,8 @@ public class ClassUtil {
 			} else {
 				String childFilePath = childFile.getPath();
 				if (childFilePath.endsWith(".class") && !childFilePath.contains("$")) {
-					String c = childFilePath.split("classes")[1].replace(".class","");
-					c = c.replace("\\",".").replace("//",".");
+					String c = childFilePath.split("classes")[1].replace(".class", "");
+					c = c.replace("\\", ".").replace("//", ".");
 					if(c.startsWith(".")){
 						c = c.substring(1);
 					}
@@ -273,7 +273,7 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 从所有jar中搜索该包,并获取该包下所有类
+	 * 从所有jar中搜索该包, 并获取该包下所有类
 	 *
 	 * @param urls         URL集合
 	 * @param packagePath  包路径
@@ -324,7 +324,7 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 反射属性target上的注解,获取注解上指定的属性值
+	 * 反射属性target上的注解, 获取注解上指定的属性值
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
 	 * @param target 类的属性
@@ -382,7 +382,7 @@ public class ClassUtil {
 	}
 
 	private static boolean match(String value, String regex){
-		regex = regex.replace("*",".*").toUpperCase();
+		regex = regex.replace("*", ".*").toUpperCase();
 		return value.toUpperCase().matches(regex);
 	}
 
@@ -431,7 +431,7 @@ public class ClassUtil {
 		if(null != clazz && recursion){
 			clazz = clazz.getSuperclass();
 			if(null != clazz){
-				list.addAll(getMethods(clazz,recursion));
+				list.addAll(getMethods(clazz, recursion));
 			}
 		}
 		return list;
@@ -503,8 +503,8 @@ public class ClassUtil {
 				name = name.toUpperCase();
 			}
 			if(ignoreSplit){
-				itemName = itemName.replace("-","").replace("_","");
-				name = name.replace("-","").replace("_","");
+				itemName = itemName.replace("-", "").replace("_", "");
+				name = name.replace("-", "").replace("_", "");
 			}
 			if(name.equals(itemName)){
 				field = item;
@@ -574,7 +574,7 @@ public class ClassUtil {
 	/**
 	 * 查询指定类的有annotation注解的属性
 	 * @param clazz  clazz
-	 * @param annotations  annotation 支持模糊匹配,不区分大小写 如 Table*
+	 * @param annotations  annotation 支持模糊匹配, 不区分大小写 如 Table*
 	 * @return List
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
@@ -609,13 +609,13 @@ public class ClassUtil {
 	@SuppressWarnings({"unchecked", "rawtypes" })
 	public static List<Class> getClasses(String pack, Class ... bases){
 		List<Class> list = new ArrayList<Class>();
-		File dir = new File(ClassUtil.class.getResource("/").getFile(),pack.replace(".", File.separator));
-		List<File> files = FileUtil.getAllChildrenFile(dir,".class");
+		File dir = new File(ClassUtil.class.getResource("/").getFile(), pack.replace(".", File.separator));
+		List<File> files = FileUtil.getAllChildrenFile(dir, ".class");
 		for(File file:files){
 			try{
 				String path = file.getAbsolutePath();
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-					log.warn("[检索类][file:{}]",path);
+					log.warn("[检索类][file:{}]", path);
 				}
 				if(path.contains(File.separator+"classes"+File.separator)){
 					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
@@ -623,7 +623,7 @@ public class ClassUtil {
 				path = path.replace(File.separator, ".");
 				path = path.replace(".classes.", "").replace(".class", "");
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-					log.warn("[检索类][class:{}]",path);
+					log.warn("[检索类][class:{}]", path);
 				}
 				Class clazz = Class.forName(path);
 				if(clazz.getName().contains("$")){
@@ -652,7 +652,7 @@ public class ClassUtil {
 	/**
 	 * 根据注解名与注解类属性 获取指定类上的注解值
 	 * @param clazz clazz上的注解
-	 * @param configs 注册名.注解属性名,不区分大小写 支持模糊匹配 如 *Table.ID*
+	 * @param configs 注册名.注解属性名, 不区分大小写 支持模糊匹配 如 *Table.ID*
 	 * @return String
 	 */
 	public static String parseAnnotationFieldValue(Class clazz, String ... configs){
@@ -671,8 +671,8 @@ public class ClassUtil {
 	/**
 	 * 根据注解名与注解类属性 获取指定属性上的注解值
 	 * @param field field上的注解
-	 * @param configs 注册名.注解属性名,不区分大小写 支持模糊匹配 如 *Table.ID*
-	 *                可以只提供注解名如Column则依次按Column.name,Column.value解析
+	 * @param configs 注册名.注解属性名, 不区分大小写 支持模糊匹配 如 *Table.ID*
+	 *                可以只提供注解名如Column则依次按Column.name, Column.value解析
 	 * @return String
 	 */
 	public static String parseAnnotationFieldValue(Field field, String ... configs){

@@ -68,6 +68,6 @@ public class RuntimeUtil {
 		return result; 
 	} 
 	public static String run(String cmd){
-		return run(cmd, true); 
+		return run(cmd, true);
 	} 
 } 

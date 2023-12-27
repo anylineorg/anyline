@@ -72,8 +72,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected String category                         = null                  ; // 分类
     protected LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     protected transient DataSet container             = null                  ; // 包含当前对象的容器
-    protected transient Map<String,DataSet> containers= new HashMap()         ; // 包含当前对象的容器s
-    protected transient Map<String,DataRow> parents   = new Hashtable()       ; // 上级
+    protected transient Map<String, DataSet> containers= new HashMap()         ; // 包含当前对象的容器s
+    protected transient Map<String, DataRow> parents   = new Hashtable()       ; // 上级
     protected List<String> primaryKeys                = new ArrayList()       ; // 主键
     protected List<String> updateColumns              = new ArrayList()       ; // 需要参与update insert操作
     protected List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
@@ -91,7 +91,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected boolean isFromCache                     = false                 ; // 是否来自缓存
     protected Map<String, String> keymap              = new HashMap<>()       ; // keymap
     protected boolean isUpperKey                      = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
-    protected Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
+    protected Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key, src><当前key, 原key>
     public boolean skip                               =  false                ; // 遍历计算时标记
     protected KeyAdapter keyAdapter                   = null                  ; // key格式转换
     protected KEY_CASE keyCase 				          = DEFAULT_KEY_CASE      ; // 列名格式
@@ -195,9 +195,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 数组解析成DataRow
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param list 数组
-     * @param fields 下标对应的属性(字段/key)名称,如果不输入则以下标作为DataRow的key,如果属性数量超出list长度,取null值存入DataRow
+     * @param fields 下标对应的属性(字段/key)名称, 如果不输入则以下标作为DataRow的key, 如果属性数量超出list长度, 取null值存入DataRow
      * @return DataRow
      */
     public static DataRow parseList(DataRow row, Collection<?> list, String... fields) {
@@ -238,7 +238,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析实体类对象
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param obj obj
      * @param keys 列名:obj属性名 "ID:memberId"
      * @return DataRow
@@ -327,7 +327,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析json结构字符
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param keyCase key大小写
      * @param json json
      * @return DataRow
@@ -356,7 +356,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析JSONObject
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param keyCase keyCase
      * @param json json
      * @return DataRow
@@ -439,7 +439,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
      * 解析xml结构字符
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param keyCase KEY_CASE
      * @param xml xml
      * @return DataRow
@@ -466,7 +466,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析xml
-     * @param row 在此基础上执行,如果不提供则新创建
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param keyCase KEY_CASE
      * @param element element
      * @return DataRow
@@ -527,8 +527,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 解析 key1,value1,key2,value2,key3:value3组合
-     * @param row 在此基础上执行,如果不提供则新创建
+     * 解析 key1, value1, key2, value2, key3:value3组合
+     * @param row 在此基础上执行, 如果不提供则新创建
      * @param kvs kvs
      * @return DataRow
      */
@@ -1013,7 +1013,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return this;
         }
 
-        /*没有处于容器中时,设置自身主键*/
+        /*没有处于容器中时, 设置自身主键*/
         if (null == primaryKeys) {
             primaryKeys = new ArrayList<>();
         }
@@ -1095,7 +1095,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
      * 读取主键
-     * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
+     * 主键为空时且容器有主键时, 读取容器主键, 否则返回默认主键
      * @return List
      */
     public List<String> getPrimaryKeys() {
@@ -1104,7 +1104,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return primaryKeys;
         }
 
-        /*处于容器中并且容器有主键,返回容器主键*/
+        /*处于容器中并且容器有主键, 返回容器主键*/
         if (hasContainer() && getContainer().hasPrimaryKeys()) {
             return getContainer().getPrimaryKeys();
         }
@@ -1182,7 +1182,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 读取数据源
-     * 数据源为空时,读取容器数据源
+     * 数据源为空时, 读取容器数据源
      * @return String
      */
     public String getDataSource() {
@@ -1249,7 +1249,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 设置数据源
-     * 当前对象处于容器中时,设置容器数据源
+     * 当前对象处于容器中时, 设置容器数据源
      * @param dataSource  dataSource
      * @return DataRow
      */
@@ -1631,7 +1631,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return tags.get(key);
     }
 
-    public Map<String,Object> getTags(){
+    public Map<String, Object> getTags(){
         if(null == tags){
             tags = new DataRow();
         }
@@ -1767,7 +1767,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 返回第1个存在的key对应的值,有可能返回null或""
+     * 返回第1个存在的key对应的值, 有可能返回null或""
      * @param keys keys
      * @return String
      */
@@ -2081,8 +2081,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
      * {id:1, code:a, value:100}<br/>
-     * toSet("k","v")转换成<br/>
-     * [{k:id,v:1},{k:code,v:a},[k:value,v:100]]
+     * toSet("k", "v")转换成<br/>
+     * [{k:id, v:1}, {k:code, v:a}, [k:value, v:100]]
      * @param key 原map中的key存放位置
      * @param value 原map中的value存放位置
      * @return DataSet
@@ -2113,7 +2113,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return BeanUtil.map2json(this);
     }
     public String toJSON(JsonInclude.Include include) {
-        return BeanUtil.map2json(this,include);
+        return BeanUtil.map2json(this, include);
     }
 
     public String toJson(JsonInclude.Include include) {
@@ -2121,7 +2121,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public String getJson(JsonInclude.Include include) {
-        return BeanUtil.map2json(this,include);
+        return BeanUtil.map2json(this, include);
     }
 
     public DataRow removeEmpty(String... keys) {
@@ -2344,7 +2344,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 删除指定的key
-     * 不和remove命名 避免调用remoate("ID","CODE")时与HashMap.remove(Object key, Object value) 冲突
+     * 不和remove命名 避免调用remoate("ID", "CODE")时与HashMap.remove(Object key, Object value) 冲突
      * @param keys keys
      * @return DataRow
      */
@@ -2495,20 +2495,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
     /**
-     * 抽取指定列,生成新的DataRow,新的DataRow只包括指定列的值,不包含其他附加信息(如来源表)
+     * 抽取指定列, 生成新的DataRow, 新的DataRow只包括指定列的值, 不包含其他附加信息(如来源表)
      * @param keys keys
      * @param regex 是否开启正则匹配
      * @return DataRow
      */
     public DataRow extract(boolean regex, String... keys) {
         DataRow result = new DataRow();
-        result.copy(regex,this, keys);
+        result.copy(regex, this, keys);
         return result;
     }
 
     public DataRow extract(boolean regex, List<String> keys) {
         DataRow result = new DataRow();
-        result.copy(regex,this, keys);
+        result.copy(regex, this, keys);
         return result;
     }
 
@@ -3007,7 +3007,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     if (result.isEmpty()) {
                         result = val;
                     } else {
-                        result += "," + val;
+                        result += ", " + val;
                     }
                 }
             }
@@ -3132,7 +3132,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             Object v = get(key);
             BigDecimal result = null;
             if (null != v) {
-                result = BasicUtil.parseDecimal(v ,def);
+                result = BasicUtil.parseDecimal(v, def);
             }
             if(null == result){
                 result = def;
@@ -3161,7 +3161,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 是否包含key(不要求完全匹配,根据KEY_CASE有可能不区分大小写)
+     * 是否包含key(不要求完全匹配, 根据KEY_CASE有可能不区分大小写)
      * @param key key
      * @return boolean
      */
@@ -3184,7 +3184,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 
     /**
-     * 返回第一个存在的key对应的value,key不要求完全匹配根据KEY_CASE有可能不区分大小写<br/>
+     * 返回第一个存在的key对应的value, key不要求完全匹配根据KEY_CASE有可能不区分大小写<br/>
      * 如果需要取第一个不为null的值调用nvl(String ... keys)<br/>
      * 第一个不为空的值调用evl(String ... keys)
      * @param keys keys
@@ -3246,10 +3246,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 
     /**
-     * 按keys顺序递归取值,如果其中一层是数组 取第0个，不支持多维数组<br/>
-     * strict=false时,如果遇到基础类型值(包含String)则直接返回当前值，忽略之后的key<br/>
+     * 按keys顺序递归取值, 如果其中一层是数组 取第0个，不支持多维数组<br/>
+     * strict=false时, 如果遇到基础类型值(包含String)则直接返回当前值，忽略之后的key<br/>
      * strict=true时，必须提取到最后一层，如果失败则返回null
-     * 如提取用户的部门的领导的年率,中间遇到部门只是个String类型,则直接返回部门String<br/>
+     * 如提取用户的部门的领导的年率, 中间遇到部门只是个String类型, 则直接返回部门String<br/>
      * @param keys keys
      * @param strict 是否严格按key顺序提取到最后一层
      * @return Object
@@ -3304,7 +3304,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 在key列基础上 +value,如果原来没有key列则默认0并put到target
+     * 在key列基础上 +value, 如果原来没有key列则默认0并put到target
      * 如果target与key一致则覆盖原值
      * @param target 计算结果key
      * @param key key
@@ -3472,21 +3472,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 除法，涉及到小数位与舍入问题可以提供scale,mode参数
-     * @param target 结果保存位置,如果与key一致则覆盖原值
+     * 除法，涉及到小数位与舍入问题可以提供scale, mode参数
+     * @param target 结果保存位置, 如果与key一致则覆盖原值
      * @param key 属性
      * @param scale 小数位
      * @param round 舍入模式 参考BigDecimal静态常量
      *       ROUND_UP        = 0 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4<br/>
-     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3<br/>
-     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
-     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
+     *       ROUND_DOWN      = 1 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1, 即截短). 如:2.36 转成 2.3<br/>
+     *       ROUND_CEILING   = 2 接近正无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_UP 相同 如果为负, 则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集<br/>
+     *       ROUND_FLOOR     = 3 接近负无穷大的舍入模式 如果 BigDecimal 为正, 则舍入行为与 ROUND_DOWN 相同 如果为负, 则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反<br/>
      *       ROUND_HALF_UP   = 4 四舍五入<br/>
      *       ROUND_HALF_DOWN = 5 五舍六入<br/>
      *       ROUND_HALF_EVEN = 6 四舍六入 五留双(银行家舍入法) <br/>
-     *         如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
-     *         如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
-     *         如:1.15 转成 1.2,因为5前面的1是奇数;1.25 转成 1.2,因为5前面的2是偶数<br/>
+     *         如果舍弃部分左边的数字为奇数, 则舍入行为与 ROUND_HALF_UP 相同（四舍五入）<br/>
+     *         如果为偶数, 则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入）<br/>
+     *         如:1.15 转成 1.2, 因为5前面的1是奇数;1.25 转成 1.2, 因为5前面的2是偶数<br/>
      *      ROUND_UNNECESSARY=7 断言所请求的操作具有准确的结果，因此不需要舍入。如果在产生不精确结果的操作上指定了该舍入模式，则会抛出ArithmeticException异常
      * @return DataRow
      */
@@ -3677,7 +3677,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return DataRow.this;
         }
         /**
-         * 根据数据类型日期格式化 ,如果失败 默认 ""<br/>
+         * 根据数据类型日期格式化,如果失败 默认 ""<br/>
          * 如set.format.date("yyyy-MM-dd", Date.class);
          * @param format 日期格式
          * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
@@ -3837,7 +3837,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return DataRow.this;
         }
         /**
-         * 根据数据类型数字格式化 ,如果失败 默认 ""<br/>
+         * 根据数据类型数字格式化,如果失败 默认 ""<br/>
          * 如set.format.number("##.00", Date.class);
          * @param format 数字格式
          * @param classes 数据类型(包括java和sql类型;不区分大小写),不指定则不执行(避免传参失败)<br/>
@@ -3954,7 +3954,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     if(tmps.length > 2){
                         def =col.replace(src+":"+tar+":", "").trim();
                     }
-                    numberParse(src, tar,  def);
+                    numberParse(src, tar, def);
                 }
             }
             return DataRow.this;

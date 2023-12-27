@@ -44,12 +44,12 @@ public class StyleParser {
                 }
                 key = key.trim();
                 value = value.trim();
-                String[] keys = key.split(",");
+                String[] keys = key.split(", ");
                 for (String k : keys) {
                     k = k.trim();
                     Map<String, String> tmps = parse(value);
-                    tmps = join(styles.get(k),tmps, true);
-                    styles.put(k,tmps);
+                    tmps = join(styles.get(k), tmps, true);
+                    styles.put(k, tmps);
                 }
             }
         }
@@ -104,7 +104,7 @@ public class StyleParser {
                         ){
                             v = v.replace("solid", "single");
                             if("none".equalsIgnoreCase(v)){
-                                styles.put(k,v);
+                                styles.put(k, v);
                                 removeBorder(k, styles);
                             }else {
                                 String[] vs = v.split(" ");
@@ -215,11 +215,11 @@ public class StyleParser {
         return src;
     }
     public static Map<String, String> removeBorder(String side, Map<String, String> styles){
-        side = side.replace("border-","");
+        side = side.replace("border-", "");
         styles.remove("border-"+side+"-width");
         styles.remove("border-"+side+"-style");
         styles.remove("border-"+side+"-color");
-        styles.put("border-"+side,"none");
+        styles.put("border-"+side, "none");
         return styles;
     }
     public static Map<String, String> removeBorder(Map<String, String> styles){

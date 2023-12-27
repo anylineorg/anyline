@@ -49,8 +49,8 @@ import java.util.List;
 public interface DMListener {
 
     /**
-     * 创建查相关的SQL之前调用,包括slect exists count等<br/>
-     * 要修改查询条件可以在这一步实现,注意不是在beforeQuery
+     * 创建查相关的SQL之前调用, 包括slect exists count等<br/>
+     * 要修改查询条件可以在这一步实现, 注意不是在beforeQuery
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
@@ -176,11 +176,11 @@ public interface DMListener {
 
     /**
      * 创建更新相关的SQL之前调用<br/>
-     * 要修改更新内容或条件可以在这一步实现,注意不是在beforeUpdate
+     * 要修改更新内容或条件可以在这一步实现, 注意不是在beforeUpdate
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj Entity或DtaRow
      * @param columns 需要更新的列
      * @param configs 更新条件
@@ -197,7 +197,7 @@ public interface DMListener {
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 更新内容
      * @param columns 需要更新的列
      * @return 是否执行  如果返回false 将不执行更新
@@ -212,7 +212,7 @@ public interface DMListener {
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @param count 影响行数
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 更新内容
      * @param success SQL是否成功执行
      * @param qty 景程行数，如果执行不成功返回-1
@@ -225,11 +225,11 @@ public interface DMListener {
 
     /**
      * 创建插入相关的SQL之前调用<br/>
-     * 要修改插入内容可以在这一步实现,注意不是在beforeInsert
+     * 要修改插入内容可以在这一步实现, 注意不是在beforeInsert
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 实体
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return SWITCH
@@ -242,7 +242,7 @@ public interface DMListener {
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的SQL以及占位参数值
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 接入内容
      * @param columns 需要插入的列
      * @return SWITCH
@@ -257,7 +257,7 @@ public interface DMListener {
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param run 包含最终执行的SQL以及占位参数值
      * @param count 影响行数
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 接入内容
      * @param success SQL是否成功执行
      * @param columns 需要插入的列
@@ -344,21 +344,21 @@ public interface DMListener {
     default SWITCH afterQuery(DataRuntime runtime, String random, Procedure procedure, boolean success, DataSet set, long millis){return SWITCH.CONTINUE;}
 
     /**
-     * 创建删除SQL前调用(DataRuntime runtime, String random, 根据Entity/DataRow),修改删除条件可以在这一步实现<br/>
+     * 创建删除SQL前调用(DataRuntime runtime, String random, 根据Entity/DataRow), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
      * service.delete(DataRuntime runtime, String random, DataRow/Entity){return SWITCH.CONTINUE;}
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+     * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj entity或DataRow
      * @param columns 删除条件的我
      * @return SWITCH
      */
     default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
     /**
-     * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件),修改删除条件可以在这一步实现<br/>
+     * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
      * service.delete(DataRuntime runtime, String random, "CRM_USER", "ID", "1", "2", "3"){return SWITCH.CONTINUE;}

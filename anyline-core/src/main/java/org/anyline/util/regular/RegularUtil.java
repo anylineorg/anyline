@@ -39,7 +39,7 @@ public class RegularUtil {
 	public static Regular regularMatchPrefix 	= new RegularMatchPrefix();		// 前缀匹配模式
 	public static Regular regularContain 		= new RegularContain();			// 包含匹配模式
 
-	private static final Map<Regular.MATCH_MODE,Regular> regularList = new HashMap<Regular.MATCH_MODE,Regular>();
+	private static final Map<Regular.MATCH_MODE, Regular> regularList = new HashMap<Regular.MATCH_MODE, Regular>();
 	public static final String REGEX_VARIABLE = "${(\\w+)}";		// 变量{ID}
 
 	public static final String TAG_BEGIN = "${begin}";
@@ -54,7 +54,7 @@ public class RegularUtil {
 	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode){
 		boolean result = false;
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.info("[match][src:{}][regx:{}][mode:{}]",src, regx, mode);
+			log.info("[match][src:{}][regx:{}][mode:{}]", src, regx, mode);
 		}
 		if(null == src || null == regx ){
 			return result;
@@ -63,7 +63,7 @@ public class RegularUtil {
 		try{
 			result = regular.match(src, regx);
 		}catch(Exception e){
-			log.warn("[match(src,regx,mode) error][src:{}][regx:{}][mode:{}]", src, regx, mode);
+			log.warn("[match(src, regx, mode) error][src:{}][regx:{}][mode:{}]", src, regx, mode);
 			e.printStackTrace();
 		}
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
@@ -109,9 +109,9 @@ public class RegularUtil {
 	}
 	public static List<String> filter(List<String> src, String regx, Regular.MATCH_MODE mode, Regular.FILTER_TYPE type){
 		if(Regular.FILTER_TYPE.PICK == type){
-			return pick(src,regx,mode);
+			return pick(src, regx, mode);
 		}else if(Regular.FILTER_TYPE.WIPE == type){
-			return wipe(src,regx,mode);
+			return wipe(src, regx, mode);
 		}else{
 			return new ArrayList<>();
 		}
@@ -168,7 +168,7 @@ public class RegularUtil {
 		return idx;
 	}
 	public static int indexOf(String src, String regx){
-		return indexOf(src,regx,0);
+		return indexOf(src, regx, 0);
 	}
 	/**
 	 * 表达式匹配值长度
@@ -192,7 +192,7 @@ public class RegularUtil {
 	}
 	/**
 	 * 删除所有 包含attribute属性 的标签 连同标签体一起删除<br/>
-	 * RegularUtil.removeTagWithBodyByAttribute(str,"class")<br/>
+	 * RegularUtil.removeTagWithBodyByAttribute(str, "class")<br/>
 	 * &lt;input type="text" class="a"/&gt;<br/>
 	 * &lt;input type="text" class="a"&gt;&lt;/input&gt;<br/>
 	 * &lt;input type="text" class = "a"&gt;&lt;/input&gt;<br/>
@@ -216,7 +216,7 @@ public class RegularUtil {
 	}
 	/**
 	 * 删除所有 包含attribute属性=value值  的标签连同标签体一起删除<br/>
-	 * RegularUtil.removeTagWithBodyByAttributeValue(s,"class","a")<br/>
+	 * RegularUtil.removeTagWithBodyByAttributeValue(s, "class", "a")<br/>
 	 * &lt;input type="text" class="a"/&gt;<br/>
 	 * &lt;input type="text" class="a"/&gt;&lt;/input/&gt;<br/>
 	 * &lt;input type="text" class="a b"/&gt;&lt;/input/&gt;如果需要不匹配可以使用"[^\\s]a[^\\s]"<br/>
@@ -241,7 +241,7 @@ public class RegularUtil {
 	}
 
 	/**
-	 * 根据属性名与属性值 删除标签(只删除标签,保留标签体)
+	 * 根据属性名与属性值 删除标签(只删除标签, 保留标签体)
 	 * @param src xml/html
 	 * @param attribute 属性名
 	 * @param value 属性值
@@ -251,7 +251,7 @@ public class RegularUtil {
 		if(null == src || null == attribute || null == value){
 			return src;
 		}
-		//[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
+		//[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称]
 		List<List<String>> lists = getTagWithBodyByAttributeValue(src, attribute, value);
 		for(List<String> list:lists){
 			String all = list.get(0);
@@ -261,7 +261,7 @@ public class RegularUtil {
 		return src;
 	}
 	/**
-	 * 根据属性名 删除标签(只删除标签,保留标签体)
+	 * 根据属性名 删除标签(只删除标签, 保留标签体)
 	 * @param src xml/html
 	 * @param attribute 属性名
 	 * @return String
@@ -271,7 +271,7 @@ public class RegularUtil {
 			return src;
 		}
 		List<List<String>> lists = getTagWithBodyByAttribute(src, attribute);
-		//[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
+		//[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称]
 		for(List<String> list:lists){
 			String all = list.get(0);
 			String body = list.get(3);
@@ -282,9 +282,9 @@ public class RegularUtil {
 
 
 	/**
-	 * 获取所有 包含attribute属性 的标签与标签体,不支持相同标签嵌套<br/>
+	 * 获取所有 包含attribute属性 的标签与标签体, 不支持相同标签嵌套<br/>
 	 * [<br/>
-	 * 	[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称],<br/>
+	 * 	[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称], <br/>
 	 * 	[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称]<br/>
 	 * ]<br/>
 	 * @param src xml/html
@@ -310,7 +310,7 @@ public class RegularUtil {
 			if(!start.endsWith("/>")){
 				end = "</" + name + ">";
 				int fr = idx+start.length();
-				int to = src.indexOf(end,idx+start.length());
+				int to = src.indexOf(end, idx+start.length());
 				if(to > fr) {
 					body = src.substring(fr, to);
 					if(body.contains(end)){
@@ -338,12 +338,12 @@ public class RegularUtil {
 
 	/**
 	 * 获取所有 包含attribute属性并且值=value  的标签与标签体<br/>
-	 * 单标签只匹配有/&gt;结尾的情况,避免与双标签的开始标签混淆<br/>
+	 * 单标签只匹配有/&gt;结尾的情况, 避免与双标签的开始标签混淆<br/>
 	 * 如class="a" : attribute=class value=a<br/>
 	 * style="width:100px;" :attribute=style value=width<br/>
 	 * [<br/>
-	 * 	[整个标签含标签体,开始标签,结束标签,标签体,标签名称],<br/>
-	 * 	[整个标签含标签体,开始标签,结束标签,标签体,标签名称]<br/>
+	 * 	[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称], <br/>
+	 * 	[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称]<br/>
 	 * ]<br/>
 	 * @param src xml/html
 	 * @param attribute 属性
@@ -361,9 +361,9 @@ public class RegularUtil {
 			List<String> item = new ArrayList<>();
 			String all = tmp.get(0);
 			String name = tmp.get(1);
-			String start = all.substring(0,all.indexOf(">")+1);
+			String start = all.substring(0, all.indexOf(">")+1);
 			String end = "</" + name + ">";
-			String body = cut(all, start,end);
+			String body = cut(all, start, end);
 			item.add(all);
 			item.add(start);
 			item.add(end);
@@ -415,7 +415,7 @@ public class RegularUtil {
 
 
 	/**
-	 * 清除所有标签(只清除标签,不清除标签体)
+	 * 清除所有标签(只清除标签, 不清除标签体)
 	 * @param src xml/html
 	 * @param tags tags
 	 * @return String
@@ -440,7 +440,7 @@ public class RegularUtil {
 	/**
 	 * 删除标签及标签体
 	 * @param src xml/html
-	 * @param tags 标签,如果不提供则删除所有标签
+	 * @param tags 标签, 如果不提供则删除所有标签
 	 * @return String
 	 */
 	public static String removeTagWithBody(String src, String ...tags){
@@ -484,7 +484,7 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeHtmlTagExceptSimple(String src){
-		return removeHtmlTagExcept(src,"br","b","strong","u","i","pre","ul","li","p");
+		return removeHtmlTagExcept(src, "br", "b", "strong", "u", "i", "pre", "ul", "li", "p");
 	}
 
 	/**
@@ -501,17 +501,17 @@ public class RegularUtil {
 		if(null != attributes && attributes.length > 0){
 			for(String attribute:attributes){
 				reg = attribute + "\\s*=\\s*\"[\\s\\S]*\"";
-				src = src.replaceAll(reg,"");
+				src = src.replaceAll(reg, "");
 				reg = attribute + "\\s*=\\s*\'[\\s\\S]*\'";
-				src = src.replaceAll(reg,"");
-				src = src.replaceAll("\\s+>",">");
+				src = src.replaceAll(reg, "");
+				src = src.replaceAll("\\s+>", ">");
 			}
 		}else{
 			reg = "\\S+?\\s*?=\\s*?\"[\\s\\S]*?\"";
-			src = src.replaceAll(reg,"");
+			src = src.replaceAll(reg, "");
 			reg = "\\S+?\\s*?=\\s*?\'[\\s\\S]*?\'";
-			src = src.replaceAll(reg,"");
-			src = src.replaceAll("\\s+?>",">");
+			src = src.replaceAll(reg, "");
+			src = src.replaceAll("\\s+?>", ">");
 		}
 		return src;
 	}
@@ -536,7 +536,7 @@ public class RegularUtil {
 	}
 	public static List<String> fetchNumbers(String src) throws Exception{
 		List<String> numbers = null;
-		numbers = fetch(src, "(\\-|\\+)?\\d+(\\.\\d+)?", Regular.MATCH_MODE.CONTAIN,0);
+		numbers = fetch(src, "(\\-|\\+)?\\d+(\\.\\d+)?", Regular.MATCH_MODE.CONTAIN, 0);
 		return numbers;
 	}
 	public static String fetchNumber(String src) throws Exception{
@@ -548,13 +548,13 @@ public class RegularUtil {
 	}
 	/**
 	 * 提取双标签&lt;div&gt;content&lt;div&gt;
-	 * 依次取出p, table,div中的内容 有嵌套时只取外层
-	 * 只能提取同时有 开始结束标签的内容,不能提取单标签内容如&lt;img&gt; &lt;br/&gt;
-	 * 支持不同标签嵌套,但不支持相同标签嵌套
+	 * 依次取出p, table, div中的内容 有嵌套时只取外层
+	 * 只能提取同时有 开始结束标签的内容, 不能提取单标签内容如&lt;img&gt; &lt;br/&gt;
+	 * 支持不同标签嵌套, 但不支持相同标签嵌套
 	 * 不区分大小写
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签
 	 * @param txt text
-	 * @param tags 标签名,如div,span tags标签名,如div,span
+	 * @param tags 标签名, 如div, span tags标签名, 如div, span
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
@@ -583,7 +583,7 @@ public class RegularUtil {
 	 * 不区分大小写
 	 * 0:全文 1::标签name
 	 * @param txt text
-	 * @param tags 标签名,如img br
+	 * @param tags 标签名, 如img br
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
@@ -653,7 +653,7 @@ public class RegularUtil {
 	/**
 	 * 取出所有属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
-	 * fetchAttributeValues(txt,"id");
+	 * fetchAttributeValues(txt, "id");
 	 * @param txt txt
 	 * @param attribute 属性
 	 * @return List
@@ -671,7 +671,7 @@ public class RegularUtil {
 	/**
 	 * 取出属性及属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
-	 * fetchAttributeValues(txt,"id","name");
+	 * fetchAttributeValues(txt, "id", "name");
 	 * @param txt txt
 	 * @param attribute 属性
 	 * @return List
@@ -762,7 +762,7 @@ public class RegularUtil {
 				_to = text.length();
 				toLength = 0;
 			}else{
-				_to = text.indexOf(toTag,_fr+frLength);
+				_to = text.indexOf(toTag, _fr+frLength);
 				toLength = toTag.length();
 			}
 		}
@@ -772,9 +772,9 @@ public class RegularUtil {
 		String result = null;
 		if(contains){
 			_fr = text.indexOf(tags[0]);
-			result = text.substring(_fr,_to+toLength);
+			result = text.substring(_fr, _to+toLength);
 		}else{
-			result = text.substring(_fr+frLength,_to);
+			result = text.substring(_fr+frLength, _to);
 		}
 		return result;
 	}
@@ -785,7 +785,7 @@ public class RegularUtil {
 	public static List<String> cuts(String text, boolean contains, String ... tags){
 		List<String> list = new ArrayList<>();
 		while(true){
-			String item = cut(text,contains, tags);
+			String item = cut(text, contains, tags);
 			if(null == item){
 				break;
 			}else{

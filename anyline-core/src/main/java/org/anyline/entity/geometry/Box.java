@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -71,7 +71,7 @@ public class Box extends Geometry{
         }
         builder.append("(");
         builder.append(p1.toString(false));
-        builder.append(",");
+        builder.append(", ");
         builder.append(p2.toString(false));
         builder.append(")");
         return builder.toString();
@@ -88,7 +88,7 @@ public class Box extends Geometry{
             builder.append("(");
         }
         builder.append(p1.sql(false, false));
-        builder.append(",");
+        builder.append(", ");
         builder.append(p2.sql(false, false));
         if(bracket){
             builder.append(")");

@@ -52,8 +52,8 @@ public class DefaultSQLStore extends SQLStore {
 	protected DefaultSQLStore() {
 	}
 
-	private static String root; //sql目录 多个以,分隔 .表示项目当前目录 ${classpath}表示classes目录
-	private static String[] cuts = "sql,classes".split(",");
+	private static String root; //sql目录 多个以, 分隔 .表示项目当前目录 ${classpath}表示classes目录
+	private static String[] cuts = "sql, classes".split(", ");
 	private static long lastLoadTime = 0;
 
 	static {
@@ -74,11 +74,11 @@ public class DefaultSQLStore extends SQLStore {
 			root = root.replace("${libpath}", ConfigTable.getLibPath());
 			root = root.replace("{libpath}", ConfigTable.getLibPath());
 		}
-		root = root.replace("/",FileUtil.getFileSeparator());
-		root = root.replace("\\",FileUtil.getFileSeparator());
-		root = root.replace("//",FileUtil.getFileSeparator());
-		root = root.replace("\\\\",FileUtil.getFileSeparator());
-		String[] dirs = root.split(",");
+		root = root.replace("/", FileUtil.getFileSeparator());
+		root = root.replace("\\", FileUtil.getFileSeparator());
+		root = root.replace("//", FileUtil.getFileSeparator());
+		root = root.replace("\\\\", FileUtil.getFileSeparator());
+		String[] dirs = root.split(", ");
 		for(String dir:dirs) {
 			if(dir.startsWith(".")){
 				dir = FileUtil.merge(ConfigTable.getRoot(), dir.substring(1));
@@ -97,7 +97,7 @@ public class DefaultSQLStore extends SQLStore {
 			String sub = path.substring(path.indexOf("jar!")+4).replace("!/", "") + FileUtil.getFileSeparator();
 			sub = sub.toLowerCase();
  			//sub:  \BOOT-INF\classes!\sql\
-			sub = sub.replace("!","");
+			sub = sub.replace("!", "");
 			if(sub.startsWith("/") || sub.startsWith("\\")){
 				sub = sub.substring(1);
 			}
@@ -156,7 +156,7 @@ public class DefaultSQLStore extends SQLStore {
 	}
 	/**
 	 * 解析目录或文件或jar
-	 * 遇到二级jar map中添加两个 一个带二级jar前缀 一个不带 遇到重名标记重复,调用时抛出异常,需要添加jar前缀才可以定位到
+	 * 遇到二级jar map中添加两个 一个带二级jar前缀 一个不带 遇到重名标记重复, 调用时抛出异常, 需要添加jar前缀才可以定位到
 	 * @param file xml或目录或jar或jar/jar
 	 */
 	private static synchronized void parseFile(File file) {
@@ -191,7 +191,7 @@ public class DefaultSQLStore extends SQLStore {
 		String result = null;
 		String prefix = path;
 		if(null != root) {
-			String[] dirs = root.split(",");
+			String[] dirs = root.split(", ");
 			for(String dir:dirs){
 				if(prefix.startsWith(dir)) {
 					prefix = prefix.replace(dir, "");
@@ -216,7 +216,7 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		result = prefix;
 		if(null != parent){
-			result += "," + parent + "." + prefix;
+			result += ", " + parent + "." + prefix;
 		}
 		return result;
 	}
@@ -287,7 +287,7 @@ public class DefaultSQLStore extends SQLStore {
 	}
 	/**
      * 解析SQL
-	 * @param prefix 用来标记SQL.ID(需要多个前缀的以,分隔)如 crm.hr.user.f1:USER_LIST  prefix = crm.hr.user.f1
+	 * @param prefix 用来标记SQL.ID(需要多个前缀的以, 分隔)如 crm.hr.user.f1:USER_LIST  prefix = crm.hr.user.f1
 	 * @param content 文件内容
 	 */
 	private static void parseXML(String prefix, String content) {
@@ -304,7 +304,7 @@ public class DefaultSQLStore extends SQLStore {
 			prepares = parseXML(prefix, root);
 		}
 		for(RunPrepare prepare:prepares){
-			String[] prefixs = prefix.split(",");
+			String[] prefixs = prefix.split(", ");
 			for(String _prefix:prefixs) {
 				String sqlId = _prefix + ":" + prepare.getId();
 				prepare.setDataSource(sqlId);

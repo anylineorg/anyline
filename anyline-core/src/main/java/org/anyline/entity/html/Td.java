@@ -33,7 +33,7 @@ public class Td {
     private int rowspan = 1;
     private String clazz = null;
     private int merge = -1; // -1 不合并 1:合并 2:被合并
-    private int offset = 0; // 向右偏移(前一列被上一行合并后,当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
+    private int offset = 0; // 向右偏移(前一列被上一行合并后, 当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
     private boolean remove = false;
     private String width;
     private boolean isMerge = false;
@@ -524,9 +524,9 @@ public class Td {
         return this;
     }
     public Td setBorder(String side, String width, String color, String style){
-        styles.put("border-"+side+"-style",style);
-        styles.put("border-"+side+"-color",color);
-        styles.put("border-"+side+"-width",width);
+        styles.put("border-"+side+"-style", style);
+        styles.put("border-"+side+"-color", color);
+        styles.put("border-"+side+"-width", width);
         return this;
     }
     public Td setBorder(String side, int width, String color, String style){
@@ -612,7 +612,7 @@ public class Td {
      */
     public Td setBold(boolean bold){
         if(bold){
-            styles.put("font-weight","700");
+            styles.put("font-weight", "700");
         }else{
             styles.remove("font-weight");
         }
@@ -630,7 +630,7 @@ public class Td {
      */
     public Td setUnderline(boolean underline){
         if(underline){
-            styles.put("underline","true");
+            styles.put("underline", "true");
         }else{
             styles.remove("underline");
         }
@@ -648,7 +648,7 @@ public class Td {
      */
     public Td setStrike(boolean strike){
         if(strike){
-            styles.put("strike","true");
+            styles.put("strike", "true");
         }else{
             styles.remove("");
         }
@@ -665,7 +665,7 @@ public class Td {
     }
     public Td setDelete(boolean strike){
         if(strike){
-            styles.put("strike","true");
+            styles.put("strike", "true");
         }else{
             styles.remove("");
         }

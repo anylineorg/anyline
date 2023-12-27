@@ -165,7 +165,8 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				String static_value = null;
 				if(v instanceof String){
 					String str = (String)v;
-					if(str.startsWith("${") && str.endsWith("}")){
+					//if(str.startsWith("${") && str.endsWith("}")){
+					if(BasicUtil.checkEl(str)){
 						static_value = str.substring(2, str.length() - 1);
 					}
 				}
@@ -224,7 +225,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 				builder.append(compare.getSQL());
 			}else if(compareCode == 80){ 							// BETWEEN ? AND ?
 				builder.append(compare.getSQL());
-			}else if(compareCode == 40 || compareCode == 140){		// IN(?,?,?)
+			}else if(compareCode == 40 || compareCode == 140){		// IN(?, ?, ?)
 				runtime.getAdapter().createConditionIn(runtime, builder, compare, val);
 			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
 					|| (compareCode >= 150 && compareCode <= 152)){ // NOT LIKE ?
@@ -277,7 +278,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}
 		return value; 
 	} 
-	@SuppressWarnings({"unchecked", "rawtypes" }) 
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	public List<Object> getValues(Object src){
 		List<Object> values = new ArrayList<Object>(); 
 		if(null != src){
@@ -338,7 +339,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		return this;
 	}
 	public String toString(){
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("join", this.getJoin());
 		map.put("column", column);
 		map.put("compare", compare.getName());

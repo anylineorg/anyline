@@ -161,7 +161,7 @@ public class HttpUtil {
 		return get(url, "UTF-8");
 	} 
 	public static HttpResponse get(String url, String charset) {
-		return get(url, charset, new HashMap<String,Object>());
+		return get(url, charset, new HashMap<String, Object>());
 	} 
 	public static HttpResponse get(String url, String charset, Map<String, Object> params) {
 		return get(null, url, charset, params);
@@ -250,18 +250,18 @@ public class HttpUtil {
 	public static DownloadTask download(String url, File dst){
 		return download(url, dst, null, null, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String, String> headers,Map<String,Object> params){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params){
 		File file = new File(dest);
 		return download(url, file, headers, params, false);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String, String> headers,Map<String,Object> params){
+	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params){
 		return download(url, dst, headers, params, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String, String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override){
 		File file = new File(dest);
 		return download(url, file, headers, params, override);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String, String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override){
 		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){
@@ -270,11 +270,11 @@ public class HttpUtil {
 	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){
 		return download(progress, url, dst, null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String, String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override){
 		return download(progress, url, new File(dest), headers, params, override);
 	}
 
-	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String, String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override){
 		DownloadTask task = new DownloadTask(); 
 		task.setProgress(progress); 
 		task.setLocal(dst); 
@@ -286,14 +286,14 @@ public class HttpUtil {
 		return task; 
 	} 
 
-	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, String> headers, Map<String,Object> params){
-		return upload(url, files, "UTF-8", headers, params); 
+	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, String> headers, Map<String, Object> params){
+		return upload(url, files, "UTF-8", headers, params);
 	} 
 	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, Object> params) {
-		return upload( url, files, null, params); 
+		return upload( url, files, null, params);
 	} 
 	public static HttpResponse upload(String url, Map<String, Object> files) {
-		return upload(url, files, null, null); 
+		return upload(url, files, null, null);
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class HttpUtil {
 	 * @param params
 	 * @return HttpResponse
 	 */
-	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String,Object> params){
+	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String, Object> params){
 		return HttpBuilder.init()
 				.setUrl(url)
 				.setCharset(charset)
@@ -402,7 +402,7 @@ public class HttpUtil {
 		if(null == url){
 			return null;
 		}
-		url = url.replace("http://","").replace("https://","");
+		url = url.replace("http://", "").replace("https://", "");
 		if (url.contains(":")){
 			url = url.substring(0, url.indexOf(":"));
 		}
@@ -541,7 +541,7 @@ public class HttpUtil {
 	 * @param params  params
 	 * @return String
 	 */
-	public static String mergeParam(String url, Map<String,Object> params){
+	public static String mergeParam(String url, Map<String, Object> params){
 		if(BasicUtil.isEmpty(params)){
 			return url;
 		}
@@ -562,7 +562,7 @@ public class HttpUtil {
 		}
 		return url;
 	}
-	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params, ContentType contetType){
+	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String, Object> params, ContentType contetType){
 		if(null != params){
 			String txt = BeanUtil.map2string(params);
 			String[] kvs = txt.split("&");
@@ -609,7 +609,7 @@ public class HttpUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static List<NameValuePair> packNameValuePair(Map<String,Object> params){
+	public static List<NameValuePair> packNameValuePair(Map<String, Object> params){
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		if (null != params) {
 			Iterator<String> keys = params.keySet().iterator();
@@ -627,7 +627,7 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val));
 						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
-							log.info("[request param][{}={}]", key, BasicUtil.cut(val,0,20));
+							log.info("[request param][{}={}]", key, BasicUtil.cut(val, 0, 20));
 						}
 					}
 				}else if(value instanceof Collection){
@@ -638,13 +638,13 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
 						if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
-							log.info("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
+							log.info("[request param][{}={}]", key, BasicUtil.cut(val.toString(), 0, 20));
 						}
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
 					if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
-						log.info("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
+						log.info("[request param][{}={}]", key, BasicUtil.cut(value.toString(), 0, 20));
 					}
 				}
 			}
@@ -696,10 +696,10 @@ public class HttpUtil {
 			}
 			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
-			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信
-			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
-			// STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols, null,
+			// ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证, 允许和所有的host建立SSL通信
+			// BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略, 即通配符能够匹配所有子域名
+			// STRICT_HOSTNAME_VERIFIER  严格匹配模式, hostname必须匹配第一个CN或者任何一个subject-alts
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}catch(Exception e){
@@ -757,10 +757,10 @@ public class HttpUtil {
 		}else{
 			String result = src;
 			result = result
-					.replace(" ","")
-					.replace("\n","")
-					.replace("\r","")
-					.replace("\t","")
+					.replace(" ", "")
+					.replace("\n", "")
+					.replace("\r", "")
+					.replace("\t", "")
 					.replace("~", "%7E")
 					.replace("!", "%21")
 					.replace("@", "%40")
@@ -780,7 +780,7 @@ public class HttpUtil {
 					.replace("]", "%5D")
 					.replace("<", "%3C")
 					.replace(">", "%3E")
-					.replace(",", "%2C")
+					.replace(", ", "%2C")
 					.replace("/", "%2F")
 					.replace("\\", "%5C")
 					.replace("?", "%3F")

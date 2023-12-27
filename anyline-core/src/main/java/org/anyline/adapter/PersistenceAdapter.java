@@ -44,7 +44,7 @@ public class PersistenceAdapter {
          */
         OneToMany join = new OneToMany();
         join.joinColumn = ClassUtil.parseAnnotationFieldValue(field, "OneToMany.mappedBy");
-        join.dependencyClass = ClassUtil.getComponentClass(field);;
+        join.dependencyClass = ClassUtil.getComponentClass(field);
         join.joinField = ClassUtil.getField(join.dependencyClass, join.joinColumn);
         if(null == join.joinField){
             //提供的是列名
@@ -52,7 +52,7 @@ public class PersistenceAdapter {
         }
         //检测joinField对应的列表
         if(null != join.joinField){
-            Column column = EntityAdapterProxy.column(join.dependencyClass,join.joinField);
+            Column column = EntityAdapterProxy.column(join.dependencyClass, join.joinField);
             if(null != column){
                 join.joinColumn = column.getName();
             }
@@ -68,15 +68,15 @@ public class PersistenceAdapter {
          *     //多对多关系  一个在多个部门任职
          *     @ManyToMany
          *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
-         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
-         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
+         *            , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+         *            , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
          *     private List<Department> departments;//查部门完整信息
          *
          *
          *     @ManyToMany
          *     @JoinTable(name = "HR_EMPLOYEE_DEPARTMENT"                          //中间关联表
-         *             , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
-         *             , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
+         *            , joinColumns = @JoinColumn(name="EMPLOYEE_ID")             //关联表中与当前表关联的外键
+         *            , inverseJoinColumns = @JoinColumn(name="DEPARTMENT_ID"))   //关联表中与当前表关联的外键
          *     @Transient
          *     private List<Long> departmentIds;//只查部门主键
          * */
