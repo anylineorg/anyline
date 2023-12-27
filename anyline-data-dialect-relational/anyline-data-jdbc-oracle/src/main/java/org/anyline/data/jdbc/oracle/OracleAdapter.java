@@ -112,7 +112,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 			String version = runtime.getVersion();
 			//Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
 			if(null != version ){
-				version = RegularUtil.cut(version, "release", "-");
+				version = RegularUtil.cut(version, "release","-");
 				if(null != version){
 					//11.2.0.1.0
 					version = version.split("\\.")[0];
@@ -268,7 +268,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**
@@ -1651,7 +1651,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @param strut 是否查询表结构
 	 * @return List
 	 * @param <T> Table
@@ -1687,7 +1687,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return String
 	 */
 	@Override
@@ -1703,7 +1703,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return String
 	 */
 	@Override
@@ -1755,7 +1755,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1774,7 +1774,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1888,7 +1888,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return List
 	 * @param <T> View
 	 */
@@ -1904,7 +1904,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return List
 	 */
 	@Override
@@ -1939,7 +1939,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return views
 	 * @throws Exception 异常
 	 */
@@ -2014,7 +2014,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
 	 * @return List
 	 * @param <T> MasterTable
 	 */

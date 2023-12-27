@@ -185,7 +185,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             //正常插入
             builder.append("INSERT INTO ");
             delimiter(builder, dest).append(" (");
-            builder.append(concat("", ", ", Column.names(columns)));
+            builder.append(concat("",", ", Column.names(columns)));
             builder.append(") \n");
             builder.append(select);
         }else{
@@ -263,7 +263,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             boolean start = true;
             for (Column column : columns.values()) {
                 if (!start) {
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 start = false;
                 String key = column.getName();
@@ -313,7 +313,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      */
     @Override
     public String batchInsertSeparator (){
-        return ", ";
+        return ",";
     }
 
     /**
@@ -747,7 +747,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             boolean first = true;
             for (String name : names) {
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 first = false;
                 builder.append(name).append(".").append(key).append(" AS ").append(name);
@@ -965,7 +965,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run){
         String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
         return sql;
     }
 
@@ -1753,7 +1753,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @param strut 是否查询表结构
      * @return List
      * @param <T> Table
@@ -1789,7 +1789,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return String
      */
     @Override
@@ -1860,7 +1860,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return String
      */
     @Override
@@ -1923,7 +1923,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return tables
      * @throws Exception 异常
      */
@@ -1942,7 +1942,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return tables
      * @throws Exception 异常
      */
@@ -2056,7 +2056,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return List
      * @param <T> View
      */
@@ -2072,7 +2072,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return List
      */
     @Override
@@ -2131,7 +2131,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return views
      * @throws Exception 异常
      */
@@ -2206,7 +2206,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+     * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
      * @return List
      * @param <T> MasterTable
      */
@@ -6442,7 +6442,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         builder.append("USING (\n");
         builder.append(select);
         builder.append(") D ON(");
-        builder.append(concatEqual("D", "M", "AND", bys)).append(")\n");
+        builder.append(concatEqual("D","M","AND", bys)).append(")\n");
         //不存的正常插入
         builder.append("WHEN NOT MATCHED THEN \n");
         builder.append("INSERT(");
@@ -6455,7 +6455,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             builder.append("WHEN MATCHED THEN \n");
             List<String> cols = Column.names(columns);
             cols.removeAll(bys);//不更新主键
-            builder.append("UPDATE SET ").append(concatEqual("M","D", ",", cols));
+            builder.append("UPDATE SET ").append(concatEqual("M","D",",", cols));
         }
     }
 
@@ -6467,7 +6467,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             String key = column.getName();
             Sequence seq = sequens.get(key);
             if(!start){
-                builder.append(", ");
+                builder.append(",");
             }
             start = false;
             if(null != seq){

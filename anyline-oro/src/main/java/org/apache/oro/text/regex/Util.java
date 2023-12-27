@@ -26,7 +26,7 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation","Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
@@ -129,12 +129,12 @@ public final class Util {
    * method creates additional list elements from each of the matching
    * subgroups in the pattern.  In other words:
    * <ul><p>
-   * <code>split(list, "/([,-])/", "8-12,15,18", Util.SPLIT_ALL)</code></ul>
+   * <code>split(list, "/([,-])/","8-12,15,18", Util.SPLIT_ALL)</code></ul>
    * <p> produces the list containing:
-   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8","-","12",",","15",",","18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following list would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
+   * <ul><p><code> {"8","12","15","18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -191,12 +191,12 @@ public final class Util {
    * In Perl, if the split expression contains parentheses, the split()
    * method creates additional list elements from each of the matching
    * subgroups in the pattern.  In other words:
-   * <ul><p><code>split(list, "/([,-])/", "8-12,15,18")</code></ul>
+   * <ul><p><code>split(list, "/([,-])/","8-12,15,18")</code></ul>
    * <p> produces the list containing: 
-   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8","-","12",",","15",",","18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following list would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
+   * <ul><p><code> {"8","12","15","18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -235,12 +235,12 @@ public final class Util {
    * In Perl, if the split expression contains parentheses, the split()
    * method creates additional list elements from each of the matching
    * subgroups in the pattern.  In other words:
-   * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
+   * <ul><p><code>split("/([,-])/","8-12,15,18")</code></ul>
    * <p> produces the Vector containing:
-   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8","-","12",",","15",",","18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following Vector would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
+   * <ul><p><code> {"8","12","15","18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>
@@ -287,12 +287,12 @@ public final class Util {
    * In Perl, if the split expression contains parentheses, the split()
    * method creates additional list elements from each of the matching
    * subgroups in the pattern.  In other words:
-   * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
+   * <ul><p><code>split("/([,-])/","8-12,15,18")</code></ul>
    * <p> produces the Vector containing: 
-   * <ul><p><code> {"8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+   * <ul><p><code> {"8","-","12",",","15",",","18" } </code> </ul>
    * <p> The OROMatcher split method does not follow this behavior.  The
    * following Vector would be produced by OROMatcher:
-   * <ul><p><code> {"8", "12", "15", "18" } </code> </ul>
+   * <ul><p><code> {"8","12","15","18" } </code> </ul>
    * <p> To obtain the Perl behavior, use
    * {@link org.apache.oro.text.perl.Perl5Util#split}.
    * </ul>

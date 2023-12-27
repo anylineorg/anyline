@@ -26,7 +26,7 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation","Jakarta-Oro" 
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
@@ -88,7 +88,7 @@ final class OpCode {
      _CURLY   = 10, // yes      Match this simple thing {n,m} times.
      _CURLYX  = 11, // yes      Match this complex thing {n,m} times.
      _BRANCH  = 12, // yes      Match this alternative, or the next...
-     _BACK    = 13, // no       Match "", "next" ptr points backward.
+     _BACK    = 13, // no       Match "","next" ptr points backward.
      _EXACTLY = 14, // yes      Match this string (preceded by length).
      _NOTHING = 15, // no       Match empty string.
      _STAR    = 16, // yes      Match this (simple) thing 0 or more times.

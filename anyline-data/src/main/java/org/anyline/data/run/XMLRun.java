@@ -520,10 +520,10 @@ public class XMLRun extends BasicRun implements Run {
 					continue; 
 				}
 				condition = condition.trim(); 
-				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim();
+				String up = condition.toUpperCase().replaceAll("\\s+"," ").trim();
 				if(up.startsWith("ORDER BY")){
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim(); 
-					String orders[] = orderStr.split(", ");
+					String orders[] = orderStr.split(",");
 					for(String item:orders){
 						// sql.order(item); 
 						if(null != configStore){
@@ -536,7 +536,7 @@ public class XMLRun extends BasicRun implements Run {
 					continue; 
 				}else if(up.startsWith("GROUP BY")){
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim(); 
-					String groups[] = groupStr.split(", ");
+					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						// sql.group(item); 
 						if(null != configStore){
