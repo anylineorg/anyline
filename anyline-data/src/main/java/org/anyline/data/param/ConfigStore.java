@@ -42,8 +42,21 @@ import java.util.*;
  * 
  */
 public interface ConfigStore {
+
 	/**
-	 * 设置要查询或操作的目标(表,存储过程,sql等)
+	 * 设置查询或操作的数据源
+	 * @param datasource 查询或操作的数据源
+	 * @return ConfigStore
+	 */
+	ConfigStore datasource(String datasource);
+
+	/**
+	 * 查询或操作的数据源
+	 * @return String
+	 */
+	String datasource();
+	/**
+	 * 设置查询或操作的目标(表,存储过程,sql等)
 	 * @param dest 查询或操作的目标
 	 * @return ConfigStore
 	 */
@@ -54,8 +67,18 @@ public interface ConfigStore {
 	 * @return String
 	 */
 	String dest();
-	ConfigStore primary(String primary);
-	String primary();
+
+	/**
+	 * 设置虚拟主键，主要是用作为更新条件
+	 * @param keys keys
+	 * @return this
+	 */
+	ConfigStore keys(String ... keys);
+	/**
+	 * 虚拟主键，主要是用作为更新条件
+	 * @return List
+	 */
+	List<String> keys();
 
 	boolean execute();
 	ConfigStore execute(boolean execute);
