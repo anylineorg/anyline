@@ -619,11 +619,17 @@ public interface DriverAdapter {
 	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, String ... columns){
 		return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
 	}
-	Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns);
+	default Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+		return buildUpdateRunFromEntity(runtime, new Table(dest), obj, configs, columns);
+	}
 
-	Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns);
+	default Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+		return buildUpdateRunFromDataRow(runtime, new Table(dest), row, configs, columns);
+	}
 
-	Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns);
+	default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+		return buildUpdateRunFromCollection(runtime, batch, new Table(dest), list, configs, columns);
+	}
 	/**
 	 * 确认需要更新的列
 	 * @param row DataRow
@@ -2085,9 +2091,12 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
-	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table);
+	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+		return columns(runtime, random, greedy, catalog, schema, new Table(table));
+	}
 	default <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
-		return columns(runtime, random, greedy, catalog, schema,null);
+		return columns(runtime, random, greedy, catalog, schema,(Table)null);
 	}
 
 	/**

@@ -34,6 +34,7 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
@@ -120,7 +121,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -159,7 +160,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -198,7 +199,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
         Run run = new TableRun(runtime, dest);
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
@@ -207,18 +208,18 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
         // CREATE (emp:Employee{id:123, name:"zh"})
 
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
         DataRow row = null;
         if(obj instanceof DataRow){
             row = (DataRow)obj;
             if(row.hasPrimaryKeys() && null != generator){
-                generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 //createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             if(!create && null != generator){
-                generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns, null);
+                generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns, null);
                 //createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }
@@ -242,7 +243,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
         Run run = new TableRun(runtime, dest);
         if(null == list || list.isEmpty()){
             throw new SQLException("空数据");
@@ -253,12 +254,12 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             first = set.getRow(0);
             configs = DataSourceUtil.parseDest(dest, set, configs);
             if(BasicUtil.isEmpty(dest)){
-                dest = configs.dest();
+                dest = configs.table();
             }
         }else{
             first = list.iterator().next();
             if(BasicUtil.isEmpty(dest)) {
-                dest = EntityAdapterProxy.table(first.getClass(), true);
+                dest = EntityAdapterProxy.table(first.getClass());
             }
         }
         if(BasicUtil.isEmpty(dest)){
@@ -276,7 +277,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * @param obj Entity或DataRow
      * @param columns 需要插入的列
      */
-    protected void insertValue(String alias, Run run, String dest, Object obj, LinkedHashMap<String, Column> columns){
+    protected void insertValue(String alias, Run run, Table dest, Object obj, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -288,7 +289,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(BasicUtil.isNotEmpty(alias)){
             builder.append(alias);
         }
-        builder.append(":").append(parseTable(dest));
+        builder.append(":").append(parseTable(dest.getName()));
         builder.append("{");
         List<String> insertColumns = new ArrayList<>();
         boolean first = true;
@@ -733,7 +734,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             prepare.setAlias(alias);
         }
         builder.append("MATCH (").append(alias);
-        String table = run.getTable();
+        Table table = run.getTable();
         if(BasicUtil.isNotEmpty(table)) {
             builder.append(":");
             if (null != run.getSchema()) {

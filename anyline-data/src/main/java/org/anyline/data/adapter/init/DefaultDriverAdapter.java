@@ -1953,7 +1953,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
 		}
@@ -2580,7 +2580,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values) {
+	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values)", 37));
 		}
@@ -5012,13 +5012,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		List<T> columns = new ArrayList<>();
 		long fr = System.currentTimeMillis();
 		if(null == random) {
 			random = random(runtime);
 		}
-		Table tab = new Table(table);
+		Table tab = table;
 		tab.setCatalog(catalog);
 		tab.setSchema(schema);
 		if(BasicUtil.isEmpty(catalog) && BasicUtil.isEmpty(schema) && !greedy){

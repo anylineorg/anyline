@@ -1580,10 +1580,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		return builder;
 	}
 
-	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-		return null;
-	}
 
 	/**
 	 * select [命令执行]<br/>
@@ -1595,7 +1591,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
 		if(run instanceof ProcedureRun){
 			ProcedureRun pr = (ProcedureRun)run;
 			return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
@@ -2250,16 +2246,16 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String column, Collection<T> values)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, Object obj, String... columns)
-	 * long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions)
-	 * long truncate(DataRuntime runtime, String random, String table)
+	 * <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String column, Collection<T> values)
+	 * long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, Object obj, String... columns)
+	 * long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions)
+	 * long truncate(DataRuntime runtime, String random, Table table)
 	 * [命令合成]
-	 * Run buildDeleteRun(DataRuntime runtime, String table, Object obj, String ... columns)
-	 * Run buildDeleteRun(DataRuntime runtime, int batch, String table, String column, Object values)
-	 * List<Run> buildTruncateRun(DataRuntime runtime, String table)
-	 * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values)
-	 * Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String ... columns)
+	 * Run buildDeleteRun(DataRuntime runtime, Table table, Object obj, String ... columns)
+	 * Run buildDeleteRun(DataRuntime runtime, int batch, Table table, String column, Object values)
+	 * List<Run> buildTruncateRun(DataRuntime runtime, Table table)
+	 * Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values)
+	 * Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, Object obj, String ... columns)
 	 * void fillDeleteRunContent(DataRuntime runtime, Run run)
 	 * [命令执行]
 	 * long delete(DataRuntime runtime, String random, ConfigStore configs, Run run)
@@ -2276,7 +2272,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values){
 		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
@@ -2307,7 +2303,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions){
 		return super.delete(runtime, random, table, configs, conditions);
 	}
 
@@ -2347,12 +2343,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, int batch, String table, String key, Object values){
+	public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, String key, Object values){
 		return super.buildDeleteRun(runtime, batch, table, key, values);
 	}
 
 	@Override
-	public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+	public List<Run> buildTruncateRun(DataRuntime runtime, Table table){
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -2360,11 +2356,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append("TRUNCATE TABLE ");
 		delimiter(builder, table);
 		return runs;
-	}
-
-	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
-		return null;
 	}
 
 
@@ -2378,7 +2369,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values) {
+	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String key, Object values) {
 		if(null == table || null == key || null == values){
 			return null;
 		}
@@ -2453,7 +2444,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		run.setFrom(2);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ");
-		delimiter(builder, parseTable(table));
+		delimiter(builder, table);
 		builder.append(" WHERE ");
 		List<String> keys = new ArrayList<>();
 		if(null != columns && columns.length>0){
@@ -4169,7 +4160,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary);
-	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table);
+	 * <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table);
 	 * [命令合成]
 	 * List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 	 * [结果集封装]<br/>
@@ -4351,7 +4342,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 	/**
@@ -9687,7 +9678,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		return true;
 	}
-	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, String table, ConfigStore configs, Run run, String sql, List<Object> values){
+	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
 				throw new SQLQueryException("未指定SQL");
@@ -9720,7 +9711,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		//Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 		if(!system && IS_AUTO_CHECK_METADATA(configs) && null != table){
-			columns = columns(runtime, random, false, new Table( table), false);
+			columns = columns(runtime, random, false, table, false);
 		}
 		try{
 			final DataRuntime rt = runtime;
@@ -9902,7 +9893,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	}
 
 
-	public  <T extends Column> T column(Catalog catalog, Schema schema, String table, String name, List<T> columns){
+	public  <T extends Column> T column(Catalog catalog, Schema schema, Table table, String name, List<T> columns){
 		for(T column:columns){
 			if(null != table && null != name) {
 				String identity = BasicUtil.nvl(catalog, "") + "_" + BasicUtil.nvl(schema, "") + "_" + BasicUtil.nvl(table, "") + "_" + name;

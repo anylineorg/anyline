@@ -93,8 +93,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
 	 * public String batchInsertSeparator()
 	 * public boolean supportInsertPlaceholder ()
-	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
@@ -238,7 +238,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.createInsertRun(runtime, dest, obj, configs, columns);
 	}
 
@@ -252,7 +252,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
 		return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
@@ -445,11 +445,11 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	@Override
-	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
+	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
 		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
 		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
@@ -484,7 +484,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
@@ -569,7 +569,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 *
 	 */
 	@Override
-	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
+	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
 		return super.select(runtime, random, clazz, table, configs, run);
 	}
 
@@ -696,7 +696,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
 		return super.select(runtime, random, system, table, configs, run);
 	}
 
@@ -1035,7 +1035,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values) {
+	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
 		return super.buildDeleteRunFromTable(runtime, batch, table, column, values);
 	}
 
@@ -2257,7 +2257,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 	/**

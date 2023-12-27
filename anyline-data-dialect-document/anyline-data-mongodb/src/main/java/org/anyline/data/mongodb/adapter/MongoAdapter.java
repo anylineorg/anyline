@@ -385,7 +385,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return bson;
     }
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         long fr = System.currentTimeMillis();
         if(null == random){
             random = random(runtime);

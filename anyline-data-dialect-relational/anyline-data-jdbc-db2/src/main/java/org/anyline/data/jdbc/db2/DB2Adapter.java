@@ -497,7 +497,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
@@ -582,7 +582,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 *
 	 */
 	@Override
-	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
+	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
 		return super.select(runtime, random, clazz, table, configs, run);
 	}
 
@@ -709,7 +709,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
 		return super.select(runtime, random, system, table, configs, run);
 	}
 
@@ -1051,7 +1051,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values) {
+	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
 		return super.buildDeleteRunFromTable(runtime, batch, table, column, values);
 	}
 
@@ -2251,7 +2251,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 	/**

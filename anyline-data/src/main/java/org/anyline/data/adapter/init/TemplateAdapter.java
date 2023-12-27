@@ -669,7 +669,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
 		return super.select(runtime, random, system, table, configs, run);
 	}
 
@@ -1008,7 +1008,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values) {
+	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
 		return super.buildDeleteRunFromTable(runtime, batch, table, column, values);
 	}
 
@@ -2208,7 +2208,7 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 	/**
