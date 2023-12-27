@@ -239,7 +239,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			for(Column column:columns.values()){
 				String key = column.getName();
 				if(!start){
-					builder.append(", ");
+					builder.append(",");
 				}
 				start = false;
 				builder.append(key);
@@ -318,7 +318,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		for(Column column:columns.values()){
 			String key = column.getName();
 			if(!start){
-				builder.append(", ");
+				builder.append(",");
 			}
 			start = false;
 			builder.append(key);
@@ -330,7 +330,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			String key = column.getName();
 			String seq = seqs.get(key);
 			if(!start){
-				builder.append(", ");
+				builder.append(",");
 			}
 			start = false;
 			if(null != seq){
@@ -1025,7 +1025,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	@Override
 	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
 		return sql;
 	}
 

@@ -77,9 +77,9 @@ public class CassandraAdapter extends DefaultJDBCAdapter implements JDBCAdapter,
             if(limit < 0){
                 limit = 0;
             }
-            sql += " LIMIT " + navi.getFirstRow() + ", " + limit;
+            sql += " LIMIT " + navi.getFirstRow() + "," + limit;
         }
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
         return sql;
     }
 

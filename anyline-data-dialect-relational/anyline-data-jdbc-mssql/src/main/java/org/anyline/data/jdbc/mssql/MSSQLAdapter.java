@@ -849,7 +849,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	@Override
 	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "IF EXISTS(\n" + run.getBuilder().toString() +"\n) SELECT 1 AS IS_EXISTS ELSE SELECT 0 AS IS_EXISTS";
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
 		return sql;
 	}
 

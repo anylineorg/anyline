@@ -71,7 +71,7 @@ public class Circle extends Geometry{
         }
         builder.append("(");
         builder.append(center.toString(false));
-        builder.append(", ");
+        builder.append(",");
         builder.append(radius);
         builder.append(")");
         return builder.toString();
@@ -88,7 +88,7 @@ public class Circle extends Geometry{
             builder.append("(");
         }
         builder.append(center.sql(false, false));
-        builder.append(", ");
+        builder.append(",");
         builder.append(radius);
         if(bracket){
             builder.append(")");

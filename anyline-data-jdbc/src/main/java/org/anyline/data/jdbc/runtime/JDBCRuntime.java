@@ -85,7 +85,7 @@ public class JDBCRuntime extends DefaultRuntime implements DataRuntime {
                         ds = jdbc.getDataSource();
                         con = DataSourceUtils.getConnection(ds);
                         DatabaseMetaData meta = con.getMetaData();
-                        feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ", "") + "_"
+                        feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_"
                                 + meta.getURL();
                         if (null == version) {
                             version = meta.getDatabaseProductVersion();

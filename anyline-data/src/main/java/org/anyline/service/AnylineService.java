@@ -91,10 +91,10 @@ public interface AnylineService<E>{
 		return insert(batch, dest, data, null, columns);
 	}
 	default long insert(int batch, Object data, String ... columns){
-		return insert(batch, null, data, BeanUtil.array2list(columns));
+		return insert(batch, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, ConfigStore configs, String ... columns){
-		return insert(batch, null, data, configs, BeanUtil.array2list(columns));
+		return insert(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, String dest, Object data, String ... columns){
 		return insert(batch, dest, data, BeanUtil.array2list(columns));
@@ -115,10 +115,33 @@ public interface AnylineService<E>{
 		return insert(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, String ... columns){
-		return insert(null, data, BeanUtil.array2list(columns));
+		return insert((String)null, data, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, ConfigStore configs, String ... columns){
-		return insert(null, data, configs, BeanUtil.array2list(columns));
+		return insert((String)null, data, configs, BeanUtil.array2list(columns));
+	}
+
+	long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long insert(int batch, Table dest, Object data, List<String> columns){
+		return insert(batch, dest, data, null, columns);
+	}
+	default long insert(int batch, Table dest, Object data, String ... columns){
+		return insert(batch, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long insert(Table dest, Object data, List<String> columns){
+		return insert(0, dest, data, columns);
+	}
+	default long insert(Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(0, dest, data, configs, columns);
+	}
+	default long insert(Table dest, Object data, String ... columns){
+		return insert(dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(Table dest, Object data, ConfigStore configs, String ... columns){
+		return insert(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	/* *****************************************************************************************************************
 	 * 													UPDATE
@@ -146,10 +169,10 @@ public interface AnylineService<E>{
 		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(int batch, Object data, String ... columns){
-		return update(batch, null, data, null, BeanUtil.array2list(columns));
+		return update(batch, (String)null, data, null, BeanUtil.array2list(columns));
 	}
 	default long update(int batch, Object data, ConfigStore configs, String ... columns){
-		return update(batch, null, data, configs, BeanUtil.array2list(columns));
+		return update(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 
 	default long update(String dest, Object data, ConfigStore configs, List<String>columns){
@@ -162,10 +185,27 @@ public interface AnylineService<E>{
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(Object data, String ... columns){
-		return update(null, data, null, BeanUtil.array2list(columns));
+		return update((String)null, data, null, BeanUtil.array2list(columns));
 	}
 	default long update(Object data, ConfigStore configs, String ... columns){
-		return update(null, data, configs, BeanUtil.array2list(columns));
+		return update((String)null, data, configs, BeanUtil.array2list(columns));
+	}
+
+	long update(int batch, Table dest, Object data, ConfigStore configs, List<String>columns);
+	default long update(int batch, Table dest, Object data, String ... columns){
+		return update(batch, dest, data, null, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(Table dest, Object data, ConfigStore configs, List<String>columns){
+		return update(0, dest, data, configs, columns);
+	}
+	default long update(Table dest, Object data, String ... columns){
+		return update(dest, data, null, BeanUtil.array2list(columns));
+	}
+	default long update(Table dest, Object data, ConfigStore configs, String ... columns){
+		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	/* *****************************************************************************************************************
 	 * 													SAVE
@@ -190,7 +230,6 @@ public interface AnylineService<E>{
 	default long save(int batch, String dest, Object data, List<String> columns){
 		return save(batch, dest, data, null, columns);
 	}
-
 	default long save(int batch, String dest, Object data, String ... columns){
 		return save(batch, dest, data, BeanUtil.array2list(columns));
 	}
@@ -198,10 +237,10 @@ public interface AnylineService<E>{
 		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long save(int batch, Object data, String ... columns){
-		return save(batch, null, data, columns);
+		return save(batch, (String)null, data, columns);
 	}
 	default long save(int batch, Object data, ConfigStore configs, String ... columns){
-		return save(batch, null, data, configs, columns);
+		return save(batch, (String)null, data, configs, columns);
 	}
 	default long save(String dest, Object data, List<String> columns){
 		return save(0, dest, data, columns);
@@ -216,24 +255,49 @@ public interface AnylineService<E>{
 		return save(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long save(Object data, String ... columns){
-		return save(null, data, columns);
+		return save((String)null, data, columns);
 	}
 	default long save(Object data, ConfigStore configs, String ... columns){
-		return save(null, data, configs, columns);
+		return save((String)null, data, configs, columns);
 	}
 	default long save(Object data, List<String> columns){
-		return save(null, data, columns);
+		return save((String)null, data, columns);
 	}
 	default long save(Object data, ConfigStore configs, List<String> columns){
-		return save(null, data, configs, columns);
+		return save((String)null, data, configs, columns);
 	}
+
+	long save(int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long save(int batch, Table dest, Object data, List<String> columns){
+		return save(batch, dest, data, null, columns);
+	}
+
+	default long save(int batch, Table dest, Object data, String ... columns){
+		return save(batch, dest, data, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long save(Table dest, Object data, List<String> columns){
+		return save(0, dest, data, columns);
+	}
+	default long save(Table dest, Object data, ConfigStore configs, List<String> columns){
+		return save(0, dest, data, configs, columns);
+	}
+	default long save(Table dest, Object data, String ... columns){
+		return save(dest, data, BeanUtil.array2list(columns));
+	}
+	default long save(Table dest, Object data, ConfigStore configs, String ... columns){
+		return save(dest, data, configs, BeanUtil.array2list(columns));
+	}
+
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/
 
 	/**
 	 * 按条件查询
-	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param dest 			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件
 	 * @param conditions	固定查询条件 <br/>
@@ -246,89 +310,161 @@ public interface AnylineService<E>{
 	 * 			
 	 * @return DataSet
 	 */
-	DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet querys(String src, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet querys(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		return querys(src, configs, obj, conditions);
+		return querys(dest, configs, obj, conditions);
 	}
-	default DataSet querys(String src, Object obj, String ... conditions){
-		return querys(src, (ConfigStore) null, obj, conditions);
+	default DataSet querys(String dest, Object obj, String ... conditions){
+		return querys(dest, (ConfigStore) null, obj, conditions);
 	}
-	default void querys(String src, StreamHandler handler, Object obj, String ... conditions){
+	default void querys(String dest, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		querys(src, configs, obj, conditions);
+		querys(dest, configs, obj, conditions);
 	}
-	default DataSet querys(String src, PageNavi navi, Object obj, String ... conditions){
+	default DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
-		return querys(src, configs, obj, conditions);
+		return querys(dest, configs, obj, conditions);
 	}
 
 	/**
 	 * 按条件查询
-	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param dest 			数据源(表或自定义SQL或SELECT语句)
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param first 起 下标从0开始
 	 * @param last 止
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	default DataSet querys(String src, long first, long last, Object obj, String ... conditions){
+	default DataSet querys(String dest, long first, long last, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
-		return querys(src, configs, obj, conditions);
+		return querys(dest, configs, obj, conditions);
 	}
 
-	default DataSet querys(String src, ConfigStore configs, String ... conditions){
-		return querys(src, configs, null, conditions);
+	default DataSet querys(String dest, ConfigStore configs, String ... conditions){
+		return querys(dest, configs, null, conditions);
 	}
-	default DataSet querys(String src, long first, long last, ConfigStore configs, String ... conditions){
+	default DataSet querys(String dest, long first, long last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		return querys(src, configs, conditions);
+		return querys(dest, configs, conditions);
 	}
-	default DataSet querys(String src, String ... conditions){
-		return querys(src, (Object) null, conditions);
+	default DataSet querys(String dest, String ... conditions){
+		return querys(dest, (Object) null, conditions);
 	}
-	default void querys(String src, StreamHandler handler, String ... conditions){
+	default void querys(String dest, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		querys(src, configs, conditions);
+		querys(dest, configs, conditions);
 	}
-	default DataSet querys(String src, PageNavi navi, String ... conditions){
-		return querys(src, navi, null, conditions);
+	default DataSet querys(String dest, PageNavi navi, String ... conditions){
+		return querys(dest, navi, null, conditions);
 	}
-	default DataSet querys(String src, long first, long last, String ... conditions){
-		return querys(src, first, last, null, conditions);
+	default DataSet querys(String dest, long first, long last, String ... conditions){
+		return querys(dest, first, last, null, conditions);
 	}
-	default DataSet querys(String src, StreamHandler handler, long first, long last, String ... conditions){
+	default DataSet querys(String dest, StreamHandler handler, long first, long last, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		ConfigStore configs = new DefaultConfigStore();
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		configs.stream(handler);
-		return querys(src, first, last, configs, conditions);
+		return querys(dest, first, last, configs, conditions);
 	}
 
+	DataSet querys(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return querys(dest, configs, obj, conditions);
+	}
+	default DataSet querys(Table dest, Object obj, String ... conditions){
+		return querys(dest, (ConfigStore) null, obj, conditions);
+	}
+	default void querys(Table dest, StreamHandler handler, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		querys(dest, configs, obj, conditions);
+	}
+	default DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.setPageNavi(navi);
+		return querys(dest, configs, obj, conditions);
+	}
+
+	/**
+	 * 按条件查询
+	 * @param dest 			数据源(表或自定义SQL或SELECT语句)
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param first 起 下标从0开始
+	 * @param last 止
+	 * @param conditions	固定查询条件
+	 * @return DataSet
+	 */
+	default DataSet querys(Table dest, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return querys(dest, configs, obj, conditions);
+	}
+
+	default DataSet querys(Table dest, ConfigStore configs, String ... conditions){
+		return querys(dest, configs, null, conditions);
+	}
+	default DataSet querys(Table dest, long first, long last, ConfigStore configs, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return querys(dest, configs, conditions);
+	}
+	default DataSet querys(Table dest, String ... conditions){
+		return querys(dest, (Object) null, conditions);
+	}
+	default void querys(Table dest, StreamHandler handler, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		querys(dest, configs, conditions);
+	}
+	default DataSet querys(Table dest, PageNavi navi, String ... conditions){
+		return querys(dest, navi, null, conditions);
+	}
+	default DataSet querys(Table dest, long first, long last, String ... conditions){
+		return querys(dest, first, last, null, conditions);
+	}
+	default DataSet querys(Table dest, StreamHandler handler, long first, long last, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		ConfigStore configs = new DefaultConfigStore();
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		configs.stream(handler);
+		return querys(dest, first, last, configs, conditions);
+	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow query(String src, Object obj, String ... conditions){
-		return query(src, null, obj, conditions);
+	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow query(String dest, Object obj, String ... conditions){
+		return query(dest, null, obj, conditions);
 	}
-	default DataRow query(String src, ConfigStore configs, String ... conditions){
-		return query(src, configs, null, conditions);
+	default DataRow query(String dest, ConfigStore configs, String ... conditions){
+		return query(dest, configs, null, conditions);
 	}
-	default DataRow query(String src, String ... conditions){
-		return query(src, (ConfigStore) null, conditions);
+	default DataRow query(String dest, String ... conditions){
+		return query(dest, (ConfigStore) null, conditions);
 	}
 	default DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return query(prepare, configs, null, conditions);
@@ -339,7 +475,16 @@ public interface AnylineService<E>{
 	default DataRow query(RunPrepare prepare, String ... conditions){
 		return query(prepare, null, null, conditions);
 	}
-
+	DataRow query(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow query(Table dest, Object obj, String ... conditions){
+		return query(dest, null, obj, conditions);
+	}
+	default DataRow query(Table dest, ConfigStore configs, String ... conditions){
+		return query(dest, configs, null, conditions);
+	}
+	default DataRow query(Table dest, String ... conditions){
+		return query(dest, (ConfigStore) null, conditions);
+	}
 	/**
 	 * 查询序列cur 或 next value
 	 * @param next  是否生成返回下一个序列 false:cur true:next
@@ -367,7 +512,7 @@ public interface AnylineService<E>{
 	}
 	/**
 	 * 根据SQL或自定义SQL返回实体
-	 * @param src SQL或自定义SQL
+	 * @param dest SQL或自定义SQL
 	 * @param clazz 返回类型
 	 * @param configs 根据http等上下文构造查询条件
 	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
@@ -375,52 +520,99 @@ public interface AnylineService<E>{
 	 * @return EntitySet
 	 * @param <T> T
 	 */
-	<T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+	<T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
-		return selects(src, clazz, configs, entity, conditions);
+		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, T entity, String ... conditions){
-		return selects(src, clazz, (ConfigStore) null, entity, conditions);
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions){
+		return selects(dest, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return selects(src, clazz, configs, entity, conditions);
+		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
-		return selects(src, clazz, configs, entity, conditions);
+		return selects(dest, clazz, configs, entity, conditions);
 	}
 
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
-		return selects(src, clazz, configs, (T) null, conditions);
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return selects(dest, clazz, configs, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, String ... conditions){
-		return selects(src, clazz, navi, (T) null, conditions);
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, String ... conditions){
+		return selects(dest, clazz, navi, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, String ... conditions){
-		return selects(src, clazz, (T) null, conditions);
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, String ... conditions){
+		return selects(dest, clazz, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		return selects(src, clazz, configs, conditions);
+		return selects(dest, clazz, configs, conditions);
 	}
-	default <T> EntitySet<T> selects(String src, Class<T> clazz, long first, long last, String ... conditions){
-		return selects(src, clazz, first, last, (T) null, conditions);
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions){
+		return selects(dest, clazz, first, last, (T) null, conditions);
 	}
 
-	<T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> T select(String src, Class<T> clazz, T entity, String ... conditions){
-		return select(src, clazz, (ConfigStore) null, entity, conditions);
+	<T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.setPageNavi(navi);
+		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> T select(String src, Class<T> clazz, ConfigStore configs, String ... conditions){
-		return select(src, clazz, configs, (T) null, conditions);
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions){
+		return selects(dest, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> T select(String src, Class<T> clazz, String ... conditions){
-		return select(src, clazz, (T) null, conditions);
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		return selects(dest, clazz, configs, entity, conditions);
+	}
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return selects(dest, clazz, configs, entity, conditions);
+	}
+
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return selects(dest, clazz, configs, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, String ... conditions){
+		return selects(dest, clazz, navi, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, String ... conditions){
+		return selects(dest, clazz, (T) null, conditions);
+	}
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		return selects(dest, clazz, configs, conditions);
+	}
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions){
+		return selects(dest, clazz, first, last, (T) null, conditions);
+	}
+
+	<T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	default <T> T select(String dest, Class<T> clazz, T entity, String ... conditions){
+		return select(dest, clazz, (ConfigStore) null, entity, conditions);
+	}
+	default <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return select(dest, clazz, configs, (T) null, conditions);
+	}
+	default <T> T select(String dest, Class<T> clazz, String ... conditions){
+		return select(dest, clazz, (T) null, conditions);
+	}
+	<T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	default <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions){
+		return select(dest, clazz, (ConfigStore) null, entity, conditions);
+	}
+	default <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+		return select(dest, clazz, configs, (T) null, conditions);
+	}
+	default <T> T select(Table dest, Class<T> clazz, String ... conditions){
+		return select(dest, clazz, (T) null, conditions);
 	}
 	/**
 	 *
@@ -470,6 +662,7 @@ public interface AnylineService<E>{
 	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
 		return selects(clazz, first, last, (T) null, conditions);
 	}
+
 	default <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions){
 		return select(clazz, configs, (T) null, conditions);
 	}
@@ -482,7 +675,7 @@ public interface AnylineService<E>{
 		return gets(new DefaultConfigStore().setPageNavi(navi), conditions);
 	}
 
-	// 与DataSet querys(String src, String ... conditions);  签名冲突
+	// 与DataSet querys(String dest, String ... conditions);  签名冲突
 	default EntitySet<E> gets(String ... conditions){
 		return gets((ConfigStore) null, conditions);
 	}
@@ -501,45 +694,80 @@ public interface AnylineService<E>{
 
 	/**
 	 * 直接返回Map集合不封装, 不分页
-	 * @param src			数据源(表或自定义SQL或SELECT语句)
+	 * @param dest			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions	固定查询条件
 	 * @return List
 	 */
-	List<Map<String, Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
-	default void maps(String src, StreamHandler handler, Object obj, String ... conditions){
+	List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default void maps(String dest, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		maps(src, configs, obj, conditions);
+		maps(dest, configs, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, Object obj, String ... conditions){
-		return maps(src, (ConfigStore) null, obj, conditions);
+	default List<Map<String, Object>> maps(String dest, Object obj, String ... conditions){
+		return maps(dest, (ConfigStore) null, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, long first, long last, Object obj, String ... conditions){
-		return maps(src, new DefaultConfigStore(first, last), obj, conditions);
+	default List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions){
+		return maps(dest, new DefaultConfigStore(first, last), obj, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, ConfigStore configs, String ... conditions){
-		return maps(src, configs, null, conditions);
+	default List<Map<String, Object>> maps(String dest, ConfigStore configs, String ... conditions){
+		return maps(dest, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, String ... conditions){
-		return maps(src, (ConfigStore) null, null, conditions);
+	default List<Map<String, Object>> maps(String dest, String ... conditions){
+		return maps(dest, (ConfigStore) null, null, conditions);
 	}
-	default void maps(String src, StreamHandler handler, String ... conditions){
+	default void maps(String dest, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
 		configs.stream(handler);
-		maps(src, configs, null, conditions);
+		maps(dest, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, PageNavi navi, String ... conditions){
-		return maps(src, new DefaultConfigStore().setPageNavi(navi), null, conditions);
+	default List<Map<String, Object>> maps(String dest, PageNavi navi, String ... conditions){
+		return maps(dest, new DefaultConfigStore().setPageNavi(navi), null, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, long first, long last, String ... conditions){
-		return maps(src, first, last, null, conditions);
+	default List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions){
+		return maps(dest, first, last, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String src, StreamHandler handler, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, StreamHandler handler, long first, long last, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		configs.stream(handler);
-		return maps(src, first, last, conditions, conditions);
+		return maps(dest, first, last, conditions, conditions);
+	}
+
+	List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default void maps(Table dest, StreamHandler handler, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		maps(dest, configs, obj, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions){
+		return maps(dest, (ConfigStore) null, obj, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, long first, long last, Object obj, String ... conditions){
+		return maps(dest, new DefaultConfigStore(first, last), obj, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, ConfigStore configs, String ... conditions){
+		return maps(dest, configs, null, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, String ... conditions){
+		return maps(dest, (ConfigStore) null, null, conditions);
+	}
+	default void maps(Table dest, StreamHandler handler, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		maps(dest, configs, null, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions){
+		return maps(dest, new DefaultConfigStore().setPageNavi(navi), null, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions){
+		return maps(dest, first, last, null, conditions);
+	}
+	default List<Map<String, Object>> maps(Table dest, StreamHandler handler, long first, long last, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		configs.stream(handler);
+		return maps(dest, first, last, conditions, conditions);
 	}
 
 	/**
@@ -551,68 +779,113 @@ public interface AnylineService<E>{
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param cache			对应ehcache缓存配置文件 中的cache.name
-	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions 	固定查询条件
 	 * @return DataSet
 	 */
-	DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		return caches(cache, src, configs, obj, conditions);
+		return caches(cache, dest, configs, obj, conditions);
 	}
-	default DataSet caches(String cache, String src, Object obj, String ... conditions){
-		return caches(cache, src, null, obj, conditions);
+	default DataSet caches(String cache, String dest, Object obj, String ... conditions){
+		return caches(cache, dest, null, obj, conditions);
 	}
-	default DataSet caches(String cache, String src, long first, long last, Object obj, String ... conditions){
+	default DataSet caches(String cache, String dest, long first, long last, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
-		return caches(cache, src, configs, obj, conditions);
+		return caches(cache, dest, configs, obj, conditions);
 	}
 
+	DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return caches(cache, dest, configs, obj, conditions);
+	}
+	default DataSet caches(String cache, Table dest, Object obj, String ... conditions){
+		return caches(cache, dest, null, obj, conditions);
+	}
+	default DataSet caches(String cache, Table dest, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return caches(cache, dest, configs, obj, conditions);
+	}
 	/**
 	 * @param cache			对应ehcache缓存配置文件 中的cache.name
-	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions 	固定查询条件
 	 * @return DataSet
 	 */
-	DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow cache(String cache, String src, Object obj, String ... conditions){
-		return cache(cache, src, null, obj, conditions);
+	DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow cache(String cache, String dest, Object obj, String ... conditions){
+		return cache(cache, dest, null, obj, conditions);
 	}
-	default DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
-		return caches(cache, src, configs, (Object) null, conditions);
+	default DataSet caches(String cache, String dest, ConfigStore configs, String ... conditions){
+		return caches(cache, dest, configs, (Object) null, conditions);
 	}
-	default DataSet caches(String cache, String src, long first, long last, ConfigStore configs, String ... conditions){
+	default DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		return caches(cache, src, configs, conditions);
+		return caches(cache, dest, configs, conditions);
 	}
-	default DataSet caches(String cache, String src, String ... conditions){
-		return caches(cache, src, null, null, conditions);
+	default DataSet caches(String cache, String dest, String ... conditions){
+		return caches(cache, dest, null, null, conditions);
 	}
-	default DataSet caches(String cache, String src, long first, long last, String ... conditions){
-		return caches(cache, src, first, last, null, conditions);
+	default DataSet caches(String cache, String dest, long first, long last, String ... conditions){
+		return caches(cache, dest, first, last, null, conditions);
 	}
-	default DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
-		return cache(cache, src, configs, null, conditions);
+	default DataRow cache(String cache, String dest, ConfigStore configs, String ... conditions){
+		return cache(cache, dest, configs, null, conditions);
 	}
-	default DataRow cache(String cache, String src, String ... conditions){
-		return cache(cache, src, null, null, conditions);
+	default DataRow cache(String cache, String dest, String ... conditions){
+		return cache(cache, dest, null, null, conditions);
 	}
 
 
+	DataRow cache(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataRow cache(String cache, Table dest, Object obj, String ... conditions){
+		return cache(cache, dest, null, obj, conditions);
+	}
+	default DataSet caches(String cache, Table dest, ConfigStore configs, String ... conditions){
+		return caches(cache, dest, configs, (Object) null, conditions);
+	}
+	default DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return caches(cache, dest, configs, conditions);
+	}
+	default DataSet caches(String cache, Table dest, String ... conditions){
+		return caches(cache, dest, null, null, conditions);
+	}
+	default DataSet caches(String cache, Table dest, long first, long last, String ... conditions){
+		return caches(cache, dest, first, last, null, conditions);
+	}
+	default DataRow cache(String cache, Table dest, ConfigStore configs, String ... conditions){
+		return cache(cache, dest, configs, null, conditions);
+	}
+	default DataRow cache(String cache, Table dest, String ... conditions){
+		return cache(cache, dest, null, null, conditions);
+	}
 	/*多表查询, 左右连接时使用*/
 
 	/**
@@ -719,17 +992,25 @@ public interface AnylineService<E>{
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致
 	 * @param channel 		channel
-	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs  		根据http等上下文构造查询条件
 	 * @param conditions 	固定查询条件
 	 * @return boolean
 	 */
-	boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
-	default boolean removeCache(String channel, String src, String ... conditions){
-		return removeCache(channel, src, null, conditions);
+	boolean removeCache(String channel, String dest, ConfigStore configs, String ... conditions);
+	default boolean removeCache(String channel, String dest, String ... conditions){
+		return removeCache(channel, dest, null, conditions);
 	}
-	default boolean removeCache(String channel, String src, long first, long last, String ... conditions){
-		return removeCache(channel, src, new DefaultConfigStore(first, last), conditions);
+	default boolean removeCache(String channel, String dest, long first, long last, String ... conditions){
+		return removeCache(channel, dest, new DefaultConfigStore(first, last), conditions);
+	}
+
+	boolean removeCache(String channel, Table dest, ConfigStore configs, String ... conditions);
+	default boolean removeCache(String channel, Table dest, String ... conditions){
+		return removeCache(channel, dest, null, conditions);
+	}
+	default boolean removeCache(String channel, Table dest, long first, long last, String ... conditions){
+		return removeCache(channel, dest, new DefaultConfigStore(first, last), conditions);
 	}
 	/**
 	 * 清空缓存
@@ -752,27 +1033,38 @@ public interface AnylineService<E>{
 	/**
 	 * 是否存在
 	 *
-	 * @param src        src
+	 * @param dest       查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs    根据http等上下文构造查询条件
 	 * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions 固定查询条件
 	 * @return boolean
 	 */
-
-	boolean exists(String src, ConfigStore configs, Object obj, String ... conditions);
-	default boolean exists(String src, Object obj, String ... conditions){
-		return exists(src, null, obj, conditions);
+	boolean exists(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default boolean exists(String dest, Object obj, String ... conditions){
+		return exists(dest, null, obj, conditions);
 	}
-	default boolean exists(String src, ConfigStore configs, String ... conditions){
-		return exists(src, configs, null, conditions);
+	default boolean exists(String dest, ConfigStore configs, String ... conditions){
+		return exists(dest, configs, null, conditions);
 	}
-	default boolean exists(String src, String ... conditions){
-		return exists(src, null, null, conditions);
+	default boolean exists(String dest, String ... conditions){
+		return exists(dest, null, null, conditions);
 	}
-	boolean exists(String src, DataRow row);
+	boolean exists(String dest, DataRow row);
 	default boolean exists(DataRow row){
-		return exists(null, row);
+		return exists((String)null, row);
 	}
+
+	boolean exists(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default boolean exists(Table dest, Object obj, String ... conditions){
+		return exists(dest, null, obj, conditions);
+	}
+	default boolean exists(Table dest, ConfigStore configs, String ... conditions){
+		return exists(dest, configs, null, conditions);
+	}
+	default boolean exists(Table dest, String ... conditions){
+		return exists(dest, null, null, conditions);
+	}
+	boolean exists(Table dest, DataRow row);
 
 	/* *****************************************************************************************************************
 	 * 													COUNT
@@ -780,21 +1072,32 @@ public interface AnylineService<E>{
 
 	/**
 	 * count
-	 * @param src 表或视图或自定义SQL
+	 * @param dest 查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs 过滤条件
 	 * @param obj 根据obj生成的过滤条件
 	 * @param conditions 简单过滤条件
 	 * @return long
 	 */
-	long count(String src, ConfigStore configs, Object obj, String ... conditions);
-	default long count(String src, Object obj, String ... conditions){
-		return count(src, null, obj, conditions);
+	long count(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default long count(String dest, Object obj, String ... conditions){
+		return count(dest, null, obj, conditions);
 	}
-	default long count(String src, ConfigStore configs, String ... conditions){
-		return count(src, configs, null, conditions);
+	default long count(String dest, ConfigStore configs, String ... conditions){
+		return count(dest, configs, null, conditions);
 	}
-	default long count(String src, String ... conditions){
-		return count(src, null, null, conditions);
+	default long count(String dest, String ... conditions){
+		return count(dest, null, null, conditions);
+	}
+
+	long count(Table dest, ConfigStore configs, Object obj, String ... conditions);
+	default long count(Table dest, Object obj, String ... conditions){
+		return count(dest, null, obj, conditions);
+	}
+	default long count(Table dest, ConfigStore configs, String ... conditions){
+		return count(dest, configs, null, conditions);
+	}
+	default long count(Table dest, String ... conditions){
+		return count(dest, null, null, conditions);
 	}
 
 	/* *****************************************************************************************************************
@@ -810,16 +1113,17 @@ public interface AnylineService<E>{
 	boolean execute(Procedure procedure, String... inputs);
 	/** 
 	 * 执行 
-	 * @param src  src
+	 * @param dest  查询或操作的目标(表、存储过程、SQL等)
 	 * @param configs  configs
 	 * @param conditions  conditions
 	 * @return int
 	 */ 
-	long execute(String src, ConfigStore configs, String ... conditions);
-	default long execute(String src, String ... conditions){
-		return execute(src, null, conditions);
+	long execute(String dest, ConfigStore configs, String ... conditions);
+	default long execute(String dest, String ... conditions){
+		return execute(dest, null, conditions);
 	}
 	long execute(int batch, String sql, List<Object> values);
+
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure
@@ -891,12 +1195,13 @@ public interface AnylineService<E>{
 
 	/**
 	 * 根据ConfigStore中的条件+conditions条件删除
-	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param configs 匹配条件
 	 * @param conditions  匹配条件
 	 * @return 影响行数
 	 */
-	long delete(String table, ConfigStore configs, String ... conditions);
+	long delete(String dest, ConfigStore configs, String ... conditions);
+	long delete(Table dest, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据columns列删除 可设置复合主键<br/>
 	 * 注意:为了避免整表删除, columns必须提供否则会抛出异常 <br/>
@@ -907,17 +1212,19 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	long delete(String dest, DataSet set, String ... columns);
+	long delete(Table dest, DataSet set, String ... columns);
 	default long delete(DataSet set, String ... columns){
 		String dest = DataSourceUtil.parseDest(null, set, null).dest();
 		return delete(dest, set, columns);
 	}
 	long delete(String dest, DataRow row, String ... columns);
+	long delete(Table dest, DataRow row, String ... columns);
 
 	/**
 	 * 根据columns列删除 <br/>
 	 * 注意:为了避免整表删除, columns必须提供否则会抛出异常 <br/>
 	 * 如果要删除整表需要单独写原生的SQL调用execute(sql) <br/>
-	 * delete(User/DataRow, "TYPE", "AGE")<br/>
+	 * delete(User/DataRow, "TYPE","AGE")<br/>
 	 * DELETE FROM USER WHERE TYPE = ? AND AGE = ?
 	 * @param obj 实体对象或DataRow/Dataset
 	 * @param columns 生成删除条件的列, 如果不设置则根据主键删除
@@ -930,27 +1237,28 @@ public interface AnylineService<E>{
 	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>
 	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
 	 * 以k, v, k, v或"k:v"形式提供参数<br/>
-	 * delete("HR_EMPLOYEE", "type", "1", "age:20");<br/>
+	 * delete("HR_EMPLOYEE","type","1","age:20");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE TYPE = 1 AND AGE = 20<br/>
 	 *<br/>
 	 * 注意以下两咱情况, 并不会忽略空值
 	 *<br/>
-	 * service.delete("HR_EMPLOYEE", "ID", "", "CODE:20");<br/>
+	 * service.delete("HR_EMPLOYEE","ID","","CODE:20");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE ID = '' AND CODE = 20<br/>
 	 *<br/>
-	 * service.delete("HR_EMPLOYEE", "ID", "1", "CODE:");<br/>
+	 * service.delete("HR_EMPLOYEE","ID","1","CODE:");<br/>
 	 * DELETE FROM HR_EMPLOYEE WHERE ID = 1 AND CODE = ''<br/>
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param kvs key-value
 	 * @return 影响行数
 	 */
 	long delete(String table, String ... kvs);
+	long delete(Table table, String ... kvs);
 
 	/**
 	 * 根据一列的多个值删除<br/>
 	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>
 	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
-	 * delete("USER", "TYPE", [1, 2, 3])<br/>
+	 * delete("USER","TYPE", [1, 2, 3])<br/>
 	 * DELETE FROM USER WHERE TYPE IN(1, 2, 3)
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 列
@@ -958,7 +1266,11 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	<T> long deletes(int batch, String table, String key, Collection<T> values);
+	<T> long deletes(int batch, Table table, String key, Collection<T> values);
 	default <T> long deletes(String table, String key, Collection<T> values){
+		return deletes(0, table, key, values);
+	}
+	default <T> long deletes(Table table, String key, Collection<T> values){
 		return deletes(0, table, key, values);
 	}
 
@@ -966,7 +1278,7 @@ public interface AnylineService<E>{
 	 * 根据一列的多个值删除<br/>
 	 * 注意:为了避免整表删除, values必须提供否则会抛出异常<br/>
 	 * 整表删除请调用service.execute("DELETE FROM TAB");或service.truncate("TAB“)<br/>
-	 * delete("USER", "TYPE", "1", "2", "3")<br/>
+	 * delete("USER","TYPE","1","2","3")<br/>
 	 * DELETE FROM USER WHERE TYPE IN(1, 2, 3)
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 名
@@ -974,11 +1286,15 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	<T> long deletes(int batch, String table, String key, T ... values);
+	<T> long deletes(int batch, Table table, String key, T ... values);
 	default <T> long deletes(String table, String key, T ... values){
 		return deletes(0, table, key, values);
 	}
-
+	default <T> long deletes(Table table, String key, T ... values){
+		return deletes(0, table, key, values);
+	}
 	long truncate(String table);
+	long truncate(Table table);
 
 
 	/* *****************************************************************************************************************

@@ -1462,7 +1462,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 super.put(key, value);
             }
             if (ConfigTable.IS_KEY_IGNORE_CASE) {
-                String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+                String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 keymap.put(ignoreKey, key);
             }
         }
@@ -2081,7 +2081,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     /**
      * {id:1, code:a, value:100}<br/>
-     * toSet("k", "v")转换成<br/>
+     * toSet("k","v")转换成<br/>
      * [{k:id, v:1}, {k:code, v:a}, [k:value, v:100]]
      * @param key 原map中的key存放位置
      * @param value 原map中的value存放位置
@@ -2344,7 +2344,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 删除指定的key
-     * 不和remove命名 避免调用remoate("ID", "CODE")时与HashMap.remove(Object key, Object value) 冲突
+     * 不和remove命名 避免调用remoate("ID","CODE")时与HashMap.remove(Object key, Object value) 冲突
      * @param keys keys
      * @return DataRow
      */
@@ -3007,7 +3007,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     if (result.isEmpty()) {
                         result = val;
                     } else {
-                        result += ", " + val;
+                        result += "," + val;
                     }
                 }
             }
@@ -3170,7 +3170,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(null != key){
             key = keyAdapter.key(key);
             if (ConfigTable.IS_KEY_IGNORE_CASE) {
-                String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+                String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 String tmp = keymap.get(ignoreKey);
                 if(null != tmp){
                     key = tmp;
@@ -3197,7 +3197,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if(keyAdapter.getKeyCase() != KEY_CASE.SRC) {
                     key = keyAdapter.key(key);
                     if (ConfigTable.IS_KEY_IGNORE_CASE) {
-                        String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+                        String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                         String tmp = keymap.get(ignoreKey);
                         if (null != tmp) {
                             key = tmp;
@@ -3220,7 +3220,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null != key) {
             key = keyAdapter.key(key);
             if (ConfigTable.IS_KEY_IGNORE_CASE) {
-                String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+                String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 String tmp = keymap.get(ignoreKey);
                 if(null != tmp){
                     key = tmp;
@@ -3630,7 +3630,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(null != value){
             try {
                 if (value instanceof String) {
-                    String str = ((String) value).replace(",", "");
+                    String str = ((String) value).replace(",","");
                     result = new BigDecimal(str);
                 } else {
                     result = BasicUtil.parseDecimal(value, null);
@@ -3933,7 +3933,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                         tar = tmps[1];
                     }
                     if(tmps.length > 2){
-                        def = DateUtil.parse(col.replace(src+":"+tar+":", "").trim());
+                        def = DateUtil.parse(col.replace(src+":"+tar+":","").trim());
                     }
                     dateParse(src, tar, null, def);
                 }
@@ -3952,7 +3952,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                         tar = tmps[1];
                     }
                     if(tmps.length > 2){
-                        def =col.replace(src+":"+tar+":", "").trim();
+                        def =col.replace(src+":"+tar+":","").trim();
                     }
                     numberParse(src, tar, def);
                 }

@@ -51,7 +51,7 @@ public class Polygon extends Geometry{
         for(Ring ring:rings){
             if(ring.clockwise() == true){
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 builder.append(ring.toString(false));
                 first = false;
@@ -61,7 +61,7 @@ public class Polygon extends Geometry{
         for(Ring ring:rings){
             if(ring.clockwise() == false){
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 builder.append(ring.toString(false));
                 first = false;
@@ -93,7 +93,7 @@ public class Polygon extends Geometry{
         for(Ring ring:rings){
             if(ring.clockwise() == true){
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 builder.append(ring.sql(false, true));
                 first = false;
@@ -103,7 +103,7 @@ public class Polygon extends Geometry{
         for(Ring ring:rings){
             if(ring.clockwise() == false){
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 builder.append(ring.sql(false, true));
                 first = false;

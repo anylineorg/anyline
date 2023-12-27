@@ -131,7 +131,7 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	 */
 	public static String reg(String key, String url, String user, String password) throws Exception{
 		Map<String, Object> param = new HashMap<>();
-		param.put("type", "ElasticSearchDataSource");
+		param.put("type","ElasticSearchDataSource");
 		param.put("url", url);
 		param.put("user", user);
 		param.put("password", password);
@@ -230,13 +230,13 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 
 		String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
 		try {
-			String[] hosts = url.split(", ");
+			String[] hosts = url.split(",");
 			HttpHost[] posts = new HttpHost[hosts.length];
 			int idx = 0;
 			for(String host:hosts){
 				String[] tmps = host.split(":");
 				String schema = tmps[0];
-				String ip = tmps[1].replace("//", "");
+				String ip = tmps[1].replace("//","");
 				int port = BasicUtil.parseInt(tmps[2], 9200);
 				posts[idx++] = new HttpHost(ip, port, schema);
 			}
@@ -465,9 +465,9 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 /*        headers.add(new BasicHeader("User-Agent",
                 "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.16 Safari/537" +
                         ".36"));
-        headers.add(new BasicHeader("Accept-Encoding", "gzip,deflate"));
-        headers.add(new BasicHeader("Accept-Language", "zh-CN"));*/
-		headers.add(new BasicHeader("Connection", "Keep-Alive"));
+        headers.add(new BasicHeader("Accept-Encoding","gzip,deflate"));
+        headers.add(new BasicHeader("Accept-Language","zh-CN"));*/
+		headers.add(new BasicHeader("Connection","Keep-Alive"));
 		return headers;
 	}
 	private static HttpAsyncClientBuilder getHttpAsyncClientBuilder(HttpAsyncClientBuilder httpAsyncClientBuilder, String user, String password) {

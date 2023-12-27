@@ -75,7 +75,7 @@ public abstract class AbstractMapClient implements MapClient{
     }
     @Override
     public Coordinate regeo(SRS srs, String point)  {
-        String[] points = point.split(", ");
+        String[] points = point.split(",");
         return regeo(srs, BasicUtil.parseDouble(points[0], null), BasicUtil.parseDouble(points[1], null));
     }
     @Override

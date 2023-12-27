@@ -205,7 +205,7 @@ public class H2Adapter extends DefaultJDBCAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

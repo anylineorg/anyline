@@ -121,7 +121,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 	public void setDelimiter(String delimiter){
 		if(BasicUtil.isNotEmpty(delimiter)){
-			delimiter = delimiter.replaceAll("\\s", "");
+			delimiter = delimiter.replaceAll("\\s","");
 			if(delimiter.length() == 1){
 				this.delimiterFr = delimiter;
 				this.delimiterTo = delimiter;
@@ -1002,7 +1002,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			for(Column col:cols.values()){
 				String key = col.getName();
 				if(!start){
-					builder.append(", ");
+					builder.append(",");
 				}
 				start = false;
 				builder.append(key);
@@ -1554,7 +1554,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			set = new DataSet();
 		}
 
-		set.setDataSource(prepare.getDataSource());
+		set.setDataSource(prepare.getDest());
 		set.setNavi(navi);
 		if (null != navi && navi.isLazy()) {
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
@@ -1617,11 +1617,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return new EntitySet();
 		}
 
-		if(BasicUtil.isEmpty(prepare.getDataSource())) {
+		if(BasicUtil.isEmpty(prepare.getDest())) {
 			//text xml格式的 不检测表名，避免一下步根据表名检测表结构
 			if(prepare instanceof TextPrepare || prepare instanceof XMLPrepare){
 			}else {
-				prepare.setDataSource(EntityAdapterProxy.table(clazz, true));
+				prepare.setDest(EntityAdapterProxy.table(clazz, true));
 			}
 		}
 
@@ -2528,7 +2528,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(obj instanceof ConfigStore){
 			run = new TableRun(runtime, dest);
 			RunPrepare prepare = new DefaultTablePrepare();
-			prepare.setDataSource(dest);
+			prepare.setDest(dest);
 			run.setPrepare(prepare);
 			run.setConfigStore((ConfigStore)obj);
 			run.addCondition(columns);
@@ -3806,7 +3806,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				log.info("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, origin, types, list.size(), System.currentTimeMillis() - fr);
 			}
 			if(BasicUtil.isNotEmpty(origin)){
-				origin = origin.replace("%", ".*");
+				origin = origin.replace("%",".*");
 				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
 				for(T item:list){
@@ -4316,7 +4316,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, views.size(), System.currentTimeMillis() - fr);
 			}
 			if(BasicUtil.isNotEmpty(pattern)){
-				pattern = pattern.replace("%", ".*");
+				pattern = pattern.replace("%",".*");
 				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
 				List<String> keys = BeanUtil.getMapKeys(views);
 				for(String key:keys){
@@ -6574,11 +6574,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		String cur_define = "";
 		if(null != src_primary) {
 			src_primary.setTable(update);
-			src_define = BeanUtil.concat(src_primary.getColumns().values(), "name", ",", false, true);
+			src_define = BeanUtil.concat(src_primary.getColumns().values(), "name",",", false, true);
 		}
 		if(null != cur_primary){
 			cur_primary.setTable(update);
-			cur_define= BeanUtil.concat(cur_primary.getColumns().values(),"name", ",", false, true);
+			cur_define= BeanUtil.concat(cur_primary.getColumns().values(),"name",",", false, true);
 		}
 		boolean change_pk = !cur_define.equalsIgnoreCase(src_define);
 		if(null != src_primary){

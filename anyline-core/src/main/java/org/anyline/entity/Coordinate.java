@@ -52,7 +52,7 @@ public class Coordinate {
 
 	public Coordinate(String location){
 		if(BasicUtil.isNotEmpty(location)){
-			String[] tmps = location.split(", ");
+			String[] tmps = location.split(",");
 			if(tmps.length > 1){
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
@@ -88,7 +88,7 @@ public class Coordinate {
 	}
 	public void setLocation(String location){
 		if(BasicUtil.isNotEmpty(location)){
-			String[] tmps = location.split(", ");
+			String[] tmps = location.split(",");
 			if(tmps.length > 1){
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
@@ -213,7 +213,7 @@ public class Coordinate {
 		this.address = address;
 	}
 	public String toString(){
-		return "["+point.x()+", "+point.y()+"]";
+		return "["+point.x()+","+point.y()+"]";
 	}
 
 	public SRS getSrs() {

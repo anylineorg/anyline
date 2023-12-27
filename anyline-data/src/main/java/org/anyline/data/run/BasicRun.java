@@ -240,7 +240,7 @@ public abstract class BasicRun implements Run {
 	 * @param split  遇到集合/数组类型是否拆分处理(DataRow 并且Column不是数组类型)
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	@Override
 	public RunValue addValues(Compare compare, Column column, Object obj, boolean split){
 		RunValue rv = null;
@@ -354,7 +354,7 @@ public abstract class BasicRun implements Run {
 	 * @param run  run
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public Run addValues(RunValue run){
 		if(null == values){
 			values = new ArrayList<>();
@@ -628,7 +628,7 @@ public abstract class BasicRun implements Run {
 		}
 		text = format(text);
 		if(!supportBr()){
-			text = text.replace("\r\n", " ").replace("\n", " ");
+			text = text.replace("\r\n"," ").replace("\n"," ");
 		}
 		return text;
 	}
@@ -755,12 +755,12 @@ public abstract class BasicRun implements Run {
 					continue;
 				}
 				condition = condition.trim();
-				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim();
+				String up = condition.toUpperCase().replaceAll("\\s+"," ").trim();
 
 				if(up.startsWith("ORDER BY")){
 					// 排序条件
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
-					String orders[] = orderStr.split(", ");
+					String orders[] = orderStr.split(",");
 					for(String item:orders){
 						order(item);
 						if(null != configStore){
@@ -774,7 +774,7 @@ public abstract class BasicRun implements Run {
 				}else if(up.startsWith("GROUP BY")){
 					// 分组条件
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
-					String groups[] = groupStr.split(", ");
+					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						if(null == groupStore){
 							groupStore = new DefaultGroupStore();
@@ -851,11 +851,11 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return result;*/
-		txt = txt.replaceAll("\\s", " ")
-				.replaceAll("'[\\S\\s]*?'", "{}")
-				.replaceAll("\\([^\\(\\)]+?\\)", "{}")
-				.replaceAll("\\([^\\(\\)]+?\\)", "{}")
-				.replaceAll("\\([^\\(\\)]+?\\)", "{}")
+		txt = txt.replaceAll("\\s"," ")
+				.replaceAll("'[\\S\\s]*?'","{}")
+				.replaceAll("\\([^\\(\\)]+?\\)","{}")
+				.replaceAll("\\([^\\(\\)]+?\\)","{}")
+				.replaceAll("\\([^\\(\\)]+?\\)","{}")
 				.toUpperCase();
 		if(txt.contains("UNION")){
 			boolean result = false;
@@ -1053,7 +1053,7 @@ public abstract class BasicRun implements Run {
 
 						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}else{
-						result += ", " + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
+						result += "," + SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}
 				}
 			}
@@ -1099,10 +1099,10 @@ public abstract class BasicRun implements Run {
 	}
 	private String format(String sql){
 		if(null != sql) {
-			sql = sql.replaceAll("\n ", "\n\t")
-					.replaceAll("\n\t\n", "\n")
-					.replaceAll("\n{2,}", "\n")
-					.replaceAll(" {2,}", " ")
+			sql = sql.replaceAll("\n ","\n\t")
+					.replaceAll("\n\t\n","\n")
+					.replaceAll("\n{2,}","\n")
+					.replaceAll(" {2,}"," ")
 					.trim();
 		}
 		return sql;

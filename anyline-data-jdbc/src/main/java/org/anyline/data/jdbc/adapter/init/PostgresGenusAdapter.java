@@ -168,7 +168,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public String batchInsertSeparator (){
-        return ", ";
+        return ",";
     }
 
     /**
@@ -585,7 +585,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             boolean first = true;
             for (String name : names) {
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 first = false;
                 builder.append(key).append("('").append(name).append("') AS ").append(name);
@@ -2476,7 +2476,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             String define = row.getString("DEFINE");
             String[] cols = RegularUtil.cut(define, "(",")").split(",");
             for(String col:cols){
-                Column column = new Column(col.trim().replace("\"", ""));
+                Column column = new Column(col.trim().replace("\"",""));
                 column.setTable(table);
                 primary.addColumn(column);
             }

@@ -209,7 +209,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

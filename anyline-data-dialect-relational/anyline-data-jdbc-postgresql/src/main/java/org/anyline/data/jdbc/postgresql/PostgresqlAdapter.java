@@ -216,7 +216,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

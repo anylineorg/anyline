@@ -210,7 +210,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**
@@ -2535,7 +2535,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
 		PrimaryKey primary = null;
-		set = set.getRows("KEY_NAME", "PRIMARY");
+		set = set.getRows("KEY_NAME","PRIMARY");
 		if(set.size() > 0){
 			primary = new PrimaryKey();
 			for(DataRow row:set){

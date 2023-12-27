@@ -256,7 +256,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

@@ -1210,7 +1210,7 @@ public class BasicUtil {
 		List<String> propertys1 = new ArrayList<>();
 		List<String> propertys2 = new ArrayList<>();
 		if(BasicUtil.isNotEmpty(propertys)){
-			String[] ps = propertys.split(", ");
+			String[] ps = propertys.split(",");
 			for(String p:ps){
 				if(BasicUtil.isNotEmpty(p)){
 					String p1 = p;

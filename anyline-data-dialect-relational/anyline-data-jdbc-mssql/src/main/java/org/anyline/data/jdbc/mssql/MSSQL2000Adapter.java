@@ -114,9 +114,9 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
                 rows = navi.getTotalRow() % navi.getPageRows();
             }
             String asc = order;
-            String desc = order.replace("ASC", "<A_ORDER>");
-            desc = desc.replace("DESC", "ASC");
-            desc = desc.replace("<A_ORDER>", "DESC");
+            String desc = order.replace("ASC","<A_ORDER>");
+            desc = desc.replace("DESC","ASC");
+            desc = desc.replace("<A_ORDER>","DESC");
             builder.append("SELECT "+cols+" FROM (\n ");
             builder.append("SELECT TOP ").append(rows).append(" * FROM (\n");
             builder.append("SELECT TOP ").append(navi.getPageRows()*navi.getCurPage()).append(" * ");
@@ -158,7 +158,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         boolean start = true;
         for(Column column:columns.values()){
             if(!start){
-                builder.append(", ");
+                builder.append(",");
             }
             start = false;
             String key = column.getName();
@@ -221,7 +221,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         boolean start = true;
         for(Column column:columns.values()){
             if(!start){
-                builder.append(", ");
+                builder.append(",");
             }
             start = false;
             String key = column.getName();

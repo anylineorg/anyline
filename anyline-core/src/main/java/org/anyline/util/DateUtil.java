@@ -1023,7 +1023,7 @@ public class DateUtil {
 				return Date.from(OffsetDateTime.parse(str).toInstant());
 			}else{
 				//2022-12-08T12:29:53
-				str = str.replace("T", " ");
+				str = str.replace("T"," ");
 			}
 		}
 		Date date = null;
@@ -1042,21 +1042,21 @@ public class DateUtil {
 			str += " 00:00:00";
 		} else if (!str.contains(" ")) {
 			// 不带日期 12:12:12 12:12:12.109
-			//format = format.replace("yyyy-MM-dd ", "");
+			//format = format.replace("yyyy-MM-dd ","");
 			str = format("yyyy-MM-dd") + " "+ str;
 		}
 		if (BasicUtil.charCount(str, ":") == 1) {
 			// 只有时分 没有秒 10:10
-			//format = format.replace(":ss", "");
+			//format = format.replace(":ss","");
 			str += ":00";
 		}
 
 		if (str.contains("/")) {
 			// 2020/01/01
-			format = format.replace("-", "/");
+			format = format.replace("-","/");
 		}
 		if (!str.contains("-") && !str.contains("/")) {
-			format = format.replace("-", "").replace("/", "");
+			format = format.replace("-","").replace("/","");
 		}
 
 		try {

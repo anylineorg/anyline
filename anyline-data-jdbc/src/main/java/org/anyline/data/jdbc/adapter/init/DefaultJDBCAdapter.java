@@ -218,7 +218,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		boolean first = true;
 		for(Column column:columns.values()){
 			if(!first){
-				builder.append(", ");
+				builder.append(",");
 			}
 			first = false;
 			String key = column.getName();
@@ -232,7 +232,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setVol(size);
 			for(int i=0; i<size; i++){
 				if(i>0){
-					builder.append(", ");
+					builder.append(",");
 				}
 				builder.append("?");
 			}
@@ -296,7 +296,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		boolean first = true;
 		for(Column column:columns.values()){
 			if(!first){
-				builder.append(", ");
+				builder.append(",");
 			}
 			first = false;
 			delimiter(builder, column.getName());
@@ -311,7 +311,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setVol(size);
 			for(int i=0; i<size; i++){
 				if(i>0){
-					builder.append(", ");
+					builder.append(",");
 				}
 				builder.append("?");
 			}
@@ -377,7 +377,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**
@@ -463,8 +463,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		boolean first = true;
 		for(Column column:cols.values()){
 			if(!first){
-				builder.append(", ");
-				valuesBuilder.append(", ");
+				builder.append(",");
+				valuesBuilder.append(",");
 			}
 			first = false;
 			String key = column.getName();
@@ -1167,7 +1167,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					for(int i=0; i<size; i++){
 						sql += "?";
 						if(i < size-1){
-							sql += ", ";
+							sql += ",";
 						}
 					}
 					sql += ")}";
@@ -1407,7 +1407,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					column = column.substring(2, column.length()-1);
 					builder.append(column);
 				}else{
-					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(", ")){
+					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
 						builder.append(column);
 					}else if("*".equals(column)){
 						builder.append("*");
@@ -1416,7 +1416,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					}
 				}
 				if(i<size-1){
-					builder.append(", ");
+					builder.append(",");
 				}
 			}
 			builder.append(BR);
@@ -1495,11 +1495,11 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		// NOT A%  151
 		// NOT %A  152
 		if(code == 50){
-			builder.append(" LIKE ").append(concat(runtime, "'%'", "?", "'%'"));
+			builder.append(" LIKE ").append(concat(runtime, "'%'","?","'%'"));
 		}else if(code == 51){
-			builder.append(" LIKE ").append(concat(runtime, "?", "'%'"));
+			builder.append(" LIKE ").append(concat(runtime, "?","'%'"));
 		}else if(code == 52){
-			builder.append(" LIKE ").append(concat(runtime, "'%'", "?"));
+			builder.append(" LIKE ").append(concat(runtime, "'%'","?"));
 		}
 		RunValue run = new RunValue();
 		run.setValue(value);
@@ -1541,7 +1541,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			for(int i=0; i<size; i++){
 				builder.append("?");
 				if(i < size-1){
-					builder.append(", ");
+					builder.append(",");
 				}
 			}
 			builder.append(")");
@@ -1849,7 +1849,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder.append("SELECT COUNT(*) AS CNT FROM (\n").append(base).append("\n) F");
 		}
 		String sql = builder.toString();
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
 		return sql;
 	}
 
@@ -1924,7 +1924,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	@Override
 	public String mergeFinalExists(DataRuntime runtime, Run run){
 		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
 		return sql;
 	}
 
@@ -1992,7 +1992,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		for(int i=0; i<size; i++){
 			sql += "?";
 			if(i < size-1){
-				sql += ", ";
+				sql += ",";
 			}
 		}
 		sql += ")}";
@@ -3254,14 +3254,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		for(DataRow row:set){
 			String _catalog = row.getString("TABLE_CATALOG");
-			String _schema = row.getString("TABLE_SCHEMA", "TABSCHEMA", "SCHEMA_NAME");
+			String _schema = row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME");
 			if(null == _catalog && null != catalog){
 				_catalog = catalog.getName();
 			}
 			if(null == _schema && null != schema){
 				_schema = schema.getName();
 			}
-			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
+			String name = row.getString("TABLE_NAME","NAME","TABNAME");
 			if(null == name){
 				continue;
 			}
@@ -3308,14 +3308,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		for(DataRow row:set){
 			String _catalog = row.getString("TABLE_CATALOG");
-			String _schema = row.getString("TABLE_SCHEMA", "TABSCHEMA", "SCHEMA_NAME");
+			String _schema = row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME");
 			if(null == _catalog && null != catalog){
 				_catalog = catalog.getName();
 			}
 			if(null == _schema && null != schema){
 				_schema = schema.getName();
 			}
-			String name = row.getString("TABLE_NAME", "NAME", "TABNAME");
+			String name = row.getString("TABLE_NAME","NAME","TABNAME");
 			T table = table(tables, new Catalog(_catalog), new Schema(_schema), name);
 			boolean conains = true;
 			if(null == table){
@@ -3345,7 +3345,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	private void init(Table table, DataRow row){
 		table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		table.setEngine(row.getString("ENGINE"));
-		table.setComment(row.getString("TABLE_COMMENT", "COMMENTS", "COMMENT"));
+		table.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
 		table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
 		table.setCollate(row.getString("TABLE_COLLATION"));
 		table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
@@ -4362,7 +4362,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			columns = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("COLUMN_NAME", "COLNAME");
+			String name = row.getString("COLUMN_NAME","COLNAME");
 			T column = columns.get(name.toUpperCase());
 			if(null == column){
 				column = (T)new Column();
@@ -4379,7 +4379,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			columns = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("COLUMN_NAME", "COLNAME");
+			String name = row.getString("COLUMN_NAME","COLNAME");
 			T tmp = (T)new Column();
 			tmp.setName(name);
 			init(tmp, table, row);
@@ -9030,7 +9030,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null != catalog){
 			catalog = catalog.trim();
 		}
-		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA", "TABSCHEMA", "SCHEMA_NAME", "OWNER"), column.getSchemaName(), table.getSchemaName());
+		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"), column.getSchemaName(), table.getSchemaName());
 		if(null != schema){
 			schema = schema.trim();
 		}
@@ -9039,15 +9039,15 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null != table.getName()) {//查询全部表
 			column.setTable(table);
 		}
-		column.setTable(BasicUtil.evl(row.getString("TABLE_NAME", "TABNAME"), table.getName(), column.getTableName(true)));
+		column.setTable(BasicUtil.evl(row.getString("TABLE_NAME","TABNAME"), table.getName(), column.getTableName(true)));
 
 		if(null == column.getPosition()) {
 			try {
-				column.setPosition(row.getInt("ORDINAL_POSITION", "COLNO", "POSITION"));
+				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
 			}catch (Exception e){}
 		}
-		column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT", "COMMENTS", "REMARKS"), column.getComment()));
-		String type = row.getString("FULL_TYPE","DATA_TYPE", "TYPE_NAME", "TYPENAME", "DATA_TYPE_NAME");
+		column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS","REMARKS"), column.getComment()));
+		String type = row.getString("FULL_TYPE","DATA_TYPE","TYPE_NAME","TYPENAME","DATA_TYPE_NAME");
 		/*if(null != type){
 			type = type.replace("character varying","VARCHAR");
 		}*/
@@ -9056,10 +9056,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		//TODO timestamp without time zone
 		//TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
 		if(null != type && type.contains(" ")){
-			type = row.getString("UDT_NAME","DATA_TYPE", "TYPENAME", "DATA_TYPE_NAME");
+			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
 		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
-		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT", "DATA_DEFAULT", "DEFAULT", "DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
+		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
 				def = def.substring(1, def.length()-1);
@@ -9102,20 +9102,20 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		//非空
 		if(-1 == column.isNullable()) {
 			try {
-				column.nullable(row.getBoolean("IS_NULLABLE", "NULLABLE", "NULLS"));
+				column.nullable(row.getBoolean("IS_NULLABLE","NULLABLE","NULLS"));
 			}catch (Exception e){}
 		}
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
 		try {
-			Integer len = row.getInt("NUMERIC_PRECISION", "PRECISION", "DATA_PRECISION","");
+			Integer len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION","");
 			if (null == len || len == 0) {
-				len = row.getInt("CHARACTER_MAXIMUM_LENGTH", "MAX_LENGTH", "DATA_LENGTH", "LENGTH");
+				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
 			}
 			column.setPrecision(len);
 		}catch (Exception e){}
 		try {
 			if (null == column.getScale()) {
-				column.setScale(row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE"));
+				column.setScale(row.getInt("NUMERIC_SCALE","SCALE","DATA_SCALE"));
 			}
 		}catch (Exception e){}
 		if(null == column.getCharset()) {
@@ -10072,7 +10072,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 								replaceDst += " ?";
 							}
 							addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
-							replaceDst = replaceDst.trim().replace(" ", ",");
+							replaceDst = replaceDst.trim().replace(" ",",");
 							result = result.replace(var.getFullKey(), replaceDst);
 						}else{
 							// 单个值
@@ -10156,7 +10156,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			sql += " LIMIT " + navi.getFirstRow() + "," + limit;
 		}
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
 		return sql;
 	}
 
@@ -10185,7 +10185,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow();
 		}
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
 		return sql;
 	}
 
@@ -10327,9 +10327,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				rows = navi.getTotalRow() % navi.getPageRows();
 			}
 			String asc = order;
-			String desc = order.replace("ASC", "<A_ORDER>");
-			desc = desc.replace("DESC", "ASC");
-			desc = desc.replace("<A_ORDER>", "DESC");
+			String desc = order.replace("ASC","<A_ORDER>");
+			desc = desc.replace("DESC","ASC");
+			desc = desc.replace("<A_ORDER>","DESC");
 			builder.append("SELECT "+cols+" FROM (\n ");
 			builder.append("SELECT TOP ").append(rows).append(" * FROM (\n");
 			builder.append("SELECT TOP ").append(navi.getPageRows()*navi.getCurPage()).append(" * ");

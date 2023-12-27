@@ -351,8 +351,8 @@ public class FTPUtil {
 		boolean result = false; 
 		try {
 			result = client.changeWorkingDirectory(dir); 
-			String path = client.doCommandAsStrings("pwd", "")[0];
-			this.dir = RegularUtil.cut(path, "\"", "\"");
+			String path = client.doCommandAsStrings("pwd","")[0];
+			this.dir = RegularUtil.cut(path, "\"","\"");
 			log.warn("[ftp change directory][directory:{}]", this.dir);
 		} catch (IOException e) {
 			e.printStackTrace(); 
@@ -460,7 +460,7 @@ public class FTPUtil {
      */   
     public static List<String> formatPath(String srcPath) {
         List<String> list = new ArrayList<>(2);
-        String repSrc = srcPath.replaceAll("\\\\", "/");
+        String repSrc = srcPath.replaceAll("\\\\","/");
         int firstP = repSrc.indexOf("/");   
         int lastP = repSrc.lastIndexOf("/");   
         String fileName = lastP + 1 == repSrc.length() ? "" : repSrc.substring(lastP + 1);   

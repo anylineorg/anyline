@@ -183,7 +183,7 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      */
     @Override
     public String batchInsertSeparator (){
-        return ", ";
+        return ",";
     }
 
     /**
@@ -3166,7 +3166,7 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
         mappings.put("properties", properties);
         String json = body.toJSON();
         log.warn("[create index][map:{}]", json);
-        Request request = new Request("PUT", "/" + meta.getName());
+        Request request = new Request("PUT","/" + meta.getName());
         request.setJsonEntity(json);
         HttpResponse response = exe(runtime, request);
         if(response.getStatus() == 200){
@@ -5641,12 +5641,12 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
     }
     /*
 PUT index_user/_bulk
-{"index":{"_index":"index_user", "_id":"10011"}}
-{"id":1001, "name":"a b", "age":20}
-{"index":{"_index":"index_user", "_id":"10012"}}
-{"id":1002, "name":"b c", "age":20}
-{"index":{"_index":"index_user", "_id":"10013"}}
-{"id":1003, "name":"c d", "age":30}*/
+{"index":{"_index":"index_user","_id":"10011"}}
+{"id":1001, "name":"a b","age":20}
+{"index":{"_index":"index_user","_id":"10012"}}
+{"id":1002, "name":"b c","age":20}
+{"index":{"_index":"index_user","_id":"10013"}}
+{"id":1003, "name":"c d","age":30}*/
     public boolean inserts(DataRuntime runtime, String table, Collection list){
         boolean result = false;
         String pk = "_id";
@@ -5677,12 +5677,12 @@ PUT index_user/_bulk
 
     /**
      *PUT index_user/_bulk
-     * {"index":{"_index":"index_user", "_id":"10011"}}
-     * {"id":1001, "name":"a b", "age":20}
-     * {"index":{"_index":"index_user", "_id":"10012"}}
-     * {"id":1002, "name":"b c", "age":20}
-     * {"index":{"_index":"index_user", "_id":"10013"}}
-     * {"id":1003, "name":"c d", "age":30}
+     * {"index":{"_index":"index_user","_id":"10011"}}
+     * {"id":1001, "name":"a b","age":20}
+     * {"index":{"_index":"index_user","_id":"10012"}}
+     * {"id":1002, "name":"b c","age":20}
+     * {"index":{"_index":"index_user","_id":"10013"}}
+     * {"id":1003, "name":"c d","age":30}
      * @param table
      * @param set
      * @return boolean
@@ -5794,7 +5794,7 @@ PUT index_user/_bulk
         if(response.getStatus() == 200) {
             String txt = response.getText();
             DataRow row = DataRow.parseJson(txt);
-            Object total = row.recursion("hits", "total", "value");
+            Object total = row.recursion("hits","total","value");
             if(null == page){
                 page = new DefaultPageNavi();
             }

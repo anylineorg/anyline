@@ -215,7 +215,7 @@ public class HiveAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

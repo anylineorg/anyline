@@ -88,7 +88,7 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 		if(null == text){
 			return this; 
 		} 
-		text = text.replaceAll("--.*", "");//过滤注释 
+		text = text.replaceAll("--.*","");//过滤注释
 		this.text = text; 
 		parseText(); 
 		return this; 
@@ -316,7 +316,7 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 //							addRunValue(tmp); 
 //							replaceDst += " ?"; 
 //						} 
-//						replaceDst = replaceDst.trim().replace(" ", ","); 
+//						replaceDst = replaceDst.trim().replace(" ",",");
 //						result = result.replace(replaceSrc, replaceDst); 
 //					}else{
 //						// 单个值 
@@ -341,11 +341,11 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 //		return result; 
 //	} 
  
-	public RunPrepare setDataSource(String ds){
+	public RunPrepare setDest(String ds){
 		this.id = ds; 
 		return this; 
 	} 
-	public String getDataSource(){
+	public String getDest(){
 		return id ; 
 	} 
 	public String getSchema(){

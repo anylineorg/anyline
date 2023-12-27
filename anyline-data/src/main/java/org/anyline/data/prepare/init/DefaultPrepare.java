@@ -131,7 +131,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	 * @param runValue  runValue
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked","rawtypes" })
 	protected RunPrepare addRunValue(Object runValue){
 		if(null == runValues){
 			runValues = new Vector<Object>(); 

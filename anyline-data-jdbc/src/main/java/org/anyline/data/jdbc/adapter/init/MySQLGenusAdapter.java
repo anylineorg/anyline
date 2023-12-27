@@ -164,7 +164,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public String batchInsertSeparator (){
-        return ", ";
+        return ",";
     }
 
     /**
@@ -1868,7 +1868,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         if(BasicUtil.isEmpty(table.getCharset())) {
             for (String item : ddls) {
                 if (item.contains("CHARSET=")) {
-                    String charset = RegularUtil.cut(item, "CHARSET=", " ");
+                    String charset = RegularUtil.cut(item, "CHARSET="," ");
                     table.setCharset(charset);
                 }
             }
@@ -2571,7 +2571,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
         PrimaryKey primary = null;
-        set = set.getRows("Key_name", "PRIMARY");
+        set = set.getRows("Key_name","PRIMARY");
         if(set.size() > 0){
             primary = new PrimaryKey();
             for(DataRow row:set){

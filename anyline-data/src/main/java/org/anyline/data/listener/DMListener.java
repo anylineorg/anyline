@@ -361,7 +361,7 @@ public interface DMListener {
      * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
-     * service.delete(DataRuntime runtime, String random, "CRM_USER", "ID", "1", "2", "3"){return SWITCH.CONTINUE;}
+     * service.delete(DataRuntime runtime, String random, "CRM_USER","ID","1","2","3"){return SWITCH.CONTINUE;}
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等

@@ -87,24 +87,33 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 按条件查询
      *
-     * @param src        数据源(表｜视图｜函数｜自定义SQL | SELECT语句)
+     * @param dest        查询或操作的目标(表｜视图｜函数｜自定义SQL | SELECT语句)
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return DataSet
      */
-    
     @Override 
-    public DataSet querys(String src, ConfigStore configs, Object obj, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(src);
+    public DataSet querys(String dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
         }
-        src = BasicUtil.compress(src);
+        dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
         configs = append(configs, obj);
-        return queryFromDao(src, configs, conditions);
+        return queryFromDao(dest, configs, conditions);
     }
 
+    @Override
+    public DataSet querys(Table dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
+        }
+        conditions = BasicUtil.compress(conditions);
+        configs = append(configs, obj);
+        return queryFromDao(dest, configs, conditions);
+    }
     @Override 
     public List<String> column2param(String table) {
         List<String> columns = columns(table);
@@ -113,16 +122,16 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public List<Map<String, Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(src);
+    public List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).maps(ps[1], configs, obj, conditions);
         }
         List<Map<String, Object>> maps = null;
-        src = BasicUtil.compress(src);
+        dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
         try {
-            RunPrepare prepare = createRunPrepare(src);
+            RunPrepare prepare = createRunPrepare(dest);
             configs = append(configs, obj);
             if(null != prepare.getRuntime()){
                 maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
@@ -137,31 +146,75 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return maps;
     }
-    
+
+    @Override
+    public List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).maps(ps[1], configs, obj, conditions);
+        }
+        List<Map<String, Object>> maps = null;
+        conditions = BasicUtil.compress(conditions);
+        try {
+            RunPrepare prepare = createRunPrepare(dest);
+            configs = append(configs, obj);
+            if(null != prepare.getRuntime()){
+                maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
+            }else {
+                maps = dao.maps(prepare, configs, conditions);
+            }
+        } catch (Exception e) {
+            maps = new ArrayList<Map<String, Object>>();
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+                throw e;
+            }
+        }
+        return maps;
+    }
+
     @Override 
-    public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(src);
+    public DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
         }
         DataSet set = null;
-        src = BasicUtil.compress(src);
+        dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
         if (null == cache || ConfigTable.IS_CACHE_DISABLED) {
-            set = querys(src, append(configs, obj), conditions);
+            set = querys(dest, append(configs, obj), conditions);
         } else {
             if (null != cacheProvider) {
-                set = queryFromCache(cache, src, configs, conditions);
+                set = queryFromCache(cache, dest, configs, conditions);
             } else {
-                set = querys(src, configs, conditions);
+                set = querys(dest, configs, conditions);
             }
         }
         return set;
     }
 
+    @Override
+    public DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
+        }
+        DataSet set = null;
+        conditions = BasicUtil.compress(conditions);
+        if (null == cache || ConfigTable.IS_CACHE_DISABLED) {
+            set = querys(dest, append(configs, obj), conditions);
+        } else {
+            if (null != cacheProvider) {
+                set = queryFromCache(cache, dest, configs, conditions);
+            } else {
+                set = querys(dest, configs, conditions);
+            }
+        }
+        return set;
+    }
 
     @Override 
-    public DataRow query(String src, ConfigStore store, Object obj, String... conditions) {
+    public DataRow query(String dest, ConfigStore store, Object obj, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -170,7 +223,7 @@ public class DefaultService<E> implements AnylineService<E> {
             store = new DefaultConfigStore();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(src, store, obj, conditions);
+        DataSet set = querys(dest, store, obj, conditions);
         if (null != set && set.size() > 0) {
             DataRow row = set.getRow(0);
             return row;
@@ -181,6 +234,26 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
+    @Override
+    public DataRow query(Table dest, ConfigStore store, Object obj, String... conditions) {
+        DefaultPageNavi navi = new DefaultPageNavi();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == store) {
+            store = new DefaultConfigStore();
+        }
+        store.setPageNavi(navi);
+        DataSet set = querys(dest, store, obj, conditions);
+        if (null != set && set.size() > 0) {
+            DataRow row = set.getRow(0);
+            return row;
+        }
+        if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
+            return new DataRow();
+        }
+        return null;
+    }
     @Override 
     public BigDecimal sequence(boolean next, String name) {
         DataRow row = sequences(next, name);
@@ -198,10 +271,10 @@ public class DefaultService<E> implements AnylineService<E> {
  
     
     @Override 
-    public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String... conditions) {
+    public DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
         // 是否启动缓存
         if (null == cache || null == cacheProvider || ConfigTable.IS_CACHE_DISABLED) {
-            return query(src, configs, obj, conditions);
+            return query(dest, configs, obj, conditions);
         }
         DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
@@ -221,7 +294,7 @@ public class DefaultService<E> implements AnylineService<E> {
             cache = ks[0];
             key += ks[1] + ":";
         }
-        key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+        key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
         if (null != cacheProvider) {
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
@@ -236,7 +309,56 @@ public class DefaultService<E> implements AnylineService<E> {
             }
         }
         // 调用实际 的方法
-        row = query(src, configs, obj, conditions);
+        row = query(dest, configs, obj, conditions);
+        if (null != row && null != cacheProvider) {
+            cacheProvider.put(cache, key, row);
+        }
+        if (null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
+            row = new DataRow();
+        }
+        return row;
+    }
+
+    @Override
+    public DataRow cache(String cache, Table dest, ConfigStore configs, Object obj, String... conditions) {
+        // 是否启动缓存
+        if (null == cache || null == cacheProvider || ConfigTable.IS_CACHE_DISABLED) {
+            return query(dest, configs, obj, conditions);
+        }
+        DefaultPageNavi navi = new DefaultPageNavi();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == configs) {
+            configs = new DefaultConfigStore();
+        }
+        configs = append(configs, obj);
+        configs.setPageNavi(navi);
+
+        DataRow row = null;
+        String key = "ROW:";
+
+        if (cache.contains(":")) {
+            String ks[] = BeanUtil.parseKeyValue(cache);
+            cache = ks[0];
+            key += ks[1] + ":";
+        }
+        key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+        if (null != cacheProvider) {
+            CacheElement cacheElement = cacheProvider.get(cache, key);
+            if (null != cacheElement && null != cacheElement.getValue()) {
+                Object cacheValue = cacheElement.getValue();
+                if (cacheValue instanceof DataRow) {
+                    row = (DataRow) cacheValue;
+                    row.setIsFromCache(true);
+                    return row;
+                } else {
+                    log.error("[缓存设置错误, 检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                }
+            }
+        }
+        // 调用实际 的方法
+        row = query(dest, configs, obj, conditions);
         if (null != row && null != cacheProvider) {
             cacheProvider.put(cache, key, row);
         }
@@ -277,17 +399,26 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @Override 
-    public <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(src);
+    public <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).selects(ps[1], clazz, configs, entity, conditions);
         }
-        return queryFromDao(src, clazz, append(configs, entity), conditions);
+        return queryFromDao(dest, clazz, append(configs, entity), conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).selects(ps[1], clazz, configs, entity, conditions);
+        }
+        return queryFromDao(dest, clazz, append(configs, entity), conditions);
     }
 
     
     @Override 
-    public <T> T select(String src, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+    public <T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         DefaultPageNavi navi = new DefaultPageNavi();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -296,7 +427,7 @@ public class DefaultService<E> implements AnylineService<E> {
             configs = new DefaultConfigStore();
         }
         configs.setPageNavi(navi);
-        EntitySet<T> list = selects(src, clazz, configs, entity, conditions);
+        EntitySet<T> list = selects(dest, clazz, configs, entity, conditions);
         if (null != list && list.size() > 0) {
             return list.get(0);
         }
@@ -310,6 +441,30 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
+
+    @Override
+    public <T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        DefaultPageNavi navi = new DefaultPageNavi();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == configs) {
+            configs = new DefaultConfigStore();
+        }
+        configs.setPageNavi(navi);
+        EntitySet<T> list = selects(dest, clazz, configs, entity, conditions);
+        if (null != list && list.size() > 0) {
+            return list.get(0);
+        }
+        if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
+            try {
+                return (T) clazz.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     /**
      * 解析泛型class
@@ -466,18 +621,18 @@ public class DefaultService<E> implements AnylineService<E> {
      * 删除缓存 参数保持与查询参数完全一致
      *
      * @param channel    channel
-     * @param src        src
+     * @param dest        查询或操作的目标(表、存储过程、SQL等)
      * @param configs    configs
      * @param conditions conditions
      * @return boolean
      */
     
     @Override 
-    public boolean removeCache(String channel, String src, ConfigStore configs, String... conditions) {
+    public boolean removeCache(String channel, String dest, ConfigStore configs, String... conditions) {
         if (null != cacheProvider) {
-            src = BasicUtil.compress(src);
+            dest = BasicUtil.compress(dest);
             conditions = BasicUtil.compress(conditions);
-            String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+            String key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
             cacheProvider.remove(channel, "SET:" + key);
             cacheProvider.remove(channel, "ROW:" + key);
 
@@ -489,12 +644,33 @@ public class DefaultService<E> implements AnylineService<E> {
                 configs = new DefaultConfigStore();
             }
             configs.setPageNavi(navi);
-            key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+            key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
             cacheProvider.remove(channel, "ROW:" + key);
         }
         return true;
     }
 
+    @Override
+    public boolean removeCache(String channel, Table dest, ConfigStore configs, String... conditions) {
+        if (null != cacheProvider) {
+            conditions = BasicUtil.compress(conditions);
+            String key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+            cacheProvider.remove(channel, "SET:" + key);
+            cacheProvider.remove(channel, "ROW:" + key);
+
+            DefaultPageNavi navi = new DefaultPageNavi();
+            navi.setFirstRow(0);
+            navi.setLastRow(0);
+            navi.setCalType(1);
+            if (null == configs) {
+                configs = new DefaultConfigStore();
+            }
+            configs.setPageNavi(navi);
+            key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+            cacheProvider.remove(channel, "ROW:" + key);
+        }
+        return true;
+    }
 
     /**
      * 清空缓存
@@ -524,23 +700,22 @@ public class DefaultService<E> implements AnylineService<E> {
     /**
      * 是否存在
      *
-     * @param src        src
+     * @param dest        查询或操作的目标(表、存储过程、SQL等)
      * @param configs    根据http等上下文构造查询条件
      * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return boolean
      */
-
     @Override 
-    public boolean exists(String src, ConfigStore configs, Object obj, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(src);
+    public boolean exists(String dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).exists(ps[1], configs, obj, conditions);
         }
         boolean result = false;
-        src = BasicUtil.compress(src);
+        dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
-        RunPrepare prepare = createRunPrepare(src);
+        RunPrepare prepare = createRunPrepare(dest);
         if(null != prepare.getRuntime()) {
             result = ServiceProxy.service(prepare.getRuntime()).getDao().exists(prepare, append(configs, obj), conditions);
         }else {
@@ -549,12 +724,30 @@ public class DefaultService<E> implements AnylineService<E> {
         return result;
     }
 
+    @Override
+    public boolean exists(Table dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).exists(ps[1], configs, obj, conditions);
+        }
+        boolean result = false;
+        conditions = BasicUtil.compress(conditions);
+        RunPrepare prepare = createRunPrepare(dest);
+        if(null != prepare.getRuntime()) {
+            result = ServiceProxy.service(prepare.getRuntime()).getDao().exists(prepare, append(configs, obj), conditions);
+        }else {
+            result = dao.exists(prepare, append(configs, obj), conditions);
+        }
+        return result;
+    }
     /**
      * 只根据主键判断
+     * @param dest 查询或操作的目标(表、存储过程、SQL等)
+     * @param row DataRow
+     * @return boolean
      */
-    
-    @Override 
-    public boolean exists(String src, DataRow row) {
+    @Override
+    public boolean exists(String dest, DataRow row) {
         if (null != row) {
             List<String> keys = row.getPrimaryKeys();
             if (null != keys) {
@@ -563,7 +756,24 @@ public class DefaultService<E> implements AnylineService<E> {
                 for (String key : keys) {
                     conditions[idx++] = key + ":" + row.getString(key);
                 }
-                return exists(src, null, conditions);
+                return exists(dest, null, conditions);
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public boolean exists(Table dest, DataRow row) {
+        if (null != row) {
+            List<String> keys = row.getPrimaryKeys();
+            if (null != keys) {
+                String[] conditions = new String[keys.size()];
+                int idx = 0;
+                for (String key : keys) {
+                    conditions[idx++] = key + ":" + row.getString(key);
+                }
+                return exists(dest, null, conditions);
             }
             return false;
         } else {
@@ -577,24 +787,46 @@ public class DefaultService<E> implements AnylineService<E> {
      ******************************************************************************************************************/
     /**
      * count
-     * @param src 表或视图或自定义SQL
+     * @param dest 表或视图或自定义SQL
      * @param configs 过滤条件
      * @param obj 根据obj生成的过滤条件
      * @param conditions 简单过滤条件
      * @return long
      */
-    @Override 
-    public long count(String src, ConfigStore configs, Object obj, String... conditions) {
-        String[] ps = DataSourceUtil.parseRuntime(src);
+    @Override
+    public long count(String dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).count(ps[1], configs, obj, conditions);
         }
         long count = -1;
         try {
             // conditions = parseConditions(conditions);
-            src = BasicUtil.compress(src);
+            dest = BasicUtil.compress(dest);
             conditions = BasicUtil.compress(conditions);
-            RunPrepare prepare = createRunPrepare(src);
+            RunPrepare prepare = createRunPrepare(dest);
+            if(null != prepare.getRuntime()){
+                count = ServiceProxy.service(prepare.getRuntime()).getDao().count(prepare, append(configs, obj), conditions);
+            }else {
+                count = dao.count(prepare, append(configs, obj), conditions);
+            }
+        } catch (Exception e) {
+            if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+                throw e;
+            }
+        }
+        return count;
+    }
+    @Override
+    public long count(Table dest, ConfigStore configs, Object obj, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).count(ps[1], configs, obj, conditions);
+        }
+        long count = -1;
+        try {
+            conditions = BasicUtil.compress(conditions);
+            RunPrepare prepare = createRunPrepare(dest);
             if(null != prepare.getRuntime()){
                 count = ServiceProxy.service(prepare.getRuntime()).getDao().count(prepare, append(configs, obj), conditions);
             }else {
@@ -628,6 +860,15 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.insert(batch, dest, data, configs, columns);
     }
 
+    @Override
+    public long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).insert(batch, ps[1], data, configs, columns);
+        }
+        return dao.insert(batch, dest, data, configs, columns);
+    }
+
     /* *****************************************************************************************************************
      * 													UPDATE
      ******************************************************************************************************************/
@@ -652,6 +893,15 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs = DataSourceUtil.parseDest(dest, data, configs);
         dest = configs.dest();
+        return dao.update(batch, dest, data, configs, columns);
+    }
+
+    @Override
+    public long update(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
+        }
         return dao.update(batch, dest, data, configs, columns);
     }
 
@@ -742,6 +992,72 @@ public class DefaultService<E> implements AnylineService<E> {
         return saveObject(dest, data, configs, columns);
     }
 
+    @Override
+    public long save(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if (null == data) {
+            return 0;
+        }
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).save(ps[1], data, configs, columns);
+        }
+        if(data instanceof DataSet){
+            DataSet set = (DataSet) data;
+            long cnt = 0;
+            DataSet inserts = new DataSet();
+            DataSet updates = new DataSet();
+            for(DataRow row:set){
+                Boolean override = row.getOverride();
+                if(null != override) {
+                    //如果设置了override需要到数据库中实际检测
+                    boolean exists = exists(dest, row);
+                    if(exists){
+                        if(!override){//忽略
+
+                        }else{//覆盖(更新)
+                            updates.add(row);
+                        }
+                    }else{
+                        inserts.add(row);
+                    }
+                }else {
+                    if (row.isNew()) {
+                        inserts.add(row);
+                    } else {
+                        updates.add(row);
+                    }
+                }
+            }
+            if(!inserts.isEmpty()){
+                cnt += insert(batch, dest, inserts, configs, columns);
+            }
+            if(!updates.isEmpty()){
+                cnt += update(batch, dest, updates, configs, columns);
+            }
+            return cnt;
+        }else if (data instanceof Collection) {
+            Collection objs = (Collection) data;
+            long cnt = 0;
+            List<Object> inserts = new ArrayList<>();
+            List<Object> updates = new ArrayList<>();
+            for (Object obj : objs) {
+                if(BeanUtil.checkIsNew(obj)){
+                    inserts.add(obj);
+                }else{
+                    updates.add(obj);
+                }
+            }
+            if(!inserts.isEmpty()){
+                cnt += insert(batch, dest, inserts, configs, columns);
+            }
+            if(!updates.isEmpty()){
+                cnt += update(batch, dest, updates, configs, columns);
+            }
+            return cnt;
+        }
+        return saveObject(dest, data, configs, columns);
+    }
+
 
     protected long saveObject(String dest, Object data, ConfigStore configs, List<String> columns) {
         if (BasicUtil.isEmpty(dest)) {
@@ -755,11 +1071,26 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.save(dest, data, configs, columns);
     }
 
+    protected long saveObject(Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if (BasicUtil.isEmpty(dest)) {
+            if (data instanceof DataRow || data instanceof DataSet) {
+                configs = DataSourceUtil.parseDest(null, data, configs);
+                dest = new Table(configs.dest());
+            } else {
+                dest = new Table(EntityAdapterProxy.table(data.getClass(), true));
+            }
+        }
+        return dao.save(dest, data, configs, columns);
+    }
     protected long saveObject(String dest, Object data, ConfigStore configs, String... columns) {
         return saveObject(dest, data, configs, BeanUtil.array2list(columns));
     }
 
-    
+    protected long saveObject(Table dest, Object data, ConfigStore configs, String... columns) {
+        return saveObject(dest, data, configs, BeanUtil.array2list(columns));
+    }
+
+
     @Override 
     public boolean execute(Procedure procedure, String... inputs) {
         procedure.setName(DataSourceUtil.parseDest(procedure.getName(), null, null).dest());
@@ -837,8 +1168,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     @SuppressWarnings("rawtypes")
-    
-    @Override 
+
+    @Override
     public long delete(String dest, DataSet set, String... columns) {
         long cnt = 0;
         int size = set.size();
@@ -849,8 +1180,19 @@ public class DefaultService<E> implements AnylineService<E> {
         return cnt;
     }
 
-    
-    @Override 
+    @Override
+    public long delete(Table dest, DataSet set, String... columns) {
+        long cnt = 0;
+        int size = set.size();
+        for (int i = 0; i < size; i++) {
+            cnt += delete(dest, set.getRow(i), columns);
+        }
+        log.info("[delete DataSet][影响行数:{}]", LogUtil.format(cnt, 34));
+        return cnt;
+    }
+
+
+    @Override
     public long delete(String dest, DataRow row, String... columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
@@ -859,7 +1201,17 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.delete(dest, row, columns);
     }
 
-    
+
+    @Override
+    public long delete(Table dest, DataRow row, String... columns) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).delete(ps[1], row, columns);
+        }
+        return dao.delete(dest, row, columns);
+    }
+
+
     @Override 
     public long delete(Object obj, String... columns) {
         if (null == obj) {
@@ -888,9 +1240,21 @@ public class DefaultService<E> implements AnylineService<E> {
         return 0;
     }
 
-    
-    @Override 
+
+    @Override
     public long delete(String table, String... kvs) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).delete(ps[1], kvs);
+        }
+        DataRow row = DataRow.parseArray(kvs);
+        row.setPrimaryKey(row.keys());
+        return dao.delete(table, row);
+    }
+
+
+    @Override
+    public long delete(Table table, String... kvs) {
         String[] ps = DataSourceUtil.parseRuntime(table);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).delete(ps[1], kvs);
@@ -928,9 +1292,47 @@ public class DefaultService<E> implements AnylineService<E> {
         }
     }
 
+
+    @Override
+    public <T> long deletes(int batch, Table table, String key, Collection<T> values) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
+        }
+        if(batch >1){
+            long qty = 0;
+            List<T> list = new ArrayList<>();
+            int vol = 0;
+            for(T value:values){
+                list.add(value);
+                vol ++;
+                if(vol >= batch){
+                    qty += dao.deletes(0, table, key, values);
+                    list.clear();
+                }
+            }
+            if(!list.isEmpty()){
+                qty += dao.deletes(0, table, key, values);
+            }
+            return qty;
+        }else {
+            return dao.deletes(batch, table, key, values);
+        }
+    }
+
     
     @Override 
     public <T> long deletes(int batch, String table, String key, T... values) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
+        }
+        return dao.deletes(batch, table, key, values);
+    }
+
+
+    @Override
+    public <T> long deletes(int batch, Table table, String key, T... values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
@@ -948,6 +1350,16 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.delete(table, configs, conditions);
     }
 
+
+    @Override
+    public long delete(Table table, ConfigStore configs, String... conditions) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).delete(ps[1], configs, conditions);
+        }
+        return dao.delete(table, configs, conditions);
+    }
+
     
     @Override 
     public long truncate(String table) {
@@ -958,6 +1370,15 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.truncate(table);
     }
 
+
+    @Override
+    public long truncate(Table table) {
+        String[] ps = DataSourceUtil.parseRuntime(table);
+        if(null != ps[0]){
+            return ServiceProxy.service(ps[0]).truncate(ps[1]);
+        }
+        return dao.truncate(table);
+    }
     protected PageNavi setPageLazy(String src, ConfigStore configs, String... conditions) {
         PageNavi navi = null;
         String lazyKey = null;
@@ -976,7 +1397,7 @@ public class DefaultService<E> implements AnylineService<E> {
     protected DataSet queryFromDao(RunPrepare prepare, ConfigStore configs, String... conditions) {
         DataSet set = null;
         if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][src:{}]", prepare.getText());
+            log.debug("[解析SQL][dest:{}]", prepare.getText());
         }
         try {
             setPageLazy(prepare.getText(), configs, conditions);
@@ -991,14 +1412,34 @@ public class DefaultService<E> implements AnylineService<E> {
         return set;
     }
 
-    protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions) {
+    protected DataSet queryFromDao(String dest, ConfigStore configs, String... conditions) {
         DataSet set = null;
         if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][src:{}]", src);
+            log.debug("[解析SQL][dest:{}]", dest);
         }
         try {
-            setPageLazy(src, configs, conditions);
-            RunPrepare prepare = createRunPrepare(src);
+            setPageLazy(dest, configs, conditions);
+            RunPrepare prepare = createRunPrepare(dest);
+
+            set = dao.querys(prepare, configs, conditions);
+
+        } catch (Exception e) {
+            set = new DataSet();
+            set.setException(e);
+            if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+                throw e;
+            }
+        }
+        return set;
+    }
+    protected DataSet queryFromDao(Table dest, ConfigStore configs, String... conditions) {
+        DataSet set = null;
+        if (ConfigTable.isSQLDebug()) {
+            log.debug("[解析SQL][dest:{}]", dest);
+        }
+        try {
+            setPageLazy(dest, configs, conditions);
+            RunPrepare prepare = createRunPrepare(dest);
 
             set = dao.querys(prepare, configs, conditions);
 
@@ -1012,14 +1453,14 @@ public class DefaultService<E> implements AnylineService<E> {
         return set;
     }
 
-    protected <T> EntitySet<T> queryFromDao(String src, Class<T> clazz, ConfigStore configs, String... conditions) {
+    protected <T> EntitySet<T> queryFromDao(String dest, Class<T> clazz, ConfigStore configs, String... conditions) {
         EntitySet<T> list = null;
         if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][src:{}]", clazz);
+            log.debug("[解析SQL][dest:{}]", clazz);
         }
         try {
-            setPageLazy(src, configs, conditions);
-            RunPrepare prepare = createRunPrepare(src);
+            setPageLazy(dest, configs, conditions);
+            RunPrepare prepare = createRunPrepare(dest);
             list = dao.selects(prepare, clazz, configs, conditions);
         } catch (Exception e) {
             list = new EntitySet<>();
@@ -1030,10 +1471,27 @@ public class DefaultService<E> implements AnylineService<E> {
         return list;
     }
 
+    protected <T> EntitySet<T> queryFromDao(Table dest, Class<T> clazz, ConfigStore configs, String... conditions) {
+        EntitySet<T> list = null;
+        if (ConfigTable.isSQLDebug()) {
+            log.debug("[解析SQL][dest:{}]", clazz);
+        }
+        try {
+            setPageLazy(dest, configs, conditions);
+            RunPrepare prepare = createRunPrepare(dest);
+            list = dao.selects(prepare, clazz, configs, conditions);
+        } catch (Exception e) {
+            list = new EntitySet<>();
+            if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+                throw e;
+            }
+        }
+        return list;
+    }
     protected <T> EntitySet<T> selectFromDao(Class<T> clazz, ConfigStore configs, String... conditions) {
         EntitySet<T> list = null;
         if (ConfigTable.isSQLDebug()) {
-            log.debug("[解析SQL][src:{}]", clazz);
+            log.debug("[解析SQL][dest:{}]", clazz);
         }
         try {
             setPageLazy(clazz.getName(), configs, conditions);
@@ -1066,7 +1524,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if (fr != -1) {
                 String pkstr = src.substring(fr + 1, to);
                 src = src.substring(0, fr);
-                String[] tmps = pkstr.split(", ");
+                String[] tmps = pkstr.split(",");
                 for (String tmp : tmps) {
                     pks.add(tmp);
                     if (ConfigTable.isSQLDebug()) {
@@ -1078,6 +1536,11 @@ public class DefaultService<E> implements AnylineService<E> {
         return src;
     }
 
+    protected RunPrepare createRunPrepare(Table table) {
+        RunPrepare prepare = new DefaultTablePrepare();
+        prepare.setDest(table);
+        return prepare;
+    }
     protected RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
         src = src.trim();
@@ -1089,13 +1552,13 @@ public class DefaultService<E> implements AnylineService<E> {
                 log.debug("[解析SQL类型] [类型:{JAVA定义}] [src:{}]", src);
             }
             src = src.substring(2, src.length() - 1);
-            src = DataSourceUtil.parseDest(src, null, null).dest();//解析数据源
+            //src = DataSourceUtil.parseDest(src, null, null).dest();//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
             prepare = new DefaultTextPrepare(src);
         } else {
-            src = DataSourceUtil.parseDest(src, null, null).dest();//解析数据源
+            src = DataSourceUtil.parseDest(src, null, null).dest();//解析表
             src = parsePrimaryKey(src, pks);//解析主键
-            if (src.replace("\n", "").replace("\r", "").trim().matches("^[a-zA-Z]+\\s+.+")) {
+            if (src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
@@ -1115,7 +1578,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     log.debug("[解析SQL类型] [类型:auto] [src:{}]", src);
                 }
                 prepare = new DefaultTablePrepare();
-                prepare.setDataSource(src);
+                prepare.setDest(src);
             }
         }
         if (null != prepare && pks.size() > 0) {
@@ -1124,9 +1587,9 @@ public class DefaultService<E> implements AnylineService<E> {
         return prepare;
     }
 
-    protected DataSet queryFromCache(String cache, String src, ConfigStore configs, String... conditions) {
+    protected DataSet queryFromCache(String cache, String dest, ConfigStore configs, String... conditions) {
         if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-            log.debug("[cache from][cache:{}][src:{}]", cache, src);
+            log.debug("[cache from][cache:{}][dest:{}]", cache, dest);
         }
         DataSet set = null;
         String key = "SET:";
@@ -1139,8 +1602,8 @@ public class DefaultService<E> implements AnylineService<E> {
             cache = ks[0];
             key += ks[1] + ":";
         }
-        key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
-        RunPrepare prepare = createRunPrepare(src);
+        key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+        RunPrepare prepare = createRunPrepare(dest);
         if (null != cacheProvider) {
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
@@ -1156,7 +1619,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 final int _max = cacheElement.getExpires();
                 if (age > _max * 0.9) {
                     if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
-                        log.debug("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]", src, age, _max);
+                        log.debug("[缓存即将到期提前刷新][dest:{}] [生存:{}/{}]", dest, age, _max);
                     }
                     final String _key = key;
                     final String _cache = cache;
@@ -1175,7 +1638,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
 
             } else {
-                setPageLazy(src, configs, conditions);
+                setPageLazy(dest, configs, conditions);
                 set = dao.querys(prepare, configs, conditions);
                 cacheProvider.put(cache, key, set);
             }
@@ -1183,6 +1646,64 @@ public class DefaultService<E> implements AnylineService<E> {
         return set;
     }
 
+    protected DataSet queryFromCache(String cache, Table dest, ConfigStore configs, String... conditions) {
+        if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
+            log.debug("[cache from][cache:{}][dest:{}]", cache, dest);
+        }
+        DataSet set = null;
+        String key = "SET:";
+        if (cache.contains(">")) {
+            String tmp[] = cache.split(">");
+            cache = tmp[0];
+        }
+        if (cache.contains(":")) {
+            String ks[] = BeanUtil.parseKeyValue(cache);
+            cache = ks[0];
+            key += ks[1] + ":";
+        }
+        key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
+        RunPrepare prepare = createRunPrepare(dest);
+        if (null != cacheProvider) {
+            CacheElement cacheElement = cacheProvider.get(cache, key);
+            if (null != cacheElement && null != cacheElement.getValue()) {
+                Object cacheValue = cacheElement.getValue();
+                if (cacheValue instanceof DataSet) {
+                    set = (DataSet) cacheValue;
+                    set.setIsFromCache(true);
+                } else {
+                    log.error("[缓存设置错误, 检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                }
+//       	// 开启新线程提前更新缓存(90%时间)
+                long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
+                final int _max = cacheElement.getExpires();
+                if (age > _max * 0.9) {
+                    if (ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
+                        log.debug("[缓存即将到期提前刷新][dest:{}] [生存:{}/{}]", dest, age, _max);
+                    }
+                    final String _key = key;
+                    final String _cache = cache;
+                    final RunPrepare _sql = prepare;
+                    final ConfigStore _configs = configs;
+                    final String[] _conditions = conditions;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            CacheUtil.start(_key, _max / 10);
+                            DataSet newSet = dao.querys(_sql, _configs, _conditions);
+                            cacheProvider.put(_cache, _key, newSet);
+                            CacheUtil.stop(_key, _max / 10);
+                        }
+                    }).start();
+                }
+
+            } else {
+                setPageLazy(dest, configs, conditions);
+                set = dao.querys(prepare, configs, conditions);
+                cacheProvider.put(cache, key, set);
+            }
+        }
+        return set;
+    }
     private ConfigStore append(ConfigStore configs, Object entity) {
         if (null == configs) {
             configs = new DefaultConfigStore();
@@ -1229,7 +1750,7 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition){
         if(condition){
-            String up = sql.toUpperCase().replace("\n", " ").replace("\t", "");
+            String up = sql.toUpperCase().replace("\n"," ").replace("\t","");
             String key = " WHERE ";
             boolean split = false;
             if(up.contains(key)){

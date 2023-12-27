@@ -212,7 +212,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

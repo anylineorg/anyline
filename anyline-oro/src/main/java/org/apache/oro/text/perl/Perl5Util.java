@@ -774,11 +774,11 @@ public final class Perl5Util implements MatchResult {
    * each of the matching subgroups in the pattern.  Using an example
    * similar to the one from the Camel book:
    * <blockquote><pre>
-   * split(list, "/([,-])/", "8-12,15,18")
+   * split(list, "/([,-])/","8-12,15,18")
    * </pre></blockquote>
    * produces the Vector containing:
    * <blockquote><pre>
-   * {"8", "-", "12", ",", "15", ",", "18" }
+   * {"8","-","12",",","15",",","18" }
    * </pre></blockquote>
    * Furthermore, the following Perl behavior is observed: "leading empty
    * fields are preserved, and empty trailing one are deleted."  This
@@ -918,11 +918,11 @@ public final class Perl5Util implements MatchResult {
    * each of the matching subgroups in the pattern.  Using an example
    * similar to the one from the Camel book:
    * <blockquote><pre>
-   * split("/([,-])/", "8-12,15,18")
+   * split("/([,-])/","8-12,15,18")
    * </pre></blockquote>
    * produces the Vector containing:
    * <blockquote><pre>
-   * {"8", "-", "12", ",", "15", ",", "18" }
+   * {"8","-","12",",","15",",","18" }
    * </pre></blockquote>
    * The {@link Util#split Util.split()} method
    * does NOT implement this particular behavior because it is intended to

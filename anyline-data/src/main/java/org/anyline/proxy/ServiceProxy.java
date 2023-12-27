@@ -305,7 +305,7 @@ public class ServiceProxy {
 
     /**
      * 按条件查询
-     * @param src 			数据源(表或自定义SQL或SELECT语句)
+     * @param dest 			查询或操作的目标(表、存储过程、SQL等)
      * @param configs		根据http等上下文构造查询条件
      * @param obj			根据obj的field/value构造查询条件
      * @param conditions	固定查询条件
@@ -318,11 +318,11 @@ public class ServiceProxy {
      *
      * @return DataSet
      */
-    public static DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions){
-        return service.querys(src, configs, obj, conditions);
+    public static DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions){
+        return service.querys(dest, configs, obj, conditions);
     }
-    public static DataSet querys(String src, Object obj, String ... conditions){
-        return service.querys(src, obj, conditions);
+    public static DataSet querys(String dest, Object obj, String ... conditions){
+        return service.querys(dest, obj, conditions);
     }
     public static void querys(String src, StreamHandler handler, Object obj, String ... conditions){
         service.querys(src, handler, obj, conditions);
@@ -333,57 +333,57 @@ public class ServiceProxy {
 
     /**
      * 按条件查询
-     * @param src 			数据源(表或自定义SQL或SELECT语句)
+     * @param dest 			查询或操作的目标(表、存储过程、SQL等)
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param first 起 下标从0开始
      * @param last 止
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String src, long first, long last, Object obj, String ... conditions){
-        return service.querys(src, first, last, obj, conditions);
+    public static DataSet querys(String dest, long first, long last, Object obj, String ... conditions){
+        return service.querys(dest, first, last, obj, conditions);
     }
-    public static DataRow query(String src, ConfigStore configs, Object obj, String ... conditions){
-        return service.query(src, configs, obj, conditions);
+    public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions){
+        return service.query(dest, configs, obj, conditions);
     }
     public static DataRow query(String src, Object obj, String ... conditions){
         return service.query(src, obj, conditions);
     }
 
-    public static DataSet querys(String src, ConfigStore configs, String ... conditions){
-        return service.querys(src, configs, conditions);
+    public static DataSet querys(String dest, ConfigStore configs, String ... conditions){
+        return service.querys(dest, configs, conditions);
     }
-    public static DataSet querys(String src, String ... conditions){
-        return service.querys(src, conditions);
+    public static DataSet querys(String dest, String ... conditions){
+        return service.querys(dest, conditions);
     }
-    public static void querys(String src, StreamHandler handler, String ... conditions){
-        service.querys(src, handler, conditions);
+    public static void querys(String dest, StreamHandler handler, String ... conditions){
+        service.querys(dest, handler, conditions);
     }
-    public static DataSet querys(String src, PageNavi navi, String ... conditions){
-        return service.querys(src, navi, conditions);
+    public static DataSet querys(String dest, PageNavi navi, String ... conditions){
+        return service.querys(dest, navi, conditions);
     }
 
     /**
      * 按条件查询
-     * @param src 			数据源(表或自定义SQL或SELECT语句)
+     * @param dest 			查询或操作的目标(表、存储过程、SQL等)
      * @param first 起 下标从0开始
      * @param last 止
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String src, long first, long last, String ... conditions){
-        return service.querys(src, first, last, conditions);
+    public static DataSet querys(String dest, long first, long last, String ... conditions){
+        return service.querys(dest, first, last, conditions);
     }
-    public static DataRow query(String src, ConfigStore configs, String ... conditions){
-        return service.query(src, configs, conditions);
+    public static DataRow query(String dest, ConfigStore configs, String ... conditions){
+        return service.query(dest, configs, conditions);
     }
-    public static DataRow query(String src, String ... conditions){
-        return service.query(src, conditions);
+    public static DataRow query(String dest, String ... conditions){
+        return service.query(dest, conditions);
     }
 
 
-    public static <T> EntitySet<T> selects(String src, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
-        return service.selects(src, clazz, configs, entity, conditions);
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+        return service.selects(dest, clazz, configs, entity, conditions);
     }
     public static <T> EntitySet<T> selects(String src, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
         return service.selects(src, clazz, navi, entity, conditions);
@@ -534,7 +534,7 @@ public class ServiceProxy {
     /**
      * 如果二级缓存开启 会从二级缓存中提取数据
      * @param cache			对应ehcache缓存配置文件 中的cache.name
-     * @param src 			数据源(表或自定义SQL或SELECT语句)
+     * @param dest 			查询或操作的目标(表、存储过程、SQL等)
      * @param configs		根据http等上下文构造查询条件
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 	固定查询条件
@@ -649,7 +649,7 @@ public class ServiceProxy {
     /**
      * 删除缓存 参数保持与查询参数完全一致
      * @param channel 		channel
-     * @param src 			数据源(表或自定义SQL或SELECT语句)
+     * @param dest 			查询或操作的目标(表、存储过程、SQL等)
      * @param configs  		根据http等上下文构造查询条件
      * @param conditions 	固定查询条件
      * @return boolean
@@ -816,7 +816,7 @@ public class ServiceProxy {
     }
 
     /**
-     * 根据多列条件删除 delete("user", "type", "1", "age:20");
+     * 根据多列条件删除 delete("user","type","1","age:20");
      * @param table 表
      * @param kvs key-value
      * @return 影响行数

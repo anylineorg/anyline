@@ -87,7 +87,7 @@ public class Point extends Geometry{
         }
         builder.append("(");
         builder.append(NumberUtil.format(x, "0.###########"));
-        builder.append(", ");
+        builder.append(",");
         builder.append(NumberUtil.format(y, "0.###########"));
         builder.append(")");
         return builder.toString();

@@ -58,7 +58,7 @@ public class MultiLine extends Geometry{
         boolean first = true;
         for(LineString line:lines){
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             first = false;
             builder.append(line.toString(false));
@@ -88,7 +88,7 @@ public class MultiLine extends Geometry{
         boolean first = true;
         for(LineString line:lines){
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             first = false;
             builder.append(line.sql(false, false));

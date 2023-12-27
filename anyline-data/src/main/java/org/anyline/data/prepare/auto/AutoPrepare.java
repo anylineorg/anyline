@@ -21,6 +21,11 @@ package org.anyline.data.prepare.auto;
 import org.anyline.entity.Compare;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.metadata.Catalog;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
+
+import java.util.function.Predicate;
 
 public interface AutoPrepare extends RunPrepare {
 	RunPrepare init();
@@ -30,7 +35,7 @@ public interface AutoPrepare extends RunPrepare {
 	 * @param table 表
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
-	RunPrepare setDataSource(String table);
+	RunPrepare setDest(String table);
 	 
 	/* ****************************************************************************************** 
 	 *  
@@ -68,8 +73,12 @@ public interface AutoPrepare extends RunPrepare {
 	 
 	void createRunText(StringBuilder builder);
 /* ******************************************* END RunPrepare *********************************************************** */
-	String getDataSource();
-	void setSchema(String schema) ;
-	void setTable(String table) ;
+	String getDest();
+	RunPrepare setCatalog(Catalog catalog) ;
+	RunPrepare setCatalog(String catalog) ;
+	RunPrepare setSchema(Schema schema) ;
+	RunPrepare setSchema(String schema) ;
+	RunPrepare setTable(String table) ;
+	RunPrepare setTable(Table table) ;
 	String getDistinct();
 } 

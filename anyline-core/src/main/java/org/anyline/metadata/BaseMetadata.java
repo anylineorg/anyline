@@ -10,6 +10,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     protected Catalog catalog                      ; // 数据库 catalog与schema 不同有数据库实现方式不一样
     protected Schema schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
     protected String name                         ; // 名称
+    protected String alias                        ; // 别名
     protected String comment                      ; // 备注
     protected boolean execute = true              ; // DDL是否立即执行, false:只创建SQL不执行可以通过ddls()返回生成的SQL
     protected Long objectId;
@@ -119,6 +120,15 @@ public class BaseMetadata<T extends BaseMetadata> {
 
     public T setName(String name) {
         this.name = name;
+        return (T)this;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public T setAlias(String alias) {
+        this.alias = alias;
         return (T)this;
     }
 

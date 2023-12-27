@@ -214,7 +214,7 @@ public class HighgoAdapter extends PostgresGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

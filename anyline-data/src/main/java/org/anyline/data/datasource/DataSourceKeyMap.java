@@ -5,15 +5,15 @@ import java.util.*;
 public class DataSourceKeyMap {
     public static Map<String, HashSet<String>> maps = new HashMap<>();
     static {
-        reg("username", "userName", "user");
-        reg("url", "jdbcUrl", "uri", "uris", "host", "hosts");
-        reg("driverClass", "driverClassName");
-        reg("IdleTimeout", "idleTimeoutMs");
-        reg("maxLifetime", "maxLifetimeMs");
-        reg("maxPoolSize", "maximumPoolSize");
-        reg("validationTimeout", "validationTimeoutMs");
-        reg("dataSourceJndiName", "jndiDataSource");
-        reg("transactionIsolationName", "transactionIsolation");
+        reg("username","userName","user");
+        reg("url","jdbcUrl","uri","uris","host","hosts");
+        reg("driverClass","driverClassName");
+        reg("IdleTimeout","idleTimeoutMs");
+        reg("maxLifetime","maxLifetimeMs");
+        reg("maxPoolSize","maximumPoolSize");
+        reg("validationTimeout","validationTimeoutMs");
+        reg("dataSourceJndiName","jndiDataSource");
+        reg("transactionIsolationName","transactionIsolation");
     }
     public static HashSet<String> alias(String key){
         return maps.get(key);

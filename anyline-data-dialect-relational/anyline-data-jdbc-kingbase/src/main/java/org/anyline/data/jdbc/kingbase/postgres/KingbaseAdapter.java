@@ -262,7 +262,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

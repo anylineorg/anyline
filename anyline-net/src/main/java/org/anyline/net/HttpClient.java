@@ -188,7 +188,7 @@ public class HttpClient {
 				result = new HttpResponse();
 				result.setInputStream(is);
 			}else{
-				method.setHeader("Connection", "close");
+				method.setHeader("Connection","close");
 				response = client.execute(method);
 				result = parseResult(result, response, charset);
 			}
@@ -405,7 +405,7 @@ public class HttpClient {
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
 		post.setEntity(entity);   // post 实体.
-		post.addHeader("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);  // 表单形式.
+		post.addHeader("Content-Type","multipart/form-data;boundary=" + BOUNDARY);  // 表单形式.
 		HttpResponse source = exe(post);
 		return source;
 	}

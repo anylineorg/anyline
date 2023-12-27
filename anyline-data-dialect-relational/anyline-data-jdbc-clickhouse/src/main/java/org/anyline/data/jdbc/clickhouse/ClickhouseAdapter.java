@@ -205,7 +205,7 @@ public class ClickhouseAdapter extends MySQLGenusAdapter implements JDBCAdapter,
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

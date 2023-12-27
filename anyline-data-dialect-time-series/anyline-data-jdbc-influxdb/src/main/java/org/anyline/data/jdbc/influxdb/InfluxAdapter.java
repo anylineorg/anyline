@@ -92,7 +92,7 @@ public class InfluxAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 				builder.append("insert ").append(parseTable(dest)).append(" ");
 				Map<String, Object> tags = row.getTags();
 				for(String tag:tags.keySet()){
-					builder.append(", ").append(tag).append("=").append(tags.get(tag));
+					builder.append(",").append(tag).append("=").append(tags.get(tag));
 				}
 				int qty = 0;
 				for(Column column:cols.values()){
@@ -102,7 +102,7 @@ public class InfluxAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 						continue;
 					}
 					if(qty>0) {
-						builder.append(", ");
+						builder.append(",");
 					}
 					builder.append(col).append("=");
 					if(BasicUtil.isNumber(value) || BasicUtil.isBoolean(value)){

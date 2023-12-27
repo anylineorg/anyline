@@ -721,7 +721,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(obj instanceof ConfigStore){
             run = new TableRun(runtime,dest);
             RunPrepare prepare = new DefaultTablePrepare();
-            prepare.setDataSource(dest);
+            prepare.setDest(dest);
             run.setPrepare(prepare);
             run.setConfigStore((ConfigStore)obj);
             run.addCondition(columns);

@@ -226,7 +226,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

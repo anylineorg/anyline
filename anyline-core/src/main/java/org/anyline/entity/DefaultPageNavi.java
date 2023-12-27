@@ -234,7 +234,7 @@ public class DefaultPageNavi implements PageNavi{
 		this.displayPageLast = displayPageLast; 
 	} 
  
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked","rawtypes" })
 	public void addParam(String key, Object value){
 		if(null == key || null == value){
 			return; 
@@ -614,7 +614,7 @@ public class DefaultPageNavi implements PageNavi{
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){
 					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
 				}else{
-					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(", ");
+					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(",");
 					String clazz = config.VAR_PAGE_VOL_CLASS; 
 					if(BasicUtil.isEmpty(clazz)){
 						clazz = "navi-rows-set"; 
@@ -647,7 +647,7 @@ public class DefaultPageNavi implements PageNavi{
 						to = totalPage-1; 
 					} 
 					index.append("<div class='navi-num-border'>\n"); 
-					createPageTag(index, method, "navi-num-item", "1", 1, configVarKey);
+					createPageTag(index, method, "navi-num-item","1", 1, configVarKey);
 					if(fr > 2){
 						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
@@ -766,7 +766,7 @@ public class DefaultPageNavi implements PageNavi{
 				if(!get) {//post
 					builder.append(" onclick='_navi_go(").append(page);
 					if (BasicUtil.isNotEmpty(configFlag)) {
-						builder.append(", ").append(configFlag);
+						builder.append(",").append(configFlag);
 					}
 					builder.append(")'");
 				}
@@ -827,11 +827,11 @@ public class DefaultPageNavi implements PageNavi{
 	}
 	@Transient
 	public String getHtml(){
-		return html("html", "get");
+		return html("html","get");
 	}
 	@Transient
 	public String html(){
-		return html("html", "get");
+		return html("html","get");
 	}
 	@Transient
 	public String html(String adapter){
@@ -839,14 +839,14 @@ public class DefaultPageNavi implements PageNavi{
 	}
 	@Transient
 	public String getForm(){
-		return html("html", "post");
+		return html("html","post");
 	}
 	@Transient
 	public String form(){
-		return html("html", "post");
+		return html("html","post");
 	}
 	@Transient
 	public String ajax(){
-		return html("ajax", "post");
+		return html("ajax","post");
 	}
 }

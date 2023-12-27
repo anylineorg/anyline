@@ -209,7 +209,7 @@ public class DerbyAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

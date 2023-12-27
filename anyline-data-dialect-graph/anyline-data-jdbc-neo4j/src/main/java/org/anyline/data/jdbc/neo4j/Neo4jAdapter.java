@@ -136,13 +136,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             }
             insertValue("e"+i, run, dest, row, columns);
             if(i<dataSize-1){
-                builder.append(", ");
+                builder.append(",");
             }
         }
         builder.append(" RETURN ");
         for(int i=0; i<dataSize; i++){
             if(i>0){
-                builder.append(", ");
+                builder.append(",");
             }
             builder.append(" ID(e").append(i).append(") AS __ID").append(i);
         }
@@ -176,14 +176,14 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         for(Object obj:list){
             insertValue("e"+idx, run, dest, obj, columns);
             if(idx<dataSize-1){
-                builder.append(", ");
+                builder.append(",");
             }
             idx ++;
         }
         builder.append(" RETURN ");
         for(int i=0; i<dataSize; i++){
             if(i>0){
-                builder.append(", ");
+                builder.append(",");
             }
             builder.append(" ID(e").append(i).append(") AS __ID").append(i);
         }
@@ -295,7 +295,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         for(Column column:columns.values()){
             String key = column.getName();
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             first = false;
             Object value = null;
@@ -485,7 +485,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     column = column.substring(2, column.length()-1);
                     builder.append(column);
                 }else{
-                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(", ")){
+                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
                         builder.append(column);
                     }else if("*".equals(column)){
                         builder.append(alias);
@@ -494,7 +494,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     }
                 }
                 if(i<size-1){
-                    builder.append(", ");
+                    builder.append(",");
                 }
             }
             builder.append(JDBCAdapter.BR);
@@ -564,7 +564,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             for(int i=0; i<size; i++){
                 builder.append("?");
                 if(i < size-1){
-                    builder.append(", ");
+                    builder.append(",");
                 }
             }
             builder.append("]");
@@ -687,7 +687,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                                 run.addValues(var.getKey(), tmp);
                                 replaceDst += " ?";
                             }
-                            replaceDst = replaceDst.trim().replace(" ", ", ");
+                            replaceDst = replaceDst.trim().replace(" ",", ");
                             result = result.replace(replaceSrc, replaceDst);
                         }else{
                             // 单个值
@@ -756,7 +756,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     column = column.substring(2, column.length()-1);
                     builder.append(column);
                 }else{
-                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(", ")){
+                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
                         builder.append(column);
                     }else if("*".equals(column)){
                         builder.append("*");
@@ -765,7 +765,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                     }
                 }
                 if(i<size-1){
-                    builder.append(", ");
+                    builder.append(",");
                 }
             }
             builder.append(JDBCAdapter.BR);
@@ -874,7 +874,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             boolean start = true;
             for(Column column:keys.values()){
                 if(!start){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 start = false;
                 String key = column.getName();
@@ -967,7 +967,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 String key = column.getName();
                 Object value = row.get(key);
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 first = false;
                 //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
@@ -1067,7 +1067,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 int idx = 0;
                 for(Object obj:cons){
                     if(idx > 0){
-                        builder.append(", ");
+                        builder.append(",");
                     }
                     // builder.append("'").append(obj).append("'");
                     builder.append("?");

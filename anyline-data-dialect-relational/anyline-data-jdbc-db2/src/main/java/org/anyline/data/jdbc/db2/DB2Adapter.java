@@ -219,7 +219,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

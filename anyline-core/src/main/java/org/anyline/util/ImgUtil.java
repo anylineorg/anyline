@@ -460,7 +460,7 @@ public class ImgUtil {
     	if(null != dir && !dir.exists()){
     		dir.mkdirs(); 
     	} 
-    	str = str.replace("data:image/jpeg;base64, ", "").replace("data:image/png;base64, ", "");
+    	str = str.replace("data:image/jpeg;base64, ","").replace("data:image/png;base64, ","");
     	OutputStream  out = null; 
     	try {
             Base64.Decoder decoder = Base64.getDecoder();

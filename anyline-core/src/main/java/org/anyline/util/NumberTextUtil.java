@@ -146,14 +146,14 @@ public abstract class NumberTextUtil {
  
 		static enum Digit {
  
-			Zero("zero", "zeroth", "ten", ""), One("one", "first", "eleven",
-					"ten"), Two("two", "second", "twelve", "twenty"), Three(
-					"three", "third", "thirteen", "thirty"), Four("four",
-					"fourth", "fourteen", "fourty"), Five("five", "fifth",
-					"fifteen", "fifty"), Six("six", "sixth", "sixteen", "sixty"), Seven(
-					"seven", "seventh", "seventeen", "seventy"), Eight("eight",
-					"eighth", "eighteen", "eighty"), Nine("nine", "nineth",
-					"nineteen", "ninety"), ;
+			Zero("zero","zeroth","ten",""), One("one","first","eleven",
+					"ten"), Two("two","second","twelve","twenty"), Three(
+					"three","third","thirteen","thirty"), Four("four",
+					"fourth","fourteen","fourty"), Five("five","fifth",
+					"fifteen","fifty"), Six("six","sixth","sixteen","sixty"), Seven(
+					"seven","seventh","seventeen","seventy"), Eight("eight",
+					"eighth","eighteen","eighty"), Nine("nine","nineth",
+					"nineteen","ninety"), ;
  
 			final String display, displayOrdinal, plusTen, multiTen;
  
@@ -348,8 +348,8 @@ public abstract class NumberTextUtil {
 		} 
  
 		static enum Connect {
-			Di("第", "第"), Fu("负", "負"), Ling("零", "零"), Shi("十", "拾"), Bai("百",
-					"佰"), Qian("千", "仟"), ;
+			Di("第","第"), Fu("负","負"), Ling("零","零"), Shi("十","拾"), Bai("百",
+					"佰"), Qian("千","仟"), ;
  
 			final String display, displayTraditional;
  
@@ -361,17 +361,17 @@ public abstract class NumberTextUtil {
  
 		static enum Power {
  
-			Wan("万", "萬"), // 10^4
-			Yi("亿", "億"), // 10^8
-			Zhao("兆", "兆"), // 10^12
-			Jing("京", "京"), // 10^16 (enough for Long.MAX_VALUE)
-			Gai("垓", "垓"), // 10^20
-			Zi("秭", "秭"), // 10^24
-			Rang("穰", "穰"), // 10^28
-			Gou("沟", "溝"), // 10^32
-			Jian("涧", "澗"), // 10^36
-			Zheng("正", "正"), // 10^40
-			Zai("载", "載"), // 10^44
+			Wan("万","萬"), // 10^4
+			Yi("亿","億"), // 10^8
+			Zhao("兆","兆"), // 10^12
+			Jing("京","京"), // 10^16 (enough for Long.MAX_VALUE)
+			Gai("垓","垓"), // 10^20
+			Zi("秭","秭"), // 10^24
+			Rang("穰","穰"), // 10^28
+			Gou("沟","溝"), // 10^32
+			Jian("涧","澗"), // 10^36
+			Zheng("正","正"), // 10^40
+			Zai("载","載"), // 10^44
 			; 
  
 			final String display, displayTraditional;
@@ -384,9 +384,9 @@ public abstract class NumberTextUtil {
  
 		static enum Digit {
  
-			Ling("零", "零"), // just to occupy this position
-			Yi("一", "壹"), Er("二", "贰"), San("三", "叁"), Si("四", "肆"), Wu("五",
-					"伍"), Liu("六", "陆"), Qi("七", "柒"), Ba("八", "捌"), Jiu("九",
+			Ling("零","零"), // just to occupy this position
+			Yi("一","壹"), Er("二","贰"), San("三","叁"), Si("四","肆"), Wu("五",
+					"伍"), Liu("六","陆"), Qi("七","柒"), Ba("八","捌"), Jiu("九",
 					"玖"), ;
  
 			final String display, displayTraditional;

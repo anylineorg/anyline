@@ -215,7 +215,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public String batchInsertSeparator (){
-		return ", ";
+		return ",";
 	}
 
 	/**

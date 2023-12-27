@@ -1598,7 +1598,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @param strut 是否查询表结构
 	 * @return List
 	 * @param <T> Table
@@ -1634,7 +1634,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
 	@Override
@@ -1650,7 +1650,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
 	 */
 	@Override
@@ -1702,7 +1702,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1721,7 +1721,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1835,7 +1835,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return List
 	 * @param <T> View
 	 */
@@ -1851,7 +1851,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return List
 	 */
 	@Override
@@ -1886,7 +1886,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return views
 	 * @throws Exception 异常
 	 */
@@ -1961,7 +1961,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE","VIEW","SYSTEM TABLE","GLOBAL TEMPORARY","LOCAL TEMPORARY","ALIAS","SYNONYM".
+	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return List
 	 * @param <T> MasterTable
 	 */

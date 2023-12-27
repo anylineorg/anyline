@@ -114,14 +114,14 @@ public class Downloader {
 //				if(errorCode.equals("")){
 //					errorCode += code; 
 //				}else{
-//					errorCode += ", "+code;
+//					errorCode += ","+code;
 //				} 
 //			} 
 //			if(!errorMsg.contains(message)){
 //				if(errorMsg.equals("")){
 //					errorMsg += message; 
 //				}else{
-//					errorMsg += ", "+message;
+//					errorMsg += ","+message;
 //				} 
 //			} 
 //			if(null != errorCallback){

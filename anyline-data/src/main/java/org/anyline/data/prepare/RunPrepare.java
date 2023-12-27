@@ -22,7 +22,11 @@ import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Join;
+import org.anyline.metadata.Catalog;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,7 +67,7 @@ public interface RunPrepare extends Cloneable {
 	String getId();
 	RunPrepare setId(String id);
 	/** 
-	 * 设置数据源(这里的数据源是指表)
+	 * 设置查询或操作的目标(表、存储过程、SQL等)
 	 * <p> 
 	 * 查询全部列 : setDataSource("V_ADMIN")<br> 
 	 * 查询指定列 : setDataSource(ADMIN(CD, ACCOUNT, NAME, REG_TIME))<br>
@@ -76,13 +80,21 @@ public interface RunPrepare extends Cloneable {
 	 *  admin.power : XML文件路径, 文件目录以.分隔<br>
 	 *  S_POWER : 自定义SQL的id 
 	 * </p>
-	 * @param ds  数据源 : 表|视图|自定义SQL.id
+	 * @param dest  数据源 : 表|视图|自定义SQL.id
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	RunPrepare setDataSource(String ds);
-	String getDataSource();
-	String getSchema();
-	String getTable();
+	RunPrepare setDest(String dest);
+	RunPrepare setDest(Table dest);
+	String getDest();
+	RunPrepare setCatalog(String catalog);
+	Catalog getCatalog();
+	String getCatalogName();
+	RunPrepare setSchema(String schema);
+	Schema getSchema();
+	String getSchemaName();
+	Table getTable();
+	String getTableName();
+
 
 	/**
 	 * 用来标记运行环境key(其中关联了数据源与适配器)<br/>

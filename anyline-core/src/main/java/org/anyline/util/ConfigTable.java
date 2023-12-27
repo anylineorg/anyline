@@ -102,7 +102,7 @@ public class ConfigTable {
 	public static boolean IS_INSERT_NULL_FIELD							= false			;	// Entity是否更新nul值的属性
 	public static boolean IS_INSERT_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
 	public static boolean IS_KEYHOLDER_IDENTITY							= true			;   // 是否返回自增ID(一般在批量操作时才需要在ConfigStore中定义)
-	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A", "B", "C"]
+	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A","B","C"]
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符
 	public static boolean IS_AUTO_CHECK_KEYWORD							= false			;   // 自动检测关键字
@@ -276,9 +276,9 @@ public class ConfigTable {
 		String osName = props.getProperty("os.name");
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
 			path = path.substring(1);
-			path =path.replace("file:/", "");
+			path =path.replace("file:/","");
 		}
-		path = path.replace("file:", "");//jar项目
+		path = path.replace("file:","");//jar项目
 		// file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
 		// log.debug("root={}", root);
 		if(null == root && null != path){
@@ -511,7 +511,7 @@ public class ConfigTable {
 			val = environment.getProperty(key);
 			if(null == val){
 				if(key.startsWith("anyline.")){
-					key = key.replace("anyline.", "");
+					key = key.replace("anyline.","");
 				}else{
 					key = "anyline." + key;
 				}
@@ -655,7 +655,7 @@ public class ConfigTable {
 					String anylineJarName = new File(anylineJarPath).getName();
 					if(anylineJarName.endsWith("jar") || anylineJarName.endsWith("jar!")){
 						if(anylineJarName.contains("-")){
-							version = anylineJarName.replace("anyline-", "").replace(".jar", "").replace("!", "");
+							version = anylineJarName.replace("anyline-","").replace(".jar","").replace("!","");
 							version = version.substring(version.indexOf("-")+1);
 						}
 					}
@@ -667,24 +667,24 @@ public class ConfigTable {
 			}
 
 			System.out.println();
-			line("", "*", 0, true);
-			line("Anyline Core [" + version + "]", " ", 0, true);
-			line("http://doc.anyline.org ", " ", 0, true);
-			line("", " ", 0, true);
+			line("","*", 0, true);
+			line("Anyline Core [" + version + "]"," ", 0, true);
+			line("http://doc.anyline.org "," ", 0, true);
+			line(""," ", 0, true);
 			if(null != time && time.startsWith("2")){
-				line("Last Modified " + "[" + time +"] ", " ", 0, true);
+				line("Last Modified " + "[" + time +"] "," ", 0, true);
 			}else{
-				line("MinVersion " +  "[" + minVersion + "]", " ", 0, true);
+				line("MinVersion " +  "[" + minVersion + "]"," ", 0, true);
 			}
-			line("", " ", 0, true);
-			line("", "*", 0, true);
-			//line("", "*", 0, true);
+			line(""," ", 0, true);
+			line("","*", 0, true);
+			//line("","*", 0, true);
 			if(null != project){
 			//	line(" project root > " + project, "", 0, false);
 			}
-			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", 0, false);
-			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", 0, false);
-			//line("", "*", 0, true);
+			//line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>","", 0, false);
+			//line(" =================== 生产环境请务必修改密钥文件key.xml ========================","", 0, false);
+			//line("","*", 0, true);
 			System.out.println();
 		}catch(Exception e){
 			e.printStackTrace();

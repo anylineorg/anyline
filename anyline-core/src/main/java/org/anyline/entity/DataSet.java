@@ -102,12 +102,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * list解析成DataSet
      * @param list list
      * @param fields 如果list是二维数据
-     *               fields 下标对应的属性(字段/key)名称 如"ID", "CODE", "NAME"
-     *               如果不输入则以下标作为DataRow的key 如row.put("0", "100").put("1", "A01").put("2", "张三");
+     *               fields 下标对应的属性(字段/key)名称 如"ID","CODE","NAME"
+     *               如果不输入则以下标作为DataRow的key 如row.put("0","100").put("1","A01").put("2","张三");
      *               如果属性数量超出list长度, 取null值存入DataRow
      *
      *               如果list是一组数组
-     *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id", "USER_NM:name"
+     *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id","USER_NM:name"
      *
      * @return DataSet
      */
@@ -1023,7 +1023,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 筛选符合条件的集合
      * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
      * @param params key1, value1, key2:value2, key3, value3
-     *               "NM:zh%", "AGE:&gt;20", "NM", "%zh%"
+     *               "NM:zh%","AGE:&gt;20","NM","%zh%"
      * @param begin  begin
      * @param qty    最多筛选多少个 0表示不限制
      * @return DataSet
@@ -1614,7 +1614,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *, {NM:部门2, USERS:[{LVL:1, SCORE:60}, {LVL:3, SCORE:70}, {LVL:2, SCORE:80}]}
      *, {NM:部门3, USERS:[{LVL:1, SCORE:600}, {LVL:5, SCORE:700}, {LVL:2, SCORE:800}]}
      * ]
-     * sum("TOTAL", "USERS", "SCORE", "LVL&gt;1") 计算每个部门中 LVL大于1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
+     * sum("TOTAL","USERS","SCORE","LVL&gt;1") 计算每个部门中 LVL大于1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
      * [
      *  {NM:部门1, TOTAL:8, USERS:[{LVL:1, SCORE:6}, {LVL:1, SCORE:7}, {LVL:2, SCORE:8}]}
      *, {NM:部门2, TOTAL:150, USERS:[{LVL:1, SCORE:60}, {LVL:3, SCORE:70}, {LVL:2, SCORE:80}]}
@@ -1877,19 +1877,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public String concatNvl(String key) {
-        return BasicUtil.concat(getNvlStrings(key), ", ");
+        return BasicUtil.concat(getNvlStrings(key), ",");
     }
 
     public String concatWithoutNull(String key) {
-        return BasicUtil.concat(getStringsWithoutNull(key), ", ");
+        return BasicUtil.concat(getStringsWithoutNull(key), ",");
     }
 
     public String concatWithoutEmpty(String key) {
-        return BasicUtil.concat(getStringsWithoutEmpty(key), ", ");
+        return BasicUtil.concat(getStringsWithoutEmpty(key), ",");
     }
 
     public String concat(String key) {
-        return BasicUtil.concat(getStrings(key), ", ");
+        return BasicUtil.concat(getStrings(key), ",");
     }
 
     /**
@@ -2751,7 +2751,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
-     * map.put("type", "list");
+     * map.put("type","list");
      * map.put("result", result);
      * map.put("message", message);
      * map.put("rows", rows);
@@ -2760,7 +2760,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public String toString() {
         Map<String, Object> map = new HashMap<>();
-        map.put("type", "list");
+        map.put("type","list");
         map.put("result", result);
         map.put("message", message);
         map.put("rows", rows);
@@ -3925,7 +3925,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return rows.add((DataRow) e);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes","unchecked"})
     public boolean addAll(Collection c) {
         return rows.addAll(c);
     }
@@ -4965,7 +4965,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         private DataSet like(DataSet src, String key, String pattern) {
             DataSet set = new DataSet();
             if (null != pattern) {
-                pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+                pattern = pattern.replace("!","^").replace("_","\\s|\\S").replace("%","(\\s|\\S)*");
             }
             String tmpValue;
             for (DataRow row : src) {
@@ -5005,7 +5005,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == pattern) {
                 return set;
             }
-            pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+            pattern = pattern.replace("!","^").replace("_","\\s|\\S").replace("%","(\\s|\\S)*");
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
