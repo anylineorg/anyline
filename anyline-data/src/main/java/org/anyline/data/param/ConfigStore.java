@@ -716,19 +716,19 @@ public interface ConfigStore {
 	}
 
 	default ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
-		return and(swt, Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
+		return or(swt, Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
 	}
 	default ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
-		return and(swt, Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
+		return or(swt, Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
 	}
 	default ConfigStore findInSetOr(String id, String var, Object value, boolean overCondition, boolean overValue){
-		return and(Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
+		return or(Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
 	}
 	default ConfigStore findInSetOr(String var, Object value, boolean overCondition, boolean overValue){
-		return and(Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
+		return or(Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
 	}
 	default ConfigStore findInSetOr(String var, Object value){
-		return and(Compare.FIND_IN_SET_OR, var, value);
+		return or(Compare.FIND_IN_SET_OR, var, value);
 	}
 
 	default ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
