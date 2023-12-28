@@ -20,6 +20,7 @@ package org.anyline.data.param;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.entity.Join;
+import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class TableBuilder {
 
-    private String table;
+    private Table table;
     private String datasource;
     private String alias;
     private List<String> queryColumns = new ArrayList<>();
@@ -38,6 +39,11 @@ public class TableBuilder {
         return builder;
     }
     public static TableBuilder init(String table){
+        TableBuilder builder = new TableBuilder();
+        builder.setTable(table);
+        return builder;
+    }
+    public static TableBuilder init(Table table){
         TableBuilder builder = new TableBuilder();
         builder.setTable(table);
         return builder;
@@ -58,6 +64,10 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder setTable(String table){
+        this.table = new Table(table);
+        return this;
+    }
+    public TableBuilder setTable(Table table){
         this.table = table;
         return this;
     }
@@ -96,14 +106,20 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder join(Join.TYPE type, String table, String condition){
+        return join(type, new Table(table), condition);
+    }
+    public TableBuilder join(Join.TYPE type, Table table, String condition){
         Join join = new Join();
-        join.setName(table);
+        join.setTable(table);
         join.setType(type);
         join.setCondition(condition);
         return join(join);
     }
-    public String getTable(){
+    public Table getTable(){
         return table;
+    }
+    public TableBuilder inner(Table table, String condition){
+        return join(Join.TYPE.INNER, table.getFullName(), condition);
     }
     public TableBuilder inner(String table, String condition){
         return join(Join.TYPE.INNER, table, condition);
@@ -111,10 +127,20 @@ public class TableBuilder {
     public TableBuilder left(String table, String condition){
         return join(Join.TYPE.LEFT, table, condition);
     }
+    public TableBuilder left(Table table, String condition){
+        return join(Join.TYPE.LEFT, table, condition);
+    }
     public TableBuilder right(String table, String condition){
         return join(Join.TYPE.RIGHT, table, condition);
     }
+    public TableBuilder right(Table table, String condition){
+        return join(Join.TYPE.RIGHT, table, condition);
+    }
     public TableBuilder full(String table, String condition){
+        return join(Join.TYPE.FULL, table, condition);
+    }
+
+    public TableBuilder full(Table table, String condition){
         return join(Join.TYPE.FULL, table, condition);
     }
 
