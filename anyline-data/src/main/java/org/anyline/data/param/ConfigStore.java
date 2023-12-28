@@ -77,6 +77,13 @@ public interface ConfigStore {
 	String catalogName();
 
 	/**
+	 * 复制配置属性(不含查询条件)
+	 * @param configs  ConfigStore
+	 * @return ConfigStore
+	 */
+	ConfigStore copyProperty(ConfigStore configs);
+
+	/**
 	 * 查询或操作的目标(表,存储过程,sql等)
 	 * @return String
 	 */
