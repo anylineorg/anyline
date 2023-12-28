@@ -17,6 +17,8 @@
 
 package org.anyline.entity;
 
+import org.anyline.metadata.Table;
+
 import java.io.Serializable;
 
 public class Join  implements Serializable {
@@ -28,48 +30,16 @@ public class Join  implements Serializable {
         public abstract String getName();
         public abstract String getCode();
     }
-    private String schema;
-    private String name;
-    private String alias;
+    private Table table;
     private TYPE type = TYPE.INNER;
     private String condition;
 
-    public String getSchema() {
-        return schema;
+    public Table getTable() {
+        return table;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        parseName();
-    }
-    private void parseName(){
-        if(null != name){
-            if(null != name && name.contains(".")){
-                String[] tbs = name.split("\\.");
-                name = tbs[1];
-                schema = tbs[0];
-            }
-            String tag = " as ";
-            String lower = name.toLowerCase();
-            int tagIdx = lower.indexOf(tag);
-            if(tagIdx > 0){
-                alias = name.substring(tagIdx+tag.length()).trim();
-                name = name.substring(0, tagIdx).trim();
-            }
-            if(name.contains(" ")){
-                String[] tmps = name.split(" ");
-                name = tmps[0];
-                alias = tmps[1];
-            }
-        }
+    public void setTable(Table table) {
+        this.table = table;
     }
 
     public TYPE getType() {
@@ -88,11 +58,4 @@ public class Join  implements Serializable {
         this.condition = condition;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
 }
