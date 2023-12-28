@@ -1806,7 +1806,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
 		if(prepare instanceof TablePrepare){
-			run = new TableRun(runtime, prepare.getTableName());
+			run = new TableRun(runtime, prepare.getTable());
 		}else if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
 		}else if(prepare instanceof TextPrepare){
