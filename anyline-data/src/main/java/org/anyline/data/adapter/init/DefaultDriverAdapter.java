@@ -11243,6 +11243,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 ******************************************************************************************************************/
 
 	protected PrimaryGenerator checkPrimaryGenerator(DatabaseType type, String table){
+		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
 		//针对当前表的生成器
 		PrimaryGenerator generator = GeneratorConfig.get(table);
 		if(null != generator){

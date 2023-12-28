@@ -128,9 +128,9 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * [调用入口]
 	 * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
 	 * public String batchInsertSeparator()
 	 * public boolean supportInsertPlaceholder ()
@@ -179,7 +179,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
 	}
 
@@ -200,7 +200,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		if(null == set || set.isEmpty()){
 			return;
 		}
@@ -227,7 +227,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 		LinkedHashMap<String, Column> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		if(null != generator){
 			pks = first.getPrimaryColumns();
 			columns.putAll(pks);
@@ -248,9 +248,9 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
 				if(null != generator){
-					generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
+					generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
 				}
-				//createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
 			builder.append(insertValue(runtime, run, row, true, false, false,true, columns));
 			builder.append(";");
@@ -267,7 +267,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		if(null == list || list.isEmpty()){
 			return;
 		}
@@ -304,7 +304,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		Object entity = list.iterator().next();
 		LinkedHashMap<String, Column> pks = null;
 		if(null != generator) {
@@ -354,13 +354,13 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 					if (null == pk) {
 						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
 					}
-					createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+					createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				}
 			}else{*/
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
 			if(!create && null != generator){
-				generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
-				//createPrimaryValue(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+				generator.create(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
+				//createPrimaryValue(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 			//}
 

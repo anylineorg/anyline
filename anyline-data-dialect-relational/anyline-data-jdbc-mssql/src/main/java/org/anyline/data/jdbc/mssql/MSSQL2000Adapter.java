@@ -137,7 +137,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
         //2000及以下
         StringBuilder builder = run.getBuilder();
         if(null == builder){
@@ -146,13 +146,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         }
 
         LinkedHashMap<String, Column> pks = null;
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator){
             pks = set.getRow(0).getPrimaryColumns();
             columns.putAll(pks);
         }
 
-        builder.append("INSERT INTO ").append(parseTable(dest));
+        builder.append("INSERT INTO ");
+        name(runtime, builder, dest);
         builder.append("(");
 
         boolean start = true;
@@ -173,9 +174,9 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             }
             if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
                 if(null != generator){
-                    generator.create(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 }
-                //createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
             builder.append(insertValue(runtime, run, row, true, true, false, false, columns));
@@ -196,7 +197,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns){
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();
@@ -208,7 +209,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             return;
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             Object entity = list.iterator().next();
@@ -216,7 +217,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             columns.putAll(pks);
         }
 
-        builder.append("INSERT INTO ").append(parseTable(dest));
+        builder.append("INSERT INTO ");
+        name(runtime, builder, dest);
         builder.append("(");
         boolean start = true;
         for(Column column:columns.values()){
@@ -235,14 +237,14 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
            /* if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
-                    createPrimaryValue(row, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                    createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 }
                 insertValue(template, run, row, true, false, false, keys);
             }else{*/
                 boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
                 if(!create && null != generator){
-                    generator.create(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-                    //createPrimaryValue(obj, type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+                    generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
             builder.append(insertValue(runtime, run, obj, true, true, false, false, columns));
            // }

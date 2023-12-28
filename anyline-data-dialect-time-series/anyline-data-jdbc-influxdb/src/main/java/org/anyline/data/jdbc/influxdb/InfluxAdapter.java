@@ -26,6 +26,7 @@ import org.anyline.data.run.TableRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -80,7 +81,7 @@ public class InfluxAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
@@ -89,7 +90,9 @@ public class InfluxAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 				DataRow row = (DataRow)obj;
 				LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
 				// insert al, tag1=value1 qty=1, name=5
-				builder.append("insert ").append(parseTable(dest)).append(" ");
+				builder.append("insert ");
+				name(runtime, builder, dest);
+				builder.append(" ");
 				Map<String, Object> tags = row.getTags();
 				for(String tag:tags.keySet()){
 					builder.append(",").append(tag).append("=").append(tags.get(tag));

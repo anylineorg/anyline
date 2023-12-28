@@ -194,10 +194,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		return run;
 	}
 
-	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
-		return buildInsertRun(runtime, batch, new Table(dest), obj, configs, columns);
-	}
 
 	/**
 	 * insert [命令合成-子流程]<br/>
@@ -217,7 +213,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setBuilder(builder);
 		}
 		LinkedHashMap<String, Column> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		if(null != generator){
 			pks = set.getRow(0).getPrimaryColumns();
 			columns.putAll(pks);
@@ -294,7 +290,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			this.fillInsertContent(runtime, run, dest, set, configs, columns);
 			return;
 		}
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		Object entity = list.iterator().next();
 		List<String> pks = null;
 		if(null != generator) {
@@ -429,7 +425,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
 
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 
 		int from = 1;
 		StringBuilder valuesBuilder = new StringBuilder();

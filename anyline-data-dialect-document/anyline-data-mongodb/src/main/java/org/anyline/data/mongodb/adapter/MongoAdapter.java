@@ -76,7 +76,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return buildInsertRun(runtime, batch, new Table(dest), obj, configs, columns);
     }
 
@@ -94,7 +94,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
         Run run = new TableRun(runtime, dest);
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             Object pv = BeanUtil.getFieldValue(obj, "_id");
             if(null == pv){
@@ -120,7 +120,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns){
         Run run = new TableRun(runtime, dest);
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             List<String> pk = new ArrayList<>();
             pk.add("_id");
