@@ -59,6 +59,9 @@ public class DataSourceUtil {
      * @return String
      */
     public static Table parseDest(String src, ConfigStore configs){
+        if(null == src){
+            return null;
+        }
         Table result = new Table();
         //<sso>pw_user
         if(src.startsWith("<")){
@@ -89,16 +92,6 @@ public class DataSourceUtil {
     }
     public static Table parseDest(String dest, Object obj, ConfigStore configs){
         Table table = null;
-        if(BasicUtil.isNotEmpty(dest)){
-            table = new Table(dest);
-        }
-        return parseDest(table, obj, configs);
-    }
-    public static Table parseDest(Table table, Object obj, ConfigStore configs){
-        String dest = null;
-        if(null != table){
-            dest = table.getFullName();
-        }
         //有表的根据表解析
         if(BasicUtil.isNotEmpty(dest) || null == obj){
             return parseDest(dest, configs);

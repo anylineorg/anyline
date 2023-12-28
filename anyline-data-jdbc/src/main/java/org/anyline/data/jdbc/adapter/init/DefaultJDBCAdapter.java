@@ -178,7 +178,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			return null;
 		}
 		if(null == dest){
-			dest = DataSourceUtil.parseDest(dest, obj, configs);
+			dest = DataSourceUtil.parseDest(null, obj, configs);
 		}
 
 		if(obj instanceof Collection){
@@ -538,7 +538,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			throw new org.anyline.exception.SQLException("空数据");
 		}
 		Object first = list.iterator().next();
-		dest = DataSourceUtil.parseDest(dest, first, configs);
 
 		if(BasicUtil.isEmpty(dest)){
 			throw new org.anyline.exception.SQLException("未指定表");

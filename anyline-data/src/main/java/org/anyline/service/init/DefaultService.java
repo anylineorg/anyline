@@ -920,7 +920,7 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override 
     public long save(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
-        return save(batch, new Table(dest), data, configs, columns);
+        return save(batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
     }
 
     @Override
@@ -991,7 +991,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
     protected long saveObject(String dest, Object data, ConfigStore configs, List<String> columns) {
-        return saveObject(new Table(dest), data, configs, columns);
+        return saveObject(DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
     }
 
     protected long saveObject(Table dest, Object data, ConfigStore configs, List<String> columns) {
@@ -1082,7 +1082,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long delete(String dest, DataSet set, String... columns) {
-        return delete(new Table(dest), set, columns);
+        return delete(DataSourceUtil.parseDest(dest, set, null), set, columns);
     }
 
     @Override
@@ -1099,7 +1099,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long delete(String dest, DataRow row, String... columns) {
-        return delete(new Table(dest), row, columns);
+        return delete(DataSourceUtil.parseDest(dest, row, null), row, columns);
     }
 
 
@@ -1328,7 +1328,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected DataSet queryFromDao(String dest, ConfigStore configs, String... conditions) {
-       return queryFromDao(new Table(dest), configs, conditions);
+       return queryFromDao(DataSourceUtil.parseDest(dest, null, configs), configs, conditions);
     }
     protected DataSet queryFromDao(Table dest, ConfigStore configs, String... conditions) {
         DataSet set = null;
@@ -1352,7 +1352,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected <T> EntitySet<T> queryFromDao(String dest, Class<T> clazz, ConfigStore configs, String... conditions) {
-        return queryFromDao(new Table(dest), clazz, configs, conditions);
+        return queryFromDao(DataSourceUtil.parseDest(dest, clazz, configs), clazz, configs, conditions);
     }
 
     protected <T> EntitySet<T> queryFromDao(Table dest, Class<T> clazz, ConfigStore configs, String... conditions) {
@@ -1470,7 +1470,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected DataSet queryFromCache(String cache, String dest, ConfigStore configs, String... conditions) {
-        return queryFromCache(cache, new Table(dest), configs, conditions);
+        return queryFromCache(cache, DataSourceUtil.parseDest(dest,configs), configs, conditions);
     }
 
     protected DataSet queryFromCache(String cache, Table dest, ConfigStore configs, String... conditions) {

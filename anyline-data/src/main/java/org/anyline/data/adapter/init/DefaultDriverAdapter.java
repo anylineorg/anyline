@@ -194,7 +194,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
-		dest = DataSourceUtil.parseDest(dest, data, configs);
 		if(null == random){
 			random = random(runtime);
 		}
@@ -597,7 +596,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
-		dest = DataSourceUtil.parseDest(dest, data, configs);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
 		if(null == random){
@@ -707,7 +705,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		if(null == dest){
-			dest = DataSourceUtil.parseDest(dest, obj, configs);
+			dest = DataSourceUtil.parseDest(null, obj, configs);
 		}
 		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		if(null != columns){
@@ -2364,7 +2362,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values){
-		table = DataSourceUtil.parseDest(table, null, configs);
 		if(null == random){
 			random = random(runtime);
 		}
@@ -2401,7 +2398,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns){
-		dest = DataSourceUtil.parseDest(dest, obj, configs);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		long size = 0;
 		if(null != obj){
@@ -2454,7 +2450,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions){
-		table = DataSourceUtil.parseDest(table, null, configs);
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		swt = InterceptorProxy.prepareDelete(runtime, random, 0, table, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
@@ -2486,7 +2481,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long truncate(DataRuntime runtime, String random, Table table){
-		table = DataSourceUtil.parseDest(table, null, null);
 		List<Run> runs = buildTruncateRun(runtime, table);
 		if(null != runs && runs.size()>0) {
 			RunPrepare prepare = new DefaultTextPrepare(runs.get(0).getFinalUpdate());
@@ -2511,7 +2505,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		Run run = null;
 		if(null == dest){
-			dest = DataSourceUtil.parseDest(dest, obj, null);
+			dest = DataSourceUtil.parseDest(null, obj, null);
 		}
 		if(null == dest){
 			Object entity = obj;

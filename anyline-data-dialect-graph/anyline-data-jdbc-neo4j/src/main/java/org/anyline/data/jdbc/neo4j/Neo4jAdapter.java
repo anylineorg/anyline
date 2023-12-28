@@ -252,7 +252,6 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(list instanceof DataSet){
             DataSet set = (DataSet)list;
             first = set.getRow(0);
-            dest = DataSourceUtil.parseDest(dest, set, configs);
             if(BasicUtil.isEmpty(dest)){
                 dest = configs.table();
             }
