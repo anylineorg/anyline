@@ -194,6 +194,23 @@ public class DefaultConfigStore implements ConfigStore {
 		return dest;
 	}
 
+	@Override
+	public ConfigStore copyProperty(ConfigStore configs) {
+		if(null != configs){
+			this.table = configs.table();
+			this.handler = configs.stream();
+			this.catalog = configs.catalog();
+			this.schema = configs.schema();
+			this.table = configs.table();
+			this.datasource = configs.datasource();
+			this.keys = configs.keys();
+			this.execute = configs.execute();
+			this.clazz = configs.getClass();
+			this.integrality = configs.integrality();
+		}
+		return this;
+	}
+
 	/**
 	 * 设置虚拟主键，主要是用作为更新条件
 	 * @param keys keys
