@@ -435,7 +435,9 @@ public interface AnylineDao<E>{
 	default DataSet querys(Procedure procedure, PageNavi navi){
 		return querys(runtime(), null, procedure, navi);
 	}
-	long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns);
+	default long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns){
+		return delete(runtime, random, new Table(dest), configs, obj, columns);
+	}
 	default long delete(DataRuntime runtime, String random, String dest, Object obj, String ... columns){
 		return delete(runtime, random, dest, null, obj, columns);
 	}

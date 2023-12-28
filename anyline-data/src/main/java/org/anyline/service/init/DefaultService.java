@@ -885,8 +885,6 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
         }
-        configs = DataSourceUtil.parseDest(dest, data, configs);
-        dest = configs.dest();
         return dao.update(batch, dest, data, configs, columns);
     }
 
@@ -997,14 +995,6 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected long saveObject(Table dest, Object data, ConfigStore configs, List<String> columns) {
-        if (BasicUtil.isEmpty(dest)) {
-            if (data instanceof DataRow || data instanceof DataSet) {
-                configs = DataSourceUtil.parseDest(dest, data, configs);
-                dest = configs.table();
-            } else {
-                dest = new Table(EntityAdapterProxy.table(data.getClass(), true));
-            }
-        }
         return dao.save(dest, data, configs, columns);
     }
     protected long saveObject(String dest, Object data, ConfigStore configs, String... columns) {
@@ -1018,7 +1008,6 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override 
     public boolean execute(Procedure procedure, String... inputs) {
-        procedure.setName(DataSourceUtil.parseDest(procedure.getName(), null, null).dest());
         if (null != inputs) {
             for (String input : inputs) {
                 procedure.addInput(input);
@@ -1039,7 +1028,6 @@ public class DefaultService<E> implements AnylineService<E> {
     public DataSet querys(Procedure procedure, PageNavi navi, String... inputs) {
         DataSet set = null;
         try {
-            procedure.setName(DataSourceUtil.parseDest(procedure.getName(), null, null).dest());
             if (null != inputs) {
                 for (String input : inputs) {
                     procedure.addInput(input);
@@ -1073,21 +1061,19 @@ public class DefaultService<E> implements AnylineService<E> {
         return 0;
     }
     @Override 
-    public long execute(String src, ConfigStore store, String... conditions) {
+    public long execute(String src, ConfigStore configs, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(src);
         if(null != ps[0]){
-            return ServiceProxy.service(ps[0]).execute(ps[1], store, conditions);
+            return ServiceProxy.service(ps[0]).execute(ps[1], configs, conditions);
         }
         long result = -1;
         src = BasicUtil.compress(src);
-        store = DataSourceUtil.parseDest(src, null, store);
-        src = store.dest();
         conditions = BasicUtil.compress(conditions);
         RunPrepare prepare = createRunPrepare(src);
         if (null == prepare) {
             return result;
         }
-        result = dao.execute(prepare, store, conditions);
+        result = dao.execute(prepare, configs, conditions);
         return result;
     }
 
@@ -1135,7 +1121,6 @@ public class DefaultService<E> implements AnylineService<E> {
         Table dest = null;
         if (obj instanceof DataRow) {
             DataRow row = (DataRow) obj;
-            dest = DataSourceUtil.parseDest((String)null, row, null).table();
             return dao.delete(dest, row, columns);
         } else {
             if (obj instanceof Collection) {
@@ -1451,12 +1436,12 @@ public class DefaultService<E> implements AnylineService<E> {
                 log.debug("[解析SQL类型] [类型:{JAVA定义}] [src:{}]", src);
             }
             src = src.substring(2, src.length() - 1);
-            //src = DataSourceUtil.parseDest(src, null, null).dest();//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
             prepare = new DefaultTextPrepare(src);
         } else {
-            src = DataSourceUtil.parseDest(src, null, null).dest();//解析表
-            src = parsePrimaryKey(src, pks);//解析主键
+            ConfigStore configs = DataSourceUtil.parseDest(src, null, null);
+            src = configs.dest();
+            pks = configs.keys();
             if (src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);

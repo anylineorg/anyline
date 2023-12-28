@@ -711,11 +711,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().querys(runtime, random, procedure, navi);
 	}
 
-	@Override
-	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
-		return delete(runtime, random, new Table(dest), configs, obj, columns);
-	}
-
 	/**
 	 *
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

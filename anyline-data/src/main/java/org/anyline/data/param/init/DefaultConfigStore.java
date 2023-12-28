@@ -131,8 +131,6 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore table(String table) {
 		if(BasicUtil.isNotEmpty(table)) {
 			this.table = new Table(table);
-		}else{
-			this.table = null;
 		}
 		return this;
 	}
@@ -141,8 +139,6 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore schema(String schema) {
 		if(BasicUtil.isNotEmpty(schema)) {
 			this.schema = new Schema(schema);
-		}else{
-			this.schema = null;
 		}
 		return this;
 	}
@@ -151,8 +147,6 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore catalog(String catalog) {
 		if(BasicUtil.isNotEmpty(catalog)) {
 			this.catalog = new Catalog(catalog);
-		}else{
-			this.catalog = null;
 		}
 		return this;
 	}
@@ -197,9 +191,6 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public String dest() {
-		if(null == table){
-
-		}
 		return dest;
 	}
 
