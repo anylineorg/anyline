@@ -1443,9 +1443,9 @@ public class DefaultService<E> implements AnylineService<E> {
             src = parsePrimaryKey(src, pks);//解析主键
             prepare = new DefaultTextPrepare(src);
         } else {
-            ConfigStore configs = DataSourceUtil.parseDest(src, null, null);
-            src = configs.dest();
-            pks = configs.keys();
+            Table table = DataSourceUtil.parseDest(src, null, null);
+            src = table.getText();
+            pks = Column.names(table.primarys());
             if (src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
