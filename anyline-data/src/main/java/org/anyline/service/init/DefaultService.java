@@ -1421,6 +1421,10 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected RunPrepare createRunPrepare(Table table) {
+        String name = table.getName();
+        if(name.contains(":") || name.contains(" ")){//自定义SQL
+            return createRunPrepare(name);
+        }
         RunPrepare prepare = new DefaultTablePrepare();
         prepare.setDest(table);
         return prepare;

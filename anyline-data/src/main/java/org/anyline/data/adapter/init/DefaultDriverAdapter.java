@@ -11731,20 +11731,22 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	@Override
 	public boolean convert(DataRuntime runtime, Table table, Run run){
 		boolean result = false;
-		LinkedHashMap<String, Column> columns = table.getColumns();
+		if(null != table) {
+			LinkedHashMap<String, Column> columns = table.getColumns();
 
-		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			if(null == columns || columns.isEmpty()) {
-				columns = columns(runtime, null,false, table, false);
+			if (ConfigTable.IS_AUTO_CHECK_METADATA) {
+				if (null == columns || columns.isEmpty()) {
+					columns = columns(runtime, null, false, table, false);
+				}
 			}
-		}
-		List<RunValue> values = run.getRunValues();
-		if (null != values) {
-			for (RunValue value : values) {
-				if (ConfigTable.IS_AUTO_CHECK_METADATA) {
-					result = convert(runtime, columns, value);
-				} else {
-					result = convert(runtime, (Column) null, value);
+			List<RunValue> values = run.getRunValues();
+			if (null != values) {
+				for (RunValue value : values) {
+					if (ConfigTable.IS_AUTO_CHECK_METADATA) {
+						result = convert(runtime, columns, value);
+					} else {
+						result = convert(runtime, (Column) null, value);
+					}
 				}
 			}
 		}
