@@ -1450,28 +1450,29 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder.append("*");
 			builder.append(BR);
 		}
+		Table table = run.getTable();
 		builder.append("FROM").append(BR_TAB);
-		if(null != run.getSchema()){
-			delimiter(builder, run.getSchema()).append(".");
+		name(runtime, builder, table);
+		String alias = table.getAlias();
+		if(BasicUtil.isNotEmpty(alias)){
+			builder.append(" ").append(alias);
 		}
-		delimiter(builder, run.getTable());
 		builder.append(BR);
+
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			// builder.append(" AS ").append(sql.getAlias());
+			//不要带AS 有些库不支持
 			builder.append("  ").append(sql.getAlias());
 		}
+
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
 				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-
-				if(null != join.getSchema()){
-					delimiter(builder, join.getSchema()).append(".");
-				}
-				delimiter(builder, join.getName());
-				if(BasicUtil.isNotEmpty(join.getAlias())){
-					// builder.append(" AS ").append(join.getAlias());
-					builder.append("  ").append(join.getAlias());
+				Table joinTable = join.getTable();
+				String joinTableAlias = joinTable.getAlias();
+				name(runtime, builder, joinTable);
+				if(BasicUtil.isNotEmpty(joinTableAlias)){
+					builder.append("  ").append(joinTableAlias);
 				}
 				builder.append(" ON ").append(join.getCondition());
 			}
@@ -2505,11 +2506,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
 		StringBuilder builder = run.getBuilder();
 		builder.append("DELETE FROM ");
-		if(null != run.getSchema()){
-			delimiter(builder, run.getSchema()).append(".");
-		}
-
-		delimiter(builder, run.getTable());
+		name(runtime, builder, run.getTable());
 		builder.append(BR);
 		if(BasicUtil.isNotEmpty(prepare.getAlias())){
 			// builder.append(" AS ").append(sql.getAlias());
@@ -2519,12 +2516,11 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null != joins) {
 			for (Join join:joins) {
 				builder.append(BR_TAB).append(join.getType().getCode()).append(" ");
-				if(null != join.getSchema()){
-					delimiter(builder, join.getSchema()).append(".");
-				}
-				delimiter(builder, join.getName());
-				if(BasicUtil.isNotEmpty(join.getAlias())){
-					builder.append("  ").append(join.getAlias());
+				Table joinTable = join.getTable();
+				String jionTableAlias = joinTable.getAlias();
+				name(runtime, builder, joinTable);
+				if(BasicUtil.isNotEmpty(jionTableAlias)){
+					builder.append("  ").append(jionTableAlias);
 				}
 				builder.append(" ON ").append(join.getCondition());
 			}
