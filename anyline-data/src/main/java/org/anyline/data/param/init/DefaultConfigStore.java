@@ -185,6 +185,9 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore dest(String dest) {
 		this.dest = dest;
+		if(null != dest && !dest.contains(" ") && !dest.contains(":")){
+			table(dest);
+		}
 		return this;
 	}
 
@@ -194,6 +197,9 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public String dest() {
+		if(null == table){
+
+		}
 		return dest;
 	}
 
