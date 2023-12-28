@@ -22,9 +22,18 @@ package org.anyline.metadata;
 public class Dest {
     private Function function;
     private Procedure procedure;
+    private String datasource;
     private Table table;
     private String id;
     private String text;
+
+    public String getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(String datasource) {
+        this.datasource = datasource;
+    }
 
     public Function getFunction() {
         return function;

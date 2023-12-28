@@ -252,7 +252,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(list instanceof DataSet){
             DataSet set = (DataSet)list;
             first = set.getRow(0);
-            configs = DataSourceUtil.parseDest(dest, set, configs);
+            dest = DataSourceUtil.parseDest(dest, set, configs);
             if(BasicUtil.isEmpty(dest)){
                 dest = configs.table();
             }
@@ -1031,9 +1031,10 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(null != joins) {
             for (Join join:joins) {
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
-                delimiter(builder, join.getName());
-                if(BasicUtil.isNotEmpty(join.getAlias())){
-                    builder.append("  ").append(join.getAlias());
+                Table table = join.getTable();
+                delimiter(builder, table.getName());
+                if(BasicUtil.isNotEmpty(table.getAlias())){
+                    builder.append("  ").append(table.getAlias());
                 }
                 builder.append(" ON ").append(join.getCondition());
             }
