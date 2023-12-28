@@ -96,7 +96,10 @@ public class DataSourceUtil {
         return parseDest(table, obj, configs);
     }
     public static ConfigStore parseDest(Table tab, Object obj, ConfigStore configs){
-        String dest = tab.getName();
+        String dest = null;
+        if(null != tab){
+            dest = tab.getName();
+        }
         if(BasicUtil.isNotEmpty(dest) || null == obj){
             return parseDest(dest, configs);
         }
