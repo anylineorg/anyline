@@ -680,6 +680,9 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public ConfigStore and(ConfigStore configs, boolean apart) {
+		if(null == configs){
+			return this;
+		}
 		ConfigChain list = null;
 		ConfigChain chains = configs.getConfigChain();
 		if(apart){
@@ -819,6 +822,9 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore or(ConfigStore configs, boolean apart) {
+		if(null == configs){
+			return this;
+		}
 		ConfigChain list = null;
 		if(apart){
 			list = new DefaultConfigChain();
