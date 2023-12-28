@@ -11508,10 +11508,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return EntityAdapterProxy.primaryValue(obj);
 		}
 	}
-
-	public String parseTable(String table){
+/*
+	public Table parseTable(String table){
 		if(null == table){
-			return table;
+			return null;
 		}
 		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
 		table = DataSourceUtil.parseDest(table, null, null).dest();
@@ -11524,7 +11524,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			table = SQLUtil.delimiter(table,getDelimiterFr(), getDelimiterTo());
 		}
 		return table;
-	}
+	}*/
 
 
 	/**
