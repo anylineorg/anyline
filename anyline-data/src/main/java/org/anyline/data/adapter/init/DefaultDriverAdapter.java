@@ -627,7 +627,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(batch <= 1){
 				Collection list = (Collection) data;
 				for (Object item : list) {
-					result += update(runtime, random, 0, dest, item, configs, columns);
+					//TODO 换成colne
+					ConfigStore cfg = new DefaultConfigStore();
+					cfg.and(configs);
+					result += update(runtime, random, 0, dest, item, cfg, columns);
 				}
 				return result;
 			}
