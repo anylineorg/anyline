@@ -64,23 +64,38 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 		joins.add(join);
 		return this;
 	}
-	public RunPrepare join(Join.TYPE type, String table, String condition){
+	public RunPrepare join(Join.TYPE type, Table table, String condition){
 		Join join = new Join();
-		join.setName(table);
+		join.setTable(table);
 		join.setType(type);
 		join.setCondition(condition);
 		return join(join);
 	}
+	public RunPrepare join(Join.TYPE type, String table, String condition){
+		return join(type, new Table(table), condition);
+	}
 	public RunPrepare inner(String table, String condition){
+		return join(Join.TYPE.INNER, table, condition);
+	}
+	public RunPrepare inner(Table table, String condition){
 		return join(Join.TYPE.INNER, table, condition);
 	}
 	public RunPrepare left(String table, String condition){
 		return join(Join.TYPE.LEFT, table, condition);
 	}
+	public RunPrepare left(Table table, String condition){
+		return join(Join.TYPE.LEFT, table, condition);
+	}
 	public RunPrepare right(String table, String condition){
 		return join(Join.TYPE.RIGHT, table, condition);
 	}
+	public RunPrepare right(Table table, String condition){
+		return join(Join.TYPE.RIGHT, table, condition);
+	}
 	public RunPrepare full(String table, String condition){
+		return join(Join.TYPE.FULL, table, condition);
+	}
+	public RunPrepare full(Table table, String condition){
 		return join(Join.TYPE.FULL, table, condition);
 	}
 } 
