@@ -133,6 +133,31 @@ public class BaseMetadata<T extends BaseMetadata> {
     public String getName() {
         return name;
     }
+    public String getFullName(){
+        String dest = null;
+        String catalogName = getCatalogName();
+        String schemaName = getSchemaName();
+        String tableName = name;
+        if(BasicUtil.isNotEmpty(catalogName)){
+            dest = catalogName;
+        }
+        if(BasicUtil.isNotEmpty(schemaName)){
+            if(null == dest){
+                dest = schemaName;
+            }else{
+                dest += "." + schemaName;
+            }
+        }
+        if(BasicUtil.isNotEmpty(tableName)){
+            if(null == dest){
+                dest = tableName;
+            }else{
+                dest += "." + tableName;
+            }
+        }
+        return dest;
+
+    }
 
     public T setName(String name) {
         this.name = name;
