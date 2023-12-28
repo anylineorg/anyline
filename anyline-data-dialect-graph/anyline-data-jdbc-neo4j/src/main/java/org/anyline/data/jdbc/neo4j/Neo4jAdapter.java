@@ -289,7 +289,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         if(BasicUtil.isNotEmpty(alias)){
             builder.append(alias);
         }
-        builder.append(":").append(parseTable(dest.getName()));
+        builder.append(":").append(dest.getName());
         builder.append("{");
         List<String> insertColumns = new ArrayList<>();
         boolean first = true;
@@ -837,7 +837,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = run.getBuilder();
@@ -870,7 +870,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
         if(!keys.isEmpty()){
-            builder.append("UPDATE ").append(parseTable(dest));
+            builder.append("UPDATE ").append(dest.getName());
             builder.append(" SET").append(JDBCAdapter.BR_TAB);
             boolean start = true;
             for(Column column:keys.values()){
@@ -934,7 +934,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
         TableRun run = new TableRun(runtime, dest);
         StringBuilder builder = new StringBuilder();
         // List<Object> values = new ArrayList<Object>();
@@ -961,7 +961,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         /*构造SQL*/
 
         if(!cols.isEmpty()){
-            builder.append("UPDATE ").append(parseTable(dest));
+            builder.append("UPDATE ").append(dest.getName());
             builder.append(" SET").append(JDBCAdapter.BR_TAB);
             boolean first = true;
             for(Column column:cols.values()){
@@ -1092,14 +1092,13 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return run;
     }
 
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, String dest, Object obj, String ... columns){
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, Object obj, String ... columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         builder.append("MATCH (d");
-        String table = parseTable(dest);
-        if(BasicUtil.isNotEmpty(table)){
-            builder.append(":").append(table);
+         if(null != dest){
+            builder.append(":").append(dest.getName());
         }
         builder.append(")");
         builder.append(" WHERE ");
