@@ -1421,13 +1421,7 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     protected RunPrepare createRunPrepare(Table table) {
-        String name = table.getName();
-        if(name.contains(":") || name.contains(" ")){//自定义SQL
-            return createRunPrepare(name);
-        }
-        RunPrepare prepare = new DefaultTablePrepare();
-        prepare.setDest(table);
-        return prepare;
+        return createRunPrepare(table.getFullName());
     }
     protected RunPrepare createRunPrepare(String src) {
         RunPrepare prepare = null;
@@ -1445,18 +1439,19 @@ public class DefaultService<E> implements AnylineService<E> {
         } else {
             Table table = DataSourceUtil.parseDest(src, null, null);
             src = table.getText();
+            String id = table.getId();
             pks = Column.names(table.primarys());
-            if (src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
+            if (null != src && src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
                 prepare = new DefaultTextPrepare(src);
-            } else if (RegularUtil.match(src, RunPrepare.XML_SQL_ID_STYLE)) {
+            } else if (null != id && RegularUtil.match(id, RunPrepare.XML_SQL_ID_STYLE)) {
                 /* XML定义 */
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:XML定义] [src:{}]", src);
                 }
-                prepare = DefaultSQLStore.parseSQL(src);
+                prepare = DefaultSQLStore.parseSQL(id);
                 if (null == prepare) {
                     log.error("[解析SQL类型][XML解析失败][src:{}]", src);
                 }
@@ -1465,11 +1460,10 @@ public class DefaultService<E> implements AnylineService<E> {
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:auto] [src:{}]", src);
                 }
-                prepare = new DefaultTablePrepare();
-                prepare.setDest(src);
+                prepare = new DefaultTablePrepare(table);
             }
         }
-        if (null != prepare && pks.size() > 0) {
+        if (null != prepare && null != pks && pks.size() > 0) {
             prepare.setPrimaryKey(pks);
         }
         return prepare;
