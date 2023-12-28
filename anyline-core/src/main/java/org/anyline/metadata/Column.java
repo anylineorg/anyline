@@ -385,7 +385,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
                 if(tmp.contains(",")){
                     //有精度或srid
-                    String[] lens = tmp.split("\\, ");
+                    String[] lens = tmp.split("\\,");
                     if(BasicUtil.isNumber(lens[0])) {
                         setPrecision(BasicUtil.parseInt(lens[0], null));
                         setScale(BasicUtil.parseInt(lens[1], null));
