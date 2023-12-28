@@ -4045,6 +4045,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return null;
     }
+    public String getTableFullName(){
+        if(null != table){
+            return table.getFullName();
+        }
+        return null;
+    }
     public DataSet setTable(Table table){
         this.table = table;
         return this;
