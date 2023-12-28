@@ -4564,7 +4564,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         return result;
                     }
                 }
-                return 0;
+                return 1;
             }
         });
         isAsc = true;
@@ -4604,7 +4604,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         return result;
                     }
                 }
-                return 0;
+                return -1;
             }
         });
         isAsc = false;
