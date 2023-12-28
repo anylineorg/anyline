@@ -120,8 +120,8 @@ public class LogUtil {
                 if(null != value){
                     builder.append("(").append(ClassUtil.type(value)).append(")");
                 }
+                builder.append("\n");
             }
-            builder.append("\n");
         }
         return builder.toString();
 
