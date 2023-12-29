@@ -44,10 +44,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -1259,7 +1256,8 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	@Override
 	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
 		return super.buildQueryVersionRun(runtime);
-	}	/**
+	}
+	/**
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1270,7 +1268,12 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-		return super.buildQueryDatabasesRun(runtime, greedy, name);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYS_DATABASE");
+		return runs;
 	}
 	/**
 	 * database[结果集封装]<br/>
@@ -1284,7 +1287,15 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
-		return super.databases(runtime, index, create, databases, set);
+		if(null == databases){
+			databases = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			Database database = new Database();
+			database.setName(row.getString("DATNAME"));
+			databases.put(database.getName().toUpperCase(), database);
+		}
+		return databases;
 	}
 	@Override
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
