@@ -1854,6 +1854,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null != row) {
             rows.add(row);
         }
+        isDesc = false;
+        isDesc = false;
         return this;
     }
 
@@ -1861,6 +1863,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null != row) {
             rows.add(idx, row);
         }
+        isDesc = false;
+        isDesc = false;
         return this;
     }
 
@@ -3956,11 +3960,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /* ********************************************** 实现接口 *********************************************************** */
     public boolean add(DataRow e) {
+        isDesc = false;
+        isDesc = false;
         return rows.add((DataRow) e);
     }
 
     @SuppressWarnings({"rawtypes","unchecked"})
     public boolean addAll(Collection c) {
+        isDesc = false;
+        isDesc = false;
         return rows.addAll(c);
     }
 
@@ -4555,12 +4563,50 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return kvs;
     }
     /**
-     * 排序
-     *
-     * @param keys keys
-     * @return DataSet
+     * 排序(正序)
+     * @param keys 参与排序的列
+     * @return this
      */
     public DataSet asc(final String... keys) {
+        if(isAsc){
+            return this;
+        }
+        if(isDesc){
+            Collections.reverse(rows);
+            return this;
+        }
+        sort(1, keys);
+        isAsc = true;
+        isDesc = false;
+        return this;
+    }
+
+    /**
+     * 排序(倒序)
+     * @param keys 参与排序的列
+     * @return this
+     */
+    public DataSet desc(final String... keys) {
+        if(isDesc){
+            return this;
+        }
+        if(isAsc){
+            Collections.reverse(rows);
+            return this;
+        }
+        sort(-1, keys);
+        isAsc = false;
+        isDesc = true;
+        return this;
+    }
+
+    /**
+     * 排序
+     * @param factor 1:正序 -1:倒序
+     * @param keys 参与排序的列
+     * @return this
+     */
+    public DataSet sort(int factor,final String ... keys){
         Collections.sort(rows, new Comparator<DataRow>() {
             public int compare(DataRow r1, DataRow r2) {
                 int result = 0;
@@ -4571,10 +4617,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         if (null == v2) {
                             continue;
                         }
-                        return -1;
+                        return -1 * factor;
                     } else {
                         if (null == v2) {
-                            return 1;
+                            return factor;
                         }
                     }
                     if (BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)) {
@@ -4590,61 +4636,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                     if(result != 0) {
                         if (result > 0) {
-                            return 1;
+                            return factor;
                         } else {
-                            return -1;
+                            return -1 * factor;
                         }
                     }
                 }
                 return result;
             }
         });
-        isAsc = true;
-        isDesc = false;
-        return this;
-    }
-
-    public DataSet desc(final String... keys) {
-        Collections.sort(rows, new Comparator<DataRow>() {
-            public int compare(DataRow r1, DataRow r2) {
-                int result = 0;
-                for (String key : keys) {
-                    Object v1 = r1.get(key);
-                    Object v2 = r2.get(key);
-                    if (null == v1) {
-                        if (null == v2) {
-                            continue;
-                        }
-                        return 1;
-                    } else {
-                        if (null == v2) {
-                            return -1;
-                        }
-                    }
-                    if (BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)) {
-                        BigDecimal val1 = new BigDecimal(v1.toString());
-                        BigDecimal val2 = new BigDecimal(v2.toString());
-                        result = val2.compareTo(val1);
-                    } else if (v1 instanceof Date && v2 instanceof Date) {
-                        Date date1 = (Date)v1;
-                        Date date2 = (Date)v2;
-                        result = date2.compareTo(date1);
-                    } else {
-                        result = v2.toString().compareTo(v1.toString());
-                    }
-                    if(result != 0) {
-                        if (result > 0) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
-                    }
-                }
-                return result;
-            }
-        });
-        isAsc = false;
-        isDesc = true;
         return this;
     }
     public DataSet addAllUpdateColumns() {
