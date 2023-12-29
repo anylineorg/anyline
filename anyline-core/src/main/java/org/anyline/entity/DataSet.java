@@ -1534,13 +1534,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return minFloat(size(), key);
     }
 
-//	public BigDecimal min(int top, String key){
-//		BigDecimal result = minDecimal(top, key);
-//		return result;
-//	}
-//	public BigDecimal min(String key){
-//		return minDecimal(size(), key);
-//	}
 
     /**
      * key对应的value最大的一行
