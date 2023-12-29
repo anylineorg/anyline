@@ -1234,7 +1234,8 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	@Override
 	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
 		return super.buildQueryVersionRun(runtime);
-	}	/**
+	}
+	/**
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
