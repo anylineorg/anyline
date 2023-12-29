@@ -4314,6 +4314,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}else{
 			columns = new LinkedHashMap<>();
 		}
+		int index = 0;
+		for(Column column:columns.values()){
+			if(null == column.getPrecision()) {
+				column.setPosition(index++);
+			}
+		}
 		return columns;
 	}
 
