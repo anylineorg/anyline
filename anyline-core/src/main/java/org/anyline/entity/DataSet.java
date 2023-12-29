@@ -4566,8 +4566,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     } else {
                         result = v1.toString().compareTo(v2.toString());
                     }
-                    if (result != 0) {
-                        return result;
+                    if(result != 0) {
+                        if (result > 0) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
                     }
                 }
                 return 1;
@@ -4606,8 +4610,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     } else {
                         result = v2.toString().compareTo(v1.toString());
                     }
-                    if (result != 0) {
-                        return result;
+                    if(result != 0) {
+                        if (result > 0) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
                     }
                 }
                 return -1;
@@ -4617,7 +4625,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         isDesc = true;
         return this;
     }
-
     public DataSet addAllUpdateColumns() {
         for (DataRow row : rows) {
             row.addAllUpdateColumns();
