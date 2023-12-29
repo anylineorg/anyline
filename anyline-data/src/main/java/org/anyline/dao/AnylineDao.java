@@ -20,6 +20,7 @@ package org.anyline.dao;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -136,7 +137,7 @@ public interface AnylineDao<E>{
 	 */
 
 	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, batch, new Table(dest), data, configs, columns);
+		return update(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 	default long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime(), null, batch, dest, data, configs, columns);
@@ -210,7 +211,7 @@ public interface AnylineDao<E>{
 	 * @return int
 	 */
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		return insert(runtime, random, batch, new Table(dest), data, configs, columns);
+		return insert(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
@@ -436,7 +437,7 @@ public interface AnylineDao<E>{
 		return querys(runtime(), null, procedure, navi);
 	}
 	default long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns){
-		return delete(runtime, random, new Table(dest), configs, obj, columns);
+		return delete(runtime, random, DataSourceUtil.parseDest(dest, null, configs), configs, obj, columns);
 	}
 	default long delete(DataRuntime runtime, String random, String dest, Object obj, String ... columns){
 		return delete(runtime, random, dest, null, obj, columns);
