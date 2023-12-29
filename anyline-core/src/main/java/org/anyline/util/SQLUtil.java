@@ -60,7 +60,7 @@ public class SQLUtil {
 		if(null == key){
 			return false;
 		}
-		if(ConfigTable.IS_SQL_DELIMITER_OPEN || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))){
+		if(ConfigTable.IS_SQL_DELIMITER_OPEN || key.contains("-") || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))){
 			return true;
 		}
 		return false;
