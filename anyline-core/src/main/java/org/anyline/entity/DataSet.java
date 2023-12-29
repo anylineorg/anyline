@@ -59,8 +59,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private long createTime                         = 0     ; // 创建时间
     private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                     = false ; // 是否来自缓存
-    private boolean isAsc                           = false ; //
-    private boolean isDesc                          = false ; //
     private Map<String, Object> tags                = new HashMap<>()       ; // 标签
 
     /**
@@ -1555,16 +1553,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (size == 0) {
             return null;
         }
-        DataRow row = null;
-        if (isAsc) {
-            row = getRow(size - 1);
-        } else if (isDesc) {
-            row = getRow(0);
-        } else {
-            asc(key);
-            row = getRow(size - 1);
-        }
-        return row;
+        asc(key);
+        return getRow(size - 1);
     }
 
     public DataRow min(String key) {
@@ -1572,16 +1562,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (size == 0) {
             return null;
         }
-        DataRow row = null;
-        if (isAsc) {
-            row = getRow(0);
-        } else if (isDesc) {
-            row = getRow(size - 1);
-        } else {
-            asc(key);
-            row = getRow(0);
-        }
-        return row;
+        asc(key);
+        return getRow(0);
     }
 
     /**
@@ -1854,8 +1836,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null != row) {
             rows.add(row);
         }
-        isDesc = false;
-        isDesc = false;
         return this;
     }
 
@@ -1863,8 +1843,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null != row) {
             rows.add(idx, row);
         }
-        isDesc = false;
-        isDesc = false;
         return this;
     }
 
@@ -3960,15 +3938,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /* ********************************************** 实现接口 *********************************************************** */
     public boolean add(DataRow e) {
-        isDesc = false;
-        isDesc = false;
         return rows.add((DataRow) e);
     }
 
     @SuppressWarnings({"rawtypes","unchecked"})
     public boolean addAll(Collection c) {
-        isDesc = false;
-        isDesc = false;
         return rows.addAll(c);
     }
 
@@ -4568,16 +4542,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return this
      */
     public DataSet asc(final String... keys) {
-        if(isAsc){
-            return this;
-        }
-        if(isDesc){
-            Collections.reverse(rows);
-            return this;
-        }
         sort(1, keys);
-        isAsc = true;
-        isDesc = false;
         return this;
     }
 
@@ -4587,16 +4552,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return this
      */
     public DataSet desc(final String... keys) {
-        if(isDesc){
-            return this;
-        }
-        if(isAsc){
-            Collections.reverse(rows);
-            return this;
-        }
         sort(-1, keys);
-        isAsc = false;
-        isDesc = true;
         return this;
     }
 
