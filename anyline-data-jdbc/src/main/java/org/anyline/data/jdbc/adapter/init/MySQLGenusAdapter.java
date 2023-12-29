@@ -3575,33 +3575,28 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public boolean alter(DataRuntime runtime, Table meta) throws Exception{
         if(meta.isSort()){
-            LinkedHashMap<String, Column> columns = meta.getColumns();
-            String prefix = null;
-            for(Column column:columns.values()){
-                if(null == prefix){
-                    column.setPosition(0);
-                }else{
-                    column.setAfter(prefix);
-                }
-                prefix = column.getName();
-            }
+            sort(meta.getColumns());
         }
         Table update = (Table)meta.getUpdate();
         if(null != update){
             if(update.isSort()){
-                LinkedHashMap<String, Column> columns = update.getColumns();
-                String prefix = null;
-                for(Column column:columns.values()){
-                    if(null == prefix){
-                        column.setPosition(0);
-                    }else{
-                        column.setAfter(prefix);
-                    }
-                    prefix = column.getName();
-                }
+                sort(update.getColumns());
             }
         }
         return super.alter(runtime, meta);
+    }
+    protected void sort(LinkedHashMap<String, Column> columns){
+        String prefix = null;
+        for(Column column:columns.values()){
+            if(null == prefix){
+                column.setPosition(0);
+            }else{
+                column.setAfter(prefix);
+            }
+            if(!column.isDrop()) {
+                prefix = column.getName();
+            }
+        }
     }
     /**
      * table[调用入口]<br/>
