@@ -77,7 +77,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildInsertRun(runtime, batch, new Table(dest), obj, configs, columns);
+        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(dest, data, configs), obj, configs, columns);
     }
 
 

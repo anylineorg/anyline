@@ -27,6 +27,7 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.persistence.ManyToMany;
@@ -206,7 +207,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
-		return update(runtime, random, batch, new Table(dest), data, configs, columns);
+		return update(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 
 	/**
@@ -614,7 +615,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public long save(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
-		return save(runtime, random, batch, new Table(dest), data, configs, columns);
+		return save(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 
 	/**

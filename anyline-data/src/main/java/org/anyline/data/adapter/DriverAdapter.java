@@ -24,6 +24,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.ColumnType;
@@ -257,7 +258,7 @@ public interface DriverAdapter {
 		return insert(runtime, random, batch, dest, data, BeanUtil.array2list(columns));
 	}
 	default long insert(DataRuntime runtime, String random, int batch, Object data, String ... columns){
-		return insert(runtime, random, batch, (Table)null, data, BeanUtil.array2list(columns));
+		return insert(runtime, random, batch, DataSourceUtil.parseDest(null, data, null), data, BeanUtil.array2list(columns));
 	}
 	default long insert(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
 		return insert(runtime, random, 0, dest, data, columns);
@@ -266,11 +267,11 @@ public interface DriverAdapter {
 		return insert(runtime, random, dest, data, BeanUtil.array2list(columns));
 	}
 	default long insert(DataRuntime runtime, String random, Object data, String ... columns){
-		return insert(runtime, random, (Table)null, data, BeanUtil.array2list(columns));
+		return insert(runtime, random, DataSourceUtil.parseDest(null, data, null), data, BeanUtil.array2list(columns));
 	}
 
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		return insert(runtime, random, batch, new Table(dest), data, configs, columns);
+		return insert(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
@@ -304,17 +305,17 @@ public interface DriverAdapter {
 		return buildInsertRun(runtime, batch, dest, obj, confgis, BeanUtil.array2list(columns));
 	}
 	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, String ... columns){
-		return buildInsertRun(runtime, batch, (Table)null, obj, BeanUtil.array2list(columns));
+		return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, null), obj, BeanUtil.array2list(columns));
 	}
 	default Run buildInsertRun(DataRuntime runtime, int batch, Object obj, ConfigStore configs, String ... columns){
-		return buildInsertRun(runtime, batch, (Table)null, obj, configs, BeanUtil.array2list(columns));
+		return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, BeanUtil.array2list(columns));
 	}
 	default Run buildInsertRun(DataRuntime runtime, int batch, ConfigStore configs, Object obj, String ... columns){
-		return buildInsertRun(runtime, batch, (Table)null, obj, configs, BeanUtil.array2list(columns));
+		return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(null, obj, configs), obj, configs, BeanUtil.array2list(columns));
 	}
 
 	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
-		return buildInsertRun(runtime, batch, new Table(dest), obj, configs, columns);
+		return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
 	}
 	default Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, List<String> columns){
 		return buildInsertRun(runtime, batch, dest, obj, null, columns);
@@ -364,7 +365,7 @@ public interface DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
-		fillInsertContent(runtime, run, new Table(dest), list, configs, columns);
+		fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, list, configs), list, configs, columns);
 	}
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, list, null, columns);
@@ -379,7 +380,7 @@ public interface DriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-		fillInsertContent(runtime, run, new Table(dest), set, configs, columns);
+		fillInsertContent(runtime, run, DataSourceUtil.parseDest(dest, set, configs), set, configs, columns);
 	}
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, set, null, columns);
@@ -410,7 +411,7 @@ public interface DriverAdapter {
 	 */
 	LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object data, ConfigStore configs, List<String> columns, boolean batch);
 	default LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object data, ConfigStore configs, List<String> columns, boolean batch){
-		return confirmInsertColumns(runtime, new Table(dest), data, configs, columns, batch);
+		return confirmInsertColumns(runtime, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns, batch);
 	}
 
 	/**
@@ -474,59 +475,59 @@ public interface DriverAdapter {
 	 */
 	long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
 	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, batch, (Table)null, data, configs, columns);
+		return update(runtime, random, batch, DataSourceUtil.parseDest(null, data, configs), data, configs, columns);
 	}
 	default long update(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){
 		return update(runtime, random, batch, dest, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, int batch, Object data, List<String> columns){
-		return update(runtime, random, batch, (Table)null, data, null, columns);
+		return update(runtime, random, batch, DataSourceUtil.parseDest(null, data, null), data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs){
-		return update(runtime, random, batch, (Table)null, data, configs);
+		return update(runtime, random, batch, DataSourceUtil.parseDest(null, data, configs), data, configs);
 	}
 	default long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, String ... columns){
 		return update(runtime, random, batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(DataRuntime runtime, String random, int batch, Object data, ConfigStore configs, String ... columns){
-		return update(runtime, random, batch, (Table)null, data, configs, BeanUtil.array2list(columns));
+		return update(runtime, random, batch, DataSourceUtil.parseDest(null, data, configs), data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(DataRuntime runtime, String random, int batch, Table dest, Object data, String ... columns){
 		return update(runtime, random, batch, dest, data, BeanUtil.array2string(columns));
 	}
 	default long update(DataRuntime runtime, String random, int batch, Object data, String ... columns){
-		return update(runtime, random, batch, (Table)null, data, BeanUtil.array2string(columns));
+		return update(runtime, random, batch, DataSourceUtil.parseDest(null, data, null), data, BeanUtil.array2string(columns));
 	}
 	default long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime, random, 0, dest, data, configs, columns);
 	}
 	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, 0, (Table)null, data, configs, columns);
+		return update(runtime, random, 0, DataSourceUtil.parseDest(null, data, configs), data, configs, columns);
 	}
 	default long update(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
 		return update(runtime, random, 0, dest, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, Object data, List<String> columns){
-		return update(runtime, random, 0, (Table)null, data, null, columns);
+		return update(runtime, random, 0, DataSourceUtil.parseDest(null, data, null), data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs){
-		return update(runtime, random, 0, (Table)null, data, configs);
+		return update(runtime, random, 0, DataSourceUtil.parseDest(null, data, configs), data, configs);
 	}
 	default long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, String ... columns){
 		return update(runtime, random, 0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(DataRuntime runtime, String random, Object data, ConfigStore configs, String ... columns){
-		return update(runtime, random, 0, (Table)null, data, configs, BeanUtil.array2list(columns));
+		return update(runtime, random, 0, DataSourceUtil.parseDest(null, data, configs), data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(DataRuntime runtime, String random, Table dest, Object data, String ... columns){
 		return update(runtime, random, 0, dest, data, BeanUtil.array2string(columns));
 	}
 	default long update(DataRuntime runtime, String random, Object data, String ... columns){
-		return update(runtime, random, 0, (Table)null, data, BeanUtil.array2string(columns));
+		return update(runtime, random, 0, DataSourceUtil.parseDest(null, data, null), data, BeanUtil.array2string(columns));
 	}
 
 	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
-		return update(runtime, random, batch, new Table(dest), data, configs, columns);
+		return update(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 
 	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
@@ -578,25 +579,25 @@ public interface DriverAdapter {
 		return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, List<String> columns){
-		return buildUpdateRun(runtime, (Table)null, obj, configs, columns);
+		return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, List<String> columns){
 		return buildUpdateRun(runtime, dest, obj, null, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, List<String> columns){
-		return buildUpdateRun(runtime, (Table)null, obj, null, columns);
+		return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, String ... columns){
 		return buildUpdateRun(runtime, dest, obj, configs, BeanUtil.array2list(columns));
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, ConfigStore configs, String ... columns){
-		return buildUpdateRun(runtime, (Table)null, obj, configs, BeanUtil.array2list(columns));
+		return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, configs), obj, configs, BeanUtil.array2list(columns));
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
 		return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
 	}
 	default Run buildUpdateRun(DataRuntime runtime, Object obj, String ... columns){
-		return buildUpdateRun(runtime, (Table)null, obj, null, BeanUtil.array2list(columns));
+		return buildUpdateRun(runtime, DataSourceUtil.parseDest(null, obj, null), obj, null, BeanUtil.array2list(columns));
 	}
 	Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns);
 
@@ -605,7 +606,7 @@ public interface DriverAdapter {
 	Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns);
 
 	default Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
-		return buildUpdateRun(runtime, batch, new Table(dest), obj, configs, columns);
+		return buildUpdateRun(runtime, batch, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
 	}
 	default Run buildUpdateRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
@@ -620,15 +621,15 @@ public interface DriverAdapter {
 		return buildUpdateRun(runtime, dest, obj, null, BeanUtil.array2list(columns));
 	}
 	default Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
-		return buildUpdateRunFromEntity(runtime, new Table(dest), obj, configs, columns);
+		return buildUpdateRunFromEntity(runtime, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
 	}
 
 	default Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
-		return buildUpdateRunFromDataRow(runtime, new Table(dest), row, configs, columns);
+		return buildUpdateRunFromDataRow(runtime, DataSourceUtil.parseDest(dest, row, configs), row, configs, columns);
 	}
 
 	default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
-		return buildUpdateRunFromCollection(runtime, batch, new Table(dest), list, configs, columns);
+		return buildUpdateRunFromCollection(runtime, batch, DataSourceUtil.parseDest(dest, list, configs), list, configs, columns);
 	}
 	/**
 	 * 确认需要更新的列
@@ -654,10 +655,10 @@ public interface DriverAdapter {
 	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns);
 	LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns);
 	default LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
-		return confirmUpdateColumns(runtime, new Table(dest), row, configs, columns);
+		return confirmUpdateColumns(runtime, DataSourceUtil.parseDest(dest, row, configs), row, configs, columns);
 	}
 	default LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
-		return confirmUpdateColumns(runtime, new Table(dest), obj, configs, columns);
+		return confirmUpdateColumns(runtime, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
 	}
 	/**
 	 * update [命令执行]<br/>
@@ -670,7 +671,7 @@ public interface DriverAdapter {
 	 */
 	long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run);
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
-		return update(runtime, random, new Table(dest), data, configs, run);
+		return update(runtime, random, DataSourceUtil.parseDest(dest, data, configs), data, configs, run);
 	}
 
 
@@ -692,17 +693,17 @@ public interface DriverAdapter {
 	}
 
 	default long save(DataRuntime runtime, String random, Object data, List<String> columns){
-		return save(runtime, random, (Table)null, data, columns);
+		return save(runtime, random, DataSourceUtil.parseDest(null, data, null), data, columns);
 	}
 	default long save(DataRuntime runtime, String random, Table dest, Object data, String ... columns){
 		return save(runtime, random, dest, data, BeanUtil.array2list(columns));
 	}
 	default long save(DataRuntime runtime, String random, Object data, String ... columns){
-		return save(runtime, random, (Table)null, data, BeanUtil.array2list(columns));
+		return save(runtime, random, DataSourceUtil.parseDest(null, data, null), data, BeanUtil.array2list(columns));
 	}
 
 	default long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
-		return save(runtime, random, new Table(dest), data, configs, columns);
+		return save(runtime, random, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
 	}
 	default long save(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
 		return save(runtime, random, dest, data, null, columns);
