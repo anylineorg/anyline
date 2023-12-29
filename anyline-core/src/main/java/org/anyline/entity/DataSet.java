@@ -981,9 +981,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+
+    /**
+     * 把k,v,k,v转换成map格式
+     *
+     * @param params k,v,k,v或k:v,k:v(只能二选一，只要有一个不带:就按第一种)
+     * @return map
+     */
     private Map<String, String> kvs(String... params){
         Map<String, String> kvs = new HashMap<>();
         int len = params.length;
+        boolean ignoreSplit = false;
+        for(String param:params){
+            if(null == param || !param.contains(":")){
+                ignoreSplit = true;
+                break;
+            }
+        }
+        if(ignoreSplit){
+            for(int i=0; i<len; i+=2){
+                String k = params[i];
+                String v = params[i+1];
+                kvs.put(k, v);
+            }
+            return kvs;
+        }
         int i = 0;
         String srcFlagTag = "srcFlag"; // 参数含有${}的 在kvs中根据key值+tag 放入一个新的键值对, 如时间格式TIME:{10:10}
 
