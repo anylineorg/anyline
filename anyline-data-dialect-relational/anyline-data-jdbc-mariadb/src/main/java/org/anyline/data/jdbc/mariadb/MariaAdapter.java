@@ -105,7 +105,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
 	 * public String batchInsertSeparator()
-	 * public boolean supportInsertPlaceholder ()
+	 * public boolean supportInsertPlaceholder()
 	 * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
 	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
 	 * public String generatedKey()
@@ -218,7 +218,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return String
 	 */
 	@Override
-	public String batchInsertSeparator (){
+	public String batchInsertSeparator(){
 		return ",";
 	}
 
@@ -228,7 +228,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return boolean
 	 */
 	@Override
-	public boolean supportInsertPlaceholder (){
+	public boolean supportInsertPlaceholder(){
 		return true;
 	}
 	/**
