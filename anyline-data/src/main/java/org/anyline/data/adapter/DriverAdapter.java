@@ -419,13 +419,13 @@ public interface DriverAdapter {
 	 * 批量插入数据时,多行数据之间分隔符
 	 * @return String
 	 */
-	String batchInsertSeparator ();
+	String batchInsertSeparator();
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 插入数据时是否支持占位符
 	 * @return boolean
 	 */
-	boolean supportInsertPlaceholder ();
+	boolean supportInsertPlaceholder();
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 自增主键返回标识
