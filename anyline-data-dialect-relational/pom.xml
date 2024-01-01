@@ -43,7 +43,6 @@
 		<module>anyline-data-jdbc-sqlite</module>
 		<module>anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-voltdb</module>
-        <module>anyline-data-jdbc-aerospike</module>
     </modules>
 	<build>
 		<plugins>
