@@ -110,7 +110,7 @@ public class SQLUtil {
 			builder.append(src);
 			return builder;
 		}
-		if(src.contains("'")){
+		if(src.contains("'") || src.contains("\"")){
 			builder.append(src);
 			return builder;
 		}
