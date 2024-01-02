@@ -1408,36 +1408,48 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder.append(sql.getDistinct());
 		}
 		builder.append(BR_TAB);
-		List<String> columns = sql.getQueryColumns();
+		LinkedHashMap<String,Column> columns = sql.getColumns();
 		if(null == columns || columns.isEmpty()){
 			ConfigStore configs = run.getConfigStore();
 			if(null != configs) {
-				columns = configs.columns();
+				List<String> cols = configs.columns();
+				columns = new LinkedHashMap<>();
+				for(String col:cols){
+					columns.put(col.toUpperCase(), new Column(col));
+				}
 			}
 		}
 		if(null != columns && columns.size()>0){
 			// 指定查询列
-			int size = columns.size();
-			for(int i=0; i<size; i++){
-				String column = columns.get(i);
-				if(BasicUtil.isEmpty(column)){
+			boolean first = true;
+			for(Column column:columns.values()){
+				if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())){
 					continue;
 				}
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+				String name = column.getName();
 				//if (column.startsWith("${") && column.endsWith("}")) {
-				if (BasicUtil.checkEl(column)) {
-					column = column.substring(2, column.length()-1);
+				if (BasicUtil.checkEl(name)) {
+					name = name.substring(2, name.length()-1);
 					builder.append(column);
 				}else{
-					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
-						builder.append(column);
-					}else if("*".equals(column)){
+					if(name.contains("(") || name.contains(",")){
+						builder.append(name);
+					}else if(name.toUpperCase().contains(" AS ")){
+						int split = name.toUpperCase().indexOf(" AS ");
+						String tmp = name.substring(0, split).trim();
+						delimiter(builder, tmp);
+						builder.append(" ");
+						tmp = name.substring(split+4).trim();
+						delimiter(builder, tmp);
+					}else if("*".equals(name)){
 						builder.append("*");
 					}else{
-						delimiter(builder, column);
+						delimiter(builder, name);
 					}
-				}
-				if(i<size-1){
-					builder.append(",");
 				}
 			}
 			builder.append(BR);
@@ -1451,15 +1463,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		name(runtime, builder, table);
 		String alias = table.getAlias();
 		if(BasicUtil.isNotEmpty(alias)){
-			builder.append(" ").append(alias);
+			builder.append(" ");
+			delimiter(builder, alias);
 		}
 		builder.append(BR);
-
-		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			//不要带AS 有些库不支持
-			builder.append("  ").append(sql.getAlias());
-		}
-
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
@@ -1468,7 +1475,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				String joinTableAlias = joinTable.getAlias();
 				name(runtime, builder, joinTable);
 				if(BasicUtil.isNotEmpty(joinTableAlias)){
-					builder.append("  ").append(joinTableAlias);
+					builder.append("  ");
+					delimiter(builder, joinTableAlias);
 				}
 				builder.append(" ON ").append(join.getCondition());
 			}

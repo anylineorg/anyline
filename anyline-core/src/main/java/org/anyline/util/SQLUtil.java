@@ -110,6 +110,14 @@ public class SQLUtil {
 			builder.append(src);
 			return builder;
 		}
+		if(BasicUtil.isNumber(src)){
+			builder.append(src);
+			return builder;
+		}
+		if(src.contains("'") || src.contains("\"")){
+			builder.append(src);
+			return builder;
+		}
 		src = src.trim();
 		if(src.startsWith(delimiterFr) || src.endsWith(delimiterTo)){
 			builder.append(src);
@@ -132,6 +140,8 @@ public class SQLUtil {
 					builder.append(".");
 				}
 			}
+		}else if(src.contains(" ")){
+			builder.append(src);
 		}else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);
 		}

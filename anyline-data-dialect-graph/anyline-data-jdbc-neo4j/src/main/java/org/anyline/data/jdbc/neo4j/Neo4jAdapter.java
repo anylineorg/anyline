@@ -28,7 +28,6 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
@@ -471,30 +470,33 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             builder.append(orders.getRunText(getDelimiterFr()+getDelimiterTo()));
         }
         builder.append(" RETURN ");
-        List<String> columns = prepare.getQueryColumns();
+        LinkedHashMap<String, Column> columns = prepare.getColumns();
         if(null != columns && columns.size()>0){
             // 指定查询列
-            int size = columns.size();
-            for(int i=0; i<size; i++){
-                String column = columns.get(i);
+            boolean first = true;
+            for(Column column:columns.values()){
                 if(BasicUtil.isEmpty(column)){
                     continue;
                 }
-                //if(column.startsWith("${") && column.endsWith("}")){
-                if(BasicUtil.checkEl(column)){
-                    column = column.substring(2, column.length()-1);
-                    builder.append(column);
-                }else{
-                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
-                        builder.append(column);
-                    }else if("*".equals(column)){
-                        builder.append(alias);
-                    }else{
-                        delimiter(builder, alias+"."+column);
-                    }
-                }
-                if(i<size-1){
+
+                if(!first){
                     builder.append(",");
+                }
+                first = false;
+                String name = column.getName();
+                if(BasicUtil.checkEl(name)){
+                    name = name.substring(2, name.length()-1);
+                    builder.append(name);
+                }else{
+                    if(name.contains("(") || name.contains(",")){
+                        builder.append(name);
+                    }else if(name.toUpperCase().contains(" AS ")){
+                        builder.append(name);
+                    }else if("*".equals(name)){
+                        builder.append("*");
+                    }else{
+                        delimiter(builder, alias+"."+name);
+                    }
                 }
             }
             builder.append(JDBCAdapter.BR);

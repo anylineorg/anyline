@@ -40,8 +40,6 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 		setTable(table);
 	}
 
-
-
 	@Override 
 	public RunPrepare setTable(String table) {
 		if(null != table){
@@ -49,7 +47,7 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 		}else{
 			this.table = null;
 		}
-		parseTable();
+		parseTable(this.table);
 		return this;
 	} 
  
@@ -62,6 +60,8 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 
 	public RunPrepare join(Join join){
 		joins.add(join);
+		Table table = join.getTable();
+		parseTable(table);
 		return this;
 	}
 	public RunPrepare join(Join.TYPE type, Table table, String condition){

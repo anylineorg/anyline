@@ -20,19 +20,19 @@ package org.anyline.data.param;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.entity.Join;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
-import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TableBuilder {
 
     private Table table;
     private String datasource;
-    private String alias;
-    private List<String> queryColumns = new ArrayList<>();
-    private List<Join> joins = new ArrayList<Join>();//关联表
+    private LinkedHashMap<String,Column> columns = new LinkedHashMap<>(); //需要查询的列
+    private List<Join> joins = new ArrayList<>();//关联表
 
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
@@ -59,10 +59,6 @@ public class TableBuilder {
         this.datasource = datasoruce;
         return this;
     }
-    public TableBuilder setAlias(String alias){
-        this.alias = alias;
-        return this;
-    }
     public TableBuilder setTable(String table){
         this.table = new Table(table);
         return this;
@@ -72,8 +68,8 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addColumn(String column){
-        if(!queryColumns.contains(column)){
-            queryColumns.add(column);
+        if(!columns.containsKey(column.toUpperCase())){
+            columns.put(column.toUpperCase(), new Column(column));
         }
         return this;
     }
@@ -89,13 +85,10 @@ public class TableBuilder {
         DefaultTablePrepare sql = new DefaultTablePrepare();
         sql.setDest(datasource);
         sql.setTable(table);
-        if(BasicUtil.isNotEmpty(alias)) {
-            sql.setAlias(alias);
-        }
         for(Join join:joins){
             sql.join(join);
         }
-        for(String col:queryColumns) {
+        for(Column col: columns.values()) {
             sql.addColumn(col);
         }
         return sql;

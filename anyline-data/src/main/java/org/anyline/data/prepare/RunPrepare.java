@@ -23,11 +23,13 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.Join;
 import org.anyline.metadata.Catalog;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -184,8 +186,8 @@ public interface RunPrepare extends Cloneable {
 	List<String> getFetchKeys();
 	RunPrepare setQueryColumns(String ... columns);
 	RunPrepare setQueryColumns(List<String> columns);
-	List<String> getQueryColumns();
-	List<String> getExcludeColumns();
+	LinkedHashMap<String,Column> getColumns();
+	List<String> getExcludes();
 	RunPrepare setExcludeColumns(List<String> excludeColumn);
 	RunPrepare setExcludeColumns(String... columns);
 	/**
@@ -195,6 +197,7 @@ public interface RunPrepare extends Cloneable {
 	 * @param columns  columns
 	 */
 	RunPrepare addColumn(String columns);
+	RunPrepare addColumn(Column column);
 	RunPrepare excludeColumn(String columns);
 
 	RunPrepare join(Join join);
