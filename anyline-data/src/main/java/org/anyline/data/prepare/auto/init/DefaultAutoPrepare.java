@@ -31,12 +31,14 @@ import org.anyline.entity.Compare;
 import org.anyline.entity.Order;
 import org.anyline.entity.Join;
 import org.anyline.metadata.Catalog;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
@@ -68,7 +70,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 			return this;
 		}
 		this.table = new Table(table);
-		parseTable();
+		parseTable(this.table);
 		return this;
 	}
 	public RunPrepare setDest(Table table){
@@ -76,7 +78,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 			return this;
 		}
 		this.table = table;
-		parseTable();
+		parseTable(this.table);
 		return this;
 	}
 	/* ******************************************************************************************
@@ -141,7 +143,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 			return this;
 		}
 		if(null == this.queryColumns){
-			this.queryColumns = new ArrayList<>();
+			this.queryColumns = new LinkedHashMap<>();
 		}
 		if(columns.contains(",")){
 			// 多列
@@ -151,8 +153,8 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 			if(columns.startsWith("!")){
 				excludeColumn(columns.substring(1));
 			}else {
-				if (!queryColumns.contains(columns)) {
-					queryColumns.add(columns);
+				if (!queryColumns.containsKey(columns)) {
+					queryColumns.put(columns.toUpperCase(), new Column(columns));
 				}
 			}
 		}
@@ -229,7 +231,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	 * user as u(id, nm)
 	 * &lt;ds_hr&gt;user as u(id, nm)
 	 */
-	public void parseTable(){
+	public void parseTable(Table table){
 		if(null != table){
 			String catalog = null;
 			String schema = null;
@@ -415,7 +417,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	public RunPrepare setTable(String table) {
 		if(BasicUtil.isNotEmpty(table)) {
 			this.table = new Table(table);
-			parseTable();
+			parseTable(this.table);
 		}else{
 			this.table = null;
 		}
@@ -424,7 +426,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	@Override
 	public RunPrepare setTable(Table table) {
 		this.table = table;
-		parseTable();
+		parseTable(this.table);
 		return this;
 	}
 	@Override
