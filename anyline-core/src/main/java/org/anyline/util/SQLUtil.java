@@ -128,6 +128,8 @@ public class SQLUtil {
 					builder.append(".");
 				}
 			}
+		}else if(src.contains(" ")){
+			builder.append(src);
 		}else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);
 		}
