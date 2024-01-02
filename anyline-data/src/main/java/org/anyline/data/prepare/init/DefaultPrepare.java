@@ -25,16 +25,14 @@ import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.Join;
+import org.anyline.metadata.Column;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Vector;
- 
+import java.util.*;
+
 public abstract class DefaultPrepare implements RunPrepare{
 
 	protected static final Logger log     = LoggerFactory.getLogger(DefaultPrepare.class);
@@ -51,7 +49,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected boolean strict		       = false				; // 严格格式 不能追加条件
 	protected String runtime		       = null				; //
 	protected EMPTY_VALUE_SWITCH swt       = EMPTY_VALUE_SWITCH.IGNORE;
-	protected List<String> queryColumns    = new ArrayList<>();	//查询列
+	protected LinkedHashMap<String,Column> queryColumns    = new LinkedHashMap<>();	//查询列
 	protected List<String> excludeColumns  = new ArrayList<>();  //不查询列
 
 
@@ -465,19 +463,22 @@ public abstract class DefaultPrepare implements RunPrepare{
 	@Override
 	public RunPrepare setQueryColumns(String... columns) {
 		if(null != columns) {
-			this.queryColumns = BeanUtil.array2list(columns);
+			setQueryColumns(BeanUtil.array2list(columns));
 		}
 		return this;
 	}
 
 	@Override
 	public RunPrepare setQueryColumns(List<String> columns) {
-		this.queryColumns = columns;
+		this.queryColumns = new LinkedHashMap<>();
+		for(String column:columns){
+			queryColumns.put(column.toUpperCase(), new Column(column));
+		}
 		return this;
 	}
 
 	@Override
-	public List<String> getQueryColumns() {
+	public LinkedHashMap<String,Column> getQueryColumns() {
 		return this.queryColumns;
 	}
 
@@ -495,7 +496,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	@Override
 	public RunPrepare setExcludeColumns(String... columns) {
 		if(null != columns) {
-			this.queryColumns = BeanUtil.array2list(columns);
+			this.excludeColumns = BeanUtil.array2list(columns);
 		}
 		return this;
 	}
