@@ -186,8 +186,8 @@ public interface RunPrepare extends Cloneable {
 	List<String> getFetchKeys();
 	RunPrepare setQueryColumns(String ... columns);
 	RunPrepare setQueryColumns(List<String> columns);
-	LinkedHashMap<String,Column> getQueryColumns();
-	List<String> getExcludeColumns();
+	LinkedHashMap<String,Column> getColumns();
+	List<String> getExcludes();
 	RunPrepare setExcludeColumns(List<String> excludeColumn);
 	RunPrepare setExcludeColumns(String... columns);
 	/**
@@ -197,6 +197,7 @@ public interface RunPrepare extends Cloneable {
 	 * @param columns  columns
 	 */
 	RunPrepare addColumn(String columns);
+	RunPrepare addColumn(Column column);
 	RunPrepare excludeColumn(String columns);
 
 	RunPrepare join(Join join);

@@ -40,8 +40,6 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 		setTable(table);
 	}
 
-
-
 	@Override 
 	public RunPrepare setTable(String table) {
 		if(null != table){

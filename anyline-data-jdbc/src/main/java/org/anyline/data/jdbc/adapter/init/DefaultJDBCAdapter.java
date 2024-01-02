@@ -1408,7 +1408,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder.append(sql.getDistinct());
 		}
 		builder.append(BR_TAB);
-		LinkedHashMap<String,Column> columns = sql.getQueryColumns();
+		LinkedHashMap<String,Column> columns = sql.getColumns();
 		if(null == columns || columns.isEmpty()){
 			ConfigStore configs = run.getConfigStore();
 			if(null != configs) {

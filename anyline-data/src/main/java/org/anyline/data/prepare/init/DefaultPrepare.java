@@ -49,8 +49,8 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected boolean strict		       = false				; // 严格格式 不能追加条件
 	protected String runtime		       = null				; //
 	protected EMPTY_VALUE_SWITCH swt       = EMPTY_VALUE_SWITCH.IGNORE;
-	protected LinkedHashMap<String,Column> queryColumns    = new LinkedHashMap<>();	//查询列
-	protected List<String> excludeColumns  = new ArrayList<>();  //不查询列
+	protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();	//查询列
+	protected List<String> excludes = new ArrayList<>();  //不查询列
 
 
 	// 运行时参数值 
@@ -470,33 +470,33 @@ public abstract class DefaultPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare setQueryColumns(List<String> columns) {
-		this.queryColumns = new LinkedHashMap<>();
+		this.columns = new LinkedHashMap<>();
 		for(String column:columns){
-			queryColumns.put(column.toUpperCase(), new Column(column));
+			this.columns.put(column.toUpperCase(), new Column(column));
 		}
 		return this;
 	}
 
 	@Override
-	public LinkedHashMap<String,Column> getQueryColumns() {
-		return this.queryColumns;
+	public LinkedHashMap<String,Column> getColumns() {
+		return this.columns;
 	}
 
 	@Override
-	public List<String> getExcludeColumns() {
-		return excludeColumns;
+	public List<String> getExcludes() {
+		return excludes;
 	}
 
 	@Override
 	public RunPrepare setExcludeColumns(List<String> excludeColumn) {
-		this.excludeColumns = excludeColumn;
+		this.excludes = excludeColumn;
 		return this;
 	}
 
 	@Override
 	public RunPrepare setExcludeColumns(String... columns) {
 		if(null != columns) {
-			this.excludeColumns = BeanUtil.array2list(columns);
+			this.excludes = BeanUtil.array2list(columns);
 		}
 		return this;
 	}

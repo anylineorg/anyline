@@ -29,6 +29,7 @@ import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.entity.Compare;
 import org.anyline.metadata.Catalog;
+import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
@@ -401,12 +402,16 @@ public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
 
 	@Override
 	public RunPrepare addColumn(String columns) {
-		return null;
+		return this;
+	}
+	@Override
+	public RunPrepare addColumn(Column column) {
+		return this;
 	}
 
 	@Override
 	public RunPrepare excludeColumn(String columns) {
-		return null;
+		return this;
 	}
 
 	@Override

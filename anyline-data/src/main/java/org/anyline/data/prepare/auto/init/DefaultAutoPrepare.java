@@ -26,7 +26,6 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.init.DefaultPrepare;
-import org.anyline.data.run.Run;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Order;
 import org.anyline.entity.Join;
@@ -35,7 +34,6 @@ import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -142,8 +140,8 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		if(BasicUtil.isEmpty(columns)){
 			return this;
 		}
-		if(null == this.queryColumns){
-			this.queryColumns = new LinkedHashMap<>();
+		if(null == this.columns){
+			this.columns = new LinkedHashMap<>();
 		}
 		if(columns.contains(",")){
 			// 多列
@@ -153,11 +151,17 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 			if(columns.startsWith("!")){
 				excludeColumn(columns.substring(1));
 			}else {
-				if (!queryColumns.containsKey(columns)) {
-					queryColumns.put(columns.toUpperCase(), new Column(columns));
-				}
+				this.columns.put(columns.toUpperCase(), new Column(columns));
 			}
 		}
+		return this;
+	}
+	@Override
+	public RunPrepare addColumn(Column column){
+		if(null == this.columns){
+			this.columns = new LinkedHashMap<>();
+		}
+		columns.put(column.getName().toUpperCase(), column);
 		return this;
 	}
 
@@ -166,16 +170,16 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		if(BasicUtil.isEmpty(columns)){
 			return this;
 		}
-		if(null == this.excludeColumns){
-			this.excludeColumns = new ArrayList<>();
+		if(null == this.excludes){
+			this.excludes = new ArrayList<>();
 		}
 		if(columns.contains(",")){
 			// 多列
 			parseMultColumns(true, columns);
 		}else{
 			// 单列
-			if(!excludeColumns.contains(columns)) {
-				this.excludeColumns.add(columns);
+			if(!excludes.contains(columns)) {
+				this.excludes.add(columns);
 			}
 		}
 

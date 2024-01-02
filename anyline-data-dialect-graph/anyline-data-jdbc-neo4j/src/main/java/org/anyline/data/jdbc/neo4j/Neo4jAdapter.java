@@ -28,7 +28,6 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLException;
@@ -471,10 +470,9 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
             builder.append(orders.getRunText(getDelimiterFr()+getDelimiterTo()));
         }
         builder.append(" RETURN ");
-        LinkedHashMap<String, Column> columns = prepare.getQueryColumns();
+        LinkedHashMap<String, Column> columns = prepare.getColumns();
         if(null != columns && columns.size()>0){
             // 指定查询列
-            int size = columns.size();
             boolean first = true;
             for(Column column:columns.values()){
                 if(BasicUtil.isEmpty(column)){
@@ -486,7 +484,6 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
                 }
                 first = false;
                 String name = column.getName();
-                //if(column.startsWith("${") && column.endsWith("}")){
                 if(BasicUtil.checkEl(name)){
                     name = name.substring(2, name.length()-1);
                     builder.append(name);
