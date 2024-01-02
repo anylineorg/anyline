@@ -60,6 +60,10 @@ public class SQLUtil {
 		if(null == key){
 			return false;
 		}
+		key = key.trim();
+		if(key.contains(" ") || key.contains("+") || key.contains("/") || key.contains(">") || key.contains("*") || key.contains("<")){
+			return false;
+		}
 		if(ConfigTable.IS_SQL_DELIMITER_OPEN || key.contains("-") || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))){
 			return true;
 		}
