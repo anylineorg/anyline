@@ -30,7 +30,6 @@ public class TableBuilder {
 
     private Table table;
     private String datasource;
-    private String alias;
     private List<String> queryColumns = new ArrayList<>();
     private List<Join> joins = new ArrayList<Join>();//关联表
 
@@ -59,10 +58,6 @@ public class TableBuilder {
         this.datasource = datasoruce;
         return this;
     }
-    public TableBuilder setAlias(String alias){
-        this.alias = alias;
-        return this;
-    }
     public TableBuilder setTable(String table){
         this.table = new Table(table);
         return this;
@@ -89,9 +84,6 @@ public class TableBuilder {
         DefaultTablePrepare sql = new DefaultTablePrepare();
         sql.setDest(datasource);
         sql.setTable(table);
-        if(BasicUtil.isNotEmpty(alias)) {
-            sql.setAlias(alias);
-        }
         for(Join join:joins){
             sql.join(join);
         }
