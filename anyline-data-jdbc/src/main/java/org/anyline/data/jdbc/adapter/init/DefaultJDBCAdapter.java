@@ -1454,12 +1454,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder.append(" ").append(alias);
 		}
 		builder.append(BR);
-
-		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			//不要带AS 有些库不支持
-			builder.append("  ").append(sql.getAlias());
-		}
-
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
