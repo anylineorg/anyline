@@ -752,7 +752,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 first = false;
                 builder.append(name).append(".").append(key).append(" AS ").append(name);
             }
-            builder.append(" FROM ").append(dummy());
+            String dummy = dummy();
+            if(BasicUtil.isNotEmpty(dummy)) {
+                builder.append(" FROM ").append(dummy);
+            }
         }
         return runs;
     }
@@ -1830,7 +1833,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 		}
 */
         //需要跨schema查询
-        builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, F.COMMENTS FROM ALL_OBJECTS   M LEFT JOIN ALL_TAB_COMMENTS   F \n");
+        builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, M.CREATED AS CREATE_TIME, M.LAST_DDL_TIME AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.COMMENTS\n");
+        builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
         builder.append("WHERE M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS') AND M.OBJECT_TYPE IN('TABLE','VIEW')");
         if(BasicUtil.isNotEmpty(schema)){
