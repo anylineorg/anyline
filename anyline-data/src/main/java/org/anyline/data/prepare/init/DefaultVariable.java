@@ -104,7 +104,7 @@ public class DefaultVariable implements Variable {
 	public void setValue(Object value) {
 		setValue(true, value);
 	}
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked","rawtypes" })
 	public void setValue(boolean chkNull, Object value) {
 		if(null == value && chkNull){
 			return;
@@ -164,10 +164,10 @@ public class DefaultVariable implements Variable {
 		this.fullKey = fullKey;
 		if(null != fullKey) {
 			if (null == key) {
-				key = fullKey.replace(":", "")
-						.replace("${", "")
-						.replace("#{", "")
-						.replace("}", "");
+				key = fullKey.replace(":","")
+						.replace("${","")
+						.replace("#{","")
+						.replace("}","");
 			}
 			if (null == keyPrefix) {
 				if(fullKey.startsWith("#{")){

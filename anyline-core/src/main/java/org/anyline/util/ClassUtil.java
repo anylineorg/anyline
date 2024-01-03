@@ -175,7 +175,7 @@ public class ClassUtil {
 		List<String> fileNames = new ArrayList<>();
 		log.warn("[正在加载本地类][package:{}]", packageName);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		String packagePath = packageName.replace(".", "/");
+		String packagePath = packageName.replace(".","/");
 		Enumeration<URL> urls = loader.getResources(packagePath);
 		while (urls.hasMoreElements()) {
 			URL url = urls.nextElement();
@@ -215,8 +215,8 @@ public class ClassUtil {
 			} else {
 				String childFilePath = childFile.getPath();
 				if (childFilePath.endsWith(".class") && !childFilePath.contains("$")) {
-					String c = childFilePath.split("classes")[1].replace(".class", "");
-					c = c.replace("\\", ".").replace("//", ".");
+					String c = childFilePath.split("classes")[1].replace(".class","");
+					c = c.replace("\\",".").replace("//",".");
 					if(c.startsWith(".")){
 						c = c.substring(1);
 					}
@@ -249,7 +249,7 @@ public class ClassUtil {
 				if (entryName.endsWith(".class") && !entryName.contains("$")) {
 					if (childPackage) {
 						if (entryName.startsWith(packagePath)) {
-							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
+							entryName = entryName.replace("/",".").substring(0, entryName.lastIndexOf("."));
 							names.add(entryName);
 						}
 					} else {
@@ -261,7 +261,7 @@ public class ClassUtil {
 							myPackagePath = entryName;
 						}
 						if (myPackagePath.equals(packagePath)) {
-							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
+							entryName = entryName.replace("/",".").substring(0, entryName.lastIndexOf("."));
 							names.add(entryName);
 						}
 					}
@@ -382,7 +382,7 @@ public class ClassUtil {
 	}
 
 	private static boolean match(String value, String regex){
-		regex = regex.replace("*", ".*").toUpperCase();
+		regex = regex.replace("*",".*").toUpperCase();
 		return value.toUpperCase().matches(regex);
 	}
 
@@ -503,8 +503,8 @@ public class ClassUtil {
 				name = name.toUpperCase();
 			}
 			if(ignoreSplit){
-				itemName = itemName.replace("-", "").replace("_", "");
-				name = name.replace("-", "").replace("_", "");
+				itemName = itemName.replace("-","").replace("_","");
+				name = name.replace("-","").replace("_","");
 			}
 			if(name.equals(itemName)){
 				field = item;
@@ -522,7 +522,7 @@ public class ClassUtil {
 	 * @param annotation  annotation
 	 * @return List
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public static List<Field> getFieldsByAnnotation(Class clazz, Class annotation){
 		List<Field> list = new ArrayList<Field>();
 		try{
@@ -577,7 +577,7 @@ public class ClassUtil {
 	 * @param annotations  annotation 支持模糊匹配, 不区分大小写 如 Table*
 	 * @return List
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations){
 		List<Field> list = new ArrayList<Field>();
 		try{
@@ -606,7 +606,7 @@ public class ClassUtil {
 	 * @return List
 	 */
 
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked","rawtypes" })
 	public static List<Class> getClasses(String pack, Class ... bases){
 		List<Class> list = new ArrayList<Class>();
 		File dir = new File(ClassUtil.class.getResource("/").getFile(), pack.replace(".", File.separator));
@@ -621,7 +621,7 @@ public class ClassUtil {
 					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
 				}
 				path = path.replace(File.separator, ".");
-				path = path.replace(".classes.", "").replace(".class", "");
+				path = path.replace(".classes.","").replace(".class","");
 				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 					log.warn("[检索类][class:{}]", path);
 				}

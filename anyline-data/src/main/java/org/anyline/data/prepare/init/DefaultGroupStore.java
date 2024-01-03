@@ -47,7 +47,7 @@ public class DefaultGroupStore implements GroupStore {
  
 	/** 
 	 * 排序多列以, 分隔
-	 * group("CD", "NM");
+	 * group("CD","NM");
 	 * group("CD, NM ");
 	 * @param str  str
 	 */ 
@@ -56,9 +56,9 @@ public class DefaultGroupStore implements GroupStore {
 			return; 
 		} 
 		if (str.toUpperCase().contains("GROUP BY")) {
-			str = str.toUpperCase().replace("GROUP BY", "").trim();
+			str = str.toUpperCase().replace("GROUP BY","").trim();
 		} 
-		String[] tmps = str.split(", "); // 多列排序
+		String[] tmps = str.split(","); // 多列排序
 		for (String tmp : tmps) {
 			group(new DefaultGroup(tmp));
 		} 
@@ -93,7 +93,7 @@ public class DefaultGroupStore implements GroupStore {
 				}
 				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
 				if(i<groups.size()-1){
-					builder.append(", ");
+					builder.append(",");
 				} 
 			} 
 		} 

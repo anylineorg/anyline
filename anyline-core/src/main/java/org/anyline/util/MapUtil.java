@@ -162,7 +162,7 @@ public class MapUtil {
 				try{
 					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
 					for(String k:ks){
-						Object v =  obj.get(k.replace("${", "").replace("}", ""));
+						Object v =  obj.get(k.replace("${","").replace("}",""));
 						if(null == v){
 							v = "";
 						}
@@ -350,7 +350,7 @@ public class MapUtil {
 				copy(params, classValue);
 				Map<String, Object> valueRow = query(datas, params);
 				if(null != valueRow){
-					valueRow.put("_tmp_skip", "1");
+					valueRow.put("_tmp_skip","1");
 				}
 				String finalKey = concatValue(classValue, "-");//2010-数学
 				if(null != valueKeys && valueKeys.size() > 0){
@@ -399,14 +399,14 @@ public class MapUtil {
 	 *  返回结构 [{姓名:张三, 数学:100, 物理:90, 英语:80}, {姓名:李四, 数学:100, 物理:90, 英语:80}]
 	 */
 	public static  Collection<Map<String, Object>> pivot(Collection<Map<String, Object>> datas, String pk, String classKey, String valueKey) {
-		List<String> pks = BeanUtil.array2list(pk.trim().split(", "));
-		List<String> classKeys = BeanUtil.array2list(classKey.trim().split(", "));
-		List<String> valueKeys = BeanUtil.array2list(valueKey.trim().split(", "));
+		List<String> pks = BeanUtil.array2list(pk.trim().split(","));
+		List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
+		List<String> valueKeys = BeanUtil.array2list(valueKey.trim().split(","));
 		return pivot(datas, pks, classKeys, valueKeys);
 	}
 	public static Collection<Map<String, Object>> pivot(Collection<Map<String, Object>> datas, String pk, String classKey) {
-		List<String> pks = BeanUtil.array2list(pk.trim().split(", "));
-		List<String> classKeys = BeanUtil.array2list(classKey.trim().split(", "));
+		List<String> pks = BeanUtil.array2list(pk.trim().split(","));
+		List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
 		List<String> valueKeys = new ArrayList<>();
 		return pivot(datas, pks, classKeys, valueKeys);
 	}

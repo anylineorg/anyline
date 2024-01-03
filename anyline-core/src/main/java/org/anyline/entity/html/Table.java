@@ -442,7 +442,7 @@ public class Table {
             int c = -1;
             if(col.contains("(")){
                 col = col.trim();
-                String[] ref = col.substring(col.indexOf("(")+1, col.length()-1).split(", ");
+                String[] ref = col.substring(col.indexOf("(")+1, col.length()-1).split(",");
                 for(int i=0; i<ref.length; i++){
                     refs.add(Integer.parseInt(ref[i]));
                 }

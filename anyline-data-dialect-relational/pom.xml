@@ -14,7 +14,6 @@
 	<packaging>pom</packaging>
 
     <modules>
-		<module>anyline-data-jdbc-antdb</module>				<!--亚信-->
 		<module>anyline-data-jdbc-clickhouse</module>
 		<module>anyline-data-jdbc-cockroachdb</module>
 		<module>anyline-data-jdbc-couchdb</module>

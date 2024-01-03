@@ -39,8 +39,8 @@ public class SeoUtil {
 	 * 按星期更新数据 
 	 */ 
 	public static String insertKeyword(String src, List<String> keys){
-		List<Integer> idxList = new ArrayList<Integer> ();				// 关键词插入位置
-		Map<Integer, String> idxKeyMap = new HashMap<Integer, String>();	// 关键词插入位置对应(位置:关键词)
+		List<Integer> idxList = new ArrayList<>();				// 关键词插入位置
+		Map<Integer, String> idxKeyMap = new HashMap<>();	// 关键词插入位置对应(位置:关键词)
  
 		int srcLen = src.length(); 
 		if(srcLen < MIN_BODY_LEN){

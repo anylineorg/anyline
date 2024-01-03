@@ -49,14 +49,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * [调用入口]
      * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
      * [命令合成]
-     * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
-     * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
-     * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+     * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
      * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
      * public String batchInsertSeparator()
-     * public boolean supportInsertPlaceholder ()
-     * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
-     * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns)
+     * public boolean supportInsertPlaceholder()
+     * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+     * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
      * public String generatedKey()
      * [命令执行]
      * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
@@ -88,7 +88,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -101,7 +101,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
         return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
     }
 
@@ -138,7 +138,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
         if(null == set || set.isEmpty()){
             return;
         }
@@ -169,7 +169,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             pks = first.getPrimaryColumns();
@@ -185,7 +185,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             //正常插入
             builder.append("INSERT INTO ");
             delimiter(builder, dest).append(" (");
-            builder.append(concat("", ", ", Column.names(columns)));
+            builder.append(concat("",", ", Column.names(columns)));
             builder.append(") \n");
             builder.append(select);
         }else{
@@ -204,7 +204,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
         if(null == list || list.isEmpty()){
             return;
         }
@@ -246,7 +246,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""));
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             pks = EntityAdapterProxy.primaryKeys(first.getClass());
@@ -263,7 +263,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             boolean start = true;
             for (Column column : columns.values()) {
                 if (!start) {
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 start = false;
                 String key = column.getName();
@@ -312,8 +312,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String batchInsertSeparator (){
-        return ", ";
+    public String batchInsertSeparator(){
+        return ",";
     }
 
     /**
@@ -322,7 +322,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return boolean
      */
     @Override
-    public boolean supportInsertPlaceholder (){
+    public boolean supportInsertPlaceholder(){
         return true;
     }
     /**
@@ -345,7 +345,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
         return super.createInsertRun(runtime, dest, obj, configs, columns);
     }
 
@@ -359,7 +359,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
         return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
 
@@ -570,11 +570,11 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     }
 
     @Override
-    protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
+    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
     @Override
@@ -609,7 +609,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
         return super.checkMetadata(runtime, table, configs, columns);
     }
 
@@ -694,7 +694,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      *
      */
     @Override
-    protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
+    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
         return super.select(runtime, random, clazz, table, configs, run);
     }
 
@@ -747,7 +747,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             boolean first = true;
             for (String name : names) {
                 if(!first){
-                    builder.append(", ");
+                    builder.append(",");
                 }
                 first = false;
                 builder.append(name).append(".").append(key).append(" AS ").append(name);
@@ -841,7 +841,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return DataSet
      */
     @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         return super.select(runtime, random, system, table, configs, run);
     }
 
@@ -965,7 +965,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     @Override
     public String mergeFinalExists(DataRuntime runtime, Run run){
         String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
-        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+        sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
         return sql;
     }
 
@@ -1134,7 +1134,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return 1表示成功执行
      */
     @Override
-    public long truncate(DataRuntime runtime, String random, String table){
+    public long truncate(DataRuntime runtime, String random, Table table){
         return super.truncate(runtime, random, table);
     }
 
@@ -1148,7 +1148,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
         return super.buildDeleteRun(runtime, dest, obj, columns);
     }
 
@@ -1182,7 +1182,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values) {
+    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
         return super.buildDeleteRunFromTable(runtime, batch, table, column, values);
     }
 
@@ -1196,7 +1196,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String... columns) {
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, Object obj, String... columns) {
         return super.buildDeleteRunFromEntity(runtime, table, obj, columns);
     }
 
@@ -2489,7 +2489,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
         return super.columns(runtime, random, greedy, catalog, schema, table);
     }
     /**
@@ -6428,7 +6428,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      *  *****************************************************************************************************************/
 
 
-    protected void merge(StringBuilder builder, String dest, ConfigStore configs, String select, LinkedHashMap<String, Column> columns, LinkedHashMap<String, Column> pks){
+    protected void merge(StringBuilder builder, Table dest, ConfigStore configs, String select, LinkedHashMap<String, Column> columns, LinkedHashMap<String, Column> pks){
         List<String> bys = configs.overrideByColumns();
         if(null == bys){
             bys = new ArrayList<>();
@@ -6442,7 +6442,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         builder.append("USING (\n");
         builder.append(select);
         builder.append(") D ON(");
-        builder.append(concatEqual("D", "M", "AND", bys)).append(")\n");
+        builder.append(concatEqual("D","M","AND", bys)).append(")\n");
         //不存的正常插入
         builder.append("WHEN NOT MATCHED THEN \n");
         builder.append("INSERT(");
@@ -6455,7 +6455,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             builder.append("WHEN MATCHED THEN \n");
             List<String> cols = Column.names(columns);
             cols.removeAll(bys);//不更新主键
-            builder.append("UPDATE SET ").append(concatEqual("M","D", ",", cols));
+            builder.append("UPDATE SET ").append(concatEqual("M","D",",", cols));
         }
     }
 
@@ -6467,7 +6467,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             String key = column.getName();
             Sequence seq = sequens.get(key);
             if(!start){
-                builder.append(", ");
+                builder.append(",");
             }
             start = false;
             if(null != seq){
@@ -6486,13 +6486,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         return builder.toString();
     }
     //批量插入select 部分
-    protected String insertsSelect(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks){
+    protected String insertsSelect(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks){
         StringBuilder builder = new StringBuilder();
         builder.append(insertSelectHead(columns, sequens));
         int col = 0;
         for(DataRow row:set) {
             if(row.hasPrimaryKeys() && null != generator){
-                generator.create(row, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                generator.create(row, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
 
             if(col > 0){
@@ -6506,14 +6506,14 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         builder.append(") I ");
         return builder.toString();
     }
-    protected String insertsSelect(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks){
+    protected String insertsSelect(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks){
         StringBuilder builder = new StringBuilder();
         builder.append(insertSelectHead(columns, sequens));
         int col = 0;
         for(Object obj:list){
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
             if(!create && null != generator){
-                generator.create(obj, type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                generator.create(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             if(col > 0){
                 builder.append("\n\tUNION ALL");

@@ -43,6 +43,7 @@ import org.anyline.entity.EntitySet;
 import org.anyline.metadata.ACTION;
 import org.anyline.metadata.ACTION.SWITCH;
 import org.anyline.metadata.Procedure;
+import org.anyline.metadata.Table;
 
 import java.util.List;
 
@@ -187,7 +188,7 @@ public interface DMListener {
      * @return 如果返回false 则中断执行
      * @return SWITCH
      */
-    default SWITCH  prepareUpdate(DataRuntime runtime, String random, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareUpdate(DataRuntime runtime, String random, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){return SWITCH.CONTINUE;}
 
 
     /**
@@ -203,7 +204,7 @@ public interface DMListener {
      * @return 是否执行  如果返回false 将不执行更新
      * @return SWITCH
      */
-    default SWITCH  beforeUpdate(DataRuntime runtime, String random, Run run, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  beforeUpdate(DataRuntime runtime, String random, Run run, Table dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 更新之前调用
      *
@@ -220,7 +221,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count, String dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterUpdate(DataRuntime runtime, String random, Run run, long count, Table dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
 
     /**
@@ -234,7 +235,7 @@ public interface DMListener {
      * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
      * @return SWITCH
      */
-    default SWITCH  prepareInsert(DataRuntime runtime, String random, int batch, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareInsert(DataRuntime runtime, String random, int batch, Table dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
     /**
      * 创建insert sql之前调用
      *
@@ -247,7 +248,7 @@ public interface DMListener {
      * @param columns 需要插入的列
      * @return SWITCH
      */
-    default SWITCH  beforeInsert(DataRuntime runtime, String random, Run run, String dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
+    default SWITCH  beforeInsert(DataRuntime runtime, String random, Run run, Table dest, Object obj, List<String> columns){return SWITCH.CONTINUE;}
 
     /**
      * 插入之后调用
@@ -265,7 +266,7 @@ public interface DMListener {
      * @param millis 执行耗时
      * @return SWITCH
      */
-    default SWITCH afterInsert(DataRuntime runtime, String random, Run run, long count, String dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
+    default SWITCH afterInsert(DataRuntime runtime, String random, Run run, long count, Table dest, Object obj, List<String> columns, boolean success, long qty, long millis){return SWITCH.CONTINUE;}
 
     /**
      * 执行SQL之前调用
@@ -356,12 +357,12 @@ public interface DMListener {
      * @param columns 删除条件的我
      * @return SWITCH
      */
-    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
+    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, Table dest, Object obj, String ... columns){return SWITCH.CONTINUE;}
     /**
      * 创建删除SQL前调用(DataRuntime runtime, String random, 根据条件), 修改删除条件可以在这一步实现<br/>
      * 注意不是beforeDelete<br/>
      * 注意prepareDelete有两个函数需要实现
-     * service.delete(DataRuntime runtime, String random, "CRM_USER", "ID", "1", "2", "3"){return SWITCH.CONTINUE;}
+     * service.delete(DataRuntime runtime, String random, "CRM_USER","ID","1","2","3"){return SWITCH.CONTINUE;}
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
@@ -370,7 +371,7 @@ public interface DMListener {
      * @param values values
      * @return SWITCH
      */
-    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, String table, String key, Object values){return SWITCH.CONTINUE;}
+    default SWITCH  prepareDelete(DataRuntime runtime, String random, int batch, Table table, String key, Object values){return SWITCH.CONTINUE;}
     /**
      * 执行删除前调用
      *

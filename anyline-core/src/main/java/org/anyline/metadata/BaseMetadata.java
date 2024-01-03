@@ -1,3 +1,19 @@
+/*
+ * Copyright 2006-2023 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.anyline.metadata;
 
 import org.anyline.util.BasicUtil;
@@ -7,11 +23,15 @@ import java.util.*;
 
 public class BaseMetadata<T extends BaseMetadata> {
 
-    protected Catalog catalog                      ; // 数据库 catalog与schema 不同有数据库实现方式不一样
+    protected String datasource                   ; // 数据源
+    protected Catalog catalog                     ; // 数据库 catalog与schema 不同有数据库实现方式不一样
     protected Schema schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
     protected String name                         ; // 名称
+    protected String alias                        ; // 别名
     protected String comment                      ; // 备注
     protected boolean execute = true              ; // DDL是否立即执行, false:只创建SQL不执行可以通过ddls()返回生成的SQL
+    protected String text;
+    protected String id;
     protected Long objectId;
 
     protected Table table;
@@ -53,6 +73,15 @@ public class BaseMetadata<T extends BaseMetadata> {
         }
         return names;
     }
+
+    public String getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(String datasource) {
+        this.datasource = datasource;
+    }
+
     public Catalog getCatalog() {
         return catalog;
     }
@@ -116,9 +145,43 @@ public class BaseMetadata<T extends BaseMetadata> {
     public String getName() {
         return name;
     }
+    public String getFullName(){
+        String dest = null;
+        String catalogName = getCatalogName();
+        String schemaName = getSchemaName();
+        String tableName = name;
+        if(BasicUtil.isNotEmpty(catalogName)){
+            dest = catalogName;
+        }
+        if(BasicUtil.isNotEmpty(schemaName)){
+            if(null == dest){
+                dest = schemaName;
+            }else{
+                dest += "." + schemaName;
+            }
+        }
+        if(BasicUtil.isNotEmpty(tableName)){
+            if(null == dest){
+                dest = tableName;
+            }else{
+                dest += "." + tableName;
+            }
+        }
+        return dest;
+
+    }
 
     public T setName(String name) {
         this.name = name;
+        return (T)this;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public T setAlias(String alias) {
+        this.alias = alias;
         return (T)this;
     }
 
@@ -391,4 +454,19 @@ public class BaseMetadata<T extends BaseMetadata> {
         return null;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

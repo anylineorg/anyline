@@ -216,7 +216,7 @@ public class RegularUtil {
 	}
 	/**
 	 * 删除所有 包含attribute属性=value值  的标签连同标签体一起删除<br/>
-	 * RegularUtil.removeTagWithBodyByAttributeValue(s, "class", "a")<br/>
+	 * RegularUtil.removeTagWithBodyByAttributeValue(s, "class","a")<br/>
 	 * &lt;input type="text" class="a"/&gt;<br/>
 	 * &lt;input type="text" class="a"/&gt;&lt;/input/&gt;<br/>
 	 * &lt;input type="text" class="a b"/&gt;&lt;/input/&gt;如果需要不匹配可以使用"[^\\s]a[^\\s]"<br/>
@@ -484,7 +484,7 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeHtmlTagExceptSimple(String src){
-		return removeHtmlTagExcept(src, "br", "b", "strong", "u", "i", "pre", "ul", "li", "p");
+		return removeHtmlTagExcept(src, "br","b","strong","u","i","pre","ul","li","p");
 	}
 
 	/**
@@ -504,14 +504,14 @@ public class RegularUtil {
 				src = src.replaceAll(reg, "");
 				reg = attribute + "\\s*=\\s*\'[\\s\\S]*\'";
 				src = src.replaceAll(reg, "");
-				src = src.replaceAll("\\s+>", ">");
+				src = src.replaceAll("\\s+>",">");
 			}
 		}else{
 			reg = "\\S+?\\s*?=\\s*?\"[\\s\\S]*?\"";
 			src = src.replaceAll(reg, "");
 			reg = "\\S+?\\s*?=\\s*?\'[\\s\\S]*?\'";
 			src = src.replaceAll(reg, "");
-			src = src.replaceAll("\\s+?>", ">");
+			src = src.replaceAll("\\s+?>",">");
 		}
 		return src;
 	}
@@ -671,7 +671,7 @@ public class RegularUtil {
 	/**
 	 * 取出属性及属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
-	 * fetchAttributeValues(txt, "id", "name");
+	 * fetchAttributeValues(txt, "id","name");
 	 * @param txt txt
 	 * @param attribute 属性
 	 * @return List
@@ -810,14 +810,14 @@ public class RegularUtil {
 		if(str == null){
 			return false;
 		}
-		str = str.replace("/", "-");
+		str = str.replace("/","-");
 		return regularMatch.match(str, Regular.PATTERN.DATE.getCode());
 	}
 	public static boolean isDateTime(String str){
 		if(null == str){
 			return false;
 		}
-		str = str.replace("/", "-");
+		str = str.replace("/","-");
 		return regularMatch.match(str, Regular.PATTERN.DATE_TIME.getCode());
 	}
 }

@@ -41,10 +41,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.kingbase.oracle")
 public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
@@ -137,14 +134,14 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * [调用入口]
 	 * long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns)
 	 * [命令合成]
-	 * public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
 	 * public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch)
 	 * public String batchInsertSeparator()
-	 * public boolean supportInsertPlaceholder ()
-	 * protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
-	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns)
+	 * public boolean supportInsertPlaceholder()
+	 * protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns)
 	 * public String generatedKey()
 	 * [命令执行]
 	 * long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks);
@@ -175,7 +172,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
 		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
 	/**
@@ -188,7 +185,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
 	}
 
@@ -202,7 +199,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		super.fillInsertContent(runtime, run, dest, set, configs, columns);
 	}
 
@@ -216,7 +213,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		super.fillInsertContent(runtime, run, dest, list, configs, columns);
 	}
 
@@ -255,8 +252,8 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return String
 	 */
 	@Override
-	public String batchInsertSeparator (){
-		return ", ";
+	public String batchInsertSeparator(){
+		return ",";
 	}
 
 	/**
@@ -265,7 +262,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return boolean
 	 */
 	@Override
-	public boolean supportInsertPlaceholder (){
+	public boolean supportInsertPlaceholder(){
 		return true;
 	}
 	/**
@@ -288,7 +285,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRun(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.createInsertRun(runtime, dest, obj, configs, columns);
 	}
 
@@ -302,7 +299,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, List<String> columns){
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
 		return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
@@ -495,11 +492,11 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	}
 
 	@Override
-	protected long saveCollection(DataRuntime runtime, String random, String dest, Collection<?> data, ConfigStore configs, List<String> columns){
+	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
 		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected long saveObject(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
 		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
@@ -534,7 +531,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, String table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
@@ -619,7 +616,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 *
 	 */
 	@Override
-	protected  <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, String table, ConfigStore configs, Run run){
+	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
 		return super.select(runtime, random, clazz, table, configs, run);
 	}
 
@@ -746,7 +743,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
 		return super.select(runtime, random, system, table, configs, run);
 	}
 
@@ -1037,7 +1034,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return 1表示成功执行
 	 */
 	@Override
-	public long truncate(DataRuntime runtime, String random, String table){
+	public long truncate(DataRuntime runtime, String random, Table table){
 		return super.truncate(runtime, random, table);
 	}
 
@@ -1051,7 +1048,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns){
+	public Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns){
 		return super.buildDeleteRun(runtime, dest, obj, columns);
 	}
 
@@ -1085,7 +1082,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values) {
+	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, String column, Object values) {
 		return super.buildDeleteRunFromTable(runtime, batch, table, column, values);
 	}
 
@@ -1099,7 +1096,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRunFromEntity(DataRuntime runtime, String table, Object obj, String... columns) {
+	public Run buildDeleteRunFromEntity(DataRuntime runtime, Table table, Object obj, String... columns) {
 		return super.buildDeleteRunFromEntity(runtime, table, obj, columns);
 	}
 
@@ -1257,7 +1254,8 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	@Override
 	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
 		return super.buildQueryVersionRun(runtime);
-	}	/**
+	}
+	/**
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1268,7 +1266,12 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
-		return super.buildQueryDatabasesRun(runtime, greedy, name);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYS_DATABASE");
+		return runs;
 	}
 	/**
 	 * database[结果集封装]<br/>
@@ -1282,7 +1285,15 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 */
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception{
-		return super.databases(runtime, index, create, databases, set);
+		if(null == databases){
+			databases = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			Database database = new Database();
+			database.setName(row.getString("DATNAME"));
+			databases.put(database.getName().toUpperCase(), database);
+		}
+		return databases;
 	}
 	@Override
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
@@ -2289,7 +2300,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 	/**

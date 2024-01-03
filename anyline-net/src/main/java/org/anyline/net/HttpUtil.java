@@ -323,7 +323,7 @@ public class HttpUtil {
 				if(BasicUtil.isEmpty(path)){
 					continue;
 				}
-				path = path.replace("\\", "/");
+				path = path.replace("\\","/");
 				if(null == result){
 					result = path;
 				}else{
@@ -385,7 +385,7 @@ public class HttpUtil {
 		if(null == url){
 			return null;
 		}
-		String str = url.replaceAll("http://", "").replaceAll("https://", "").replaceAll("//", "");
+		String str = url.replaceAll("http://","").replaceAll("https://","").replaceAll("//","");
 		int idx = str.indexOf("/");
 		if (idx != -1) {
 			str = str.substring(0, idx);
@@ -402,7 +402,7 @@ public class HttpUtil {
 		if(null == url){
 			return null;
 		}
-		url = url.replace("http://", "").replace("https://", "");
+		url = url.replace("http://","").replace("https://","");
 		if (url.contains(":")){
 			url = url.substring(0, url.indexOf(":"));
 		}
@@ -454,7 +454,7 @@ public class HttpUtil {
 	public static String parseFileName(String url) {
 		String name = null;
 		if(null != url){
-			url = url.replace("://", "");
+			url = url.replace("://","");
 			if(!url.endsWith("/")){
 				name = url.substring(url.lastIndexOf("/")+1);
 				if(name.contains("?")){
@@ -757,37 +757,37 @@ public class HttpUtil {
 		}else{
 			String result = src;
 			result = result
-					.replace(" ", "")
-					.replace("\n", "")
-					.replace("\r", "")
-					.replace("\t", "")
-					.replace("~", "%7E")
-					.replace("!", "%21")
-					.replace("@", "%40")
-					.replace("#", "%23")
-					.replace("$", "%24")
-					.replace("%", "%25")
-					.replace("^", "%5E")
-					.replace("&", "%26")
-					.replace("(", "%28")
-					.replace(")", "%29")
-					.replace("=", "%3D")
-					.replace("`", "%60")
-					.replace("+", "%2B")
-					.replace("{", "%7B")
-					.replace("}", "%7D")
-					.replace("[", "%5B")
-					.replace("]", "%5D")
-					.replace("<", "%3C")
-					.replace(">", "%3E")
-					.replace(", ", "%2C")
-					.replace("/", "%2F")
-					.replace("\\", "%5C")
-					.replace("?", "%3F")
-					.replace(";", "%3B")
-					.replace("'", "%27")
-					.replace(":", "%3A")
-					.replace("\"", "%22");
+					.replace(" ","")
+					.replace("\n","")
+					.replace("\r","")
+					.replace("\t","")
+					.replace("~","%7E")
+					.replace("!","%21")
+					.replace("@","%40")
+					.replace("#","%23")
+					.replace("$","%24")
+					.replace("%","%25")
+					.replace("^","%5E")
+					.replace("&","%26")
+					.replace("(","%28")
+					.replace(")","%29")
+					.replace("=","%3D")
+					.replace("`","%60")
+					.replace("+","%2B")
+					.replace("{","%7B")
+					.replace("}","%7D")
+					.replace("[","%5B")
+					.replace("]","%5D")
+					.replace("<","%3C")
+					.replace(">","%3E")
+					.replace(",", "%2C")
+					.replace("/","%2F")
+					.replace("\\","%5C")
+					.replace("?","%3F")
+					.replace(";","%3B")
+					.replace("'","%27")
+					.replace(":","%3A")
+					.replace("\"","%22");
 			return result;
 		}
 	}

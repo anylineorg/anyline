@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum DatabaseType implements Serializable {
-        NONE			        ("NONE"	                           , KEY_CASE.SRC, 0, null, "", ""),
-        COMMON                  ("COMMON"	                           , KEY_CASE.SRC, 0, null, "", ""),
+        NONE			        ("NONE"	                           , KEY_CASE.SRC, 0, null, "",""),
+        COMMON                  ("COMMON"	                           , KEY_CASE.SRC, 0, null, "",""),
         Access              	("Microsoft Access"                 	, KEY_CASE.SRC	, 980	, "Microsoft Access"	, "sun.jdbc.odbc.JdbcOdbcDriver"	, "jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};DBQ={database}"),
         Accumulo            	("Apache Accumulo"                  	, KEY_CASE.SRC	, 910	, null	, ""	, ""),
         Acebase             	("Acebase"                          	, KEY_CASE.SRC	, 624	, null	, ""	, ""),

@@ -93,7 +93,7 @@ public interface EntityAdapter {
         Class parent = clazz;
         String name = null;
         while (true){
-            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name", "table.value", "tableName.name", "tableName.value");
+            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name","table.value","tableName.name","tableName.value");
             if(BasicUtil.isEmpty(name)){
                 parent = parent.getSuperclass();
                 if(null == parent){
@@ -148,7 +148,7 @@ public interface EntityAdapter {
         if(null == columns) {
             columns = new LinkedHashMap<>();
             List<Field> fields = ClassUtil.getFields(clazz, false, false);
-            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient", "OneToMany", "ManyToMany");
+            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient","OneToMany","ManyToMany");
             fields.removeAll(ignores);
             for (Field field : fields) {
                 Column column = column(clazz, field);
@@ -204,9 +204,9 @@ public interface EntityAdapter {
         // 2.注解
         if(null == annotations || annotations.length ==0 ){
             if(BasicUtil.isNotEmpty(ConfigTable.ENTITY_COLUMN_ANNOTATION)){
-                annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(", ");
+                annotations = ConfigTable.ENTITY_COLUMN_ANNOTATION.split(",");
             }else {
-                annotations = "column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value".split(", ");
+                annotations = "column.name, column.value, TableField.name, TableField.value, tableId.name, tableId.value, Id.name, Id.value".split(",");
             }
         }
         name = ClassUtil.parseAnnotationFieldValue(field, annotations);
@@ -236,7 +236,7 @@ public interface EntityAdapter {
             String type = ClassUtil.parseAnnotationFieldValue(field, "column.columnDefinition");
             if(BasicUtil.isNotEmpty(type)){
                 if(type.contains("[]")){
-                    type = type.replace("[]", "");
+                    type = type.replace("[]","");
                     column.setArray(true);
                 }
                 column.setType(type);
@@ -309,7 +309,7 @@ public interface EntityAdapter {
         PrimaryGenerator generator = null;
         table = table.toUpperCase();
         if(null == GeneratorConfig.get(table)){
-            Object generatorName = ClassUtil.parseAnnotationFieldValue(field, "GeneratedValue", "generator");
+            Object generatorName = ClassUtil.parseAnnotationFieldValue(field, "GeneratedValue","generator");
             if(null != generatorName){
                 String name = generatorName.toString();
                 for(PrimaryGenerator.GENERATOR item:PrimaryGenerator.GENERATOR.values()){
@@ -373,10 +373,10 @@ public interface EntityAdapter {
                 annotations = "tableId, Id";
             }
             //根据注解提取属性s
-            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(", "));
+            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, annotations.split(","));
             for (Field field : fields) {
                 //根据属性获取相应的列名
-                Column column = column(clazz, field, annotations.split(", "));
+                Column column = column(clazz, field, annotations.split(","));
                 if (null != column) {
                     list.put(column.getName().toUpperCase(), column);
                 }
@@ -386,7 +386,7 @@ public interface EntityAdapter {
                 fields = ClassUtil.getFields(clazz, false, false);
                 Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
                 if (null != field) {
-                    Column column = column(clazz, field, annotations.split(", "));
+                    Column column = column(clazz, field, annotations.split(","));
                     if (null != column) {
                         list.put(column.getName().toUpperCase(), column);
                     }

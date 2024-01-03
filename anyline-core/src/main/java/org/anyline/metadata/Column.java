@@ -368,7 +368,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 typeName = typeName.substring(1);
                 setArray(true);
             }
-            typeName = typeName.trim().replace("'", "");
+            typeName = typeName.trim().replace("'","");
 
             if(typeName.toUpperCase().contains("IDENTITY")){
                 autoIncrement(true);
@@ -383,9 +383,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 this.precision = 0;
                 this.scale = 0;
                 String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
-                if(tmp.contains(", ")){
+                if(tmp.contains(",")){
                     //有精度或srid
-                    String[] lens = tmp.split("\\, ");
+                    String[] lens = tmp.split("\\,");
                     if(BasicUtil.isNumber(lens[0])) {
                         setPrecision(BasicUtil.parseInt(lens[0], null));
                         setScale(BasicUtil.parseInt(lens[1], null));
@@ -979,7 +979,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 if (precision > 0) {
                     builder.append("(").append(precision);
                     if (null != scale && scale > 0) {
-                        builder.append(", ").append(scale);
+                        builder.append(",").append(scale);
                     }
                     builder.append(")");
                 } else if (precision == -1) {
@@ -992,7 +992,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             builder.append("(");
             builder.append(child);
             if(null != srid){
-                builder.append(", ");
+                builder.append(",");
                 builder.append(srid);
             }
             builder.append(")");

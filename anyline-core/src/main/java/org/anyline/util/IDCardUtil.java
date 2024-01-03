@@ -29,50 +29,50 @@ import java.util.regex.Pattern;
 public class IDCardUtil {
  
 	private static Map<String, String> CODE_NM =  new HashMap<String, String>();
-	private static String CITY_CODE[] = {"11", "12", "13", "14", "15", "21", "22",
-			"23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43",
-			"44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63",
-			"64", "65", "71", "81", "82", "91" };
+	private static String CITY_CODE[] = {"11","12","13","14","15","21","22",
+			"23","31","32","33","34","35","36","37","41","42","43",
+			"44","45","46","50","51","52","53","54","61","62","63",
+			"64","65","71","81","82","91" };
 	// 每位加权因子
 	private static int power[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
 	// 第18位校检码
-	private static String verifyCode[] = {"1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
+	private static String verifyCode[] = {"1","0","X","9","8","7","6","5","4","3","2" };
 	static{
-		CODE_NM.put( "11", "北京" );
-		CODE_NM.put( "12", "天津" );
-		CODE_NM.put( "13", "河北" );
-		CODE_NM.put( "14", "山西" );
-		CODE_NM.put( "15", "内蒙古" );
-		CODE_NM.put( "21", "辽宁" );
-		CODE_NM.put( "22", "吉林" );
-		CODE_NM.put( "23", "黑龙江" );
-		CODE_NM.put( "31", "上海" );
-		CODE_NM.put( "32", "江苏" );
-		CODE_NM.put( "33", "浙江" );
-		CODE_NM.put( "34", "安徽" );
-		CODE_NM.put( "35", "福建" );
-		CODE_NM.put( "36", "江西" );
-		CODE_NM.put( "37", "山东" );
-		CODE_NM.put( "41", "河南" );
-		CODE_NM.put( "42", "湖北" );
-		CODE_NM.put( "43", "湖南" );
-		CODE_NM.put( "44", "广东" );
-		CODE_NM.put( "45", "广西" );
-		CODE_NM.put( "46", "海南" );
-		CODE_NM.put( "50", "重庆" );
-		CODE_NM.put( "51", "四川" );
-		CODE_NM.put( "52", "贵州" );
-		CODE_NM.put( "53", "云南" );
-		CODE_NM.put( "54", "西藏" );
-		CODE_NM.put( "61", "陕西" );
-		CODE_NM.put( "62", "甘肃" );
-		CODE_NM.put( "63", "青海" );
-		CODE_NM.put( "64", "宁夏" );
-		CODE_NM.put( "65", "新疆" );
-		CODE_NM.put( "71", "台湾" );
-		CODE_NM.put( "81", "香港" );
-		CODE_NM.put( "82", "澳门" );
-		CODE_NM.put( "91", "国外" );
+		CODE_NM.put( "11","北京" );
+		CODE_NM.put( "12","天津" );
+		CODE_NM.put( "13","河北" );
+		CODE_NM.put( "14","山西" );
+		CODE_NM.put( "15","内蒙古" );
+		CODE_NM.put( "21","辽宁" );
+		CODE_NM.put( "22","吉林" );
+		CODE_NM.put( "23","黑龙江" );
+		CODE_NM.put( "31","上海" );
+		CODE_NM.put( "32","江苏" );
+		CODE_NM.put( "33","浙江" );
+		CODE_NM.put( "34","安徽" );
+		CODE_NM.put( "35","福建" );
+		CODE_NM.put( "36","江西" );
+		CODE_NM.put( "37","山东" );
+		CODE_NM.put( "41","河南" );
+		CODE_NM.put( "42","湖北" );
+		CODE_NM.put( "43","湖南" );
+		CODE_NM.put( "44","广东" );
+		CODE_NM.put( "45","广西" );
+		CODE_NM.put( "46","海南" );
+		CODE_NM.put( "50","重庆" );
+		CODE_NM.put( "51","四川" );
+		CODE_NM.put( "52","贵州" );
+		CODE_NM.put( "53","云南" );
+		CODE_NM.put( "54","西藏" );
+		CODE_NM.put( "61","陕西" );
+		CODE_NM.put( "62","甘肃" );
+		CODE_NM.put( "63","青海" );
+		CODE_NM.put( "64","宁夏" );
+		CODE_NM.put( "65","新疆" );
+		CODE_NM.put( "71","台湾" );
+		CODE_NM.put( "81","香港" );
+		CODE_NM.put( "82","澳门" );
+		CODE_NM.put( "91","国外" );
 	} 
 	/** 
 	 * 验证所有的身份证的合法性 

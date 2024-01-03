@@ -60,7 +60,11 @@ public class SQLUtil {
 		if(null == key){
 			return false;
 		}
-		if(ConfigTable.IS_SQL_DELIMITER_OPEN || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))){
+		key = key.trim();
+		if(key.contains(" ") || key.contains("+") || key.contains("/") || key.contains(">") || key.contains("*") || key.contains("<")){
+			return false;
+		}
+		if(ConfigTable.IS_SQL_DELIMITER_OPEN || key.contains("-") || (ConfigTable.IS_AUTO_CHECK_KEYWORD && keys.contains(key.toLowerCase()))){
 			return true;
 		}
 		return false;
@@ -106,6 +110,14 @@ public class SQLUtil {
 			builder.append(src);
 			return builder;
 		}
+		if(BasicUtil.isNumber(src)){
+			builder.append(src);
+			return builder;
+		}
+		if(src.contains("'") || src.contains("\"")){
+			builder.append(src);
+			return builder;
+		}
 		src = src.trim();
 		if(src.startsWith(delimiterFr) || src.endsWith(delimiterTo)){
 			builder.append(src);
@@ -128,6 +140,8 @@ public class SQLUtil {
 					builder.append(".");
 				}
 			}
+		}else if(src.contains(" ")){
+			builder.append(src);
 		}else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);
 		}

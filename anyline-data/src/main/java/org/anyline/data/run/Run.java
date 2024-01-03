@@ -26,8 +26,7 @@ import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.metadata.ACTION;
-import org.anyline.metadata.Column;
+import org.anyline.metadata.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -101,10 +100,13 @@ public interface Run {
 	Run addOrders(OrderStore orderStore);
 	Run addOrder(Order order);
 	RunPrepare getPrepare() ;
-	String getTable();
-	String getCatalog();
-	String getSchema();
-	String getDataSource();
+	Table getTable();
+	Catalog getCatalog();
+	Schema getSchema();
+	String getTableName();
+	String getCatalogName();
+	String getSchemaName();
+	String getDest();
 	Run setPrepare(RunPrepare prepare) ;
 	Run setInsertColumns(List<String> keys);
 	Run setInsertColumns(LinkedHashMap<String, Column> columns);

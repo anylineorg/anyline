@@ -78,7 +78,7 @@ public class ElasticSearchDatasourceLoader implements DatasourceLoader {
             prefixs = env.getProperty(head + "-list");
         }
         if(null != prefixs){
-            for (String prefix : prefixs.split(", ")) {
+            for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 try {
                     //返回 datasource的bean id

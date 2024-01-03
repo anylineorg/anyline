@@ -53,8 +53,8 @@ public class VCFUtil {
     public static String format(List<String> mobiles){
        StringBuilder builder = new StringBuilder();
        for(String mobile:mobiles){
-            if(mobile.contains(", ")){
-                String[] items = mobile.split(", ");
+            if(mobile.contains(",")){
+                String[] items = mobile.split(",");
                 if(items.length==1){
                     builder.append(format(items[0])).append("\n");
                 }else if(items.length>1){

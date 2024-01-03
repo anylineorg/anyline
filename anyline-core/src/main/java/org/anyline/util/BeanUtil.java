@@ -204,7 +204,7 @@ public class BeanUtil {
 		Collection result = new ArrayList();
 		if(v instanceof String){
 			if("concat".equalsIgnoreCase(ConfigTable.LIST2STRING_FORMAT)){
-				String[] tmps = v.toString().split(", ");
+				String[] tmps = v.toString().split(",");
 				for(String tmp:tmps){
 					result.add(tmp);
 				}
@@ -649,7 +649,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked","rawtypes" })
 	public static Object fetch(Object obj, String ... keys){
 		if(null == obj){
 			return null;
@@ -747,7 +747,7 @@ public class BeanUtil {
 	}
 	/**
 	 * @param params key1, value1, key2:value2, key3, value3
-	 *               "NM:zh%", "AGE:&gt;20", "NM", "%zh%"
+	 *               "NM:zh%","AGE:&gt;20","NM","%zh%"
 	 * @return Map
 	 */
 	public static Map<String, String> array2map(String ... params){
@@ -982,7 +982,7 @@ public class BeanUtil {
 	 * @param order 是否排序
 	 * @return String(a=1&amp;b=2&amp;b=3)
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public static String map2string(Map map, String join, String separator, boolean ignoreEmpty, boolean order){
 		StringBuilder result = new StringBuilder();
 		Set es = null;
@@ -1036,10 +1036,10 @@ public class BeanUtil {
 	}
 
 	public static String map2string(Map map, boolean ignoreEmpty, boolean order){
-		return map2string(map, "=", "&", ignoreEmpty, order);
+		return map2string(map, "=","&", ignoreEmpty, order);
 	}
 	public static String map2string(Map map){
-		return map2string(map, "=", "&", true, true);
+		return map2string(map, "=","&", true, true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
 		return xml2object(xml, clazz, null, recursion, ignoreCase, ignoreSplit);
@@ -1471,7 +1471,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 	public static String concat(List<?> list) {
-		return concat(list, ", ");
+		return concat(list, ",");
 	}
 */
 
@@ -1532,7 +1532,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Collection<?> list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Collection<?> list) {
 		return concat(list, false);
@@ -1576,7 +1576,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static <T> String concat(T[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static <T> String concat(T[] list) {
 		return concat(list, false);
@@ -1602,7 +1602,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Integer[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Integer[] list) {
 		return concat(list, false);
@@ -1627,7 +1627,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Long[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Long[] list) {
 		return concat(list, false);
@@ -1652,7 +1652,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Double[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Double[] list) {
 		return concat(list, false);
@@ -1677,7 +1677,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Float[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Float[] list) {
 		return concat(list, false);
@@ -1702,7 +1702,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Short[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Short[] list) {
 		return concat(list, false);
@@ -1728,7 +1728,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(Byte[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(Byte[] list) {
 		return concat(list, false);
@@ -1754,7 +1754,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(int[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(int[] list) {
 		return concat(list, false);
@@ -1779,7 +1779,7 @@ public class BeanUtil {
 		return concat(list, split);
 	}
 	public static String concat(long[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(long[] list) {
 		return concat(list, false);
@@ -1804,7 +1804,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(double[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(double[] list) {
 		return concat(list, false);
@@ -1829,7 +1829,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(float[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(float[] list) {
 		return concat(list, false);
@@ -1854,7 +1854,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(short[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(short[] list) {
 		return concat(list, false);
@@ -1880,7 +1880,7 @@ public class BeanUtil {
 		return concat(list, split, false);
 	}
 	public static String concat(byte[] list, boolean required) {
-		return concat(list, ", ", required);
+		return concat(list, ",", required);
 	}
 	public static String concat(byte[] list) {
 		return concat(list, false);
@@ -1950,7 +1950,7 @@ public class BeanUtil {
 		return list;
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
 			return null;
@@ -2220,7 +2220,7 @@ public class BeanUtil {
 			}else if(str.startsWith("{") && str.endsWith("}")){
 				str = str.substring(1, str.length()-1);
 			}
-			String[] list = str.split(", ");
+			String[] list = str.split(",");
 			for(String item:list){
 				String[] kv = item.split(":");
 				if(kv.length ==2){
@@ -2234,7 +2234,7 @@ public class BeanUtil {
 					}
 					map.put(k, v);
 				}else{
-					map.put(item.replace(":", ""), null);
+					map.put(item.replace(":",""), null);
 				}
 			}
 		}
@@ -2633,7 +2633,7 @@ public class BeanUtil {
 				try{
 					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
 					for(String k:ks){
-						Object v = getFieldValue(obj, k.replace("${", "").replace("}", ""));
+						Object v = getFieldValue(obj, k.replace("${","").replace("}",""));
 						if(null == v){
 							v = "";
 						}
@@ -2761,9 +2761,9 @@ public class BeanUtil {
 	}
 	/**
 	 * 解析 key:vlue形式参数age:20
-	 * 返回数组["age", "20"]
-	 * 如果值为空返回["age", ""]
-	 * 如果没有分隔符返回["age", "age"]
+	 * 返回数组["age","20"]
+	 * 如果值为空返回["age",""]
+	 * 如果没有分隔符返回["age","age"]
 	 * @param src  src
 	 * @return String
 	 */

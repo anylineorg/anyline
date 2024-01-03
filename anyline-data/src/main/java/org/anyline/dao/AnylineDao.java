@@ -20,6 +20,7 @@ package org.anyline.dao;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -135,7 +136,9 @@ public interface AnylineDao<E>{
 	 * @return int 影响行数
 	 */
 
-	long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
+	}
 	default long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime(), null, batch, dest, data, configs, columns);
 	}
@@ -143,10 +146,10 @@ public interface AnylineDao<E>{
 		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(int batch, Object data, ConfigStore configs, String ... columns){
-		return update(batch, null, data, configs, BeanUtil.array2list(columns));
+		return update(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long update(int batch, Object data, ConfigStore configs, List<String> columns){
-		return update(batch, null, data, configs, columns);
+		return update(batch, (String)null, data, configs, columns);
 	}
 	default long update(int batch, String dest, Object data, String ... columns){
 		return update(batch, dest, data, null, BeanUtil.array2list(columns));
@@ -155,7 +158,7 @@ public interface AnylineDao<E>{
 		return update(batch, dest, data, null, columns);
 	}
 	default long update(int batch, Object data, List<String> columns){
-		return update(batch, null, data, null, columns);
+		return update(batch, (String)null, data, null, columns);
 	}
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
 		return update(runtime, random, 0, dest, data, configs, columns);
@@ -181,6 +184,22 @@ public interface AnylineDao<E>{
 	default long update(Object data, List<String> columns){
 		return update(null, data, null, columns);
 	}
+	long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long update(int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime(), null, batch, dest, data, configs, columns);
+	}
+	default long update(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Table dest, Object data, String ... columns){
+		return update(batch, dest, data, null, BeanUtil.array2list(columns));
+	}
+	default long update(int batch, Table dest, Object data, List<String> columns){
+		return update(batch, dest, data, null, columns);
+	}
+	default long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return update(runtime, random, 0, dest, data, configs, columns);
+	}
 
 	/** 
 	 * 添加
@@ -191,7 +210,9 @@ public interface AnylineDao<E>{
 	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return int
 	 */
-	long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns);
+	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime, random, batch, DataSourceUtil.parseDest(dest, data, configs), data, configs, columns);
+	}
 	default long insert(DataRuntime runtime, String random, int batch, String dest, Object data, List<String> columns){
 		return insert(runtime, random, batch, dest, data, null, columns);
 	}
@@ -208,16 +229,16 @@ public interface AnylineDao<E>{
 		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, String ... columns){
-		return insert(batch, null, data, BeanUtil.array2list(columns));
+		return insert(batch, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, ConfigStore configs, String ... columns){
-		return insert(batch, null, data, configs, BeanUtil.array2list(columns));
+		return insert(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(int batch, Object data, List<String> columns){
-		return insert(batch, null, data, columns);
+		return insert(batch, (String)null, data, columns);
 	}
 	default long insert(int batch, Object data, ConfigStore configs, List<String> columns){
-		return insert(batch, null, data, configs, columns);
+		return insert(batch, (String)null, data, configs, columns);
 	}
 
 	default long insert(DataRuntime runtime, String random, String dest, Object data, List<String> columns){
@@ -239,18 +260,52 @@ public interface AnylineDao<E>{
 		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, String ... columns){
-		return insert(0, null, data, BeanUtil.array2list(columns));
+		return insert(0, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long insert( Object data, ConfigStore configs, String ... columns){
-		return insert(0, null, data, configs, BeanUtil.array2list(columns));
+		return insert(0, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long insert(Object data, List<String> columns){
-		return insert(0, null, data, columns);
+		return insert(0, (String)null, data, columns);
 	}
 	default long insert(Object data, ConfigStore configs, List<String> columns){
-		return insert(0, null, data, configs, columns);
+		return insert(0, (String)null, data, configs, columns);
 	}
 
+	long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
+	default long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns){
+		return insert(runtime, random, batch, dest, data, null, columns);
+	}
+	default long insert(int batch, Table dest, Object data, List<String> columns){
+		return insert(runtime(), null, batch, dest, data, columns);
+	}
+	default long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime(), null, batch, dest, data, configs, columns);
+	}
+	default long insert(int batch, Table dest, Object data, String ... columns){
+		return insert(batch, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long insert(DataRuntime runtime, String random, Table dest, Object data, List<String> columns){
+		return insert(runtime, random, 0, dest, data, columns);
+	}
+	default long insert(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime, random, 0, dest, data, configs, columns);
+	}
+	default long insert(Table dest, Object data, List<String> columns){
+		return insert(runtime(), null, 0, dest, data, columns);
+	}
+	default long insert(Table dest, Object data, ConfigStore configs, List<String> columns){
+		return insert(runtime(), null, 0, dest, data, configs, columns);
+	}
+	default long insert(Table dest, Object data, String ... columns){
+		return insert(0, dest, data, BeanUtil.array2list(columns));
+	}
+	default long insert(Table dest, Object data, ConfigStore configs, String ... columns){
+		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
+	}
 	/** 
 	 * 保存(insert|update)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -277,10 +332,10 @@ public interface AnylineDao<E>{
 		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long save(int batch, Object data, String ... columns){
-		return save(batch, null, data, BeanUtil.array2list(columns));
+		return save(batch, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long save(int batch, Object data, ConfigStore configs, String ... columns){
-		return save(batch, null, data, configs, BeanUtil.array2list(columns));
+		return save(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 	default long save(DataRuntime runtime, String random, String dest, Object data, List<String>  columns){
 		return save(runtime, random, 0, dest, data, columns);
@@ -301,10 +356,44 @@ public interface AnylineDao<E>{
 		return save(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	default long save(Object data, String ... columns){
-		return save(0, null, data, BeanUtil.array2list(columns));
+		return save(0, (String)null, data, BeanUtil.array2list(columns));
 	}
 	default long save(Object data, ConfigStore configs, String ... columns){
-		return save(0, null, data, configs, BeanUtil.array2list(columns));
+		return save(0, (String)null, data, configs, BeanUtil.array2list(columns));
+	}
+	long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String>  columns);
+	default long save(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String>  columns){
+		return save(runtime, random, batch, dest, data, null, columns);
+	}
+	default long save(int batch, Table dest, Object data, List<String>  columns){
+		return save(runtime(), null, batch, dest, data, columns);
+	}
+	default long save(int batch, Table dest, Object data, ConfigStore configs, List<String>  columns){
+		return save(runtime(), null, batch, dest, data, configs, columns);
+	}
+	default long save(int batch, Table dest, Object data, String ... columns){
+		return save(batch, dest, data, BeanUtil.array2list(columns));
+	}
+	default long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
+	}
+	default long save(DataRuntime runtime, String random, Table dest, Object data, List<String>  columns){
+		return save(runtime, random, 0, dest, data, columns);
+	}
+	default long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String>  columns){
+		return save(runtime, random, 0, dest, data, configs, columns);
+	}
+	default long save(Table dest, Object data, List<String>  columns){
+		return save(runtime(), null, 0, dest, data, columns);
+	}
+	default long save(Table dest, Object data, ConfigStore confnigs, List<String>  columns){
+		return save(runtime(), null, 0, dest, data, confnigs, columns);
+	}
+	default long save(Table dest, Object data, String ... columns){
+		return save(0, dest, data, BeanUtil.array2list(columns));
+	}
+	default long save(Table dest, Object data, ConfigStore configs, String ... columns){
+		return save(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 	/**
 	 * 执行
@@ -347,15 +436,30 @@ public interface AnylineDao<E>{
 	default DataSet querys(Procedure procedure, PageNavi navi){
 		return querys(runtime(), null, procedure, navi);
 	}
-	long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns);
+	default long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String ... columns){
+		return delete(runtime, random, DataSourceUtil.parseDest(dest, null, configs), configs, obj, columns);
+	}
 	default long delete(DataRuntime runtime, String random, String dest, Object obj, String ... columns){
 		return delete(runtime, random, dest, null, obj, columns);
 	}
 	default long delete(String dest, Object obj, String ... columns){
 		return delete(runtime(), null, dest, obj, columns);
 	}
-	long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String ... conditions);
+	default long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String ... conditions){
+		return delete(runtime, random, new Table(table), configs, conditions);
+	}
 	default long delete(String table, ConfigStore configs, String ... conditions){
+		return delete(runtime(), null, table, configs, conditions);
+	}
+	long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String ... columns);
+	default long delete(DataRuntime runtime, String random, Table dest, Object obj, String ... columns){
+		return delete(runtime, random, dest, null, obj, columns);
+	}
+	default long delete(Table dest, Object obj, String ... columns){
+		return delete(runtime(), null, dest, obj, columns);
+	}
+	long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String ... conditions);
+	default long delete(Table table, ConfigStore configs, String ... conditions){
 		return delete(runtime(), null, table, configs, conditions);
 	}
 	/**
@@ -365,15 +469,30 @@ public interface AnylineDao<E>{
 	 * @param values 值集合
 	 * @return 影响行数
 	 */
-	<T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values);
+	default <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values){
+		return deletes(runtime, random, batch, new Table(table), key, values);
+	}
 	default <T> long deletes(int batch, String table, String key, Collection<T> values){
 		return deletes(runtime(), null, batch, table, key, values);
 	}
 	default <T> long deletes(int batch, String table, String key, T ... values){
 		return deletes(batch, table, key, BeanUtil.array2list(values));
 	}
-	long truncate(DataRuntime runtime, String random, String table);
+	<T> long deletes(DataRuntime runtime, String random, int batch, Table table, String key, Collection<T> values);
+	default <T> long deletes(int batch, Table table, String key, Collection<T> values){
+		return deletes(runtime(), null, batch, table, key, values);
+	}
+	default <T> long deletes(int batch, Table table, String key, T ... values){
+		return deletes(batch, table, key, BeanUtil.array2list(values));
+	}
+	long truncate(DataRuntime runtime, String random, Table table);
+	default long truncate(DataRuntime runtime, String random, String table){
+		return truncate(runtime, random, new Table(table));
+	}
 	default long truncate(String table){
+		return truncate(runtime(), null, table);
+	}
+	default long truncate(Table table){
 		return truncate(runtime(), null, table);
 	}
 

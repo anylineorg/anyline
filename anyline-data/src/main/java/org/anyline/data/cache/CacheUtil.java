@@ -24,6 +24,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.encrypt.MD5Util;
@@ -145,14 +146,14 @@ public class CacheUtil {
 	 * 创建cache key
 	 * @param page 是否需要拼接分页下标
 	 * @param order order
-	 * @param src src
+	 * @param dest 查询或操作的目标(表、存储过程、SQL等)
 	 * @param store 根据http等上下文构造查询条件
 	 * @param conditions 固定查询条件
 	 * @return String
 	 */
-	public static String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
+	public static String createCacheElementKey(boolean page, boolean order, String dest, ConfigStore store, String ... conditions){
 		conditions = BasicUtil.compress(conditions);
-		String result = src+"|";
+		String result = dest+"|";
 		if(null != store){
 			ConfigChain chain = store.getConfigChain();
 			if(null != chain){
@@ -194,5 +195,13 @@ public class CacheUtil {
 			log.info("[create cache key][key:{}]", result);
 		}
 		return MD5Util.crypto(result);
-	} 
+	}
+
+	public static String createCacheElementKey(boolean page, boolean order, Table dest, ConfigStore store, String ... conditions){
+		String key = null;
+		if(null != dest){
+			key = dest.toString();
+		}
+		return createCacheElementKey(page, order, key, store, conditions);
+	}
 } 

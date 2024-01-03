@@ -22,6 +22,8 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 
 import java.util.List;
@@ -32,18 +34,25 @@ public class TableRun extends BasicRun implements Run {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
+		this.table = new Table(table);
+		this.runtime = runtime;
+	}
+	public TableRun(DataRuntime runtime, Table table){
+		this.builder = new StringBuilder();
+		this.conditionChain = new DefaultAutoConditionChain();
+		this.orderStore = new DefaultOrderStore();
 		this.table = table;
 		this.runtime = runtime;
 	}
 
 	private void parseDataSource(){
+		String table = getTableName();
 		if(null != prepare) {
-			table = prepare.getTable();
+			table = prepare.getTableName();
 		}
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
 		if(table.contains(".")){
-			this.schema = table.substring(0, table.indexOf("."));
-			this.table = table.substring(table.indexOf(".") + 1); 
+
 		} else{
 			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())){
 				schema = prepare.getSchema();
@@ -127,6 +136,30 @@ public class TableRun extends BasicRun implements Run {
 	@Override
 	public Run setConditionValue(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
 		return this;
+	}
+
+	@Override
+	public String getTableName() {
+		if(null != table){
+			return table.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public String getCatalogName() {
+		if(null != catalog){
+			return catalog.getName();
+		}
+		return null;
+	}
+
+	@Override
+	public String getSchemaName() {
+		if(null != schema){
+			return schema.getName();
+		}
+		return null;
 	}
 
 } 

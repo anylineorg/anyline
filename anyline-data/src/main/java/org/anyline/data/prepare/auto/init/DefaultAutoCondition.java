@@ -124,7 +124,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		return text; 
 	} 
 
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare){
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = runtime.getAdapter().getDelimiterFr();
@@ -278,7 +278,7 @@ public class DefaultAutoCondition extends DefaultCondition implements AutoCondit
 		}
 		return value; 
 	} 
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked","rawtypes" })
 	public List<Object> getValues(Object src){
 		List<Object> values = new ArrayList<Object>(); 
 		if(null != src){

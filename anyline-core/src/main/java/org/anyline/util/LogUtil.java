@@ -83,8 +83,7 @@ public class LogUtil {
             builder.append("\n");
             int idx = 0;
             for(Object param:params){
-                builder.append("param").append(idx++).append("=");
-                builder.append(param);
+                builder.append("param").append(idx++).append("=").append(param);
                 if(null != param){
                     builder.append("(").append(ClassUtil.type(param)).append(")");
                 }
@@ -121,8 +120,8 @@ public class LogUtil {
                 if(null != value){
                     builder.append("(").append(ClassUtil.type(value)).append(")");
                 }
+                builder.append("\n");
             }
-            builder.append("\n");
         }
         return builder.toString();
 

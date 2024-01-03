@@ -49,7 +49,7 @@ public enum Compare {
             return false;
         }
     },
-    EQUAL(10, "等于", "eq", " = ? ")			{
+    EQUAL(10, "等于","eq"," = ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == target){
                 if(null == value){
@@ -64,7 +64,7 @@ public enum Compare {
             return false;
         }
     },
-    GREAT(20, "大于", "gt", " > ? ")			{
+    GREAT(20, "大于","gt"," > ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -79,7 +79,7 @@ public enum Compare {
             return false;
         }
     },
-    GREAT_EQUAL(21, "大于等于", "gte", " >= ? ")		{
+    GREAT_EQUAL(21, "大于等于","gte"," >= ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -90,7 +90,7 @@ public enum Compare {
             return false;
         }
     },
-    LESS(30, "小于", "lt", " < ? ")			{
+    LESS(30, "小于","lt"," < ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -105,7 +105,7 @@ public enum Compare {
             return false;
         }
     },
-    LESS_EQUAL(31, "小于等于", "lte", " <= ? ")		{
+    LESS_EQUAL(31, "小于等于","lte"," <= ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -120,7 +120,7 @@ public enum Compare {
             return false;
         }
     },
-    IN(40, "in", "in", " IN ")				{
+    IN(40, "in","in"," IN ")				{
         public boolean compare(Object value, Object targets) {
             if(null != targets && targets instanceof Collection){
                 Collection cols = (Collection) targets;
@@ -136,7 +136,7 @@ public enum Compare {
             return true;
         }
     },
-    LIKE(50, "like %?%", "", " LIKE ")			{
+    LIKE(50, "like %?%",""," LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -147,7 +147,7 @@ public enum Compare {
             return false;
         }
     },
-    LIKE_PREFIX(51, "like ?%", "", " LIKE ")		{
+    LIKE_PREFIX(51, "like ?%",""," LIKE ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -158,7 +158,7 @@ public enum Compare {
             return false;
         }
     },
-    START_WITH(51, "like ?%", "", " LIKE ")		{
+    START_WITH(51, "like ?%",""," LIKE ")		{
         public int getCode(){return 51;}
         public String getSQL(){return " LIKE ";}
         public String getName(){return "like ?%";}
@@ -172,7 +172,7 @@ public enum Compare {
             return false;
         }
     },
-    LIKE_SUFFIX(52, "like %?", "", " LIKE ")		{
+    LIKE_SUFFIX(52, "like %?",""," LIKE ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -183,7 +183,7 @@ public enum Compare {
             return false;
         }
     },
-    END_WITH(52, "like %?", "", " LIKE ")		{
+    END_WITH(52, "like %?",""," LIKE ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -194,43 +194,43 @@ public enum Compare {
             return false;
         }
     },
-    FIND_IN_SET(60, "find in set", "", " FIND_IN_SET "){ // = FIND_IN_SET_OR
+    FIND_IN_SET(60, "find in set",""," FIND_IN_SET "){ // = FIND_IN_SET_OR
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
             }
-            String[] arrays = target.toString().split(", ");
+            String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
         public boolean isMultipleValue(){
             return false;
         }
     },
-    FIND_IN_SET_OR(61, "find in set", "", " FIND_IN_SET "){
+    FIND_IN_SET_OR(61, "find in set",""," FIND_IN_SET "){
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
             }
-            String[] arrays = target.toString().split(", ");
+            String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
         public boolean isMultipleValue(){
             return false;
         }
     },
-    FIND_IN_SET_AND(62, "find in set", "", " FIND_IN_SET "){
+    FIND_IN_SET_AND(62, "find in set",""," FIND_IN_SET "){
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
             }
-            String[] arrays = target.toString().split(", ");
+            String[] arrays = target.toString().split(",");
             return BeanUtil.array2list(arrays).contains(value);
         }
         public boolean isMultipleValue(){
             return false;
         }
     },
-    BETWEEN(80, "区间", "", " BETWEEN ? AND ? ")			{
+    BETWEEN(80, "区间",""," BETWEEN ? AND ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == value){
                 return false;
@@ -261,7 +261,7 @@ public enum Compare {
             return true;
         }
     },
-    NULL(90, "空", "", " IS NULL ")			{
+    NULL(90, "空",""," IS NULL ")			{
         public boolean compare(Object value, Object target) {
             if(null == value){
                 return true;
@@ -272,7 +272,7 @@ public enum Compare {
             return false;
         }
     },
-    NOT_EQUAL(110, "不等于", "nin", " != ? ")		{
+    NOT_EQUAL(110, "不等于","nin"," != ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -283,7 +283,7 @@ public enum Compare {
             return false;
         }
     },
-    NOT_IN(140, "不包含", "nin", " NOT IN ")			{
+    NOT_IN(140, "不包含","nin"," NOT IN ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -298,7 +298,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_LIKE(150, "NOT LIKE %?%", "", " NOT LIKE ")				{
+    NOT_LIKE(150, "NOT LIKE %?%",""," NOT LIKE ")				{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -313,7 +313,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_LIKE_PREFIX(151, "NOT LIKE ?%", "", " NOT LIKE ")			{
+    NOT_LIKE_PREFIX(151, "NOT LIKE ?%",""," NOT LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -328,7 +328,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_START_WITH(151, "NOT LIKE ?%", "", " NOT LIKE ")				{
+    NOT_START_WITH(151, "NOT LIKE ?%",""," NOT LIKE ")				{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -343,7 +343,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_LIKE_SUFFIX(152, "NOT LIKE %?", "", " NOT LIKE ")			{
+    NOT_LIKE_SUFFIX(152, "NOT LIKE %?",""," NOT LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -358,7 +358,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_END_WITH(152, "NOT LIKE %?", "", " NOT LIKE ")			{
+    NOT_END_WITH(152, "NOT LIKE %?",""," NOT LIKE ")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;
@@ -373,7 +373,7 @@ public enum Compare {
             return true;
         }
     },
-    NOT_NULL(190, "非空", "", " IS NOT NULL ")			{
+    NOT_NULL(190, "非空",""," IS NOT NULL ")			{
         public boolean compare(Object value, Object target) {
             if(null == value){
                 return false;
@@ -385,7 +385,7 @@ public enum Compare {
         }
     },
     //正则表达式，注意不是每个数据库都支持
-    REGEX(999, "正则", "regex", "")			{
+    REGEX(999, "正则","regex","")			{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
                 return false;

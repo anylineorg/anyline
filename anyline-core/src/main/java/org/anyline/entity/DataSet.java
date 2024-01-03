@@ -22,8 +22,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.entity.geometry.Point;
+import org.anyline.metadata.Schema;
+import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
@@ -50,13 +53,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private List<String> primaryKeys                = null  ; // 主键
     private String datalink                         = null  ; // 数据连接
     private String dataSource                       = null  ; // 数据源(表|视图|XML定义SQL)
-    private String schema                           = null  ; //
-    private String table                            = null  ; //
+    private Catalog catalog                         = null  ;
+    private Schema schema                           = null  ; //
+    private Table table                             = null  ; //
     private long createTime                         = 0     ; // 创建时间
     private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                     = false ; // 是否来自缓存
-    private boolean isAsc                           = false ; //
-    private boolean isDesc                          = false ; //
     private Map<String, Object> tags                = new HashMap<>()       ; // 标签
 
     /**
@@ -102,12 +104,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * list解析成DataSet
      * @param list list
      * @param fields 如果list是二维数据
-     *               fields 下标对应的属性(字段/key)名称 如"ID", "CODE", "NAME"
-     *               如果不输入则以下标作为DataRow的key 如row.put("0", "100").put("1", "A01").put("2", "张三");
+     *               fields 下标对应的属性(字段/key)名称 如"ID","CODE","NAME"
+     *               如果不输入则以下标作为DataRow的key 如row.put("0","100").put("1","A01").put("2","张三");
      *               如果属性数量超出list长度, 取null值存入DataRow
      *
      *               如果list是一组数组
-     *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id", "USER_NM:name"
+     *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id","USER_NM:name"
      *
      * @return DataSet
      */
@@ -977,9 +979,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+
+    /**
+     * 把k,v,k,v转换成map格式
+     *
+     * @param params k,v,k,v或k:v,k:v(只能二选一，只要有一个不带:就按第一种)
+     * @return map
+     */
     private Map<String, String> kvs(String... params){
         Map<String, String> kvs = new HashMap<>();
         int len = params.length;
+        boolean ignoreSplit = false;
+        for(String param:params){
+            if(null == param || !param.contains(":")){
+                ignoreSplit = true;
+                break;
+            }
+        }
+        if(ignoreSplit){
+            for(int i=0; i<len; i+=2){
+                String k = params[i];
+                String v = params[i+1];
+                kvs.put(k, v);
+            }
+            return kvs;
+        }
         int i = 0;
         String srcFlagTag = "srcFlag"; // 参数含有${}的 在kvs中根据key值+tag 放入一个新的键值对, 如时间格式TIME:{10:10}
 
@@ -1023,7 +1047,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 筛选符合条件的集合
      * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
      * @param params key1, value1, key2:value2, key3, value3
-     *               "NM:zh%", "AGE:&gt;20", "NM", "%zh%"
+     *               "NM:zh%","AGE:&gt;20","NM","%zh%"
      * @param begin  begin
      * @param qty    最多筛选多少个 0表示不限制
      * @return DataSet
@@ -1510,13 +1534,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return minFloat(size(), key);
     }
 
-//	public BigDecimal min(int top, String key){
-//		BigDecimal result = minDecimal(top, key);
-//		return result;
-//	}
-//	public BigDecimal min(String key){
-//		return minDecimal(size(), key);
-//	}
 
     /**
      * key对应的value最大的一行
@@ -1529,16 +1546,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (size == 0) {
             return null;
         }
-        DataRow row = null;
-        if (isAsc) {
-            row = getRow(size - 1);
-        } else if (isDesc) {
-            row = getRow(0);
-        } else {
-            asc(key);
-            row = getRow(size - 1);
-        }
-        return row;
+        asc(key);
+        return getRow(size - 1);
     }
 
     public DataRow min(String key) {
@@ -1546,16 +1555,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (size == 0) {
             return null;
         }
-        DataRow row = null;
-        if (isAsc) {
-            row = getRow(0);
-        } else if (isDesc) {
-            row = getRow(size - 1);
-        } else {
-            asc(key);
-            row = getRow(0);
-        }
-        return row;
+        asc(key);
+        return getRow(0);
     }
 
     /**
@@ -1614,7 +1615,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *, {NM:部门2, USERS:[{LVL:1, SCORE:60}, {LVL:3, SCORE:70}, {LVL:2, SCORE:80}]}
      *, {NM:部门3, USERS:[{LVL:1, SCORE:600}, {LVL:5, SCORE:700}, {LVL:2, SCORE:800}]}
      * ]
-     * sum("TOTAL", "USERS", "SCORE", "LVL&gt;1") 计算每个部门中 LVL大于1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
+     * sum("TOTAL","USERS","SCORE","LVL&gt;1") 计算每个部门中 LVL大于1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
      * [
      *  {NM:部门1, TOTAL:8, USERS:[{LVL:1, SCORE:6}, {LVL:1, SCORE:7}, {LVL:2, SCORE:8}]}
      *, {NM:部门2, TOTAL:150, USERS:[{LVL:1, SCORE:60}, {LVL:3, SCORE:70}, {LVL:2, SCORE:80}]}
@@ -1877,19 +1878,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public String concatNvl(String key) {
-        return BasicUtil.concat(getNvlStrings(key), ", ");
+        return BasicUtil.concat(getNvlStrings(key), ",");
     }
 
     public String concatWithoutNull(String key) {
-        return BasicUtil.concat(getStringsWithoutNull(key), ", ");
+        return BasicUtil.concat(getStringsWithoutNull(key), ",");
     }
 
     public String concatWithoutEmpty(String key) {
-        return BasicUtil.concat(getStringsWithoutEmpty(key), ", ");
+        return BasicUtil.concat(getStringsWithoutEmpty(key), ",");
     }
 
     public String concat(String key) {
-        return BasicUtil.concat(getStrings(key), ", ");
+        return BasicUtil.concat(getStrings(key), ",");
     }
 
     /**
@@ -2751,7 +2752,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
-     * map.put("type", "list");
+     * map.put("type","list");
      * map.put("result", result);
      * map.put("message", message);
      * map.put("rows", rows);
@@ -2760,7 +2761,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public String toString() {
         Map<String, Object> map = new HashMap<>();
-        map.put("type", "list");
+        map.put("type","list");
         map.put("result", result);
         map.put("message", message);
         map.put("rows", rows);
@@ -2925,18 +2926,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public <T> EntitySet<T> entitys(Class<T> clazz){
         return EntityAdapterProxy.entitys(clazz, this, metadatas);
     }
-    public DataSet setDataSource(String dataSource) {
-        if (null == dataSource) {
+    public DataSet setDest(String dest) {
+        if (null == dest) {
             return this;
         }
-        this.dataSource = dataSource;
-        if (dataSource.contains(".") && !dataSource.contains(":")) {
-            schema = dataSource.substring(0, dataSource.indexOf("."));
-            table = dataSource.substring(dataSource.indexOf(".") + 1);
+        if (dest.contains(".") && !dest.contains(":")) {
+            String[] tmps = dest.split("\\.");
+            if(tmps.length == 2){
+                setSchema(tmps[0]);
+                setTable(tmps[1]);
+            }else if(tmps.length == 3){
+                setCatalog(tmps[0]);
+                setSchema(tmps[1]);
+                setTable(tmps[2]);
+            }
+        }else{
+            setTable(dest);
         }
         for (DataRow row : rows) {
-            if (BasicUtil.isEmpty(row.getDataSource())) {
-                row.setDataSource(dataSource);
+            if (BasicUtil.isEmpty(row.getDest())) {
+                row.setDest(dest);
             }
         }
         return this;
@@ -3925,7 +3934,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return rows.add((DataRow) e);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes","unchecked"})
     public boolean addAll(Collection c) {
         return rows.addAll(c);
     }
@@ -3976,26 +3985,90 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return rows.toArray(a);
     }
 
-    public String getSchema() {
-        return schema;
+    public Catalog getCatalog() {
+        return catalog;
     }
 
-    public DataSet setSchema(String schema) {
-        this.schema = schema;
+    public String getCatalogName() {
+        if(null != catalog){
+            return catalog.getName();
+        }
+        return null;
+    }
+
+    public DataSet setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+        return this;
+    }
+    public DataSet setCatalog(String catalog) {
+        if(BasicUtil.isNotEmpty(catalog)) {
+            this.catalog = new Catalog(catalog);
+        }else{
+            this.catalog = null;
+        }
         return this;
     }
 
-    public String getTable() {
-        return table;
+    public Schema getSchema() {
+        return schema;
     }
 
+    public String getSchemaName() {
+        if(null != schema){
+            return schema.getName();
+        }
+        return null;
+    }
+
+    public DataSet setSchema(Schema schema) {
+        this.schema = schema;
+        return this;
+    }
+    public DataSet setSchema(String schema) {
+        if(BasicUtil.isNotEmpty(schema)) {
+            this.schema = new Schema(schema);
+        }else{
+            this.schema = null;
+        }
+        return this;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+    public String getTableName() {
+        if(null != table){
+            return table.getName();
+        }
+        return null;
+    }
+    public String getTableFullName(){
+        if(null != table){
+            return table.getFullName();
+        }
+        return null;
+    }
+    public DataSet setTable(Table table){
+        this.table = table;
+        return this;
+    }
     public DataSet setTable(String table) {
-        if (null != table && table.contains(".")) {
-            String[] tbs = table.split("\\.");
-            this.table = tbs[1];
-            this.schema = tbs[0];
-        } else {
-            this.table = table;
+        if(null != table) {
+            if (table.contains(".")) {
+                String[] tbs = table.split("\\.");
+                if (tbs.length == 2) {
+                    this.table = new Table(tbs[1]);
+                    this.schema = new Schema(tbs[0]);
+                } else if (tbs.length == 3) {
+                    this.table = new Table(tbs[2]);
+                    this.schema = new Schema(tbs[1]);
+                    this.catalog = new Catalog(tbs[0]);
+                }
+            } else {
+                this.table = new Table(table);
+            }
+        }else{
+            this.table = null;
         }
         return this;
     }
@@ -4107,15 +4180,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public String getDataSource() {
-        String ds = table;
-        if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
-            ds = schema + "." + ds;
+    public String getDest() {
+        String dest = null;
+        String catalogName = getCatalogName();
+        String schemaName = getSchemaName();
+        String tableName = getTableName();
+        if(BasicUtil.isNotEmpty(catalogName)){
+            dest = catalogName;
         }
-        if (BasicUtil.isEmpty(ds)) {
-            ds = dataSource;
+        if(BasicUtil.isNotEmpty(schemaName)){
+            if(null == dest){
+                dest = schemaName;
+            }else{
+                dest += "." + schemaName;
+            }
         }
-        return ds;
+        if(BasicUtil.isNotEmpty(tableName)){
+            if(null == dest){
+                dest = tableName;
+            }else{
+                dest += "." + tableName;
+            }
+        }
+        return dest;
     }
 
     public DataSet order(String... keys) {
@@ -4443,12 +4530,32 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return kvs;
     }
     /**
-     * 排序
-     *
-     * @param keys keys
-     * @return DataSet
+     * 排序(正序)
+     * @param keys 参与排序的列
+     * @return this
      */
     public DataSet asc(final String... keys) {
+        sort(1, keys);
+        return this;
+    }
+
+    /**
+     * 排序(倒序)
+     * @param keys 参与排序的列
+     * @return this
+     */
+    public DataSet desc(final String... keys) {
+        sort(-1, keys);
+        return this;
+    }
+
+    /**
+     * 排序
+     * @param factor 1:正序 -1:倒序
+     * @param keys 参与排序的列
+     * @return this
+     */
+    public DataSet sort(int factor,final String ... keys){
         Collections.sort(rows, new Comparator<DataRow>() {
             public int compare(DataRow r1, DataRow r2) {
                 int result = 0;
@@ -4459,10 +4566,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         if (null == v2) {
                             continue;
                         }
-                        return -1;
+                        return -1 * factor;
                     } else {
                         if (null == v2) {
-                            return 1;
+                            return factor;
                         }
                     }
                     if (BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)) {
@@ -4476,58 +4583,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     } else {
                         result = v1.toString().compareTo(v2.toString());
                     }
-                    if (result != 0) {
-                        return result;
-                    }
-                }
-                return 0;
-            }
-        });
-        isAsc = true;
-        isDesc = false;
-        return this;
-    }
-
-    public DataSet desc(final String... keys) {
-        Collections.sort(rows, new Comparator<DataRow>() {
-            public int compare(DataRow r1, DataRow r2) {
-                int result = 0;
-                for (String key : keys) {
-                    Object v1 = r1.get(key);
-                    Object v2 = r2.get(key);
-                    if (null == v1) {
-                        if (null == v2) {
-                            continue;
-                        }
-                        return 1;
-                    } else {
-                        if (null == v2) {
-                            return -1;
+                    if(result != 0) {
+                        if (result > 0) {
+                            return factor;
+                        } else {
+                            return -1 * factor;
                         }
                     }
-                    if (BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)) {
-                        BigDecimal val1 = new BigDecimal(v1.toString());
-                        BigDecimal val2 = new BigDecimal(v2.toString());
-                        result = val2.compareTo(val1);
-                    } else if (v1 instanceof Date && v2 instanceof Date) {
-                        Date date1 = (Date)v1;
-                        Date date2 = (Date)v2;
-                        result = date2.compareTo(date1);
-                    } else {
-                        result = v2.toString().compareTo(v1.toString());
-                    }
-                    if (result != 0) {
-                        return result;
-                    }
                 }
-                return 0;
+                return result;
             }
         });
-        isAsc = false;
-        isDesc = true;
         return this;
     }
-
     public DataSet addAllUpdateColumns() {
         for (DataRow row : rows) {
             row.addAllUpdateColumns();
@@ -4965,7 +5033,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         private DataSet like(DataSet src, String key, String pattern) {
             DataSet set = new DataSet();
             if (null != pattern) {
-                pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+                pattern = pattern.replace("!","^").replace("_","\\s|\\S").replace("%","(\\s|\\S)*");
             }
             String tmpValue;
             for (DataRow row : src) {
@@ -5005,7 +5073,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == pattern) {
                 return set;
             }
-            pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+            pattern = pattern.replace("!","^").replace("_","\\s|\\S").replace("%","(\\s|\\S)*");
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);

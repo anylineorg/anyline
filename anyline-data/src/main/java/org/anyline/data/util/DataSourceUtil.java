@@ -18,10 +18,10 @@
 package org.anyline.data.util;
 
 import org.anyline.data.param.ConfigStore;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 
@@ -29,41 +29,6 @@ import java.util.Collection;
 
 public class DataSourceUtil {
 
-    /**
-     * 解析数据源, 并返回修改后的SQL
-     * &lt;mysql_ds&gt;crm_user
-     * @param src  src
-     * @return String
-     */
-    public static ConfigStore parseDest(String src, ConfigStore configs){
-        if(null == configs){
-            configs = new DefaultConfigStore();
-        }
-        if(null == src){
-            return configs;
-        }
-        //<sso>pw_user
-        if(src.startsWith("<")){
-            int fr = src.indexOf("<");
-            int to = src.indexOf(">");
-            if(fr != -1){
-                String datasource = src.substring(fr+1, to);
-                src = src.substring(to+1);
-                configs.datasource(datasource);
-            }
-        }
-        //pw_user<id,code>
-        if(src.endsWith(">")){
-            int fr = src.lastIndexOf("<");
-            if(fr != -1) {
-                String[] keys = src.substring(fr + 1, src.length() - 1).split(",");
-                src = src.substring(0, fr);
-                configs.keys(keys);
-            }
-        }
-        configs.dest(src);
-        return configs;
-    }
     public static String[] parseRuntime(BaseMetadata meta){
         if(null != meta){
             return parseRuntime(meta.getName());
@@ -87,40 +52,71 @@ public class DataSourceUtil {
         return result;
     }
 
-    public static ConfigStore parseDest(String dest, Object obj, ConfigStore configs){
+    /**
+     * 解析数据源, 并返回修改后的SQL
+     * &lt;mysql_ds&gt;crm_user
+     * @param src  src
+     * @return String
+     */
+    public static Table parseDest(String src, ConfigStore configs){
+        if(null == src){
+            return null;
+        }
+        Table result = new Table();
+        //<sso>pw_user
+        if(src.startsWith("<")){
+            int fr = src.indexOf("<");
+            int to = src.indexOf(">");
+            if(fr != -1){
+                String datasource = src.substring(fr+1, to);
+                src = src.substring(to+1);
+                result.setDatasource(datasource);
+            }
+        }
+        //pw_user<id,code>
+        if(src.endsWith(">")){
+            int fr = src.lastIndexOf("<");
+            if(fr != -1) {
+                String[] keys = src.substring(fr + 1, src.length() - 1).split(",");
+                src = src.substring(0, fr);
+                result.setPrimaryKey(keys);
+            }
+        }
+        if(src.contains(" ")){
+            result.setText(src);
+        }else if(src.contains(":")){
+            result.setId(src);
+        }
+        result.setName(src);
+        return result;
+    }
+    public static Table parseDest(String dest, Object obj, ConfigStore configs){
+        Table table = null;
+        //有表的根据表解析
         if(BasicUtil.isNotEmpty(dest) || null == obj){
             return parseDest(dest, configs);
         }
-        if(null == configs){
-            configs = new DefaultConfigStore();
-        }
-        String table = "";
+        //没有表的根据 对象解析
+
         if(obj instanceof DataRow){
             DataRow row = (DataRow)obj;
-            String link = row.getDataLink();
-            if(BasicUtil.isNotEmpty(link)){
-                //DatasourceHolder.setDataSource(link, true);
-            }
-            table = row.getDataSource();
-            configs.dest(table);
+            table = parseDest(row.getDest(), configs);
         }else if(obj instanceof DataSet){
             DataSet set = (DataSet)obj;
             if(set.size()>0){
-                configs = parseDest(dest, set.getRow(0), configs);
+                table = parseDest(set.getRow(0).getDest(), configs);
             }
         } else if (obj instanceof Collection) {
             Object first = ((Collection)obj).iterator().next();
             if(first instanceof DataRow){
-                configs = parseDest(dest, first, configs);
+                table = parseDest(((DataRow)first).getDest(), configs);
             }else {
-                table = EntityAdapterProxy.table(first.getClass(), true);
-                configs.dest(table);
+                String tableName = EntityAdapterProxy.table(first.getClass(), true);
+                table = parseDest(tableName, configs);
             }
         } else{
-            table = EntityAdapterProxy.table(obj.getClass(), true);
-            configs.dest(table);
+            table = EntityAdapterProxy.table(obj.getClass());
         }
-        configs = parseDest(table, configs);
-        return configs;
+        return table;
     }
 }

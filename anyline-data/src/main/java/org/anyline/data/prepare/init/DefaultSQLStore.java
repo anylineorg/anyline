@@ -53,7 +53,7 @@ public class DefaultSQLStore extends SQLStore {
 	}
 
 	private static String root; //sql目录 多个以, 分隔 .表示项目当前目录 ${classpath}表示classes目录
-	private static String[] cuts = "sql, classes".split(", ");
+	private static String[] cuts = "sql, classes".split(",");
 	private static long lastLoadTime = 0;
 
 	static {
@@ -78,7 +78,7 @@ public class DefaultSQLStore extends SQLStore {
 		root = root.replace("\\", FileUtil.getFileSeparator());
 		root = root.replace("//", FileUtil.getFileSeparator());
 		root = root.replace("\\\\", FileUtil.getFileSeparator());
-		String[] dirs = root.split(", ");
+		String[] dirs = root.split(",");
 		for(String dir:dirs) {
 			if(dir.startsWith(".")){
 				dir = FileUtil.merge(ConfigTable.getRoot(), dir.substring(1));
@@ -94,15 +94,15 @@ public class DefaultSQLStore extends SQLStore {
 		//\D:\ \target\anyline-simple-data-jdbc-xml-8.6.5.jar!\BOOT-INF\classes!\sql
 		if(path.contains("jar!")){
 			//jar内部
-			String sub = path.substring(path.indexOf("jar!")+4).replace("!/", "") + FileUtil.getFileSeparator();
+			String sub = path.substring(path.indexOf("jar!")+4).replace("!/","") + FileUtil.getFileSeparator();
 			sub = sub.toLowerCase();
  			//sub:  \BOOT-INF\classes!\sql\
-			sub = sub.replace("!", "");
+			sub = sub.replace("!","");
 			if(sub.startsWith("/") || sub.startsWith("\\")){
 				sub = sub.substring(1);
 			}
-			sub = sub.replace("\\", "/");
-			sub = sub.replace("//", "/");
+			sub = sub.replace("\\","/");
+			sub = sub.replace("//","/");
 			try {
 				File file = new File(System.getProperty("java.class.path"));
 				parseJarFile(file, sub);
@@ -191,7 +191,7 @@ public class DefaultSQLStore extends SQLStore {
 		String result = null;
 		String prefix = path;
 		if(null != root) {
-			String[] dirs = root.split(", ");
+			String[] dirs = root.split(",");
 			for(String dir:dirs){
 				if(prefix.startsWith(dir)) {
 					prefix = prefix.replace(dir, "");
@@ -207,16 +207,16 @@ public class DefaultSQLStore extends SQLStore {
 		if(prefix.contains(".xml")){
 			prefix = prefix.substring(0, prefix.indexOf(".xml"));
 		}
-		prefix = prefix.replace("/", ".")
-				.replace("\\", ".")
-				.replace("src/main", ".")
-				.replace("src\\main", ".");
+		prefix = prefix.replace("/",".")
+				.replace("\\",".")
+				.replace("src/main",".")
+				.replace("src\\main",".");
 		if(prefix.startsWith(".")){
 			prefix = prefix.substring(1);
 		}
 		result = prefix;
 		if(null != parent){
-			result += ", " + parent + "." + prefix;
+			result += "," + parent + "." + prefix;
 		}
 		return result;
 	}
@@ -304,10 +304,10 @@ public class DefaultSQLStore extends SQLStore {
 			prepares = parseXML(prefix, root);
 		}
 		for(RunPrepare prepare:prepares){
-			String[] prefixs = prefix.split(", ");
+			String[] prefixs = prefix.split(",");
 			for(String _prefix:prefixs) {
 				String sqlId = _prefix + ":" + prepare.getId();
-				prepare.setDataSource(sqlId);
+				prepare.setDest(sqlId);
 				if(sqls.containsKey(sqlId)){
 					sqls.get(sqlId).setMultiple(true);
 					log.warn("[SQL Prepare 重名][调用时请注意添加前缀][id:{}]", sqlId);

@@ -55,7 +55,7 @@ public class LineString extends Geometry {
         boolean first = true;
         for(Point point:points){
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             builder.append(point.toString(false));
             first = false;
@@ -84,7 +84,7 @@ public class LineString extends Geometry {
         boolean first = true;
         for(Point point:points){
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             builder.append(point.sql(false, false));
             first = false;

@@ -731,7 +731,7 @@ public class NumberUtil {
 
 	/**
 	 * 16进制string拆分<br/>
-	 * 0102 &gt; ["01", "02"]
+	 * 0102 &gt; ["01","02"]
 	 * @param hex hex
 	 * @return strings
 	 */
@@ -798,8 +798,8 @@ public class NumberUtil {
 		if (null != src) {
 			int idx = src.indexOf(".");
 			if(idx != -1){
-				src = src.replaceAll("^0+", "");
-				src = src.replaceAll("0+$", "");
+				src = src.replaceAll("^0+","");
+				src = src.replaceAll("0+$","");
 			}
 			if(".".equals(src)){
 				if(integer){

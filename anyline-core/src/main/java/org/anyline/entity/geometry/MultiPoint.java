@@ -63,7 +63,7 @@ public class MultiPoint extends Geometry{
         boolean first = true;
         for(Point point:points){
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             first = false;
             builder.append(point.toString(false));
@@ -94,7 +94,7 @@ public class MultiPoint extends Geometry{
         boolean first = true;
         for(Point point:points){
             if(!first){
-                builder.append(", ");
+                builder.append(",");
             }
             first = false;
             builder.append(point.sql(false, false));

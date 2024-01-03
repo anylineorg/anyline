@@ -73,7 +73,7 @@ public class DomUtil {
      * @return Element
      */
     public static Element element(Element root, String tags){
-        return element(root, BeanUtil.array2list(tags.split(", ")));
+        return element(root, BeanUtil.array2list(tags.split(",")));
     }
     /**
      * 根据标签name搜索element
@@ -99,7 +99,7 @@ public class DomUtil {
     }
 
     public static List<Element> elements(Element root, String tags, boolean recursion){
-        return elements(root, BeanUtil.array2list(tags.split(", ")), recursion);
+        return elements(root, BeanUtil.array2list(tags.split(",")), recursion);
     }
     public static List<Element> elements(Element root, List<String> tags){
         return elements(root, tags, true);
@@ -131,7 +131,7 @@ public class DomUtil {
     }
 
     public static Element element(Element root, String tags, String attribute, String value){
-        return element(root, BeanUtil.array2list(tags.split(", ")), attribute, value);
+        return element(root, BeanUtil.array2list(tags.split(",")), attribute, value);
     }
     /**
      * 根据标签name以及属性值搜索element
@@ -156,7 +156,7 @@ public class DomUtil {
     }
 
     public static List<Element> elements(Element root, String tags, String attribute, String value){
-        return elements(root, BeanUtil.array2list(tags.split(", ")), attribute, value);
+        return elements(root, BeanUtil.array2list(tags.split(",")), attribute, value);
     }
     /**
      * 根据属性值搜索element

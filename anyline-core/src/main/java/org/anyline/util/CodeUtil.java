@@ -131,7 +131,7 @@ public class CodeUtil {
 		char[] chars = str.toCharArray(); 
 		for (int i = 0; i < chars.length; i++) {
 			if (i != chars.length - 1) {
-				sbu.append((int) chars[i]).append(", ");
+				sbu.append((int) chars[i]).append(",");
 			} else {
 				sbu.append((int) chars[i]); 
 			} 
@@ -144,7 +144,7 @@ public class CodeUtil {
 			return ""; 
 		} 
 		StringBuffer sbu = new StringBuffer(); 
-		String[] chars = str.split(", ");
+		String[] chars = str.split(",");
 		for (int i = 0; i < chars.length; i++) {
 			sbu.append((char) Integer.parseInt(chars[i])); 
 		} 
@@ -244,7 +244,7 @@ public class CodeUtil {
 		} 
 		String result = url; 
 		try {
-			result = result.replace(" ", "%20");
+			result = result.replace(" ","%20");
 			result = new URI(result).toASCIIString(); 
 		} catch (Exception e) {
 			e.printStackTrace(); 

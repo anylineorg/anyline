@@ -135,7 +135,7 @@ public class ParseResult {
 			}else if(prefix.startsWith("+")){
 				setSwitch(EMPTY_VALUE_SWITCH.NULL);
 			}
-			prefix = prefix.replace("+", "");
+			prefix = prefix.replace("+","");
 		}
 		this.prefix = prefix;
 	} 

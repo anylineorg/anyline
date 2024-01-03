@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>anyline-data-jdbc-antdb</module>				<!--亚信-->
 		<module>anyline-data-jdbc-citus</module>
 		<module>anyline-data-jdbc-cmdb</module>				<!--中国移动磐维数据库-->
 		<module>anyline-data-jdbc-cudb</module>				<!--中国联通-->

@@ -152,7 +152,7 @@ public class GISUtil {
         if(null == gps){
             return null;
         }
-        gps = gps.replaceAll("[^0-9.]", "");
+        gps = gps.replaceAll("[^0-9.]","");
         String d = gps.substring(0, gps.indexOf("."));
         String m = "";
         int idx = d.length() - 2;

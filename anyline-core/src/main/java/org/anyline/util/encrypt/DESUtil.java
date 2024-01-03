@@ -155,7 +155,7 @@ public class DESUtil {
 			return str;
 		}
 		String result = "";
-		result = new String(decrypt(NumberUtil.hex2bytes(str)), ConfigTable.getString("DES_ENCODE", "UTF-8"));
+		result = new String(decrypt(NumberUtil.hex2bytes(str)), ConfigTable.getString("DES_ENCODE","UTF-8"));
 		result = result.substring(salt.length());
 		return result;
 	}
@@ -182,7 +182,7 @@ public class DESUtil {
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
 		if(null == keys || null == obj){
 			return; 
@@ -227,7 +227,7 @@ public class DESUtil {
 		try {
 			String ignoreList = ConfigTable.getString("DES_IGNORE");
 			if(null != ignoreList){
-				String[] tmps = ignoreList.split(", ");
+				String[] tmps = ignoreList.split(",");
 				for(String tmp:tmps){
 					ignores.add(tmp);
 				}

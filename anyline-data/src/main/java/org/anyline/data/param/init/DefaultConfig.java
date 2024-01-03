@@ -114,7 +114,7 @@ public class DefaultConfig implements Config {
 	public List<Object> getOrValues() {
 		return orValues; 
 	} 
-	@SuppressWarnings({"rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes","unchecked" })
 	public void addValue(Object value){
 		values = append(values, value);
 	}
