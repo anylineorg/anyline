@@ -116,6 +116,10 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      * 索引长度
      */
     protected Long indexLength                  ;
+    /**
+     * 是否临时表
+     */
+    protected int temporary                     ;
 
 
     protected PrimaryKey primaryKey;
@@ -837,6 +841,25 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     public Long getDataLength() {
         return dataLength;
+    }
+
+    public int getTemporary() {
+        return temporary;
+    }
+    public boolean isTemporary() {
+        return (temporary == 1);
+    }
+
+    public void setTemporary(int temporary) {
+        this.temporary = temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        if(temporary){
+            this.temporary = 1;
+        }else{
+            this.temporary = 0;
+        }
     }
 
     public void setDataLength(Long dataLength) {
