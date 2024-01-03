@@ -52,6 +52,7 @@ import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -3803,7 +3804,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				List<T> tmp = new ArrayList<>();
 				for(T item:list){
 					String name = item.getName(greedy);
-					if(RegularUtil.match(name, origin)){
+					if(RegularUtil.match(name, origin, Regular.MATCH_MODE.MATCH)){
 						tmp.add(item);
 					}
 				}
@@ -4112,10 +4113,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				table.setDdls(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
-				LinkedHashMap<String, Column> columns = columns(runtime, random, false, table, true);
-				table.setColumns(columns);
-				table.setTags(tags(runtime, random, false, table));
-				PrimaryKey pk = primary(runtime, random, false, table);
+				LinkedHashMap<String, Column> columns = table.getColumns();
+				if(null == columns || columns.isEmpty()) {
+					columns = columns(runtime, random, false, table, true);
+					table.setColumns(columns);
+					table.setTags(tags(runtime, random, false, table));
+				}
+				PrimaryKey pk = table.getPrimaryKey();
+				if(null == pk) {
+					pk = primary(runtime, random, false, table);
+				}
 				if (null != pk) {
 					for (String col : pk.getColumns().keySet()) {
 						Column column = columns.get(col.toUpperCase());
@@ -4125,7 +4132,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					}
 				}
 				table.setPrimaryKey(pk);
-				table.setIndexs(indexs(runtime, random, table, null));
+				LinkedHashMap<String, Index> indexs = table.getIndexs();
+				if(null == indexs || indexs.isEmpty()) {
+					table.setIndexs(indexs(runtime, random, table, null));
+				}
 				runs = buildCreateRun(runtime, table);
 				for(Run run:runs){
 					list.add(run.getFinalUpdate());
@@ -4314,7 +4324,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				for(String key:keys){
 					T item = views.get(key);
 					String name = item.getName(greedy);
-					if(RegularUtil.match(name, pattern)){
+					if(RegularUtil.match(name, pattern, Regular.MATCH_MODE.MATCH)){
 						tmps.put(name.toUpperCase(), item);
 					}
 				}
