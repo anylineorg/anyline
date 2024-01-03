@@ -4566,7 +4566,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         if (null == v2) {
                             continue;
                         }
-                        return -1 * factor;
+                        return -factor;
                     } else {
                         if (null == v2) {
                             return factor;
@@ -4587,7 +4587,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         if (result > 0) {
                             return factor;
                         } else {
-                            return -1 * factor;
+                            return -factor;
                         }
                     }
                 }
