@@ -1840,6 +1840,9 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         if(BasicUtil.isNotEmpty(schema)){
             builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
         }
+        if(BasicUtil.isNotEmpty(pattern)){
+            builder.append(" AND M.OBJECT_NAME LIKE '").append(pattern).append("'");
+        }
         if(BasicUtil.isNotEmpty(types)){
             String[] tmps = types.split(",");
             builder.append(" AND M.OBJECT_TYPE IN(");

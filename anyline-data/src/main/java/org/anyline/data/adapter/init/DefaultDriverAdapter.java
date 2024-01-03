@@ -3778,7 +3778,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			//表备注
 			if(!comment) {
 				try {
-					List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, null, types);
+					List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
