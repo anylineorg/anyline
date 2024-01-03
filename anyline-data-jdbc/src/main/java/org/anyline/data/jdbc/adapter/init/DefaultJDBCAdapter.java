@@ -3383,6 +3383,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
 		table.setType(row.getString("TABLE_TYPE"));
 		table.setEngine(row.getString("ENGINE"));
+		table.setTemporary(row.getBoolean("IS_TEMPORARY", false));
 	}
 	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
 		try {
