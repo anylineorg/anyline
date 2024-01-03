@@ -2595,9 +2595,11 @@ public class DefaultService<E> implements AnylineService<E> {
                     update = table;
                 }
                 otable.setUpdate(update, false, false);
-                result = alter(otable);
+                table.sort();
+                result = dao.alter(otable);
             }else{
-                result =  create(table);
+                table.sort();
+                result =  dao.create(table);
             }
             CacheProxy.clear();
             return result;
@@ -2615,9 +2617,9 @@ public class DefaultService<E> implements AnylineService<E> {
             Table update = (Table) table.getUpdate();
             if(null == update){
                 update = table;
-                table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
-                table.setUpdate(update, false, false);
-            } 
+            }
+            table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
+            table.setUpdate(update, false, false);
             boolean result = dao.alter(table);
             CacheProxy.clear();
             return result;
