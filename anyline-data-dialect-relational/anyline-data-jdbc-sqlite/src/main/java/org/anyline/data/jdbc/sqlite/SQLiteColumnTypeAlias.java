@@ -103,8 +103,8 @@ public enum SQLiteColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TEXT               ), //mysql,pg, ,mssql
     TIMEZ                   (StandardColumnType.TEXT               ), //    ,pg
     TIMESTAMP               (StandardColumnType.INTEGER            ), //mysql,pg,oracle,mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.INTEGER            ), //    ,pg
-    TIMESTAMP_ZONE          (StandardColumnType.INTEGER            ), //    ,pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.INTEGER            ), //    ,pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.INTEGER            ), //    ,pg
     TSQUERY                 (StandardColumnType.ILLEGAL            ), //    ,pg
     TSVECTOR                (StandardColumnType.ILLEGAL            ), //    ,pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL            ), //    ,pg

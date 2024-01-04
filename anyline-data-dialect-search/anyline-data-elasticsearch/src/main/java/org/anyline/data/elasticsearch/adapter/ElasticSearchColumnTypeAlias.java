@@ -103,8 +103,8 @@ public enum ElasticSearchColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.DATE             ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.DATE             ), //    , pg
     TIMESTAMP               (StandardColumnType.DATE             ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.DATE             ), //    , pg
-    TIMESTAMP_ZONE          (StandardColumnType.DATE             ), //    , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.DATE             ), //    , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.DATE             ), //    , pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //    , pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //    , pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    , pg

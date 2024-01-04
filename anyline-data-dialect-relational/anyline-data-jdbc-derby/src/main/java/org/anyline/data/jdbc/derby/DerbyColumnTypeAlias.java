@@ -105,8 +105,8 @@ public enum DerbyColumnTypeAlias implements ColumnTypeAlias {
         TIME                    (StandardColumnType.TIME                  ), //mysql, pg, , mssql
         TIMEZ                   (StandardColumnType.TIME                  ), //    , pg
         TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql, pg, oracle, mssql
-        TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    , pg
-        TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP             ), //    , pg
+        TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    , pg
+        TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), //    , pg
         TSQUERY                 (StandardColumnType.ILLEGAL               ), //    , pg
         TSVECTOR                (StandardColumnType.ILLEGAL               ), //    , pg
         TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    , pg

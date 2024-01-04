@@ -105,8 +105,8 @@ public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIME                  ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.TIMEZ                 ), //    , pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_LOCAL_ZONE  ), //    , pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP_ZONE        ), //    , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_WITH_LOCAL_ZONE  ), //    , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP_WITH_ZONE        ), //    , pg
     TSQUERY                 (StandardColumnType.TSQUERY               ), //    , pg
     TSVECTOR                (StandardColumnType.TSVECTOR              ), //    , pg
     TXID_SNAPSHOT           (StandardColumnType.TXID_SNAPSHOT         ), //    , pg

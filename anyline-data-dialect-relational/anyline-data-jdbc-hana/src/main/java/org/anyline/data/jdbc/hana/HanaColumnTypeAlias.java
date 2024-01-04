@@ -108,8 +108,8 @@ public enum HanaColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIME                  ), // HANA, mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.TIMESTAMP             ), //     , , pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), // HANA, mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //     , , pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP             ), //     , , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //     , , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), //     , , pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //     , , pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //     , , pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //     , , pg

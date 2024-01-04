@@ -106,8 +106,8 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.DATETIME              ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.DATETIME              ), //    , pg
     TIMESTAMP               (StandardColumnType.DATETIME              ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.DATETIME              ), //    ,pg
-    TIMESTAMP_ZONE          (StandardColumnType.DATETIME              ), //    ,pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.DATETIME              ), //    ,pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.DATETIME              ), //    ,pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //    ,pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //    ,pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    ,pg

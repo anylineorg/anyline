@@ -105,8 +105,8 @@ public enum IoTDBColumnTypeAlias implements ColumnTypeAlias {
         TIME                    (StandardColumnType.INT64        ), //mysql, pg, , mssql
         TIMEZ                   (StandardColumnType.INT64        ), //    , pg
         TIMESTAMP               (StandardColumnType.INT64        ), //mysql, pg, oracle, mssql
-        TIMESTAMP_LOCAL_ZONE    (StandardColumnType.INT64        ), //    , pg
-        TIMESTAMP_ZONE          (StandardColumnType.INT64        ), //    , pg
+        TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.INT64        ), //    , pg
+        TIMESTAMP_WITH_ZONE          (StandardColumnType.INT64        ), //    , pg
         TSQUERY                 (StandardColumnType.ILLEGAL      ), //    , pg
         TSVECTOR                (StandardColumnType.ILLEGAL      ), //    , pg
         TXID_SNAPSHOT           (StandardColumnType.ILLEGAL      ), //    , pg

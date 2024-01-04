@@ -103,8 +103,8 @@ public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIMESTAMP           ), //mysql,pg, ,mssql
     TIMEZ                   (StandardColumnType.TIMESTAMP           ), //    ,pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP           ), //mysql,pg,oracle,mssql      ,td
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP           ), //    ,pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP           ), //    ,pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP           ), //    ,pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP           ), //    ,pg
     TSQUERY                 (StandardColumnType.ILLEGAL             ), //    ,pg
     TSVECTOR                (StandardColumnType.ILLEGAL             ), //    ,pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL             ), //    ,pg

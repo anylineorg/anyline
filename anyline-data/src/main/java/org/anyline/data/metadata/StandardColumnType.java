@@ -394,12 +394,14 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * mysql(Boolean), pg(Boolean), MSSQL
      */
-   , BIT("BIT", new DatabaseType[]{MySQL, MSSQL}, Boolean.class, true, true)
+    , BIT("BIT", new DatabaseType[]{MySQL, MSSQL}, Boolean.class, true, true)
     /**
      * pg
      */
-   , VARBIT("VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true)
-   , SHORT("SHORT", new DatabaseType[]{}, Short.class, true, true)
+    , VARBIT("VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true)
+    , SHORT("SHORT", new DatabaseType[]{}, Short.class, true, true)
+
+    , BYTE("BYTE", new DatabaseType[]{}, Short.class, true, true)
 
     /**
      * mysql, MSSQL, kingbase
@@ -728,6 +730,11 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
+    , TIME_WITH_ZONE("TIME WITH TIME ZONE", new DatabaseType[]{DM}, java.sql.Time.class, true, true){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            return TIME.write(value, def, placeholder);
+        }
+    }
     /**
      * pg
      */
@@ -744,12 +751,12 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP_ZONE("TIMESTAMP", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
+   , TIMESTAMP_WITH_ZONE("TIMESTAMP WITH TIME ZONE", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP_LOCAL_ZONE("TIMESTAMP", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
+   , TIMESTAMP_WITH_LOCAL_ZONE("TIMESTAMP WITH LOCAL TIME ZONE", new DatabaseType[]{PostgreSQL}, java.sql.Timestamp.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
@@ -836,7 +843,6 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * pg
      */
    , BYTEA("BYTEA", new DatabaseType[]{PostgreSQL}, byte[].class, true, true)
-   , BYTE("BYTE", new DatabaseType[]{Informix, ElasticSearch}, byte[].class, true, true)
     /**
      * pg
      */
@@ -967,6 +973,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * pg
      */
    , INTERVAL("INTERVAL", new DatabaseType[]{PostgreSQL, Informix}, null, true, true)
+
     /**
      * oracle
      */
