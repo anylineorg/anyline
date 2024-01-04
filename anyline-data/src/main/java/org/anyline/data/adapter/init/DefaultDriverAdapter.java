@@ -11302,6 +11302,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(type.contains(" ")){
 			type = type.split(" ")[0];
 		}
+		if(type.contains("(")){
+			type = type.split("\\(")[0];
+		}
 		TypeMetadata ct = types.get(type.toUpperCase());
 		if(null != ct){
 			ct.setArray(array);
