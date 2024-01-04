@@ -1878,6 +1878,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
                 table.setPrimaryKey(pk);
                 table.setIndexs(indexs(table));
+                table.setConstraints(constraints(table));
                 if(null == table.ddl()){
                     ddl(table);
                 }
