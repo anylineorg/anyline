@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.ubisql")
 public class UbiSQLAdapter extends TiDBAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.UbiSQL;
     }
     @Value("${anyline.data.jdbc.delimiter.ubisql:}")

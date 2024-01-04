@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.timescale")
 public class TimescaleAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.Timescale;
     }
     @Value("${anyline.data.jdbc.delimiter.timescale:}")

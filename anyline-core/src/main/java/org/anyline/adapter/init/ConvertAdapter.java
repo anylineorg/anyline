@@ -23,7 +23,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.geometry.Point;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.ConvertException;
-import org.anyline.metadata.type.DataType;
 import org.anyline.metadata.type.init.AbstractConvert;
 import org.anyline.util.*;
 import org.slf4j.Logger;

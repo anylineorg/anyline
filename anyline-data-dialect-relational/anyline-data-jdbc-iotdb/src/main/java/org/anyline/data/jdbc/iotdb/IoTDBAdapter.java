@@ -31,7 +31,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.iotdb")
 public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.IoTDB;
 	}
 

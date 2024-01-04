@@ -19,12 +19,12 @@ package org.anyline.metadata.type.init;
 
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 
 import java.lang.reflect.Field;
 
-public class AbstractColumnType implements ColumnType {
+public class AbstractColumnType implements TypeMetadata {
     private boolean array;
     private DatabaseType[] dbs;
     private String name;

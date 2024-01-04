@@ -29,7 +29,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
@@ -1104,9 +1104,9 @@ public abstract class BasicRun implements Run {
 			for(RunValue rv:values){
 				Object value = rv.getValue();
 				Column column = rv.getColumn();
-				ColumnType columnType = null;
+				TypeMetadata columnType = null;
 				if(null != column){
-					columnType = column.getColumnType();
+					columnType = column.getTypeMetadata();
 				}
 				int index = result.indexOf("?");
 				String replacement = null;

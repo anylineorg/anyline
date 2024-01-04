@@ -27,7 +27,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -68,7 +68,7 @@ public interface DriverAdapter {
 	 * 数据库类型
 	 * @return DatabaseType
 	 */
-	DatabaseType type();
+	DatabaseType typeMetadata();
 
 
 	/**
@@ -80,7 +80,7 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	default boolean match(DataRuntime runtime, boolean compensate){
-		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+		List<String> keywords = typeMetadata().keywords(); //关键字+jdbc-url前缀+驱动类
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
 		return match(feature, keywords, compensate);
 	}
@@ -133,7 +133,7 @@ public interface DriverAdapter {
 	 * @param type 编码时输入的类型
 	 * @return 具体数据库中对应的数据类型
 	 */
-	ColumnType type(String type);
+	TypeMetadata typeMetadata(String type);
 
 	/**
 	 * 写入数据库前 类型转换
@@ -141,14 +141,14 @@ public interface DriverAdapter {
 	 * @param writer DataWriter
 	 */
 	default void reg(Object[] supports, DataWriter writer){
-		SystemDataWriterFactory.reg(type(), supports, writer);
+		SystemDataWriterFactory.reg(typeMetadata(), supports, writer);
 	}
 	/**
 	 * 写入数据库时 类型转换 写入的原始类型需要writer中实现supports
 	 * @param writer DataWriter
 	 */
 	default void reg(DataWriter writer){
-		SystemDataWriterFactory.reg(type(), null, writer);
+		SystemDataWriterFactory.reg(typeMetadata(), null, writer);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public interface DriverAdapter {
 	 * @param reader DataReader
 	 */
 	default void reg(Object[] supports, DataReader reader){
-		SystemDataReaderFactory.reg(type(), supports, reader);
+		SystemDataReaderFactory.reg(typeMetadata(), supports, reader);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public interface DriverAdapter {
 	 * @param reader DataReader
 	 */
 	default void reg(DataReader reader){
-		SystemDataReaderFactory.reg(type(), null, reader);
+		SystemDataReaderFactory.reg(typeMetadata(), null, reader);
 	}
 
 	/**
@@ -174,9 +174,9 @@ public interface DriverAdapter {
 	 * @return DataReader
 	 */
 	default DataReader reader(Object type){
-		DataReader reader = DataReaderFactory.reader(type(), type);
+		DataReader reader = DataReaderFactory.reader(typeMetadata(), type);
 		if(null == reader){
-			reader = SystemDataReaderFactory.reader(type(), type);
+			reader = SystemDataReaderFactory.reader(typeMetadata(), type);
 		}
 		if(null == reader){
 			reader = DataReaderFactory.reader(DatabaseType.NONE, type);
@@ -192,9 +192,9 @@ public interface DriverAdapter {
 	 * @return DataWriter
 	 */
 	default DataWriter writer(Object type){
-		DataWriter writer = DataWriterFactory.writer(type(), type);
+		DataWriter writer = DataWriterFactory.writer(typeMetadata(), type);
 		if(null == writer){
-			writer = SystemDataWriterFactory.writer(type(), type);
+			writer = SystemDataWriterFactory.writer(typeMetadata(), type);
 		}
 		if(null == writer){
 			writer = DataWriterFactory.writer(DatabaseType.NONE, type);
@@ -3549,7 +3549,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column);
+	StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column column);
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:列数据类型定义
@@ -3561,7 +3561,7 @@ public interface DriverAdapter {
 	 * @param isIgnoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
+	StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4193,7 +4193,7 @@ public interface DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
-	StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta);
+	StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta);
 	/**
 	 * index[命令合成-子流程]<br/>
 	 * 索引备注
@@ -4645,7 +4645,7 @@ public interface DriverAdapter {
 	 */
 	boolean convert(DataRuntime runtime, Column column, RunValue run);
 	Object convert(DataRuntime runtime, Column column, Object value);
-	Object convert(DataRuntime runtime, ColumnType columnType, Object value);
+	Object convert(DataRuntime runtime, TypeMetadata columnType, Object value);
 	/**
 	 * 在不检测数据库结构时才生效,否则会被convert代替
 	 * 生成value格式 主要确定是否需要单引号  或  类型转换

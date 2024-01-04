@@ -17,7 +17,7 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.util.BasicUtil;
 
@@ -81,9 +81,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected Integer displaySize                 ; // display size
     protected Integer type                        ; // 类型
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
-    protected ColumnType columnType               ;
+    protected TypeMetadata typeMetadata;
     protected String childTypeName                ;
-    protected ColumnType childColumnType          ;
+    protected TypeMetadata childTypeMetadata;
     protected JavaType javaType                   ;
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
     protected Integer precision                   ; // 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
@@ -254,22 +254,22 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
-    public ColumnType getChildColumnType() {
+    public TypeMetadata getChildTypeMetadata() {
         if(getmap && null != update){
-            return update.childColumnType;
+            return update.childTypeMetadata;
         }
-        if(array && null != childColumnType){
-            childColumnType.setArray(array);
+        if(array && null != childTypeMetadata){
+            childTypeMetadata.setArray(array);
         }
-        return childColumnType;
+        return childTypeMetadata;
     }
 
-    public Column setChildColumnType(ColumnType childColumnType) {
+    public Column setChildTypeMetadata(TypeMetadata childTypeMetadata) {
         if(setmap && null != update){
-            update.setChildColumnType(childColumnType);
+            update.setChildTypeMetadata(childTypeMetadata);
             return this;
         }
-        this.childColumnType = childColumnType;
+        this.childTypeMetadata = childTypeMetadata;
         return this;
     }
 
@@ -1009,7 +1009,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(!BasicUtil.equals(name, column.getName())){
             return false;
         }
-        if(!BasicUtil.equals(columnType, column.getColumnType())){
+        if(!BasicUtil.equals(typeMetadata, column.getTypeMetadata())){
             return false;
         }
         if(!BasicUtil.equals(precision, column.getPrecision())){
@@ -1044,16 +1044,22 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     }
 
     
-    public ColumnType getColumnType() {
+    public TypeMetadata getTypeMetadata() {
         if(getmap && null != update){
-            return update.columnType;
+            return update.typeMetadata;
         }
-        if(array && null != columnType){
-            columnType.setArray(array);
+        if(array && null != typeMetadata){
+            typeMetadata.setArray(array);
         }
-        return columnType;
+        return typeMetadata;
     }
 
+    public TypeMetadata.CATEGORY getTypeCategory(){
+        if(null != typeMetadata){
+            return typeMetadata.getCategory();
+        }
+        return TypeMetadata.CATEGORY.NONE;
+    }
     public String getAnalyzer() {
         return analyzer;
     }
@@ -1081,12 +1087,12 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
-    public Column setColumnType(ColumnType columnType) {
+    public Column setTypeMetadata(TypeMetadata typeMetadata) {
         if(setmap && null != update){
-            update.setColumnType(columnType);
+            update.setTypeMetadata(typeMetadata);
             return this;
         }
-        this.columnType = columnType;
+        this.typeMetadata = typeMetadata;
         return this;
     }
 

@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.tdengine;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
 
@@ -120,13 +120,13 @@ public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.NCHAR               ), //      ,oracle,
     XML                     (StandardColumnType.NCHAR               ), //    ,pg，     ,mssql
     YEAR                    (StandardColumnType.INT                 ); //mysql,
-    private final ColumnType standard;
-    private TDengineColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private TDengineColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 

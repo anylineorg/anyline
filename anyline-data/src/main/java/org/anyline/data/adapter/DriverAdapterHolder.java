@@ -19,7 +19,6 @@ package org.anyline.data.adapter;
 
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class DriverAdapterHolder {
 	public static List<DriverAdapter> getAdapters(DatabaseType type){
 		List<DriverAdapter> list = new ArrayList<>();
 		for(DriverAdapter adapter:adapters){
-			if(adapter.type() == type){
+			if(adapter.typeMetadata() == type){
 				list.add(adapter);
 			}
 		}

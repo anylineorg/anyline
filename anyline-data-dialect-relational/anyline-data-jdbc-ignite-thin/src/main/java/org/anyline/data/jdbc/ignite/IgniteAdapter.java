@@ -27,11 +27,8 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -47,7 +44,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.ignite")
 public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.Ignite;
 	}
 
@@ -4522,8 +4519,8 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4537,8 +4534,8 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+		return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
 	}
 
 
@@ -5461,8 +5458,8 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * index[命令合成-子流程]<br/>

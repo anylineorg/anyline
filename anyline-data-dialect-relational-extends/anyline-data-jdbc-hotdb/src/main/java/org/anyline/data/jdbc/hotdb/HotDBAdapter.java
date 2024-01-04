@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.hotdb")
 public class HotDBAdapter extends MySQLAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.HotDB;
     }
     @Value("${anyline.data.jdbc.delimiter.hotdb:}")

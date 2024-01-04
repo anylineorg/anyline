@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.kundb")
 public class KunDBAdapter extends MySQLGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.KunDB;
     }
     @Value("${anyline.data.jdbc.delimiter.kundb:}")

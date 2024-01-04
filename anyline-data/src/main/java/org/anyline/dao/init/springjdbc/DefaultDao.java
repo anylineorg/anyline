@@ -794,7 +794,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	@Override
 	public DatabaseType type() {
 		DataRuntime runtime = runtime();
-		return runtime.getAdapter().type();
+		return runtime.getAdapter().typeMetadata();
 	}
 
 	@Override

@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.maxdb;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum MaxDBColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //    , , oracle,
@@ -122,13 +122,13 @@ public enum MaxDBColumnTypeAlias implements ColumnTypeAlias {
         VARCHAR2                (StandardColumnType.VARCHAR               ), //    , , oracle,
         XML                     (StandardColumnType.CLOB                  ), //    , pg，     , mssql
         YEAR                    (StandardColumnType.DATE                  ); //mysql, 
-        private final ColumnType standard;
-        MaxDBColumnTypeAlias(ColumnType standard){
+        private final TypeMetadata standard;
+        MaxDBColumnTypeAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 
         @Override
-        public ColumnType standard() {
+        public TypeMetadata standard() {
                 return standard;
         }
 }

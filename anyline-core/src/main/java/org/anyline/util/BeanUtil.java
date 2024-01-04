@@ -33,7 +33,7 @@ import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.Column;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.Convert;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.encrypt.DESUtil;
@@ -255,10 +255,10 @@ public class BeanUtil {
 		String fieldType = field.getType().getSimpleName();
 		Class targetClass = field.getType();
 		String type = fieldType.toLowerCase();		//属性类型
-		ColumnType columnType = null;
+		TypeMetadata columnType = null;
 		String columnTypeName = ""; //列类型
 		if(null != metadata){
-			columnType = metadata.getColumnType();
+			columnType = metadata.getTypeMetadata();
 			columnTypeName = metadata.getTypeName();
 			if(null != columnTypeName){
 				columnTypeName = columnTypeName.toUpperCase();

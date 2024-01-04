@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.oracle;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum OracleColumnTypeAlias implements ColumnTypeAlias {
 
@@ -120,13 +120,13 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR2               ), //       , oracle,
     XML                     (StandardColumnType.ILLEGAL               ), //    , pg，     , mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
-    private final ColumnType standard;
-    private OracleColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private OracleColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

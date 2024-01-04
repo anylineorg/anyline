@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.hive;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum HiveColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL               ), //    , , oracle,
@@ -121,13 +121,13 @@ public enum HiveColumnTypeAlias implements ColumnTypeAlias {
         VARCHAR2                (StandardColumnType.VARCHAR               ), //    , , oracle,
         XML                     (StandardColumnType.TEXT                  ), //    , pg，     , mssql
         YEAR                    (StandardColumnType.DATE                  ); //mysql, 
-        private final ColumnType standard;
-        HiveColumnTypeAlias(ColumnType standard){
+        private final TypeMetadata standard;
+        HiveColumnTypeAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 
         @Override
-        public ColumnType standard() {
+        public TypeMetadata standard() {
                 return standard;
         }
 }

@@ -19,10 +19,10 @@ package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
-    BFILE                   (ColumnType.ILLEGAL                       ), //    , , oracle,
+    BFILE                   (TypeMetadata.ILLEGAL                       ), //    , , oracle,
     BINARY_DOUBLE           (StandardColumnType.NUMERIC               ), //    , , oracle,
     BINARY_FLOAT            (StandardColumnType.FLOAT_MSSQL              ), //    , , oracle,
     BIGINT                  (StandardColumnType.BIGINT                ), //mysql, , , mssql,
@@ -119,13 +119,13 @@ public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //    , ,oracle,
     XML                     (StandardColumnType.XML                   ), //    ,pg，     ,mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
-    private final ColumnType standard;
-    private MSSQLColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private MSSQLColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

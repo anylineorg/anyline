@@ -37,7 +37,7 @@ import java.util.List;
 @Repository("anyline.data.jdbc.adapter.cassandra")
 public class CassandraAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.Cassandra;
     }
 

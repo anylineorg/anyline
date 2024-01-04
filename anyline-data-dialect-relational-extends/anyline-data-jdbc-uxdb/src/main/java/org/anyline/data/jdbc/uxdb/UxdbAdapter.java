@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.uxdb")
 public class UxdbAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.UXDB;
     }
     @Value("${anyline.data.jdbc.delimiter.uxdb:}")

@@ -169,7 +169,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             pks = first.getPrimaryColumns();
@@ -246,7 +246,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             pks = EntityAdapterProxy.primaryKeys(first.getClass());
@@ -4596,7 +4596,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 name(runtime, builder, meta.getTable(true));
                 builder.append(" MODIFY(");
                 delimiter(builder, meta.getName()).append(" ");
-                type(runtime, builder, meta.getUpdate());
+                this.typeMetadata(runtime, builder, meta.getUpdate());
                 builder.append(")");
                 runs.add(new SimpleRun(runtime, builder));
             }
@@ -4810,8 +4810,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-        return super.type(runtime, builder, meta);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+        return super.typeMetadata(runtime, builder, meta);
     }
     /**
      * column[命令合成-子流程]<br/>
@@ -4825,8 +4825,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-        return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+        return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
     }
 
 
@@ -5708,8 +5708,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
-        return super.type(runtime, builder, meta);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+        return super.typeMetadata(runtime, builder, meta);
     }
     /**
      * index[命令合成-子流程]<br/>
@@ -6499,7 +6499,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         int col = 0;
         for(DataRow row:set) {
             if(row.hasPrimaryKeys() && null != generator){
-                generator.create(row, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                generator.create(row, typeMetadata(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
 
             if(col > 0){
@@ -6520,7 +6520,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         for(Object obj:list){
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
             if(!create && null != generator){
-                generator.create(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                generator.create(obj, typeMetadata(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             if(col > 0){
                 builder.append("\n\tUNION ALL");

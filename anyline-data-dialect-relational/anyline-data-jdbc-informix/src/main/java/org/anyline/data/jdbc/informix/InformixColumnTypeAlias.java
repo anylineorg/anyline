@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.informix;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum InformixColumnTypeAlias implements ColumnTypeAlias {
 
@@ -124,13 +124,13 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //      ,oracle,
     XML                     (StandardColumnType.TEXT                  ), //    ,pg，     ,mssql
     YEAR                    (StandardColumnType.DATETIME              ); //mysql,
-    private final ColumnType standard;
-    private InformixColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private InformixColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

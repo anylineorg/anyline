@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.gbase8s.postgres;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
 
@@ -120,13 +120,13 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //       ,oracle,
     XML                     (StandardColumnType.ILLEGAL               ), //    ,pg，     ,mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
-    private final ColumnType standard;
-    private GbaseColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private GbaseColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

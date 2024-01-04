@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.sqlite;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum SQLiteColumnTypeAlias implements ColumnTypeAlias {
 
@@ -120,13 +120,13 @@ public enum SQLiteColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.TEXT               ), //      ,oracle,
     XML                     (StandardColumnType.TEXT               ), //    ,pg，     ,mssql
     YEAR                    (StandardColumnType.INTEGER            ); //mysql,
-    private final ColumnType standard;
-    private SQLiteColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private SQLiteColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.greatdb")
 public class GreatDBAdapter extends MySQLAdapter {
 	
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.GreatDB;
 	}
 	@Value("${anyline.data.jdbc.delimiter.greatdb:}")

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.questdb")
 public class QuestDbAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.QuestDB;
     }
     @Value("${anyline.data.jdbc.delimiter.questdb:}")

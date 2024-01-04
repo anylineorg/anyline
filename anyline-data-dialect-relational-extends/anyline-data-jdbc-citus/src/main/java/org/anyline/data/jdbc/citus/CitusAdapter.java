@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.citus")
 public class CitusAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.Citus;
     }
     @Value("${anyline.data.jdbc.delimiter.citus:}")

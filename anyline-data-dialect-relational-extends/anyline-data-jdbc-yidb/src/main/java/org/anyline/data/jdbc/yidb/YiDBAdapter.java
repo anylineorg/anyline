@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.yidb")
 public class YiDBAdapter extends TiDBAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.YiDB;
     }
     @Value("${anyline.data.jdbc.delimiter.yidb:}")

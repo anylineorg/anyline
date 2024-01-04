@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.vastbase")
 public class VastbaseAdapter extends OpenGaussAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.Vastbase;
     }
     @Value("${anyline.data.jdbc.delimiter.vastbase:}")
