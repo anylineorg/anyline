@@ -2596,10 +2596,10 @@ public class DefaultService<E> implements AnylineService<E> {
                     update = table;
                 }
                 otable.setUpdate(update, false, false);
-                table.sort();
+                sort(table);
                 result = dao.alter(otable);
             }else{
-                table.sort();
+                sort(table);
                 result =  dao.create(table);
             }
             CacheProxy.clear();
@@ -2608,10 +2608,23 @@ public class DefaultService<E> implements AnylineService<E> {
         
         @Override
         public boolean create(Table table) throws Exception{
-            table.sort();
+            sort(table);
             return dao.create(table);
         }
-        
+        protected void sort(Table table){
+            LinkedHashMap<String, Column> columns = table.getColumns();
+            boolean sort = false;
+            for(Column column:columns.values()){
+                //只要有一个带 位置属性的列就排序
+                if(null != column.getPosition()){
+                    sort = true;
+                    break;
+                }
+            }
+            if(sort){
+                table.sort();
+            }
+        }
         @Override
         public boolean alter(Table table) throws Exception{
             CacheProxy.clear();
