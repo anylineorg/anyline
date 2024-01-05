@@ -826,7 +826,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return this
 	 */
 	@Override
-	public ConfigStore param(Object... values) {
+	public ConfigStore params(Object... values) {
 		if(null == this.values){
 			this.values = Arrays.asList(values);
 		}else{
@@ -836,7 +836,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore param(Collection values) {
+	public ConfigStore params(Collection values) {
 		if(null == this.values){
 			this.values = new ArrayList<>();
 		}
