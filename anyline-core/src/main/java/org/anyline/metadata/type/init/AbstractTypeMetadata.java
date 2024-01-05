@@ -24,15 +24,17 @@ import org.anyline.util.BasicUtil;
 
 import java.lang.reflect.Field;
 
-public class AbstractColumnType implements TypeMetadata {
+public class AbstractTypeMetadata implements TypeMetadata {
     private boolean array;
     private DatabaseType[] dbs;
     private String name;
+    private CATEGORY category;
     private Class transfer                  ; //中间转换类型 转换成其他格式前先转换成transfer类型
     private Class compatible                ; //从数据库中读写数据的类型
     private Boolean ignorePrecision;
     private Boolean ignoreScale;
-    public AbstractColumnType(String name, DatabaseType db, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    public AbstractTypeMetadata(CATEGORY category, String name, DatabaseType db, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+        this.category = category;
         this.name = name;
         this.dbs = new DatabaseType[]{db};
         this.transfer = transfer;
@@ -40,7 +42,8 @@ public class AbstractColumnType implements TypeMetadata {
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    public AbstractColumnType(String name, DatabaseType db, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    public AbstractTypeMetadata(CATEGORY category, String name, DatabaseType db, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+        this.category = category;
         this.name = name;
         this.dbs = new DatabaseType[]{db};
         this.compatible = compatible;
@@ -133,6 +136,11 @@ public class AbstractColumnType implements TypeMetadata {
     @Override
     public void setArray(boolean array) {
         this.array = array;
+    }
+
+    @Override
+    public CATEGORY getCategory() {
+        return null;
     }
 
     @Override
