@@ -3,6 +3,7 @@ package org.anyline.data.jdbc.adapter.init;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -4572,16 +4573,17 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
 
                 update.setName(uname);
                 runs.addAll(buildAddRun(runtime, update));
-
-                StringBuilder builder = new StringBuilder();
-                builder.append("UPDATE ");
-                name(runtime, builder, meta.getTable(true));
-                builder.append(" SET ");
-                delimiter(builder, uname);
-                builder.append(" = ");
-                delimiter(builder, tmp_name);
-                runs.add(new SimpleRun(runtime, builder));
-
+                long size = count(runtime, null, new DefaultTablePrepare(meta.getTable(true)), null);
+                if(size > 0) {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("UPDATE ");
+                    name(runtime, builder, meta.getTable(true));
+                    builder.append(" SET ");
+                    delimiter(builder, uname);
+                    builder.append(" = ");
+                    delimiter(builder, tmp_name);
+                    runs.add(new SimpleRun(runtime, builder));
+                }
                 meta.setName(tmp_name);
                 List<Run> drop = buildDropRun(runtime, meta);
                 runs.addAll(drop);
