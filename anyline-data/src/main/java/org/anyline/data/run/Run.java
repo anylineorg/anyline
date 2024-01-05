@@ -55,7 +55,7 @@ public interface Run {
 	Run order(String order);
 	 
 	void setConfigStore(ConfigStore configs);
-	ConfigStore getConfigStore() ; 
+	ConfigStore getConfigs() ;
 	 
  
 	/** 

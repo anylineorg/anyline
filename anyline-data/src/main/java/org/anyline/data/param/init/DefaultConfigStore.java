@@ -54,7 +54,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected GroupStore groups;
 	protected List<String> queryColumns     = new ArrayList<>()		; // 查询的列
 	protected List<String> excludeColumns 	= new ArrayList<>()		; // 不查询的列
-	protected Object values											; // 保存values后续parse用到
+	protected List<Object> values											; // 保存values后续parse用到
 
 	protected Boolean override              = null                  ; //如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected List<String> overrideByColumns		= null			; //中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
@@ -820,6 +820,35 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
+	/**
+	 * 根据占位符下标赋值
+	 * @param values values
+	 * @return this
+	 */
+	@Override
+	public ConfigStore param(Object... values) {
+		if(null == this.values){
+			this.values = Arrays.asList(values);
+		}else{
+			this.values.add(Arrays.asList(values));
+		}
+		return this;
+	}
+
+	@Override
+	public ConfigStore param(Collection values) {
+		if(null == this.values){
+			this.values = new ArrayList<>();
+		}
+		this.values.addAll(values);
+		return this;
+	}
+
+	@Override
+	public List<Object> values() {
+		return this.values;
+	}
+
 	@Override
 	public ConfigStore or(ConfigStore configs, boolean apart) {
 		if(null == configs){
@@ -1295,7 +1324,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override 
 	public ConfigStore setValue(Map<String, Object> values) {
-		this.values = values;
+		//this.values = values;
 		if(null == chain || null == values){
 			return this; 
 		} 

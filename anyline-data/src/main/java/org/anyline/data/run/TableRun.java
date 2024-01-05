@@ -22,7 +22,6 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
-import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
 
@@ -62,15 +61,15 @@ public class TableRun extends BasicRun implements Run {
 	public void init(){
 		super.init(); 
 		parseDataSource(); 
-		if(null != configStore){
-			ConditionChain chain = configStore.getConfigChain().createAutoConditionChain(); 
+		if(null != configs){
+			ConditionChain chain = configs.getConfigChain().createAutoConditionChain();
 			if(null != chain){
 				//for(Condition condition:chain.getConditions()){
 				//	addCondition(condition);
 				//}
 				addCondition(chain);
 			} 
-			OrderStore orderStore = configStore.getOrders(); 
+			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders(); 
 				if(null != orders){
@@ -79,7 +78,7 @@ public class TableRun extends BasicRun implements Run {
 					} 
 				} 
 			} 
-			PageNavi navi = configStore.getPageNavi(); 
+			PageNavi navi = configs.getPageNavi();
 			if(navi != null){
 				this.pageNavi = navi; 
 			} 
@@ -105,7 +104,7 @@ public class TableRun extends BasicRun implements Run {
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false;
 		}
-		if(null != configStore && !configStore.isValid()){
+		if(null != configs && !configs.isValid()){
 			this.valid = false;
 		}
 		return valid;
@@ -127,7 +126,7 @@ public class TableRun extends BasicRun implements Run {
 	} 
 
 	public void setConfigs(ConfigStore configs) {
-		this.configStore = configs; 
+		this.configs = configs;
 		if(null != configs){
 			this.pageNavi = configs.getPageNavi();
 		} 

@@ -928,6 +928,20 @@ public interface ConfigStore {
 	default ConfigStore param(String var, Object value){
 		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, var, value);
 	}
+
+	/**
+	 * 根据占位符下标赋值
+	 * @param values values
+	 * @return this
+	 */
+	ConfigStore param(Object ... values);
+	ConfigStore param(Collection values);
+
+	/**
+	 * 根据占位符下标赋值
+	 * @return list
+	 */
+	List<Object> values();
 	/**
 	 * 与ConfigStore中前一个条件合成or
 	 * @param swt 遇到空值处理方式

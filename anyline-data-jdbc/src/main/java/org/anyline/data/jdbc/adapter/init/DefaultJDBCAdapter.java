@@ -1410,7 +1410,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append(BR_TAB);
 		LinkedHashMap<String,Column> columns = sql.getColumns();
 		if(null == columns || columns.isEmpty()){
-			ConfigStore configs = run.getConfigStore();
+			ConfigStore configs = run.getConfigs();
 			if(null != configs) {
 				List<String> cols = configs.columns();
 				columns = new LinkedHashMap<>();
@@ -10124,9 +10124,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				// CD = ?
 				if(var.getType() == Variable.VAR_TYPE_INDEX){
 					List<Object> varValues = var.getValues();
-					String value = null;
+					Object value = null;
 					if(BasicUtil.isNotEmpty(true, varValues)){
-						value = (String)varValues.get(0);
+						value = varValues.get(0);
 					}
 					addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
 				}

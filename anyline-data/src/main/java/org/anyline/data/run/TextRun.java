@@ -79,8 +79,8 @@ public class TextRun extends BasicRun implements Run {
 			} 
 		}
 		//configStore解析与Table不一样, txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
-		if(null != configStore){
-			List<Config> confs = configStore.getConfigChain().getConfigs();
+		if(null != configs){
+			List<Config> confs = configs.getConfigChain().getConfigs();
 			for(Config conf:confs){
 				//是否覆盖相同var key的条件
 				boolean overCondition = conf.isOverCondition();
@@ -126,7 +126,21 @@ public class TextRun extends BasicRun implements Run {
 					}
 				}
 			}
-			OrderStore orderStore = configStore.getOrders(); 
+			//根据下标赋值
+			List<Object> values = configs.values();
+			if(null != values){
+				int i = 0;
+				int len = values.size();
+				for(Variable var:variables){
+					if(i < len){
+						var.setValue(values.get(i));
+						i++;
+					}else {
+						break;
+					}
+				}
+			}
+			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders(); 
 				if(null != orders){
@@ -135,7 +149,7 @@ public class TextRun extends BasicRun implements Run {
 					} 
 				} 
 			} 
-			PageNavi navi = configStore.getPageNavi(); 
+			PageNavi navi = configs.getPageNavi();
 			if(navi != null){
 				this.pageNavi = navi; 
 			} 
@@ -196,7 +210,7 @@ public class TextRun extends BasicRun implements Run {
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false;
 		}
-		if(null != configStore && !configStore.isValid()){
+		if(null != configs && !configs.isValid()){
 			this.valid = false;
 		}
 		return valid;
@@ -227,7 +241,7 @@ public class TextRun extends BasicRun implements Run {
 	}
 	 
 	public void setConfigs(ConfigStore configs) {
-		this.configStore = configs; 
+		this.configs = configs;
 		if(null != configs){
 			this.pageNavi = configs.getPageNavi(); 
 			 

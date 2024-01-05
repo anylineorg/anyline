@@ -75,12 +75,12 @@ public class XMLRun extends BasicRun implements Run {
 
 	public void init(){
 		super.init(); 
-		if(null != configStore){
-			for(Config conf:configStore.getConfigChain().getConfigs()){
+		if(null != configs){
+			for(Config conf: configs.getConfigChain().getConfigs()){
 				setConditionValue(conf.getSwitch(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
 			} 
 			 
-			OrderStore orderStore = configStore.getOrders(); 
+			OrderStore orderStore = configs.getOrders();
 			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders(); 
 				if(null != orders){
@@ -89,7 +89,7 @@ public class XMLRun extends BasicRun implements Run {
 					} 
 				} 
 			} 
-			PageNavi navi = configStore.getPageNavi(); 
+			PageNavi navi = configs.getPageNavi();
 			if(navi != null){
 				this.pageNavi = navi; 
 			} 
@@ -421,7 +421,7 @@ public class XMLRun extends BasicRun implements Run {
 	} 
 	 
 	public void setConfigs(ConfigStore configs) {
-		this.configStore = configs; 
+		this.configs = configs;
 		if(null != configs){
 			this.pageNavi = configs.getPageNavi(); 
 			 
@@ -526,8 +526,8 @@ public class XMLRun extends BasicRun implements Run {
 					String orders[] = orderStr.split(",");
 					for(String item:orders){
 						// sql.order(item); 
-						if(null != configStore){
-							configStore.order(item); 
+						if(null != configs){
+							configs.order(item);
 						} 
 						if(null != this.orderStore){
 							this.orderStore.order(item); 
@@ -539,8 +539,8 @@ public class XMLRun extends BasicRun implements Run {
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						// sql.group(item); 
-						if(null != configStore){
-							configStore.group(item); 
+						if(null != configs){
+							configs.group(item);
 						} 
 					} 
 					continue; 
@@ -649,10 +649,7 @@ public class XMLRun extends BasicRun implements Run {
 		con.setValue(variable, value);
 		return this; 
 	} 
- 
-	public void setConfigStore(ConfigStore configStore) {
-		this.configStore = configStore; 
-	} 
+
 	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value){
 		setConditionValue(swt, compare, column, null, value);
 		return this; 

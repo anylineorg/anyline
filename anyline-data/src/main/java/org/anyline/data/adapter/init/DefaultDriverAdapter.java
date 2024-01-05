@@ -8110,7 +8110,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			log.warn("{}[{}][exception:{}]", random, LogUtil.format("修改Column执行异常", 33), e.toString());
 			if(trigger && null != ddListener && !BasicUtil.equalsIgnoreCase(meta.getTypeName(), meta.getUpdate().getTypeName())) {
-				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
+				//DDL修改列异常后 -1:抛出异常 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == -1) {
+					throw e;
+				}else if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
 					swt = ddListener.afterAlterColumnException(runtime, random, table, meta, e);
 				}
 				log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, swt);
