@@ -1784,10 +1784,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return result;
     }
+    public String key(int index){
+        List<String> keys = keys();
+        if(index < keys.size()){
+            return keys.get(index);
+        }
+        return null;
+    }
+    public String getString(int index){
+        return getString(key(index));
+    }
     //为方便新人查询实现两次
     public String getString(String key){
+        if(null == key){
+            return null;
+        }
         String result = null;
-
         if (key.contains("${") && key.contains("}")) {
             result = BeanUtil.parseFinalValue(this, key);
         } else {
@@ -1832,7 +1844,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
         }
     }
-
+    public Integer getInt(int index) throws Exception{
+        return getInt(key(index));
+    }
     public Integer getInt(String key) throws Exception {
         Object val = get(key);
         if (val instanceof Boolean) {
@@ -1851,7 +1865,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
         }
     }
-
+    public Integer getInt(int index, Integer def) {
+        return getInt(key(index), def);
+    }
     public Integer getInt(String key, Integer def) {
         try {
             Integer result =  getInt(key);
@@ -1871,6 +1887,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
+    public Double getDouble(int index) throws Exception {
+        return getDouble(key(index));
+    }
     public Double getDouble(String key) throws Exception {
         Object value = get(key);
         if(null != value) {
@@ -1879,6 +1898,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+    public Double getDouble(int index, Double def) {
+        return getDouble(key(index), def);
+    }
     public Double getDouble(String key, Double def) {
         try {
             Double dbl = getDouble(key);
@@ -1889,6 +1911,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } catch (Exception e) {
             return def;
         }
+    }
+    public Double getDouble(int index, Integer def) {
+        return getDouble(key(index), def);
     }
     public Double getDouble(String key, Integer def) {
         if(null == def){
@@ -1902,11 +1927,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return BasicUtil.parseLong(value);
     }
 
+    public Long getLong(int index) throws Exception {
+        return getLong(key(index));
+    }
     public Long getLong(String key) throws Exception {
         Object value = get(key);
         return BasicUtil.parseLong(value);
     }
 
+    public Long getLong(int index, Long def) {
+        return getLong(key(index), def);
+    }
     public Long getLong(String key, Long def) {
         try {
             Long result = getLong(key);
@@ -1917,6 +1948,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } catch (Exception e) {
             return def;
         }
+    }
+    public Long getLong(int index, Integer def) {
+        return getLong(key(index), def);
     }
     public Long getLong(String key, Integer def) {
         if(null == def){
@@ -1929,11 +1963,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         Object value = get(keys);
         return Float.parseFloat(value.toString());
     }
+    public Float getFloat(int index) throws Exception {
+        return getFloat(key(index));
+    }
     public Float getFloat(String key) throws Exception {
         Object value = get(key);
         return Float.parseFloat(value.toString());
     }
 
+    public Float getFloat(int index, Float def) {
+        return getFloat(key(index), def);
+    }
     public Float getFloat(String key, Float def) {
         try {
             Float result = getFloat(key);
@@ -1945,6 +1985,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return def;
         }
     }
+    public Float getFloat(int index, Integer def) {
+        return getFloat(key(index), def);
+    }
     public Float getFloat(String key, Integer def) {
         if(null == def){
             return getFloat(key, (Float)null);
@@ -1952,12 +1995,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getFloat(key, def.floatValue());
     }
 
+    public Boolean getBoolean(int index, Boolean def) {
+        return getBoolean(key(index), def);
+    }
     public Boolean getBoolean(String key, Boolean def) {
         return BasicUtil.parseBoolean(getString(key), def);
     }
 
     public Boolean getBoolean(String ... keys) throws Exception {
         return BasicUtil.parseBoolean(getString(keys));
+    }
+
+    public Boolean getBoolean(int index) throws Exception {
+        return getBoolean(key(index));
     }
     public Boolean getBoolean(String key) throws Exception {
         return BasicUtil.parseBoolean(getString(key));
@@ -1967,18 +2017,30 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return new BigDecimal(getString(keys));
     }
 
+    public BigDecimal getDecimal(int index) throws Exception {
+        return getDecimal(key(index));
+    }
     public BigDecimal getDecimal(String key) throws Exception {
         return new BigDecimal(getString(key));
     }
 
+    public BigDecimal getDecimal(int index, Double def) {
+        return getDecimal(key(index), def);
+    }
     public BigDecimal getDecimal(String key, Double def) {
         return getDecimal(key, new BigDecimal(def));
     }
 
+    public BigDecimal getDecimal(int index, Integer def) {
+        return getDecimal(key(index), def);
+    }
     public BigDecimal getDecimal(String key, Integer def) {
         return getDecimal(key, new BigDecimal(def));
     }
 
+    public BigDecimal getDecimal(int index, BigDecimal def) {
+        return getDecimal(key(index), def);
+    }
     public BigDecimal getDecimal(String key, BigDecimal def) {
         try {
             BigDecimal result = getDecimal(key);
@@ -1996,10 +2058,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return NumberUtil.format(result, format);
     }
 
+    public String getDecimal(int index, String format) throws Exception {
+        return getDecimal(key(index), format);
+    }
+
     public String getDecimal(String key, double def, String format) {
         return getDecimal(key, new BigDecimal(def), format);
     }
 
+    public String getDecimal(int index, double def, String format) {
+        return getDecimal(key(index), def, format);
+    }
+
+    public String getDecimal(int index, BigDecimal def, String format) {
+        return getDecimal(key(index), def, format);
+    }
     public String getDecimal(String key, BigDecimal def, String format) {
         BigDecimal result = null;
         try {
@@ -2013,6 +2086,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return NumberUtil.format(result, format);
     }
 
+    public Date getDate(int index, Date def) {
+        return getDate(key(index), def);
+    }
     public Date getDate(String key, Date def) {
         Date result = def;
         Object date = get(key);
@@ -2032,6 +2108,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return result;
     }
 
+    public Date getDate(int index, String def) throws Exception{
+        return getDate(key(index), def);
+    }
     public Date getDate(String key, String def) throws Exception{
         try {
             return getDate(key);
@@ -2043,13 +2122,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public Date getDate(String ... keys) throws Exception {
         return DateUtil.parse(get(keys));
     }
+    public Date getDate(int index) throws Exception {
+        return getDate(key(index));
+    }
     public Date getDate(String key) throws Exception {
         return DateUtil.parse(get(key));
     }
+    public byte[] getBytes(int index){
+        return getBytes(key(index));
+    }
+
     public byte[] getBytes(String key){
         return (byte[]) get(key);
     }
-
 
     /**
      * 超长部分忽略
