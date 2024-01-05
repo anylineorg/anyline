@@ -1878,6 +1878,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
                 table.setPrimaryKey(pk);
                 table.setIndexs(indexs(table));
+                table.setConstraints(constraints(table));
                 if(null == table.ddl()){
                     ddl(table);
                 }
@@ -2595,9 +2596,11 @@ public class DefaultService<E> implements AnylineService<E> {
                     update = table;
                 }
                 otable.setUpdate(update, false, false);
-                result = alter(otable);
+                sort(table);
+                result = dao.alter(otable);
             }else{
-                result =  create(table);
+                sort(table);
+                result =  dao.create(table);
             }
             CacheProxy.clear();
             return result;
@@ -2605,19 +2608,32 @@ public class DefaultService<E> implements AnylineService<E> {
         
         @Override
         public boolean create(Table table) throws Exception{
-            table.sort();
+            sort(table);
             return dao.create(table);
         }
-        
+        protected void sort(Table table){
+            LinkedHashMap<String, Column> columns = table.getColumns();
+            boolean sort = false;
+            for(Column column:columns.values()){
+                //只要有一个带 位置属性的列就排序
+                if(null != column.getPosition()){
+                    sort = true;
+                    break;
+                }
+            }
+            if(sort){
+                table.sort();
+            }
+        }
         @Override
         public boolean alter(Table table) throws Exception{
             CacheProxy.clear();
             Table update = (Table) table.getUpdate();
             if(null == update){
                 update = table;
-                table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
-                table.setUpdate(update, false, false);
-            } 
+            }
+            table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
+            table.setUpdate(update, false, false);
             boolean result = dao.alter(table);
             CacheProxy.clear();
             return result;

@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
 
@@ -105,8 +105,8 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIME                  ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.TIMEZ                 ), //    , pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_LOCAL_ZONE  ), //    , pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP_ZONE        ), //    , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_WITH_LOCAL_ZONE  ), //    , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP_WITH_ZONE        ), //    , pg
     TIMESTAMPTZ             (StandardColumnType.TIMESTAMPTZ           ), //    , pg
     TSQUERY                 (StandardColumnType.TSQUERY               ), //    , pg
     TSVECTOR                (StandardColumnType.TSVECTOR              ), //    , pg
@@ -123,13 +123,13 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //      , oracle,
     XML                     (StandardColumnType.XML                   ), //    , pg，     , mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
-    private final ColumnType standard;
-    private PostresqlColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private PostresqlColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

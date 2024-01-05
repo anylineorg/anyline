@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.goldendb")
 public class GoldenDBAdapter extends MySQLAdapter {
 	
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.GoldenDB;
 	}
 	@Value("${anyline.data.jdbc.delimiter.goldendb:}")

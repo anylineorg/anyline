@@ -4550,7 +4550,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             addColumnGuide(runtime, builder, meta);
             delimiter(builder, meta.getName()).append(" ");
             // 数据类型
-            type(runtime, builder, meta);
+            this.typeMetadata(runtime, builder, meta);
             // 编码
             charset(runtime, builder, meta);
             // 默认值
@@ -4801,8 +4801,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-        return super.type(runtime, builder, meta);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+        return super.typeMetadata(runtime, builder, meta);
     }
     /**
      * column[命令合成-子流程]<br/>
@@ -4816,8 +4816,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-        return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+        return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
     }
 
 
@@ -5725,7 +5725,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
         String type = meta.getType();
         if(BasicUtil.isNotEmpty(type)){
             builder.append("USING ").append(type).append(" ");

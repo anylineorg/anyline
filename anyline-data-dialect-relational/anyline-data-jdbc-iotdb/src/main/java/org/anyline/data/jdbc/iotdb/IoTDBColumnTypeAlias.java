@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.iotdb;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 public enum IoTDBColumnTypeAlias implements ColumnTypeAlias {
         BFILE                   (StandardColumnType.ILLEGAL      ), //    , , oracle, 
         BINARY_DOUBLE           (StandardColumnType.DOUBLE       ), //    , , oracle, 
@@ -105,8 +105,8 @@ public enum IoTDBColumnTypeAlias implements ColumnTypeAlias {
         TIME                    (StandardColumnType.INT64        ), //mysql, pg, , mssql
         TIMEZ                   (StandardColumnType.INT64        ), //    , pg
         TIMESTAMP               (StandardColumnType.INT64        ), //mysql, pg, oracle, mssql
-        TIMESTAMP_LOCAL_ZONE    (StandardColumnType.INT64        ), //    , pg
-        TIMESTAMP_ZONE          (StandardColumnType.INT64        ), //    , pg
+        TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.INT64        ), //    , pg
+        TIMESTAMP_WITH_ZONE          (StandardColumnType.INT64        ), //    , pg
         TSQUERY                 (StandardColumnType.ILLEGAL      ), //    , pg
         TSVECTOR                (StandardColumnType.ILLEGAL      ), //    , pg
         TXID_SNAPSHOT           (StandardColumnType.ILLEGAL      ), //    , pg
@@ -122,13 +122,13 @@ public enum IoTDBColumnTypeAlias implements ColumnTypeAlias {
         VARCHAR2                (StandardColumnType.TEXT         ), //    , , oracle, 
         XML                     (StandardColumnType.TEXT         ), //    , pg，     , mssql
         YEAR                    (StandardColumnType.INT32        ); //mysql, 
-        private final ColumnType standard;
-        IoTDBColumnTypeAlias(ColumnType standard){
+        private final TypeMetadata standard;
+        IoTDBColumnTypeAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 
         @Override
-        public ColumnType standard() {
+        public TypeMetadata standard() {
                 return standard;
         }
 }

@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.opengauss;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
 
@@ -105,8 +105,8 @@ public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIME                  ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.TIMEZ                 ), //    , pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_LOCAL_ZONE  ), //    , pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP_ZONE        ), //    , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP_WITH_LOCAL_ZONE  ), //    , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP_WITH_ZONE        ), //    , pg
     TSQUERY                 (StandardColumnType.TSQUERY               ), //    , pg
     TSVECTOR                (StandardColumnType.TSVECTOR              ), //    , pg
     TXID_SNAPSHOT           (StandardColumnType.TXID_SNAPSHOT         ), //    , pg
@@ -122,13 +122,13 @@ public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //      , oracle,
     XML                     (StandardColumnType.XML                   ), //    , pg，     , mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql,
-    private final ColumnType standard;
-    private OpenGaussColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private OpenGaussColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

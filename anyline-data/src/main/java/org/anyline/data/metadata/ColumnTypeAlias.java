@@ -17,8 +17,8 @@
 
 package org.anyline.data.metadata;
 
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public interface ColumnTypeAlias {
-    public ColumnType standard();
+    public TypeMetadata standard();
 }

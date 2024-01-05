@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.lightdb")
 public class LightDBAdapter extends PostgresGenusAdapter {
 	
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.LightDB;
 	}
 	@Value("${anyline.data.jdbc.delimiter.lightdb:}")

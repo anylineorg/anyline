@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.sinodb")
 public class SinoDBAdapter extends TiDBAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.SinoDB;
     }
     @Value("${anyline.data.jdbc.delimiter.sinodb:}")

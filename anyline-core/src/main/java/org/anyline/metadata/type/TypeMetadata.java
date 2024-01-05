@@ -20,9 +20,14 @@ package org.anyline.metadata.type;
 
 import java.lang.reflect.Field;
 
-public interface ColumnType {
-    public static ColumnType ILLEGAL = new ColumnType() {
+public interface TypeMetadata {
+    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, BYTES, GEOMETRY, NONE}
+    TypeMetadata ILLEGAL = new TypeMetadata() {
 
+        @Override
+        public CATEGORY getCategory() {
+            return CATEGORY.NONE;
+        }
         @Override
         public String getName() {
             return null;
@@ -113,6 +118,7 @@ public interface ColumnType {
             return null;
         }
     };
+    CATEGORY getCategory();
     String getName();
     boolean ignorePrecision();
     boolean ignoreScale();

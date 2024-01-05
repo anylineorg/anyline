@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.hana;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum HanaColumnTypeAlias implements ColumnTypeAlias {
     BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  , oracle,
@@ -108,8 +108,8 @@ public enum HanaColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIME                  ), // HANA, mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.TIMESTAMP             ), //     , , pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), // HANA, mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //     , , pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP             ), //     , , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //     , , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), //     , , pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //     , , pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //     , , pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //     , , pg
@@ -125,13 +125,13 @@ public enum HanaColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //     ,   , oracle,
     XML                     (StandardColumnType.NVARCHAR              ), //     , , pg，     , mssql
     YEAR                    (StandardColumnType.INTEGER               ); //     , mysql,
-    private final ColumnType standard;
-    private HanaColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private HanaColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

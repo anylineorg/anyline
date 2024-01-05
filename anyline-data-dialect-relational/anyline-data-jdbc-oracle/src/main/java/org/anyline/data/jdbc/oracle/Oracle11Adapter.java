@@ -49,7 +49,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public boolean match(DataRuntime runtime, boolean compensate) {
-        List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+        List<String> keywords = typeMetadata().keywords(); //关键字+jdbc-url前缀+驱动类
         String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
         boolean chk = super.match(feature, keywords, compensate);
         if(chk) {

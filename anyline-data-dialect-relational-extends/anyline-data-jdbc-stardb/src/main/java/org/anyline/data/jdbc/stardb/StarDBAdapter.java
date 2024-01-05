@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.stardb")
 public class StarDBAdapter extends MySQLAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.StarDB;
     }
     @Value("${anyline.data.jdbc.delimiter.stardb:}")

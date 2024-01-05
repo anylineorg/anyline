@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.polardb")
 public class PolarAdapter extends PostgresGenusAdapter {
 	
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.PolarDB;
 	}
 	@Value("${anyline.data.jdbc.delimiter.polardb:}")

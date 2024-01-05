@@ -27,7 +27,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.yugabyte")
 public class YugabyteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.YugabyteDB;
     }
     @Value("${anyline.data.jdbc.delimiter.yugabyte:}")

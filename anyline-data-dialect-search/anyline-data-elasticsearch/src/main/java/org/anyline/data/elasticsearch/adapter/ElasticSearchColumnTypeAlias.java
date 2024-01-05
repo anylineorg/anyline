@@ -19,7 +19,7 @@ package org.anyline.data.elasticsearch.adapter;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum ElasticSearchColumnTypeAlias implements ColumnTypeAlias {
 
@@ -103,8 +103,8 @@ public enum ElasticSearchColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.DATE             ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.DATE             ), //    , pg
     TIMESTAMP               (StandardColumnType.DATE             ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.DATE             ), //    , pg
-    TIMESTAMP_ZONE          (StandardColumnType.DATE             ), //    , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.DATE             ), //    , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.DATE             ), //    , pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //    , pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //    , pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    , pg
@@ -122,13 +122,13 @@ public enum ElasticSearchColumnTypeAlias implements ColumnTypeAlias {
     YEAR                    (StandardColumnType.DATE                  ), //mysql,
     OBJECT                  (StandardColumnType.OBJECT                  ), //mysql,
     KEYWORD                 (StandardColumnType.KEYWORD                  ); //mysql, 
-    private final ColumnType standard;
-    private ElasticSearchColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private ElasticSearchColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

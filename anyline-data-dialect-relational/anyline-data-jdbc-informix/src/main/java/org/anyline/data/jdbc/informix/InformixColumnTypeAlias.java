@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.informix;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum InformixColumnTypeAlias implements ColumnTypeAlias {
 
@@ -106,8 +106,8 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.DATETIME              ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.DATETIME              ), //    , pg
     TIMESTAMP               (StandardColumnType.DATETIME              ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.DATETIME              ), //    ,pg
-    TIMESTAMP_ZONE          (StandardColumnType.DATETIME              ), //    ,pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.DATETIME              ), //    ,pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.DATETIME              ), //    ,pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //    ,pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //    ,pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    ,pg
@@ -124,13 +124,13 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //      ,oracle,
     XML                     (StandardColumnType.TEXT                  ), //    ,pg，     ,mssql
     YEAR                    (StandardColumnType.DATETIME              ); //mysql,
-    private final ColumnType standard;
-    private InformixColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private InformixColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

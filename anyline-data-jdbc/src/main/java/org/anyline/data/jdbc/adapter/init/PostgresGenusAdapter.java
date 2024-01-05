@@ -4382,7 +4382,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         builder.append(" ALTER COLUMN ");
         delimiter(builder, meta.getName());
         builder.append(" TYPE ");
-        type(runtime, builder, update);
+        this.typeMetadata(runtime, builder, update);
         String type = update.getTypeName();
         if(type.contains("(")){
             type = type.substring(0,type.indexOf("("));
@@ -4608,7 +4608,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
 
         String type = meta.getTypeName();
         if(null == type){
@@ -4647,7 +4647,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
                 meta.setType("int8");
             }
         }
-        return super.type(runtime, builder, meta);
+        return super.typeMetadata(runtime, builder, meta);
     }
     /**
      * column[命令合成-子流程]<br/>
@@ -4661,8 +4661,8 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-        return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+        return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
     }
 
 
@@ -5534,8 +5534,8 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
-        return super.type(runtime, builder, meta);
+    public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+        return super.typeMetadata(runtime, builder, meta);
     }
     /**
      * index[命令合成-子流程]<br/>

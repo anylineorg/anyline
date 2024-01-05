@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.gbase8a.oracle;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
 
@@ -103,8 +103,8 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     TIME                    (StandardColumnType.TIMESTAMP             ), //mysql, pg, , mssql
     TIMEZ                   (StandardColumnType.TIMESTAMP             ), //    , pg
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql, pg, oracle, mssql
-    TIMESTAMP_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    , pg
-    TIMESTAMP_ZONE          (StandardColumnType.TIMESTAMP             ), //    , pg
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    , pg
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), //    , pg
     TSQUERY                 (StandardColumnType.ILLEGAL               ), //    , pg
     TSVECTOR                (StandardColumnType.ILLEGAL               ), //    , pg
     TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    , pg
@@ -120,13 +120,13 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     VARCHAR2                (StandardColumnType.VARCHAR               ), //       , oracle,
     XML                     (StandardColumnType.ILLEGAL               ), //    , pg，     , mssql
     YEAR                    (StandardColumnType.DATE                  ); //mysql, 
-    private final ColumnType standard;
-    private GbaseColumnTypeAlias(ColumnType standard){
+    private final TypeMetadata standard;
+    private GbaseColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
     @Override
-    public ColumnType standard() {
+    public TypeMetadata standard() {
         return standard;
     }
 }

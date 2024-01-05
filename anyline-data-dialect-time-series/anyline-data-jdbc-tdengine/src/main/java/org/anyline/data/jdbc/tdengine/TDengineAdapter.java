@@ -25,7 +25,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,7 +44,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.TDengine;
 	}
 
@@ -2613,8 +2613,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 			column.setSchema(table.getSchema());
 			column.setTypeName(row.getString("TYPE"));
 			column.setPrecision(row.getInt("LENGTH", 0));
-			ColumnType columnType = type(column.getTypeName());
-			column.setColumnType(columnType);
+			TypeMetadata columnType = typeMetadata(column.getTypeName());
+			column.setTypeMetadata(columnType);
 		}
 		return columns;
 	}
@@ -4116,7 +4116,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 						builder.append(",");
 					}
 					delimiter(builder, tag.getName()).append(" ");
-					type(runtime, builder, tag);
+					this.typeMetadata(runtime, builder, tag);
 					//不支持comment sever:3.0.7.1 driver:3.2.4
 					//comment(builder, tag);
 					idx ++;
@@ -4705,8 +4705,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4720,7 +4720,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		if(null == builder){
 			builder = new StringBuilder();
 		}
@@ -5591,8 +5591,8 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * index[命令合成-子流程]<br/>

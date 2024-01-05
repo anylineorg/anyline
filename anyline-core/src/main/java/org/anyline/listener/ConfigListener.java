@@ -20,7 +20,6 @@ package org.anyline.listener;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.adapter.init.JavaTypeAdapter;
 import org.anyline.metadata.type.Convert;
-import org.anyline.metadata.type.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

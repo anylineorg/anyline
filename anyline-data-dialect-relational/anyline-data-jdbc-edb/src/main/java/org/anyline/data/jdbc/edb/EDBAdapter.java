@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.edb")
 public class EDBAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType typeMetadata(){
         return DatabaseType.EDB;
     }
     @Value("${anyline.data.jdbc.delimiter.edb:}")

@@ -46,12 +46,13 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public String delimiterTo = "";
 
 	//根据名称定位数据类型
-	protected Map<String, ColumnType> types = new Hashtable();
+	protected Map<String, TypeMetadata> types = new Hashtable();
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -102,7 +103,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		for(StandardColumnType type: StandardColumnType.values()){
 			DatabaseType[] dbs = type.dbs();
 			for(DatabaseType db:dbs){
-				if(db == this.type()){
+				if(db == this.typeMetadata()){
 					//column type支持当前db
 					types.put(type.getName(), type);
 					break;
@@ -3777,7 +3778,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			//表备注
 			if(!comment) {
 				try {
-					List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, null, types);
+					List<Run> runs = buildQueryTablesCommentRun(runtime, catalog, schema, origin, types);
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
@@ -3803,7 +3804,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				List<T> tmp = new ArrayList<>();
 				for(T item:list){
 					String name = item.getName(greedy);
-					if(RegularUtil.match(name, origin)){
+					if(RegularUtil.match(name, origin, Regular.MATCH_MODE.MATCH)){
 						tmp.add(item);
 					}
 				}
@@ -4112,10 +4113,16 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				table.setDdls(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
-				LinkedHashMap<String, Column> columns = columns(runtime, random, false, table, true);
-				table.setColumns(columns);
-				table.setTags(tags(runtime, random, false, table));
-				PrimaryKey pk = primary(runtime, random, false, table);
+				LinkedHashMap<String, Column> columns = table.getColumns();
+				if(null == columns || columns.isEmpty()) {
+					columns = columns(runtime, random, false, table, true);
+					table.setColumns(columns);
+					table.setTags(tags(runtime, random, false, table));
+				}
+				PrimaryKey pk = table.getPrimaryKey();
+				if(null == pk) {
+					pk = primary(runtime, random, false, table);
+				}
 				if (null != pk) {
 					for (String col : pk.getColumns().keySet()) {
 						Column column = columns.get(col.toUpperCase());
@@ -4125,7 +4132,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					}
 				}
 				table.setPrimaryKey(pk);
-				table.setIndexs(indexs(runtime, random, table, null));
+				LinkedHashMap<String, Index> indexs = table.getIndexs();
+				if(null == indexs || indexs.isEmpty()) {
+					table.setIndexs(indexs(runtime, random, table, null));
+				}
 				runs = buildCreateRun(runtime, table);
 				for(Run run:runs){
 					list.add(run.getFinalUpdate());
@@ -4314,7 +4324,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				for(String key:keys){
 					T item = views.get(key);
 					String name = item.getName(greedy);
-					if(RegularUtil.match(name, pattern)){
+					if(RegularUtil.match(name, pattern, Regular.MATCH_MODE.MATCH)){
 						tmps.put(name.toUpperCase(), item);
 					}
 				}
@@ -6441,10 +6451,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
 		for(Column col:columns.values()){
-			col.setColumnType(type(col.getTypeName()));
+			col.setTypeMetadata(typeMetadata(col.getTypeName()));
 		}
 		for(Column col:ucolumns.values()){
-			col.setColumnType(type(col.getTypeName()));
+			col.setTypeMetadata(typeMetadata(col.getTypeName()));
 		}
 		checkPrimary(runtime, update);
 		String name = meta.getName();
@@ -8534,7 +8544,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
 		}
@@ -8552,7 +8562,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale)", 37));
 		}
@@ -10086,7 +10096,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta)", 37));
 		}
@@ -11279,7 +11289,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return 具体数据库中对应的数据类型
 	 */
 	@Override
-	public ColumnType type(String type){
+	public TypeMetadata typeMetadata(String type){
 		if(null == type){
 			return null;
 		}
@@ -11295,7 +11305,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(type.contains(" ")){
 			type = type.split(" ")[0];
 		}
-		ColumnType ct = types.get(type.toUpperCase());
+		if(type.contains("(")){
+			type = type.split("\\(")[0];
+		}
+		TypeMetadata ct = types.get(type.toUpperCase());
 		if(null != ct){
 			ct.setArray(array);
 		}
@@ -11536,13 +11549,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		Object result = null;
-		ColumnType columnType = null;
+		TypeMetadata columnType = null;
 		DataWriter writer = null;
 		boolean isArray = false;
 		if(null != metadata){
 			isArray = metadata.isArray();
 			//根据列类型
-			columnType = metadata.getColumnType();
+			columnType = metadata.getTypeMetadata();
 			if(null != columnType){
 				writer = writer(columnType);
 			}
@@ -11551,13 +11564,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if (null != typeName) {
 					writer = writer(typeName);
 					if(null != columnType){
-						writer = writer(type(typeName.toUpperCase()));
+						writer = writer(typeMetadata(typeName.toUpperCase()));
 					}
 				}
 			}
 		}
 		if(null == columnType){
-			columnType = type(value.getClass().getSimpleName());
+			columnType = typeMetadata(value.getClass().getSimpleName());
 		}
 		if(null != columnType){
 			Class writeClass = columnType.compatible();
@@ -11616,9 +11629,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		DataReader reader = null;
-		ColumnType ctype = null;
+		TypeMetadata ctype = null;
 		if (null != metadata) {
-			ctype = metadata.getColumnType();
+			ctype = metadata.getTypeMetadata();
 			if(null != ctype){
 				reader = reader(ctype);
 			}
@@ -11627,7 +11640,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if (null != typeName) {
 					reader = reader(typeName);
 					if(null == reader) {
-						reader = reader(type(typeName));
+						reader = reader(typeMetadata(typeName));
 					}
 				}
 			}
@@ -11663,7 +11676,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			if(value instanceof SQL_BUILD_IN_VALUE){
 				builder.append(value(runtime, null, (SQL_BUILD_IN_VALUE)value));
 			}else {
-				ColumnType type = type(value.getClass().getName());
+				TypeMetadata type = typeMetadata(value.getClass().getName());
 				if (null != type) {
 					value = type.write(value, null, false);
 				}
@@ -11798,12 +11811,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		try {
 			if(null != metadata) {
-				ColumnType columnType = metadata.getColumnType();
+				TypeMetadata columnType = metadata.getTypeMetadata();
 				if(null == columnType){
-					columnType = type(metadata.getTypeName());
+					columnType = typeMetadata(metadata.getTypeName());
 					if(null != columnType) {
 						columnType.setArray(metadata.isArray());
-						metadata.setColumnType(columnType);
+						metadata.setTypeMetadata(columnType);
 					}
 				}
 				value = convert(runtime, columnType, value);
@@ -11814,7 +11827,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return value;
 	}
 	@Override
-	public Object convert(DataRuntime runtime, ColumnType columnType, Object value){
+	public Object convert(DataRuntime runtime, TypeMetadata columnType, Object value){
 		if(null == columnType){
 			return value;
 		}
@@ -11860,7 +11873,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	@Override
 	public String objectName(DataRuntime runtime, String name) {
-		KeyAdapter.KEY_CASE keyCase = type().nameCase();
+		KeyAdapter.KEY_CASE keyCase = typeMetadata().nameCase();
 		if(null != keyCase){
 			return keyCase.convert(name);
 		}

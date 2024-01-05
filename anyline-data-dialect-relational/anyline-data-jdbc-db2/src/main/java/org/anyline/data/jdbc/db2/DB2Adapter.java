@@ -60,7 +60,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.DB2;
 	} 
 	public DB2Adapter(){
@@ -4288,8 +4288,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4303,8 +4303,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+		return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
 	}
 
 
@@ -5151,8 +5151,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * index[命令合成-子流程]<br/>

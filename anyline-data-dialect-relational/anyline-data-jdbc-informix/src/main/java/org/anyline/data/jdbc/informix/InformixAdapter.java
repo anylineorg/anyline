@@ -27,7 +27,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
@@ -52,7 +52,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	public static Map<Integer, String> column_types = new HashMap<>();
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
-	public DatabaseType type(){
+	public DatabaseType typeMetadata(){
 		return DatabaseType.Informix;
 	}
 
@@ -227,7 +227,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 		LinkedHashMap<String, Column> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
 		if(null != generator){
 			pks = first.getPrimaryColumns();
 			columns.putAll(pks);
@@ -248,7 +248,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
 				if(null != generator){
-					generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
+					generator.create(row, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
 				}
 				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
@@ -304,7 +304,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
 		Object entity = list.iterator().next();
 		LinkedHashMap<String, Column> pks = null;
 		if(null != generator) {
@@ -359,7 +359,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			}else{*/
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
 			if(!create && null != generator){
-				generator.create(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
+				generator.create(obj, typeMetadata(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
 				//createPrimaryValue(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 			//}
@@ -2536,9 +2536,9 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 				len = len/256;
 				column.setPrecision(len, scale);
 			}
-			if(null == column.getColumnType()) {
-				ColumnType columnType = type(column.getTypeName());
-				column.setColumnType(columnType);
+			if(null == column.getTypeMetadata()) {
+				TypeMetadata columnType = typeMetadata(column.getTypeName());
+				column.setTypeMetadata(columnType);
 			}
 			columns.put(name.toUpperCase(), (T)column);
 		}
@@ -4557,8 +4557,8 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4572,7 +4572,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		if(null == builder){
 			builder = new StringBuilder();
 		}
@@ -4583,7 +4583,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			}
 			builder.append(type).append(" YEAR TO ").append(dateScale);
 		}else{
-			return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+			return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
 		}
 
 		return builder;
@@ -5453,8 +5453,8 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
-		return super.type(runtime, builder, meta);
+	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+		return super.typeMetadata(runtime, builder, meta);
 	}
 	/**
 	 * index[命令合成-子流程]<br/>

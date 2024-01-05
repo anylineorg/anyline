@@ -17,7 +17,7 @@
 
 package org.anyline.metadata;
 
-import org.anyline.metadata.type.ColumnType;
+import org.anyline.metadata.type.TypeMetadata;
 
 import java.io.Serializable;
 
@@ -28,7 +28,7 @@ public class Parameter extends BaseMetadata<Parameter> implements Serializable {
     protected Integer scale                       ; // 小数部分的长度
 
     private Object value;
-    private ColumnType columnType;
+    private TypeMetadata columnType;
     private Integer type = java.sql.Types.VARCHAR;
 
     public Object getValue() {
@@ -43,7 +43,7 @@ public class Parameter extends BaseMetadata<Parameter> implements Serializable {
         return type;
     }
 
-    public void setType(ColumnType type) {
+    public void setType(TypeMetadata type) {
         this.columnType = type;
     }
     public void setType(Integer type) {
@@ -67,11 +67,11 @@ public class Parameter extends BaseMetadata<Parameter> implements Serializable {
     }
 
 
-    public ColumnType getColumnType() {
+    public TypeMetadata getColumnType() {
         return columnType;
     }
 
-    public void setColumnType(ColumnType columnType) {
+    public void setColumnType(TypeMetadata columnType) {
         this.columnType = columnType;
     }
 

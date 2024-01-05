@@ -28,27 +28,73 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     protected String keyword = "TABLE"            ;
 
+    /**
+     * 主表名(相对于分区表)
+     */
     protected String masterName;
+    /**
+     * 主表(相对于分区表)
+     */
     protected Table master;
-    protected Partition partitionBy ; // 分区方式
-    protected Partition partitionFor ; // 分区值
+    /**
+     * 分区方式 LIST, RANGE, HASH
+     */
+    protected Partition partitionBy ;
+    /**
+     * 分区值
+     */
+    protected Partition partitionFor ;
 
+    /**
+     * 表类型 不同数据库有所区别 如"TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+     */
     protected String type                         ;
-    protected Table inherits                      ;
+    /**
+     * 继承自
+     */
+    protected Table inherit;
+    /**
+     * 地理坐标系
+     */
     protected int srid                            ;
 
     protected String typeCat                      ;
     protected String typeSchema                   ;
     protected String typeName                     ;
+    /**
+     * 指定 "identifier" 列的名称
+     */
     protected String selfReferencingColumn        ;
+    /**
+     * 指定在 SELF_REFERENCING_COL_NAME 中创建值的方式。如 SYSTEM USER DERIVED
+     */
     protected String refGeneration                ;
 
+    /**
+     * 数据库引擎
+     */
     protected String engine                       ;
+
+    /**
+     * 编码
+     */
     protected String charset                      ;
+    /**
+     * 排序规则
+     */
     protected String collate                      ;
+    /**
+     * 数据的过期时间
+     */
     protected Long ttl                            ;
 
+    /**
+     * 创建时间
+     */
     protected Date createTime;
+    /**
+     * 修改结构时间
+     */
     protected Date updateTime;
     /**
      * 数据行数
@@ -70,6 +116,10 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      * 索引长度
      */
     protected Long indexLength                  ;
+    /**
+     * 是否临时表
+     */
+    protected int temporary                     ;
 
 
     protected PrimaryKey primaryKey;
@@ -740,16 +790,16 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.dataFree = dataFree;
     }
 
-    public Table getInherits() {
-        return inherits;
+    public Table getInherit() {
+        return inherit;
     }
 
-    public void setInherits(Table inherits) {
-        this.inherits = inherits;
+    public void setInherit(Table inherit) {
+        this.inherit = inherit;
     }
 
     public void setInherits(String inherits) {
-        this.inherits = new Table(inherits);
+        this.inherit = new Table(inherits);
     }
 
     public String getKeyword() {
@@ -791,6 +841,25 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     public Long getDataLength() {
         return dataLength;
+    }
+
+    public int getTemporary() {
+        return temporary;
+    }
+    public boolean isTemporary() {
+        return (temporary == 1);
+    }
+
+    public void setTemporary(int temporary) {
+        this.temporary = temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        if(temporary){
+            this.temporary = 1;
+        }else{
+            this.temporary = 0;
+        }
     }
 
     public void setDataLength(Long dataLength) {
