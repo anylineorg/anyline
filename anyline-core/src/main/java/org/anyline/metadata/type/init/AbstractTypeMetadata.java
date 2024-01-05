@@ -50,6 +50,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
+
     @Override
     public Object convert(Object value, Object def){
         return convert(value, null, def);
@@ -140,7 +141,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
 
     @Override
     public CATEGORY getCategory() {
-        return null;
+        return this.category;
     }
 
     @Override
