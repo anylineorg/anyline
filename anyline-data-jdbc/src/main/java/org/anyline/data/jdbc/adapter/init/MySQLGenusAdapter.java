@@ -4595,12 +4595,13 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             name(runtime, builder, table);
         }
         Column update = meta.getUpdate();
-        if(null != update){
-            builder.append(" CHANGE ");
-            delimiter(builder, meta.getName()).append(" ");
-            delimiter(builder, update.getName()).append(" ");
-            define(runtime, builder, update);
+        if(null == update){
+            update = meta;
         }
+        builder.append(" CHANGE ");
+        delimiter(builder, meta.getName()).append(" ");
+        delimiter(builder, update.getName()).append(" ");
+        define(runtime, builder, update);
         return runs;
     }
     @Override
