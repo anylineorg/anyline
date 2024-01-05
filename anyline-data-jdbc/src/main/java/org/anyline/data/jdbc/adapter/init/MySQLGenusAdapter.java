@@ -3732,7 +3732,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         builder.append("RENAME TABLE ");
         name(runtime, builder, meta);
         builder.append(" TO ");
-        name(runtime, builder, (Table)meta.getUpdate());
+        name(runtime, builder, meta.getUpdate());
         return runs;
     }
     /**
