@@ -798,10 +798,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.inherit = inherit;
     }
 
-    public void setInherits(String inherits) {
-        this.inherit = new Table(inherits);
+    public void setInherit(String setInherit) {
+        this.inherit = new Table(setInherit);
     }
-
     public String getKeyword() {
         return keyword;
     }
