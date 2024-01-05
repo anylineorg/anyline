@@ -934,9 +934,8 @@ public interface ConfigStore {
 	 * @param values values
 	 * @return this
 	 */
-	ConfigStore param(Object ... values);
-	ConfigStore param(Collection values);
-
+	ConfigStore params(Object ... values);
+	ConfigStore params(Collection<?> values);
 	/**
 	 * 根据占位符下标赋值
 	 * @return list
