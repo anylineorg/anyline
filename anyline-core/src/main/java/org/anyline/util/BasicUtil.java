@@ -163,22 +163,22 @@ public class BasicUtil {
 		}
 		return true;
 	}
+
 	public static boolean equals(Object obj1, Object obj2) {
-		if (null == obj1) {
-			if (null == obj2) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			if(null == obj2){
-				return false;
-			}else {
-				return obj1.toString().equals(obj2.toString());
-			}
-		}
+		return equals(obj1, obj2, false);
 	}
 	public static boolean equalsIgnoreCase(Object obj1, Object obj2) {
+		return equals(obj1, obj2, true);
+	}
+
+	/**
+	 * 对象toString相等
+	 * @param obj1 object
+	 * @param obj2 object
+	 * @param ignoreCase 是否忽略大小写
+	 * @return boolean
+	 */
+	public static boolean equals(Object obj1, Object obj2, boolean ignoreCase) {
 		if (null == obj1) {
 			if (null == obj2) {
 				return true;
@@ -189,7 +189,11 @@ public class BasicUtil {
 			if(null == obj2){
 				return false;
 			}else {
-				return obj1.toString().equalsIgnoreCase(obj2.toString());
+				if(ignoreCase){
+					return obj1.toString().equalsIgnoreCase(obj2.toString());
+				}else {
+					return obj1.toString().equals(obj2.toString());
+				}
 			}
 		}
 	}
