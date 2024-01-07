@@ -1001,12 +1001,15 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     }
 
 
-    
     public boolean equals(Column column) {
+        return equals(column, true);
+    }
+    
+    public boolean equals(Column column, boolean ignoreCase) {
         if(null == column){
             return false;
         }
-        if(!BasicUtil.equals(name, column.getName())){
+        if (!BasicUtil.equals(name, column.getName(), ignoreCase)) {
             return false;
         }
         if(!BasicUtil.equals(typeMetadata, column.getTypeMetadata())){
@@ -1039,10 +1042,8 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(!BasicUtil.equals(position, column.getPosition())){
             return false;
         }
-
         return true;
     }
-
     
     public TypeMetadata getTypeMetadata() {
         if(getmap && null != update){
