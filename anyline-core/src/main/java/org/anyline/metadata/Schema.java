@@ -1,5 +1,7 @@
 package org.anyline.metadata;
 
+import org.anyline.util.BasicUtil;
+
 import java.io.Serializable;
 
 public class Schema extends BaseMetadata<Schema> implements Serializable {
@@ -18,29 +20,17 @@ public class Schema extends BaseMetadata<Schema> implements Serializable {
         }
         return false;
     }
-    public boolean equal(Schema schema){
-        String name = null;
-        Catalog catalog = null;
-        if(null != schema){
-            name = schema.getName();
-            catalog = schema.getCatalog();
+
+    public boolean equals(Schema schema){
+        return equals(schema, true);
+    }
+    public boolean equals(Schema schema, boolean ignoreCase){
+        if(null == schema){
+            return false;
         }
-        boolean catalog_equal = false;
-        if(null == this.catalog){
-            if(null == catalog){
-                catalog_equal = true;
-            }
-        }else{
-            catalog_equal = this.catalog.equal(catalog);
-        }
+        boolean catalog_equal = BasicUtil.equals(this.catalog, schema.getCatalog(), ignoreCase);
         if(catalog_equal){
-            if(null == this.name){
-                if(null == name){
-                    return true;
-                }
-            }else if(this.name.equals(name)){
-                return true;
-            }
+            return BasicUtil.equals(this.name, schema.getName(), ignoreCase);
         }
         return false;
     }
