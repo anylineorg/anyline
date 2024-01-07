@@ -1635,9 +1635,21 @@ public interface DriverAdapter {
 	 */
 	Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception;
 
+	/**
+	 * 检测name,name中可能包含catalog.schema.name<br/>
+	 * 如果有一项或三项，在父类中解析<br/>
+	 * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta 表,视图等
+	 * @return T
+	 * @throws Exception 如果区分不出来的抛出异常
+	 */
+	<T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
+
 	/**
 	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1670,6 +1682,7 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 
@@ -1682,6 +1695,7 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
 	/**

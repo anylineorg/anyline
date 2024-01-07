@@ -1626,6 +1626,7 @@ public class HyperAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 * @param pattern 名称统配符或正则
 	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
@@ -1642,6 +1643,7 @@ public class HyperAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 * @param pattern 名称统配符或正则
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{

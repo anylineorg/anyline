@@ -3653,6 +3653,34 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
+	/**
+	 * 检测name,name中可能包含catalog.schema.name<br/>
+	 * 如果有一项或三项，在父类中解析<br/>
+	 * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta 表,视图等
+	 * @return T
+	 * @throws Exception 如果区分不出来的抛出异常
+	 */
+	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception{
+		if(null == meta){
+			return null;
+		}
+		String name = meta.getName();
+		if(null != name && name.contains(".")){
+			String[] ks = name.split("\\.");
+			if(ks.length == 3){
+				meta.setCatalog(ks[0]);
+				meta.setSchema(ks[1]);
+				meta.setName(ks[2]);
+			}else{
+				throw new Exception("无法实现schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+			}
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -3829,7 +3857,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 								cols.put(column.getName().toUpperCase(), column);
 							}else{
 								if( null == cCatalog  || cCatalog.equals(tCatalog)){
-									if(null == cSchema || cSchema.equal(tSchema)){
+									if(null == cSchema || cSchema.equals(tSchema)){
 										cols.put(column.getName().toUpperCase(), column);
 									}
 								}
@@ -3915,6 +3943,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
@@ -3934,6 +3963,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
 		if(log.isDebugEnabled()) {
@@ -6259,8 +6289,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
 		if(null != tables){
 			for(T table:tables){
-				if((null == catalog || catalog.equal(table.getCatalog()))
-						&& (null == schema || schema.equal(table.getSchema()))
+				if((null == catalog || catalog.equals(table.getCatalog()))
+						&& (null == schema || schema.equals(table.getSchema()))
 						&& table.getName().equalsIgnoreCase(name)
 				){
 					return table;
@@ -6282,7 +6312,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
 		if(null != schemas){
 			for(T schema:schemas){
-				if((null == catalog || catalog.equal(schema.getCatalog()))
+				if((null == catalog || catalog.equals(schema.getCatalog()))
 						&& schema.getName().equalsIgnoreCase(name)
 				){
 					return schema;
