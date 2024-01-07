@@ -3833,7 +3833,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				for(T item:list){
 					String name = item.getName(greedy);
 					if(RegularUtil.match(name, origin, Regular.MATCH_MODE.MATCH)){
-						tmp.add(item);
+						if(BasicUtil.equalsIgnoreCase(catalog, item.getCatalog()) && BasicUtil.equalsIgnoreCase(schema, item.getSchema())) {
+							tmp.add(item);
+						}
 					}
 				}
 				list = tmp;
@@ -3842,24 +3844,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				//查询全部表结构
 				List<Column> columns = columns(runtime, random, greedy, catalog, schema, pattern);
 				for(Table table:list){
-					String tName = table.getName();
-					Catalog tCatalog = table.getCatalog();
-					Schema tSchema = table.getSchema();
 					Long tObjectId = table.getObjectId();
 					LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 					table.setColumns(cols);
 					for(Column column:columns){
-						if(tName.equalsIgnoreCase(column.getTableName(false))){
-							Catalog  cCatalog = column.getCatalog();
+						if(table.equals(column.getTable())){
+							Catalog cCatalog = column.getCatalog();
 							Schema cSchema = column.getSchema();
 							Long cObjectId = column.getObjectId();
 							if(null != tObjectId && null != cObjectId && tObjectId == cObjectId){
 								cols.put(column.getName().toUpperCase(), column);
 							}else{
-								if( null == cCatalog  || cCatalog.equals(tCatalog)){
-									if(null == cSchema || cSchema.equals(tSchema)){
+								if(BasicUtil.equalsIgnoreCase(cCatalog, column.getCatalog())
+										&& BasicUtil.equalsIgnoreCase(schema, column.getSchema())){
 										cols.put(column.getName().toUpperCase(), column);
-									}
 								}
 							}
 						}
@@ -4293,7 +4291,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 					LinkedHashMap<String,View> all = views(runtime, random, greedy, catalog, schema, null, types);
 					if(!greedy) {
 						for (View view : all.values()) {
-							if ((catalog + "_" + schema).equals(view.getCatalog() + "_" + view.getSchema())) {
+							if (BasicUtil.equalsIgnoreCase(catalog, view.getCatalog()) && BasicUtil.equalsIgnoreCase(schema, view.getSchema())) {
 								view_map.put(view.getName(greedy).toUpperCase(), view.getName(greedy));
 							}
 						}
@@ -6289,8 +6287,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
 		if(null != tables){
 			for(T table:tables){
-				if((null == catalog || catalog.equals(table.getCatalog()))
-						&& (null == schema || schema.equals(table.getSchema()))
+				if(BasicUtil.equalsIgnoreCase(catalog, table.getCatalog())
+						&& BasicUtil.equalsIgnoreCase(schema, table.getSchema())
 						&& table.getName().equalsIgnoreCase(name)
 				){
 					return table;
@@ -6312,7 +6310,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
 		if(null != schemas){
 			for(T schema:schemas){
-				if((null == catalog || catalog.equals(schema.getCatalog()))
+				if(BasicUtil.equalsIgnoreCase(catalog, schema.getCatalog())
 						&& schema.getName().equalsIgnoreCase(name)
 				){
 					return schema;
@@ -11344,6 +11342,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return ct;
 	}
+	public String name(BaseMetadata meta){
+		StringBuilder builder = new StringBuilder();
+		String catalog = meta.getCatalogName();
+		String schema = meta.getSchemaName();
+		String name = meta.getName();
+		if(BasicUtil.isNotEmpty(catalog)) {
+			builder.append(catalog).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			builder.append(schema).append(".");
+		}
+		builder.append(name);
+		return builder.toString();
+	}
 	/**
 	 * 构造完整表名
 	 * @param builder builder
@@ -11352,8 +11364,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata meta){
-		Catalog catalog = meta.getCatalog();
-		Schema schema = meta.getSchema();
+		String catalog = meta.getCatalogName();
+		String schema = meta.getSchemaName();
 		String name = meta.getName();
 		if(BasicUtil.isNotEmpty(catalog)) {
 			delimiter(builder, catalog).append(".");
@@ -11362,6 +11374,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			delimiter(builder, schema).append(".");
 		}
 		delimiter(builder, name);
+		return builder;
+	}
+	public StringBuilder delimiter(StringBuilder builder, String src){
+		return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
+	}
+	public StringBuilder delimiter(StringBuilder builder, BaseMetadata src){
+		if(null != src) {
+			String name = src.getName();
+			if(BasicUtil.isNotEmpty(name)) {
+				SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+			}
+		}
 		return builder;
 	}
 	@Override
@@ -11969,18 +11993,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return builder.toString();
 	}
 
-	public StringBuilder delimiter(StringBuilder builder, String src){
-		return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
-	}
-	public StringBuilder delimiter(StringBuilder builder, BaseMetadata src){
-		if(null != src) {
-			String name = src.getName();
-			if(BasicUtil.isNotEmpty(name)) {
-				SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
-			}
-		}
-		return builder;
-	}
 
 	public  <T extends BaseMetadata> T search(List<T> list, String catalog, String schema, String name){
 		return BaseMetadata.search(list, catalog, schema, name);

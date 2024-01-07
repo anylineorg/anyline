@@ -12,7 +12,12 @@ public class Schema extends BaseMetadata<Schema> implements Serializable {
         this.name = name;
     }
     public String toString(){
-        return name;
+        String str = getKeyword()+":";
+        if(null != catalog){
+            str += getCatalogName() + ".";
+        }
+        str += name;
+        return str;
     }
     public boolean isEmpty(){
         if(null == name || name.trim().isEmpty()){

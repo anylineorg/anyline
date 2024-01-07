@@ -50,7 +50,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     protected Date checkSchemaTime                ;
     public String getIdentity(){
         if(null == identity){
-            identity = BasicUtil.nvl(catalog, "")+"_"+BasicUtil.nvl(schema, "")+"_"+BasicUtil.nvl(getTableName(false), "")+"_"+BasicUtil.nvl(getName(), "") ;
+            identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getTableName(false), "") + "_" + BasicUtil.nvl(getName(), "") ;
             identity = identity.toUpperCase();
             //identity = MD5Util.crypto(identity.toUpperCase());
         }
@@ -468,5 +468,12 @@ public class BaseMetadata<T extends BaseMetadata> {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getKeyword(){
+        return "object";
+    }
+    public String toString(){
+        return getKeyword() + ":" + getName();
     }
 }
