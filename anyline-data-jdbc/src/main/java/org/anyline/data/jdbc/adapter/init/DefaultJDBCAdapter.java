@@ -2355,7 +2355,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("TRUNCATE TABLE ");
-		delimiter(builder, table);
+		name(runtime, builder, table);
 		return runs;
 	}
 
@@ -2377,7 +2377,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		StringBuilder builder = new StringBuilder();
 		TableRun run = new TableRun(runtime, table);
 		builder.append("DELETE FROM ");
-		delimiter(builder, table);
+		name(runtime, builder, table);
 		builder.append(" WHERE ");
 
 		if(values instanceof Collection){
@@ -2445,7 +2445,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		run.setFrom(2);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ");
-		delimiter(builder, table);
+		name(runtime, builder, table);
 		builder.append(" WHERE ");
 		List<String> keys = new ArrayList<>();
 		if(null != columns && columns.length>0){
@@ -3169,6 +3169,36 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		return schema;
 	}
 
+	/**
+	 * 检测name,name中可能包含catalog.schema.name<br/>
+	 * 如果有一项或三项，在父类中解析<br/>
+	 * 如果只有两项，需要根据不同数据库区分出最前一项是catalog还是schema，如果区分不出来的抛出异常
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta 表,视图等
+	 * @return T
+	 * @throws Exception 如果区分不出来的抛出异常
+	 */
+	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception{
+		if(null == meta){
+			return null;
+		}
+		String name = meta.getName();
+		if(null != name && name.contains(".")){
+			String[] ks = name.split("\\.");
+			if(ks.length == 3){
+				meta.setCatalog(ks[0]);
+				meta.setSchema(ks[1]);
+				meta.setName(ks[2]);
+			}else if(ks.length == 2){
+				meta.setSchema(ks[0]);
+				meta.setName(ks[1]);
+			}else{
+				throw new Exception("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+			}
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6935,7 +6965,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append(" RENAME ").append(meta.getKeyword()).append(" ");
 		delimiter(builder, meta.getName());
 		builder.append(" ");
-		delimiter(builder, meta.getUpdate());
+		name(runtime, builder, meta.getUpdate());
 		meta.setName(meta.getUpdate().getName());
 		return runs;
 	}
@@ -7617,7 +7647,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append(" RENAME ").append(meta.getKeyword()).append(" ");
 		delimiter(builder, meta.getName());
 		builder.append(" ");
-		delimiter(builder, meta.getUpdate());
+		name(runtime, builder, meta.getUpdate());
 		return runs;
 	}
 	/**
@@ -7991,7 +8021,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				if(!first){
 					builder.append(",");
 				}
-				delimiter(builder, column.getReference());
+				name(runtime, builder, column.getReference());
 				first = false;
 			}
 			builder.append(")");
@@ -8556,18 +8586,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("DROP TRIGGER ");
-		Table table = meta.getTable(true);
-		if(null != table) {
-			Catalog catalog = table.getCatalog();
-			Schema schema = table.getSchema();
-			if (BasicUtil.isNotEmpty(catalog)) {
-				delimiter(builder, catalog).append(".");
-			}
-			if (BasicUtil.isNotEmpty(schema)) {
-				delimiter(builder, schema).append(".");
-			}
-		}
-		delimiter(builder, meta.getName());
+		name(runtime, builder, meta);
 		return runs;
 	}
 
@@ -8590,14 +8609,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Schema schema = table.getSchema();
 		builder.append("ALTER TRIGGER ");
 		if(BasicUtil.isNotEmpty(catalog)) {
-			delimiter(builder, catalog).append(".");
+			name(runtime, builder, catalog).append(".");
 		}
 		if(BasicUtil.isNotEmpty(schema)) {
-			delimiter(builder, schema).append(".");
+			name(runtime, builder, schema).append(".");
 		}
 		delimiter(builder, meta.getName());
 		builder.append(" RENAME TO ");
-		delimiter(builder, meta.getUpdate());
+		name(runtime, builder, meta.getUpdate());
 
 		return runs;
 	}
@@ -8780,7 +8799,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append("ALTER PROCEDURE ");
 		name(runtime, builder, meta);
 		builder.append(" RENAME TO ");
-		delimiter(builder, meta.getUpdate());
+		name(runtime, builder, meta.getUpdate());
 		return runs;
 	}
 

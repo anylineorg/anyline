@@ -738,10 +738,7 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         Table table = run.getTable();
         if(BasicUtil.isNotEmpty(table)) {
             builder.append(":");
-            if (null != run.getSchema()) {
-                delimiter(builder, run.getSchema()).append(".");
-            }
-            delimiter(builder, run.getTable());
+            name(runtime, builder, run.getTable());
         }
         builder.append(") ");
         /*
@@ -1015,15 +1012,11 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         return null;
     }
 
-    protected Run fillDeleteRunContent(TableRun run){
+    public void fillDeleteRunContent(DataRuntime runtime, TableRun run){
         RunPrepare prepare =   run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
-        if(null != run.getSchema()){
-            delimiter(builder, run.getSchema()).append(".");
-        }
-
-        delimiter(builder, run.getTable());
+        name(runtime, builder, run.getTable());
         builder.append(JDBCAdapter.BR);
         if(BasicUtil.isNotEmpty(prepare.getAlias())){
             builder.append("  ").append(prepare.getAlias());
@@ -1051,8 +1044,6 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         run.appendGroup();
         run.appendOrderStore();
         run.checkValid();
-
-        return run;
     }
     @Override
     public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String key, Object values){

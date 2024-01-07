@@ -185,13 +185,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         if(null == override) {
             //正常插入
             builder.append("INSERT INTO ");
-            delimiter(builder, dest).append(" (");
+            name(runtime, builder, dest).append(" (");
             builder.append(concat("",", ", Column.names(columns)));
             builder.append(") \n");
             builder.append(select);
         }else{
             //重复时 是否覆盖
-            merge(builder, dest, configs, select, columns, pks);
+            merge(runtime, builder, dest, configs, select, columns, pks);
         }
     }
 
@@ -260,7 +260,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         }
         if(null == override) {
             builder.append("INSERT INTO ");
-            delimiter(builder, dest).append(" (");
+            name(runtime, builder, dest).append(" (");
             boolean start = true;
             for (Column column : columns.values()) {
                 if (!start) {
@@ -274,7 +274,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             builder.append(select);
         }else{
             //重复时 是否覆盖
-            merge(builder, dest, configs, select, columns, pks);
+            merge(runtime, builder, dest, configs, select, columns, pks);
         }
     }
 
@@ -6437,7 +6437,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      *  *****************************************************************************************************************/
 
 
-    protected void merge(StringBuilder builder, Table dest, ConfigStore configs, String select, LinkedHashMap<String, Column> columns, LinkedHashMap<String, Column> pks){
+    protected void merge(DataRuntime runtime, StringBuilder builder, Table dest, ConfigStore configs, String select, LinkedHashMap<String, Column> columns, LinkedHashMap<String, Column> pks){
         List<String> bys = configs.overrideByColumns();
         if(null == bys){
             bys = new ArrayList<>();
@@ -6446,7 +6446,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             bys = Column.names(pks);
         }
         builder.append("MERGE INTO ");
-        delimiter(builder, dest);
+        name(runtime, builder, dest);
         builder.append(" M\n");
         builder.append("USING (\n");
         builder.append(select);

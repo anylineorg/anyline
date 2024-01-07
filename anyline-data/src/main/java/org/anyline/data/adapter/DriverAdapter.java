@@ -4610,7 +4610,8 @@ public interface DriverAdapter {
 	 * 													common
 	 *
 	 ******************************************************************************************************************/
-	StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata table);
+	StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata meta);
+	StringBuilder name(DataRuntime runtime, StringBuilder builder, Column meta);
 	/**
 	 * 获取单主键列名
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

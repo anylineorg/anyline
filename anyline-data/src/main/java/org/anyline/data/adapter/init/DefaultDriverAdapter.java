@@ -2557,7 +2557,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("TRUNCATE TABLE ");
-		delimiter(builder, table);
+		name(runtime, builder, table);
 		return runs;
 	}
 
@@ -3676,7 +3676,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				meta.setSchema(ks[1]);
 				meta.setName(ks[2]);
 			}else{
-				throw new Exception("无法实现schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+				throw new Exception("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
 			}
 		}
 		return meta;
@@ -6654,7 +6654,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	public boolean drop(DataRuntime runtime, Table meta) throws Exception{
 		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TABLE_DROP;
@@ -11364,6 +11363,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata meta){
+		try {
+			checkName(runtime, null, meta);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		String catalog = meta.getCatalogName();
 		String schema = meta.getSchemaName();
 		String name = meta.getName();
@@ -11376,10 +11380,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		delimiter(builder, name);
 		return builder;
 	}
+	@Override
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(null != meta){
+			delimiter(builder, meta.getName());
+		}
+		return builder;
+	}
 	public StringBuilder delimiter(StringBuilder builder, String src){
 		return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
-	}
-	public StringBuilder delimiter(StringBuilder builder, BaseMetadata src){
+	}/*
+	//column.name不需要catalog等前缀
+	public StringBuilder delimiter(StringBuilder builder, Column src){
 		if(null != src) {
 			String name = src.getName();
 			if(BasicUtil.isNotEmpty(name)) {
@@ -11387,7 +11399,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 		return builder;
-	}
+	}*/
 	@Override
 	public boolean isBooleanColumn(DataRuntime runtime, Column column) {
 		String clazz = column.getClassName();

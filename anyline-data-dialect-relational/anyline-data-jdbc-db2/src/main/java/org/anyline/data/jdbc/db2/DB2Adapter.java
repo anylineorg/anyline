@@ -5546,7 +5546,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		builder.append("RENAME PROCEDURE ");
 		name(runtime, builder, meta);
 		builder.append(" TO ");
-		delimiter(builder, meta.getUpdate());
+		name(runtime, builder, meta.getUpdate());
 		return runs;
 	}
 
