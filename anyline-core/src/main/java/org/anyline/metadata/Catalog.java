@@ -15,6 +15,8 @@
  */
 package org.anyline.metadata;
 
+import org.anyline.util.BasicUtil;
+
 import java.io.Serializable;
 
 public class Catalog extends BaseMetadata<Catalog> implements Serializable {
@@ -33,18 +35,13 @@ public class Catalog extends BaseMetadata<Catalog> implements Serializable {
         }
         return false;
     }
-    public boolean equal(Catalog catalog){
-        String name = null;
-        if(null != catalog){
-            name = catalog.getName();
+    public boolean equals(Catalog catalog){
+        return equals(catalog, true);
+    }
+    public boolean equals(Catalog catalog, boolean ignoreCase){
+        if(null == catalog){
+            return false;
         }
-        if(null == this.name){
-            if(null == name){
-                return true;
-            }
-        }else if(this.name.equals(name)){
-            return true;
-        }
-        return false;
+        return BasicUtil.equals(this.name, catalog.getName(), ignoreCase);
     }
 }
