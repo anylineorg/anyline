@@ -916,4 +916,22 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         builder.append(name);
         return builder.toString();
     }
+
+    public boolean equals(Table table) {
+        return equals(table, true);
+    }
+    public boolean equals(Table table, boolean ignoreCase) {
+        if(null == table){
+            return false;
+        }
+        boolean catalog_equals = BasicUtil.equals(this.catalog, table.getCatalog(), ignoreCase);
+        if(!catalog_equals){
+            return false;
+        }
+        boolean schema_equals = BasicUtil.equals(this.schema, table.getSchema(), ignoreCase) ;
+        if(!schema_equals){
+            return false;
+        }
+        return BasicUtil.equals(this.name, table.getName());
+    }
 }
