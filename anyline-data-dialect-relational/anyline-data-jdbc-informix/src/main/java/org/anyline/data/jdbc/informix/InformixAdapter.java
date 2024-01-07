@@ -234,7 +234,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 		for(DataRow row:set){
 			builder.append("INSERT INTO ");
-			delimiter(builder, dest).append(" (");
+			name(runtime, builder, dest).append(" (");
 			boolean start = true;
 			for(Column column:columns.values()){
 				String key = column.getName();
@@ -313,7 +313,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 		builder.append("INSERT INTO ");
-		delimiter(builder, dest).append(" (");
+		name(runtime, builder, dest).append(" (");
 		boolean start = true;
 		for(Column column:columns.values()){
 			String key = column.getName();

@@ -4503,7 +4503,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			runs.add(drop);
 			StringBuilder builder = drop.getBuilder();
 			builder.append("ALTER TABLE ");
-			delimiter(builder, meta.getTable());
+			name(runtime, builder, meta.getTable());
 			builder.append(" DROP CONSTRAINT ").append(constraint);
 		}
 		//添加默认值
@@ -4512,7 +4512,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			runs.add(run);
 			StringBuilder builder = run.getBuilder();
 			builder.append("ALTER TABLE ");
-			delimiter(builder, meta.getTable());
+			name(runtime, builder, meta.getTable());
 			builder.append(" ADD DEFAULT ");
 			udef = write(runtime, meta, udef, false);
 			if (null == udef) {
@@ -4520,7 +4520,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			}
 			builder.append(udef);
 			builder.append(" FOR ");
-			delimiter(builder, meta);
+			name(runtime, builder, meta);
 		}
 		return runs;
 	}
