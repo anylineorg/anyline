@@ -2260,6 +2260,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         Catalog catalog = null;
         Schema schema = null;
         String name = null;
+        checkName(runtime, null, table);
         if(null != table){
             name = table.getName();
             catalog = table.getCatalog();
@@ -2441,6 +2442,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
+        checkName(runtime, null, table);
         StringBuilder builder = run.getBuilder();
         //test_pk_pkey	| p	| {2,1}	| 	PRIMARY KEY (id, name)
         builder.append("SELECT  m.conname, pg_get_constraintdef(m.oid, true) AS define\n");
@@ -2521,6 +2523,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
+        checkName(runtime, null, table);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT TC.CONSTRAINT_NAME,TC.TABLE_NAME AS TABLE_NAME, KCU.COLUMN_NAME AS COLUMN_NAME, KCU.ORDINAL_POSITION,CCU.TABLE_NAME AS REFERENCED_TABLE_NAME, CCU.COLUMN_NAME AS REFERENCED_COLUMN_NAME\n");
         builder.append("FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS TC\n");
@@ -2699,6 +2702,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             return new LinkedHashMap<>();
         }
         try{
+            checkName(runtime, null, table);
             ds = jdbc.getDataSource();
             con = DataSourceUtils.getConnection(ds);
             DatabaseMetaData dbmd = con.getMetaData();
@@ -2905,6 +2909,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
         if(null != table){
+            checkName(runtime, null, table);
             Schema schemae = table.getSchema();
             String name = table.getName();
             if(BasicUtil.isNotEmpty(schemae)){
@@ -3614,6 +3619,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             pks = meta.primarys();
         }
         if(!pks.isEmpty()){
+            checkName(runtime, null, meta);
             builder.append(",CONSTRAINT ").append("PK_").append(meta.getName()).append(" PRIMARY KEY (");
             boolean first = true;
             for(Column pk:pks.values()){
@@ -4349,6 +4355,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
+        checkName(runtime, null, meta);
         StringBuilder builder = run.getBuilder();
         builder.append("ALTER TABLE ");
         name(runtime, builder, meta.getTable(true));

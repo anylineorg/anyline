@@ -143,6 +143,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         if(null == set || set.isEmpty()){
             return;
         }
+        checkName(runtime, null, dest);
         StringBuilder builder = run.getBuilder();
         DataRow first = set.getRow(0);
         Map<String, Sequence> sequens = new HashMap<>();
@@ -209,6 +210,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         if(null == list || list.isEmpty()){
             return;
         }
+        checkName(runtime, null, dest);
         StringBuilder builder = run.getBuilder();
         if(null == builder){
             builder = new StringBuilder();

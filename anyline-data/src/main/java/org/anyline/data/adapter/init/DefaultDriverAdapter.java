@@ -6500,6 +6500,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 		long fr = System.currentTimeMillis();
 		if(!name.equalsIgnoreCase(uname)){
+			//先修改表名，后续在新表名基础上执行
 			result = rename(runtime, meta, uname);
 			meta.setName(uname);
 		}
@@ -6527,7 +6528,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 
 		Map<String, Column> cols = new LinkedHashMap<>();
-
 		// 更新列
 		for (Column ucolumn : ucolumns.values()) {
 			//先根据原列名 找到数据库中定义的列
@@ -6541,18 +6541,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if (!column.equals(ucolumn)) {
 					column.setTable(update);
 					column.setUpdate(ucolumn, false, false);
-					/*
-					alter(rutime, column);
-					result = true;*/
 					column.setAction(ACTION.DDL.COLUMN_ALTER);
 					cols.put(column.getName().toUpperCase(), column);
 				}
 			} else {
 				// 添加列
 				ucolumn.setTable(update);
-				/*
-				add(ucolumn);
-				result = true;*/
 				ucolumn.setAction(ACTION.DDL.COLUMN_ADD);
 				cols.put(ucolumn.getName().toUpperCase(), ucolumn);
 			}
@@ -6580,9 +6574,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
 				if (null == ucolumn) {
 					column.setTable(update);
-					/*
-					drop(column);
-					result = true;*/
 					column.setAction(ACTION.DDL.COLUMN_DROP);
 					cols.put(column.getName().toUpperCase(), column);
 				}
