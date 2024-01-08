@@ -6463,18 +6463,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-	/**
-	 * table[调用入口]<br/>
-	 * 修改表,执行的SQL通过meta.ddls()返回
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 表
-	 * @return boolean 是否执行成功
-	 * @throws Exception DDL异常
-	 */
 
-	public boolean alter(DataRuntime runtime, Table meta) throws Exception{
-		boolean result = true;
-		List<Run> runs = new ArrayList<>();
+	/**
+	 * 检测列的执行命令,all drop alter等
+	 * @param meta 表
+	 * @return cols
+	 */
+	protected LinkedHashMap<String, Column> checkColumnAction(Table meta){
 		Table update = (Table)meta.getUpdate();
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
@@ -6484,50 +6479,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		for(Column col:ucolumns.values()){
 			col.setTypeMetadata(typeMetadata(col.getTypeName()));
 		}
-		checkPrimary(runtime, update);
-		String name = meta.getName();
-		String uname = update.getName();
-		String random = random(runtime);
-		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_ALTER, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.parepareAlter(runtime, random, meta);
-		}
-		if(swt == ACTION.SWITCH.BREAK){
-			return false;
-		}
-		checkSchema(runtime, meta);
-		checkSchema(runtime, update);
-
-		long fr = System.currentTimeMillis();
-		if(!name.equalsIgnoreCase(uname)){
-			//先修改表名，后续在新表名基础上执行
-			result = rename(runtime, meta, uname);
-			meta.setName(uname);
-		}
-		if(!result){
-			return result;
-		}
-
-		//修改表备注
-		String comment = update.getComment()+"";
-		if(!comment.equals(meta.getComment())){
-			swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
-			if(swt != ACTION.SWITCH.BREAK) {
-				if(BasicUtil.isNotEmpty(meta.getComment())) {
-					runs.addAll(buildChangeCommentRun(runtime, update));
-				}else{
-					runs.addAll(buildAppendCommentRun(runtime, update));
-				}
-				swt = InterceptorProxy.before(runtime, random, ACTION.DDL.TABLE_COMMENT, meta, runs);
-				if(swt != ACTION.SWITCH.BREAK) {
-					long cmt_fr = System.currentTimeMillis();
-					result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
-					InterceptorProxy.after(runtime, random, ACTION.DDL.TABLE_COMMENT, meta, runs, result, System.currentTimeMillis()-cmt_fr);
-				}
-			}
-		}
-
-		Map<String, Column> cols = new LinkedHashMap<>();
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		// 更新列
 		for (Column ucolumn : ucolumns.values()) {
 			//先根据原列名 找到数据库中定义的列
@@ -6587,46 +6539,110 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
+		return cols;
+	}
 
-		//主键
-		PrimaryKey src_primary = primary(runtime, random, false, meta);
-		PrimaryKey cur_primary = update.getPrimaryKey();
-		String src_define = "";
-		String cur_define = "";
-		if(null != src_primary) {
-			src_primary.setTable(update);
-			src_define = BeanUtil.concat(src_primary.getColumns().values(), "name",",", false, true);
-		}
-		if(null != cur_primary){
-			cur_primary.setTable(update);
-			cur_define= BeanUtil.concat(cur_primary.getColumns().values(),"name",",", false, true);
-		}
-		boolean change_pk = !cur_define.equalsIgnoreCase(src_define);
-		if(null != src_primary){
-			//如果主键有更新 先删除主键 避免alters中把原主键列的非空取消时与主键约束冲突
-			if(change_pk){
-				LinkedHashMap<String,Column> pks = null;
-				if(null != src_primary) {
-					pks = src_primary.getColumns();
-				}
-				LinkedHashMap<String,Column> npks = null;
-				if(null != cur_primary) {
-					npks = cur_primary.getColumns();
-				}
-				if(null != pks) {
-					for (String k : pks.keySet()) {
-						Column auto = columns.get(k.toUpperCase());
-						if (null != auto && auto.isAutoIncrement() == 1) {//原主键科自增
-							if (null != npks && !npks.containsKey(auto.getName().toUpperCase())) { //当前不是主键
-								auto.primary(false);
-								runs = buildDropAutoIncrement(runtime, auto);
-								result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, runs) && result;
-							}
+	/**
+	 * 修改主键前先 根据主键检测自增 部分数据库要求自增必须在主键上时才需要执行
+	 * @param runtime
+	 * @param random
+	 * @param table
+	 * @return
+	 * @throws Exception
+	 */
+	protected boolean checkAutoIncrement(DataRuntime runtime, String random, Table table) throws Exception{
+		boolean result = false;
+		Table update = (Table)table.getUpdate();
+		if(table.primaryEquals(update)) {
+			LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
+			LinkedHashMap<String, Column> npks = update.getPrimaryKeyColumns();
+			LinkedHashMap<String, Column> columns = table.getColumns();
+			if (null != pks) {
+				for (String k : pks.keySet()) {
+					Column auto = columns.get(k.toUpperCase());
+					if (null != auto && auto.isAutoIncrement() == 1) {//原来是自增
+						if (null != npks && !npks.containsKey(auto.getName().toUpperCase())) { //当前不是主键
+							auto.primary(false);
+							//取消自增
+							List<Run> runs = buildDropAutoIncrement(runtime, auto);
+							result = execute(runtime, random, table, ACTION.DDL.TABLE_ALTER, runs);
 						}
 					}
 				}
 			}
 		}
+		return result;
+	}
+	/**
+	 * table[调用入口]<br/>
+	 * 修改表,执行的SQL通过meta.ddls()返回
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return boolean 是否执行成功
+	 * @throws Exception DDL异常
+	 */
+	public boolean alter(DataRuntime runtime, Table meta) throws Exception{
+		boolean result = true;
+		List<Run> runs = new ArrayList<>();
+		Table update = (Table)meta.getUpdate();
+		LinkedHashMap<String, Column> columns = meta.getColumns();
+
+		checkPrimary(runtime, update);
+		String name = meta.getName();
+		String uname = update.getName();
+		String random = random(runtime);
+		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_ALTER, meta);
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
+			swt = ddListener.parepareAlter(runtime, random, meta);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		checkSchema(runtime, meta);
+		checkSchema(runtime, update);
+
+		long fr = System.currentTimeMillis();
+		if(!name.equalsIgnoreCase(uname)){
+			//先修改表名，后续在新表名基础上执行
+			result = rename(runtime, meta, uname);
+			meta.setName(uname);
+		}
+		if(!result){
+			return result;
+		}
+
+		//修改表备注
+		String comment = update.getComment()+"";
+		if(!comment.equals(meta.getComment())){
+			swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
+			if(swt != ACTION.SWITCH.BREAK) {
+				if(BasicUtil.isNotEmpty(meta.getComment())) {
+					runs.addAll(buildChangeCommentRun(runtime, update));
+				}else{
+					runs.addAll(buildAppendCommentRun(runtime, update));
+				}
+				swt = InterceptorProxy.before(runtime, random, ACTION.DDL.TABLE_COMMENT, meta, runs);
+				if(swt != ACTION.SWITCH.BREAK) {
+					long cmt_fr = System.currentTimeMillis();
+					result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
+					InterceptorProxy.after(runtime, random, ACTION.DDL.TABLE_COMMENT, meta, runs, result, System.currentTimeMillis()-cmt_fr);
+				}
+			}
+		}
+
+		LinkedHashMap<String, Column> cols = checkColumnAction(meta);
+		//主键
+		PrimaryKey src_primary = primary(runtime, random, false, meta);
+		PrimaryKey cur_primary = update.getPrimaryKey();
+		boolean change_pk = !meta.primaryEquals(update);
+		//如果主键有更新 先删除主键 避免alters中把原主键列的非空取消时与主键约束冲突
+		try {
+			checkAutoIncrement(runtime, null, meta);
+		}catch (Exception e){
+			e.printStackTrace();
+			result = false;
+		}
+		//更新列
 		List<Run> alters = buildAlterRun(runtime, meta, cols.values());
 		if(null != alters && alters.size()>0){
 			result = execute(runtime, random, meta, ACTION.DDL.COLUMN_ALTER, alters) && result;
@@ -8504,7 +8520,6 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
