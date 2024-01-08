@@ -172,4 +172,12 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
         }
         return (M)this;
     }
+    public boolean equals(Index index){
+        if(null == index){
+            return false;
+        }
+        String this_define = BeanUtil.concat(getColumns().values(), "name",",", false, true);;
+        String index_define = BeanUtil.concat(index.getColumns().values(),"name",",", false, true);
+        return this_define.equalsIgnoreCase(index_define);
+    }
 }
