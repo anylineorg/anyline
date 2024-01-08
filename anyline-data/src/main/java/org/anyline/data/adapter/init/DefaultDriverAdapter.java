@@ -3664,7 +3664,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
-	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception{
+	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
 		if(null == meta){
 			return null;
 		}
@@ -3676,7 +3676,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				meta.setSchema(ks[1]);
 				meta.setName(ks[2]);
 			}else{
-				throw new Exception("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+				throw new RuntimeException("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
 			}
 		}
 		return meta;
@@ -11363,11 +11363,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata meta){
-		try {
-			checkName(runtime, null, meta);
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		checkName(runtime, null, meta);
 		String catalog = meta.getCatalogName();
 		String schema = meta.getSchemaName();
 		String name = meta.getName();

@@ -3179,7 +3179,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
-	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception{
+	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
 		if(null == meta){
 			return null;
 		}
@@ -3194,7 +3194,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				meta.setSchema(ks[0]);
 				meta.setName(ks[1]);
 			}else{
-				throw new Exception("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
+				throw new RuntimeException("无法实别schema或catalog(子类未" + this.getClass().getSimpleName() + "实现)");
 			}
 		}
 		return meta;
