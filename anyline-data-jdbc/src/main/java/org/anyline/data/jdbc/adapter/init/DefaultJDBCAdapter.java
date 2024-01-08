@@ -212,6 +212,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			run.setBuilder(builder);
 		}
 		LinkedHashMap<String, Column> pks = null;
+		checkName(runtime, null, dest);
 		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
 		if(null != generator){
 			pks = set.getRow(0).getPrimaryColumns();
@@ -284,6 +285,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			builder = new StringBuilder();
 			run.setBuilder(builder);
 		}
+		checkName(runtime, null, dest);
 		if(list instanceof DataSet){
 			DataSet set = (DataSet) list;
 			this.fillInsertContent(runtime, run, dest, set, configs, columns);
@@ -424,6 +426,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
 
+		checkName(runtime, null, dest);
 		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
 
 		int from = 1;
@@ -4485,6 +4488,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 
+			checkName(runtime, null, table);
 			String catalog = table.getCatalogName();
 			String schema = table.getSchemaName();
 			DatabaseMetaData dbmd = con.getMetaData();
@@ -4599,6 +4603,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null == table || BasicUtil.isEmpty(table.getName())){
 			return new LinkedHashMap();
 		}
+		checkName(runtime, null, table);
 		LinkedHashMap<String,T> tags = CacheProxy.tags(runtime.getKey(), table);
 		if(null != tags && !tags.isEmpty()){
 			return tags;
@@ -4939,6 +4944,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
 			DatabaseMetaData dbmd = con.getMetaData();
+			checkName(runtime, null, table);
 			String[] tmp = correctSchemaFromJDBC(table.getCatalogName(), table.getSchemaName());
 			ResultSet set = dbmd.getIndexInfo(tmp[0], tmp[1], table.getName(), unique, approximate);
 			Map<String, Integer> keys = keys(set);
@@ -9137,6 +9143,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
 				column.autoIncrement(true);
 			}
+		}
+		//mysql中的on update
+		if(row.getStringNvl("EXTRA").toLowerCase().contains("on update")){
+			column.setOnUpdate(true);
 		}
 		String defaultValue = column.getDefaultValue()+"";
 		if(defaultValue.toLowerCase().contains("nextval")){
