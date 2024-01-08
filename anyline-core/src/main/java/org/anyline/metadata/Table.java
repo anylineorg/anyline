@@ -626,6 +626,13 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         }
         return (LinkedHashMap<String, T>) indexs;
     }
+    public LinkedHashMap<String, Column> getPrimaryKeyColumns(){
+        PrimaryKey pk = getPrimaryKey();
+        if(null != pk){
+            return pk.getColumns();
+        }
+        return new LinkedHashMap<>();
+    }
     public PrimaryKey getPrimaryKey(){
         if(getmap && null != update){
             return update.getPrimaryKey();
@@ -933,5 +940,26 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             return false;
         }
         return BasicUtil.equals(this.name, table.getName());
+    }
+
+    /**
+     * 主键相同
+     * @param table table
+     * @return boolean
+     */
+    public boolean primaryEquals(Table table){
+        if(null == table){
+            return false;
+        }
+        PrimaryKey pks = getPrimaryKey();
+        PrimaryKey tpks = table.getPrimaryKey();
+        if(null == pks){
+            if(null == tpks){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return pks.equals(tpks);
     }
 }
