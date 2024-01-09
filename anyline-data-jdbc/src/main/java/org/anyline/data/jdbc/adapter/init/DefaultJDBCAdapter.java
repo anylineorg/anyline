@@ -7864,6 +7864,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				name(runtime, builder, table);
 				boolean first = true;
 				for(Run item:slices){
+					if(item.getBuilder().length() == 0){
+						continue;
+					}
 					if(!first){
 						builder.append(",");
 					}
