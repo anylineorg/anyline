@@ -1079,21 +1079,46 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return setPrimaryKey(false, pks);
     }
 
-
+    public Column getPrimaryColumn() {
+        LinkedHashMap<String, Column> columns = getPrimaryColumns();
+        if(!columns.isEmpty()){
+            return columns.values().iterator().next();
+        }
+        String pk = getPrimaryKey();
+        if(null == pk){
+            pk = DataRow.DEFAULT_PRIMARY_KEY;
+        }
+        Column column = null;
+        if(null != metadatas){
+            column = metadatas.get(pk.toUpperCase());
+        }else{
+            column = new Column(pk);
+        }
+        return column;
+    }
     public LinkedHashMap<String, Column> getPrimaryColumns() {
         LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
-        List<String> pks = getPrimaryKeys();
-        if(null != pks){
-           for(String pk:pks){
-               Column column = null;
-               if(null != metadatas){
-                   column = metadatas.get(pk.toUpperCase());
-               }
-               if(null == column){
-                   column = new Column(pk);
-               }
-               columns.put(pk.toUpperCase(), column);
-           }
+        if(null != metadatas){
+            for(Column column:metadatas.values()){
+                if(column.isPrimaryKey() == 1){
+                    columns.put(column.getName().toUpperCase(), column);
+                }
+            }
+        }
+        if(columns.isEmpty()){
+            List<String> pks = getPrimaryKeys();
+            if(null != pks){
+                for(String pk:pks){
+                    Column column = null;
+                    if(null != metadatas){
+                        column = metadatas.get(pk.toUpperCase());
+                    }
+                    if(null == column){
+                        column = new Column(pk);
+                    }
+                    columns.put(pk.toUpperCase(), column);
+                }
+            }
         }
         return columns;
     }
@@ -1177,7 +1202,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return boolean
      */
     public boolean hasSelfPrimaryKeys() {
-        if (null != primaryKeys && primaryKeys.size() > 0) {
+        if (null != primaryKeys && !primaryKeys.isEmpty()) {
             return true;
         } else {
             return false;
