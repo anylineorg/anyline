@@ -6022,13 +6022,16 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		//CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='备注';
 		charset(runtime, builder, meta);
+		keytype(runtime, builder, meta);
 		comment(runtime, builder, meta);
-
-		/*[partition_info]
+		property(runtime, builder, meta);
+		/*[engine_type]
+[keys_type]
+[table_comment]
+[partition_info]
 distribution_desc
 [rollup_list]
-[properties]
-[extra_properties]*/
+[properties]*/
 
 		List<Run> tableComment = buildAppendCommentRun(runtime, meta);
 		if(null != tableComment) {
@@ -6237,7 +6240,19 @@ distribution_desc
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.comment(runtime, builder, meta);
 	}
-
+	
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 数据模型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.keytype(runtime, builder, meta);
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性

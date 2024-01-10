@@ -485,6 +485,21 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return this;
     }
 
+    public Table setKeyType(KeyType keyType, String ... keys) {
+        if(setmap && null != update){
+            update.setKeyType(keyType, keys);
+            return this;
+        }
+        this.keyType = keyType;
+        if(null == keyColumns){
+            keyColumns = new LinkedHashMap<>();
+        }
+        for(String key:keys){
+            keyColumns.put(key.toUpperCase(), new Column(key));
+        }
+        return this;
+    }
+
     public LinkedHashMap<String, Column> getKeyColumns() {
         if(getmap && null != update){
             return update.keyColumns;

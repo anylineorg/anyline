@@ -27,6 +27,7 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.AggregationType;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.KeyType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -3537,6 +3538,19 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.comment(runtime, builder, meta);
 	}
+	
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 数据模型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.keytype(runtime, builder, meta);
+	}
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -3548,7 +3562,21 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.property(runtime, builder, meta);
+		KeyType type = meta.getKeyType();
+		LinkedHashMap<String, Column> columns = meta.getKeyColumns();
+		if(null != type && null != columns && !columns.isEmpty()){
+			builder.append(" ").append(type.getName()).append(" KEY(");
+			boolean first = true;
+			for(Column column:columns.values()){
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+				name(runtime, builder, column);
+			}
+			builder.append(")");
+		}
+		return builder;
 	}
 
 	/**
