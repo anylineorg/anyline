@@ -6024,6 +6024,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		charset(runtime, builder, meta);
 		comment(runtime, builder, meta);
 
+		/*[partition_info]
+distribution_desc
+[rollup_list]
+[properties]
+[extra_properties]*/
+
 		List<Run> tableComment = buildAppendCommentRun(runtime, meta);
 		if(null != tableComment) {
 			runs.addAll(tableComment);
@@ -6230,6 +6236,22 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.comment(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 扩展属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
+		if(null != meta.getProperty()){
+			builder.append(" ").append(meta.getProperty());
+		}
+		return builder;
 	}
 
 	/**
@@ -7284,6 +7306,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		comment(runtime, builder, meta);
 		// 位置
 		position(runtime, builder, meta);
+
 		return builder;
 	}
 

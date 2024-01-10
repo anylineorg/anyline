@@ -1,4 +1,4 @@
-package org.anyline.entity;
+package org.anyline.metadata.type;
 
 public enum AggregationType {
     MIN			    ("MIN"  			, "最小"),

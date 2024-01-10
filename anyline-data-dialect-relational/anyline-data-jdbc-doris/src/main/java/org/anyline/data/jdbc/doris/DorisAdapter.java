@@ -25,6 +25,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.AggregationType;
 import org.anyline.metadata.type.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -3535,6 +3536,19 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.comment(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 扩展属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.property(runtime, builder, meta);
 	}
 
 	/**

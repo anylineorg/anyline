@@ -9,7 +9,7 @@ public class Sequence extends BaseMetadata<Sequence> implements Serializable {
     private Long max;
     private Long last;
     private boolean next = true;//NEXTVAL  CURRVAL
-    private int start = 0;
+    private Long start = 1L;
     private int increment = 1;
     private int cache = 100;
     private Boolean cycle = false;
@@ -56,11 +56,11 @@ public class Sequence extends BaseMetadata<Sequence> implements Serializable {
         this.next = next;
     }
 
-    public int getStart() {
+    public Long getStart() {
         return start;
     }
 
-    public void setStart(int start) {
+    public void setStart(Long start) {
         this.start = start;
     }
 

@@ -18,6 +18,7 @@
 package org.anyline.metadata;
 
 import org.anyline.exception.AnylineException;
+import org.anyline.metadata.type.KeyType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
@@ -83,6 +84,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      * 排序规则
      */
     protected String collate                      ;
+
+    protected KeyType keyType                     ;
+    LinkedHashMap<String, Column> keyColumns     ;
     /**
      * 数据的过期时间
      */
@@ -120,6 +124,8 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      * 是否临时表
      */
     protected int temporary                     ;
+
+    protected String property;
 
 
     protected PrimaryKey primaryKey;
@@ -179,6 +185,13 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.keyword = keyword;
     }
 
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
+    }
 
     public E drop(){
         this.action = ACTION.DDL.TABLE_DROP;
@@ -453,6 +466,38 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             return this;
         }
         this.type = type;
+        return this;
+    }
+
+    public KeyType getKeyType() {
+        if(getmap && null != update){
+            return update.keyType;
+        }
+        return keyType;
+    }
+
+    public Table setKeyType(KeyType keyType) {
+        if(setmap && null != update){
+            update.setKeyType(keyType);
+            return this;
+        }
+        this.keyType = keyType;
+        return this;
+    }
+
+    public LinkedHashMap<String, Column> getKeyColumns() {
+        if(getmap && null != update){
+            return update.keyColumns;
+        }
+        return keyColumns;
+    }
+
+    public Table setKeyColumns(LinkedHashMap<String, Column> keyColumns) {
+        if(setmap && null != update){
+            update.setKeyColumns(keyColumns);
+            return this;
+        }
+        this.keyColumns = keyColumns;
         return this;
     }
 

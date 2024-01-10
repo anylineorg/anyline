@@ -17,7 +17,7 @@
 
 package org.anyline.metadata;
 
-import org.anyline.entity.AggregationType;
+import org.anyline.metadata.type.AggregationType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.util.BasicUtil;
