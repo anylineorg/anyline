@@ -194,6 +194,20 @@ public enum Compare {
             return false;
         }
     },
+    /**
+     * 这个专用来实现所有列LIKE
+     */
+    LIKES(59, "like %?%",""," LIKE ")			{
+        public boolean compare(Object value, Object target) {
+            if(null == target || null == value){
+                return false;
+            }
+            return value.toString().toUpperCase().contains(target.toString().toUpperCase());
+        }
+        public boolean isMultipleValue(){
+            return false;
+        }
+    },
     FIND_IN_SET(60, "find in set",""," FIND_IN_SET "){ // = FIND_IN_SET_OR
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
