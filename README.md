@@ -182,6 +182,7 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
 
 - **数据中台**    
   动态处理各种异构数据源、强大的结果集批量处理能力，不再需要对呆板的实体类各种遍历各种转换。  
+- 通常需要在运行时频繁的注册、切换、注销数据源  
   [【示例】](https://gitee.com/anyline/anyline-simple)
 -
 - **可视化数据源**  
@@ -191,6 +192,9 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
 
 - **物联网车联网数据处理**    
   如车载终端、交通信号灯、数字化工厂传感器、环境检测设备数据等   
+  这种场景通常会涉及到时序数据库    
+  时序库虽然快，但是结构简单，数据需要经过各种组合后给业务系统       
+  时序库通常需要在运行时操作大量的DDL   
   [【示例】](https://gitee.com/anyline/service)
 
 
@@ -208,7 +212,7 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
   [【office示例】](http://office.anyline.org/v/b6_3797)
 
 
-- **运行时自定义表单/查询条件/数据结构**  
+- **工作流(运行时自定义表单/查询条件/数据结构)**  
   各个阶段都要自定义，比低代码要求更高的是:操作用户不懂编程
   [【示例】](https://gitee.com/anyline/service)
 
