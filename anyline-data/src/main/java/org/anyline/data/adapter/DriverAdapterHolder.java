@@ -53,7 +53,7 @@ public class DriverAdapterHolder {
 	public static List<DriverAdapter> getAdapters(DatabaseType type){
 		List<DriverAdapter> list = new ArrayList<>();
 		for(DriverAdapter adapter:adapters){
-			if(adapter.typeMetadata() == type){
+			if(adapter.type() == type){
 				list.add(adapter);
 			}
 		}

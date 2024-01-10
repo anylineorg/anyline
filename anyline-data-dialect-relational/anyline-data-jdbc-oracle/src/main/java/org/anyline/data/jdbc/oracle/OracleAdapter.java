@@ -56,7 +56,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.ORACLE; 
 	}
 	public String version(){
@@ -79,7 +79,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		delimiterTo = "\"";
 		OracleConvert.reg();
 		for (OracleColumnTypeAlias alias : OracleColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 
 		for(OracleWriter writer: OracleWriter.values()){
@@ -88,13 +88,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		for(OracleReader reader: OracleReader.values()){
 			reg(reader.supports(), reader.reader());
 		}
-		types.put("BFILE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.BYTES,"BFILE", DatabaseType.ORACLE, oracle.sql.BFILE.class, true, true));
-		types.put("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "ROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
-		types.put("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "UROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
-		types.put("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE", DatabaseType.ORACLE, java.util.Date.class, java.sql.Timestamp.class, true, true));
-		types.put("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMP", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, true, true));
-		types.put("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, true, true));
-		types.put("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPLTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, true, true));
+		alias.put("BFILE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.BYTES,"BFILE", DatabaseType.ORACLE, oracle.sql.BFILE.class, true, true));
+		alias.put("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "ROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
+		alias.put("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "UROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, true, true));
+		alias.put("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE", DatabaseType.ORACLE, java.util.Date.class, java.sql.Timestamp.class, true, true));
+		alias.put("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMP", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, true, true));
+		alias.put("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, true, true));
+		alias.put("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPLTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, true, true));
 	}
 
 

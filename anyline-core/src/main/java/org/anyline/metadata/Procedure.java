@@ -26,6 +26,7 @@ import java.util.List;
  
  
 public class Procedure extends BaseMetadata<Procedure> implements Serializable {
+	protected String keyword = "PROCEDURE"           ;
 	private String returnType;
 	private List<Parameter> parameters = new ArrayList<Parameter>();
 	private List<Parameter> inputs = new ArrayList<Parameter>();
@@ -226,5 +227,8 @@ public class Procedure extends BaseMetadata<Procedure> implements Serializable {
 		copy.outputs = outputs;
 
 		return copy;
+	}
+	public String getKeyword() {
+		return this.keyword;
 	}
 }

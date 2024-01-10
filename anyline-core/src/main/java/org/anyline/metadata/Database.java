@@ -22,6 +22,7 @@ import org.dom4j.datatype.DatatypeAttribute;
 import java.io.Serializable;
 
 public class Database extends BaseMetadata<Database> implements Serializable {
+    protected String keyword = "DATABASE"           ;
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
     protected String filePath                     ; // 文件位置
@@ -64,5 +65,8 @@ public class Database extends BaseMetadata<Database> implements Serializable {
 
     public void setLogPath(String logPath) {
         this.logPath = logPath;
+    }
+    public String getKeyword() {
+        return this.keyword;
     }
 }

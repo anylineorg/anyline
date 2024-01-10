@@ -23,6 +23,7 @@ import org.anyline.util.BeanUtil;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 public class Constraint<E extends Constraint> extends BaseMetadata<E> implements Serializable {
+    protected String keyword = "CONSTRAINT"           ;
     public enum TYPE{
         PRIMARY_KEY, UNIQUE, NOT_NULL, FOREIGN_KEY, DEFAULT
     }
@@ -146,6 +147,9 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
     }
 
 
+    public String getKeyword() {
+        return this.keyword;
+    }
     public E clone(){
         E copy = super.clone();
 

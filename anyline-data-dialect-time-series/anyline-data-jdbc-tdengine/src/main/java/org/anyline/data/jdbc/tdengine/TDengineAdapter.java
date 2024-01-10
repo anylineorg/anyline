@@ -44,7 +44,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.tdengine")
 public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.TDengine;
 	}
 
@@ -52,7 +52,7 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (TDengineColumnTypeAlias alias: TDengineColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 

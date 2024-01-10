@@ -5,6 +5,7 @@ import org.anyline.util.BasicUtil;
 import java.io.Serializable;
 
 public class Schema extends BaseMetadata<Schema> implements Serializable {
+    protected String keyword = "SCHEMA"           ;
     public Schema(){
 
     }
@@ -38,5 +39,8 @@ public class Schema extends BaseMetadata<Schema> implements Serializable {
             return BasicUtil.equals(this.name, schema.getName(), ignoreCase);
         }
         return false;
+    }
+    public String getKeyword() {
+        return this.keyword;
     }
 }

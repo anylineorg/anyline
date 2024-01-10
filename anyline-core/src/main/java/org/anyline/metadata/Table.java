@@ -180,6 +180,10 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     }
 
 
+    public E drop(){
+        this.action = ACTION.DDL.TABLE_DROP;
+        return super.drop();
+    }
 
     public Partition getPartitionFor() {
         if(getmap && null != update){

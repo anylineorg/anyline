@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.antdb")
 public class AntDBAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.AntDB;
     }
     @Value("${anyline.data.jdbc.delimiter.antdb:}")

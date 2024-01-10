@@ -54,7 +54,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.neo4j")
 public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.Neo4j;
     }
     public Neo4jAdapter(){
@@ -207,18 +207,18 @@ public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
         }
         // CREATE (emp:Employee{id:123, name:"zh"})
 
-        PrimaryGenerator generator = checkPrimaryGenerator(this.typeMetadata(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(this.type(), dest.getName());
         DataRow row = null;
         if(obj instanceof DataRow){
             row = (DataRow)obj;
             if(row.hasPrimaryKeys() && null != generator){
-                generator.create(row, this.typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                generator.create(row, this.type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
             if(!create && null != generator){
-                generator.create(obj, this.typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns, null);
+                generator.create(obj, this.type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns, null);
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
         }

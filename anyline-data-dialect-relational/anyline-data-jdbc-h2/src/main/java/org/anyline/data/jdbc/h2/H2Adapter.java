@@ -47,7 +47,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.h2")
 public class H2Adapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.H2;
 	} 
 	public H2Adapter(){

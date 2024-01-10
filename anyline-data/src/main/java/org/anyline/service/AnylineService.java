@@ -18,6 +18,7 @@
 package org.anyline.service;
 
 import org.anyline.dao.AnylineDao;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DatasourceHolder;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
@@ -45,6 +46,7 @@ public interface AnylineService<E>{
 	 * @return String
 	 */
 	String datasource();
+	DriverAdapter adapter();
 
 	default boolean validate(){
 		return DatasourceHolder.validate(datasource());

@@ -29,7 +29,7 @@ public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
         delimiterFr = "`";
         delimiterTo = "`";
         for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
-            types.put(alias.name(), alias.standard());
+            this.alias.put(alias.name(), alias.standard());
         }
         for(MySQLWriter writer: MySQLWriter.values()){
             reg(writer.supports(), writer.writer());

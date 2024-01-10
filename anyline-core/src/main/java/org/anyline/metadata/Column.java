@@ -176,6 +176,10 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     }
 
 
+    public Column drop(){
+        this.action = ACTION.DDL.COLUMN_DROP;
+        return super.drop();
+    }
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;

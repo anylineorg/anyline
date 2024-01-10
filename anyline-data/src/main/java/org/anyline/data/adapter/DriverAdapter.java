@@ -68,9 +68,20 @@ public interface DriverAdapter {
 	 * 数据库类型
 	 * @return DatabaseType
 	 */
-	DatabaseType typeMetadata();
+	DatabaseType type();
+	default LinkedHashMap<String, TypeMetadata> types(){
+		LinkedHashMap<String, TypeMetadata> types = new LinkedHashMap<>();
+		for(TypeMetadata type:alias().values()){
+			types.put(type.getName().toUpperCase(), type);
+		}
+		return types;
+	}
 
-
+	/**
+	 * 数据类型别名
+	 * @return LinkedHashMap
+	 */
+	LinkedHashMap<String, TypeMetadata> alias();
 	/**
 	 * 验证运行环境与当前适配器是否匹配<br/>
 	 * 默认不连接只根据连接参数<br/>
@@ -80,7 +91,7 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	default boolean match(DataRuntime runtime, boolean compensate){
-		List<String> keywords = typeMetadata().keywords(); //关键字+jdbc-url前缀+驱动类
+		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
 		return match(feature, keywords, compensate);
 	}
@@ -141,14 +152,14 @@ public interface DriverAdapter {
 	 * @param writer DataWriter
 	 */
 	default void reg(Object[] supports, DataWriter writer){
-		SystemDataWriterFactory.reg(typeMetadata(), supports, writer);
+		SystemDataWriterFactory.reg(type(), supports, writer);
 	}
 	/**
 	 * 写入数据库时 类型转换 写入的原始类型需要writer中实现supports
 	 * @param writer DataWriter
 	 */
 	default void reg(DataWriter writer){
-		SystemDataWriterFactory.reg(typeMetadata(), null, writer);
+		SystemDataWriterFactory.reg(type(), null, writer);
 	}
 
 	/**
@@ -157,7 +168,7 @@ public interface DriverAdapter {
 	 * @param reader DataReader
 	 */
 	default void reg(Object[] supports, DataReader reader){
-		SystemDataReaderFactory.reg(typeMetadata(), supports, reader);
+		SystemDataReaderFactory.reg(type(), supports, reader);
 	}
 
 	/**
@@ -165,7 +176,7 @@ public interface DriverAdapter {
 	 * @param reader DataReader
 	 */
 	default void reg(DataReader reader){
-		SystemDataReaderFactory.reg(typeMetadata(), null, reader);
+		SystemDataReaderFactory.reg(type(), null, reader);
 	}
 
 	/**
@@ -174,9 +185,9 @@ public interface DriverAdapter {
 	 * @return DataReader
 	 */
 	default DataReader reader(Object type){
-		DataReader reader = DataReaderFactory.reader(typeMetadata(), type);
+		DataReader reader = DataReaderFactory.reader(type(), type);
 		if(null == reader){
-			reader = SystemDataReaderFactory.reader(typeMetadata(), type);
+			reader = SystemDataReaderFactory.reader(type(), type);
 		}
 		if(null == reader){
 			reader = DataReaderFactory.reader(DatabaseType.NONE, type);
@@ -192,9 +203,9 @@ public interface DriverAdapter {
 	 * @return DataWriter
 	 */
 	default DataWriter writer(Object type){
-		DataWriter writer = DataWriterFactory.writer(typeMetadata(), type);
+		DataWriter writer = DataWriterFactory.writer(type(), type);
 		if(null == writer){
-			writer = SystemDataWriterFactory.writer(typeMetadata(), type);
+			writer = SystemDataWriterFactory.writer(type(), type);
 		}
 		if(null == writer){
 			writer = DataWriterFactory.writer(DatabaseType.NONE, type);

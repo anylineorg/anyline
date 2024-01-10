@@ -203,8 +203,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     }
 
     public T delete() {
-        this.drop = true;
-        return (T)this;
+        return drop();
     }
 
     public boolean isDelete() {
@@ -226,8 +225,9 @@ public class BaseMetadata<T extends BaseMetadata> {
         return (T)this;
     }
 
-    public void drop() {
+    public T drop() {
         this.drop = true;
+        return (T)this;
     }
 
 

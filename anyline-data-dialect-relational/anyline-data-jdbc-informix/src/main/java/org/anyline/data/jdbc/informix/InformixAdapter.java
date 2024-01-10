@@ -52,7 +52,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	public static Map<Integer, String> column_types = new HashMap<>();
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.Informix;
 	}
 
@@ -69,7 +69,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (InformixColumnTypeAlias alias: InformixColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 	static{
@@ -227,7 +227,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 		LinkedHashMap<String, Column> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		if(null != generator){
 			pks = first.getPrimaryColumns();
 			columns.putAll(pks);
@@ -248,7 +248,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
 				if(null != generator){
-					generator.create(row, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
+					generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
 				}
 				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
@@ -304,7 +304,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		}
 
 
-		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		Object entity = list.iterator().next();
 		LinkedHashMap<String, Column> pks = null;
 		if(null != generator) {
@@ -359,8 +359,8 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			}else{*/
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
 			if(!create && null != generator){
-				generator.create(obj, typeMetadata(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
-				//createPrimaryValue(obj, type(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
+				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 			//}
 

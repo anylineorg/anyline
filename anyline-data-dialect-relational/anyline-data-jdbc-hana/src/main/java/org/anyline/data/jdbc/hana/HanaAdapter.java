@@ -48,7 +48,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.HANA;
 	}
 
@@ -66,7 +66,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 		delimiterFr = "";
 		delimiterTo = "";
 		for (HanaColumnTypeAlias alias : HanaColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 

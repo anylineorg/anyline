@@ -1,6 +1,7 @@
 package org.anyline.metadata;
 
 public class Sequence {
+    protected String keyword = "SEQUENCE";
     private String name;
     private boolean next = true;//NEXTVAL  CURRVAL
     private int start = 0;
@@ -87,5 +88,8 @@ public class Sequence {
 
     public void setFetchValueBeforeInsert(boolean fetchValueBeforeInsert) {
         this.fetchValueBeforeInsert = fetchValueBeforeInsert;
+    }
+    public String getKeyword() {
+        return this.keyword;
     }
 }

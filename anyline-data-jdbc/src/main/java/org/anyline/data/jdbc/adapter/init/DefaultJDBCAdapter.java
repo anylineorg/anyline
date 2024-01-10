@@ -72,8 +72,11 @@ import java.util.*;
 public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdapter {
 	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
 
+	public DefaultJDBCAdapter(){
+		super();
+	}
 	@Override
-	public DatabaseType typeMetadata() {
+	public DatabaseType type() {
 		return DatabaseType.COMMON;
 	}
 	protected JdbcTemplate jdbc(DataRuntime runtime){
@@ -213,7 +216,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		LinkedHashMap<String, Column> pks = null;
 		checkName(runtime, null, dest);
-		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		if(null != generator){
 			pks = set.getRow(0).getPrimaryColumns();
 			columns.putAll(pks);
@@ -253,7 +256,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
 				if(null != generator){
-					generator.create(row, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
+					generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
 				}
 				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 			}
@@ -291,7 +294,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			this.fillInsertContent(runtime, run, dest, set, configs, columns);
 			return;
 		}
-		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 		Object entity = list.iterator().next();
 		List<String> pks = null;
 		if(null != generator) {
@@ -336,7 +339,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
             }else{*/
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(columns));
 			if(!create && null != generator){
-				generator.create(obj, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 			builder.append(insertValue(runtime, run, obj, true, true, false, true, columns));
@@ -427,7 +430,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 
 		checkName(runtime, null, dest);
-		PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 
 		int from = 1;
 		StringBuilder valuesBuilder = new StringBuilder();
@@ -440,7 +443,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(obj instanceof DataRow){
 			row = (DataRow)obj;
 			if(row.hasPrimaryKeys() && null != generator){
-				generator.create(row, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+				generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 			}
 		}else{
@@ -448,7 +451,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
 			LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
 			if(!create && null != generator){
-				generator.create(obj, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 		}
@@ -7853,12 +7856,11 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if (null != origin) {
 				slices.addAll(buildDropRun(runtime, origin, true));
 			}
-			if (null != meta) {
+			if (null != meta && !meta.isDrop()) {
 				slices.addAll(buildAddRun(runtime, meta, true));
 			}
 			if(!slices.isEmpty()){
 				Run run = new SimpleRun(runtime);
-				runs.add(run);
 				StringBuilder builder = run.getBuilder();
 				builder.append("ALTER TABLE ");
 				name(runtime, builder, table);
@@ -7872,6 +7874,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					}
 					builder.append(item.getBuilder());
 					first = false;
+				}
+				if(!first) {//非空
+					runs.add(run);
 				}
 			}
 		}

@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 public class PrimaryKey extends Index<PrimaryKey> implements Serializable {
+    protected String keyword = "PrimaryKey";
     public PrimaryKey(){
         primary = true;
     }
@@ -35,5 +36,8 @@ public class PrimaryKey extends Index<PrimaryKey> implements Serializable {
         column.setNullable(false);
         columns.put(column.getName().toUpperCase(), column);
         return this;
+    }
+    public String getKeyword() {
+        return this.keyword;
     }
 }

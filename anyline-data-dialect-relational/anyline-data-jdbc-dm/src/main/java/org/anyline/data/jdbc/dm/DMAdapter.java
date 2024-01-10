@@ -54,7 +54,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.DM;
 	}
 
@@ -72,7 +72,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (DMColumnTypeAlias alias : DMColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 
 		for(DMWriter writer: DMWriter.values()){

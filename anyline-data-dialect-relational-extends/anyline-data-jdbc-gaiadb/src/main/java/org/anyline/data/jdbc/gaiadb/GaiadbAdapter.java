@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.gaiadb")
 public class GaiadbAdapter extends MySQLAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.GaiaDB;
     }
     @Value("${anyline.data.jdbc.delimiter.gaiadb:}")

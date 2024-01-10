@@ -45,7 +45,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.postgresql")
 public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.PostgreSQL;
 	}
 
@@ -63,7 +63,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (PostresqlColumnTypeAlias alias: PostresqlColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(PostgresqlWriter writer: PostgresqlWriter.values()){
 			reg(writer.supports(), writer.writer());

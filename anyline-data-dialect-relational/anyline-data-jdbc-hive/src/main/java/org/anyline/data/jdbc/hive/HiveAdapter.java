@@ -43,7 +43,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.hive")
 public class HiveAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.Hive;
 	}
 
@@ -52,7 +52,7 @@ public class HiveAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Init
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (HiveColumnTypeAlias alias: HiveColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(HiveWriter writer: HiveWriter.values()){
 			reg(writer.supports(), writer.writer());

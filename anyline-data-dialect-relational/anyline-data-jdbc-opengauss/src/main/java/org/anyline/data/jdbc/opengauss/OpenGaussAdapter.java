@@ -50,7 +50,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.opengauss")
 public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.OpenGauss;
 	}
 
@@ -67,7 +67,7 @@ public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapte
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (OpenGaussColumnTypeAlias alias: OpenGaussColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(OpenGaussWriter writer: OpenGaussWriter.values()){
 			reg(writer.supports(), writer.writer());

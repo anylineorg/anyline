@@ -50,7 +50,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.mariadb")
 public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.MariaDB;
 	}
 
@@ -59,7 +59,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (MariaColumnTypeAlias alias: MariaColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(MariaWriter writer: MariaWriter.values()){
 			reg(writer.supports(), writer.writer());

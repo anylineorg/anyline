@@ -71,9 +71,6 @@ public class MasterTable extends Table<MasterTable>  implements Serializable {
         this.partitionBy = partition;
         return this;
     }
-    public String getKeyword() {
-        return this.keyword;
-    }
 
     public LinkedHashMap<String, Table> getPartitions() {
         if(getmap && null != update){
@@ -117,6 +114,9 @@ public class MasterTable extends Table<MasterTable>  implements Serializable {
     }
 
 
+    public String getKeyword() {
+        return this.keyword;
+    }
     public String toString(){
         return this.keyword+":"+name;
     }

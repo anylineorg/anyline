@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.tidb")
 public class TiDBAdapter extends MySQLAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.TiDB;
     }
     @Value("${anyline.data.jdbc.delimiter.tidb:}")

@@ -171,7 +171,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             pks = first.getPrimaryColumns();
@@ -249,7 +249,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             pks = EntityAdapterProxy.primaryKeys(first.getClass());
@@ -6503,7 +6503,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         int col = 0;
         for(DataRow row:set) {
             if(row.hasPrimaryKeys() && null != generator){
-                generator.create(row, typeMetadata(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
 
             if(col > 0){
@@ -6524,7 +6524,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         for(Object obj:list){
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
             if(!create && null != generator){
-                generator.create(obj, typeMetadata(),dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             if(col > 0){
                 builder.append("\n\tUNION ALL");

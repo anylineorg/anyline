@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trigger extends BaseMetadata<Trigger> implements Serializable {
+    protected String keyword = "TRIGGER";
     public enum EVENT{
         INSERT, DELETE, UPDATE;
     }
@@ -41,6 +42,10 @@ public class Trigger extends BaseMetadata<Trigger> implements Serializable {
     private List<EVENT> events = new ArrayList<>();
     private boolean each = true; //每行触发发
 
+    public Trigger drop(){
+        this.action = ACTION.DDL.TRIGGER_DROP;
+        return super.drop();
+    }
     public void setEach(boolean each) {
         this.each = each;
     }
@@ -104,6 +109,9 @@ public class Trigger extends BaseMetadata<Trigger> implements Serializable {
         return each;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
     public Trigger clone(){
         Trigger copy = super.clone();
         copy.events.addAll(this.events);

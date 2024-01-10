@@ -46,14 +46,14 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.derby")
 public class DerbyAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.Derby;
 	}
 	public DerbyAdapter(){
 		delimiterFr = "";
 		delimiterTo = "";
 		for (DerbyColumnTypeAlias alias: DerbyColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 

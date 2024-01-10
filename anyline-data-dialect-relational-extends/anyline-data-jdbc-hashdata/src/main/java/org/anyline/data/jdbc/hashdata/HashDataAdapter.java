@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.hashdata")
 public class HashDataAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.HashData;
     }
     @Value("${anyline.data.jdbc.delimiter.hashdata:}")

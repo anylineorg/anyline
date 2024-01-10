@@ -49,7 +49,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.KingBase;
 	}
 	@Value("${anyline.data.jdbc.delimiter.kingbase:}")
@@ -66,7 +66,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 		delimiterFr = "";
 		delimiterTo = "";
 		for (KingbaseColumnTypeAlias alias : KingbaseColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 
 		for(KingbaseWriter writer: KingbaseWriter.values()){

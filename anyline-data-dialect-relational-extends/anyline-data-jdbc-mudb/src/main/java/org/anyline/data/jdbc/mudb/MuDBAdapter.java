@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.mudb")
 public class MuDBAdapter extends OpenGaussAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.MuDB;
     }
     @Value("${anyline.data.jdbc.delimiter.mudb:}")

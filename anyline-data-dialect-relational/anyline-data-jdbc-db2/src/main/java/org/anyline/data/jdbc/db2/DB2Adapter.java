@@ -60,7 +60,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.db2")
 public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.DB2;
 	} 
 	public DB2Adapter(){

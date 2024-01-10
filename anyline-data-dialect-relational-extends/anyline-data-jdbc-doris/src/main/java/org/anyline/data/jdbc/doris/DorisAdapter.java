@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.doris")
 public class DorisAdapter extends MySQLAdapter {
 
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.Doris;
     }
     @Value("${anyline.data.jdbc.delimiter.doris:}")

@@ -59,7 +59,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public boolean match(DataRuntime runtime, boolean compensate) {
-        List<String> keywords = typeMetadata().keywords(); //关键字+jdbc-url前缀+驱动类
+        List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
         String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
         boolean chk = match(feature, keywords, compensate);
         if(chk) {
@@ -146,7 +146,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         }
 
         LinkedHashMap<String, Column> pks = null;
-        PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator){
             pks = set.getRow(0).getPrimaryColumns();
             columns.putAll(pks);
@@ -174,7 +174,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             }
             if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
                 if(null != generator){
-                    generator.create(row, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 }
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
@@ -209,7 +209,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             return;
         }
 
-        PrimaryGenerator generator = checkPrimaryGenerator(typeMetadata(), dest.getName());
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         LinkedHashMap<String, Column> pks = null;
         if(null != generator) {
             Object entity = list.iterator().next();
@@ -243,7 +243,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             }else{*/
                 boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
                 if(!create && null != generator){
-                    generator.create(obj, typeMetadata(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                    generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
             builder.append(insertValue(runtime, run, obj, true, true, false, false, columns));

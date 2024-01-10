@@ -46,7 +46,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.clickhouse")
 public class ClickhouseAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.ClickHouse;
 	}
 

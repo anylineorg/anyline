@@ -47,7 +47,7 @@ import java.util.Map;
 public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.oscar;
 	} 
 	public OscarAdapter(){
@@ -55,7 +55,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 		delimiterTo = "";
 
 		for (OscarColumnTypeAlias alias : OscarColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(OscarWriter writer: OscarWriter.values()){
 			reg(writer.supports(), writer.writer());

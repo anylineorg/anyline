@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.oceanbase")
 public class OceanBaseAdapter extends MySQLAdapter {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.OceanBase;
 	} 
 	public OceanBaseAdapter(){

@@ -47,14 +47,14 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.highgo")
 public class HighgoAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.HighGo;
 	}
 	public HighgoAdapter(){
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (HighgoColumnTypeAlias alias: HighgoColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(HighgoWriter writer: HighgoWriter.values()){
 			reg(writer.supports(), writer.writer());

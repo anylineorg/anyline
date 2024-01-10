@@ -43,7 +43,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.mysql")
 public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.MySQL; 
 	}
  
@@ -52,7 +52,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(MySQLWriter writer: MySQLWriter.values()){
 			reg(writer.supports(), writer.writer());

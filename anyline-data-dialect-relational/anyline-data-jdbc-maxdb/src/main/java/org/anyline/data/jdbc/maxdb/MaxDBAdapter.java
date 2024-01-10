@@ -45,7 +45,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.maxdb")
 public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.MariaDB;
 	}
 
@@ -55,7 +55,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		delimiterTo = "";
 
 		for (MaxDBColumnTypeAlias alias: MaxDBColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.maxdb:}")

@@ -20,7 +20,7 @@ package org.anyline.metadata;
 import java.io.Serializable;
 
 public class Label extends Table<Label> implements Serializable {
-    protected String keyword = "Label"            ;
+    protected String keyword = "LABEL"            ;
     protected Label update;
 
     public Label(){
@@ -38,9 +38,13 @@ public class Label extends Table<Label> implements Serializable {
         this.name = name;
     }
 
+    public Label drop(){
+        this.action = ACTION.DDL.COLUMN_DROP;
+        return super.drop();
+    }
 
     public String getKeyword() {
-        return keyword;
+        return this.keyword;
     }
 
     public String toString(){

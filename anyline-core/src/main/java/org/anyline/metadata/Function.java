@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Function extends BaseMetadata<Function> implements Serializable {
+    protected String keyword = "FUNCTION"           ;
     protected List<Parameter> parameters = new ArrayList<>();
     protected String definition;
 
@@ -57,6 +58,9 @@ public class Function extends BaseMetadata<Function> implements Serializable {
         return this;
     }
 
+    public String getKeyword() {
+        return this.keyword;
+    }
 
     public Function clone(){
         Function copy = super.clone();

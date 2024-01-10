@@ -47,7 +47,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.hyper")
 public class HyperAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.HyperSQL;
 	} 
 	public HyperAdapter(){

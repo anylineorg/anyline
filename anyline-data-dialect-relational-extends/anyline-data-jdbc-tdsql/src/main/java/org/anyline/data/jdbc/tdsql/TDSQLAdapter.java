@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.tdsql")
 public class TDSQLAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.TDSQL;
     }
     @Value("${anyline.data.jdbc.delimiter.tdsql:}")

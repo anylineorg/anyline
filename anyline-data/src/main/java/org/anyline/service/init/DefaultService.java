@@ -20,6 +20,7 @@ package org.anyline.service.init;
 import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
 import org.anyline.dao.AnylineDao;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.CacheUtil;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.param.ConfigStore;
@@ -60,9 +61,17 @@ public class DefaultService<E> implements AnylineService<E> {
     @Qualifier("anyline.dao")
     protected AnylineDao dao;
 
+
+
     public String datasource() {
         return dao.runtime().datasource();
     }
+
+    @Override
+    public DriverAdapter adapter() {
+        return dao.runtime().getAdapter();
+    }
+
     protected static CacheProvider cacheProvider;
 
     public CacheProvider getCacheProvider() {

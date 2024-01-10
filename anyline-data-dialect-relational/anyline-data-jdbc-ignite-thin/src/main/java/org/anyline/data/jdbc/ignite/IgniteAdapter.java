@@ -44,7 +44,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.ignite")
 public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.Ignite;
 	}
 
@@ -53,7 +53,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (IgniteColumnTypeAlias alias: IgniteColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.mysql:}")

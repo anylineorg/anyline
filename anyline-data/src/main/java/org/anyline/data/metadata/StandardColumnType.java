@@ -844,6 +844,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         return transfer;
     }
 
+    /**
+     * 支持的数据库类型
+     * @return DatabaseTypes
+     */
     @Override
     public DatabaseType[] dbs() {
         return dbs;

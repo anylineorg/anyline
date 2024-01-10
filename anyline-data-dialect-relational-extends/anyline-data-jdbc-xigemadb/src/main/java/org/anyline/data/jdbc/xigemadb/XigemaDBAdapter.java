@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.xigemadb")
 public class XigemaDBAdapter extends InformixAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.xigemaDB;
     }
     @Value("${anyline.data.jdbc.delimiter.xigemadb:}")

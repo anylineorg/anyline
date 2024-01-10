@@ -20,6 +20,7 @@ import org.anyline.util.BasicUtil;
 import java.io.Serializable;
 
 public class Catalog extends BaseMetadata<Catalog> implements Serializable {
+    protected String keyword = "CATALOG"           ;
     public Catalog(){
 
     }
@@ -34,6 +35,10 @@ public class Catalog extends BaseMetadata<Catalog> implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public String getKeyword() {
+        return this.keyword;
     }
     public boolean equals(Catalog catalog){
         return equals(catalog, true);

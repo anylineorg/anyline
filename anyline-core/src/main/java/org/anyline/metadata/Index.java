@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 public class Index<M extends Index> extends BaseMetadata<M>  implements Serializable {
+    protected String keyword = "INDEX"           ;
     protected String type;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected boolean primary     ; // 是否是主键
@@ -43,6 +44,10 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
     public Index(Table table, String name){
         setTable(table);
         setName(name);
+    }
+    public M drop(){
+        this.action = ACTION.DDL.INDEX_DROP;
+        return super.drop();
     }
     public boolean isCluster() {
         if(getmap && null != update){
@@ -172,12 +177,15 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
         }
         return (M)this;
     }
+    public String getKeyword() {
+        return this.keyword;
+    }
     public boolean equals(Index index){
         if(null == index){
             return false;
         }
-        String this_define = BeanUtil.concat(getColumns().values(), "name",",", false, true);;
-        String index_define = BeanUtil.concat(index.getColumns().values(),"name",",", false, true);
+        String this_define = BeanUtil.concat(getColumns().values(), "name",",", false, true) + ":" + action;
+        String index_define = BeanUtil.concat(index.getColumns().values(),"name",",", false, true) + ":" + index.action;
         return this_define.equalsIgnoreCase(index_define);
     }
 }

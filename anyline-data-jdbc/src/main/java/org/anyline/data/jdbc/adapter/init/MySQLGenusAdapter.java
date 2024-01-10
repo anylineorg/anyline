@@ -3684,9 +3684,8 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception{
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
         if (columns.size() > 0) {
+            Run run = new SimpleRun(runtime);
             StringBuilder builder = run.getBuilder();
             builder.append("ALTER ").append(keyword(table)).append(" ");
             name(runtime, builder, table);
@@ -3704,13 +3703,20 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
             boolean first = true;
             for(Run slice:slices){
                 if(BasicUtil.isNotEmpty(slice)){
+                    String line = slice.getFinalUpdate().trim();
+                    if(BasicUtil.isEmpty(line)){
+                        continue;
+                    }
                     builder.append("\n");
                     if(!first){
                         builder.append(",");
                     }
                     first = false;
-                    builder.append(slice.getFinalUpdate().trim());
+                    builder.append(line);
                 }
+            }
+            if(!first) {//非空
+                runs.add(run);
             }
         }
         return runs;

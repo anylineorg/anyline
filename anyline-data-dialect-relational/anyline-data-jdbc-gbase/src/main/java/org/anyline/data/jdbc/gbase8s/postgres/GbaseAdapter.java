@@ -47,7 +47,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.gbase8s.pg")
 public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata() {
+	public DatabaseType type() {
 		return DatabaseType.GBase8A;
 	}
 
@@ -64,7 +64,7 @@ public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, I
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for (GbaseWriter writer : GbaseWriter.values()) {
 			reg(writer.supports(), writer.writer());

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.data.jdbc.adapter.cmdb")
 public class ChinaMobileDBAdapter extends OpenGaussAdapter {
     
-    public DatabaseType typeMetadata(){
+    public DatabaseType type(){
         return DatabaseType.ChinaMobileDB;
     }
     @Value("${anyline.data.jdbc.delimiter.cmdb:}")

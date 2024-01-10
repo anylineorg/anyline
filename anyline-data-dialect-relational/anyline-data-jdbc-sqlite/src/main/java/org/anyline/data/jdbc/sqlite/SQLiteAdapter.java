@@ -46,7 +46,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.sqlite")
 public class SQLiteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.SQLite;
 	}
 
@@ -56,7 +56,7 @@ public class SQLiteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (SQLiteColumnTypeAlias alias: SQLiteColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.sqlite:}")

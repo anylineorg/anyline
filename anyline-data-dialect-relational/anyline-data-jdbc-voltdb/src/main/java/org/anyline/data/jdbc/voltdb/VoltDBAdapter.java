@@ -40,7 +40,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.voltdb")
 public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.VoltDB;
 	}
 
@@ -49,7 +49,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (VoltDBColumnTypeAlias alias: VoltDBColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(VoltDBWriter writer: VoltDBWriter.values()){
 			reg(writer.supports(), writer.writer());

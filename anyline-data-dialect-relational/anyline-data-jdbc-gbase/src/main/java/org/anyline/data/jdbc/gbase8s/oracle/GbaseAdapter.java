@@ -46,7 +46,7 @@ import java.util.Map;
 @Repository("anyline.data.jdbc.adapter.gbase8s.oracle")
 public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.GBase8S;
 	}
 
@@ -58,7 +58,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 		for(GbaseWriter writer: GbaseWriter.values()){
 			reg(writer.supports(), writer.writer());

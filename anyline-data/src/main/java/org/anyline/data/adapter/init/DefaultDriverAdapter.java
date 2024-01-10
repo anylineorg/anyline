@@ -90,7 +90,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public String delimiterTo = "";
 
 	//根据名称定位数据类型
-	protected Map<String, TypeMetadata> types = new Hashtable();
+	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -103,9 +103,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		for(StandardColumnType type: StandardColumnType.values()){
 			DatabaseType[] dbs = type.dbs();
 			for(DatabaseType db:dbs){
-				if(db == this.typeMetadata()){
+				if(db == this.type()){
 					//column type支持当前db
-					types.put(type.getName(), type);
+					alias.put(type.getName(), type);
 					break;
 				}
 			}
@@ -132,7 +132,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 		}
 	}
-
+	public LinkedHashMap<String, TypeMetadata> alias(){
+		return alias;
+	}
 
 	/* *****************************************************************************************************************
 	 *
@@ -11341,7 +11343,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(type.contains("(")){
 			type = type.split("\\(")[0];
 		}
-		TypeMetadata ct = types.get(type.toUpperCase());
+		TypeMetadata ct = alias.get(type.toUpperCase());
 		if(null != ct){
 			ct.setArray(array);
 		}
@@ -11941,7 +11943,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	@Override
 	public String objectName(DataRuntime runtime, String name) {
-		KeyAdapter.KEY_CASE keyCase = typeMetadata().nameCase();
+		KeyAdapter.KEY_CASE keyCase = type().nameCase();
 		if(null != keyCase){
 			return keyCase.convert(name);
 		}

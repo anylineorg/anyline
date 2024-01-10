@@ -53,7 +53,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.kingbase.pg")
 public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 	
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.KingBase;
 	}
 	@Value("${anyline.data.jdbc.delimiter.kingbase:}")
@@ -69,7 +69,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (KingbaseColumnTypeAlias alias : KingbaseColumnTypeAlias.values()) {
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 
 		for(KingbaseWriter writer: KingbaseWriter.values()){

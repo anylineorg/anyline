@@ -31,13 +31,13 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
     private static Logger log = LoggerFactory.getLogger(ElasticSearchAdapter.class);
 
     @Override
-    public DatabaseType typeMetadata() {
+    public DatabaseType type() {
         return DatabaseType.ElasticSearch;
     }
     public ElasticSearchAdapter(){
         super();
         for (ElasticSearchColumnTypeAlias alias : ElasticSearchColumnTypeAlias.values()) {
-            types.put(alias.name(), alias.standard());
+            this.alias.put(alias.name(), alias.standard());
         }
     }
 

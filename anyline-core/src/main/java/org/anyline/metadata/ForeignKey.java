@@ -21,6 +21,7 @@ package org.anyline.metadata;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
+    protected String keyword = "FOREIGNKEY"           ;
     public boolean isForeign(){
         return true;
     }
@@ -125,6 +126,9 @@ public class ForeignKey extends Constraint<ForeignKey> implements Serializable {
         return this;
     }
 
+    public String getKeyword() {
+        return this.keyword;
+    }
     public ForeignKey clone(){
         ForeignKey copy = super.clone();
         copy.reference = this.reference.clone();

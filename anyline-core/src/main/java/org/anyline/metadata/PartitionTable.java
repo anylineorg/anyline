@@ -44,5 +44,4 @@ public class PartitionTable extends Table<PartitionTable> implements Serializabl
     public String toString(){
         return this.keyword+":"+name;
     }
-
 }

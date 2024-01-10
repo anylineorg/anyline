@@ -48,7 +48,7 @@ import java.util.*;
 @Repository("anyline.data.jdbc.adapter.mssql") 
 public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
 
-	public DatabaseType typeMetadata(){
+	public DatabaseType type(){
 		return DatabaseType.MSSQL; 
 	}
 	public String version(){return "2005";}
@@ -66,7 +66,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		delimiterFr = "[";
 		delimiterTo = "]";
 		for (MSSQLColumnTypeAlias alias: MSSQLColumnTypeAlias.values()){
-			types.put(alias.name(), alias.standard());
+			this.alias.put(alias.name(), alias.standard());
 		}
 	}
 
