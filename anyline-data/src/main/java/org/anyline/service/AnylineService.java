@@ -2335,6 +2335,51 @@ public interface AnylineService<E>{
 			return function(false, name);
 		}
 		List<String> ddl(Function function);
+
+
+		/* *****************************************************************************************************************
+		 * 													sequence
+		 ******************************************************************************************************************/
+
+		<T extends Sequence> List<T> sequences(boolean greedy, Catalog catalog, Schema schema, String name);
+		default <T extends Sequence> List<T> sequences(boolean greedy, Schema schema, String name){
+			return sequences(greedy, null, schema, name);
+		}
+		default <T extends Sequence> List<T> sequences(boolean greedy, String name){
+			return sequences(greedy, null, null, name);
+		}
+		default <T extends Sequence> List<T> sequences(boolean greedy){
+			return sequences(greedy, null, null, null);
+		}
+		<T extends Sequence> LinkedHashMap<String, T> sequences(Catalog catalog, Schema schema, String name);
+		default <T extends Sequence> LinkedHashMap<String, T> sequences(Schema schema, String name){
+			return sequences(null, schema, name);
+		}
+		default <T extends Sequence> LinkedHashMap<String, T> sequences(String name){
+			return sequences(null, name);
+		}
+		default <T extends Sequence> LinkedHashMap<String, T> sequences(){
+			return sequences(null);
+		}
+
+
+		Sequence sequence(boolean greedy, Catalog catalog, Schema schema, String name);
+		default Sequence sequence(boolean greedy, Schema schema, String name){
+			return sequence(greedy, null, schema, name);
+		}
+		default Sequence sequence(boolean greedy, String name){
+			return sequence(greedy, null, null, name);
+		}
+		default Sequence sequence(Catalog catalog, Schema schema, String name){
+			return sequence(false, catalog, schema, name);
+		}
+		default Sequence sequence(Schema schema, String name){
+			return sequence(false, schema, name);
+		}
+		default Sequence sequence(String name){
+			return sequence(false, name);
+		}
+		List<String> ddl(Sequence sequence);
 	}
 
 
@@ -2517,6 +2562,19 @@ public interface AnylineService<E>{
 		boolean alter(Function function) throws Exception;
 		boolean drop(Function function) throws Exception;
 		boolean rename(Function origin, String name) throws Exception;
+		/* *****************************************************************************************************************
+		 * 													sequence
+		 ******************************************************************************************************************/
+		/**
+		 * 函数
+		 * @param sequence 序列
+		 * @return boolean
+		 * @throws Exception 异常 Exception
+		 */
+		boolean create(Sequence sequence) throws Exception;
+		boolean alter(Sequence sequence) throws Exception;
+		boolean drop(Sequence sequence) throws Exception;
+		boolean rename(Sequence origin, String name) throws Exception;
 	}
 
 

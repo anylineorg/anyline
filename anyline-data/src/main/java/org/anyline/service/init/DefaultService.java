@@ -2465,7 +2465,6 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													trigger
          ******************************************************************************************************************/
 
-
         @Override
         public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events) {
             String[] ps = DataSourceUtil.parseRuntime(table);
@@ -2560,6 +2559,43 @@ public class DefaultService<E> implements AnylineService<E> {
                 return ServiceProxy.service(ps[0]).metadata().ddl(function);
             }
             return dao.ddl(function);
+        }
+
+        /* *****************************************************************************************************************
+         * 													sequence
+         ******************************************************************************************************************/
+        @Override
+        public <T extends Sequence> List<T> sequences(boolean greedy, Catalog catalog, Schema schema, String name) {
+            String[] ps = DataSourceUtil.parseRuntime(name);
+            if(null != ps[0]){
+                return ServiceProxy.service(ps[0]).metadata().sequences(greedy, catalog, schema, ps[0]);
+            }
+            return dao.sequences(greedy, catalog, schema, name);
+        }
+        @Override
+        public <T extends Sequence> LinkedHashMap<String, T> sequences(Catalog catalog, Schema schema, String name) {
+            String[] ps = DataSourceUtil.parseRuntime(name);
+            if(null != ps[0]){
+                return ServiceProxy.service(ps[0]).metadata().sequences(catalog, schema, ps[0]);
+            }
+            return dao.sequences(catalog, schema, name);
+        }
+        @Override
+        public Sequence sequence(boolean greedy, Catalog catalog, Schema schema, String name) {
+            List<Sequence> sequences = sequences(greedy, catalog, schema, name);
+            if(null != sequences && !sequences.isEmpty()){
+                return sequences.get(0);
+            }
+            return null;
+        }
+        @Override
+        public List<String> ddl(Sequence sequence) {
+            String[] ps = DataSourceUtil.parseRuntime(sequence.getName());
+            if(null != ps[0]){
+                sequence.setName(ps[1]);
+                return ServiceProxy.service(ps[0]).metadata().ddl(sequence);
+            }
+            return dao.ddl(sequence);
         }
     };
     /* *****************************************************************************************************************
@@ -3301,5 +3337,34 @@ public class DefaultService<E> implements AnylineService<E> {
             return result;
         }
 
+        /* *****************************************************************************************************************
+         * 													sequence
+         ******************************************************************************************************************/
+        /**
+         * 函数
+         * @param function 函数
+         * @return boolean
+         * @throws Exception 异常 Exception
+         */
+        @Override
+        public boolean create(Sequence sequence) throws Exception{
+            boolean result = dao.create(sequence);
+            return result;
+        }
+        @Override
+        public boolean alter(Sequence sequence) throws Exception{
+            boolean result = dao.alter(sequence);
+            return result;
+        }
+        @Override
+        public boolean drop(Sequence sequence) throws Exception{
+            boolean result = dao.drop(sequence);
+            return result;
+        }
+        @Override
+        public boolean rename(Sequence origin, String name) throws Exception{
+            boolean result = dao.rename(origin, name);
+            return result;
+        }
     };
 }

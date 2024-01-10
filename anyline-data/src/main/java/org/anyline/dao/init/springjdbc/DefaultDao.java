@@ -1239,6 +1239,38 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return runtime.getAdapter().ddl(runtime, random, function);
 	}
+
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 ******************************************************************************************************************/
+	@Override
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().sequences(runtime, random, greedy, catalog, schema, name);
+	}
+	@Override
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().sequences(runtime, random, catalog, schema, name);
+	}
+
+	/**
+	 * 查询 sequence 创建SQL
+	 * @param sequence 序列
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, Sequence sequence){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().ddl(runtime, random, sequence);
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
@@ -1713,6 +1745,37 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public boolean rename(Function origin, String name) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().rename(runtime, origin, name);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(Sequence meta) throws Exception
+	 * boolean alter(Sequence meta) throws Exception
+	 * boolean drop(Sequence meta) throws Exception
+	 * boolean rename(Sequence origin, String name)  throws Exception
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(Sequence meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().create(runtime, meta);
+	}
+
+
+	@Override
+	public boolean alter(Sequence meta) throws Exception{
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().alter(runtime, meta);
+	}
+	@Override
+	public boolean drop(Sequence meta) throws Exception {
+		DataRuntime runtime = runtime();
+		return runtime.getAdapter().drop(runtime, meta);
+	}
+	@Override
+	public boolean rename(Sequence origin, String name) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().rename(runtime, origin, name);
 	}

@@ -2669,7 +2669,7 @@ public interface DriverAdapter {
 
 	/**
 	 * function[结果集封装]<br/>
-	 * 根据查询结果集构造 Trigger
+	 * 根据查询结果集构造 Function
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2729,6 +2729,122 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set);
+
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 ******************************************************************************************************************/
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
+	<T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
+	<T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
+	/**
+	 * sequence[命令合成]<br/>
+	 * 查询表上的 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return sqls
+	 */
+	List<Run> buildQuerysequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果集构造 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @param set 查询结果集
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	<T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果集构造 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @param set 查询结果集
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	<T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据驱动内置接口补充 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	<T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception;
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据驱动内置接口补充 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	<T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences) throws Exception;
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param sequence Sequence
+	 * @return ddl
+	 */
+	List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
+	/**
+	 * sequence[命令合成]<br/>
+	 * 查询序列DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param sequence 序列
+	 * @return List
+	 */
+	List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 查询 Sequence DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param sequence Sequence
+	 * @param ddls 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 */
+	List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set);
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
@@ -4616,6 +4732,95 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildRenameRun(DataRuntime runtime, Function meta) throws Exception;
 
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * boolean create(DataRuntime runtime, Sequence meta) throws Exception
+	 * boolean alter(DataRuntime runtime, Sequence meta) throws Exception
+	 * boolean drop(DataRuntime runtime, Sequence meta) throws Exception
+	 * boolean rename(DataRuntime runtime, Sequence origin, String name)  throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 添加序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	boolean create(DataRuntime runtime, Sequence meta) throws Exception;
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 修改序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	boolean alter(DataRuntime runtime, Sequence meta) throws Exception;
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 删除序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	boolean drop(DataRuntime runtime, Sequence meta) throws Exception;
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 重命名序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param origin 序列
+	 * @param name 新名称
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	boolean rename(DataRuntime runtime, Sequence origin, String name) throws Exception;
+
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 添加序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return String
+	 */
+	List<Run> buildCreateRun(DataRuntime runtime, Sequence meta) throws Exception;
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 修改序列
+	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return List
+	 */
+	List<Run> buildAlterRun(DataRuntime runtime, Sequence meta) throws Exception;
+
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 删除序列
+	 * @param meta 序列
+	 * @return String
+	 */
+	List<Run> buildDropRun(DataRuntime runtime, Sequence meta) throws Exception;
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 修改序列名
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return String
+	 */
+	List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception;
 	/* *****************************************************************************************************************
 	 *
 	 * 													common

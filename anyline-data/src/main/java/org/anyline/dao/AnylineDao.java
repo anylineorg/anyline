@@ -1074,6 +1074,25 @@ public interface AnylineDao<E>{
 	}
 
 	/* *****************************************************************************************************************
+	 * 													sequence
+	 ******************************************************************************************************************/
+
+	<T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name);
+	default <T extends Sequence> List<T> sequences(boolean greedy, Catalog catalog, Schema schema, String name){
+		return sequences(runtime(), null, greedy, catalog, schema, name);
+	}
+
+	<T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name);
+	default <T extends Sequence> LinkedHashMap<String, T> sequences(Catalog catalog, Schema schema, String name){
+		return sequences(runtime(), null, catalog, schema, name);
+	}
+
+	List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
+	default List<String> ddl(Sequence sequence){
+		return ddl(runtime(), null, sequence);
+	}
+
+	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
@@ -1213,4 +1232,17 @@ public interface AnylineDao<E>{
 	boolean alter(Function function) throws Exception;
 	boolean drop(Function function) throws Exception;
 	boolean rename(Function origin, String name) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 ******************************************************************************************************************/
+	/**
+	 * 函数
+	 * @param sequence 序列
+	 * @return boolean
+	 * @throws Exception 异常 Exception
+	 */
+	boolean create(Sequence sequence) throws Exception;
+	boolean alter(Sequence sequence) throws Exception;
+	boolean drop(Sequence sequence) throws Exception;
+	boolean rename(Sequence origin, String name) throws Exception;
 } 
