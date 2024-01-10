@@ -3,11 +3,14 @@ package org.anyline.metadata;
 public class Sequence {
     protected String keyword = "SEQUENCE";
     private String name;
+    private Long min = 0L;
+    private Long max;
+    private Long last;
     private boolean next = true;//NEXTVAL  CURRVAL
     private int start = 0;
     private int increment = 1;
     private int cache = 100;
-    private int min = 0;
+    private boolean cycle = false;
     private boolean fetchValueBeforeInsert = false; //在插入前先获取实际值
 
     public Sequence(){
@@ -74,12 +77,8 @@ public class Sequence {
         this.cache = cache;
     }
 
-    public int getMin() {
+    public Long getMin() {
         return min;
-    }
-
-    public void setMin(int min) {
-        this.min = min;
     }
 
     public boolean isFetchValueBeforeInsert() {
@@ -91,5 +90,37 @@ public class Sequence {
     }
     public String getKeyword() {
         return this.keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public void setMin(Long min) {
+        this.min = min;
+    }
+
+    public Long getMax() {
+        return max;
+    }
+
+    public void setMax(Long max) {
+        this.max = max;
+    }
+
+    public Long getLast() {
+        return last;
+    }
+
+    public void setLast(Long last) {
+        this.last = last;
+    }
+
+    public boolean isCycle() {
+        return cycle;
+    }
+
+    public void setCycle(boolean cycle) {
+        this.cycle = cycle;
     }
 }
