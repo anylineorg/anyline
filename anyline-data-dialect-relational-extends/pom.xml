@@ -19,7 +19,6 @@
 		<module>anyline-data-jdbc-cudb</module>				<!--中国联通-->
 		<module>anyline-data-jdbc-hashdata</module>			<!--酷克数据-->
 		<module>anyline-data-jdbc-hotdb</module>				<!--热璞-->
-		<module>anyline-data-jdbc-doris</module>				<!--Apache Doris-->
 		<module>anyline-data-jdbc-gaiadb</module>				<!--百度-->
 		<module>anyline-data-jdbc-goldendb</module>			<!--中兴-->
 		<module>anyline-data-jdbc-greatdb</module>			<!--万里数据库-->

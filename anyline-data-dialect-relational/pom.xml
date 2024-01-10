@@ -21,6 +21,7 @@
 		<module>anyline-data-jdbc-db2</module>
 		<module>anyline-data-jdbc-derby</module>
 		<module>anyline-data-jdbc-dm</module>
+		<module>anyline-data-jdbc-doris</module>				<!--Apache Doris-->
 		<module>anyline-data-jdbc-edb</module>
 		<module>anyline-data-jdbc-gbase</module>					<!--南大通用(oracle)-->
 		<module>anyline-data-jdbc-h2</module>
