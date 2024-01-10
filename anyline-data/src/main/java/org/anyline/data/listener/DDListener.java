@@ -313,6 +313,30 @@ public interface DDListener {
 
 
     /**
+     * 创建 sequence 之前触发
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param sequence sequence
+     * @return default SWITCH  如果返回false则中断执行
+     */
+    default SWITCH prepareCreate(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+
+    default SWITCH prepareRename(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+
+
+    /**
      * 创建 trigger 之前触发
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
