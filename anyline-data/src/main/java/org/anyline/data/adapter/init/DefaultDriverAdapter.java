@@ -6305,6 +6305,227 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
+	 * [命令合成]
+	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences)
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences)
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
+		}
+		return new ArrayList<>();
+	}
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern)", 37));
+		}
+		return new LinkedHashMap<>();
+	}
+	/**
+	 * sequence[命令合成]<br/>
+	 * 查询表上的 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return sqls
+	 */
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果集构造 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @param set 查询结果集
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set)", 37));
+		}
+		return new ArrayList<>();
+	}
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果集构造 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @param set 查询结果集
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set)", 37));
+		}
+		return new LinkedHashMap<>();
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据驱动内置接口补充 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据驱动内置接口补充 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences)", 37));
+		}
+		return new LinkedHashMap<>();
+	}
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta Sequence
+	 * @return ddl
+	 */
+	public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDdlsRun(runtime, meta);
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
+				int idx = 0;
+				for (Run run : runs) {
+					//不要传table,这里的table用来查询表结构
+					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					list = ddl(runtime, idx++, meta, list, set);
+				}
+				if(list.size()>0) {
+					meta.setDdls(list);
+				}
+			}else{
+				//数据库不支持的 根据definition拼装
+			}
+			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[sequence ddl][sequence:{}][result:{}][执行耗时:{}ms]", random, meta.getName(), list.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+				log.info("{}[sequence ddl][{}][sequence:{}][msg:{}]", random, LogUtil.format("查询序列的创建DDL失败", 33), meta.getName(), e.toString());
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 查询序列DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta) throws Exception{
+		List<Run> runs = new ArrayList<>();
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta)", 37));
+		}
+		return runs;
+	}
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 查询 Sequence DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param sequence Sequence
+	 * @param ddls 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
+	/* *****************************************************************************************************************
+	 * 													common
+	 * ----------------------------------------------------------------------------------------------------------------
+	 */
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
@@ -11287,6 +11508,274 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public List<Run> buildRenameRun(DataRuntime runtime, Function meta) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Function meta)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, Sequence meta)
+	 * boolean alter(DataRuntime runtime, Sequence meta)
+	 * boolean drop(DataRuntime runtime, Sequence meta)
+	 * boolean rename(DataRuntime runtime, Sequence origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildDropRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Sequence sequence)
+	 ******************************************************************************************************************/
+
+	/**
+	 * sequence[调用入口]
+	 * 添加序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	public boolean create(DataRuntime runtime, Sequence meta) throws Exception{
+		boolean result = true;
+		ACTION.DDL action = ACTION.DDL.SEQUENCE_CREATE;
+		String random = random(runtime);
+		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt = ddListener.prepareCreate(runtime, random, meta);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		checkSchema(runtime, meta);
+		List<Run> runs = buildCreateRun(runtime, meta);
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, meta, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			swt = ACTION.SWITCH.CONTINUE;
+			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+
+			if(null != ddListener){
+				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == ACTION.SWITCH.CONTINUE){
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * sequence[调用入口]
+	 * 修改序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	public boolean alter(DataRuntime runtime, Sequence meta) throws Exception{
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.DDL action = ACTION.DDL.SEQUENCE_ALTER;
+		ACTION.SWITCH swt  = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		checkSchema(runtime, meta);
+		List<Run> runs = buildAlterRun(runtime, meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt =  ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+
+		long fr = System.currentTimeMillis();
+		try {
+			result = execute(runtime, random, meta, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = ACTION.SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == ACTION.SWITCH.CONTINUE){
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * sequence[调用入口]
+	 * 删除序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	public boolean drop(DataRuntime runtime, Sequence meta) throws Exception{
+		boolean result = false;
+		String random = random(runtime);
+		ACTION.DDL action = ACTION.DDL.SEQUENCE_DROP;
+		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt = ddListener.prepareDrop(runtime, random, meta);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		checkSchema(runtime, meta);
+
+		List<Run> runs = buildDropRun(runtime, meta);
+		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt = ddListener.beforeDrop(runtime, random, meta, runs);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, meta, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, meta.getName(), runs.size(), result, millis);
+			}
+			swt = ACTION.SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
+			}
+			if(swt == ACTION.SWITCH.CONTINUE) {
+				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * sequence[调用入口]
+	 * 重命名序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param origin 序列
+	 * @param name 新名称
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	public boolean rename(DataRuntime runtime, Sequence origin, String name) throws Exception{
+		boolean result = false;
+		ACTION.DDL action = ACTION.DDL.SEQUENCE_RENAME;
+		String random = random(runtime);
+		origin.setNewName(name);
+		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt = ddListener.prepareRename(runtime, random, origin);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		checkSchema(runtime, origin);
+
+		List<Run> runs = buildRenameRun(runtime, origin);
+		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
+		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
+			swt = ddListener.beforeRename(runtime, random, origin, runs);
+		}
+		if(swt == ACTION.SWITCH.BREAK){
+			return false;
+		}
+		long fr = System.currentTimeMillis();
+		try{
+			result = execute(runtime, random, origin, action, runs);
+		}finally {
+			long millis = System.currentTimeMillis() - fr;
+			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
+				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}ms]", random, action, origin.getName(), name, runs.size(), result, millis);
+			}
+			swt = ACTION.SWITCH.CONTINUE;
+			if(null != ddListener){
+				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
+			}
+			if(swt == ACTION.SWITCH.CONTINUE) {
+				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 添加序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return String
+	 */
+	public List<Run> buildCreateRun(DataRuntime runtime, Sequence meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildCreateRun(DataRuntime runtime, Sequence meta)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 修改序列
+	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return List
+	 */
+	public List<Run> buildAlterRun(DataRuntime runtime, Sequence meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Sequence meta)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 删除序列
+	 * @param meta 序列
+	 * @return String
+	 */
+	public List<Run> buildDropRun(DataRuntime runtime, Sequence meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Sequence meta)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 修改序列名
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return String
+	 */
+	public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Sequence meta)", 37));
 		}
 		return new ArrayList<>();
 	}
