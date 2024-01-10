@@ -12,7 +12,7 @@ public class Sequence extends BaseMetadata<Sequence> implements Serializable {
     private int start = 0;
     private int increment = 1;
     private int cache = 100;
-    private boolean cycle = false;
+    private Boolean cycle = false;
     private boolean fetchValueBeforeInsert = false; //在插入前先获取实际值
 
     public Sequence(){
@@ -119,11 +119,11 @@ public class Sequence extends BaseMetadata<Sequence> implements Serializable {
         this.last = last;
     }
 
-    public boolean isCycle() {
+    public Boolean isCycle() {
         return cycle;
     }
 
-    public void setCycle(boolean cycle) {
+    public void setCycle(Boolean cycle) {
         this.cycle = cycle;
     }
 }
