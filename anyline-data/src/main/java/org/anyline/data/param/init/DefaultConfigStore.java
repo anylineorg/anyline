@@ -574,7 +574,7 @@ public class DefaultConfigStore implements ConfigStore {
 			compare = Compare.AUTO;
 		}
 		int compareCode = compare.getCode();
-		if(null == prefix && var.contains(".")){
+		if(null == prefix && null != var && var.contains(".")){
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}

@@ -28,6 +28,7 @@ import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -1805,6 +1806,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		Run run = null;
 		if(prepare instanceof TablePrepare){
 			run = new TableRun(runtime, prepare.getTable());
+			//检测 likes
+			likes(runtime, prepare.getTable(), configs);
 		}else if(prepare instanceof XMLPrepare){
 			run = new XMLRun();
 		}else if(prepare instanceof TextPrepare){
@@ -1832,6 +1835,32 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		convert(runtime, configs, run);
 		return run;
+	}
+	private void likes(DataRuntime runtime,Table table, ConfigStore configs){
+		if(null == table || null == configs){
+			return;
+		}
+		List<Config> list = configs.getConfigChain().getConfigs();
+		for(Config config:list){
+			if(config.getCompare() == Compare.LIKES){
+				LinkedHashMap<String, Column> colums = columns(runtime, null, false, table, false);
+				list.remove(config);
+				ConfigStore ors = new DefaultConfigStore();
+				List<Object> values = config.getValues();
+				Object value = null;
+				if(null != values && !values.isEmpty()){
+					value = values.get(0);
+				}
+				for(Column column:colums.values()){
+					TypeMetadata tm = column.getTypeMetadata();
+					if(null != tm && tm.getCategory() == TypeMetadata.CATEGORY.STRING) {
+						ors.or(Compare.LIKE, column.getName(), value);
+					}
+				}
+				configs.and(ors);
+				break;
+			}
+		}
 	}
 
 	/**

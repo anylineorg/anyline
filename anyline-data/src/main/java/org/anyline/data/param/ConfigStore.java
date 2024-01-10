@@ -642,7 +642,7 @@ public interface ConfigStore {
 		return likes(EMPTY_VALUE_SWITCH.IGNORE, value);
 	}
 	default ConfigStore likes(EMPTY_VALUE_SWITCH swt, String value){
-		return and(swt, Compare.LIKES, value);
+		return and(swt, Compare.LIKES, null, value);
 	}
 	default ConfigStore like(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
 		return and(swt, Compare.LIKE, id, var, value, overCondition, overValue);
