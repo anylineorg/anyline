@@ -336,6 +336,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *
      * ****************************************************************************************************************/
     , BIT(CATEGORY.BOOLEAN, "BIT", new DatabaseType[]{MySQL, MSSQL}, Boolean.class, true, true)
+    , BITMAP(CATEGORY.BYTES, "BITMAP", new DatabaseType[]{Doris}, Byte.class, true, true)
     , VARBIT(CATEGORY.BOOLEAN, "VARBIT", new DatabaseType[]{PostgreSQL}, Byte[].class, true, true)
     , SHORT(CATEGORY.INT, "SHORT", new DatabaseType[]{}, Short.class, true, true)
 
@@ -355,6 +356,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , INT4(CATEGORY.INT, "INT4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
    , INT8(CATEGORY.INT, "INT8", new DatabaseType[]{PostgreSQL, Informix}, Long.class, true, true)
    , BIGINT(CATEGORY.INT, "BIGINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase}, Long.class, true, true)
+   , LARGEINT(CATEGORY.INT, "LARGEINT", new DatabaseType[]{Doris}, Long.class, true, true)
    , MEDIUMINT(CATEGORY.INT, "MEDIUMINT", new DatabaseType[]{MySQL}, Integer.class, true, true)
    , INTEGER(CATEGORY.INT, "INTEGER", new DatabaseType[]{MySQL, SQLite, HANA, ElasticSearch, Derby, KingBase}, Integer.class, true, true)
    , SMALLINT(CATEGORY.INT, "SMALLINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase}, Integer.class, true, true)
@@ -402,7 +404,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      * pg:
      * informix(p)
      * oracle(p)
-     * mysql, , oracle(BigDecimal)
+     * mysql, oracle(BigDecimal)
      */
    , FLOAT_MySQL(CATEGORY.FLOAT, "FLOAT", new DatabaseType[]{MySQL}, Float.class, false, false){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
@@ -585,7 +587,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *
      * ****************************************************************************************************************/
     /**
-     * mysql(byte[]), , oracle, sqlite
+     * mysql(byte[]), oracle, sqlite
      */
    , BLOB(CATEGORY.BYTES, "BLOB", new DatabaseType[]{MySQL, ORACLE, SQLite, Informix, HANA, Derby, KingBase}, byte[].class, true, true){
         public Object read(Object value, Object def, Class clazz){

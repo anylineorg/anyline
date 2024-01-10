@@ -22,103 +22,103 @@ import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
-    BFILE                   (TypeMetadata.ILLEGAL                       ), //    , , oracle,
-    BINARY_DOUBLE           (StandardColumnType.NUMERIC               ), //    , , oracle,
-    BINARY_FLOAT            (StandardColumnType.FLOAT_MSSQL              ), //    , , oracle,
-    BIGINT                  (StandardColumnType.BIGINT                ), //mysql, , , mssql,
-    BIGSERIAL               (StandardColumnType.BIGINT                ), //    , pg,
-    BINARY                  (StandardColumnType.BINARY                ), //mysql, , , mssql,
-    BIT                     (StandardColumnType.BIT                   ), //mysql, pg, , mssql,
-    BLOB                    (StandardColumnType.VARBINARY             ), //mysql, , oracle, , sqlite
-    BOOL                    (StandardColumnType.BIT                   ), //    , pg
-    BOX                     (StandardColumnType.ILLEGAL               ), //    , pg
-    BYTEA                   (StandardColumnType.VARBINARY             ), //    , pg
-    CHAR                    (StandardColumnType.CHAR                  ), //mysql, pg, oracle, mssql,
-    CIDR                    (StandardColumnType.ILLEGAL               ), //      pg
-    CIRCLE                  (StandardColumnType.ILLEGAL               ), //      pg
-    CLOB                    (StandardColumnType.TEXT                  ), //    , , oracle
-    DATE                    (StandardColumnType.DATE                  ), //mysql, pg, oracle, mssql
-    DATETIME                (StandardColumnType.DATETIME              ), //mysql, , , mssql
-    DATETIME2               (StandardColumnType.DATETIME2             ), //mysql, , , mssql
-    DATETIMEOFFSET          (StandardColumnType.DATETIMEOFFSET        ), //mysql, , , mssql
-    DECIMAL                 (StandardColumnType.DECIMAL               ), //mysql, pg, oracle, mssql
-    DOUBLE                  (StandardColumnType.DECIMAL               ), //mysql,
-    ENUM                    (StandardColumnType.ILLEGAL               ), //mysql,
-    FLOAT                   (StandardColumnType.FLOAT_MSSQL                 ), //mysql, , oracle, mssql
-    FLOAT4                  (StandardColumnType.FLOAT_MSSQL                 ), //    , pg
-    FLOAT8                  (StandardColumnType.FLOAT_MSSQL                 ), //    , pg
-    GEOGRAPHY               (StandardColumnType.GEOGRAPHY             ), //    , , , mssql
-    GEOMETRY                (StandardColumnType.ILLEGAL               ), //mysql
-    GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ), //mysql
-    HIERARCHYID             (StandardColumnType.HIERARCHYID           ), //    , , , mssql
-    IMAGE                   (StandardColumnType.IMAGE                 ), //    , , , mssql
-    INET                    (StandardColumnType.ILLEGAL               ), //    , pg
-    INTERVAL                (StandardColumnType.ILLEGAL               ), //    , pg
-    INT                     (StandardColumnType.INT                   ), //mysql, , , mssql,
-    INT2                    (StandardColumnType.INT                   ), //    , pg
-    INT4                    (StandardColumnType.INT                   ), //    , pg
-    INT8                    (StandardColumnType.BIGINT                ), //    , pg
-    INTEGER                 (StandardColumnType.INT                   ), //mysql                , sqlite
-    JSON                    (StandardColumnType.ILLEGAL               ), //mysql, pg
-    JSONB                   (StandardColumnType.ILLEGAL               ), //    , pg
-    LINE                    (StandardColumnType.ILLEGAL               ), //mysql, pg
-    LONG                    (StandardColumnType.BIGINT                ), //    , , oracle
-    LONGBLOB                (StandardColumnType.VARBINARY             ), //mysql
-    LONGTEXT                (StandardColumnType.TEXT                  ), //mysql
-    LSEG                    (StandardColumnType.ILLEGAL               ), //    , pg
-    MACADDR                 (StandardColumnType.ILLEGAL               ), //    , pg
-    MONEY                   (StandardColumnType.MONEY                 ), //    , pg, , mssql
-    NUMBER                  (StandardColumnType.NUMERIC               ), //    , , oracle
-    NCHAR                   (StandardColumnType.NCHAR                 ), //    , , oracle, mssql
-    NCLOB                   (StandardColumnType.VARBINARY             ), //    , , oracle
-    NTEXT                   (StandardColumnType.NTEXT                 ), //    , , , mssql
-    NVARCHAR                (StandardColumnType.NVARCHAR              ), //    , , , mssql
-    NVARCHAR2               (StandardColumnType.NVARCHAR              ), //    , , oracle
-    PATH                    (StandardColumnType.ILLEGAL               ), //    , pg
-    MEDIUMBLOB              (StandardColumnType.VARBINARY             ), //mysql,
-    MEDIUMINT               (StandardColumnType.INT                   ), //mysql,
-    MEDIUMTEXT              (StandardColumnType.TEXT                  ), //mysql,
-    MULTILINESTRING         (StandardColumnType.ILLEGAL               ), //mysql,
-    MULTIPOINT              (StandardColumnType.ILLEGAL               ), //mysql,
-    MULTIPOLYGON            (StandardColumnType.ILLEGAL               ), //mysql,
-    NUMERIC                 (StandardColumnType.NUMERIC               ), //mysql, ,  , mssql, sqlite
-    POINT                   (StandardColumnType.ILLEGAL               ), //mysql, pg
-    POLYGON                 (StandardColumnType.ILLEGAL               ), //mysql, pg
-    REAL                    (StandardColumnType.REAL                  ), //mysql, , , mssql, sqlite
-    RAW                     (StandardColumnType.ILLEGAL               ), //    , , oracle
-    ROWID                   (StandardColumnType.ILLEGAL               ), //    , , oracle
-    SERIAL                  (StandardColumnType.INT                   ), //    , pg,
-    SERIAL2                 (StandardColumnType.TINYINT               ), //    , pg,
-    SERIAL4                 (StandardColumnType.INT                   ), //    , pg,
-    SERIAL8                 (StandardColumnType.BIGINT                ), //    , pg,
-    SET                     (StandardColumnType.ILLEGAL               ), //mysql,
-    SMALLDATETIME           (StandardColumnType.SMALLDATETIME         ), //    , , , mssql
-    SMALLMONEY              (StandardColumnType.SMALLMONEY            ), //    , , , mssql
-    SMALLINT                (StandardColumnType.INT                   ), //mysql,
-    SMALLSERIAL             (StandardColumnType.INT                   ), //    , pg,
-    SQL_VARIANT             (StandardColumnType.SQL_VARIANT           ), //    , , , mssql
-    SYSNAME                 (StandardColumnType.SYSNAME               ), //    , , ,mssql
-    TEXT                    (StandardColumnType.TEXT                  ), //mysql,pg, ,mssql,sqlite
-    TIME                    (StandardColumnType.TIME                  ), //mysql,pg, ,mssql
-    TIMEZ                   (StandardColumnType.TIME                  ), //    ,pg
-    TIMESTAMP               (StandardColumnType.TIMESTAMP             ), //mysql,pg,oracle,mssql
-    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //    ,pg
-    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), //    ,pg
-    TSQUERY                 (StandardColumnType.ILLEGAL               ), //    ,pg
-    TSVECTOR                (StandardColumnType.ILLEGAL               ), //    ,pg
-    TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //    ,pg
-    UNIQUEIDENTIFIER        (StandardColumnType.UNIQUEIDENTIFIER      ), //    , ，    ,mssql
-    UUID                    (StandardColumnType.ILLEGAL               ), //    ,pg
-    UROWID                  (StandardColumnType.ILLEGAL               ), //    , ,oracle
-    VARBIT                  (StandardColumnType.VARBINARY             ), //    ,pg
-    TINYBLOB                (StandardColumnType.VARBINARY             ), //mysql,
-    TINYINT                 (StandardColumnType.TINYINT               ), //mysql, , ,mssql
-    TINYTEXT                (StandardColumnType.TEXT                  ), //mysql,
-    VARBINARY               (StandardColumnType.VARBINARY             ), //mysql, , ,mssql
-    VARCHAR                 (StandardColumnType.VARCHAR               ), //mysql,pg,oracle,mssql
-    VARCHAR2                (StandardColumnType.VARCHAR               ), //    , ,oracle,
-    XML                     (StandardColumnType.XML                   ), //    ,pg，     ,mssql
-    YEAR                    (StandardColumnType.DATE                  ); //mysql,
+    BFILE                   (TypeMetadata.ILLEGAL                       ), 
+    BINARY_DOUBLE           (StandardColumnType.NUMERIC               ), 
+    BINARY_FLOAT            (StandardColumnType.FLOAT_MSSQL              ), 
+    BIGINT                  (StandardColumnType.BIGINT                ), 
+    BIGSERIAL               (StandardColumnType.BIGINT                ),
+    BINARY                  (StandardColumnType.BINARY                ), 
+    BIT                     (StandardColumnType.BIT                   ), 
+    BLOB                    (StandardColumnType.VARBINARY             ), 
+    BOOL                    (StandardColumnType.BIT                   ), 
+    BOX                     (StandardColumnType.ILLEGAL               ), 
+    BYTEA                   (StandardColumnType.VARBINARY             ), 
+    CHAR                    (StandardColumnType.CHAR                  ), 
+    CIDR                    (StandardColumnType.ILLEGAL               ), 
+    CIRCLE                  (StandardColumnType.ILLEGAL               ), 
+    CLOB                    (StandardColumnType.TEXT                  ), 
+    DATE                    (StandardColumnType.DATE                  ), 
+    DATETIME                (StandardColumnType.DATETIME              ), 
+    DATETIME2               (StandardColumnType.DATETIME2             ), 
+    DATETIMEOFFSET          (StandardColumnType.DATETIMEOFFSET        ), 
+    DECIMAL                 (StandardColumnType.DECIMAL               ), 
+    DOUBLE                  (StandardColumnType.DECIMAL               ), 
+    ENUM                    (StandardColumnType.ILLEGAL               ), 
+    FLOAT                   (StandardColumnType.FLOAT_MSSQL                 ),
+    FLOAT4                  (StandardColumnType.FLOAT_MSSQL                 ), 
+    FLOAT8                  (StandardColumnType.FLOAT_MSSQL                 ), 
+    GEOGRAPHY               (StandardColumnType.GEOGRAPHY             ), 
+    GEOMETRY                (StandardColumnType.ILLEGAL               ),
+    GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ),
+    HIERARCHYID             (StandardColumnType.HIERARCHYID           ), 
+    IMAGE                   (StandardColumnType.IMAGE                 ), 
+    INET                    (StandardColumnType.ILLEGAL               ), 
+    INTERVAL                (StandardColumnType.ILLEGAL               ), 
+    INT                     (StandardColumnType.INT                   ), 
+    INT2                    (StandardColumnType.INT                   ), 
+    INT4                    (StandardColumnType.INT                   ), 
+    INT8                    (StandardColumnType.BIGINT                ), 
+    INTEGER                 (StandardColumnType.INT                   ), 
+    JSON                    (StandardColumnType.ILLEGAL               ), 
+    JSONB                   (StandardColumnType.ILLEGAL               ), 
+    LINE                    (StandardColumnType.ILLEGAL               ), 
+    LONG                    (StandardColumnType.BIGINT                ), 
+    LONGBLOB                (StandardColumnType.VARBINARY             ),
+    LONGTEXT                (StandardColumnType.TEXT                  ),
+    LSEG                    (StandardColumnType.ILLEGAL               ), 
+    MACADDR                 (StandardColumnType.ILLEGAL               ), 
+    MONEY                   (StandardColumnType.MONEY                 ), 
+    NUMBER                  (StandardColumnType.NUMERIC               ), 
+    NCHAR                   (StandardColumnType.NCHAR                 ), 
+    NCLOB                   (StandardColumnType.VARBINARY             ), 
+    NTEXT                   (StandardColumnType.NTEXT                 ), 
+    NVARCHAR                (StandardColumnType.NVARCHAR              ), 
+    NVARCHAR2               (StandardColumnType.NVARCHAR              ), 
+    PATH                    (StandardColumnType.ILLEGAL               ), 
+    MEDIUMBLOB              (StandardColumnType.VARBINARY             ), 
+    MEDIUMINT               (StandardColumnType.INT                   ), 
+    MEDIUMTEXT              (StandardColumnType.TEXT                  ), 
+    MULTILINESTRING         (StandardColumnType.ILLEGAL               ), 
+    MULTIPOINT              (StandardColumnType.ILLEGAL               ), 
+    MULTIPOLYGON            (StandardColumnType.ILLEGAL               ), 
+    NUMERIC                 (StandardColumnType.NUMERIC               ),
+    POINT                   (StandardColumnType.ILLEGAL               ), 
+    POLYGON                 (StandardColumnType.ILLEGAL               ), 
+    REAL                    (StandardColumnType.REAL                  ), 
+    RAW                     (StandardColumnType.ILLEGAL               ), 
+    ROWID                   (StandardColumnType.ILLEGAL               ), 
+    SERIAL                  (StandardColumnType.INT                   ),
+    SERIAL2                 (StandardColumnType.TINYINT               ),
+    SERIAL4                 (StandardColumnType.INT                   ),
+    SERIAL8                 (StandardColumnType.BIGINT                ),
+    SET                     (StandardColumnType.ILLEGAL               ), 
+    SMALLDATETIME           (StandardColumnType.SMALLDATETIME         ), 
+    SMALLMONEY              (StandardColumnType.SMALLMONEY            ), 
+    SMALLINT                (StandardColumnType.INT                   ), 
+    SMALLSERIAL             (StandardColumnType.INT                   ),
+    SQL_VARIANT             (StandardColumnType.SQL_VARIANT           ), 
+    SYSNAME                 (StandardColumnType.SYSNAME               ),
+    TEXT                    (StandardColumnType.TEXT                  ),
+    TIME                    (StandardColumnType.TIME                  ),
+    TIMEZ                   (StandardColumnType.TIME                  ), 
+    TIMESTAMP               (StandardColumnType.TIMESTAMP             ), 
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), 
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), 
+    TSQUERY                 (StandardColumnType.ILLEGAL               ), 
+    TSVECTOR                (StandardColumnType.ILLEGAL               ), 
+    TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), 
+    UNIQUEIDENTIFIER        (StandardColumnType.UNIQUEIDENTIFIER      ),
+    UUID                    (StandardColumnType.ILLEGAL               ), 
+    UROWID                  (StandardColumnType.ILLEGAL               ),
+    VARBIT                  (StandardColumnType.VARBINARY             ), 
+    TINYBLOB                (StandardColumnType.VARBINARY             ), 
+    TINYINT                 (StandardColumnType.TINYINT               ), 
+    TINYTEXT                (StandardColumnType.TEXT                  ), 
+    VARBINARY               (StandardColumnType.VARBINARY             ), 
+    VARCHAR                 (StandardColumnType.VARCHAR               ), 
+    VARCHAR2                (StandardColumnType.VARCHAR               ),
+    XML                     (StandardColumnType.XML                   ),
+    YEAR                    (StandardColumnType.DATE                  ); 
     private final TypeMetadata standard;
     private MSSQLColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;

@@ -4398,6 +4398,23 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
 	}
 
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:聚合类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 列
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
+		AggregationType type = meta.getAggregationType();
+		if(null != type){
+			builder.append(" ").append(type.getName());
+		}
+		return builder;
+	}
+
 
 	/**
 	 * column[命令合成-子流程]<br/>

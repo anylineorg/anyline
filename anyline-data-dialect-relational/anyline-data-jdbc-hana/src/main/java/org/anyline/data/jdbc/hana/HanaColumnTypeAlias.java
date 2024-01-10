@@ -23,108 +23,108 @@ import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum HanaColumnTypeAlias implements ColumnTypeAlias {
-    BFILE                   (StandardColumnType.ILLEGAL               ), //     ,  , oracle,
-    BINARY_DOUBLE           (StandardColumnType.ILLEGAL               ), //     ,  , oracle,
-    BINARY_FLOAT            (StandardColumnType.ILLEGAL               ), //     ,  , oracle,
-    BIGINT                  (StandardColumnType.BIGINT                ), // HANA, mysql        , mssql,
-    BIGSERIAL               (StandardColumnType.BIGINT                ), //     , , pg,
-    BINARY                  (StandardColumnType.BINARY                ), // HANA, mysql        , mssql,
-    BIT                     (StandardColumnType.BOOLEAN               ), //     , mysql, pg, , mssql,
-    BLOB                    (StandardColumnType.BLOB                  ), // HANA, mysql , oracle, , sqlite
-    BOOL                    (StandardColumnType.BOOLEAN               ), //     , , pg
-    BOOLEAN                 (StandardColumnType.BOOLEAN               ), // HANA, , pg
-    BOX                     (StandardColumnType.ILLEGAL               ), //     , , pg
-    BYTEA                   (StandardColumnType.ILLEGAL               ), //     , , pg
-    CHAR                    (StandardColumnType.CHAR                  ), // HANA, mysql, pg, oracle, mssql,
-    CIDR                    (StandardColumnType.ILLEGAL               ), //     ,  pg
-    CIRCLE                  (StandardColumnType.ILLEGAL               ), //     ,  pg
-    CLOB                    (StandardColumnType.NCLOB                 ), //     ,  , oracle
-    DATE                    (StandardColumnType.DATE                  ), // HANA, mysql, pg, oracle, mssql
-    DATETIME                (StandardColumnType.TIMESTAMP             ), //     , mysql        , mssql
-    DATETIME2               (StandardColumnType.TIMESTAMP             ), //     , mysql        , mssql
-    DATETIMEOFFSET          (StandardColumnType.TIMESTAMP             ), //     , mysql        , mssql
-    DECIMAL                 (StandardColumnType.DECIMAL               ), // HANA, mysql, pg, oracle, mssql
-    DOUBLE                  (StandardColumnType.DOUBLE                ), // HANA, mysql,
-    ENUM                    (StandardColumnType.ILLEGAL               ), //     , mysql,
-    FLOAT                   (StandardColumnType.DOUBLE                ), //     , mysql , oracle, mssql
-    FLOAT4                  (StandardColumnType.DOUBLE                ), //     , , pg
-    FLOAT8                  (StandardColumnType.DOUBLE                ), //     , , pg
-    GEOGRAPHY               (StandardColumnType.ILLEGAL               ), //     ,         , mssql
-    GEOMETRY                (StandardColumnType.ST_GEOMETRY           ), //     , mysql
-    GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ), //     , mysql
-    HIERARCHYID             (StandardColumnType.ILLEGAL               ), //     ,         , mssql
-    IMAGE                   (StandardColumnType.BLOB                  ), //     ,         , mssql
-    INET                    (StandardColumnType.ILLEGAL               ), //     , , pg
-    INTERVAL                (StandardColumnType.ILLEGAL               ), //     , , pg
-    INT                     (StandardColumnType.INTEGER               ), //     , mysql        , mssql,
-    INT2                    (StandardColumnType.INTEGER               ), //     , , pg
-    INT4                    (StandardColumnType.INTEGER               ), //     , , pg
-    INT8                    (StandardColumnType.INTEGER               ), //     , , pg
-    INTEGER                 (StandardColumnType.INTEGER               ), // HANA, mysql                , sqlite
-    JSON                    (StandardColumnType.NCLOB                 ), //     , mysql, pg
-    JSONB                   (StandardColumnType.BLOB                  ), //     , , pg
-    LINE                    (StandardColumnType.ILLEGAL               ), //     , mysql, pg
-    LONG                    (StandardColumnType.LONG                  ), //     ,  , oracle
-    LONGBLOB                (StandardColumnType.BLOB                  ), //     , mysql
-    LONGTEXT                (StandardColumnType.NCLOB                 ), //     , mysql
-    LSEG                    (StandardColumnType.ST_GEOMETRY           ), //     , , pg
-    MACADDR                 (StandardColumnType.ST_GEOMETRY           ), //     , , pg
-    MONEY                   (StandardColumnType.DECIMAL               ), //     , , pg, , mssql
-    NUMBER                  (StandardColumnType.DECIMAL               ), //     ,  , oracle
-    NCHAR                   (StandardColumnType.NVARCHAR              ), //     ,  , oracle, mssql
-    NCLOB                   (StandardColumnType.NCLOB                 ), // HANA,  , oracle
-    NTEXT                   (StandardColumnType.NCLOB                 ), //     ,         , mssql
-    NVARCHAR                (StandardColumnType.NVARCHAR              ), // HANA,         , mssql
-    NVARCHAR2               (StandardColumnType.NVARCHAR              ), //     ,  , oracle
-    PATH                    (StandardColumnType.ST_GEOMETRY           ), //     , , pg
-    MEDIUMBLOB              (StandardColumnType.BLOB                  ), //     , mysql,
-    MEDIUMINT               (StandardColumnType.INTEGER               ), //     , mysql,
-    MEDIUMTEXT              (StandardColumnType.NCLOB                 ), //     , mysql,
-    MULTILINESTRING         (StandardColumnType.ST_GEOMETRY           ), //     , mysql,
-    MULTIPOINT              (StandardColumnType.ST_GEOMETRY           ), //     , mysql,
-    MULTIPOLYGON            (StandardColumnType.ST_GEOMETRY           ), //     , mysql,
-    NUMERIC                 (StandardColumnType.DECIMAL               ), //     , mysql         , mssql, sqlite
-    POINT                   (StandardColumnType.ST_POINT              ), //     , mysql, pg
-    POLYGON                 (StandardColumnType.ST_GEOMETRY           ), //     , mysql, pg
-    REAL                    (StandardColumnType.REAL                  ), // HANA, mysql        , mssql, sqlite
-    RAW                     (StandardColumnType.ILLEGAL               ), //     ,  , oracle
-    ROWID                   (StandardColumnType.ILLEGAL               ), //     ,  , oracle
-    SECONDDATE              (StandardColumnType.SECONDDATE            ), // HANA
-    SERIAL                  (StandardColumnType.INTEGER               ), //     , , pg,
-    SERIAL2                 (StandardColumnType.INTEGER               ), //     , , pg,
-    SERIAL4                 (StandardColumnType.INTEGER               ), //     , , pg,
-    SERIAL8                 (StandardColumnType.BIGINT                ), //     , , pg,
-    SET                     (StandardColumnType.ILLEGAL               ), //     , mysql,
-    SMALLDATETIME           (StandardColumnType.TIMESTAMP             ), //     ,         , mssql
-    SMALLDECIMAL            (StandardColumnType.SMALLDECIMAL          ), // HANA
-    SMALLMONEY              (StandardColumnType.DECIMAL               ), //     ,         , mssql
-    SMALLINT                (StandardColumnType.SMALLINT              ), // HANA, mysql,
-    SMALLSERIAL             (StandardColumnType.INTEGER               ), //     , , pg,
-    SQL_VARIANT             (StandardColumnType.ILLEGAL               ), //     ,         , mssql
-    ST_GEOMETRY             (StandardColumnType.ST_GEOMETRY           ), // HANA
-    ST_POINT                (StandardColumnType.ST_POINT              ), // HANA
-    SYSNAME                 (StandardColumnType.ILLEGAL               ), //     ,         , mssql
-    TEXT                    (StandardColumnType.NCLOB                 ), //     , mysql, pg, , mssql, sqlite
-    TIME                    (StandardColumnType.TIME                  ), // HANA, mysql, pg, , mssql
-    TIMEZ                   (StandardColumnType.TIMESTAMP             ), //     , , pg
-    TIMESTAMP               (StandardColumnType.TIMESTAMP             ), // HANA, mysql, pg, oracle, mssql
-    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), //     , , pg
-    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ), //     , , pg
-    TSQUERY                 (StandardColumnType.ILLEGAL               ), //     , , pg
-    TSVECTOR                (StandardColumnType.ILLEGAL               ), //     , , pg
-    TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ), //     , , pg
-    UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ), //     ,   ，    , mssql
-    UUID                    (StandardColumnType.ILLEGAL               ), //     , , pg
-    UROWID                  (StandardColumnType.VARCHAR               ), //     ,  , oracle
-    VARBIT                  (StandardColumnType.BLOB                  ), //     , , pg
-    TINYBLOB                (StandardColumnType.BLOB                  ), //     , mysql,
-    TINYINT                 (StandardColumnType.TINYINT               ), // HANA, mysql        , mssql
-    TINYTEXT                (StandardColumnType.NCLOB                 ), //     , mysql,
-    VARBINARY               (StandardColumnType.VARBINARY             ), // HANA, mysql        , mssql
-    VARCHAR                 (StandardColumnType.VARCHAR               ), // HANA, mysql, pg, oracle, mssql
-    VARCHAR2                (StandardColumnType.VARCHAR               ), //     ,   , oracle,
-    XML                     (StandardColumnType.NVARCHAR              ), //     , , pg，     , mssql
-    YEAR                    (StandardColumnType.INTEGER               ); //     , mysql,
+    BFILE                   (StandardColumnType.ILLEGAL               ),
+    BINARY_DOUBLE           (StandardColumnType.ILLEGAL               ),
+    BINARY_FLOAT            (StandardColumnType.ILLEGAL               ),
+    BIGINT                  (StandardColumnType.BIGINT                ),
+    BIGSERIAL               (StandardColumnType.BIGINT                ),
+    BINARY                  (StandardColumnType.BINARY                ),
+    BIT                     (StandardColumnType.BOOLEAN               ),
+    BLOB                    (StandardColumnType.BLOB                  ),
+    BOOL                    (StandardColumnType.BOOLEAN               ),
+    BOOLEAN                 (StandardColumnType.BOOLEAN               ),
+    BOX                     (StandardColumnType.ILLEGAL               ),
+    BYTEA                   (StandardColumnType.ILLEGAL               ),
+    CHAR                    (StandardColumnType.CHAR                  ),
+    CIDR                    (StandardColumnType.ILLEGAL               ),
+    CIRCLE                  (StandardColumnType.ILLEGAL               ),
+    CLOB                    (StandardColumnType.NCLOB                 ),
+    DATE                    (StandardColumnType.DATE                  ),
+    DATETIME                (StandardColumnType.TIMESTAMP             ),
+    DATETIME2               (StandardColumnType.TIMESTAMP             ),
+    DATETIMEOFFSET          (StandardColumnType.TIMESTAMP             ),
+    DECIMAL                 (StandardColumnType.DECIMAL               ),
+    DOUBLE                  (StandardColumnType.DOUBLE                ),
+    ENUM                    (StandardColumnType.ILLEGAL               ),
+    FLOAT                   (StandardColumnType.DOUBLE                ),
+    FLOAT4                  (StandardColumnType.DOUBLE                ),
+    FLOAT8                  (StandardColumnType.DOUBLE                ),
+    GEOGRAPHY               (StandardColumnType.ILLEGAL               ),
+    GEOMETRY                (StandardColumnType.ST_GEOMETRY           ),
+    GEOMETRYCOLLECTION      (StandardColumnType.ILLEGAL               ),
+    HIERARCHYID             (StandardColumnType.ILLEGAL               ),
+    IMAGE                   (StandardColumnType.BLOB                  ),
+    INET                    (StandardColumnType.ILLEGAL               ),
+    INTERVAL                (StandardColumnType.ILLEGAL               ),
+    INT                     (StandardColumnType.INTEGER               ),       
+    INT2                    (StandardColumnType.INTEGER               ),
+    INT4                    (StandardColumnType.INTEGER               ),
+    INT8                    (StandardColumnType.INTEGER               ),
+    INTEGER                 (StandardColumnType.INTEGER               ), 
+    JSON                    (StandardColumnType.NCLOB                 ), 
+    JSONB                   (StandardColumnType.BLOB                  ),
+    LINE                    (StandardColumnType.ILLEGAL               ), 
+    LONG                    (StandardColumnType.LONG                  ),
+    LONGBLOB                (StandardColumnType.BLOB                  ),
+    LONGTEXT                (StandardColumnType.NCLOB                 ),
+    LSEG                    (StandardColumnType.ST_GEOMETRY           ),
+    MACADDR                 (StandardColumnType.ST_GEOMETRY           ),
+    MONEY                   (StandardColumnType.DECIMAL               ), 
+    NUMBER                  (StandardColumnType.DECIMAL               ),
+    NCHAR                   (StandardColumnType.NVARCHAR              ),
+    NCLOB                   (StandardColumnType.NCLOB                 ),
+    NTEXT                   (StandardColumnType.NCLOB                 ),
+    NVARCHAR                (StandardColumnType.NVARCHAR              ),
+    NVARCHAR2               (StandardColumnType.NVARCHAR              ),
+    PATH                    (StandardColumnType.ST_GEOMETRY           ),
+    MEDIUMBLOB              (StandardColumnType.BLOB                  ),
+    MEDIUMINT               (StandardColumnType.INTEGER               ),
+    MEDIUMTEXT              (StandardColumnType.NCLOB                 ),
+    MULTILINESTRING         (StandardColumnType.ST_GEOMETRY           ),
+    MULTIPOINT              (StandardColumnType.ST_GEOMETRY           ),
+    MULTIPOLYGON            (StandardColumnType.ST_GEOMETRY           ),
+    NUMERIC                 (StandardColumnType.DECIMAL               ),
+    POINT                   (StandardColumnType.ST_POINT              ), 
+    POLYGON                 (StandardColumnType.ST_GEOMETRY           ), 
+    REAL                    (StandardColumnType.REAL                  ),
+    RAW                     (StandardColumnType.ILLEGAL               ),
+    ROWID                   (StandardColumnType.ILLEGAL               ),
+    SECONDDATE              (StandardColumnType.SECONDDATE            ),
+    SERIAL                  (StandardColumnType.INTEGER               ),
+    SERIAL2                 (StandardColumnType.INTEGER               ),
+    SERIAL4                 (StandardColumnType.INTEGER               ),
+    SERIAL8                 (StandardColumnType.BIGINT                ),
+    SET                     (StandardColumnType.ILLEGAL               ),
+    SMALLDATETIME           (StandardColumnType.TIMESTAMP             ),
+    SMALLDECIMAL            (StandardColumnType.SMALLDECIMAL          ),
+    SMALLMONEY              (StandardColumnType.DECIMAL               ),
+    SMALLINT                (StandardColumnType.SMALLINT              ),
+    SMALLSERIAL             (StandardColumnType.INTEGER               ),
+    SQL_VARIANT             (StandardColumnType.ILLEGAL               ),
+    ST_GEOMETRY             (StandardColumnType.ST_GEOMETRY           ),
+    ST_POINT                (StandardColumnType.ST_POINT              ),
+    SYSNAME                 (StandardColumnType.ILLEGAL               ),
+    TEXT                    (StandardColumnType.NCLOB                 ),
+    TIME                    (StandardColumnType.TIME                  ), 
+    TIMEZ                   (StandardColumnType.TIMESTAMP             ),
+    TIMESTAMP               (StandardColumnType.TIMESTAMP             ),
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ),
+    TIMESTAMP_WITH_ZONE          (StandardColumnType.TIMESTAMP             ),
+    TSQUERY                 (StandardColumnType.ILLEGAL               ),
+    TSVECTOR                (StandardColumnType.ILLEGAL               ),
+    TXID_SNAPSHOT           (StandardColumnType.ILLEGAL               ),
+    UNIQUEIDENTIFIER        (StandardColumnType.ILLEGAL               ),
+    UUID                    (StandardColumnType.ILLEGAL               ),
+    UROWID                  (StandardColumnType.VARCHAR               ),
+    VARBIT                  (StandardColumnType.BLOB                  ),
+    TINYBLOB                (StandardColumnType.BLOB                  ),
+    TINYINT                 (StandardColumnType.TINYINT               ),
+    TINYTEXT                (StandardColumnType.NCLOB                 ),
+    VARBINARY               (StandardColumnType.VARBINARY             ),
+    VARCHAR                 (StandardColumnType.VARCHAR               ),
+    VARCHAR2                (StandardColumnType.VARCHAR               ),
+    XML                     (StandardColumnType.NVARCHAR              ),
+    YEAR                    (StandardColumnType.INTEGER               );
     private final TypeMetadata standard;
     private HanaColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;

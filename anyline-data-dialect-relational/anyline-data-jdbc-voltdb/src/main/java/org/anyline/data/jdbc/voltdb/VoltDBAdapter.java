@@ -3129,6 +3129,159 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		return super.ddl(runtime, index, function, ddls, set);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern);
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern);
+	 * [命令合成]
+	 * List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	 * [结果集封装]<br/>
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences, DataSet set) throws Exception;
+	 * <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception;
+	 * [调用入口]
+	 * List<String> ddl(DataRuntime runtime, String random, Sequence sequence);
+	 * [命令合成]
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence sequence) throws Exception;
+	 * [结果集封装]<br/>
+	 * List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)
+	 ******************************************************************************************************************/
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
+	@Override
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
+		return super.sequences(runtime, random, greedy, catalog, schema, pattern);
+	}
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @return  LinkedHashMap
+	 * @param <T> Index
+	 */
+	@Override
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
+		return super.sequences(runtime, random, catalog, schema, pattern);
+	}
+	/**
+	 * sequence[命令合成]<br/>
+	 * 查询表上的 Trigger
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param name 名称统配符或正则
+	 * @return sqls
+	 */
+	@Override
+	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
+		return super.buildQuerySequencesRun(runtime, catalog, schema, name);
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果集构造 Trigger
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @param set 查询结果集
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception{
+		return super.sequences(runtime, index, create, sequences, set);
+	}
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果集构造 Trigger
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryConstraintsRun 返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @param set 查询结果集
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception{
+		return super.sequences(runtime, index, create, sequences, set);
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据驱动内置接口补充 Sequence
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param sequences 上一步查询结果
+	 * @return LinkedHashMap
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, boolean create, List<T> sequences) throws Exception {
+		return super.sequences(runtime, create, sequences);
+	}
+
+	/**
+	 *
+	 * sequence[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta Sequence
+	 * @return ddl
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+		return super.ddl(runtime, random, meta);
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 查询序列DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.buildQueryDdlsRun(runtime, meta);
+	}
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 查询 Sequence DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param sequence Sequence
+	 * @param ddls 上一步查询结果
+	 * @param set 查询结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+		return super.ddl(runtime, index, sequence, ddls, set);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													common
+	 * ----------------------------------------------------------------------------------------------------------------
+	 */
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
@@ -4311,8 +4464,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.typeMetadata(runtime, builder, meta);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.type(runtime, builder, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4326,8 +4479,21 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-		return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+	}
+
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:聚合类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param column 列
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.aggregation(runtime, builder, meta);
 	}
 
 
@@ -5171,8 +5337,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
-		return super.typeMetadata(runtime, builder, meta);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+		return super.type(runtime, builder, meta);
 	}
 	/**
 	 * index[命令合成-子流程]<br/>
@@ -5689,6 +5855,124 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildRenameRun(DataRuntime runtime, Function meta) throws Exception{
+		return super.buildRenameRun(runtime, meta);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													sequence
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * [调用入口]
+	 * boolean create(DataRuntime runtime, Sequence meta)
+	 * boolean alter(DataRuntime runtime, Sequence meta)
+	 * boolean drop(DataRuntime runtime, Sequence meta)
+	 * boolean rename(DataRuntime runtime, Sequence origin, String name)
+	 * [命令合成]
+	 * List<Run> buildCreateRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildDropRun(DataRuntime runtime, Sequence sequence)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Sequence sequence)
+	 ******************************************************************************************************************/
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 添加序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	@Override
+	public boolean create(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.create(runtime, meta);
+	}
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 修改序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	@Override
+	public boolean alter(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.alter(runtime, meta);
+	}
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 删除序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	@Override
+	public boolean drop(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.drop(runtime, meta);
+	}
+
+	/**
+	 * sequence[调用入口]<br/>
+	 * 重命名序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param origin 序列
+	 * @param name 新名称
+	 * @return 是否执行成功
+	 * @throws Exception 异常
+	 */
+	@Override
+	public boolean rename(DataRuntime runtime, Sequence origin, String name) throws Exception{
+		return super.rename(runtime, origin, name);
+	}
+
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 添加序列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildCreateRun(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.buildCreateRun(runtime, meta);
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 修改序列
+	 * 有可能生成多条SQL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildAlterRun(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.buildAlterRun(runtime, meta);
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 删除序列
+	 * @param meta 序列
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildDropRun(DataRuntime runtime, Sequence meta) throws Exception{
+		return super.buildDropRun(runtime, meta);
+	}
+
+	/**
+	 * sequence[命令合成]<br/>
+	 * 修改序列名
+	 * 一般不直接调用,如果需要由buildAlterRun内部统一调用
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 序列
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
 

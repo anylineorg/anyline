@@ -17,6 +17,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.entity.AggregationType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.util.BasicUtil;
@@ -102,6 +103,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String defaultConstraint            ; // 默认约束名
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
+    protected AggregationType aggregationType     ; //聚合类型
     protected int withTimeZone                = -1;
     protected int withLocalTimeZone           = -1;
     protected Column reference                    ; // 外键依赖列
@@ -556,6 +558,22 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 this.signed = 0;
             }
         }
+        return this;
+    }
+
+    public AggregationType getAggregationType() {
+        if(getmap && null != update){
+            return update.aggregationType;
+        }
+        return aggregationType;
+    }
+
+    public Column setAggregationType(AggregationType aggregationType) {
+        if(setmap && null != update){
+            update.setAggregationType(aggregationType);
+            return this;
+        }
+        this.aggregationType = aggregationType;
         return this;
     }
 

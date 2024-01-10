@@ -8829,9 +8829,24 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
+		}
+		return builder;
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:聚合类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param column 列
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
 		}
 		return builder;
 	}
@@ -8847,7 +8862,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale)", 37));
 		}
@@ -10381,7 +10396,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta)", 37));
 		}

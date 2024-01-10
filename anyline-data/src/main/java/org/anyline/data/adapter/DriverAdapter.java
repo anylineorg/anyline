@@ -2768,7 +2768,7 @@ public interface DriverAdapter {
 	 * @param pattern 名称统配符或正则
 	 * @return sqls
 	 */
-	List<Run> buildQuerysequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
+	List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
 
 	/**
 	 * sequence[结果集封装]<br/>
@@ -3690,7 +3690,18 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column column);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column);
+
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:聚合类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param column 列
+	 * @return StringBuilder
+	 */
+	StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column column);
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:列数据类型定义
@@ -3702,7 +3713,7 @@ public interface DriverAdapter {
 	 * @param isIgnoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4334,7 +4345,7 @@ public interface DriverAdapter {
 	 * @param builder builder
 	 * @return StringBuilder
 	 */
-	StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta);
 	/**
 	 * index[命令合成-子流程]<br/>
 	 * 索引备注

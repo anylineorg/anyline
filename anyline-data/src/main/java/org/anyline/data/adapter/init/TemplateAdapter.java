@@ -4339,8 +4339,8 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.typeMetadata(runtime, builder, meta);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.type(runtime, builder, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4354,8 +4354,21 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-		return super.typeMetadata(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+	}
+
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:聚合类型
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param column 列
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.aggregation(runtime, builder, meta);
 	}
 
 
@@ -5199,8 +5212,8 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder typeMetadata(DataRuntime runtime, StringBuilder builder, Index meta){
-		return super.typeMetadata(runtime, builder, meta);
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+		return super.type(runtime, builder, meta);
 	}
 	/**
 	 * index[命令合成-子流程]<br/>
@@ -5837,4 +5850,5 @@ public abstract class TemplateAdapter extends DefaultDriverAdapter {
 	public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
+
 }
