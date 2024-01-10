@@ -26,7 +26,7 @@ import java.util.*;
 
 public class Column extends BaseMetadata<Column> implements Serializable {
 
-    public enum AggregationType {
+    public enum Aggregation {
         MIN			    ("MIN"  			, "最小"),
         MAX			    ("MAX"  			, "最大"),
         SUM			    ("SUM"  			, "求和"),
@@ -36,7 +36,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         BITMAP_UNION			    ("BITMAP_UNION"  			, "BIMTAP 类型的列的聚合方式，");//进行位图的并集聚合
         final String code;
         final String name;
-        AggregationType(String code, String name){
+        Aggregation(String code, String name){
             this.code = code;
             this.name = name;
         }
@@ -124,7 +124,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String defaultConstraint            ; // 默认约束名
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码
-    protected AggregationType aggregationType     ; //聚合类型
+    protected Aggregation aggregation; //聚合类型
     protected int withTimeZone                = -1;
     protected int withLocalTimeZone           = -1;
     protected Column reference                    ; // 外键依赖列
@@ -582,19 +582,19 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
-    public AggregationType getAggregationType() {
+    public Aggregation getAggregation() {
         if(getmap && null != update){
-            return update.aggregationType;
+            return update.aggregation;
         }
-        return aggregationType;
+        return aggregation;
     }
 
-    public Column setAggregationType(AggregationType aggregationType) {
+    public Column setAggregation(Aggregation aggregation) {
         if(setmap && null != update){
-            update.setAggregationType(aggregationType);
+            update.setAggregation(aggregation);
             return this;
         }
-        this.aggregationType = aggregationType;
+        this.aggregation = aggregation;
         return this;
     }
 

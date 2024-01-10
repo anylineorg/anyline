@@ -3551,7 +3551,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		if(null != keys){
 			boolean kfirst = true;
 			for(Table.Key key:keys){
-				Table.KeyType type = key.getType();
+				Table.Key.TYPE type = key.getType();
 				LinkedHashMap<String, Column> columns = key.getColumns();
 				if(null != type && null != columns && !columns.isEmpty()){
 					if(!kfirst){
@@ -3586,7 +3586,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
 		Table.Distribution distribution = meta.getDistribution();
 		if(null != distribution){
-			Table.DistributionType type = distribution.getType();
+			Table.Distribution.TYPE type = distribution.getType();
 			if(null != type){
 				builder.append(" DISTRIBUTED BY HASH");
 				LinkedHashMap<String, Column> columns = distribution.getColumns();
@@ -4509,7 +4509,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
-		Column.AggregationType type = meta.getAggregationType();
+		Column.Aggregation type = meta.getAggregation();
 		if(null != type){
 			builder.append(" ").append(type.getName());
 		}
