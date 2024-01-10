@@ -45,7 +45,51 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             return code;
         }
     }
+    public enum DistributionType{
+        HASH 			("HASH"  			, "哈希分桶"),
+        RANDOM 			("RANDOM"  			, "随机分桶");
+        final String code;
+        final String name;
+        DistributionType(String code, String name){
+            this.code = code;
+            this.name = name;
+        }
+        public String getName(){
+            return name;
+        }
+        public String getCode(){
+            return code;
+        }}
+    public static class Distribution{
+        private DistributionType type;
+        private LinkedHashMap<String, Column> columns;
 
+        public DistributionType getType() {
+            return type;
+        }
+
+        public void setType(DistributionType type) {
+            this.type = type;
+        }
+
+        public LinkedHashMap<String, Column> getColumns() {
+            return columns;
+        }
+
+        public void setColumns(LinkedHashMap<String, Column> columns) {
+            this.columns = columns;
+        }
+        public void setColumns(String ... columns) {
+            if(null == this.columns){
+                this.columns = new LinkedHashMap<>();
+            }
+            if(null != columns){
+                for (String column:columns){
+                    this.columns.put(column.toUpperCase(), new Column(column));
+                }
+            }
+        }
+    }
     public static class Key{
         private KeyType type;
         private LinkedHashMap<String, Column> columns;
@@ -174,6 +218,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      *
      */
     protected List<Key> keys;
+    protected Distribution distribution;
     protected PrimaryKey primaryKey;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
@@ -253,6 +298,21 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             return update.setProperty(property);
         }
         this.property = property;
+        return this;
+    }
+
+    public Distribution getDistribution() {
+        if(getmap && null != update){
+            return update.getDistribution();
+        }
+        return distribution;
+    }
+
+    public Table setDistribution(Distribution distribution) {
+        if(getmap && null != update){
+            return update.setDistribution(distribution);
+        }
+        this.distribution = distribution;
         return this;
     }
 
