@@ -173,7 +173,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              String
      *
      * ****************************************************************************************************************/
-    CHAR(CATEGORY.STRING, "CHAR", new DatabaseType[]{MySQL, PostgreSQL, Informix, HANA, Derby}, String.class, false, true){
+    CHAR(CATEGORY.STRING, "CHAR", new DatabaseType[]{MySQL, PostgreSQL, Informix, HANA, Derby, Doris}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -223,7 +223,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     /**
      * Informix(长度不超过 255 )
      */
-   , VARCHAR(CATEGORY.STRING, "VARCHAR", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, Informix, HANA, Derby, KingBase}, String.class, false, true){
+   , VARCHAR(CATEGORY.STRING, "VARCHAR", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, Informix, HANA, Derby, KingBase, Doris}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
    , LVARCHAR(CATEGORY.STRING, "LVARCHAR", new DatabaseType[]{Informix}, String.class, false, true){
@@ -258,13 +258,19 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , BINARY(CATEGORY.BYTES, "BINARY", new DatabaseType[]{MySQL, MSSQL, HANA, ElasticSearch}, byte[].class, false, true)
    , VARBINARY(CATEGORY.BYTES, "VARBINARY", new DatabaseType[]{MySQL, MSSQL, HANA}, byte[].class, false, true)
 
+    , STRING(CATEGORY.STRING, "STRING", new DatabaseType[]{Doris}, String.class, false, true){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    }
+    , HLL(CATEGORY.STRING, "HLL", new DatabaseType[]{Doris}, String.class, false, true){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    }
 
     /* *****************************************************************************************************************
      *
      *                                              String-format
      *
      * ****************************************************************************************************************/
-   , JSON(CATEGORY.STRING, "JSON", new DatabaseType[]{MySQL, PostgreSQL, KingBase}, String.class, true, true){
+   , JSON(CATEGORY.STRING, "JSON", new DatabaseType[]{MySQL, PostgreSQL, KingBase, Doris}, String.class, true, true){
         @Override
         public Object convert(Object value, Class target, Object def) {
             if(null == value){
@@ -341,7 +347,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     , SHORT(CATEGORY.INT, "SHORT", new DatabaseType[]{}, Short.class, true, true)
 
     , BYTE(CATEGORY.INT, "BYTE", new DatabaseType[]{}, Short.class, true, true)
-   , INT(CATEGORY.INT, "INT", new DatabaseType[]{MySQL, MSSQL, Informix, Derby}, Integer.class, true, true)
+   , INT(CATEGORY.INT, "INT", new DatabaseType[]{MySQL, MSSQL, Informix, Derby, Doris}, Integer.class, true, true)
    , INT32(CATEGORY.INT, "INT32", new DatabaseType[]{IoTDB}, Integer.class, true, true)
    , INT64(CATEGORY.INT, "INT64", new DatabaseType[]{IoTDB}, Integer.class, true, true)
    , INFORMIX_INTEGER(CATEGORY.INT, "INTEGER", new DatabaseType[]{Informix}, Integer.class, true, true)
@@ -355,14 +361,14 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , INT2(CATEGORY.INT, "INT2", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
    , INT4(CATEGORY.INT, "INT4", new DatabaseType[]{PostgreSQL}, Integer.class, true, true)
    , INT8(CATEGORY.INT, "INT8", new DatabaseType[]{PostgreSQL, Informix}, Long.class, true, true)
-   , BIGINT(CATEGORY.INT, "BIGINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase}, Long.class, true, true)
+   , BIGINT(CATEGORY.INT, "BIGINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase, Doris}, Long.class, true, true)
    , LARGEINT(CATEGORY.INT, "LARGEINT", new DatabaseType[]{Doris}, Long.class, true, true)
    , MEDIUMINT(CATEGORY.INT, "MEDIUMINT", new DatabaseType[]{MySQL}, Integer.class, true, true)
    , INTEGER(CATEGORY.INT, "INTEGER", new DatabaseType[]{MySQL, SQLite, HANA, ElasticSearch, Derby, KingBase}, Integer.class, true, true)
-   , SMALLINT(CATEGORY.INT, "SMALLINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase}, Integer.class, true, true)
-   , TINYINT(CATEGORY.INT, "TINYINT", new DatabaseType[]{MySQL, HANA, KingBase}, Integer.class, true, true)
+   , SMALLINT(CATEGORY.INT, "SMALLINT", new DatabaseType[]{MySQL, Informix, HANA, Derby, KingBase, Doris}, Integer.class, true, true)
+   , TINYINT(CATEGORY.INT, "TINYINT", new DatabaseType[]{MySQL, HANA, KingBase, Doris}, Integer.class, true, true)
    , BOOLEAN(CATEGORY.BOOLEAN, "BOOLEAN", new DatabaseType[]{PostgreSQL, Informix, HANA, ElasticSearch, KingBase}, Boolean.class, true, true)
-   , BOOL(CATEGORY.BOOLEAN, "BOOLEAN", new DatabaseType[]{PostgreSQL}, Boolean.class, true, true){
+   , BOOL(CATEGORY.BOOLEAN, "BOOLEAN", new DatabaseType[]{PostgreSQL, Doris}, Boolean.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return BOOLEAN.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
@@ -370,7 +376,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              number-double/float
      *
      * ****************************************************************************************************************/
-   , DECIMAL(CATEGORY.FLOAT, "DECIMAL", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, Informix, HANA, Derby}, BigDecimal.class, false, false){
+   , DECIMAL(CATEGORY.FLOAT, "DECIMAL", new DatabaseType[]{MySQL, PostgreSQL, ORACLE, Informix, HANA, Derby, Doris}, BigDecimal.class, false, false){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -387,7 +393,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return DECIMAL.write(value, def, placeholder);
         }
     }
-   , DOUBLE(CATEGORY.FLOAT, "DOUBLE", new DatabaseType[]{MySQL, Informix, HANA, IoTDB, ElasticSearch, Derby}, Double.class, false, false){
+   , DOUBLE(CATEGORY.FLOAT, "DOUBLE", new DatabaseType[]{MySQL, Informix, HANA, IoTDB, ElasticSearch, Derby, Doris}, Double.class, false, false){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -433,7 +439,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , FLOAT4(CATEGORY.FLOAT, "FLOAT4", new DatabaseType[]{PostgreSQL}, Float.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
     }
-   , FLOAT(CATEGORY.FLOAT, "FLOAT", new DatabaseType[]{IoTDB, ElasticSearch, Derby}, Float.class, true, true){
+   , FLOAT(CATEGORY.FLOAT, "FLOAT", new DatabaseType[]{IoTDB, ElasticSearch, Derby, Doris}, Float.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
     }
    , FLOAT8(CATEGORY.FLOAT, "FLOAT8", new DatabaseType[]{PostgreSQL}, Double.class, true, true){
@@ -466,7 +472,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                               write 需要根据数据库类型 由内置函数转换
      *
      * ****************************************************************************************************************/
-   , DATE(CATEGORY.DATE, "DATE", new DatabaseType[]{MySQL, PostgreSQL, Informix, HANA, Derby}, java.sql.Date.class, true, true){
+   , DATE(CATEGORY.DATE, "DATE", new DatabaseType[]{MySQL, PostgreSQL, Informix, HANA, Derby, Doris}, java.sql.Date.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -485,7 +491,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-   , DATETIME(CATEGORY.DATE, "DATETIME", new DatabaseType[]{MySQL, Informix}, LocalDateTime.class, true, true){
+   , DATETIME(CATEGORY.DATE, "DATETIME", new DatabaseType[]{MySQL, Informix, Doris}, LocalDateTime.class, true, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -715,7 +721,15 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
 
    , KEYWORD(CATEGORY.NONE, "KEYWORD", new DatabaseType[]{ElasticSearch}, null, true, true)
 
-   , OBJECT(CATEGORY.NONE, "OBJECT", new DatabaseType[]{ElasticSearch}, null, true, true)
+    , OBJECT(CATEGORY.NONE, "OBJECT", new DatabaseType[]{ElasticSearch}, null, true, true)
+
+    , ARRAY(CATEGORY.NONE, "ARRAY", new DatabaseType[]{Doris}, null, true, true)
+
+    , MAP(CATEGORY.NONE, "MAP", new DatabaseType[]{Doris}, null, true, true)
+
+    , STRUCT(CATEGORY.NONE, "STRUCT", new DatabaseType[]{Doris}, null, true, true)
+
+    , AGG_STATE(CATEGORY.NONE, "AGG_STATE", new DatabaseType[]{Doris}, null, true, true)
 
     ;
     private final DatabaseType[] dbs;

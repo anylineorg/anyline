@@ -25,9 +25,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.AggregationType;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.metadata.type.KeyType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -3548,8 +3546,32 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.keytype(runtime, builder, meta);
+	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
+		List<Table.Key> keys = meta.getKeys();
+		if(null != keys){
+			boolean kfirst = true;
+			for(Table.Key key:keys){
+				Table.KeyType type = key.getType();
+				LinkedHashMap<String, Column> columns = key.getColumns();
+				if(null != type && null != columns && !columns.isEmpty()){
+					if(!kfirst){
+						builder.append(",");
+					}
+					kfirst = false;
+					builder.append(" ").append(type.getName()).append(" KEY(");
+					boolean first = true;
+					for(Column column:columns.values()){
+						if(!first){
+							builder.append(",");
+						}
+						first = false;
+						name(runtime, builder, column);
+					}
+					builder.append(")");
+				}
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -3562,17 +3584,17 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
-		KeyType type = meta.getKeyType();
-		LinkedHashMap<String, Column> columns = meta.getKeyColumns();
-		if(null != type && null != columns && !columns.isEmpty()){
-			builder.append(" ").append(type.getName()).append(" KEY(");
+		LinkedHashMap<String, Object> property = meta.getProperty();
+		if(null != property && !property.isEmpty()){
+			builder.append(" PROPERTIES(");
 			boolean first = true;
-			for(Column column:columns.values()){
+			for(String key:property.keySet()){
 				if(!first){
 					builder.append(",");
 				}
 				first = false;
-				name(runtime, builder, column);
+				Object value = property.get(key);
+				builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
 			}
 			builder.append(")");
 		}
@@ -4450,7 +4472,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
-		AggregationType type = meta.getAggregationType();
+		Column.AggregationType type = meta.getAggregationType();
 		if(null != type){
 			builder.append(" ").append(type.getName());
 		}

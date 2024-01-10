@@ -3610,8 +3610,8 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.keytype(runtime, builder, meta);
+	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.keys(runtime, builder, meta);
 	}
 
 	/**

@@ -3082,7 +3082,7 @@ public interface DriverAdapter {
 	 * @param meta 表
 	 * @return StringBuilder
 	 */
-	StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table table);
+	StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table table);
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性

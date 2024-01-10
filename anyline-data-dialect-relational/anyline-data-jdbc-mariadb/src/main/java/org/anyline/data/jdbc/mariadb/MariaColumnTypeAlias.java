@@ -99,6 +99,7 @@ public enum MariaColumnTypeAlias implements ColumnTypeAlias {
         SMALLINT                (StandardColumnType.TINYINT               ), 
         SMALLSERIAL             (StandardColumnType.TINYINT               ),
         SQL_VARIANT             (StandardColumnType.ILLEGAL               ),
+        STRING                  (StandardColumnType.VARCHAR                ),
         SYSNAME                 (StandardColumnType.ILLEGAL               ),
         TEXT                    (StandardColumnType.TEXT                  ),
         TIME                    (StandardColumnType.TIME                  ),

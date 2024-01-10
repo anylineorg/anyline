@@ -17,8 +17,8 @@
 
 package org.anyline.metadata;
 
+import javafx.scene.control.Tab;
 import org.anyline.exception.AnylineException;
-import org.anyline.metadata.type.KeyType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
@@ -26,9 +26,56 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
-
     protected String keyword = "TABLE"            ;
 
+    public enum KeyType {
+        DUPLICATE 			("DUPLICATE"  			, "排序列"),
+        AGGREGATE 			("AGGREGATE"  			, "维度列"),
+        UNIQUE 			    ("UNIQUE"  			, "主键列");
+        final String code;
+        final String name;
+        KeyType(String code, String name){
+            this.code = code;
+            this.name = name;
+        }
+        public String getName(){
+            return name;
+        }
+        public String getCode(){
+            return code;
+        }
+    }
+
+    public static class Key{
+        private KeyType type;
+        private LinkedHashMap<String, Column> columns;
+
+        public KeyType getType() {
+            return type;
+        }
+
+        public void setType(KeyType type) {
+            this.type = type;
+        }
+
+        public LinkedHashMap<String, Column> getColumns() {
+            return columns;
+        }
+
+        public void setColumns(LinkedHashMap<String, Column> columns) {
+            this.columns = columns;
+        }
+        public void setColumns(String ... columns) {
+            if(null == this.columns){
+                this.columns = new LinkedHashMap<>();
+            }
+            if(null != columns){
+                for (String column:columns){
+                    this.columns.put(column.toUpperCase(), new Column(column));
+                }
+            }
+        }
+    }
     /**
      * 主表名(相对于分区表)
      */
@@ -84,9 +131,6 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      * 排序规则
      */
     protected String collate                      ;
-
-    protected KeyType keyType                     ;
-    LinkedHashMap<String, Column> keyColumns     ;
     /**
      * 数据的过期时间
      */
@@ -125,9 +169,11 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      */
     protected int temporary                     ;
 
-    protected String property;
-
-
+    protected LinkedHashMap<String, Object> property;
+    /**
+     *
+     */
+    protected List<Key> keys;
     protected PrimaryKey primaryKey;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
@@ -185,17 +231,72 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.keyword = keyword;
     }
 
-    public String getProperty() {
+    public LinkedHashMap<String, Object> getProperty() {
+        if(getmap && null != update){
+            return update.getProperty();
+        }
         return property;
     }
 
-    public void setProperty(String property) {
+    public Table setProperty(String key, Object value) {
+        if(getmap && null != update){
+            return update.setProperty(key, value);
+        }
+        if(null == this.property){
+            this.property = new LinkedHashMap<>();
+        }
+        this.property.put(key, value);
+        return this;
+    }
+    public Table setProperty(LinkedHashMap<String, Object> property) {
+        if(getmap && null != update){
+            return update.setProperty(property);
+        }
         this.property = property;
+        return this;
     }
 
     public E drop(){
         this.action = ACTION.DDL.TABLE_DROP;
         return super.drop();
+    }
+
+    public List<Key> getKeys() {
+        if(getmap && null != update){
+            return update.getKeys();
+        }
+        return keys;
+    }
+
+    public Table setKeys(List<Key> keys) {
+        if(getmap && null != update){
+            return update.setKeys(keys);
+        }
+        this.keys = keys;
+        return this;
+    }
+    public Table addKey(Key key){
+        if(getmap && null != update){
+            return update.addKey(key);
+        }
+        if(null == keys){
+            keys = new ArrayList<>();
+        }
+        keys.add(key);
+        return this;
+    }
+    public Table addKey(KeyType type, String ... columns){
+        if(getmap && null != update){
+            return update.addKey(type, columns);
+        }
+        if(null == keys){
+            keys = new ArrayList<>();
+        }
+        Key key = new Key();
+        key.setType(type);
+        key.setColumns(columns);
+        keys.add(key);
+        return this;
     }
 
     public Partition getPartitionFor() {
@@ -466,53 +567,6 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             return this;
         }
         this.type = type;
-        return this;
-    }
-
-    public KeyType getKeyType() {
-        if(getmap && null != update){
-            return update.keyType;
-        }
-        return keyType;
-    }
-
-    public Table setKeyType(KeyType keyType) {
-        if(setmap && null != update){
-            update.setKeyType(keyType);
-            return this;
-        }
-        this.keyType = keyType;
-        return this;
-    }
-
-    public Table setKeyType(KeyType keyType, String ... keys) {
-        if(setmap && null != update){
-            update.setKeyType(keyType, keys);
-            return this;
-        }
-        this.keyType = keyType;
-        if(null == keyColumns){
-            keyColumns = new LinkedHashMap<>();
-        }
-        for(String key:keys){
-            keyColumns.put(key.toUpperCase(), new Column(key));
-        }
-        return this;
-    }
-
-    public LinkedHashMap<String, Column> getKeyColumns() {
-        if(getmap && null != update){
-            return update.keyColumns;
-        }
-        return keyColumns;
-    }
-
-    public Table setKeyColumns(LinkedHashMap<String, Column> keyColumns) {
-        if(setmap && null != update){
-            update.setKeyColumns(keyColumns);
-            return this;
-        }
-        this.keyColumns = keyColumns;
         return this;
     }
 

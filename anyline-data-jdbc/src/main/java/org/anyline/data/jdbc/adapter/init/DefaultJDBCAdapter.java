@@ -6022,7 +6022,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		//CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='备注';
 		charset(runtime, builder, meta);
-		keytype(runtime, builder, meta);
+		keys(runtime, builder, meta);
 		comment(runtime, builder, meta);
 		property(runtime, builder, meta);
 		/*[engine_type]
@@ -6250,8 +6250,8 @@ distribution_desc
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.keytype(runtime, builder, meta);
+	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.keys(runtime, builder, meta);
 	}
 	/**
 	 * table[命令合成-子流程]<br/>

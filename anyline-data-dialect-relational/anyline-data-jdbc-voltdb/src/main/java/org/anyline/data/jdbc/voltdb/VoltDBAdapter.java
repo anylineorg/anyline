@@ -3631,8 +3631,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder keytype(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.keytype(runtime, builder, meta);
+	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.keys(runtime, builder, meta);
 	}
 
 	/**
