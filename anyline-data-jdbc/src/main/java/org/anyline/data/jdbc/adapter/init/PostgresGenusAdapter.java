@@ -3342,7 +3342,21 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-        return super.buildQuerySequencesRun(runtime, catalog, schema, name);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM pg_sequences WHERE 1=1\n");
+        if(BasicUtil.isNotEmpty(catalog)){
+            builder.append(" AND SEQUENCEOWNER = '").append(catalog.getName()).append("'");
+        }
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND SCHEMANAME = '").append(schema.getName()).append("'");
+        }
+        if(BasicUtil.isNotEmpty(name)){
+            builder.append(" AND SEQUENCENAME = '").append(name).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -3358,7 +3372,15 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception{
-        return super.sequences(runtime, index, create, sequences, set);
+        if(null == sequences){
+            sequences = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("SEQUENCENAME");
+            Sequence sequence = new Sequence(name);
+            sequences.add((T)init(sequence, row));
+        }
+        return sequences;
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3373,7 +3395,31 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception{
-        return super.sequences(runtime, index, create, sequences, set);
+        if(null == sequences){
+            sequences = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("SEQUENCENAME");
+            Sequence sequence = sequences.get(name.toUpperCase());
+            sequences.put(name.toUpperCase(), (T)init(sequence, row));
+        }
+        return sequences;
+    }
+    protected Sequence init(Sequence sequence, DataRow row){
+        if(null == sequence){
+            sequence = new Sequence();
+        }
+        sequence.setName(row.getString("SEQUENCENAME"));
+        sequence.setCatalog(new Catalog(row.getString("SEQUENCEOWNER")));
+        sequence.setSchema(new Schema(row.getString("SCHEMANAME")));
+        sequence.setLast(row.getLong("LAST_NUMBER", (Long)null));
+        sequence.setMin(row.getLong("MIN_VALUE", (Long)null));
+        sequence.setStart(row.getLong("START_VALUE", (Long)null));
+        sequence.setMax(row.getLong("MAX_VALUE", (Long)null));
+        sequence.setIncrement(row.getInt("INCREMENT_BY", 1));
+        sequence.setCache(row.getInt("CACHE_SIZE", null));
+        sequence.setCycle(row.getBoolean("CYCLE", null));
+        return sequence;
     }
 
     /**
