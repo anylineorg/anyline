@@ -1,6 +1,8 @@
 package org.anyline.metadata;
 
-public class Sequence {
+import java.io.Serializable;
+
+public class Sequence extends BaseMetadata<Sequence> implements Serializable {
     protected String keyword = "SEQUENCE";
     private String name;
     private Long min = 0L;
@@ -32,7 +34,7 @@ public class Sequence {
             return name + "." + "CURRVAL";
         }
     }
-    public void setName(String name) {
+    public Sequence setName(String name) {
         if(name.contains(".")){
             String[] tmps = name.split("\\.");
             name = tmps[0];
@@ -43,6 +45,7 @@ public class Sequence {
             }
         }
         this.name = name;
+        return this;
     }
 
     public boolean isNext() {
