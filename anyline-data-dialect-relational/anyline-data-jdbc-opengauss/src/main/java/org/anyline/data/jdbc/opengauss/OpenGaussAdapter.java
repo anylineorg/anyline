@@ -3552,6 +3552,18 @@ public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapte
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 分桶方式
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.distribution(runtime, builder, meta);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder

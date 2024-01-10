@@ -3576,6 +3576,43 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 分桶方式
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
+		Table.Distribution distribution = meta.getDistribution();
+		if(null != distribution){
+			Table.DistributionType type = distribution.getType();
+			if(null != type){
+				builder.append(" DISTRIBUTED BY HASH");
+				LinkedHashMap<String, Column> columns = distribution.getColumns();
+				if(null != columns && !columns.isEmpty()){
+					//分桶相关列
+					boolean first = true;
+					for(Column column:columns.values()){
+						if(!first){
+							builder.append(",");
+						}
+						first = false;
+						name(runtime, builder, column);
+					}
+					builder.append(")");
+					//分桶数量
+					int buckets = distribution.getBuckets();
+					if(buckets >0){
+						builder.append(" BUCKETS ").append(buckets);
+					}
+				}
+			}
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder

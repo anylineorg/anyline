@@ -7237,12 +7237,28 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 分桶方式
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param table 表
+	 * @param meta 表
 	 * @return StringBuilder
 	 */
 	@Override

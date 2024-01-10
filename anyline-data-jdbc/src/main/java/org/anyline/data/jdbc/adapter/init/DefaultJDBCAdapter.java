@@ -6253,6 +6253,19 @@ distribution_desc
 	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.keys(runtime, builder, meta);
 	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 分桶方式
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.distribution(runtime, builder, meta);
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
@@ -6281,7 +6294,7 @@ distribution_desc
 	@Override
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		// PARTITION BY RANGE (code); #根据code值分区
-		Partition partition = meta.getPartitionBy();
+		Table.Partition partition = meta.getPartitionBy();
 		if(null != partition) {
 			builder.append(" PARTITION BY ").append(partition.getType()).append("(");
 			LinkedHashMap<String, Column> columns = partition.getColumns();
@@ -6320,15 +6333,15 @@ distribution_desc
 		}
 		name(runtime, builder, master);
 		builder.append(" FOR VALUES");
-		Partition partition = meta.getPartitionFor();
-		Partition.TYPE type = null;
+		Table.Partition partition = meta.getPartitionFor();
+		Table.Partition.TYPE type = null;
 		if(null != partition){
 			type = partition.getType();
 		}
 		if(null == type && null != master.getPartitionBy()){
 			type = master.getPartitionBy().getType();
 		}
-		if(type == Partition.TYPE.LIST){
+		if(type == Table.Partition.TYPE.LIST){
 			List<Object> list = partition.getList();
 			if(null == list){
 				throw new SQLException("未提供分区表枚举值(Partition.list)");
@@ -6347,7 +6360,7 @@ distribution_desc
 				}
 			}
 			builder.append(")");
-		}else if(type == Partition.TYPE.RANGE){
+		}else if(type == Table.Partition.TYPE.RANGE){
 			Object from = partition.getFrom();
 			Object to = partition.getTo();
 			if(BasicUtil.isEmpty(from) || BasicUtil.isEmpty(to)){
@@ -6368,7 +6381,7 @@ distribution_desc
 				builder.append("'").append(to).append("'");
 			}
 			builder.append(")");
-		}else if(type == Partition.TYPE.HASH){
+		}else if(type == Table.Partition.TYPE.HASH){
 			int modulus = partition.getModulus();
 			if(modulus == 0){
 				throw new SQLException("未提供分区表MODULUS");
@@ -7374,7 +7387,7 @@ distribution_desc
 	 * 定义列:聚合类型
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param column 列
+	 * @param meta 列
 	 * @return StringBuilder
 	 */
 	@Override
