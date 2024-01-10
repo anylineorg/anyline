@@ -591,7 +591,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
-				log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTable());
+				log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
 			}
 			return -1;
 		}

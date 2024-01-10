@@ -2729,7 +2729,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         if(null != table) {
             checkName(runtime, null, table);
             if (null != table.getSchema()) {
-                builder.append("AND TABLE_SCHEMA='").append(table.getSchema()).append("'\n");
+                builder.append("AND TABLE_SCHEMA='").append(table.getSchemaName()).append("'\n");
             }
             if (null != table.getName()) {
                 builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");

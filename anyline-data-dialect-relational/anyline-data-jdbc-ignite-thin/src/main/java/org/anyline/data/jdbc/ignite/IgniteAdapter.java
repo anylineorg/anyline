@@ -2661,7 +2661,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		builder.append("WHERE 1=1\n");
 		if(null != table) {
 			if (null != table.getSchema()) {
-				builder.append("AND SCHEMA_NAME='").append(table.getSchema()).append("'\n");
+				builder.append("AND SCHEMA_NAME='").append(table.getSchemaName()).append("'\n");
 			}
 			if (null != table.getName()) {
 				builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");

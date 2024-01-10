@@ -3566,7 +3566,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(meta.getSchema()).append("'");
+			builder.append(",@level0name=N'").append(meta.getSchemaName()).append("'");
 			builder.append(",@level1type=N'TABLE'");
 			builder.append(",@level1name=N'").append(meta.getName()).append("'");
 		}
@@ -3592,7 +3592,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(meta.getSchema()).append("'");
+			builder.append(",@level0name=N'").append(meta.getSchemaName()).append("'");
 			builder.append(",@level1type=N'TABLE'");
 			builder.append(",@level1name=N'").append(meta.getName()).append("'");
 		}

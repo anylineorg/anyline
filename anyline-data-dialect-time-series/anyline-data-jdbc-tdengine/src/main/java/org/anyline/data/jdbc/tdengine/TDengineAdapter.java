@@ -2690,10 +2690,10 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 		}else {
 			if (table instanceof MasterTable) {
 				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-				builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
+				builder.append(table.getCatalogName()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
 			} else {
 				builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-				builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
+				builder.append(table.getCatalogName()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
 			}
 			runs.add(new SimpleRun(runtime, builder));
 			builder = new StringBuilder();

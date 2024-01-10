@@ -298,7 +298,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             builder.append("'MS_Description', ");
             builder.append("N'").append(comment).append("', ");
             builder.append("'USER', ");
-            builder.append("'").append(table.getSchema()).append("', ");
+            builder.append("'").append(table.getSchemaName()).append("', ");
             builder.append("'TABLE', ");
             builder.append("'").append(table.getName()).append("'");
         }

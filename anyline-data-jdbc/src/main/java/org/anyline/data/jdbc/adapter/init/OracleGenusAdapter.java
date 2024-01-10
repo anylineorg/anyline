@@ -2776,8 +2776,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
         builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
         if(null != table){
-            if(BasicUtil.isNotEmpty(table.getCatalog())){
-                builder.append(" AND OWNER = '").append(table.getCatalog()).append("'\n");
+            if(BasicUtil.isNotEmpty(table.getCatalogName())){
+                builder.append(" AND OWNER = '").append(table.getCatalogName()).append("'\n");
             }
             builder.append(" AND UC.TABLE_NAME = '").append(table.getName()).append("'\n");
         }

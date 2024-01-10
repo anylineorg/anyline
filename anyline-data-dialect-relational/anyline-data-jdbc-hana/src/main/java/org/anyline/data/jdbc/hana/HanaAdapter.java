@@ -2487,8 +2487,8 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 		builder.append("SELECT * FROM PUBLIC.INDEX_COLUMNS \n");
 		builder.append("WHERE CONSTRAINT = 'PRIMARY KEY'");
 		builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
-		if(BasicUtil.isNotEmpty(table.getSchema())){
-			builder.append(" AND SCHEMA_NAME = '").append(table.getSchema()).append("'");
+		if(BasicUtil.isNotEmpty(table.getSchemaName())){
+			builder.append(" AND SCHEMA_NAME = '").append(table.getSchemaName()).append("'");
 		}
 		return runs;
 	}
