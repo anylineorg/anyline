@@ -3503,7 +3503,18 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      */
     @Override
     public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-        return super.buildQuerySequencesRun(runtime, catalog, schema, name);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM all_sequences WHERE 1=1\n");
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND SEQUENCE_OWNER = '").append(schema.getName()).append("'");
+        }
+        if(BasicUtil.isNotEmpty(name)){
+            builder.append(" AND SEQUENCE_NAME = '").append(name).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -3519,7 +3530,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      */
     @Override
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception{
-        return super.sequences(runtime, index, create, sequences, set);
+        if(null == sequences){
+            sequences = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("SEQUENCE_NAME");
+            Sequence sequence = new Sequence(name);
+            sequences.add((T)init(sequence, row));
+        }
+        return sequences;
     }
     /**
      * sequence[结果集封装]<br/>
@@ -3534,9 +3553,30 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
      */
     @Override
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception{
-        return super.sequences(runtime, index, create, sequences, set);
+        if(null == sequences){
+            sequences = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("SEQUENCE_NAME");
+            Sequence sequence = sequences.get(name.toUpperCase());
+            sequences.put(name.toUpperCase(), (T)init(sequence, row));
+        }
+        return sequences;
     }
-
+    protected Sequence init(Sequence sequence, DataRow row){
+        if(null == sequence){
+            sequence = new Sequence();
+        }
+        sequence.setName(row.getString("SEQUENCE_NAME"));
+        sequence.setSchema(new Schema(row.getString("SEQUENCE_OWNER")));
+        sequence.setLast(row.getLong("LAST_NUMBER", (Long)null));
+        sequence.setMin(row.getLong("MIN_VALUE", (Long)null));
+        sequence.setMax(row.getLong("MAX_VALUE", (Long)null));
+        sequence.setIncrement(row.getInt("INCREMENT_BY", 1));
+        sequence.setCache(row.getInt("CACHE_SIZE", null));
+        sequence.setCycle(row.getBoolean("CYCLE_FLAG", null));
+        return sequence;
+    }
     /**
      * sequence[结果集封装]<br/>
      * 根据驱动内置接口补充 Sequence
