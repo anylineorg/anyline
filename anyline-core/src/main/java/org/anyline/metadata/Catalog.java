@@ -27,9 +27,6 @@ public class Catalog extends BaseMetadata<Catalog> implements Serializable {
     public Catalog(String name){
         this.name = name;
     }
-    public String toString(){
-        return name;
-    }
     public boolean isEmpty(){
         if(null == name || name.trim().isEmpty()){
             return true;
