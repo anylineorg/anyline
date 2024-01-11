@@ -418,8 +418,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			}
 			List<String> keys = Column.names(cols);
 			for(String key:keys){
-				key = key.toUpperCase();
-				if(mastKeys.containsKey(key)){
+				if(mastKeys.containsKey(key.toUpperCase())){
 					// 必须插入
 					continue;
 				}
@@ -3862,8 +3861,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
 				for(T item:list){
-					String name = item.getName(greedy);
-					if(RegularUtil.match(name, origin, Regular.MATCH_MODE.MATCH)){
+					String name = item.getName(greedy)+"";
+					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)){
 						if(BasicUtil.equalsIgnoreCase(catalog, item.getCatalog()) && BasicUtil.equalsIgnoreCase(schema, item.getSchema())) {
 							tmp.add(item);
 						}
@@ -7192,6 +7191,21 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta)", 37));
+		}
+		return new ArrayList<>();
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 修改备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
@@ -7255,12 +7269,58 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表 engine
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 columns部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param table 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table table){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 索引部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 编码
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
 	 * @return StringBuilder
 	 */
+	@Override
 	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
@@ -7312,6 +7372,22 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 物化视图
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
 		}
 		return builder;
 	}
@@ -9670,7 +9746,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
-		List<Run> runs = buildAddRun(runtime, meta);
+		List<Run> runs = buildAddRun(runtime, meta, false);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE){
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -10231,7 +10307,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * boolean drop(DataRuntime runtime, Index meta)
 	 * boolean rename(DataRuntime runtime, Index origin, String name)
 	 * [命令合成]
-	 * List<Run> buildAddRun(DataRuntime runtime, Index meta)
+	 * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
@@ -10455,6 +10531,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
+	/**
+	 * index[命令合成]<br/>
+	 * 创建表过程添加索引,表创建完成后添加索引,于表内索引index(DataRuntime, StringBuilder, Table)二选一
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)", 37));
+		}
+		return new ArrayList<>();
+	}
 	/**
 	 * index[命令合成]<br/>
 	 * 添加索引

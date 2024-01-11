@@ -26,6 +26,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -38,10 +40,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.doris")
 public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
@@ -1670,6 +1669,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
+		//数据库中查出 internal jdbc查出数据库名 已赋值给schema
+		set.removeColumn("TABLE_CATALOG");
 		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
 
@@ -1688,6 +1689,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception{
+		set.removeColumn("TABLE_CATALOG");
 		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
 	/**
@@ -3366,7 +3368,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * table[命令合成]<br/>
-	 * 创建表<br/>
+	 * 创建表<br/>注意comment顺序不一样
 	 * 关于创建主键的几个环节<br/>
 	 * 1.1.定义列时 标识 primary(DataRuntime runtime, StringBuilder builder, Column column)<br/>
 	 * 1.2.定义表时 标识 primary(DataRuntime runtime, StringBuilder builder, Table table)<br/>
@@ -3380,7 +3382,43 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception{
-		return super.buildCreateRun(runtime, meta);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("CREATE ").append(keyword(meta)).append(" ");
+		checkTableExists(runtime, builder, false);
+		name(runtime, builder, meta);
+		//分区表
+		partitionOf(runtime, builder, meta);
+		//列
+		columns(runtime, builder, meta);
+		//索引
+		indexs(runtime, builder, meta);
+		//继承表
+		inherit(runtime, builder, meta);
+		//引擎
+		engine(runtime, builder, meta);
+		//编码方式
+		charset(runtime, builder, meta);
+		//keys type
+		keys(runtime, builder, meta);
+		//注释
+		comment(runtime, builder, meta);
+		//分表
+		partitionBy(runtime, builder, meta);
+		//分桶方式
+		distribution(runtime, builder, meta);
+		//物化视图
+		materialize(runtime, builder, meta);
+		//扩展属性
+		property(runtime, builder, meta);
+
+		runs.addAll(buildAppendCommentRun(runtime, meta));
+		runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+		runs.addAll(buildAppendPrimaryRun(runtime, meta));
+		runs.addAll(buildAppendIndexRun(runtime, meta));
+		return runs;
 	}
 	/**
 	 * table[命令合成]<br/>
@@ -3450,6 +3488,19 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
+		return super.buildAppendColumnCommentRun(runtime, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 修改备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
@@ -3513,6 +3564,43 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表 engine
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.engine(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 columns部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.columns(runtime, builder, meta);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 索引部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.indexs(runtime, builder, meta);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 编码
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -3554,11 +3642,12 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 				Table.Key.TYPE type = key.getType();
 				LinkedHashMap<String, Column> columns = key.getColumns();
 				if(null != type && null != columns && !columns.isEmpty()){
+					builder.append("\n");
 					if(!kfirst){
 						builder.append(",");
 					}
 					kfirst = false;
-					builder.append(" ").append(type.getName()).append(" KEY(");
+					builder.append(" ").append(type.name()).append(" KEY(");
 					boolean first = true;
 					for(Column column:columns.values()){
 						if(!first){
@@ -3588,11 +3677,12 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		if(null != distribution){
 			Table.Distribution.TYPE type = distribution.getType();
 			if(null != type){
-				builder.append(" DISTRIBUTED BY HASH");
+				builder.append("\nDISTRIBUTED BY ").append(type);
 				LinkedHashMap<String, Column> columns = distribution.getColumns();
 				if(null != columns && !columns.isEmpty()){
 					//分桶相关列
 					boolean first = true;
+					builder.append("(");
 					for(Column column:columns.values()){
 						if(!first){
 							builder.append(",");
@@ -3603,11 +3693,43 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 					builder.append(")");
 					//分桶数量
 					int buckets = distribution.getBuckets();
-					if(buckets >0){
+					if(buckets > 0){
 						builder.append(" BUCKETS ").append(buckets);
 					}
 				}
 			}
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 物化视图
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
+		LinkedHashMap<String, View> views = meta.getMaterializes();
+		if(null != views && !views.isEmpty()){
+			builder.append("\nROLLUP(");
+			boolean vfirst = true;
+			for(View view:views.values()){
+				LinkedHashMap<String, Column> columns = view.getColumns();
+				if(null == columns || columns.isEmpty()) {
+					continue;
+				}
+				if(!vfirst){
+					builder.append(",");
+				}
+				vfirst = false;
+				builder.append(view.getName()).append("(");
+				builder.append(BeanUtil.concat(view.getColumns().values(), "name", ",", false, true));
+				builder.append(")");
+
+			}
+			builder.append(")");
 		}
 		return builder;
 	}
@@ -3623,7 +3745,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
 		LinkedHashMap<String, Object> property = meta.getProperty();
 		if(null != property && !property.isEmpty()){
-			builder.append(" PROPERTIES(");
+			builder.append("\nPROPERTIES(");
 			boolean first = true;
 			for(String key:property.keySet()){
 				if(!first){
@@ -3649,7 +3771,118 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
-		return super.partitionBy(runtime, builder, meta);
+		// PARTITION BY RANGE (code); #根据code值分区
+		Table.Partition partition = meta.getPartitionBy();
+		if(null != partition) {
+			builder.append("\nPARTITION BY ").append(partition.getType()).append("(");
+			LinkedHashMap<String, Column> columns = partition.getColumns();
+			boolean first = true;
+			for (Column column : columns.values()) {
+				if (!first) {
+					builder.append(",");
+				}
+				first = false;
+				delimiter(builder, column.getName());
+			}
+			builder.append(")\n");
+
+			List<Table.Partition.Slice> slices = partition.getSlices();
+			if(null != slices && !slices.isEmpty()){
+				builder.append("(");
+				boolean sfirst = true;
+				for(Table.Partition.Slice slice:slices){
+					if(!sfirst){
+						builder.append("\n,");
+					}
+					sfirst = false;
+					Object min = slice.getMin();
+					Object max = slice.getMax();
+					List<Object> values = slice.getValues();
+					LinkedHashMap<String,Object> less = slice.getLess();
+					int interval = slice.getInterval();
+					String unit = slice.getUnit();
+					if(null != min && null != max){
+						// FROM ("2000-11-11") TO ("2021-11-11") INTERVAL 1 YEAR,
+						builder.append(" FROM (");
+						boolean number = BasicUtil.isNumber(min);
+						if(!number){
+							builder.append("'");
+						}
+						builder.append(min);
+						if(!number){
+							builder.append("'");
+						}
+						builder.append(") TO (");
+						if(!number){
+							builder.append("'");
+						}
+						builder.append(max);
+						if(!number){
+							builder.append("'");
+						}
+						builder.append(")");
+						if(interval>0){
+							builder.append(" INTERVAL ").append(interval);
+						}
+						if(BasicUtil.isNotEmpty(unit)){
+							builder.append(" ").append(unit);
+						}
+					}else if(null != less && !less.isEmpty()){
+						/*PARTITION BY RANGE(col1[, col2, ...])
+						(
+							PARTITION partition_name1 VALUES LESS THAN MAXVALUE|("value1", "value2", ...),
+							PARTITION partition_name2 VALUES LESS THAN MAXVALUE|("value1", "value2", ...)
+						)*/
+						builder.append(" PARTITION ").append(slice.getName()).append(" VALUES LESS THAN ");
+						builder.append("(");
+						boolean lfirst = true;
+						for (Column column : columns.values()) {
+							if (!lfirst) {
+								builder.append(",");
+							}
+							lfirst = false;
+							Object v = less.get(column.getName().toUpperCase());
+							boolean number = BasicUtil.isNumber(v);
+							if(!number){
+								builder.append("'");
+							}
+							builder.append(v);
+							if(!number){
+								builder.append("'");
+							}
+						}
+						builder.append(")");
+					}else if(null != values && !values.isEmpty()){
+						/*
+						PARTITION BY List(`address` )
+						(
+							PARTITION `p_city1` VALUES IN ("浦东","闵行"),
+							PARTITION `p_city2` VALUES IN ("海淀","昌平"),
+							PARTITION `p_city3` VALUES IN ("太原","忻州")
+						*/
+						builder.append(" PARTITION ").append(slice.getName()).append(" VALUES IN(");
+						boolean vfirst = true;
+						for(Object value:values){
+							if(!vfirst){
+								builder.append(",");
+							}
+							vfirst = false;
+							boolean number = BasicUtil.isNumber(value);
+							if(!number){
+								builder.append("'");
+							}
+							builder.append(value);
+							if(!number){
+								builder.append("'");
+							}
+						}
+						builder.append(")");
+					}
+				}
+				builder.append(")");
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -4105,7 +4338,6 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable meta) throws Exception{
 		return super.buildAppendCommentRun(runtime, meta);
 	}
-
 	/**
 	 * partition table[命令合成]<br/>
 	 * 修改分区表
@@ -4445,7 +4677,6 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		return super.buildAppendCommentRun(runtime, meta);
 	}
 
-
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 取消自增
@@ -4670,14 +4901,52 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:默认值
+	 * 列定义:默认值,注意数字也需要引号
 	 * @param builder builder
 	 * @param meta 列
 	 * @return StringBuilder
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.defaultValue(runtime, builder, meta);
+		Object def = null;
+		boolean defaultCurrentDateTime = false;
+		if(null != meta.getUpdate()){
+			def = meta.getUpdate().getDefaultValue();
+			defaultCurrentDateTime = meta.getUpdate().isDefaultCurrentDateTime();
+		}else {
+			def = meta.getDefaultValue();
+			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
+		}
+		if(null == def && defaultCurrentDateTime){
+			String type = meta.getFullType().toLowerCase();
+			if (type.contains("timestamp")) {
+				def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
+			}else{
+				def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
+			}
+		}
+		if(null != def) {
+			builder.append(" DEFAULT ");
+			//boolean isCharColumn = isCharColumn(runtime, column);
+			SQL_BUILD_IN_VALUE val = checkDefaultBuildInValue(runtime, def);
+			if(null != val){
+				def = val;
+			}
+			if(def instanceof SQL_BUILD_IN_VALUE){
+				String value = value(runtime, meta, (SQL_BUILD_IN_VALUE)def);
+				if(null != value){
+					builder.append("'").append(value).append("'");
+				}
+			}else {
+				def = write(runtime, meta, def, false);
+				if(null == def){
+					def = meta.getDefaultValue();
+				}
+				//format(builder, def);
+				builder.append("'").append(def).append("'");
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -5240,7 +5509,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * boolean drop(DataRuntime runtime, Index meta)
 	 * boolean rename(DataRuntime runtime, Index origin, String name)
 	 * [命令合成]
-	 * List<Run> buildAddRun(DataRuntime runtime, Index meta)
+	 * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
@@ -5315,6 +5584,17 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		return super.rename(runtime, origin, name);
 	}
 
+	/**
+	 * index[命令合成]<br/>
+	 * 创建表过程添加索引,表创建完成后添加索引,于表内索引index(DataRuntime, StringBuilder, Table)二选一
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
+		return super.buildAppendIndexRun(runtime, meta);
+	}
 	/**
 	 * index[命令合成]<br/>
 	 * 添加索引

@@ -3513,6 +3513,18 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
+		return super.buildAppendColumnCommentRun(runtime, meta);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 修改备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
@@ -3566,6 +3578,44 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表 engine
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.engine(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 columns部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.columns(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 索引部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.indexs(runtime, builder, meta);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 编码
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -3614,6 +3664,19 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	@Override
 	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.distribution(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 物化视图
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.materialize(runtime, builder, meta);
 	}
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -4095,7 +4158,6 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable meta) throws Exception{
 		return super.buildAppendCommentRun(runtime, meta);
 	}
-
 	/**
 	 * partition table[命令合成]<br/>
 	 * 修改分区表
@@ -4434,7 +4496,6 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception{
 		return super.buildAppendCommentRun(runtime, meta);
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5229,7 +5290,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 * boolean drop(DataRuntime runtime, Index meta)
 	 * boolean rename(DataRuntime runtime, Index origin, String name)
 	 * [命令合成]
-	 * List<Run> buildAddRun(DataRuntime runtime, Index meta)
+	 * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
@@ -5304,6 +5365,17 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		return super.rename(runtime, origin, name);
 	}
 
+	/**
+	 * index[命令合成]<br/>
+	 * 创建表过程添加索引,表创建完成后添加索引,于表内索引index(DataRuntime, StringBuilder, Table)二选一
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
+		return super.buildAppendIndexRun(runtime, meta);
+	}
 	/**
 	 * index[命令合成]<br/>
 	 * 添加索引

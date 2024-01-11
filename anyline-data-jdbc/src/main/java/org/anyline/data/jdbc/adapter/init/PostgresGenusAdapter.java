@@ -5600,7 +5600,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * boolean drop(DataRuntime runtime, Index meta)
      * boolean rename(DataRuntime runtime, Index origin, String name)
      * [命令合成]
-     * List<Run> buildAddRun(DataRuntime runtime, Index meta)
+     * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
      * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
      * List<Run> buildDropRun(DataRuntime runtime, Index meta)
      * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
@@ -5683,8 +5683,8 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * @return String
      */
     @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception{
-        return super.buildAddRun(runtime, meta);
+    public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
+        return super.buildAppendIndexRun(runtime, meta);
     }
     /**
      * index[命令合成]<br/>

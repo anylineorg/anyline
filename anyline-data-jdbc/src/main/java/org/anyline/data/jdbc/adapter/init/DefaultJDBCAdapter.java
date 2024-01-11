@@ -5966,91 +5966,33 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		checkTableExists(runtime, builder, false);
 		name(runtime, builder, meta);
 		//分区表
-		Table master = meta.getMaster();
-		if(null != master){
-			//CREATE TABLE simple.public.log1 PARTITION OF simple.public.log_master FOR VALUES FROM (1) TO (9)
-			partitionOf(runtime, builder, meta);
-		}
-		LinkedHashMap columMap = meta.getColumns();
-		Collection<Column> columns = null;
-		PrimaryKey primary = meta.getPrimaryKey();
-		LinkedHashMap<String, Column> pks = null;
-		if(null != primary){
-			pks = primary.getColumns();
-		}else{
-			pks = meta.primarys();
-			primary = new PrimaryKey();
-			primary.setTable(meta);
-			for (Column col:pks.values()){
-				primary.addColumn(col);
-			}
-		}
-		if(null != columMap){
-			columns = columMap.values();
-			if(null != columns && !columns.isEmpty()){
-				builder.append("(\n");
-				int idx = 0;
-				for(Column column:columns){
-					builder.append("\t");
-					if(idx > 0){
-						builder.append(",");
-					}
-					column.setAction(ACTION.DDL.COLUMN_ADD);
-					delimiter(builder, column.getName()).append(" ");
-					define(runtime, builder, column).append("\n");
-					idx ++;
-				}
-				builder.append("\t");
-				if(!pks.isEmpty()) {
-					primary(runtime, builder, meta);
-				}
-				builder.append(")");
-			}
-		}
+		partitionOf(runtime, builder, meta);
+		columns(runtime, builder, meta);
+		indexs(runtime, builder, meta);
 		//分区依据 PARTITION BY RANGE (code);
 		partitionBy(runtime, builder, meta);
 		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
 		inherit(runtime, builder, meta);
-		//CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='备注';
+		//引擎
+		engine(runtime, builder, meta);
+		//编码方式
 		charset(runtime, builder, meta);
+		//keys type
 		keys(runtime, builder, meta);
-		comment(runtime, builder, meta);
+		//分桶方式
+		distribution(runtime, builder, meta);
+		//物化视图
+		materialize(runtime, builder, meta);
+		//扩展属性
 		property(runtime, builder, meta);
-		/*[engine_type]
-[keys_type]
-[table_comment]
-[partition_info]
-distribution_desc
-[rollup_list]
-[properties]*/
+		//备注
+		comment(runtime, builder, meta);
 
-		List<Run> tableComment = buildAppendCommentRun(runtime, meta);
-		if(null != tableComment) {
-			runs.addAll(tableComment);
-		}
-		if(null != columns){
-			for(Column column:columns){
-				List<Run> columnComment = buildAppendCommentRun(runtime, column);
-				if(null != columnComment){
-					runs.addAll(columnComment);
-				}
-			}
-		}
-		if(null != primary){
-			List<Run> pksql = buildAddRunAfterTable(runtime, primary);
-			if(null != pksql){
-				runs.addAll(pksql);
-			}
-		}
-		LinkedHashMap<String,Index> indexs = meta.getIndexs();
-		if(null != indexs){
-			for(Index index:indexs.values()){
-				//创建表过程已添加过主键，这里不重复添加
-				if(!index.isPrimary()) {
-					runs.addAll(buildAddRun(runtime, index));
-				}
-			}
-		}
+		//创建表后追加
+		runs.addAll(buildAppendCommentRun(runtime, meta));
+		runs.addAll(buildAppendColumnCommentRun(runtime, meta));
+		runs.addAll(buildAppendPrimaryRun(runtime, meta));
+		runs.addAll(buildAppendIndexRun(runtime, meta));
 		return runs;
 	}
 	/**
@@ -6126,6 +6068,18 @@ distribution_desc
 		return super.buildAppendCommentRun(runtime, meta);
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
+		return super.buildAppendColumnCommentRun(runtime, meta);
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 修改备注
@@ -6208,6 +6162,83 @@ distribution_desc
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表 engine
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+		String engine = meta.getEngine();
+		if(BasicUtil.isNotEmpty(engine)){
+			builder.append("\nENGINE = ").append(engine);
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 columns部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta){
+		LinkedHashMap columMap = meta.getColumns();
+		Collection<Column> columns = null;
+		PrimaryKey primary = meta.getPrimaryKey();
+		LinkedHashMap<String, Column> pks = null;
+		if(null != primary){
+			pks = primary.getColumns();
+		}else{
+			pks = meta.primarys();
+			primary = new PrimaryKey();
+			primary.setTable(meta);
+			for (Column col:pks.values()){
+				primary.addColumn(col);
+			}
+			meta.setPrimaryKey(primary);
+		}
+		if(null != columMap){
+			columns = columMap.values();
+			if(null != columns && !columns.isEmpty()){
+				builder.append("(\n");
+				int idx = 0;
+				for(Column column:columns){
+					builder.append("\t");
+					if(idx > 0){
+						builder.append(",");
+					}
+					column.setAction(ACTION.DDL.COLUMN_ADD);
+					delimiter(builder, column.getName()).append(" ");
+					define(runtime, builder, column).append("\n");
+					idx ++;
+				}
+				builder.append("\t");
+				if(!pks.isEmpty()) {
+					primary(runtime, builder, meta);
+				}
+				builder.append(")");
+			}
+		}
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 索引部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.indexs(runtime, builder, meta);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 编码
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -6257,6 +6288,19 @@ distribution_desc
 	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.distribution(runtime, builder, meta);
 	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 物化视图
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.materialize(runtime, builder, meta);
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
@@ -6289,13 +6333,13 @@ distribution_desc
 		if(null != partition) {
 			builder.append(" PARTITION BY ").append(partition.getType()).append("(");
 			LinkedHashMap<String, Column> columns = partition.getColumns();
-			int idx = 0;
+			boolean first = true;
 			for (Column column : columns.values()) {
-				if (idx > 0) {
+				if (!first) {
 					builder.append(",");
 				}
+				first = false;
 				delimiter(builder, column.getName());
-				idx++;
 			}
 			builder.append(")");
 		}
@@ -6317,8 +6361,11 @@ distribution_desc
 		//CREATE TABLE partition_name2 PARTITION OF main_table_name FOR VALUES FROM (100) TO (199);
 		//CREATE TABLE emp_0 PARTITION OF emp FOR VALUES WITH (MODULUS 3,REMAINDER 0);
 		//CREATE TABLE hr_user_1 PARTITION OF hr_user FOR VALUES IN ('HR');
-		builder.append(" PARTITION OF ");
 		Table master = meta.getMaster();
+		if(null == master){
+			return builder;
+		}
+		builder.append(" PARTITION OF ");
 		if(null == master){
 			throw new SQLException("未提供 Master Table");
 		}
@@ -6393,6 +6440,7 @@ distribution_desc
 	 */
 	@Override
 	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
 		if(BasicUtil.isNotEmpty(meta.getInherit())){
 			LinkedHashMap<String, Column> columns = meta.getColumns();
 			if(null == columns || columns.isEmpty()){
@@ -6858,7 +6906,6 @@ distribution_desc
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable meta) throws Exception{
 		return super.buildAppendCommentRun(runtime, meta);
 	}
-
 	/**
 	 * partition table[命令合成]<br/>
 	 * 修改分区表
@@ -7304,7 +7351,6 @@ distribution_desc
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception{
 		return super.buildAppendCommentRun(runtime, meta);
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -8334,7 +8380,7 @@ distribution_desc
 	 * boolean drop(DataRuntime runtime, Index meta)
 	 * boolean rename(DataRuntime runtime, Index origin, String name)
 	 * [命令合成]
-	 * List<Run> buildAddRun(DataRuntime runtime, Index meta)
+	 * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildDropRun(DataRuntime runtime, Index meta)
 	 * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
@@ -8409,6 +8455,17 @@ distribution_desc
 		return super.rename(runtime, origin, name);
 	}
 
+	/**
+	 * index[命令合成]<br/>
+	 * 创建表过程添加索引,表创建完成后添加索引,于表内索引index(DataRuntime, StringBuilder, Table)二选一
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return String
+	 */
+	@Override
+	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
+		return super.buildAppendIndexRun(runtime, meta);
+	}
 	/**
 	 * index[命令合成]<br/>
 	 * 添加索引

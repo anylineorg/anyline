@@ -3000,11 +3000,11 @@ public interface DriverAdapter {
 	 * table[命令合成]<br/>
 	 * 删除表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Table meta) throws Exception;
 
 
 
@@ -3012,11 +3012,20 @@ public interface DriverAdapter {
 	 * table[命令合成-子流程]<br/>
 	 * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildAppendCommentRun(DataRuntime runtime, Table meta) throws Exception;
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception;
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -3054,21 +3063,50 @@ public interface DriverAdapter {
 	 * 定义表的主键标识,在创建表的DDL结尾部分(注意不要跟列定义中的主键重复)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param table 表
+	 * @param meta 表
 	 * @return StringBuilder
 	 */
-	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table table);
+	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta);
 
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 engine
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta);
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 columns部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta);
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 索引部分
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta);
 
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 编码
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param table 表
+	 * @param meta 表
 	 * @return StringBuilder
 	 */
-	StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table table);
+	StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta);
 
 
 	/**
@@ -3076,10 +3114,10 @@ public interface DriverAdapter {
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param table 表
+	 * @param meta 表
 	 * @return StringBuilder
 	 */
-	StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table table);
+	StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta);
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 数据模型
@@ -3098,6 +3136,17 @@ public interface DriverAdapter {
 	 * @return StringBuilder
 	 */
 	StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta);
+
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 物化视图
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta);
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
@@ -4139,10 +4188,10 @@ public interface DriverAdapter {
 	 * 默认不调用，大部分数据库在创建列或表时可以直接标识出主键<br/>
 	 * 只有在创建表过程中不支持创建主键的才需要实现这个方法
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param primary 主键
+	 * @param meta 表
 	 * @return String
 	 */
-	default List<Run> buildAddRunAfterTable(DataRuntime runtime, PrimaryKey primary) throws Exception{
+	default List<Run> buildAppendPrimaryRun(DataRuntime runtime, Table meta) throws Exception{
 		return new ArrayList<>();
 	}
 	/**
@@ -4343,13 +4392,21 @@ public interface DriverAdapter {
 
 	/**
 	 * index[命令合成]<br/>
+	 * 创建表过程添加索引,表创建完成后添加索引,于表内索引index(DataRuntime, StringBuilder, Table)二选一
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 表
+	 * @return String
+	 */
+	List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception;
+
+	/**
+	 * index[命令合成]<br/>
 	 * 添加索引
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 索引
 	 * @return String
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception;
-
 	/**
 	 * index[命令合成]<br/>
 	 * 修改索引

@@ -4932,7 +4932,7 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      */
     @Override
     public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
-        return super.buildAddRun(runtime, meta);
+        return super.buildAddRun(runtime, meta, slice);
     }
 
     /**
@@ -5118,7 +5118,7 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * boolean drop(DataRuntime runtime, Index meta)
      * boolean rename(DataRuntime runtime, Index origin, String name)
      * [命令合成]
-     * List<Run> buildAddRun(DataRuntime runtime, Index meta)
+     * List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)
      * List<Run> buildAlterRun(DataRuntime runtime, Index meta)
      * List<Run> buildDropRun(DataRuntime runtime, Index meta)
      * List<Run> buildRenameRun(DataRuntime runtime, Index meta)
@@ -5201,8 +5201,8 @@ public class ElasticSearchAdapter extends DefaultDriverAdapter implements Driver
      * @return String
      */
     @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception{
-        return super.buildAddRun(runtime, meta);
+    public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
+        return super.buildAppendIndexRun(runtime, meta);
     }
     /**
      * index[命令合成]<br/>
