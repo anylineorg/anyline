@@ -1055,7 +1055,21 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if (!BasicUtil.equals(name, column.getName(), ignoreCase)) {
             return false;
         }
-        if(!BasicUtil.equals(typeMetadata, column.getTypeMetadata())){
+        TypeMetadata columnTypeMetadata = column.getTypeMetadata();
+        TypeMetadata origin = null;
+        TypeMetadata columnOrigin = null;
+        if(null != typeMetadata){
+            origin = typeMetadata.getOrigin();
+        }
+        if(null != columnTypeMetadata){
+            columnOrigin = columnTypeMetadata.getOrigin();
+        }
+
+        if(!BasicUtil.equals(typeMetadata, columnTypeMetadata)
+                && !BasicUtil.equals(origin, columnOrigin)
+                && !BasicUtil.equals(typeMetadata, columnTypeMetadata)
+                && !BasicUtil.equals(origin, columnOrigin)
+        ){
             return false;
         }
         if(null == typeMetadata || !typeMetadata.ignorePrecision()) {

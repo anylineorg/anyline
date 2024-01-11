@@ -120,6 +120,9 @@ public interface TypeMetadata {
     };
     CATEGORY getCategory();
     String getName();
+    default TypeMetadata getOrigin(){
+        return this;
+    }
     boolean ignorePrecision();
     boolean ignoreScale();
     boolean support();
