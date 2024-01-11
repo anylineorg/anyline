@@ -52,6 +52,13 @@ public interface DataRuntime {
     String datasource();
     void setAdapter(DriverAdapter adapter);
 
+    /**
+     * 配置文件中设置adapter标识(url参数或adapter属性)
+     * @param adapter adapter标识
+     */
+    void setAdapterKey(String adapter);
+    String getAdapterKey();
+
     void setHolder(RuntimeHolder holder);
     RuntimeHolder getHolder();
 }

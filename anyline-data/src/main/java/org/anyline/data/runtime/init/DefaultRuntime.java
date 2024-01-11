@@ -25,6 +25,7 @@ public class DefaultRuntime implements DataRuntime {
      */
     protected String version;
     protected DriverAdapter adapter;
+    protected String adapterKey;
     protected RuntimeHolder holder;
 
     @Override
@@ -112,6 +113,12 @@ public class DefaultRuntime implements DataRuntime {
         this.adapter = adapter;
     }
 
+    public void setAdapterKey(String adapter) {
+        this.adapterKey = adapter;
+    }
+    public String getAdapterKey(){
+        return adapterKey;
+    }
     @Override
     public void setHolder(RuntimeHolder holder) {
         this.holder = holder;
