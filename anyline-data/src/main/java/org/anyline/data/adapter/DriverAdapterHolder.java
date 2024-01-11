@@ -93,6 +93,7 @@ public class DriverAdapterHolder {
 		}
 		DriverAdapter adapter = null;
 		try {
+			//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
 			for (DriverAdapter item:adapters){
 				if(item.match(runtime, false)){
 					adapter = item;

@@ -32,6 +32,7 @@ import org.anyline.proxy.DatasourceHolderProxy;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
+import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -317,7 +318,16 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 				Map<String, Object> param = params.get(key);
 				if(null != param) {
 					runtime.setDriver(param.get("driver") + "");
-					runtime.setUrl(param.get("url") + "");
+					String url = param.get("url") + "";
+					runtime.setUrl(url);
+					String adapter = param.get("adapter")+"";
+					if(BasicUtil.isEmpty(adapter) && url.contains("adapter")){
+						adapter = RegularUtil.cut(url, "adapter=", "&");
+						if(BasicUtil.isEmpty(adapter)){
+							RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
+						}
+					}
+					runtime.setAdapterKey(adapter);
 				}
 			}
 		}
