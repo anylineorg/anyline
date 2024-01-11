@@ -28,8 +28,10 @@ import java.util.*;
 public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
     protected String keyword = "TABLE"            ;
 
+    /**
+     * 分桶方式及数量
+     */
     public static class Distribution{
-
         public enum TYPE{
             HASH 			("HASH"  			, "哈希分桶"),
             RANDOM 			("RANDOM"  			, "随机分桶");
@@ -44,7 +46,8 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             }
             public String getCode(){
                 return code;
-            }}
+            }
+        }
         /**
          * 分桶方式
          */
@@ -52,33 +55,50 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         /**
          * 分桶数量
          */
-        private int buckets;
+        private int buckets = -1;
+        /**
+         * 分桶依据列
+         */
         private LinkedHashMap<String, Column> columns;
+        public Distribution(){
 
+        }
+        public Distribution(TYPE type, int buckets, String ... columns){
+            setBuckets(buckets);
+            setType(type);
+            setColumns(columns);
+        }
+        public Distribution(TYPE type, String ... columns){
+            setType(type);
+            setColumns(columns);
+        }
         public int getBuckets() {
             return buckets;
         }
 
-        public void setBuckets(int buckets) {
+        public Distribution setBuckets(int buckets) {
             this.buckets = buckets;
+            return this;
         }
 
         public TYPE getType() {
             return type;
         }
 
-        public void setType(TYPE type) {
+        public Distribution setType(TYPE type) {
             this.type = type;
+            return this;
         }
 
         public LinkedHashMap<String, Column> getColumns() {
             return columns;
         }
 
-        public void setColumns(LinkedHashMap<String, Column> columns) {
+        public Distribution setColumns(LinkedHashMap<String, Column> columns) {
             this.columns = columns;
+            return this;
         }
-        public void setColumns(String ... columns) {
+        public Distribution setColumns(String ... columns) {
             if(null == this.columns){
                 this.columns = new LinkedHashMap<>();
             }
@@ -87,6 +107,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                     this.columns.put(column.toUpperCase(), new Column(column));
                 }
             }
+            return this;
         }
     }
     public static class Key{
@@ -137,7 +158,53 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         }
     }
 
-    public static class Partition  implements Serializable {
+    public static class Partition implements Serializable {
+        public static class Slice implements Serializable{
+            private String name;
+            private Object min;
+            private Object max;
+            private int interval;
+            private String unit;
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public Object getMin() {
+                return min;
+            }
+
+            public void setMin(Object min) {
+                this.min = min;
+            }
+
+            public Object getMax() {
+                return max;
+            }
+
+            public void setMax(Object max) {
+                this.max = max;
+            }
+
+            public int getInterval() {
+                return interval;
+            }
+
+            public void setInterval(int interval) {
+                this.interval = interval;
+            }
+
+            public String getUnit() {
+                return unit;
+            }
+
+            public void setUnit(String unit) {
+                this.unit = unit;
+            }
+        }
         public enum TYPE{LIST, RANGE, HASH}
         //RANGE
         private Object from;
@@ -163,6 +230,11 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             for(String column:columns){
                 this.columns.put(column.toUpperCase(), new Column(column));
             }
+        }
+        private List<Slice> slices = new ArrayList<>();
+        public Partition addSlice(Slice slice){
+            slices.add(slice);
+            return this;
         }
         public Partition.TYPE getType() {
             return type;
@@ -371,8 +443,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     protected LinkedHashMap<String, Object> property;
     /**
-     *
+     * 物化视图
      */
+    protected LinkedHashMap<String, View> materializes;
     protected List<Key> keys;
     protected Distribution distribution;
     protected PrimaryKey primaryKey;
@@ -411,6 +484,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             this.name = name;
         }
     }
+
     public Table(String schema, String table){
         this(null, schema, table);
     }
@@ -472,6 +546,27 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return this;
     }
 
+    /**
+     * 设置分桶方式
+     * @param type 分桶方式
+     * @param buckets 分桶数量
+     * @param columns 分桶依据列
+     * @return this
+     */
+    public Table setDistribution(Distribution.TYPE type, int buckets, String ... columns){
+        setDistribution(new Distribution(type, buckets, columns));
+        return this;
+    }
+    /**
+     * 设置分桶方式
+     * @param type 分桶方式
+     * @param columns 分桶依据列
+     * @return this
+     */
+    public Table setDistribution(Distribution.TYPE type, String ... columns){
+        setDistribution(new Distribution(type, columns));
+        return this;
+    }
     public E drop(){
         this.action = ACTION.DDL.TABLE_DROP;
         return super.drop();
@@ -594,6 +689,21 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.master = master;
     }
 
+    public LinkedHashMap<String, View> getMaterializes() {
+        return materializes;
+    }
+
+    public Table setMaterializes(LinkedHashMap<String, View> materializes) {
+        this.materializes = materializes;
+        return this;
+    }
+    public Table addMaterializes(View view) {
+        if(null == this.materializes){
+            this.materializes = new LinkedHashMap<>();
+        }
+        this.materializes.put(view.getName().toUpperCase(), view);
+        return this;
+    }
 
     public LinkedHashMap<String, Column> primarys(){
         LinkedHashMap<String, Column> pks = new LinkedHashMap<>();
