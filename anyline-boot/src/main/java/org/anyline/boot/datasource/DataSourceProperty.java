@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 //@Configuration("anyline.boot.datasource")
 //@ConfigurationProperties(prefix = "anyline.datasource")
 public class DataSourceProperty extends DataSourceProperties {
-
+    private volatile String adapter;
     private volatile String driver;
     private volatile String catalog;
     private volatile long connectionTimeout;
@@ -141,6 +141,14 @@ public class DataSourceProperty extends DataSourceProperties {
 
     public void setAuthenticationDatabase(String authenticationDatabase) {
         this.authenticationDatabase = authenticationDatabase;
+    }
+
+    public String getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(String adapter) {
+        this.adapter = adapter;
     }
 
     public String getUsername() {
