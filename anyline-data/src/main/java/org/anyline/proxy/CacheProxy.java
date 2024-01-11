@@ -59,19 +59,19 @@ public class CacheProxy {
         String catalog_name = null;
         String schema_name = null;
         if(null != catalog){
-            catalog_name = catalog.getName().toUpperCase();
+            catalog_name = catalog.getName();
         }
         if(null != schema){
-            schema_name = schema.getName().toUpperCase();
+            schema_name = schema.getName();
         }
-        return catalog_name + "_" + schema_name;
+        return (catalog_name + "_" + schema_name).toUpperCase();
     }
     private static String key(Catalog catalog, Schema schema, Table table){
         String table_name = null;
         if(null != table){
-            table_name = table.getName().toUpperCase();
+            table_name = table.getName();
         }
-        return key(catalog, schema) + ":" + table_name;
+        return (key(catalog, schema) + ":" + table_name).toUpperCase();
     }
     public static void name(Catalog catalog, Schema schema, String name, String origin){
         String group_key = key(catalog, schema);
@@ -80,7 +80,7 @@ public class CacheProxy {
             maps = new HashMap<>();
             cache_names.put(group_key, maps);
         }
-        String name_key = group_key + ":" + name.toUpperCase();
+        String name_key = (group_key + ":" + name).toUpperCase();
         maps.put(name_key, origin);
     }
     public static Map<String, String> names(Catalog catalog, Schema schema){
@@ -93,7 +93,7 @@ public class CacheProxy {
         String group_key = key(catalog, schema);
         Map<String, String> maps = cache_names.get(group_key);
         if(null != maps){
-            String name_key = group_key + ":" + name.toUpperCase();
+            String name_key = (group_key + ":" + name).toUpperCase();
             String origin = maps.get(name_key);
             if(null != origin){
                 return origin;
@@ -102,7 +102,7 @@ public class CacheProxy {
         if(greedy) {
             for (Map<String, String> names : cache_names.values()) {
                 for(String item:names.keySet()){
-                    if(item.endsWith(":"+name.toUpperCase())){
+                    if(item.endsWith((":"+name).toUpperCase())){
                         return names.get(item);
                     }
                 }
@@ -179,7 +179,7 @@ public class CacheProxy {
         }
         LinkedHashMap<String, T> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_COLUMNS_" + key(table.getCatalog(), table.getSchema(), table);
+        String key = datasource(datasource) + "_COLUMNS_" + key(table.getCatalog(), table.getSchema(), table);
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
@@ -209,7 +209,7 @@ public class CacheProxy {
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_COLUMNS_" + key(table.getCatalog(), table.getSchema(), table);
+        String key = datasource(datasource) + "_COLUMNS_" + key(table.getCatalog(), table.getSchema(), table);
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, columns);
