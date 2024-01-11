@@ -6338,10 +6338,41 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param <T> Index
 	 */
 	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
+
+		if(null == random){
+			random = random(runtime);
 		}
-		return new ArrayList<>();
+		List<T> sequences = new ArrayList<>();
+		try{
+			long fr = System.currentTimeMillis();
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQuerySequencesRun(runtime, catalog, schema, pattern);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						sequences = sequences(runtime, idx++, true, sequences, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+					log.warn("{}[sequences][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+				}
+			}
+			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+				log.info("{}[sequences][result:{}][执行耗时:{}ms]", random, sequences.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[sequences][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return sequences;
 	}
 	/**
 	 *
@@ -6355,10 +6386,41 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param <T> Index
 	 */
 	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern)", 37));
+
+		if(null == random){
+			random = random(runtime);
 		}
-		return new LinkedHashMap<>();
+		LinkedHashMap<String, T> sequences = new LinkedHashMap<>();
+		try{
+			long fr = System.currentTimeMillis();
+			// 根据系统表查询
+			try{
+				List<Run> runs = buildQuerySequencesRun(runtime, catalog, schema, pattern);
+				if(null != runs) {
+					int idx = 0;
+					for(Run run:runs) {
+						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						sequences = sequences(runtime, idx++, true, sequences, set);
+					}
+				}
+			}catch (Exception e){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+					e.printStackTrace();
+				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+					log.warn("{}[sequences][{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), e.toString());
+				}
+			}
+			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+				log.info("{}[sequences][result:{}][执行耗时:{}ms]", random, sequences.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			}else{
+				log.error("[sequences][result:fail][msg:{}]", e.toString());
+			}
+		}
+		return sequences;
 	}
 	/**
 	 * sequence[命令合成]<br/>
