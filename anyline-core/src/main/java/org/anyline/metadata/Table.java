@@ -22,6 +22,7 @@ import org.anyline.exception.AnylineException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
+import java.io.PipedReader;
 import java.io.Serializable;
 import java.util.*;
 
@@ -163,46 +164,92 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             private String name;
             private Object min;
             private Object max;
+            private List<Object> values;
+            private LinkedHashMap<String,Object> less;
             private int interval;
             private String unit;
             public String getName() {
                 return name;
             }
 
-            public void setName(String name) {
+            public Slice setName(String name) {
                 this.name = name;
+                return this;
             }
 
             public Object getMin() {
                 return min;
             }
 
-            public void setMin(Object min) {
+            public Slice setMin(Object min) {
                 this.min = min;
+                return this;
+            }
+
+            public List<Object> getValues() {
+                return values;
+            }
+
+            public Slice setValues(List<Object> values) {
+                this.values = values;
+                return this;
+            }
+            public Slice setValues(Object ... values) {
+                if(null == this.values){
+                    this.values = new ArrayList<>();
+                }
+                if(null != values){
+                    for(Object value:values){
+                        this.values.add(value);
+                    }
+                }
+                return this;
+            }
+            public Slice addValues(Object value) {
+                if(null == this.values){
+                    this.values = new ArrayList<>();
+                }
+                this.values.add(value);
+                return this;
             }
 
             public Object getMax() {
                 return max;
             }
 
-            public void setMax(Object max) {
+            public Slice setMax(Object max) {
                 this.max = max;
+                return this;
             }
 
             public int getInterval() {
                 return interval;
             }
 
-            public void setInterval(int interval) {
+            public Slice setInterval(int interval) {
                 this.interval = interval;
+                return this;
+            }
+
+            public LinkedHashMap<String,Object> getLess() {
+                return less;
+            }
+
+            public Slice setLess(String column, Object less) {
+                if(null == this.less){
+                    this.less = new LinkedHashMap<>();
+                }
+                this.less.put(column.toUpperCase(), less);
+                return this;
             }
 
             public String getUnit() {
                 return unit;
             }
 
-            public void setUnit(String unit) {
+            public Slice setUnit(String unit) {
                 this.unit = unit;
+                return this;
             }
         }
         public enum TYPE{LIST, RANGE, HASH}
@@ -235,6 +282,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         public Partition addSlice(Slice slice){
             slices.add(slice);
             return this;
+        }
+        public List<Slice> getSlices(){
+            return this.slices;
         }
         public Partition.TYPE getType() {
             return type;
