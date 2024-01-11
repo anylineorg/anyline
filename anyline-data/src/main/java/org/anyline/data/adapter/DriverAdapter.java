@@ -3114,23 +3114,33 @@ public interface DriverAdapter {
 	 * 主表设置分区依据(根据哪几列分区)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param table 表
+	 * @param meta 表
 	 * @return StringBuilder
 	 * @throws Exception 异常
 	 */
-	StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table table) throws Exception;
+	StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception;
 
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 子表执行分区依据(相关主表及分区值)如CREATE TABLE hr_user_hr PARTITION OF hr_user FOR VALUES IN ('HR')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param table 表
+	 * @param meta 表
 	 * @return StringBuilder
 	 * @throws Exception 异常
 	 */
-	StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table table) throws Exception;
+	StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception;
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 继承自table.getInherit
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													view

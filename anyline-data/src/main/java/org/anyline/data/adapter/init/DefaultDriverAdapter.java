@@ -7339,6 +7339,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 * @throws Exception 异常
 	 */
+	@Override
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
@@ -7356,6 +7357,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 * @throws Exception 异常
 	 */
+	@Override
 	public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
@@ -7363,6 +7365,22 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 继承自table.getInherit
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													view

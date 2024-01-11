@@ -3601,6 +3601,19 @@ public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, I
 		return super.partitionOf(runtime, builder, meta);
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 继承自table.getInherit
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		return super.inherit(runtime, builder, meta);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													view

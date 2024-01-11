@@ -6010,16 +6010,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		//分区依据 PARTITION BY RANGE (code);
 		partitionBy(runtime, builder, meta);
 		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
-		if(BasicUtil.isNotEmpty(meta.getInherit())){
-			if(null == columns || columns.isEmpty()){
-				// TODO 放到子类实现
-				//继承关系中 子表如果没有新添加的列 需要空()
-				builder.append("()");
-			}
-			builder.append(" INHERITS(");
-			name(runtime, builder, meta.getInherit());
-			builder.append(")");
-		}
+		inherit(runtime, builder, meta);
 		//CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='备注';
 		charset(runtime, builder, meta);
 		keys(runtime, builder, meta);
@@ -6391,6 +6382,30 @@ distribution_desc
 		return builder;
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 继承自table.getInherit
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		if(BasicUtil.isNotEmpty(meta.getInherit())){
+			LinkedHashMap<String, Column> columns = meta.getColumns();
+			if(null == columns || columns.isEmpty()){
+				// TODO 放到子类实现
+				//继承关系中 子表如果没有新添加的列 需要空()
+				builder.append("()");
+			}
+			builder.append(" INHERITS(");
+			name(runtime, builder, meta.getInherit());
+			builder.append(")");
+		}
+		return builder;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													view
