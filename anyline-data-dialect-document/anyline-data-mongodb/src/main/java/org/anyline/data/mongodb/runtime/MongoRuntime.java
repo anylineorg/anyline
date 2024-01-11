@@ -24,9 +24,10 @@ import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.mongodb.entity.MongoDataRow;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.data.runtime.init.DefaultRuntime;
 import org.anyline.util.ConfigTable;
 
-public class MongoRuntime implements DataRuntime {
+public class MongoRuntime extends DefaultRuntime implements DataRuntime {
 
     private String origin;
     /**
@@ -171,4 +172,5 @@ public class MongoRuntime implements DataRuntime {
     public void setHolder(RuntimeHolder holder) {
         this.holder = holder;
     }
+
 }

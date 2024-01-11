@@ -1,5 +1,7 @@
 package org.anyline.data.elasticsearch.datasource;
 
+import org.anyline.data.runtime.init.DefaultRuntime;
+
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -7,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
-public class ElasticSearchDataSource implements DataSource {
+public class ElasticSearchDataSource extends DefaultRuntime implements DataSource {
     @Override
     public Connection getConnection() throws SQLException {
         return null;

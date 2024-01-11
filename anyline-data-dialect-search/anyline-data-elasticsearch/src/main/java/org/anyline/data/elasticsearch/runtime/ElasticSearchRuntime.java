@@ -95,6 +95,16 @@ public class ElasticSearchRuntime implements DataRuntime {
         this.adapter = adapter;
     }
 
+    @Override
+    public void setAdapterKey(String adapter) {
+
+    }
+
+    @Override
+    public String getAdapterKey() {
+        return null;
+    }
+
     public ElasticSearchRuntime(String key, RestClient client, DriverAdapter adapter){
         setKey(key);
         setProcessor(client);
