@@ -712,7 +712,7 @@ public class ClassUtil {
 		if(gtype instanceof ParameterizedType) {
 			ParameterizedType pt = (ParameterizedType) gtype;
 			Type[] args = pt.getActualTypeArguments();
-			if (null != args && args.length > 0) {
+			if (null != args && args.length > 0 && args[0] instanceof Class) {
 				Class itemClass = (Class) args[0];
 				return itemClass;
 			}
