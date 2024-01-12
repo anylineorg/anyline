@@ -7070,8 +7070,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param meta 表
 	 * @return String
 	 */
-	public  String keyword(Table meta){
-		return meta.getKeyword();
+	public String keyword(Table meta){
+		return  meta.getKeyword();
 	}
 
 	/**
@@ -7425,8 +7425,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(相关主表及分区值)
-	 * 如CREATE TABLE hr_user_hr PARTITION OF hr_user FOR VALUES IN ('HR')
+	 * 子表执行分区依据(相关主表)<br/>
+	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -7441,6 +7441,22 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+		}
+		return builder;
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 继承自table.getInherit
@@ -12142,7 +12158,21 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	}
 	public StringBuilder delimiter(StringBuilder builder, String src){
 		return SQLUtil.delimiter(builder, src, getDelimiterFr(), getDelimiterTo());
-	}/*
+	}
+	public StringBuilder delimiter(StringBuilder builder, List<String> list){
+		String fr = getDelimiterFr();
+		String to = getDelimiterTo();
+		boolean first = true;
+		for(String item:list){
+			if(!first){
+				builder.append(", ");
+			}
+			first = false;
+			SQLUtil.delimiter(builder, item, fr, to);
+		}
+		return builder;
+	}
+	/*
 	//column.name不需要catalog等前缀
 	public StringBuilder delimiter(StringBuilder builder, Column src){
 		if(null != src) {

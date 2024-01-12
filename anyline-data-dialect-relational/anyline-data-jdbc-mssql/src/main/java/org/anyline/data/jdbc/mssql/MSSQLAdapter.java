@@ -3620,8 +3620,8 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public  String keyword(Table meta){
-		return meta.getKeyword();
+	public String keyword(Table meta){
+		return super.keyword(meta);
 	}
 
 	/**
@@ -3927,8 +3927,8 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(相关主表及分区值)
-	 * 如CREATE TABLE hr_user_hr PARTITION OF hr_user FOR VALUES IN ('HR')
+	 * 子表执行分区依据(相关主表)<br/>
+	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -3938,6 +3938,20 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	@Override
 	public StringBuilder partitionOf(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		return super.partitionOf(runtime, builder, meta);
+	}
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		return super.partitionFor(runtime, builder, meta);
 	}
 
 	/**
@@ -5416,21 +5430,14 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Map<String,Column> columns = meta.getColumns();
-		if(columns.size()>0) {
+		LinkedHashMap<String,Column> columns = meta.getColumns();
+		if(null != columns && !columns.isEmpty()) {
 			if(!slice) {
 				builder.append("ALTER TABLE ");
 				name(runtime, builder, meta.getTable(true));
 			}
 			builder.append(" ADD PRIMARY KEY (");
-			boolean first = true;
-			for(Column column:columns.values()){
-				if(!first){
-					builder.append(",");
-				}
-				delimiter(builder, column.getName());
-				first = false;
-			}
+			delimiter(builder, Column.names(columns));
 			builder.append(")");
 
 		}

@@ -26,29 +26,28 @@ import java.io.PipedReader;
 import java.io.Serializable;
 import java.util.*;
 
-public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
+public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serializable {
     protected String keyword = "TABLE"            ;
+    /**
+     * 继承自
+     */
+    protected Table<?> inherit;
     /**
      * 主表(相对于分区表)
      */
-    protected Table master;
+    protected Table<?> master;
     /**
-     * 分区方式(分区依据列) LIST, RANGE, HASH
+     * 分区
+     * partition by :分区方式(LIST, RANGE, HASH)及 依据列
+     * partition of :主表
+     * partition for:分区依据值
      */
-    protected Partition partitionBy ;
-    /**
-     * 分区值(分区依据值)
-     */
-    protected Partition partitionFor ;
+    protected Partition partition ;
 
     /**
      * 表类型 不同数据库有所区别 如"TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
      */
     protected String type                         ;
-    /**
-     * 继承自
-     */
-    protected Table inherit;
     /**
      * 地理坐标系
      */
@@ -178,8 +177,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.name = name;
     }
 
-    public void setKeyword(String keyword) {
+    public Table setKeyword(String keyword) {
         this.keyword = keyword;
+        return this;
     }
 
     public LinkedHashMap<String, Object> getProperty() {
@@ -286,55 +286,39 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return this;
     }
 
-    public Partition getPartitionFor() {
+    public Partition getPartition() {
         if(getmap && null != update){
-            return update.partitionFor;
+            return update.partition;
         }
-        return partitionFor;
+        return partition;
     }
-    public Partition getPartitionBy() {
-        if(getmap && null != update){
-            return update.partitionBy;
-        }
-        return partitionBy;
-    }
-    public Table partitionOf(Table master){
-        this.master = master;
-        return this;
-    }
-    public Table partitionFor(Partition partition){
-        return setPartitionFor(partition);
-    }
+
+    /**
+     * 分区依据值
+     * @param type
+     * @param values
+     * @return
+     */
     public Table partitionFor(Partition.TYPE type, Object ... values){
         Partition partition = new Partition();
         partition.setType(type);
-        partition.addList(values);
-        return setPartitionFor(partition);
+        partition.addValues(values);
+        return setPartition(partition);
     }
-    public Table setPartitionFor(Partition partition) {
+    public Table setPartition(Partition partition) {
         if(setmap && null != update){
-            update.setPartitionFor(partition);
+            update.setPartition(partition);
             return this;
         }
-        this.partitionFor = partition;
+        this.partition = partition;
         return this;
     }
-    public Table partitionBy(Partition partition){
-        return setPartitionBy(partition);
-    }
+
     public Table partitionBy(Partition.TYPE type, String ... columns){
         Partition partition = new Partition();
         partition.setType(type);
         partition.setColumns(columns);
-        return setPartitionBy(partition);
-    }
-    public Table setPartitionBy(Partition partition) {
-        if(setmap && null != update){
-            update.setPartitionBy(partition);
-            return this;
-        }
-        this.partitionBy = partition;
-        return this;
+        return setPartition(partition);
     }
 
     public String getMasterName() {
@@ -344,19 +328,22 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return null;
     }
 
-    public void setMaster(String master) {
+    public Table setMaster(String master) {
         this.master = new MasterTable(master);
+        return this;
     }
 
     public Table getMaster() {
         return master;
     }
 
-    public void setPartitionOf(Table master) {
+    public Table setPartitionOf(Table master) {
         this.master = master;
+        return this;
     }
-    public void setMaster(Table master) {
+    public Table setMaster(Table master) {
         this.master = master;
+        return this;
     }
 
     public LinkedHashMap<String, View> getMaterializes() {
@@ -907,20 +894,23 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return dataFree;
     }
 
-    public void setDataFree(Long dataFree) {
+    public Table setDataFree(Long dataFree) {
         this.dataFree = dataFree;
+        return this;
     }
 
     public Table getInherit() {
         return inherit;
     }
 
-    public void setInherit(Table inherit) {
+    public Table setInherit(Table inherit) {
         this.inherit = inherit;
+        return this;
     }
 
-    public void setInherit(String setInherit) {
+    public Table setInherit(String setInherit) {
         this.inherit = new Table(setInherit);
+        return this;
     }
     public String getKeyword() {
         return keyword;
@@ -931,32 +921,36 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return autoDropColumn;
     }
 
-    public void setAutoDropColumn(boolean autoDropColumn) {
+    public Table setAutoDropColumn(boolean autoDropColumn) {
         this.autoDropColumn = autoDropColumn;
+        return this;
     }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public Table setCreateTime(Date createTime) {
         this.createTime = createTime;
+        return this;
     }
 
     public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public Table setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+        return this;
     }
 
     public Long getDataRows() {
         return dataRows;
     }
 
-    public void setDataRows(Long dataRows) {
+    public Table setDataRows(Long dataRows) {
         this.dataRows = dataRows;
+        return this;
     }
 
     public Long getDataLength() {
@@ -970,44 +964,50 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return (temporary == 1);
     }
 
-    public void setTemporary(int temporary) {
+    public Table setTemporary(int temporary) {
         this.temporary = temporary;
+        return this;
     }
 
-    public void setTemporary(boolean temporary) {
+    public Table setTemporary(boolean temporary) {
         if(temporary){
             this.temporary = 1;
         }else{
             this.temporary = 0;
         }
+        return this;
     }
 
-    public void setDataLength(Long dataLength) {
+    public Table setDataLength(Long dataLength) {
         this.dataLength = dataLength;
+        return this;
     }
 
     public Long getIncrement() {
         return increment;
     }
 
-    public void setIncrement(Long increment) {
+    public Table setIncrement(Long increment) {
         this.increment = increment;
+        return this;
     }
 
     public Long getIndexLength() {
         return indexLength;
     }
 
-    public void setIndexLength(Long indexLength) {
+    public Table setIndexLength(Long indexLength) {
         this.indexLength = indexLength;
+        return this;
     }
 
     public boolean isSort() {
         return sort;
     }
 
-    public void setSort(boolean sort) {
+    public Table setSort(boolean sort) {
         this.sort = sort;
+        return this;
     }
 
     /**
@@ -1184,18 +1184,20 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             return type;
         }
 
-        public void setType(TYPE type) {
+        public Key setType(TYPE type) {
             this.type = type;
+            return this;
         }
 
         public LinkedHashMap<String, Column> getColumns() {
             return columns;
         }
 
-        public void setColumns(LinkedHashMap<String, Column> columns) {
+        public Key setColumns(LinkedHashMap<String, Column> columns) {
             this.columns = columns;
+            return this;
         }
-        public void setColumns(String ... columns) {
+        public Key setColumns(String ... columns) {
             if(null == this.columns){
                 this.columns = new LinkedHashMap<>();
             }
@@ -1204,13 +1206,168 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                     this.columns.put(column.toUpperCase(), new Column(column));
                 }
             }
+            return this;
         }
     }
-
     /**
-     * 分区方式(分区依据列)
+     * 分区
+     * partition by :分区方式(LIST, RANGE, HASH)及 依据列
+     * partition of :主表
+     * partition for:分区依据值
      */
     public static class Partition implements Serializable {
+        public enum TYPE{LIST, RANGE, HASH}
+        //主表中设置分区
+        private List<Slice> slices = new ArrayList<>();
+        //RANGE
+        private Object min;
+        private Object max;
+        //LIST
+        private List<Object> values;
+        //HASH
+        private int modulus;
+        private int remainder;
+
+        private Partition.TYPE type;
+        private LinkedHashMap<String, Column> columns;
+
+        public Partition(){
+
+        }
+        public Partition(Partition.TYPE type){
+            this.type = type;
+        }
+        public Partition(Partition.TYPE type, String ... columns){
+            this.type = type;
+            this.columns = new LinkedHashMap<>();
+            for(String column:columns){
+                this.columns.put(column.toUpperCase(), new Column(column));
+            }
+        }
+        public Partition addSlice(Slice slice){
+            slices.add(slice);
+            return this;
+        }
+        public List<Slice> getSlices(){
+            return this.slices;
+        }
+        public Partition.TYPE getType() {
+            return type;
+        }
+
+        public Partition setType(Partition.TYPE type) {
+            this.type = type;
+            return this;
+        }
+
+        public LinkedHashMap<String, Column> getColumns() {
+            return columns;
+        }
+
+        public Partition setColumns(LinkedHashMap<String, Column> columns) {
+            this.columns = columns;
+            return this;
+        }
+
+        public Partition setColumns(String ... columns){
+            this.columns = new LinkedHashMap<>();
+            for(String column:columns){
+                this.columns.put(column.toUpperCase(), new Column(column));
+            }
+            return this;
+        }
+        public Partition addColumn(Column column){
+            if(null == columns){
+                columns = new LinkedHashMap<>();
+            }
+            columns.put(column.getName().toUpperCase(), column);
+            return this;
+        }
+        public Partition addColumn(String column){
+            return addColumn(new Column(column));
+        }
+
+        public Partition setRange(Object min, Object max){
+            this.min = min;
+            this.max = max;
+            return this;
+        }
+        public Object getMin() {
+            return min;
+        }
+
+        public Partition setSlices(List<Slice> slices) {
+            this.slices = slices;
+            return this;
+        }
+
+        public Partition setMin(Object min) {
+            this.min = min;
+            return this;
+        }
+
+        public Object getMax() {
+            return max;
+        }
+
+        public Partition setMax(Object max) {
+            this.max = max;
+            return this;
+        }
+
+        public List<Object> getValues() {
+            return values;
+        }
+
+        public Partition setValues(List<Object> values) {
+            this.values = values;
+            return this;
+        }
+        public Partition addValues(Object ... items) {
+            if(null == values) {
+                this.values = new ArrayList<>();
+            }
+            for(Object item:items) {
+                if (item instanceof Collection) {
+                    Collection cons = (Collection) item;
+                    for(Object con:cons){
+                        addValues(con);
+                    }
+                }else if(item instanceof Object[]){
+                    Object[] objs = (Object[]) item;
+                    for(Object obj:objs){
+                        addValues(obj);
+                    }
+                }else {
+                    values.add(item);
+                }
+            }
+            return this;
+        }
+
+        public int getModulus() {
+            return modulus;
+        }
+
+        public Partition setModulus(int modulus) {
+            this.modulus = modulus;
+            return this;
+        }
+        public Partition setHash(int modulus, int remainder) {
+            this.modulus = modulus;
+            this.remainder = remainder;
+            return this;
+        }
+
+        public int getRemainder() {
+            return remainder;
+        }
+
+        public Partition setRemainder(int remainder) {
+            this.remainder = remainder;
+            return this;
+        }
+
         /**
          * 分片(分区依据值)
          */
@@ -1321,151 +1478,6 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                 this.unit = unit;
                 return this;
             }
-        }
-        public enum TYPE{LIST, RANGE, HASH}
-        //RANGE
-        private Object from;
-        private Object to;
-        //LIST
-        private List<Object> list;
-        //HASH
-        private int modulus;
-        private int remainder;
-
-        private Partition.TYPE type;
-        private LinkedHashMap<String, Column> columns;
-
-        public Partition(){
-
-        }
-        public Partition(Partition.TYPE type){
-            this.type = type;
-        }
-        public Partition(Partition.TYPE type, String ... columns){
-            this.type = type;
-            this.columns = new LinkedHashMap<>();
-            for(String column:columns){
-                this.columns.put(column.toUpperCase(), new Column(column));
-            }
-        }
-        private List<Slice> slices = new ArrayList<>();
-        public Partition addSlice(Slice slice){
-            slices.add(slice);
-            return this;
-        }
-        public List<Slice> getSlices(){
-            return this.slices;
-        }
-        public Partition.TYPE getType() {
-            return type;
-        }
-
-        public Partition setType(Partition.TYPE type) {
-            this.type = type;
-            return this;
-        }
-
-        public LinkedHashMap<String, Column> getColumns() {
-            return columns;
-        }
-
-        public Partition setColumns(LinkedHashMap<String, Column> columns) {
-            this.columns = columns;
-            return this;
-        }
-
-        public Partition setColumns(String ... columns){
-            this.columns = new LinkedHashMap<>();
-            for(String column:columns){
-                this.columns.put(column.toUpperCase(), new Column(column));
-            }
-            return this;
-        }
-        public Partition addColumn(Column column){
-            if(null == columns){
-                columns = new LinkedHashMap<>();
-            }
-            columns.put(column.getName().toUpperCase(), column);
-            return this;
-        }
-        public Partition addColumn(String column){
-            return addColumn(new Column(column));
-        }
-
-        public Partition setRange(Object from, Object to){
-            this.from = from;
-            this.to = to;
-            return this;
-        }
-        public Object getFrom() {
-            return from;
-        }
-
-        public Partition setFrom(Object from) {
-            this.from = from;
-            return this;
-        }
-
-        public Object getTo() {
-            return to;
-        }
-
-        public Partition setTo(Object to) {
-            this.to = to;
-            return this;
-        }
-
-        public List<Object> getList() {
-            return list;
-        }
-
-        public Partition setList(List<Object> list) {
-            this.list = list;
-            return this;
-        }
-        public Partition addList(Object ... items) {
-            if(null == list) {
-                this.list = new ArrayList<>();
-            }
-            for(Object item:items) {
-                if (item instanceof Collection) {
-                    Collection cons = (Collection) item;
-                    for(Object con:cons){
-                        addList(con);
-                    }
-                }else if(item instanceof Object[]){
-                    Object[] objs = (Object[]) item;
-                    for(Object obj:objs){
-                        addList(obj);
-                    }
-                }else {
-                    list.add(item);
-                }
-            }
-            return this;
-        }
-
-        public int getModulus() {
-            return modulus;
-        }
-
-        public Partition setModulus(int modulus) {
-            this.modulus = modulus;
-            return this;
-        }
-        public Partition setHash(int modulus, int remainder) {
-            this.modulus = modulus;
-            this.remainder = remainder;
-            return this;
-        }
-
-        public int getRemainder() {
-            return remainder;
-        }
-
-        public Partition setRemainder(int remainder) {
-            this.remainder = remainder;
-            return this;
         }
     }
 }

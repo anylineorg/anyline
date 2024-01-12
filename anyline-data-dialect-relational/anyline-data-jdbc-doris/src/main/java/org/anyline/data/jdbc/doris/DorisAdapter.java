@@ -36,10 +36,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.doris")
@@ -3362,8 +3359,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return String
 	 */
 	@Override
-	public  String keyword(Table meta){
-		return meta.getKeyword();
+	public String keyword(Table meta){
+		return super.keyword(meta);
 	}
 
 	/**
@@ -3382,6 +3379,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception{
+		//参考 https://doris.apache.org/zh-CN/docs/sql-manual/sql-reference/Data-Definition-Statements/Create/CREATE-TABLE/
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -3389,8 +3387,6 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		builder.append("CREATE ").append(keyword(meta)).append(" ");
 		checkTableExists(runtime, builder, false);
 		name(runtime, builder, meta);
-		//分区表
-		partitionOf(runtime, builder, meta);
 		//列
 		columns(runtime, builder, meta);
 		//索引
@@ -3407,6 +3403,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		comment(runtime, builder, meta);
 		//分表
 		partitionBy(runtime, builder, meta);
+		partitionFor(runtime, builder, meta);
 		//分桶方式
 		distribution(runtime, builder, meta);
 		//物化视图
@@ -3648,14 +3645,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 					}
 					kfirst = false;
 					builder.append(" ").append(type.name()).append(" KEY(");
-					boolean first = true;
-					for(Column column:columns.values()){
-						if(!first){
-							builder.append(",");
-						}
-						first = false;
-						name(runtime, builder, column);
-					}
+					delimiter(builder, Column.names(columns));
 					builder.append(")");
 				}
 			}
@@ -3683,13 +3673,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 					//分桶相关列
 					boolean first = true;
 					builder.append("(");
-					for(Column column:columns.values()){
-						if(!first){
-							builder.append(",");
-						}
-						first = false;
-						name(runtime, builder, column);
-					}
+					delimiter(builder, Column.names(columns));
 					builder.append(")");
 					//分桶数量
 					int buckets = distribution.getBuckets();
@@ -3723,9 +3707,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 				if(!vfirst){
 					builder.append(",");
 				}
-				vfirst = false;
 				builder.append(view.getName()).append("(");
-				builder.append(BeanUtil.concat(view.getColumns().values(), "name", ",", false, true));
+				delimiter(builder, Column.names(view.getColumns()));
 				builder.append(")");
 
 			}
@@ -3772,123 +3755,21 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	@Override
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		// PARTITION BY RANGE (code); #根据code值分区
-		Table.Partition partition = meta.getPartitionBy();
-		if(null != partition) {
-			builder.append("\nPARTITION BY ").append(partition.getType()).append("(");
-			LinkedHashMap<String, Column> columns = partition.getColumns();
-			boolean first = true;
-			for (Column column : columns.values()) {
-				if (!first) {
-					builder.append(",");
-				}
-				first = false;
-				delimiter(builder, column.getName());
-			}
-			builder.append(")\n");
-
-			List<Table.Partition.Slice> slices = partition.getSlices();
-			if(null != slices && !slices.isEmpty()){
-				builder.append("(");
-				boolean sfirst = true;
-				for(Table.Partition.Slice slice:slices){
-					if(!sfirst){
-						builder.append("\n,");
-					}
-					sfirst = false;
-					Object min = slice.getMin();
-					Object max = slice.getMax();
-					List<Object> values = slice.getValues();
-					LinkedHashMap<String,Object> less = slice.getLess();
-					int interval = slice.getInterval();
-					String unit = slice.getUnit();
-					if(null != min && null != max){
-						// FROM ("2000-11-11") TO ("2021-11-11") INTERVAL 1 YEAR,
-						builder.append(" FROM (");
-						boolean number = BasicUtil.isNumber(min);
-						if(!number){
-							builder.append("'");
-						}
-						builder.append(min);
-						if(!number){
-							builder.append("'");
-						}
-						builder.append(") TO (");
-						if(!number){
-							builder.append("'");
-						}
-						builder.append(max);
-						if(!number){
-							builder.append("'");
-						}
-						builder.append(")");
-						if(interval>0){
-							builder.append(" INTERVAL ").append(interval);
-						}
-						if(BasicUtil.isNotEmpty(unit)){
-							builder.append(" ").append(unit);
-						}
-					}else if(null != less && !less.isEmpty()){
-						/*PARTITION BY RANGE(col1[, col2, ...])
-						(
-							PARTITION partition_name1 VALUES LESS THAN MAXVALUE|("value1", "value2", ...),
-							PARTITION partition_name2 VALUES LESS THAN MAXVALUE|("value1", "value2", ...)
-						)*/
-						builder.append(" PARTITION ").append(slice.getName()).append(" VALUES LESS THAN ");
-						builder.append("(");
-						boolean lfirst = true;
-						for (Column column : columns.values()) {
-							if (!lfirst) {
-								builder.append(",");
-							}
-							lfirst = false;
-							Object v = less.get(column.getName().toUpperCase());
-							boolean number = BasicUtil.isNumber(v);
-							if(!number){
-								builder.append("'");
-							}
-							builder.append(v);
-							if(!number){
-								builder.append("'");
-							}
-						}
-						builder.append(")");
-					}else if(null != values && !values.isEmpty()){
-						/*
-						PARTITION BY List(`address` )
-						(
-							PARTITION `p_city1` VALUES IN ("浦东","闵行"),
-							PARTITION `p_city2` VALUES IN ("海淀","昌平"),
-							PARTITION `p_city3` VALUES IN ("太原","忻州")
-						*/
-						builder.append(" PARTITION ").append(slice.getName()).append(" VALUES IN(");
-						boolean vfirst = true;
-						for(Object value:values){
-							if(!vfirst){
-								builder.append(",");
-							}
-							vfirst = false;
-							boolean number = BasicUtil.isNumber(value);
-							if(!number){
-								builder.append("'");
-							}
-							builder.append(value);
-							if(!number){
-								builder.append("'");
-							}
-						}
-						builder.append(")");
-					}
-				}
-				builder.append(")");
-			}
+		Table.Partition partition = meta.getPartition();
+		if(null == partition){
+			return builder;
 		}
+		builder.append("\nPARTITION BY ").append(partition.getType()).append("(");
+		LinkedHashMap<String, Column> columns = partition.getColumns();
+		delimiter(builder, Column.names(columns));
+		builder.append(")");
 		return builder;
 	}
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(相关主表及分区值)
-	 * 如CREATE TABLE hr_user_hr PARTITION OF hr_user FOR VALUES IN ('HR')
+	 * 子表执行分区依据(相关主表)<br/>
+	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -3900,6 +3781,120 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		return super.partitionOf(runtime, builder, meta);
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		Table.Partition partition = meta.getPartition();
+		if(null == partition){
+			return builder;
+		}
+		List<Table.Partition.Slice> slices = partition.getSlices();
+		if(null != slices && !slices.isEmpty()){
+			builder.append("(\n");
+			boolean sfirst = true;
+			for(Table.Partition.Slice slice:slices){
+				builder.append("\n\t");
+				if(!sfirst){
+					builder.append(",");
+				}
+				sfirst = false;
+				Object min = slice.getMin();
+				Object max = slice.getMax();
+				List<Object> values = slice.getValues();
+				LinkedHashMap<String,Object> less = slice.getLess();
+				int interval = slice.getInterval();
+				String unit = slice.getUnit();
+				if(null != min && null != max){
+					// FROM ("2000-11-11") TO ("2021-11-11") INTERVAL 1 YEAR,
+					builder.append(" FROM (");
+					boolean number = BasicUtil.isNumber(min);
+					if(!number){
+						builder.append("'");
+					}
+					builder.append(min);
+					if(!number){
+						builder.append("'");
+					}
+					builder.append(") TO (");
+					if(!number){
+						builder.append("'");
+					}
+					builder.append(max);
+					if(!number){
+						builder.append("'");
+					}
+					builder.append(")");
+					if(interval>0){
+						builder.append(" INTERVAL ").append(interval);
+					}
+					if(BasicUtil.isNotEmpty(unit)){
+						builder.append(" ").append(unit);
+					}
+				}else if(null != less && !less.isEmpty()){
+					LinkedHashMap<String, Column> columns = partition.getColumns();
+						/*PARTITION BY RANGE(col1[, col2, ...])
+						(
+							PARTITION partition_name1 VALUES LESS THAN MAXVALUE|("value1", "value2", ...),
+							PARTITION partition_name2 VALUES LESS THAN MAXVALUE|("value1", "value2", ...)
+						)*/
+					builder.append("PARTITION ").append(slice.getName()).append(" VALUES LESS THAN ");
+					builder.append("(");
+					boolean lfirst = true;
+					for (Column column : columns.values()) {
+						if (!lfirst) {
+							builder.append(",");
+						}
+						lfirst = false;
+						Object v = less.get(column.getName().toUpperCase());
+						boolean number = BasicUtil.isNumber(v);
+						if(!number){
+							builder.append("'");
+						}
+						builder.append(v);
+						if(!number){
+							builder.append("'");
+						}
+					}
+					builder.append(")");
+				}else if(null != values && !values.isEmpty()){
+						/*
+						PARTITION BY List(`address` )
+						(
+							PARTITION `p_city1` VALUES IN ("浦东","闵行"),
+							PARTITION `p_city2` VALUES IN ("海淀","昌平"),
+							PARTITION `p_city3` VALUES IN ("太原","忻州")
+						*/
+					builder.append("PARTITION ").append(slice.getName()).append(" VALUES IN(");
+					boolean vfirst = true;
+					for(Object value:values){
+						if(!vfirst){
+							builder.append(",");
+						}
+						vfirst = false;
+						boolean number = BasicUtil.isNumber(value);
+						if(!number){
+							builder.append("'");
+						}
+						builder.append(value);
+						if(!number){
+							builder.append("'");
+						}
+					}
+					builder.append(")");
+				}
+			}
+			builder.append("\n)");
+		}
+		return builder;
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 继承自table.getInherit

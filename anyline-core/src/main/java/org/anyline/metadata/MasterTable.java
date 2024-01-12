@@ -51,27 +51,6 @@ public class MasterTable extends Table<MasterTable>  implements Serializable {
     }
 
 
-    public Partition getPartition() {
-        if(getmap && null != update){
-            return update.partitionBy;
-        }
-        return partitionBy;
-    }
-
-    public MasterTable setPartition(Partition partition) {
-        if(setmap && null != update){
-            update.setPartition(partition);
-            return this;
-        }
-        this.partitionBy = partition;
-        return this;
-    }
-    public MasterTable setPartition(Partition.TYPE type, String ... columns){
-        Partition partition = new Partition(type, columns);
-        this.partitionBy = partition;
-        return this;
-    }
-
     public LinkedHashMap<String, Table> getPartitions() {
         if(getmap && null != update){
             return update.partitions;

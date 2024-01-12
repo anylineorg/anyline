@@ -225,15 +225,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append(head);
 		name(runtime, builder, dest);//.append(parseTable(dest));
 		builder.append("(");
-		boolean first = true;
-		for(Column column:columns.values()){
-			if(!first){
-				builder.append(",");
-			}
-			first = false;
-			String key = column.getName();
-			delimiter(builder, key);
-		}
+		delimiter(builder, Column.names(columns));
 		builder.append(") VALUES ");
 		if(batch > 1){
 			//批量执行
@@ -304,15 +296,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		builder.append(head);//
 		name(runtime, builder, dest);// .append(parseTable(dest));
 		builder.append("(");
-
-		boolean first = true;
-		for(Column column:columns.values()){
-			if(!first){
-				builder.append(",");
-			}
-			first = false;
-			delimiter(builder, column.getName());
-		}
+		delimiter(builder, Column.names(columns));
 		builder.append(") VALUES ");
 		int dataSize = list.size();
 		int idx = 0;
@@ -5938,8 +5922,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @return String
 	 */
 	@Override
-	public  String keyword(Table meta){
-		return meta.getKeyword();
+	public String keyword(Table meta){
+		return super.keyword(meta);
 	}
 
 	/**
@@ -5967,9 +5951,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		name(runtime, builder, meta);
 		//分区表
 		partitionOf(runtime, builder, meta);
+		partitionFor(runtime, builder, meta);
 		columns(runtime, builder, meta);
 		indexs(runtime, builder, meta);
-		//分区依据 PARTITION BY RANGE (code);
+		//分区依据列(主表执行) PARTITION BY RANGE (code);
 		partitionBy(runtime, builder, meta);
 		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
 		inherit(runtime, builder, meta);
@@ -6204,23 +6189,23 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null != columMap){
 			columns = columMap.values();
 			if(null != columns && !columns.isEmpty()){
-				builder.append("(\n");
+				builder.append("(");
 				int idx = 0;
 				for(Column column:columns){
-					builder.append("\t");
+					builder.append("\n\t");
 					if(idx > 0){
 						builder.append(",");
 					}
 					column.setAction(ACTION.DDL.COLUMN_ADD);
 					delimiter(builder, column.getName()).append(" ");
-					define(runtime, builder, column).append("\n");
+					define(runtime, builder, column);
 					idx ++;
 				}
-				builder.append("\t");
 				if(!pks.isEmpty()) {
+					builder.append("\n\t");
 					primary(runtime, builder, meta);
 				}
-				builder.append(")");
+				builder.append("\n)");
 			}
 		}
 		return builder;
@@ -6329,27 +6314,27 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	@Override
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		// PARTITION BY RANGE (code); #根据code值分区
-		Table.Partition partition = meta.getPartitionBy();
-		if(null != partition) {
-			builder.append(" PARTITION BY ").append(partition.getType()).append("(");
-			LinkedHashMap<String, Column> columns = partition.getColumns();
-			boolean first = true;
-			for (Column column : columns.values()) {
-				if (!first) {
-					builder.append(",");
-				}
-				first = false;
-				delimiter(builder, column.getName());
-			}
-			builder.append(")");
+		Table.Partition partition = meta.getPartition();
+		if(null == partition){
+			return builder;
 		}
+		Table.Partition.TYPE  type = partition.getType();
+		if(null == type){
+			return builder;
+		}
+		builder.append(" PARTITION BY ").append(type.name()).append("(");
+		LinkedHashMap<String, Column> columns = partition.getColumns();
+		if(null != columns) {
+			delimiter(builder, Column.names(columns));
+		}
+		builder.append(")");
 		return builder;
 	}
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 子表执行分区依据(相关主表及分区值)
-	 * 如CREATE TABLE hr_user_hr PARTITION OF hr_user FOR VALUES IN ('HR')
+	 * 子表执行分区依据(相关主表)<br/>
+	 * 如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -6370,17 +6355,40 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			throw new SQLException("未提供 Master Table");
 		}
 		name(runtime, builder, master);
-		builder.append(" FOR VALUES");
-		Table.Partition partition = meta.getPartitionFor();
+		return builder;
+	}
+
+
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 子表执行分区依据(分区依据值)如CREATE TABLE hr_user_fi PARTITION OF hr_user FOR VALUES IN ('FI')
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
+		Table master = meta.getMaster();
+		if(null == master){
+			//只有子表才需要执行
+			return builder;
+		}
+		Table.Partition partition = meta.getPartition();
 		Table.Partition.TYPE type = null;
 		if(null != partition){
 			type = partition.getType();
 		}
-		if(null == type && null != master.getPartitionBy()){
-			type = master.getPartitionBy().getType();
+		if(null == type && null != master.getPartition()){
+			type = master.getPartition().getType();
 		}
+		if(null == type){
+			return builder;
+		}
+		builder.append(" FOR VALUES");
 		if(type == Table.Partition.TYPE.LIST){
-			List<Object> list = partition.getList();
+			List<Object> list = partition.getValues();
 			if(null == list){
 				throw new SQLException("未提供分区表枚举值(Partition.list)");
 			}
@@ -6399,8 +6407,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			builder.append(")");
 		}else if(type == Table.Partition.TYPE.RANGE){
-			Object from = partition.getFrom();
-			Object to = partition.getTo();
+			Object from = partition.getMin();
+			Object to = partition.getMax();
 			if(BasicUtil.isEmpty(from) || BasicUtil.isEmpty(to)){
 				throw new SQLException("未提供分区表范围值(Partition.from/to)");
 			}
@@ -6428,7 +6436,6 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		return builder;
 	}
-
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 继承自table.getInherit
@@ -8290,8 +8297,8 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		Map<String,Column> columns = meta.getColumns();
-		if(columns.size()>0) {
+		LinkedHashMap<String,Column> columns = meta.getColumns();
+		if(null != columns && !columns.isEmpty()) {
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, meta.getTable(true));
 			builder.append(" ADD");
@@ -8299,17 +8306,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				builder.append(" CONSTRAINT ").append(meta.getName());
 			}
 			builder.append(" FOREIGN KEY (");
-			boolean first = true;
-			for(Column column:columns.values()){
-				if(!first){
-					builder.append(",");
-				}
-				delimiter(builder, column.getName());
-				first = false;
-			}
+			delimiter(builder, Column.names(columns));
 			builder.append(")");
 			builder.append(" REFERENCES ").append(meta.getReference().getName()).append("(");
-			first = true;
+			boolean first = true;
 			for(Column column:columns.values()){
 				if(!first){
 					builder.append(",");
