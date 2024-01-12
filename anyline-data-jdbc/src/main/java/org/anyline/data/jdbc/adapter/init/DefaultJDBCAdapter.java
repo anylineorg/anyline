@@ -6318,6 +6318,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null == partition){
 			return builder;
 		}
+		//只有主表需要执行
+		if(null != meta.getMaster()){
+			return builder;
+		}
 		Table.Partition.TYPE  type = partition.getType();
 		if(null == type){
 			return builder;

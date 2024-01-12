@@ -4530,7 +4530,7 @@ public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapte
 	 * 定义列:聚合类型
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param column 列
+	 * @param meta 列
 	 * @return StringBuilder
 	 */
 	@Override
