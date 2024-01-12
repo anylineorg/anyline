@@ -1747,8 +1747,6 @@ public class TDengineAdapter extends DefaultJDBCAdapter implements JDBCAdapter, 
 					if(create) {
 						table = (T)new MasterTable(name);
 						tables.put(name.toUpperCase(), table);
-					}else{
-						continue;
 					}
 				}
 			}

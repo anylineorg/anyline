@@ -27,7 +27,6 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -36,7 +35,10 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.doris")
@@ -1785,7 +1787,13 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryDdlsRun(runtime, table);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SHOW CREATE TABLE ");
+		name(runtime, builder, table);
+		return runs;
 	}
 
 	/**
@@ -1800,7 +1808,16 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
-		return super.ddl(runtime, index, table, ddls, set);
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String ddl = row.getString("CREATE TABLE");
+			if(BasicUtil.isNotEmpty(ddl)){
+				ddls.add(ddl);
+			}
+		}
+		return ddls;
 	}
 
 	/* *****************************************************************************************************************
