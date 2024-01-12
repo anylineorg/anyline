@@ -2697,7 +2697,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
         builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
         if(BasicUtil.isNotEmpty(table.getSchema())){
-            builder.append(" AND COL.OWNER = '").append(table.getSchema()).append("'");
+            builder.append(" AND COL.OWNER = '").append(table.getSchemaName()).append("'");
         }
         return runs;
     }

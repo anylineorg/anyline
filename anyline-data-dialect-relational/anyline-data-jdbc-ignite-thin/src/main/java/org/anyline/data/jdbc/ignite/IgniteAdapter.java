@@ -2904,10 +2904,10 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
 		if(null != table){
-			Schema schemae = table.getSchema();
+			String schema = table.getSchemaName();
 			String name = table.getName();
-			if(BasicUtil.isNotEmpty(schemae)){
-				builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
 			}
 			if(BasicUtil.isNotEmpty(name)){
 				builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
@@ -3815,6 +3815,18 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		return super.engine(runtime, builder, meta);
 	}
 
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 body部分包含column index
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta){
+		return super.body(runtime, builder, meta);
+	}
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 columns部分

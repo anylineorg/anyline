@@ -3049,7 +3049,6 @@ public interface DriverAdapter {
 	 */
 	StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists);
 
-
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
@@ -3068,7 +3067,6 @@ public interface DriverAdapter {
 	 */
 	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta);
 
-
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 engine
@@ -3078,7 +3076,15 @@ public interface DriverAdapter {
 	 * @return StringBuilder
 	 */
 	StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta);
-
+	/**
+	 * table[命令合成-子流程]<br/>
+	 * 创建表 body部分包含column index
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta);
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 columns部分

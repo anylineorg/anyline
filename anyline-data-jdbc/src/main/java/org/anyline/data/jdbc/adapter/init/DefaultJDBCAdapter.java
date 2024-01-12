@@ -5952,8 +5952,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		//分区表
 		partitionOf(runtime, builder, meta);
 		partitionFor(runtime, builder, meta);
-		columns(runtime, builder, meta);
-		indexs(runtime, builder, meta);
+		body(runtime, builder, meta);
 		//分区依据列(主表执行) PARTITION BY RANGE (code);
 		partitionBy(runtime, builder, meta);
 		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
@@ -6163,6 +6162,22 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	}
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 创建表 body部分包含column index
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 表
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta){
+		builder.append("(");
+		columns(runtime, builder, meta);
+		indexs(runtime, builder, meta);
+		builder.append(")");
+		return builder;
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 创建表 columns部分
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -6189,7 +6204,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(null != columMap){
 			columns = columMap.values();
 			if(null != columns && !columns.isEmpty()){
-				builder.append("(");
+				//builder.append("(");
 				int idx = 0;
 				for(Column column:columns){
 					builder.append("\n\t");
@@ -6205,7 +6220,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					builder.append("\n\t");
 					primary(runtime, builder, meta);
 				}
-				builder.append("\n)");
+				//builder.append("\n)");
 			}
 		}
 		return builder;
@@ -6455,9 +6470,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(BasicUtil.isNotEmpty(meta.getInherit())){
 			LinkedHashMap<String, Column> columns = meta.getColumns();
 			if(null == columns || columns.isEmpty()){
-				// TODO 放到子类实现
+				// TODO body中已实现
 				//继承关系中 子表如果没有新添加的列 需要空()
-				builder.append("()");
+				//builder.append("()");
 			}
 			builder.append(" INHERITS(");
 			name(runtime, builder, meta.getInherit());
