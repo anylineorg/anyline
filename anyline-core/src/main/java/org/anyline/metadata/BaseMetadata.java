@@ -48,6 +48,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     protected String identity                     ;
     protected Object extend                       ; //扩展属性
     protected Date checkSchemaTime                ;
+    protected LinkedHashMap<String, Object> property;
     public String getIdentity(){
         if(null == identity){
             identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getTableName(false), "") + "_" + BasicUtil.nvl(getName(), "") ;
@@ -291,6 +292,30 @@ public class BaseMetadata<T extends BaseMetadata> {
         return (T)this;
     }
 
+    public LinkedHashMap<String, Object> getProperty() {
+        if(getmap && null != update){
+            return update.getProperty();
+        }
+        return property;
+    }
+
+    public T setProperty(String key, Object value) {
+        if(getmap && null != update){
+            return (T)update.setProperty(key, value);
+        }
+        if(null == this.property){
+            this.property = new LinkedHashMap<>();
+        }
+        this.property.put(key, value);
+        return (T)this;
+    }
+    public T setProperty(LinkedHashMap<String, Object> property) {
+        if(getmap && null != update){
+            return (T)update.setProperty(property);
+        }
+        this.property = property;
+        return (T)this;
+    }
     public String getDefinition() {
         if(getmap && null != update){
             return  update.definition;

@@ -56,6 +56,7 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
         return cluster;
     }
 
+
     public M addColumn(Column column){
         if(null == columns){
             columns = new LinkedHashMap<>();

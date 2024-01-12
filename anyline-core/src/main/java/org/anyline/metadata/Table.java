@@ -116,7 +116,6 @@ public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serial
      */
     protected int temporary                     ;
 
-    protected LinkedHashMap<String, Object> property;
     /**
      * 物化视图
      */
@@ -179,31 +178,6 @@ public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serial
 
     public Table setKeyword(String keyword) {
         this.keyword = keyword;
-        return this;
-    }
-
-    public LinkedHashMap<String, Object> getProperty() {
-        if(getmap && null != update){
-            return update.getProperty();
-        }
-        return property;
-    }
-
-    public Table setProperty(String key, Object value) {
-        if(getmap && null != update){
-            return update.setProperty(key, value);
-        }
-        if(null == this.property){
-            this.property = new LinkedHashMap<>();
-        }
-        this.property.put(key, value);
-        return this;
-    }
-    public Table setProperty(LinkedHashMap<String, Object> property) {
-        if(getmap && null != update){
-            return update.setProperty(property);
-        }
-        this.property = property;
         return this;
     }
 
