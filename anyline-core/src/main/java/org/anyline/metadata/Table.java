@@ -28,390 +28,16 @@ import java.util.*;
 
 public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
     protected String keyword = "TABLE"            ;
-
-    /**
-     * 分桶方式及数量
-     */
-    public static class Distribution{
-        public enum TYPE{
-            HASH 			("HASH"  			, "哈希分桶"),
-            RANDOM 			("RANDOM"  			, "随机分桶");
-            final String code;
-            final String name;
-            TYPE(String code, String name){
-                this.code = code;
-                this.name = name;
-            }
-            public String getName(){
-                return name;
-            }
-            public String getCode(){
-                return code;
-            }
-        }
-        /**
-         * 分桶方式
-         */
-        private TYPE type;
-        /**
-         * 分桶数量
-         */
-        private int buckets = -1;
-        /**
-         * 分桶依据列
-         */
-        private LinkedHashMap<String, Column> columns;
-        public Distribution(){
-
-        }
-        public Distribution(TYPE type, int buckets, String ... columns){
-            setBuckets(buckets);
-            setType(type);
-            setColumns(columns);
-        }
-        public Distribution(TYPE type, String ... columns){
-            setType(type);
-            setColumns(columns);
-        }
-        public int getBuckets() {
-            return buckets;
-        }
-
-        public Distribution setBuckets(int buckets) {
-            this.buckets = buckets;
-            return this;
-        }
-
-        public TYPE getType() {
-            return type;
-        }
-
-        public Distribution setType(TYPE type) {
-            this.type = type;
-            return this;
-        }
-
-        public LinkedHashMap<String, Column> getColumns() {
-            return columns;
-        }
-
-        public Distribution setColumns(LinkedHashMap<String, Column> columns) {
-            this.columns = columns;
-            return this;
-        }
-        public Distribution setColumns(String ... columns) {
-            if(null == this.columns){
-                this.columns = new LinkedHashMap<>();
-            }
-            if(null != columns){
-                for (String column:columns){
-                    this.columns.put(column.toUpperCase(), new Column(column));
-                }
-            }
-            return this;
-        }
-    }
-    public static class Key{
-        public enum TYPE {
-            DUPLICATE 			("DUPLICATE"  			, "排序列"),
-            AGGREGATE 			("AGGREGATE"  			, "维度列"),
-            UNIQUE 			    ("UNIQUE"  			, "主键列");
-            final String code;
-            final String name;
-            TYPE(String code, String name){
-                this.code = code;
-                this.name = name;
-            }
-            public String getName(){
-                return name;
-            }
-            public String getCode(){
-                return code;
-            }
-        }
-        private TYPE type;
-        private LinkedHashMap<String, Column> columns;
-
-        public TYPE getType() {
-            return type;
-        }
-
-        public void setType(TYPE type) {
-            this.type = type;
-        }
-
-        public LinkedHashMap<String, Column> getColumns() {
-            return columns;
-        }
-
-        public void setColumns(LinkedHashMap<String, Column> columns) {
-            this.columns = columns;
-        }
-        public void setColumns(String ... columns) {
-            if(null == this.columns){
-                this.columns = new LinkedHashMap<>();
-            }
-            if(null != columns){
-                for (String column:columns){
-                    this.columns.put(column.toUpperCase(), new Column(column));
-                }
-            }
-        }
-    }
-
-    public static class Partition implements Serializable {
-        public static class Slice implements Serializable{
-            private String name;
-            private Object min;
-            private Object max;
-            private List<Object> values;
-            private LinkedHashMap<String,Object> less;
-            private int interval;
-            private String unit;
-            public String getName() {
-                return name;
-            }
-
-            public Slice setName(String name) {
-                this.name = name;
-                return this;
-            }
-
-            public Object getMin() {
-                return min;
-            }
-
-            public Slice setMin(Object min) {
-                this.min = min;
-                return this;
-            }
-
-            public List<Object> getValues() {
-                return values;
-            }
-
-            public Slice setValues(List<Object> values) {
-                this.values = values;
-                return this;
-            }
-            public Slice setValues(Object ... values) {
-                if(null == this.values){
-                    this.values = new ArrayList<>();
-                }
-                if(null != values){
-                    for(Object value:values){
-                        this.values.add(value);
-                    }
-                }
-                return this;
-            }
-            public Slice addValues(Object value) {
-                if(null == this.values){
-                    this.values = new ArrayList<>();
-                }
-                this.values.add(value);
-                return this;
-            }
-
-            public Object getMax() {
-                return max;
-            }
-
-            public Slice setMax(Object max) {
-                this.max = max;
-                return this;
-            }
-
-            public int getInterval() {
-                return interval;
-            }
-
-            public Slice setInterval(int interval) {
-                this.interval = interval;
-                return this;
-            }
-
-            public LinkedHashMap<String,Object> getLess() {
-                return less;
-            }
-
-            public Slice setLess(String column, Object less) {
-                if(null == this.less){
-                    this.less = new LinkedHashMap<>();
-                }
-                this.less.put(column.toUpperCase(), less);
-                return this;
-            }
-
-            public String getUnit() {
-                return unit;
-            }
-
-            public Slice setUnit(String unit) {
-                this.unit = unit;
-                return this;
-            }
-        }
-        public enum TYPE{LIST, RANGE, HASH}
-        //RANGE
-        private Object from;
-        private Object to;
-        //LIST
-        private List<Object> list;
-        //HASH
-        private int modulus;
-        private int remainder;
-
-        private Partition.TYPE type;
-        private LinkedHashMap<String, Column> columns;
-
-        public Partition(){
-
-        }
-        public Partition(Partition.TYPE type){
-            this.type = type;
-        }
-        public Partition(Partition.TYPE type, String ... columns){
-            this.type = type;
-            this.columns = new LinkedHashMap<>();
-            for(String column:columns){
-                this.columns.put(column.toUpperCase(), new Column(column));
-            }
-        }
-        private List<Slice> slices = new ArrayList<>();
-        public Partition addSlice(Slice slice){
-            slices.add(slice);
-            return this;
-        }
-        public List<Slice> getSlices(){
-            return this.slices;
-        }
-        public Partition.TYPE getType() {
-            return type;
-        }
-
-        public Partition setType(Partition.TYPE type) {
-            this.type = type;
-            return this;
-        }
-
-        public LinkedHashMap<String, Column> getColumns() {
-            return columns;
-        }
-
-        public Partition setColumns(LinkedHashMap<String, Column> columns) {
-            this.columns = columns;
-            return this;
-        }
-
-        public Partition setColumns(String ... columns){
-            this.columns = new LinkedHashMap<>();
-            for(String column:columns){
-                this.columns.put(column.toUpperCase(), new Column(column));
-            }
-            return this;
-        }
-        public Partition addColumn(Column column){
-            if(null == columns){
-                columns = new LinkedHashMap<>();
-            }
-            columns.put(column.getName().toUpperCase(), column);
-            return this;
-        }
-        public Partition addColumn(String column){
-            return addColumn(new Column(column));
-        }
-
-        public Partition setRange(Object from, Object to){
-            this.from = from;
-            this.to = to;
-            return this;
-        }
-        public Object getFrom() {
-            return from;
-        }
-
-        public Partition setFrom(Object from) {
-            this.from = from;
-            return this;
-        }
-
-        public Object getTo() {
-            return to;
-        }
-
-        public Partition setTo(Object to) {
-            this.to = to;
-            return this;
-        }
-
-        public List<Object> getList() {
-            return list;
-        }
-
-        public Partition setList(List<Object> list) {
-            this.list = list;
-            return this;
-        }
-        public Partition addList(Object ... items) {
-            if(null == list) {
-                this.list = new ArrayList<>();
-            }
-            for(Object item:items) {
-                if (item instanceof Collection) {
-                    Collection cons = (Collection) item;
-                    for(Object con:cons){
-                        addList(con);
-                    }
-                }else if(item instanceof Object[]){
-                    Object[] objs = (Object[]) item;
-                    for(Object obj:objs){
-                        addList(obj);
-                    }
-                }else {
-                    list.add(item);
-                }
-            }
-            return this;
-        }
-
-        public int getModulus() {
-            return modulus;
-        }
-
-        public Partition setModulus(int modulus) {
-            this.modulus = modulus;
-            return this;
-        }
-        public Partition setHash(int modulus, int remainder) {
-            this.modulus = modulus;
-            this.remainder = remainder;
-            return this;
-        }
-
-        public int getRemainder() {
-            return remainder;
-        }
-
-        public Partition setRemainder(int remainder) {
-            this.remainder = remainder;
-            return this;
-        }
-    }
-    /**
-     * 主表名(相对于分区表)
-     */
-    protected String masterName;
     /**
      * 主表(相对于分区表)
      */
     protected Table master;
     /**
-     * 分区方式 LIST, RANGE, HASH
+     * 分区方式(分区依据列) LIST, RANGE, HASH
      */
     protected Partition partitionBy ;
     /**
-     * 分区值
+     * 分区值(分区依据值)
      */
     protected Partition partitionFor ;
 
@@ -712,23 +338,17 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     }
 
     public String getMasterName() {
-        if(null == masterName && null != master){
-            masterName = master.getName();
+        if(null != master){
+            return master.getName();
         }
-        return masterName;
+        return null;
     }
 
-    public void setMasterName(String masterName) {
-        this.masterName = masterName;
-    }
-    public void setMaster(String masterName) {
-        this.masterName = masterName;
+    public void setMaster(String master) {
+        this.master = new MasterTable(master);
     }
 
     public Table getMaster() {
-        if(null == master && null != masterName){
-            master = new Table(masterName);
-        }
         return master;
     }
 
@@ -1455,5 +1075,397 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             }
         }
         return pks.equals(tpks);
+    }
+
+    /**
+     * 分桶方式及数量
+     */
+    public static class Distribution{
+        public enum TYPE{
+            HASH 			("HASH"  			, "哈希分桶"),
+            RANDOM 			("RANDOM"  			, "随机分桶");
+            final String code;
+            final String name;
+            TYPE(String code, String name){
+                this.code = code;
+                this.name = name;
+            }
+            public String getName(){
+                return name;
+            }
+            public String getCode(){
+                return code;
+            }
+        }
+        /**
+         * 分桶方式
+         */
+        private TYPE type;
+        /**
+         * 分桶数量
+         */
+        private int buckets = -1;
+        /**
+         * 分桶依据列
+         */
+        private LinkedHashMap<String, Column> columns;
+        public Distribution(){
+
+        }
+        public Distribution(TYPE type, int buckets, String ... columns){
+            setBuckets(buckets);
+            setType(type);
+            setColumns(columns);
+        }
+        public Distribution(TYPE type, String ... columns){
+            setType(type);
+            setColumns(columns);
+        }
+        public int getBuckets() {
+            return buckets;
+        }
+
+        public Distribution setBuckets(int buckets) {
+            this.buckets = buckets;
+            return this;
+        }
+
+        public TYPE getType() {
+            return type;
+        }
+
+        public Distribution setType(TYPE type) {
+            this.type = type;
+            return this;
+        }
+
+        public LinkedHashMap<String, Column> getColumns() {
+            return columns;
+        }
+
+        public Distribution setColumns(LinkedHashMap<String, Column> columns) {
+            this.columns = columns;
+            return this;
+        }
+        public Distribution setColumns(String ... columns) {
+            if(null == this.columns){
+                this.columns = new LinkedHashMap<>();
+            }
+            if(null != columns){
+                for (String column:columns){
+                    this.columns.put(column.toUpperCase(), new Column(column));
+                }
+            }
+            return this;
+        }
+    }
+    public static class Key{
+        public enum TYPE {
+            DUPLICATE 			("DUPLICATE"  		, "排序列"),
+            AGGREGATE 			("AGGREGATE"  		, "维度列"),
+            UNIQUE 			    ("UNIQUE"  			, "主键列");
+            final String code;
+            final String name;
+            TYPE(String code, String name){
+                this.code = code;
+                this.name = name;
+            }
+            public String getName(){
+                return name;
+            }
+            public String getCode(){
+                return code;
+            }
+        }
+        private TYPE type;
+        private LinkedHashMap<String, Column> columns;
+
+        public TYPE getType() {
+            return type;
+        }
+
+        public void setType(TYPE type) {
+            this.type = type;
+        }
+
+        public LinkedHashMap<String, Column> getColumns() {
+            return columns;
+        }
+
+        public void setColumns(LinkedHashMap<String, Column> columns) {
+            this.columns = columns;
+        }
+        public void setColumns(String ... columns) {
+            if(null == this.columns){
+                this.columns = new LinkedHashMap<>();
+            }
+            if(null != columns){
+                for (String column:columns){
+                    this.columns.put(column.toUpperCase(), new Column(column));
+                }
+            }
+        }
+    }
+
+    /**
+     * 分区方式(分区依据列)
+     */
+    public static class Partition implements Serializable {
+        /**
+         * 分片(分区依据值)
+         */
+        public static class Slice implements Serializable{
+            private String name;
+            private Object min;
+            private Object max;
+            private List<Object> values;
+            private LinkedHashMap<String,Object> less;
+            private int interval;
+            private String unit;
+            public String getName() {
+                return name;
+            }
+
+            public Slice setName(String name) {
+                this.name = name;
+                return this;
+            }
+
+            public Object getMin() {
+                return min;
+            }
+
+            public Slice setMin(Object min) {
+                this.min = min;
+                return this;
+            }
+
+            public List<Object> getValues() {
+                return values;
+            }
+
+            public Slice setValues(List<Object> values) {
+                this.values = values;
+                return this;
+            }
+            public Slice setValues(Object ... values) {
+                if(null == this.values){
+                    this.values = new ArrayList<>();
+                }
+                if(null != values){
+                    for(Object value:values){
+                        this.values.add(value);
+                    }
+                }
+                return this;
+            }
+            public Slice addValue(Object value) {
+                if(null == value){
+                    return this;
+                }
+                if(null == this.values){
+                    this.values = new ArrayList<>();
+                }
+                if(value instanceof Collection){
+                    this.values.addAll((Collection<?>) value);
+                }else {
+                    this.values.add(value);
+                }
+                return this;
+            }
+
+            public Slice addValues(Object ... values) {
+                if(null != values){
+                    for(Object value:values){
+                        addValue(value);
+                    }
+                }
+                return this;
+            }
+
+            public Object getMax() {
+                return max;
+            }
+
+            public Slice setMax(Object max) {
+                this.max = max;
+                return this;
+            }
+
+            public int getInterval() {
+                return interval;
+            }
+
+            public Slice setInterval(int interval) {
+                this.interval = interval;
+                return this;
+            }
+
+            public LinkedHashMap<String,Object> getLess() {
+                return less;
+            }
+
+            public Slice setLess(String column, Object less) {
+                if(null == this.less){
+                    this.less = new LinkedHashMap<>();
+                }
+                this.less.put(column.toUpperCase(), less);
+                return this;
+            }
+
+            public String getUnit() {
+                return unit;
+            }
+
+            public Slice setUnit(String unit) {
+                this.unit = unit;
+                return this;
+            }
+        }
+        public enum TYPE{LIST, RANGE, HASH}
+        //RANGE
+        private Object from;
+        private Object to;
+        //LIST
+        private List<Object> list;
+        //HASH
+        private int modulus;
+        private int remainder;
+
+        private Partition.TYPE type;
+        private LinkedHashMap<String, Column> columns;
+
+        public Partition(){
+
+        }
+        public Partition(Partition.TYPE type){
+            this.type = type;
+        }
+        public Partition(Partition.TYPE type, String ... columns){
+            this.type = type;
+            this.columns = new LinkedHashMap<>();
+            for(String column:columns){
+                this.columns.put(column.toUpperCase(), new Column(column));
+            }
+        }
+        private List<Slice> slices = new ArrayList<>();
+        public Partition addSlice(Slice slice){
+            slices.add(slice);
+            return this;
+        }
+        public List<Slice> getSlices(){
+            return this.slices;
+        }
+        public Partition.TYPE getType() {
+            return type;
+        }
+
+        public Partition setType(Partition.TYPE type) {
+            this.type = type;
+            return this;
+        }
+
+        public LinkedHashMap<String, Column> getColumns() {
+            return columns;
+        }
+
+        public Partition setColumns(LinkedHashMap<String, Column> columns) {
+            this.columns = columns;
+            return this;
+        }
+
+        public Partition setColumns(String ... columns){
+            this.columns = new LinkedHashMap<>();
+            for(String column:columns){
+                this.columns.put(column.toUpperCase(), new Column(column));
+            }
+            return this;
+        }
+        public Partition addColumn(Column column){
+            if(null == columns){
+                columns = new LinkedHashMap<>();
+            }
+            columns.put(column.getName().toUpperCase(), column);
+            return this;
+        }
+        public Partition addColumn(String column){
+            return addColumn(new Column(column));
+        }
+
+        public Partition setRange(Object from, Object to){
+            this.from = from;
+            this.to = to;
+            return this;
+        }
+        public Object getFrom() {
+            return from;
+        }
+
+        public Partition setFrom(Object from) {
+            this.from = from;
+            return this;
+        }
+
+        public Object getTo() {
+            return to;
+        }
+
+        public Partition setTo(Object to) {
+            this.to = to;
+            return this;
+        }
+
+        public List<Object> getList() {
+            return list;
+        }
+
+        public Partition setList(List<Object> list) {
+            this.list = list;
+            return this;
+        }
+        public Partition addList(Object ... items) {
+            if(null == list) {
+                this.list = new ArrayList<>();
+            }
+            for(Object item:items) {
+                if (item instanceof Collection) {
+                    Collection cons = (Collection) item;
+                    for(Object con:cons){
+                        addList(con);
+                    }
+                }else if(item instanceof Object[]){
+                    Object[] objs = (Object[]) item;
+                    for(Object obj:objs){
+                        addList(obj);
+                    }
+                }else {
+                    list.add(item);
+                }
+            }
+            return this;
+        }
+
+        public int getModulus() {
+            return modulus;
+        }
+
+        public Partition setModulus(int modulus) {
+            this.modulus = modulus;
+            return this;
+        }
+        public Partition setHash(int modulus, int remainder) {
+            this.modulus = modulus;
+            this.remainder = remainder;
+            return this;
+        }
+
+        public int getRemainder() {
+            return remainder;
+        }
+
+        public Partition setRemainder(int remainder) {
+            this.remainder = remainder;
+            return this;
+        }
     }
 }
