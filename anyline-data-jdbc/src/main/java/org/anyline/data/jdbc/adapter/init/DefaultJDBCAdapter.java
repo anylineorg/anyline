@@ -1589,7 +1589,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		String sql = run.getFinalQuery();
 		if(BasicUtil.isEmpty(sql)){
-			return new DataSet();
+			return new DataSet().setTable(table);
 		}
 		List<Object> values = run.getValues();
 		return select(runtime, random, system, ACTION.DML.SELECT, table, configs, run, sql, values);
@@ -10149,7 +10149,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				throw new SQLQueryException("未指定SQL");
 			}else{
 				log.error("未指定SQL");
-				return new DataSet();
+				return new DataSet().setTable(table);
 			}
 		}
 
@@ -10164,6 +10164,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			log.info("{}[action:select]{}", random, run.log(action, IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 		DataSet set = new DataSet();
+		set.setTable(table);
 		boolean exe = true;
 		if(null != configs){
 			exe = configs.execute();

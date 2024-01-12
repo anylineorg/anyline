@@ -1268,16 +1268,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         if (dest.contains(".") && !dest.contains(":")) {
             String[] tmps = dest.split("\\.");
+            Catalog catalog = null;
+            Schema schema = null;
+            Table table = null;
             if(tmps.length == 2){
-                setSchema(tmps[0]);
-                setTable(tmps[1]);
+                schema = new Schema(tmps[0]);
+                table = new Table(tmps[1]);
+                table.setSchema(schema);
             }else if(tmps.length == 3){
-                setCatalog(tmps[0]);
-                setSchema(tmps[1]);
-                setTable(tmps[2]);
+                catalog = new Catalog(tmps[0]);
+                schema = new Schema(tmps[1]);
+                schema.setCatalog(catalog);
+                table = new Table(tmps[2]);
+                table.setSchema(schema);
+                table.setCatalog(catalog);
             }
+            setCatalog(catalog);
+            setSchema(schema);
+            setTable(table);
         }else{
-            setTable(dest);
+            Table table = new Table(dest);
+            setTable(table);
         }
         return this;
     }
@@ -2423,24 +2434,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return dest;
     }
+    public DataRow setTable(Table table){
+        this.table = table;
+        return this;
+    }
     public DataRow setTable(String table) {
-        if(null != table) {
-            if (table.contains(".")) {
-                String[] tbs = table.split("\\.");
-                if (tbs.length == 2) {
-                    this.table = new Table(tbs[1]);
-                    this.schema = new Schema(tbs[0]);
-                } else if (tbs.length == 3) {
-                    this.table = new Table(tbs[2]);
-                    this.schema = new Schema(tbs[1]);
-                    this.catalog = new Catalog(tbs[0]);
-                }
-            } else {
-                this.table = new Table(table);
-            }
-        }else{
-            this.table = null;
-        }
+        setDest(table);
         return this;
     }
 

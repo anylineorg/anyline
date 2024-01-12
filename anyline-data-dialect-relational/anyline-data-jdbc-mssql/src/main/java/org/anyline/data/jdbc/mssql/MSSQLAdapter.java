@@ -2549,7 +2549,7 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		builder.append("WHERE TABLE_NAME='").append(objectName(runtime, table.getName())).append("'");
 		Catalog catalog = table.getCatalog();
 		if(BasicUtil.isNotEmpty(catalog)){
-			builder.append("\nAND TABLE_CATALOG = '").append(catalog).append("'");
+			builder.append("\nAND TABLE_CATALOG = '").append(catalog.getName()).append("'");
 		}
 		Schema schema = table.getSchema();
 		if(BasicUtil.isNotEmpty(schema)){

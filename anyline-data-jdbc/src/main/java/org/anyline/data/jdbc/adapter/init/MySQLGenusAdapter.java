@@ -1651,7 +1651,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
         // 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
 		/*if(BasicUtil.isNotEmpty(catalog)){
-			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
+			builder.append(" AND TABLE_SCHEMA = '").append(catalog.getName()).append("'");
 		}*/
         if(BasicUtil.isNotEmpty(schema)){
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");

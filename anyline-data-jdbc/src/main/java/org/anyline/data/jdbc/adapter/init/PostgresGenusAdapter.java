@@ -2281,7 +2281,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
             builder.append("WHERE 1 = 1\n");
             if(BasicUtil.isNotEmpty(catalog)){
-                builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
+                builder.append(" AND M.TABLE_CATALOG = '").append(catalog.getName()).append("'");
             }
             if(BasicUtil.isNotEmpty(schema)){
                 builder.append(" AND M.TABLE_SCHEMA = '").append(schema.getName()).append("'");

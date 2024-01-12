@@ -17,12 +17,10 @@
 
 package org.anyline.metadata;
 
-import javafx.scene.control.Tab;
 import org.anyline.exception.AnylineException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
-import java.io.PipedReader;
 import java.io.Serializable;
 import java.util.*;
 

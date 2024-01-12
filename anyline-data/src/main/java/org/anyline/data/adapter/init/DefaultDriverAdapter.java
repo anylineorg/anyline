@@ -1482,12 +1482,12 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
 		if(swt == ACTION.SWITCH.BREAK){
-			return new DataSet();
+			return new DataSet().setTable(prepare.getTable());
 		}
 		//query拦截
 		swt = InterceptorProxy.prepareQuery(runtime, random, prepare, configs, conditions);
 		if(swt == ACTION.SWITCH.BREAK){
-			return new DataSet();
+			return new DataSet().setTable(prepare.getTable());
 		}
 
 		run = buildQueryRun(runtime, prepare, configs, conditions);
@@ -1539,7 +1539,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				}
 				swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
 				if(swt == ACTION.SWITCH.BREAK){
-					return new DataSet();
+					return new DataSet().setTable(prepare.getTable());
 				}
 				set = select(runtime, random, false, prepare.getTable(), configs, run);
 				cmd_success = true;
@@ -1547,13 +1547,13 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				if(null != configs){
 					configs.add(run);
 				}
-				set = new DataSet();
+				set = new DataSet().setTable(prepare.getTable());
 				if(IS_CHECK_EMPTY_SET_METADATA(configs)){
 					set.setMetadata(metadata(runtime, prepare, false));
 				}
 			}
 		} else {
-			set = new DataSet();
+			set = new DataSet().setTable(prepare.getTable());
 		}
 
 		set.setDest(prepare.getDest());
@@ -1986,7 +1986,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)", 37));
 		}
-		return new DataSet();
+		return new DataSet().setTable(table);
 	}
 
 

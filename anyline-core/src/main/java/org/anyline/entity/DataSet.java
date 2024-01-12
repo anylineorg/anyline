@@ -2974,25 +2974,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return EntityAdapterProxy.entitys(clazz, this, metadatas);
     }
     public DataSet setDest(String dest) {
+
         if (null == dest) {
             return this;
         }
+        Catalog catalog = null;
+        Schema schema = null;
+        Table table = null;
         if (dest.contains(".") && !dest.contains(":")) {
             String[] tmps = dest.split("\\.");
             if(tmps.length == 2){
-                setSchema(tmps[0]);
-                setTable(tmps[1]);
+                schema = new Schema(tmps[0]);
+                table = new Table(tmps[1]);
+                table.setSchema(schema);
             }else if(tmps.length == 3){
-                setCatalog(tmps[0]);
-                setSchema(tmps[1]);
-                setTable(tmps[2]);
+                catalog = new Catalog(tmps[0]);
+                schema = new Schema(tmps[1]);
+                schema.setCatalog(catalog);
+                table = new Table(tmps[2]);
+                table.setSchema(schema);
+                table.setCatalog(catalog);
             }
+            setCatalog(catalog);
+            setSchema(schema);
+            setTable(table);
         }else{
-            setTable(dest);
+            table = new Table(dest);
+            setTable(table);
         }
         for (DataRow row : rows) {
             if (BasicUtil.isEmpty(row.getDest())) {
-                row.setDest(dest);
+                row.setCatalog(catalog);
+                row.setSchema(schema);
+                row.setTable(table);
             }
         }
         return this;

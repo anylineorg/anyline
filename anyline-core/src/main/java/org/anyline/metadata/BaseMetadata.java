@@ -34,7 +34,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     protected String id;
     protected Long objectId;
 
-    protected Table table;
+    protected Table<?> table;
     protected String definition;
 
     protected T origin;
