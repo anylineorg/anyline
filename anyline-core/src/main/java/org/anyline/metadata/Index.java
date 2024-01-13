@@ -30,6 +30,7 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
     protected boolean cluster     ; // 是否聚簇索引
     protected boolean fulltext    ;
     protected boolean spatial     ;
+    protected LinkedHashMap<String, Integer> positions = new LinkedHashMap<>();
 
     protected boolean unique;
     public Index(){}
@@ -54,6 +55,24 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
             return update.cluster;
         }
         return cluster;
+    }
+
+    public LinkedHashMap<String, Integer> getPositions() {
+        return positions;
+    }
+
+    public M setPositions(LinkedHashMap<String, Integer> positions) {
+        this.positions = positions;
+        return (M)this;
+    }
+
+    public M setPosition(String column, Integer position) {
+        this.positions.put(column.toUpperCase(), position);
+        return (M)this;
+    }
+    public M setPosition(Column column, Integer position) {
+        this.positions.put(column.getName().toUpperCase(), position);
+        return (M)this;
     }
 
 
