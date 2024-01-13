@@ -5428,8 +5428,10 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("ALTER TABLE ");
-        name(runtime, builder, meta.getTable(true));
+        if(!slice) {
+            builder.append("ALTER TABLE ");
+            name(runtime, builder, meta.getTable(true));
+        }
         builder.append(" DROP CONSTRAINT ");
         delimiter(builder, meta.getName());
         return runs;
