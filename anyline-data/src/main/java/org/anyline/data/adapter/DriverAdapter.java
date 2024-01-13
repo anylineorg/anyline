@@ -4233,6 +4233,9 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary, boolean slice) throws Exception;
+	default List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
+		return buildDropRun(runtime, primary, false);
+	}
 
 	/**
 	 * primary[命令合成]<br/>
