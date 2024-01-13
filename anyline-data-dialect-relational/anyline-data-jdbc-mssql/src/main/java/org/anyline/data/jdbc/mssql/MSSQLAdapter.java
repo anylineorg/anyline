@@ -5010,6 +5010,10 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(meta.isPrimaryKey() == 1){
+			builder.append(" NOT NULL");
+			return builder;
+		}
 		int nullable = meta.isNullable();
 		if(nullable != -1) {
 			if (nullable == 0) {

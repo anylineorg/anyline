@@ -6209,12 +6209,18 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			}
 			meta.setPrimaryKey(primary);
 		}
+		if(null == pks){
+			pks = new LinkedHashMap<>();
+		}
 		if(null != columMap){
 			columns = columMap.values();
 			if(null != columns && !columns.isEmpty()){
 				//builder.append("(");
 				int idx = 0;
 				for(Column column:columns){
+					if(pks.containsKey(column.getName().toUpperCase())){
+						column.setNullable(false);
+					}
 					builder.append("\n\t");
 					if(idx > 0){
 						builder.append(",");
@@ -7616,6 +7622,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(meta.isPrimaryKey() == 1){
+			builder.append(" NOT NULL");
+			return builder;
+		}
 		int nullable = meta.isNullable();
 		if(nullable != -1) {
 			if (nullable == 0) {
