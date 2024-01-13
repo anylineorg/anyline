@@ -5381,6 +5381,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 				name(runtime, builder, meta.getTable(true));
 			}
 			builder.append(" ADD PRIMARY KEY (");
+			Column.sort(meta.getPositions(), columns);
 			delimiter(builder, Column.names(columns));
 			builder.append(")");
 		}

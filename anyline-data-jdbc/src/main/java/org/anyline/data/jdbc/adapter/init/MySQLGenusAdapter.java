@@ -4009,6 +4009,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         if(!pks.isEmpty()){
             builder.append(",PRIMARY KEY (");
             boolean first = true;
+            Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()){
                 if(!first){
                     builder.append(",");
@@ -5547,6 +5548,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
                 name(runtime, builder, meta.getTable(true));
             }
             builder.append(" ADD PRIMARY KEY (");
+            Column.sort(meta.getPositions(), columns);
             delimiter(builder, Column.names(columns));
             builder.append(")");
         }

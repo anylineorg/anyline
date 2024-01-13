@@ -3974,6 +3974,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         if(!pks.isEmpty()){
             builder.append(",CONSTRAINT ").append("PK_").append(meta.getName()).append(" PRIMARY KEY (");
             boolean first = true;
+            Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()){
                 if(!first){
                     builder.append(",");
@@ -5559,7 +5560,8 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
             }
-            builder.append(" ADD CONSTRAINT ").append(meta.getTableName(true)).append("_PK").append(" PRIMARY KEY(");
+            builder.append(" ADD CONSTRAINT pk_").append(meta.getTableName(true)).append(" PRIMARY KEY(");
+            Column.sort(meta.getPositions(), columns);
             delimiter(builder, Column.names(columns));
             builder.append(")");
 

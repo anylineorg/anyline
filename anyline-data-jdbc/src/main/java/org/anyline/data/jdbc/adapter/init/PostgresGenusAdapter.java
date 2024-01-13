@@ -3826,17 +3826,9 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             delimiter(builder, name);
             builder.append(" PRIMARY KEY (");
             boolean first = true;
-            for(Column pk:pks.values()){
-                if(!first){
-                    builder.append(",");
-                }
-                delimiter(builder, pk.getName());
-                String order = pk.getOrder();
-                if(null != order){
-                    builder.append(" ").append(order);
-                }
-                first = false;
-            }
+            Column.sort(primary.getPositions(), pks);
+            //不支持 asc desc
+            delimiter(builder, Column.names(pks));
             builder.append(")");
         }
         return builder;
@@ -5400,6 +5392,7 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
                 name(runtime, builder, meta.getTable(true));
             }
             builder.append(" ADD PRIMARY KEY (");
+            Column.sort(meta.getPositions(), columns);
             delimiter(builder, Column.names(columns));
             builder.append(")");
 

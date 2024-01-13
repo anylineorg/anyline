@@ -91,7 +91,12 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
         return addColumn(new Column(column).setOrder(order));
     }
     public M addColumn(String column, String order, int position){
-        return addColumn(new Column(column).setOrder(order).setPosition(position));
+        positions.put(column.toUpperCase(), position);
+        return addColumn(new Column(column).setOrder(order));
+    }
+    public M addColumn(String column, int position){
+        positions.put(column.toUpperCase(), position);
+        return addColumn(new Column(column));
     }
 
     public String getName() {

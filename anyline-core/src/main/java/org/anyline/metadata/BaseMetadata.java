@@ -75,6 +75,36 @@ public class BaseMetadata<T extends BaseMetadata> {
         return names;
     }
 
+    public static <T extends BaseMetadata> void sort(LinkedHashMap<String, Integer> positions, LinkedHashMap<String, T> columns){
+        if(null == positions || positions.isEmpty()){
+            return;
+        }
+        List<T> list = new ArrayList<>();
+        list.addAll(columns.values());
+
+        Collections.sort(list, new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                Integer p1 = positions.get(o1.getName().toUpperCase());
+                Integer p2 = positions.get(o2.getName().toUpperCase());
+                if(p1 == p2){
+                    return 0;
+                }
+                if (null == p1) {
+                    return 1;
+                }
+                if (null == p2) {
+                    return -1;
+                }
+                return p1 > p2 ? 1:-1;
+            }
+        });
+
+        columns.clear();
+        for(T column:list){
+            columns.put(column.getName().toUpperCase(), column);
+        }
+    }
     public String getDatasource() {
         return datasource;
     }

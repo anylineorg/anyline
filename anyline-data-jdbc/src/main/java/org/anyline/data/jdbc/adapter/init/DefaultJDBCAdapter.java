@@ -6128,6 +6128,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		if(!pks.isEmpty()){
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
+			Column.sort(primary.getPositions(), pks);
 			for(Column pk:pks.values()){
 				if(!first){
 					builder.append(",");
@@ -8536,8 +8537,9 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		name(runtime, builder, table);
 		builder.append("(");
 		int qty = 0;
-		Collection<Column> cols = meta.getColumns().values();
-		for(Column column:cols){
+		LinkedHashMap<String, Column> columns = meta.getColumns();
+		Column.sort(meta.getPositions(), columns);
+		for(Column column:columns.values()){
 			if(qty>0){
 				builder.append(",");
 			}

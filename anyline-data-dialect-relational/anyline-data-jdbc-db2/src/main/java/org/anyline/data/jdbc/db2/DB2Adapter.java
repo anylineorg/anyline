@@ -3571,6 +3571,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		if(!pks.isEmpty()){
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
+			Column.sort(primary.getPositions(), pks);
 			for(Column pk:pks.values()){
 				if(!first){
 					builder.append(",");

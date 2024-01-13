@@ -3823,6 +3823,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		if(!pks.isEmpty()){
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
+			Column.sort(primary.getPositions(), pks);
 			for(Column pk:pks.values()){
 				if(!first){
 					builder.append(",");
@@ -5329,6 +5330,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, meta.getTable(true));
 			builder.append(" ADD CONSTRAINT PRIMARY KEY (");
+			Column.sort(meta.getPositions(), columns);
 			delimiter(builder, Column.names(columns));
 			builder.append(")");
 			if(BasicUtil.isNotEmpty(meta.getName())){
