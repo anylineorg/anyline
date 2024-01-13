@@ -1728,7 +1728,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		long fr = System.currentTimeMillis();
 		if (log.isInfoEnabled() && IS_LOG_SQL(configs)) {
-			log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
+			log.info("{}[action:select]{}", random, run.log(ACTION.DML.EXISTS, IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 		/*if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)){
 			//>0:有占位 isEmpty:值为空
