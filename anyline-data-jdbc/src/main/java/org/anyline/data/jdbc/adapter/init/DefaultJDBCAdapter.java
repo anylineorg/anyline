@@ -8123,13 +8123,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * 删除主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主键
-	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
 	@Override
-	public boolean drop(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
-		return super.drop(runtime, meta, slice);
+	public boolean drop(DataRuntime runtime, PrimaryKey meta) throws Exception{
+		return super.drop(runtime, meta);
 	}
 
 	/**

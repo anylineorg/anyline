@@ -3812,14 +3812,19 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
     public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
+        String name = null;
         if(null != primary){
             pks = primary.getColumns();
+            name = primary.getName();
         }else{
             pks = meta.primarys();
+            name = "pk_" + meta.getName();
         }
         if(!pks.isEmpty()){
             checkName(runtime, null, meta);
-            builder.append(",CONSTRAINT ").append("PK_").append(meta.getName()).append(" PRIMARY KEY (");
+            builder.append(",CONSTRAINT ");
+            delimiter(builder, name);
+            builder.append(" PRIMARY KEY (");
             boolean first = true;
             for(Column pk:pks.values()){
                 if(!first){

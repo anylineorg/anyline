@@ -715,7 +715,7 @@ public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serial
                 if(column.isPrimaryKey() ==1){
                     if(null == primaryKey){
                         primaryKey = new PrimaryKey();
-                        primaryKey.setName(getName()+"_PK");
+                        primaryKey.setName("pk_"+getName());
                         primaryKey.setTable(this);
                     }
                     primaryKey.addColumn(column);
