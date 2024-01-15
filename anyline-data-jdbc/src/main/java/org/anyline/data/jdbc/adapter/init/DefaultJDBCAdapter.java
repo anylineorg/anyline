@@ -6225,6 +6225,11 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 				//builder.append("(");
 				int idx = 0;
 				for(Column column:columns){
+					TypeMetadata metadata = column.getTypeMetadata();
+					if(null == metadata){
+						metadata = typeMetadata(column.getTypeName());
+						column.setTypeMetadata(metadata);
+					}
 					if(pks.containsKey(column.getName().toUpperCase())){
 						column.setNullable(false);
 					}
