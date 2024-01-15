@@ -1073,34 +1073,34 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return false;
         }
         if(null == typeMetadata || !typeMetadata.ignorePrecision()) {
-            if (!BasicUtil.equals(precision, column.getPrecision())) {
+            if (!BasicUtil.equals(getPrecision(), column.getPrecision())) {
                 return false;
             }
         }
         if(null == typeMetadata || !typeMetadata.ignoreScale()) {
-            if (!BasicUtil.equals(scale, column.getScale())) {
+            if (!BasicUtil.equals(getScale(), column.getScale())) {
                 return false;
             }
         }
-        if(!BasicUtil.equals(defaultValue, column.getDefaultValue())){
+        if(!BasicUtil.equals(getDefaultValue(), column.getDefaultValue())){
             return false;
         }
-        if(!BasicUtil.equals(comment, column.getComment())){
+        if(!BasicUtil.equals(getComment(), column.getComment())){
             return false;
         }
-        if(!BasicUtil.equals(nullable, column.isNullable())){
+        if(!BasicUtil.equals(isNullable(), column.isNullable())){
             return false;
         }
-        if(!BasicUtil.equals(autoIncrement, column.isAutoIncrement())){
+        if(!BasicUtil.equals(isAutoIncrement(), column.isAutoIncrement())){
             return false;
         }
-        if(!BasicUtil.equals(charset, column.getCharset())){
+        if(!BasicUtil.equals(getCharset(), column.getCharset())){
             return false;
         }
-        if(!BasicUtil.equals(primary, column.isPrimaryKey())){
+        if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())){
             return false;
         }
-        if(!BasicUtil.equals(position, column.getPosition())){
+        if(!BasicUtil.equals(getPosition(), column.getPosition())){
             return false;
         }
         return true;
