@@ -4347,8 +4347,14 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		int index = 0;
 		for(Column column:columns.values()){
-			if(null == column.getPosition()) {
+			if(null == column.getPosition() || -1 == column.getPosition()) {
 				column.setPosition(index++);
+			}
+			if(column.isAutoIncrement() != 1){
+				column.autoIncrement(false);
+			}
+			if(column.isPrimaryKey() != 1){
+				column.setPrimary(false);
 			}
 		}
 		return columns;

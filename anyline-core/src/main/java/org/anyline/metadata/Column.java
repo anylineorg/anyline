@@ -1100,9 +1100,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())){
             return false;
         }
-        if(!BasicUtil.equals(getPosition(), column.getPosition())){
+        /*if(!BasicUtil.equals(getPosition(), column.getPosition())){
             return false;
-        }
+        }*/
         return true;
     }
     
