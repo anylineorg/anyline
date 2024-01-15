@@ -20,6 +20,7 @@ package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -27,6 +28,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -4927,6 +4929,15 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(null != meta){
+			TypeMetadata metadata = meta.getTypeMetadata();
+			if(metadata == StandardColumnType.VARCHAR || metadata == StandardColumnType.VARBINARY || metadata == StandardColumnType.NVARCHAR){
+				int len = meta.getPrecision();
+				if(len > 8000){
+					meta.setPrecision(-2);
+				}
+			}
+		}
 		return super.type(runtime, builder, meta);
 	}
 	/**

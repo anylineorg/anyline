@@ -7529,7 +7529,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 						builder.append(",").append(scale);
 					}
 					builder.append(")");
-				} else if (precision == -1) {
+				} else if (precision == -2) {
 					builder.append("(max)");
 				}
 			}
