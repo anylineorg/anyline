@@ -872,7 +872,9 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		for (String pk : primaryKeys) {
 			Object pv = row.get(pk);
 			pv = convert(runtime, cols.get(pk.toUpperCase()), pv); //统一调用
-			configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
+			if(null != pv) {
+				configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
+			}
                 /*builder.append(" AND ");
                 delimiter(builder, pk).append(" = ?");
                 updateColumns.add(pk);
