@@ -6859,11 +6859,11 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 修改主键前先 根据主键检测自增 部分数据库要求自增必须在主键上时才需要执行
-	 * @param runtime
-	 * @param random
-	 * @param table
-	 * @return
-	 * @throws Exception
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param table 表
+	 * @return boolean
+	 * @throws Exception 异常
 	 */
 	protected boolean checkAutoIncrement(DataRuntime runtime, String random, Table table) throws Exception{
 		boolean result = false;
