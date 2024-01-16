@@ -9,6 +9,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -4697,7 +4698,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(!slice) {
+        if(!slice(slice)) {
             Table table = meta.getTable(true);
             builder.append("ALTER TABLE ");
             name(runtime, builder, table);
@@ -4797,18 +4798,15 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         Column update = meta.getUpdate();
         String name = meta.getName();
         String type = meta.getTypeName();
-        if(type.contains("(")){
-            type = type.substring(0,type.indexOf("("));
-        }
         String uname = update.getName();
-        String utype = update.getTypeName();
+
+        TypeMetadata update_metadata = update.getTypeMetadata();
+        TypeMetadata column_metadata = meta.getTypeMetadata();
+
         if(uname.endsWith("_TMP_UPDATE_TYPE")){
             runs.addAll(buildDropRun(runtime, update));
         }else {
-            if (utype != null && utype.contains("(")) {
-                utype = utype.substring(0, utype.indexOf("("));
-            }
-            if (!type.equals(utype)) {
+            if (null != update_metadata && !update_metadata.equals(column_metadata)) {
                 String tmp_name = meta.getName() + "_TMP_UPDATE_TYPE";
 
                 update.setName(tmp_name);
@@ -5602,7 +5600,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         StringBuilder builder = run.getBuilder();
         LinkedHashMap<String,Column> columns = meta.getColumns();
         if(null != columns && !columns.isEmpty()) {
-            if(!slice) {
+            if(!slice(slice)) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
             }
@@ -5641,7 +5639,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(!slice) {
+        if(!slice(slice)) {
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true));
         }

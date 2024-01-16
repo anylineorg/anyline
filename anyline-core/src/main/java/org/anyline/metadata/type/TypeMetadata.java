@@ -21,6 +21,24 @@ package org.anyline.metadata.type;
 import java.lang.reflect.Field;
 
 public interface TypeMetadata {
+    default boolean equals(TypeMetadata metadata){
+        if(null == metadata){
+            return false;
+        }
+        if(this.getOrigin() == metadata){
+            return true;
+        }
+        if(this == metadata){
+            return true;
+        }
+        if(this == metadata.getOrigin()){
+            return true;
+        }
+        if(this.getOrigin() == metadata.getOrigin()){
+            return true;
+        }
+        return false;
+    }
     enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, BYTES, GEOMETRY, NONE}
     TypeMetadata ILLEGAL = new TypeMetadata() {
 
