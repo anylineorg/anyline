@@ -8,14 +8,14 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 
-package org.anyline.data.jdbc.gbase8a.oracle;
+package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
 import org.anyline.data.metadata.StandardColumnType;
@@ -23,25 +23,25 @@ import org.anyline.metadata.type.TypeMetadata;
 
 public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
 
-    BFILE                   (StandardColumnType.BFILE                 ), 
-    BINARY_DOUBLE           (StandardColumnType.BINARY_DOUBLE         ), 
-    BINARY_FLOAT            (StandardColumnType.FLOAT4                ), 
-    BIGINT                  (StandardColumnType.NUMBER                ), 
+    BFILE                   (StandardColumnType.BFILE                 ),
+    BINARY_DOUBLE           (StandardColumnType.BINARY_DOUBLE         ),
+    BINARY_FLOAT            (StandardColumnType.FLOAT4                ),
+    BIGINT                  (StandardColumnType.NUMBER                ),
     BIGSERIAL               (StandardColumnType.NUMBER                ),
-    BINARY                  (StandardColumnType.BLOB                  ), 
-    BIT                     (StandardColumnType.NUMBER                ), 
-    BLOB                    (StandardColumnType.BLOB                  ), 
+    BINARY                  (StandardColumnType.BLOB                  ),
+    BIT                     (StandardColumnType.NUMBER                ),
+    BLOB                    (StandardColumnType.BLOB                  ),
     BOOL                    (StandardColumnType.NUMBER                ), 
     BOX                     (StandardColumnType.ILLEGAL               ), 
     BYTEA                   (StandardColumnType.BLOB                  ), 
-    CHAR                    (StandardColumnType.CHAR                  ), 
+    CHAR                    (StandardColumnType.CHAR                  ),
     CIDR                    (StandardColumnType.ILLEGAL               ), 
     CIRCLE                  (StandardColumnType.ILLEGAL               ), 
     CLOB                    (StandardColumnType.CLOB                  ), 
     DATE                    (StandardColumnType.DATE                  ), 
-    DATETIME                (StandardColumnType.TIMESTAMP             ), 
-    DATETIME2               (StandardColumnType.TIMESTAMP             ), 
-    DATETIMEOFFSET          (StandardColumnType.TIMESTAMP             ), 
+    DATETIME                (StandardColumnType.TIMESTAMP             ),      
+    DATETIME2               (StandardColumnType.TIMESTAMP             ),      
+    DATETIMEOFFSET          (StandardColumnType.TIMESTAMP             ),      
     DECIMAL                 (StandardColumnType.NUMBER                ), 
     DOUBLE                  (StandardColumnType.NUMBER                ), 
     ENUM                    (StandardColumnType.ILLEGAL               ), 
@@ -55,12 +55,12 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     IMAGE                   (StandardColumnType.BLOB                  ), 
     INET                    (StandardColumnType.ILLEGAL               ), 
     INTERVAL                (StandardColumnType.ILLEGAL               ), 
-    INT                     (StandardColumnType.NUMBER                ), 
+    INT                     (StandardColumnType.NUMBER                ),
     INT2                    (StandardColumnType.NUMBER                ), 
     INT4                    (StandardColumnType.NUMBER                ), 
     INT8                    (StandardColumnType.NUMBER                ), 
-    INTEGER                 (StandardColumnType.NUMBER                ), 
-    JSON                    (StandardColumnType.CLOB                  ),  
+    INTEGER                 (StandardColumnType.NUMBER                ),
+    JSON                    (StandardColumnType.CLOB                  ), 
     JSONB                   (StandardColumnType.BLOB                  ), 
     LINE                    (StandardColumnType.ILLEGAL               ), 
     LONG                    (StandardColumnType.LONG                  ), 
@@ -85,7 +85,7 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     NUMERIC                 (StandardColumnType.NUMBER                ),
     POINT                   (StandardColumnType.ILLEGAL               ), 
     POLYGON                 (StandardColumnType.ILLEGAL               ), 
-    REAL                    (StandardColumnType.FLOAT_ORACLE          ), 
+    REAL                    (StandardColumnType.FLOAT_ORACLE          ),
     RAW                     (StandardColumnType.RAW                   ), 
     ROWID                   (StandardColumnType.ROWID                 ), 
     SERIAL                  (StandardColumnType.NUMBER                ),
@@ -99,8 +99,8 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     SMALLSERIAL             (StandardColumnType.NUMBER                ),
     SQL_VARIANT             (StandardColumnType.ILLEGAL               ), 
     SYSNAME                 (StandardColumnType.ILLEGAL               ), 
-    TEXT                    (StandardColumnType.CLOB                  ),  
-    TIME                    (StandardColumnType.TIMESTAMP             ), 
+    TEXT                    (StandardColumnType.CLOB                  ),
+    TIME                    (StandardColumnType.TIMESTAMP             ),
     TIMEZ                   (StandardColumnType.TIMESTAMP             ), 
     TIMESTAMP               (StandardColumnType.TIMESTAMP             ), 
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardColumnType.TIMESTAMP             ), 
@@ -113,13 +113,13 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     UROWID                  (StandardColumnType.UROWID                ), 
     VARBIT                  (StandardColumnType.BLOB                  ), 
     TINYBLOB                (StandardColumnType.BLOB                  ), 
-    TINYINT                 (StandardColumnType.NUMBER                ), 
+    TINYINT                 (StandardColumnType.NUMBER                ),      
     TINYTEXT                (StandardColumnType.CLOB                  ), 
-    VARBINARY               (StandardColumnType.BLOB                  ), 
+    VARBINARY               (StandardColumnType.BLOB                  ),      
     VARCHAR                 (StandardColumnType.VARCHAR               ), 
-    VARCHAR2                (StandardColumnType.VARCHAR               ), 
-    XML                     (StandardColumnType.ILLEGAL               ), 
-    YEAR                    (StandardColumnType.DATE                  );  
+    VARCHAR2                (StandardColumnType.VARCHAR               ),
+    XML                     (StandardColumnType.ILLEGAL               ),
+    YEAR                    (StandardColumnType.DATE                  ); 
     private final TypeMetadata standard;
     private GbaseColumnTypeAlias(TypeMetadata standard){
         this.standard = standard;

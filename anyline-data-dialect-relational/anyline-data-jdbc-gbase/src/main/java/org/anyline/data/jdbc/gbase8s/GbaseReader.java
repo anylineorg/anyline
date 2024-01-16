@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8s.postgres;
+package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.adapter.DataReader;
 

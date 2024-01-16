@@ -16,10 +16,14 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8s.postgres;
+package org.anyline.data.jdbc.gbase8c;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.gbase8s.GbaseColumnTypeAlias;
+import org.anyline.data.jdbc.gbase8s.GbaseReader;
+import org.anyline.data.jdbc.gbase8s.GbaseWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -44,14 +48,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.gbase8s.pg")
+@Repository("anyline.data.jdbc.adapter.gbase8c")
 public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type() {
-		return DatabaseType.GBase8A;
+		return DatabaseType.GBase8C;
 	}
 
-	@Value("${anyline.data.jdbc.delimiter.gbase:}")
+	@Value("${anyline.data.jdbc.delimiter.gbase8c:}")
 	private String delimiter;
 
 	@Override

@@ -1,3 +1,4 @@
+ 
 /*
  * Copyright 2006-2023 www.anyline.org
  *
@@ -8,17 +9,20 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 
-package org.anyline.data.jdbc.gbase8a.oracle;
+package org.anyline.data.jdbc.gbase8a;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
+import org.anyline.data.jdbc.gbase8s.GbaseColumnTypeAlias;
+import org.anyline.data.jdbc.gbase8s.GbaseReader;
+import org.anyline.data.jdbc.gbase8s.GbaseWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -43,35 +47,26 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.gbase8a.oracle")
-public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
-	
-	public DatabaseType type(){
+@Repository("anyline.data.jdbc.adapter.gbase8a")
+public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
+
+	public DatabaseType type() {
 		return DatabaseType.GBase8A;
 	}
 
-	@Value("${anyline.data.jdbc.delimiter.gbase:}")
+	@Value("${anyline.data.jdbc.delimiter.gbase8a:}")
 	private String delimiter;
 
-	public GbaseAdapter(){
-		super();
-		delimiterFr = "\"";
-		delimiterTo = "\"";
-		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
-			this.alias.put(alias.name(), alias.standard());
-		}
-		for(GbaseWriter writer: GbaseWriter.values()){
-			reg(writer.supports(), writer.writer());
-		}
-		for(GbaseReader reader: GbaseReader.values()){
-			reg(reader.supports(), reader.reader());
-		}
-	}
 	@Override
-	public void afterPropertiesSet()  {
+	public void afterPropertiesSet() {
 		setDelimiter(delimiter);
 	}
 
+	public GbaseAdapter() {
+		super();
+		delimiterFr = "\"";
+		delimiterTo = "\"";
+	}
 
 
 	/* *****************************************************************************************************************
@@ -585,7 +580,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	/**
 	 * query [调用入口]<br/>
 	 * <br/>
-	 * 对性能有要求的场景调用，返回java原生map集合, 结果中不包含元数据信息
+	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -594,7 +589,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 	/**
@@ -718,7 +713,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.maps(runtime, random, configs, run);
 	}
 	/**
@@ -729,7 +724,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return map
 	 */
 	@Override
-	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.map(runtime, random, configs, run);
 	}
 
@@ -754,7 +749,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
 		return super.process(runtime, list);
 	}
 
@@ -947,7 +942,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param values 列对应的值
 	 * @return 影响行数
 	 * @param <T> T
@@ -1899,7 +1894,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	/**
-	 * view[调用入口]<br/>
+	 * view[调用入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
@@ -3702,7 +3697,6 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception{
 		return super.inherit(runtime, builder, meta);
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -6038,6 +6032,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 														JDBC
@@ -6228,7 +6223,7 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public String concat(DataRuntime runtime, String... args) {
-		return super.concatFun(runtime, args);
+		return super.concat(runtime, args);
 	}
 
 	/**
@@ -6244,5 +6239,4 @@ public class GbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 	 *
 	 *  ***************************************************************************************************************/
 
-
-} 
+}

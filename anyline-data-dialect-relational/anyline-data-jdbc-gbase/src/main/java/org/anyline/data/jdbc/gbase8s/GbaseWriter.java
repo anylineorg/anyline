@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8a.oracle;
+package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.init.ConvertAdapter;
