@@ -25,7 +25,6 @@ import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
@@ -769,7 +768,7 @@ public interface AnylineService<E>{
 	default List<Map<String, Object>> maps(Table dest, StreamHandler handler, long first, long last, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		configs.stream(handler);
-		return maps(dest, first, last, conditions, conditions);
+		return maps(dest, first, last, configs, conditions);
 	}
 
 	/**
