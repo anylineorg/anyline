@@ -1065,10 +1065,10 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             columnOrigin = columnTypeMetadata.getOrigin();
         }
 
-        if(!BasicUtil.equals(typeMetadata, columnTypeMetadata)
-                && !BasicUtil.equals(origin, columnOrigin)
-                && !BasicUtil.equals(typeMetadata, columnTypeMetadata)
-                && !BasicUtil.equals(origin, columnOrigin)
+        if(!BasicUtil.equals(typeMetadata, columnTypeMetadata, ignoreCase)
+                && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
+                && !BasicUtil.equals(typeMetadata, columnTypeMetadata, ignoreCase)
+                && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
         ){
             return false;
         }
@@ -1094,7 +1094,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(!BasicUtil.equals(isAutoIncrement(), column.isAutoIncrement())){
             return false;
         }
-        if(!BasicUtil.equals(getCharset(), column.getCharset())){
+        if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)){
             return false;
         }
         if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())){
