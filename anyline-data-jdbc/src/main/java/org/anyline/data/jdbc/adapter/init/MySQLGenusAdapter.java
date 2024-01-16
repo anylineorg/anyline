@@ -4013,7 +4013,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         }else{
             pks = meta.primarys();
         }
-        if(!pks.isEmpty()){
+        if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
             builder.append(",PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
@@ -5168,7 +5168,14 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      */
     @Override
     public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
-        return super.primary(runtime, builder, meta);
+        if(null != meta && meta.isPrimaryKey()==1){
+            Table table = meta.getTable();
+            int size = table.getPrimaryKeySize();
+            if(size ==1){//单键时 在列名上设置
+                builder.append(" PRIMARY KEY");
+            }
+        }
+        return builder;
     }
 
     /**
