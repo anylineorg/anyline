@@ -23,8 +23,8 @@ import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.geometry.*;
-import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import org.anyline.metadata.type.TypeMetadata.CATEGORY;
 
 import static org.anyline.metadata.type.DatabaseType.*;
 
@@ -202,7 +201,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , NVARCHAR(CATEGORY.STRING, "NVARCHAR", null, new DatabaseType[]{MSSQL, Informix, HANA, KingBase}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , NVARCHAR2(CATEGORY.STRING, "NVARCHAR2", null, new DatabaseType[]{ORACLE}, String.class, false, true){
+   , NVARCHAR2(CATEGORY.STRING, "NVARCHAR2", NVARCHAR, new DatabaseType[]{ORACLE}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
    , LONGTEXT(CATEGORY.STRING, "LONGTEXT", null, new DatabaseType[]{MySQL}, String.class, true, true){
@@ -229,7 +228,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , LVARCHAR(CATEGORY.STRING, "LVARCHAR", null, new DatabaseType[]{Informix}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , VARCHAR2(CATEGORY.STRING, "VARCHAR2", null, new DatabaseType[]{ORACLE}, String.class, false, true){
+   , VARCHAR2(CATEGORY.STRING, "VARCHAR2", VARCHAR, new DatabaseType[]{ORACLE}, String.class, false, true){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
    , SYSNAME(CATEGORY.STRING, "SYSNAME", null, new DatabaseType[]{MSSQL}, String.class, true, true){
