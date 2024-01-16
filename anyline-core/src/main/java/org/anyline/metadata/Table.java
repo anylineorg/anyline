@@ -223,7 +223,13 @@ public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serial
         this.action = ACTION.DDL.TABLE_DROP;
         return super.drop();
     }
-
+    public int getPrimaryKeySize(){
+        PrimaryKey pk = getPrimaryKey();
+        if(null != pk){
+            return pk.getColumns().size();
+        }
+        return 0;
+    }
     public List<Key> getKeys() {
         if(getmap && null != update){
             return update.getKeys();
