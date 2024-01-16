@@ -3551,7 +3551,13 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
      * procedure        : 存储过程
      * function         : 函数
      ******************************************************************************************************************/
-
+    /**
+     * 是否支持DDL合并
+     * @return boolean
+     */
+    public boolean slice(){
+        return true;
+    }
     /**
      * ddl [执行命令]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
