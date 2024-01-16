@@ -6975,13 +6975,20 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			e.printStackTrace();
 			result = false;
 		}
+		if(change_pk && null != src_primary){
+			drop(runtime, src_primary);
+			src_primary = null;
+		}
 		//更新列
 		List<Run> alters = buildAlterRun(runtime, meta, cols.values());
 		if(null != alters && alters.size()>0){
 			result = execute(runtime, random, meta, ACTION.DDL.COLUMN_ALTER, alters) && result;
 		}
+
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
-		if(change_pk){
+		//TODO 但是如果 添加了新主键需要先删除旧主键
+		//TODO 如果DDL支持合并需要合成一个DDL
+		if(meta.getPrimaryKeySize() > 1) {//复合主键的单独添加
 			alter(runtime, meta, src_primary, cur_primary);
 		}
 		return result;

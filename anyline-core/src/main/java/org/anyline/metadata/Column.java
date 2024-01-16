@@ -1158,6 +1158,22 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
+    public Column setNewName(String newName, boolean setmap, boolean getmap) {
+        if(null == update){
+            update(setmap, getmap);
+        }
+        update.setName(newName);
+        Table table = getTable();
+        if(null != table){
+            //修改主键列名
+            LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
+            if(null != pks && pks.containsKey(this.getName().toUpperCase())){
+                pks.remove(this.getName().toUpperCase());
+                pks.put(newName.toUpperCase(), update);
+            }
+        }
+        return update;
+    }
     
     public JavaType getJavaType() {
         if(getmap && null != update){
