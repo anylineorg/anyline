@@ -164,8 +164,12 @@ public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serial
         this(null, schema, table);
     }
     public Table(String catalog, String schema, String name){
-        this.catalog = new Catalog(catalog);
-        this.schema = new Schema(schema);
+        if(BasicUtil.isNotEmpty(catalog)) {
+            this.catalog = new Catalog(catalog);
+        }
+        if(BasicUtil.isNotEmpty(schema)) {
+            this.schema = new Schema(schema);
+        }
         this.name = name;
     }
     public Table(Catalog catalog, Schema schema, String name){

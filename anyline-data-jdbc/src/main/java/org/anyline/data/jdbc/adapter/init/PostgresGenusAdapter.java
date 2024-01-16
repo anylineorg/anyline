@@ -3410,8 +3410,8 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             sequence = new Sequence();
         }
         sequence.setName(row.getString("SEQUENCENAME"));
-        sequence.setCatalog(new Catalog(row.getString("SEQUENCEOWNER")));
-        sequence.setSchema(new Schema(row.getString("SCHEMANAME")));
+        sequence.setCatalog(row.getString("SEQUENCEOWNER"));
+        sequence.setSchema(row.getString("SCHEMANAME"));
         sequence.setLast(row.getLong("LAST_NUMBER", (Long)null));
         sequence.setMin(row.getLong("MIN_VALUE", (Long)null));
         sequence.setStart(row.getLong("START_VALUE", (Long)null));

@@ -5595,8 +5595,10 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("ALTER TABLE ");
-        name(runtime, builder, meta.getTable(true));
+        if(!slice) {
+            builder.append("ALTER TABLE ");
+            name(runtime, builder, meta.getTable(true));
+        }
         builder.append(" DROP PRIMARY KEY");
         return runs;
     }

@@ -124,7 +124,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     }
 
     public T setCatalog(String catalog) {
-        if(null == catalog){
+        if(BasicUtil.isEmpty(catalog)){
             this.catalog = null;
         }else {
             this.catalog = new Catalog(catalog);

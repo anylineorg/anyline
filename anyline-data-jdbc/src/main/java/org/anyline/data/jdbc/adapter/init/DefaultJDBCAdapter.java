@@ -3634,10 +3634,10 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		for(DataRow row:set){
 			String name = row.getString("TABLE_NAME");
 			String comment = row.getString("TABLE_COMMENT");
-			if(null == catalog){
+			if(null == catalog && row.isNotEmpty("TABLE_CATALOG")){
 				catalog = new Catalog(row.getString("TABLE_CATALOG"));
 			}
-			if(null == schema){
+			if(null == schema && row.isNotEmpty("TABLE_SCHEMA")){
 				schema = new Schema(row.getString("TABLE_SCHEMA"));
 			}
 

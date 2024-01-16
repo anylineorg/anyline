@@ -28,6 +28,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import java.math.BigDecimal;
@@ -1303,7 +1304,11 @@ public interface AnylineService<E>{
 
 	List<String> tables(Catalog catalog, Schema schema, String name, String types);
 	default List<String> tables(String catalog, String schema, String name, String types){
-		return tables(new Catalog(catalog), new Schema(schema), name, types);
+		Catalog _catalog = null;
+		if(BasicUtil.isNotEmpty(catalog)){
+			_catalog = new Catalog(catalog);
+		}
+		return tables(_catalog, new Schema(schema), name, types);
 	}
 	default List<String> tables(Schema schema, String name, String types){
 		return tables(null, schema, name, types);

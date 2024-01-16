@@ -5080,8 +5080,10 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 			random = random(runtime);
 		}
 		Table tab = table;
-		tab.setCatalog(catalog);
-		tab.setSchema(schema);
+		if(null != tab) {
+			tab.setCatalog(catalog);
+			tab.setSchema(schema);
+		}
 		if(BasicUtil.isEmpty(catalog) && BasicUtil.isEmpty(schema) && !greedy){
 			checkSchema(runtime, tab);
 		}
@@ -6600,10 +6602,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
+		String catalog_name = null;
+		String schema_name = null;
+		if(null != catalog){
+			catalog_name = catalog.getName();
+		}
+		if(null != schema){
+			schema_name = schema.getName();
+		}
 		if(null != tables){
 			for(T table:tables){
-				if(BasicUtil.equalsIgnoreCase(catalog, table.getCatalog())
-						&& BasicUtil.equalsIgnoreCase(schema, table.getSchema())
+				if(BasicUtil.equalsIgnoreCase(catalog_name, table.getCatalogName())
+						&& BasicUtil.equalsIgnoreCase(schema_name, table.getSchemaName())
 						&& table.getName().equalsIgnoreCase(name)
 				){
 					return table;

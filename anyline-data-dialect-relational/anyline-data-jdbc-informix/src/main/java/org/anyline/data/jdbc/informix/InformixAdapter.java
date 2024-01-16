@@ -5327,8 +5327,10 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		StringBuilder builder = run.getBuilder();
 		LinkedHashMap<String,Column> columns = meta.getColumns();
 		if(null != columns && !columns.isEmpty()) {
-			builder.append("ALTER TABLE ");
-			name(runtime, builder, meta.getTable(true));
+			if(!slice) {
+				builder.append("ALTER TABLE ");
+				name(runtime, builder, meta.getTable(true));
+			}
 			builder.append(" ADD CONSTRAINT PRIMARY KEY (");
 			Column.sort(meta.getPositions(), columns);
 			delimiter(builder, Column.names(columns));
