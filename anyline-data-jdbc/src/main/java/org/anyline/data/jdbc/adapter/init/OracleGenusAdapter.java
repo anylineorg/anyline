@@ -3933,13 +3933,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 runs.add(run);
                 StringBuilder builder = run.getBuilder();
                 builder.append("COMMENT ON COLUMN ");
-                name(runtime, builder, meta.getTable(true)).append(".");
-                Column update = (Column)meta.getUpdate();
+                name(runtime, builder, meta).append(".");
+                Column update = (Column)column.getUpdate();
                 String name = null;
                 if(null != update){
                     name = update.getName();
                 }else{
-                    name = meta.getName();
+                    name = column.getName();
                 }
                 delimiter(builder, name);
                 builder.append(" IS '").append(comment).append("'");
@@ -4021,6 +4021,19 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
             }
             builder.append(")");
         }
+        return builder;
+    }
+
+    /**
+     * table[命令合成-子流程]<br/>
+     * 创建表 engine
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 表
+     * @return StringBuilder
+     */
+    @Override
+    public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
         return builder;
     }
 
