@@ -19,22 +19,16 @@
 package org.anyline.data.jdbc.informix;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
-import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -45,13 +39,13 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.informix")
-public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
-	public static Map<Integer, String> column_types = new HashMap<>();
-	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
-
+public class InformixAdapter extends InformixGenusAdapter implements JDBCAdapter, InitializingBean {
 	public DatabaseType type(){
 		return DatabaseType.Informix;
 	}
@@ -72,39 +66,6 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 			this.alias.put(alias.name(), alias.standard());
 		}
 	}
-	static{
-		column_types.put(0, "CHAR");
-		column_types.put(1, "SMALLINT");
-		column_types.put(2, "INTEGER");
-		column_types.put(3, "FLOAT");
-		column_types.put(4, "SMALLFLOAT");
-		column_types.put(5, "DECIMAL");
-		column_types.put(6, "SERIAL");
-		column_types.put(7, "DATE");
-		column_types.put(8, "MONEY");
-		column_types.put(9, "NULL");
-		column_types.put(10, "DATETIME");
-		column_types.put(11, "BYTE");
-		column_types.put(12, "TEXT");
-		column_types.put(13, "VARCHAR");
-		column_types.put(14, "INTERVAL");
-		column_types.put(15, "NCHAR");
-		column_types.put(16, "NVARCHAR");
-		column_types.put(17, "INT8");
-		column_types.put(18, "SERIAL8");
-		column_types.put(19, "SET");
-		column_types.put(20, "MULTISET");
-		column_types.put(21, "LIST");
-		column_types.put(22, "ROW");
-		column_types.put(23, "COLLECTION");
-		column_types.put(24, "UDT");
-		column_types.put(40, "LVARCHAR");
-		column_types.put(41, "BLOB");
-		column_types.put(42, "CLOB");
-		column_types.put(43, "BOOLEAN");
-	}
-
-
 
 	/* *****************************************************************************************************************
 	 *
@@ -201,60 +162,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-		if(null == set || set.isEmpty()){
-			return;
-		}
-		StringBuilder builder = run.getBuilder();
-		DataRow first = set.getRow(0);
-		Map<String, String> seqs = new HashMap<>();
-		for(Column column:columns.values()){
-			String key = column.getName();
-			Object value = first.getStringNvl(key);
-			if(null != value && value instanceof String) {
-				String str = (String)value;
-				if (str.toUpperCase().contains(".NEXTVAL")) {
-					//if (str.startsWith("${") && str.endsWith("}")) {
-					if (BasicUtil.checkEl(str)) {
-						str = str.substring(2, str.length() - 1);
-					}
-					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						createPrimaryValue(runtime, set, str);
-					}else {
-						seqs.put(key, str);
-					}
-				}
-			}
-		}
-
-		LinkedHashMap<String, Column> pks = null;
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-		if(null != generator){
-			pks = first.getPrimaryColumns();
-			columns.putAll(pks);
-		}
-		for(DataRow row:set){
-			builder.append("INSERT INTO ");
-			name(runtime, builder, dest).append(" (");
-			boolean start = true;
-			for(Column column:columns.values()){
-				String key = column.getName();
-				if(!start){
-					builder.append(",");
-				}
-				start = false;
-				builder.append(key);
-			}
-			builder.append(")");
-
-			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-				if(null != generator){
-					generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
-				}
-				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-			}
-			builder.append(insertValue(runtime, run, row, true, false, false,true, columns));
-			builder.append(";");
-		}
+		super.fillInsertContent(runtime, run, dest, set, configs, columns);
 	}
 
 	/**
@@ -268,111 +176,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
-		if(null == list || list.isEmpty()){
-			return;
-		}
-		StringBuilder builder = run.getBuilder();
-		if(null == builder){
-			builder = new StringBuilder();
-			run.setBuilder(builder);
-		}
-		if(list instanceof DataSet){
-			DataSet set = (DataSet) list;
-			this.fillInsertContent(runtime, run, dest, set, columns);
-			return;
-		}
-
-		Object first = list.iterator().next();
-		Map<String, String> seqs = new HashMap<>();
-		for(Column column:columns.values()){
-			String key = column.getName();
-			Object value = BeanUtil.getFieldValue(first, key);
-			if(null != value && value instanceof String) {
-				String str = (String)value;
-				if (str.toUpperCase().contains(".NEXTVAL")) {
-					//if (str.startsWith("${") && str.endsWith("}")) {
-					if (BasicUtil.checkEl(str)) {
-						str = str.substring(2, str.length() - 1);
-					}
-					if(IS_GET_SEQUENCE_VALUE_BEFORE_INSERT) {
-						createPrimaryValue(runtime, list, str);
-					}else {
-						seqs.put(key, str);
-					}
-				}
-			}
-		}
-
-
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-		Object entity = list.iterator().next();
-		LinkedHashMap<String, Column> pks = null;
-		if(null != generator) {
-			pks = EntityAdapterProxy.primaryKeys(entity.getClass());
-			columns.putAll(pks);
-		}
-
-		builder.append("INSERT INTO ");
-		name(runtime, builder, dest).append(" (");
-		boolean start = true;
-		for(Column column:columns.values()){
-			String key = column.getName();
-			if(!start){
-				builder.append(",");
-			}
-			start = false;
-			builder.append(key);
-		}
-		builder.append(") \n");
-		builder.append("SELECT ");
-		start = true;
-		for(Column column:columns.values()){
-			String key = column.getName();
-			String seq = seqs.get(key);
-			if(!start){
-				builder.append(",");
-			}
-			start = false;
-			if(null != seq){
-				builder.append(seq);
-			}else{
-				builder.append("M.").append(key);
-			}
-			builder.append(" AS ").append(key);
-		}
-		builder.append("\nFROM( ");
-		for(String seq:seqs.keySet()){
-			columns.remove(seq.toUpperCase());
-		}
-		int col = 0;
-
-		for(Object obj:list){
-			/*if(obj instanceof DataRow) {
-				DataRow row = (DataRow)obj;
-				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
-					String pk = row.getPrimaryKey();
-					if (null == pk) {
-						pk = ConfigTable.DEFAULT_PRIMARY_KEY;
-					}
-					createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
-				}
-			}else{*/
-			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
-			if(!create && null != generator){
-				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
-				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
-			}
-			//}
-
-			if(col > 0){
-				builder.append("\n\tUNION ALL");
-			}
-			builder.append("\n\tSELECT ");
-			builder.append(insertValue(runtime, run, obj, true,true, true,false, columns));
-			builder.append(" FROM DUAL ");
-			col ++;
-		}
-		builder.append(") M ");
+		super.fillInsertContent(runtime, run, dest, list, configs, columns);
 	}
 
 	/**
@@ -411,7 +215,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public String batchInsertSeparator(){
-		return ",";
+		return super.batchInsertSeparator();
 	}
 
 	/**
@@ -421,7 +225,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public boolean supportInsertPlaceholder(){
-		return true;
+		return super.supportInsertPlaceholder();
 	}
 	/**
 	 * insert [命令合成-子流程]<br/>
@@ -1024,9 +828,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	}
 	@Override
 	public String mergeFinalExists(DataRuntime runtime, Run run){
-		String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
-		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE");
-		return sql;
+		return super.mergeFinalExists(runtime, run);
 	}
 
 
@@ -1839,12 +1641,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT * FROM SYSTABLES  WHERE TABID > 99 AND TABTYPE = 'T'");
-		return runs;
+		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 
@@ -2463,36 +2260,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Catalog catalog = null;
-		Schema schema = null;
-		String name = null;
-		if(null != table){
-			name = table.getName();
-			catalog = table.getCatalog();
-			schema = table.getSchema();
-		}
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		if(metadata){
-			builder.append("SELECT * FROM ");
-			name(runtime, builder, table);
-			builder.append(" WHERE 1=0");
-		}else{
-			builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
-			builder.append("WHERE 1 = 1\n");
-			if(BasicUtil.isNotEmpty(catalog)){
-			}
-			if(BasicUtil.isNotEmpty(schema)){
-				builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
-			}
-			if(BasicUtil.isNotEmpty(name)) {
-				builder.append(" AND F.TABNAME = '").append(name).append("'");
-			}
-			builder.append(" ORDER BY F.TABNAME");
-		}
-		return runs;
+		return super.buildQueryColumnsRun(runtime, table, metadata);
 	}
 
 	/**
@@ -2509,42 +2277,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception{
-		if(null == columns){
-			columns = new LinkedHashMap<>();
-		}
-
-		for(DataRow row:set){
-			String name = row.getString("COLNAME");
-			Column column = columns.get(name.toUpperCase());
-			if(null == column){
-				column = new Column();
-			}
-			column.setTable(table);
-			column.setTable(BasicUtil.evl(row.getString("TABNAME"), table.getName(), column.getTableName(true)));
-			column.setName(name);
-			Integer coltype = row.getInt("COLTYPE", null);
-			if(null != coltype){
-				if(coltype >= 256){
-					coltype -= 256;
-					column.nullable(false);
-				}
-				String typeName = column_types.get(coltype);
-				column.setTypeName(typeName);
-			}
-			int len = row.getInt("COLLENGTH",0);
-			column.setPrecision(len);
-			if(coltype == 8 || coltype == 5){
-				int scale = len%256;
-				len = len/256;
-				column.setPrecision(len, scale);
-			}
-			if(null == column.getTypeMetadata()) {
-				TypeMetadata columnType = typeMetadata(column.getTypeName());
-				column.setTypeMetadata(columnType);
-			}
-			columns.put(name.toUpperCase(), (T)column);
-		}
-		return columns;
+		return super.columns(runtime, index, create, table, columns, set);
 	}
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception{
@@ -2674,22 +2407,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT T.TABNAME AS TABLE_NAME, C.CONSTRNAME AS CONSTRAINT_NAME, C.CONSTRTYPE AS CONSTRAINT_TYPE, K.COLNAME AS COLUMN_NAME\n");
-		builder.append("FROM SYSTABLES T\n");
-		builder.append("JOIN SYSCONSTRAINTS C ON T.TABID = C.TABID\n");
-		builder.append("JOIN SYSINDEXES I ON C.IDXNAME = I.IDXNAME AND C.TABID = I.TABID\n");
-		builder.append("JOIN SYSCOLUMNS K ON T.TABID = K.TABID AND I.PART1 = K.COLNO\n");
-		builder.append("WHERE  C.CONSTRTYPE = 'P'\n");
-		builder.append("AND T.TABNAME = '").append(table.getName()).append("'\n");
-		Schema schema = table.getSchema();
-		if(BasicUtil.isNotEmpty(schema)){
-			builder.append(" AND T.OWNER = '").append(schema.getName()).append("'");
-		}
-		return runs;
+		return super.buildQueryPrimaryRun(runtime, table);
 	}
 
 	/**
@@ -2703,22 +2421,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception{
-		PrimaryKey primary = null;
-		for(DataRow row:set){
-			if(null == primary){
-				primary = new PrimaryKey();
-				primary.setName(row.getString("CONSTRAINT_NAME"));
-				primary.setTable(table);
-			}
-			String col = row.getString("COLUMN_NAME");
-			Column column = primary.getColumn(col);
-			if(null == column){
-				column = new Column(col);
-			}
-			column.setTable(table);
-			primary.addColumn(column);
-		}
-		return primary;
+		return super.primary(runtime, index, table, set);
 	}
 
 
@@ -3813,31 +3516,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
-		PrimaryKey primary = meta.getPrimaryKey();
-		LinkedHashMap<String, Column> pks = null;
-		if(null != primary){
-			pks = primary.getColumns();
-		}else{
-			pks = meta.primarys();
-		}
-		if(!pks.isEmpty()){
-			builder.append(",PRIMARY KEY (");
-			boolean first = true;
-			Column.sort(primary.getPositions(), pks);
-			for(Column pk:pks.values()){
-				if(!first){
-					builder.append(",");
-				}
-				first = false;
-				delimiter(builder, pk.getName());
-				String order = pk.getOrder();
-				if(null != order){
-					builder.append(" ").append(order);
-				}
-			}
-			builder.append(")");
-		}
-		return builder;
+		return super.primary(runtime, builder, meta);
 	}
 
 	/**
@@ -3875,8 +3554,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
-		//单独添加备注
-		return builder;
+		return super.comment(runtime, builder, meta);
 	}
 
 	/**
@@ -4261,7 +3939,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, MasterTable meta) throws Exception{
-		return new ArrayList<>();
+		return super.buildChangeCommentRun(runtime, meta);
 	}
 
 	/* *****************************************************************************************************************
@@ -4603,21 +4281,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		Column update = meta.getUpdate();
-		builder.append("ALTER TABLE ");
-		name(runtime, builder, meta.getTable(true));
-		builder.append(" MODIFY ");
-		delimiter(builder, meta.getName());
-		String type = update.getTypeName();
-		if(type.contains("(")){
-			type = type.substring(0,type.indexOf("("));
-		}
-		builder.append(" ").append(type);
-		return runs;
+		return super.buildChangeTypeRun(runtime, meta);
 	}
 
 	/**
@@ -4642,8 +4306,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		builder.append(" ADD ");
-		return builder;
+		return super.addColumnGuide(runtime, builder, meta);
 	}
 
 
@@ -4658,8 +4321,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
-		builder.append(" DROP ");
-		return builder;
+		return super.dropColumnGuide(runtime, builder, meta);
 	}
 
 	/**
@@ -4779,20 +4441,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-		if(null == builder){
-			builder = new StringBuilder();
-		}
-		if("datetime".equalsIgnoreCase(type)){
-			String dateScale = meta.getDateScale();
-			if(null == dateScale){
-				dateScale = "FRACTION";
-			}
-			builder.append(type).append(" YEAR TO ").append(dateScale);
-		}else{
-			return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
-		}
-
-		return builder;
+		return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
 	}
 
 
@@ -4827,41 +4476,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public Boolean checkIgnorePrecision(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return false;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+		return super.checkIgnorePrecision(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4872,41 +4487,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public Boolean checkIgnoreScale(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return true;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+		return super.checkIgnoreScale(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5006,8 +4587,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
-		//单独生成备注
-		return builder;
+		return super.comment(runtime, builder, meta);
 	}
 
 
@@ -5321,25 +4901,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		LinkedHashMap<String,Column> columns = meta.getColumns();
-		if(null != columns && !columns.isEmpty()) {
-			if(!slice(slice)) {
-				builder.append("ALTER TABLE ");
-				name(runtime, builder, meta.getTable(true));
-			}
-			builder.append(" ADD CONSTRAINT PRIMARY KEY (");
-			Column.sort(meta.getPositions(), columns);
-			delimiter(builder, Column.names(columns));
-			builder.append(")");
-			if(BasicUtil.isNotEmpty(meta.getName())){
-				builder.append(" CONSTRAINT ").append(meta.getName());
-			}
-		}
-		return runs;
+		return super.buildAddRun(runtime, meta, slice);
 	}
 	/**
 	 * primary[命令合成]<br/>
@@ -6369,11 +5931,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public boolean identity(DataRuntime runtime, String random, Object data, ConfigStore configs, KeyHolder keyholder){
-		if(data instanceof Collection) {
-			return false;
-		}else{
-			return super.identity(runtime, random, data, configs, keyholder);
-		}
+		return super.identity(runtime, random, data, configs, keyholder);
 	}
 
 	public String insertHead(ConfigStore configs){
@@ -6488,27 +6046,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
-		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME
-				|| value == SQL_BUILD_IN_VALUE.CURRENT_DATE
-				|| value == SQL_BUILD_IN_VALUE.CURRENT_TIME
-				|| value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP
-		) {
-			String type = column.getTypeName();
-			if ("datetime".equalsIgnoreCase(type)) {
-				String scale = column.getDateScale();
-				if (null == scale) {
-					if ("date".equalsIgnoreCase(type)) {
-						scale = "DAY";
-					} else {
-						scale = "FRACTION";
-					}
-				}
-				return "CURRENT YEAR TO " + scale;
-			}else if("date".equalsIgnoreCase(type)){
-				return "TODAY";
-			}
-		}
-		return null;
+		return super.value(runtime, column, value);
 	}
 
 
@@ -6537,24 +6075,7 @@ public class InformixAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 *  ***************************************************************************************************************/
 
 	protected boolean createPrimaryValue(DataRuntime runtime, Collection list, String seq){
-		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
-		int size = list.size();
-		for(int i=0; i<size; i++){
-			builder.append("SELECT NULL FROM DUAL\n");
-			if(i<size-1){
-				builder.append("UNION ALL\n");
-			}
-		}
-		builder.append(") M");
-		JdbcTemplate jdbc = jdbc(runtime);
-		List<Map<String,Object>> ids = jdbc.queryForList(builder.toString());
-		int i=0;
-		for(Object obj:list){
-			Object value = ids.get(i++).get("ID");
-			setPrimaryValue(obj, value);
-		}
-		return true;
+		return super.createPrimaryValue(runtime, list, seq);
 	}
 
 
