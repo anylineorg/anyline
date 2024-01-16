@@ -3925,7 +3925,7 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     @Override
     public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
         List<Run> runs = new ArrayList<>();
-        LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> columns = meta.getColumns();
         for(Column column:columns.values()){
             String comment = column.getComment();
             if(BasicUtil.isNotEmpty(comment)) {
