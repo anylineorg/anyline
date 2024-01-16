@@ -1025,7 +1025,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                         builder.append(",").append(scale);
                     }
                     builder.append(")");
-                } else if (precision == -1) {
+                } else if (precision == -2) {
                     builder.append("(max)");
                 }
             }

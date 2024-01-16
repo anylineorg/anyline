@@ -4607,7 +4607,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		if(!slice) {
+		if(!slice(slice)) {
 			Table table = meta.getTable(true);
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, table);
@@ -5376,7 +5376,7 @@ public class IgniteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, In
 		StringBuilder builder = run.getBuilder();
 		LinkedHashMap<String,Column> columns = meta.getColumns();
 		if(null != columns && !columns.isEmpty()) {
-			if(!slice) {
+			if(!slice(slice)) {
 				builder.append("ALTER TABLE ");
 				name(runtime, builder, meta.getTable(true));
 			}

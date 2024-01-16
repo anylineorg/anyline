@@ -2872,6 +2872,16 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 
 	/**
+	 * 是否支持DDL合并
+	 * @return boolean
+	 */
+	default boolean slice(){
+		return false;
+	}
+	default boolean slice(boolean slice){
+		return slice && slice();
+	}
+	/**
 	 * 执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令

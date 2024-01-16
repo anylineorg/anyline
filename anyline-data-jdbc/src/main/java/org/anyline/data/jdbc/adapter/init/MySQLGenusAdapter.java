@@ -3663,6 +3663,13 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
      ******************************************************************************************************************/
 
     /**
+     * 是否支持DDL合并
+     * @return boolean
+     */
+    public boolean slice(){
+        return true;
+    }
+    /**
      * ddl [执行命令]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
@@ -4707,7 +4714,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(!slice) {
+        if(!slice(slice)) {
             Table table = meta.getTable(true);
             builder.append("ALTER TABLE ");
             name(runtime, builder, table);
@@ -4757,7 +4764,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(!slice) {
+        if(!slice(slice)) {
             Table table = meta.getTable(true);
             builder.append("ALTER TABLE ");
             name(runtime, builder, table);
@@ -5543,7 +5550,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         StringBuilder builder = run.getBuilder();
         LinkedHashMap<String,Column> columns = meta.getColumns();
         if(null != columns && !columns.isEmpty()) {
-            if(!slice) {
+            if(!slice(slice)) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
             }
@@ -5581,7 +5588,7 @@ public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements In
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(!slice) {
+        if(!slice(slice)) {
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true));
         }

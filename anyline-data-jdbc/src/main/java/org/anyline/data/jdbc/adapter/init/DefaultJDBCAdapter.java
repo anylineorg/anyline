@@ -7137,7 +7137,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		if(!slice) {
+		if(!slice(slice)) {
 			Table table = meta.getTable(true);
 			builder.append("ALTER ").append(keyword(table)).append(" ");
 			name(runtime, builder, table);
@@ -7255,7 +7255,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			Tag tag = (Tag)meta;
 			return buildDropRun(runtime, tag);
 		}
-		if(!slice) {
+		if(!slice(slice)) {
 			Table table = meta.getTable(true);
 			builder.append("ALTER ").append(keyword(table)).append(" ");
 			name(runtime, builder, table);
@@ -8194,25 +8194,29 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if (null != meta && !meta.isDrop()) {
 				slices.addAll(buildAddRun(runtime, meta, true));
 			}
-			if(!slices.isEmpty()){
-				Run run = new SimpleRun(runtime);
-				StringBuilder builder = run.getBuilder();
-				builder.append("ALTER TABLE ");
-				name(runtime, builder, table);
-				boolean first = true;
-				for(Run item:slices){
-					if(item.getBuilder().length() == 0){
-						continue;
+			if(slice(true)) {
+				if (!slices.isEmpty()) {
+					Run run = new SimpleRun(runtime);
+					StringBuilder builder = run.getBuilder();
+					builder.append("ALTER TABLE ");
+					name(runtime, builder, table);
+					boolean first = true;
+					for (Run item : slices) {
+						if (item.getBuilder().length() == 0) {
+							continue;
+						}
+						if (!first) {
+							builder.append(",");
+						}
+						builder.append(item.getBuilder());
+						first = false;
 					}
-					if(!first){
-						builder.append(",");
+					if (!first) {//非空
+						runs.add(run);
 					}
-					builder.append(item.getBuilder());
-					first = false;
 				}
-				if(!first) {//非空
-					runs.add(run);
-				}
+			}else{
+				runs.addAll(slices);
 			}
 		}
 		return runs;
@@ -8231,7 +8235,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		if(!slice) {
+		if(!slice(slice)) {
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, meta.getTable(true));
 		}
