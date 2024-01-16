@@ -267,9 +267,9 @@ public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serial
 
     /**
      * 分区依据值
-     * @param type
-     * @param values
-     * @return
+     * @param type 分区方式
+     * @param values 分区依据值
+     * @return Table
      */
     public Table partitionFor(Partition.TYPE type, Object ... values){
         Partition partition = new Partition();
