@@ -3862,10 +3862,18 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 				origin = origin.replace("%",".*");
 				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
+				String catalog_name = null;
+				String schema_name = null;
+				if(null != catalog){
+					catalog_name = catalog.getName();
+				}
+				if(null != schema){
+					schema_name = schema.getName();
+				}
 				for(T item:list){
 					String name = item.getName(greedy)+"";
 					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)){
-						if(BasicUtil.equalsIgnoreCase(catalog, item.getCatalog()) && BasicUtil.equalsIgnoreCase(schema, item.getSchema())) {
+						if(BasicUtil.equalsIgnoreCase(catalog_name, item.getCatalogName()) && BasicUtil.equalsIgnoreCase(schema_name, item.getSchemaName())) {
 							tmp.add(item);
 						}
 					}
