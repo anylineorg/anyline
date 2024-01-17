@@ -2257,14 +2257,14 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
         List<Run> runs = new ArrayList<>();
-        Catalog catalog = null;
-        Schema schema = null;
+        String catalog = null;
+        String schema = null;
         String name = null;
         checkName(runtime, null, table);
         if(null != table){
             name = table.getName();
-            catalog = table.getCatalog();
-            schema = table.getSchema();
+            catalog = table.getCatalogName();
+            schema = table.getSchemaName();
         }
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2281,10 +2281,10 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
             builder.append("WHERE 1 = 1\n");
             if(BasicUtil.isNotEmpty(catalog)){
-                builder.append(" AND M.TABLE_CATALOG = '").append(catalog.getName()).append("'");
+                builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
             }
             if(BasicUtil.isNotEmpty(schema)){
-                builder.append(" AND M.TABLE_SCHEMA = '").append(schema.getName()).append("'");
+                builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND M.TABLE_NAME = '").append(name).append("'");
@@ -3346,12 +3346,20 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM pg_sequences WHERE 1=1\n");
-        if(BasicUtil.isNotEmpty(catalog)){
-            builder.append(" AND SEQUENCEOWNER = '").append(catalog.getName()).append("'");
+        String catalogName = null;
+        String schemaName = null;
+        if(null != catalog){
+            catalogName = catalog.getName();
         }
-        if(BasicUtil.isNotEmpty(schema)){
-            builder.append(" AND SCHEMANAME = '").append(schema.getName()).append("'");
+        if(null != schema){
+            schemaName = schema.getName();
+        }
+        builder.append("SELECT * FROM pg_sequences WHERE 1=1\n");
+        if(BasicUtil.isNotEmpty(catalogName)){
+            builder.append(" AND SEQUENCEOWNER = '").append(catalogName).append("'");
+        }
+        if(BasicUtil.isNotEmpty(schemaName)){
+            builder.append(" AND SCHEMANAME = '").append(schemaName).append("'");
         }
         if(BasicUtil.isNotEmpty(name)){
             builder.append(" AND SEQUENCENAME = '").append(name).append("'");
@@ -3831,7 +3839,6 @@ public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements
             builder.append(",CONSTRAINT ");
             delimiter(builder, name);
             builder.append(" PRIMARY KEY (");
-            boolean first = true;
             Column.sort(primary.getPositions(), pks);
             //不支持 asc desc
             delimiter(builder, Column.names(pks));

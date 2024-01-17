@@ -2345,13 +2345,13 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception{
 		List<Run> runs = new ArrayList<>();
-		Catalog catalog = null;
-		Schema schema = null;
+		String catalog = null;
+		String schema = null;
 		String name = null;
 		if(null != table){
 			name = table.getName();
-			catalog = table.getCatalog();
-			schema = table.getSchema();
+			catalog = table.getCatalogName();
+			schema = table.getSchemaName();
 		}
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -2369,10 +2369,10 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = c.OBJECT_ID AND B.MINOR_ID = C.COLUMN_ID\n");
 			builder.append("WHERE 1=1 \n");
 			if(BasicUtil.isNotEmpty(catalog)){
-				builder.append(" AND FTT.TABLE_CATALOG = '").append(catalog.getName()).append("'");
+				builder.append(" AND FTT.TABLE_CATALOG = '").append(catalog).append("'");
 			}
 			if(BasicUtil.isNotEmpty(schema)){
-				builder.append(" AND SCHEMA_NAME(FT.SCHEMA_ID) = '").append(schema.getName()).append("'");
+				builder.append(" AND SCHEMA_NAME(FT.SCHEMA_ID) = '").append(schema).append("'");
 			}
 			if (null != name) {
 				builder.append(" AND OBJECT_NAME(c.OBJECT_ID) ='").append(objectName(runtime, name)).append("'");
@@ -2546,16 +2546,22 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
+		String catalog = null;
+		String schema = null;
+		String name = null;
+		if(null != table){
+			catalog = table.getCatalogName();
+			schema = table.getSchemaName();
+			name = table.getName();
+		}
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT  *  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n");
 		builder.append("WHERE TABLE_NAME='").append(objectName(runtime, table.getName())).append("'");
-		Catalog catalog = table.getCatalog();
 		if(BasicUtil.isNotEmpty(catalog)){
-			builder.append("\nAND TABLE_CATALOG = '").append(catalog.getName()).append("'");
+			builder.append("\nAND TABLE_CATALOG = '").append(catalog).append("'");
 		}
-		Schema schema = table.getSchema();
 		if(BasicUtil.isNotEmpty(schema)){
-			builder.append("\nAND TABLE_SCHEMA = '").append(schema.getName()).append("'");
+			builder.append("\nAND TABLE_SCHEMA = '").append(schema).append("'");
 		}
 		builder.append("\nORDER BY ORDINAL_POSITION");
 		return runs;
@@ -3800,13 +3806,20 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
 		PrimaryKey primary = meta.getPrimaryKey();
 		LinkedHashMap<String, Column> pks = null;
+		String name = null;
 		if(null != primary){
 			pks = primary.getColumns();
+			name = primary.getName();
 		}else{
 			pks = meta.primarys();
 		}
 		if(!pks.isEmpty()){
-			builder.append(",CONSTRAINT ").append("PK_").append(meta.getName()).append(" PRIMARY KEY (");
+			if(BasicUtil.isEmpty(name)){
+				name = "PK_" + meta.getName();
+			}
+			builder.append(",CONSTRAINT ");
+			delimiter(builder, name);
+			builder.append(" PRIMARY KEY (");
 			boolean first = true;
 			Column.sort(primary.getPositions(), pks);
 			for(Column pk:pks.values()){

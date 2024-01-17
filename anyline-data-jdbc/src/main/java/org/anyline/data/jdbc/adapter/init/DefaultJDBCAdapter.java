@@ -9571,20 +9571,30 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 	 * @param row
 	 */
 	protected void init(Column column, Table table, DataRow row){
-		String catalog = BasicUtil.evl(row.getString("TABLE_CATALOG"), column.getCatalogName(), table.getCatalogName());
+		String catalog = BasicUtil.evl(row.getString("TABLE_CATALOG"), column.getCatalogName());
+		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"), column.getSchemaName());
+		String tableName = null;
+		if(null != table){
+			tableName = table.getName();
+			if(null == catalog){
+				catalog = table.getCatalogName();
+			}
+			if(null == schema){
+				schema = table.getSchemaName();
+			}
+		}
 		if(null != catalog){
 			catalog = catalog.trim();
 		}
-		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"), column.getSchemaName(), table.getSchemaName());
 		if(null != schema){
 			schema = schema.trim();
 		}
 		column.setCatalog(catalog);
 		column.setSchema(schema);
-		if(null != table.getName()) {//查询全部表
+		if(null != table) {//查询全部表
 			column.setTable(table);
 		}
-		column.setTable(BasicUtil.evl(row.getString("TABLE_NAME","TABNAME"), table.getName(), column.getTableName(true)));
+		column.setTable(BasicUtil.evl(row.getString("TABLE_NAME","TABNAME"), column.getTableName(true), tableName));
 
 		if(null == column.getPosition()) {
 			try {

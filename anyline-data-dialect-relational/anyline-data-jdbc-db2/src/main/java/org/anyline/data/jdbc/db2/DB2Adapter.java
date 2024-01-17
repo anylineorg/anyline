@@ -2276,12 +2276,12 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
-			Catalog catalog = null;
-			Schema schema = null;
+			String catalog = null;
+			String schema = null;
 			String name = null;
 			if(null != table) {
-				catalog = table.getCatalog();
-				schema = table.getSchema();
+				catalog = table.getCatalogName();
+				schema = table.getSchemaName();
 				name = table.getName();
 			}
 			builder.append("SELECT * FROM SYSCAT.COLUMNS WHERE 1=1 ");
@@ -2289,7 +2289,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
 			}*/
 			if(BasicUtil.isNotEmpty(schema)){
-				builder.append(" AND TABSCHEMA = '").append(schema.getName()).append("'");
+				builder.append(" AND TABSCHEMA = '").append(schema).append("'");
 			}
 			if(null != name) {
 				builder.append(" AND TABNAME = '").append(objectName(runtime, name)).append("'");
