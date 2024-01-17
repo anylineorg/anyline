@@ -92,10 +92,14 @@ public interface DriverAdapter {
 	 */
 	default boolean match(DataRuntime runtime, boolean compensate){
 		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
-		String adapter = runtime.getAdapterKey();
-		if(BasicUtil.isNotEmpty(adapter)){
-			if(adapter.equalsIgnoreCase(type().name())){
+		String adapter_key = runtime.getAdapterKey();
+		if(BasicUtil.isNotEmpty(adapter_key)){
+			String type = type().name();
+			if(adapter_key.equalsIgnoreCase(type)){
 				return true;
+			}else{
+				//如果明确指定了adapter 不考虑其他特征
+				return false;
 			}
 		}
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
