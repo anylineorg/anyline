@@ -29,7 +29,6 @@
 		<module>anyline-data-jdbc-oceanbase</module>
 		<module>anyline-data-jdbc-polardb</module>
 		<module>anyline-data-jdbc-questdb</module>
-		<module>anyline-data-jdbc-sinodb</module>				<!--星瑞格-->
 		<module>anyline-data-jdbc-stardb</module>				<!--京东StarDB-->
 		<module>anyline-data-jdbc-tdsql</module>				<!--腾讯TDSQL PostgreSQL(TBase)-->
 		<module>anyline-data-jdbc-tidb</module>
