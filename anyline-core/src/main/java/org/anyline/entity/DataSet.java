@@ -4232,6 +4232,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataSet setNavi(PageNavi navi) {
         this.navi = navi;
+        if(null != navi){
+            navi.setDataSize(this.size());
+        }
         return this;
     }
 
