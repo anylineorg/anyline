@@ -116,7 +116,7 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
     TINYINT                 (StandardColumnType.NUMBER                ), 
     TINYTEXT                (StandardColumnType.CLOB                  ), 
     VARBINARY               (StandardColumnType.BLOB                  ), 
-    VARCHAR                 (StandardColumnType.VARCHAR               ), 
+    VARCHAR                 (StandardColumnType.VARCHAR2               ),
     VARCHAR2                (StandardColumnType.VARCHAR2               ), 
     XML                     (StandardColumnType.ILLEGAL               ), 
     YEAR                    (StandardColumnType.DATE                  ); 
