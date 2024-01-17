@@ -53,7 +53,8 @@ public class DefaultPageNavi implements PageNavi{
 	protected static final String BR 					= "\n"; 
 	protected static final String TAB 					= "\t"; 
 	protected static final String BR_TAB 				= "\n\t"; 
-	 
+
+	protected int dataSize					= 0			; // 查询结果行数
 	protected long totalRow					= 0			; // 记录总数 (rows)
 	protected long totalPage				= 0 		; // 最大页数 (pages)
 	protected long curPage					= 1 		; // 当前页数
@@ -137,12 +138,25 @@ public class DefaultPageNavi implements PageNavi{
 		setTotalRow(rows);
 		return this;
 	}
-	/** 
+
+	@Override
+	public PageNavi setDataSize(int size) {
+		this.dataSize = size;
+		return this;
+	}
+
+	@Override
+	public int getDataSize() {
+		return this.dataSize;
+	}
+
+	/**
 	 * 分页计算方式 
 	 * @param type	0-按页数 1-按开始结束记录数 
 	 */ 
-	public void setCalType(int type){
-		this.calType = type; 
+	public PageNavi setCalType(int type){
+		this.calType = type;
+		return this;
 	} 
 	public int getCalType(){
 		return calType; 
@@ -150,7 +164,7 @@ public class DefaultPageNavi implements PageNavi{
 	/** 
 	 * 计算分页变量 
 	 */ 
-	public void calculate() {
+	public PageNavi calculate() {
 		long totalPage = (totalRow - 1) / pageRows + 1;
 		// 当前页是否超出总页数 
 		if(curPage > totalPage){
@@ -172,7 +186,8 @@ public class DefaultPageNavi implements PageNavi{
 		setDisplayPageLast(displayPageFirst + pageRange - 1);		// 显示的最后页 
 		if (displayPageLast > totalPage){
 			setDisplayPageLast(totalPage); 
-		} 
+		}
+		return this;
 	} 
 	 
 	/** 
@@ -214,8 +229,9 @@ public class DefaultPageNavi implements PageNavi{
 	 * 设置页面显示的第一页 
 	 * @param displayPageFirst  displayPageFirst
 	 */ 
-	public void setDisplayPageFirst(long displayPageFirst) {
-		this.displayPageFirst = displayPageFirst; 
+	public PageNavi setDisplayPageFirst(long displayPageFirst) {
+		this.displayPageFirst = displayPageFirst;
+		return this;
 	} 
 	/** 
 	 * 页面显示的最后一页 set
@@ -230,14 +246,15 @@ public class DefaultPageNavi implements PageNavi{
 	 * 设置页面显示的最后一页 
 	 * @param displayPageLast  displayPageLast
 	 */ 
-	public void setDisplayPageLast(long displayPageLast) {
-		this.displayPageLast = displayPageLast; 
+	public PageNavi setDisplayPageLast(long displayPageLast) {
+		this.displayPageLast = displayPageLast;
+		return this;
 	} 
  
 	@SuppressWarnings({"unchecked","rawtypes" })
-	public void addParam(String key, Object value){
+	public PageNavi addParam(String key, Object value){
 		if(null == key || null == value){
-			return; 
+			return this;
 		} 
 		if(null == this.params){
 			this.params = new HashMap<String, List<Object>>();
@@ -252,6 +269,7 @@ public class DefaultPageNavi implements PageNavi{
 			values.add(value); 
 		} 
 		params.put(key, values);
+		return this;
 	} 
 	public Object getParams(String key){
 		Object result = null; 
