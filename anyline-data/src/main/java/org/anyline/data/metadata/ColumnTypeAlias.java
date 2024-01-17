@@ -20,5 +20,36 @@ package org.anyline.data.metadata;
 import org.anyline.metadata.type.TypeMetadata;
 
 public interface ColumnTypeAlias {
-    public TypeMetadata standard();
+    TypeMetadata standard();
+
+    /**
+     * 读取元数据时 长度对应的列<br/>
+     * 正常情况下只有一列<br/>
+     * 如果需要取多列以,分隔
+     * @return column names
+     */
+    default String length(){
+        return null;
+    }
+    /**
+     * 读取元数据时 有效位数对应的列<br/>
+     * 正常情况下只有一列<br/>
+     * 如果需要取多列以,分隔
+     * @return column names
+     */
+    default String precision(){
+        return null;
+    }
+    /**
+     * 读取元数据时 小数位对应的列<br/>
+     * 正常情况下只有一列<br/>
+     * 如果需要取多列以,分隔
+     * @return column names
+     */
+    default String scale(){
+        return null;
+    }
+    default TypeMetadata.ColumnMap columnMap(){
+        return null;
+    }
 }
