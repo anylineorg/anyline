@@ -1245,6 +1245,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 					if(null != navi){
 						navi.setTotalRow(index);
 						set.setNavi(navi);
+						navi.setDataSize(set.size());
 					}
 
 					set.setDatalink(rt.datasource());

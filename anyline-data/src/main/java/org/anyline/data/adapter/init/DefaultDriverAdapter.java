@@ -1561,6 +1561,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 		set.setDest(prepare.getDest());
 		set.setNavi(navi);
 		if (null != navi && navi.isLazy()) {
+			navi.setDataSize(set.size());
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
 		}
 
