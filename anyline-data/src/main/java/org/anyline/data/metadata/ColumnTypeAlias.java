@@ -49,7 +49,7 @@ public interface ColumnTypeAlias {
     default String scale(){
         return null;
     }
-    default TypeMetadata.ColumnMap columnMap(){
+    default TypeMetadata.Config config(){
         return null;
     }
 }

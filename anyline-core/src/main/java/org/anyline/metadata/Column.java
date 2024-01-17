@@ -440,6 +440,22 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
+    public Integer getLength() {
+        if(getmap && null != update){
+            return update.getLength();
+        }
+        return length;
+    }
+
+    public Column setLength(Integer length) {
+        if(setmap && null != update){
+            update.setLength(length);
+            return this;
+        }
+        this.length = length;
+        return this;
+    }
+
     public Integer getPrecision() {
         if(getmap && null != update){
             return update.getPrecision();

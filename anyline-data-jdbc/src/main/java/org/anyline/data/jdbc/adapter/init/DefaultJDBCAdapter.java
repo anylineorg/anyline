@@ -9614,10 +9614,32 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
 		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
+		int ignore_length = -1;
+		int ignore_precision = -1;
+		int ignore_scale = -1;
+		String length_column = null;
+		String precision_column = null;
+		String scale_column = null;
+
 		TypeMetadata typeMetadata = column.getTypeMetadata();
-		TypeMetadata.ColumnMap map = null;
+		TypeMetadata.Config config = null;
 		if(null != typeMetadata){
-			map = typeMetadata.getCategory();
+			//先根据类型确定
+			config = typeConfigs.get(typeMetadata.getName());
+			if(null == config){
+				TypeMetadata.CATEGORY category = typeMetadata.getCategory();
+				if(null != category){
+					config = typeCategoryConfigs.get(category);
+				}
+			}
+		}
+		if(null != config){
+			ignore_length = config.getIgnoreLength();
+			ignore_precision = config.getIgnorePrecision();
+			ignore_scale = config.getIgnoreScale();
+			length_column = config.getLengthColumn();
+			precision_column = config.getPrecisionColumn();
+			scale_column = config.getScaleColumn();
 		}
 
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
@@ -9672,16 +9694,41 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
 		try {
-
-			Integer len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION","");
-			if (null == len || len == 0) {
-				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
+			Integer len = null;
+			if(ignore_length != 1){
+				if(null != length_column){
+					len = row.getInt(length_column);
+				}else{
+					len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+					if (null == len || len == 0) {
+						len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
+					}
+				}
+				column.setLength(len);
 			}
-			column.setPrecision(len);
 		}catch (Exception e){}
+		try{
+			Integer precision = null;
+			if(ignore_precision != 1){
+				if(null != precision_column){
+					precision = row.getInt(precision_column);
+				}else{
+					precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+				}
+				column.setPrecision(precision);
+			}
+		}catch (Exception e){
+
+		}
 		try {
-			if (null == column.getScale()) {
-				column.setScale(row.getInt("NUMERIC_SCALE","SCALE","DATA_SCALE"));
+			if (ignore_scale != 1) {
+				Integer scale = null;
+				if(null != scale_column){
+					scale = row.getInt(scale_column);
+				}else {
+					scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
+				}
+				column.setScale(scale);
 			}
 		}catch (Exception e){}
 		if(null == column.getCharset()) {

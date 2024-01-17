@@ -182,12 +182,12 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
     }
 
     @Override
-    public TypeMetadata.ColumnMap columnMap() {
-        TypeMetadata.ColumnMap map = new TypeMetadata.ColumnMap();
-        map.precision(this.precision);
-        map.scale(this.scale);
-        map.length(this.length);
-        return map;
+    public TypeMetadata.Config config() {
+        TypeMetadata.Config config = new TypeMetadata.Config();
+        config.setLengthColumn(this.length);
+        config.setPrecisionColumn(this.precision);
+        config.setScaleColumn(this.scale);
+        return config;
     }
 
 }

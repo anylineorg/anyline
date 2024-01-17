@@ -384,7 +384,7 @@ public enum DatabaseType implements Serializable {
         Sequoiadb           	("Sequoiadb(巨杉数据库)"                 	,KEY_CASE.SRC	,730	,null	,"com.mysql.jdbc.Driver"	,"jdbc:mysql://{host}:{port:3306}/{database}"),
         Siaqodb             	("Siaqodb"                          	,KEY_CASE.SRC	,637	,null	,""	,""),
         SingleStore         	("SingleStore"                      	,KEY_CASE.SRC	,927	,null	,"com.singlestore.jdbc.Driver"	,"jdbc:singlestore://{host}:{port}/{database}"),
-        SinoDB              	("星瑞格"                              	,KEY_CASE.SRC	,900	,null	,"com.informix.jdbc.IfxDriver"	,"jdbc:informix-sqli://{host}:{port}/{database}:INFORMIXSERVER={server}"),
+        SinoDB              	("星瑞格"                              	,KEY_CASE.SRC	,900	,null	,"com.sinodbms.jdbc.IfxDriver"	,"jdbc:sinodbms-sqli://{host}:{port}/{database}:SINODBMSSERVER={server}"),
         SiriDB              	("SiriDB"                           	,KEY_CASE.SRC	,623	,null	,""	,""),
         SiteWhere           	("SiteWhere"                        	,KEY_CASE.SRC	,622	,null	,""	,""),
         Skytable            	("Skytable"                         	,KEY_CASE.SRC	,663	,null	,""	,""),
