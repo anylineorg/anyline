@@ -26,6 +26,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -55,6 +56,24 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
     @Override
     public void afterPropertiesSet()  {
         setDelimiter(delimiter);
+    }
+    public SinoDBAdapter() {
+        super();
+        delimiterFr = "\"";
+        delimiterTo = "\"";
+        for (SinoDBColumnTypeAlias alias : SinoDBColumnTypeAlias.values()) {
+            this.alias.put(alias.name(), alias.standard());
+            TypeMetadata.Config config = alias.config();
+            typeConfigs.put(alias.standard().getName(), config);
+        }
+
+        TypeMetadata.Config numberConfig = new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE");
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, numberConfig);
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, numberConfig);
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("DATA_LENGTH"));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.STRING, new TypeMetadata.Config("DATA_LENGTH"));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("DATA_LENGTH", null,  "DATA_SCALE"));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.NONE, new TypeMetadata.Config("DATA_LENGTH"));
     }
 
 
