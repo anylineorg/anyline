@@ -4001,13 +4001,20 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
     public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
+        String name = null;
         if(null != primary){
             pks = primary.getColumns();
+            name = primary.getName();
         }else{
             pks = meta.primarys();
         }
         if(!pks.isEmpty()){
-            builder.append(",CONSTRAINT ").append("PK_").append(meta.getName()).append(" PRIMARY KEY (");
+            if(BasicUtil.isEmpty(name)){
+                name = "PK_" + meta.getName();
+            }
+            builder.append(",CONSTRAINT ");
+            delimiter(builder, name);
+            builder.append(" PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
             for(Column pk:pks.values()){
@@ -5605,7 +5612,13 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
             }
-            builder.append(" ADD CONSTRAINT pk_").append(meta.getTableName(true)).append(" PRIMARY KEY(");
+            String name = meta.getName();
+            if(BasicUtil.isEmpty(name)){
+                name = "PK_" + meta.getTableName(true);
+            }
+            builder.append(" ADD CONSTRAINT ");
+            delimiter(builder, name);
+            builder.append(" PRIMARY KEY(");
             Column.sort(meta.getPositions(), columns);
             delimiter(builder, Column.names(columns));
             builder.append(")");
