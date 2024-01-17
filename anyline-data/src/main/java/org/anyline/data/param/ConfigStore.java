@@ -935,6 +935,14 @@ public interface ConfigStore {
 		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, var, value);
 	}
 
+	default ConfigStore param(Map<String, Object> params){
+		if(null != params){
+			for(String key:params.keySet()){
+				param(key, params.get(key));
+			}
+		}
+		return this;
+	}
 	/**
 	 * 根据占位符下标赋值
 	 * @param values values
