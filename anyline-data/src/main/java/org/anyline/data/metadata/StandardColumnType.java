@@ -768,6 +768,9 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
+    public TypeMetadata getOrigin(){
+        return origin;
+    }
     @Override
     public CATEGORY getCategory(){
         return category;
