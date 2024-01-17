@@ -7179,7 +7179,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			// 修改列名
 			String name = meta.getName();
 			String uname = update.getName();
-			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)){
 				runs.addAll(buildRenameRun(runtime, meta));
 			}
 			// 修改数据类型
@@ -7907,7 +7907,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			// 修改标签名
 			String name = meta.getName();
 			String uname = update.getName();
-			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)){
 				runs.addAll(buildRenameRun(runtime, meta));
 			}
 			meta.setName(uname);

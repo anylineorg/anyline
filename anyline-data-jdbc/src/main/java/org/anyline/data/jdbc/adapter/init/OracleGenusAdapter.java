@@ -13,6 +13,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -4803,11 +4804,11 @@ public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements I
         TypeMetadata update_metadata = update.getTypeMetadata();
         TypeMetadata column_metadata = meta.getTypeMetadata();
 
-        if(uname.endsWith("_TMP_UPDATE_TYPE")){
+        if(uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)){
             runs.addAll(buildDropRun(runtime, update));
         }else {
             if (null != update_metadata && !update_metadata.equals(column_metadata)) {
-                String tmp_name = meta.getName() + "_TMP_UPDATE_TYPE";
+                String tmp_name = meta.getName() + ConfigTable.ALTER_COLUMN_TYPE_SUFFIX;
 
                 update.setName(tmp_name);
                 runs.addAll(buildRenameRun(runtime, meta));

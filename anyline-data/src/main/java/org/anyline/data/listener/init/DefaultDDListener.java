@@ -110,7 +110,7 @@ public class DefaultDDListener implements DDListener {
                 }
                 set.setPrimaryKey(true, keys);
                 for(DataRow row:set){
-                    String value = row.getString(column.getName()+"_TMP_UPDATE_TYPE");
+                    String value = row.getString(column.getName()+ConfigTable.ALTER_COLUMN_TYPE_SUFFIX);
                     if(null == value){
                         value = row.getString(column.getName());
                     }
