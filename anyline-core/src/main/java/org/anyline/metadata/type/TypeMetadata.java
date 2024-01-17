@@ -21,7 +21,7 @@ package org.anyline.metadata.type;
 import java.lang.reflect.Field;
 
 public interface TypeMetadata {
-    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, BYTES, GEOMETRY, NONE}
+    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, TIMESTAMP, BYTES, GEOMETRY, NONE}
     default boolean equals(TypeMetadata metadata){
         if(null == metadata){
             return false;
@@ -212,6 +212,11 @@ public interface TypeMetadata {
         public ColumnMap(){}
         public ColumnMap(String precision){
             this.precision = precision;
+        }
+        public ColumnMap(String length, String precision, String scale){
+            this.length = length;
+            this.precision = precision;
+            this.scale = scale;
         }
         public ColumnMap(String precision, String scale){
             this.precision = precision;
