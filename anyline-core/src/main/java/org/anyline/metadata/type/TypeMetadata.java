@@ -21,35 +21,6 @@ package org.anyline.metadata.type;
 import java.lang.reflect.Field;
 
 public interface TypeMetadata {
-    class ColumnMap{
-        /**
-         * 读取元数据时 长度对应的列<br/>
-         * 正常情况下只有一列<br/>
-         * 如果需要取多列以,分隔
-         */
-        private String precision;
-        /**
-         * 读取元数据时 小数位对应的列<br/>
-         * 正常情况下只有一列<br/>
-         * 如果需要取多列以,分隔
-         */
-        private String scale;
-
-        public String precision(){
-            return precision;
-        }
-        public String scale(){
-            return scale;
-        }
-        public ColumnMap precision(String precision){
-            this.precision = precision;
-            return this;
-        }
-        public ColumnMap scale(String scale){
-            this.scale = scale;
-            return this;
-        }
-    }
     enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, BYTES, GEOMETRY, NONE}
     default boolean equals(TypeMetadata metadata){
         if(null == metadata){
@@ -217,4 +188,55 @@ public interface TypeMetadata {
         return write(value, def, false, placeholder);
     }
     Object write(Object value, Object def, boolean array, boolean placeholder);
+
+
+    class ColumnMap{
+        /**
+         * 读取元数据时 字符类型长度对应的列<br/>
+         * 正常情况下只有一列<br/>
+         * 如果需要取多列以,分隔
+         */
+        private String length;
+        /**
+         * 读取元数据时 数字类型长度对应的列<br/>
+         * 正常情况下只有一列<br/>
+         * 如果需要取多列以,分隔
+         */
+        private String precision;
+        /**
+         * 读取元数据时 小数位对应的列<br/>
+         * 正常情况下只有一列<br/>
+         * 如果需要取多列以,分隔
+         */
+        private String scale;
+        public ColumnMap(){}
+        public ColumnMap(String precision){
+            this.precision = precision;
+        }
+        public ColumnMap(String precision, String scale){
+            this.precision = precision;
+            this.scale = scale;
+        }
+        public String length(){
+            return length;
+        }
+        public String precision(){
+            return precision;
+        }
+        public String scale(){
+            return scale;
+        }
+        public ColumnMap length(String length){
+            this.length = length;
+            return this;
+        }
+        public ColumnMap precision(String precision){
+            this.precision = precision;
+            return this;
+        }
+        public ColumnMap scale(String scale){
+            this.scale = scale;
+            return this;
+        }
+    }
 }
