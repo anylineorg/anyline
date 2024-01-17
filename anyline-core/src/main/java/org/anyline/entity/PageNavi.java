@@ -23,60 +23,72 @@ import java.io.Serializable;
  
  
 public interface PageNavi extends Serializable{
+	/**
+	 * 查询结果行数
+	 * @param size 查询结果行数
+	 * @return this
+	 */
+	PageNavi setDataSize(int size);
+
+	/**
+	 * 查询结果行数
+	 * @return 查询结果行数
+	 */
+	int getDataSize();
 	/** 
 	 * 分页计算方式 
 	 * @param type	0-按页数 1-按开始结束记录数 
 	 */ 
-	public void setCalType(int type); 
-	public int getCalType(); 
+	PageNavi setCalType(int type); 
+	int getCalType(); 
 	/** 
 	 * 计算分页变量 
 	 */ 
-	public void calculate() ; 
-	public String createHidParam(String name, Object values);
+	PageNavi calculate() ; 
+	String createHidParam(String name, Object values);
  
 	/** 
 	 * 第一行 
 	 * @return int
 	 */ 
-	public long getFirstRow();
+	long getFirstRow();
 	/** 
 	 * 最后一行 
 	 * @return int
 	 */ 
-	public long getLastRow();
+	long getLastRow();
 	/** 
 	 * 页面显示的第一页 
 	 * @return int
 	 */ 
-	public long getDisplayPageFirst() ;
+	long getDisplayPageFirst() ;
 	/** 
 	 * 设置页面显示的第一页 
 	 * @param displayPageFirst  displayPageFirst
 	 */ 
-	public void setDisplayPageFirst(long displayPageFirst);
+	PageNavi setDisplayPageFirst(long displayPageFirst);
 	/** 
 	 * 页面显示的最后一页 
 	 * @return int
 	 */ 
-	public long getDisplayPageLast() ;
+	long getDisplayPageLast() ;
 	/** 
 	 * 设置页面显示的最后一页 
 	 * @param displayPageLast  displayPageLast
 	 */ 
-	public void setDisplayPageLast(long displayPageLast) ;
+	PageNavi setDisplayPageLast(long displayPageLast) ;
  
-	public void addParam(String key, Object value);
-	public Object getParams(String key); 
-	public Object getParam(String key); 
-	public String getOrderText(boolean require); 
-	// public String getOrderText(boolean require, OrderStore store);
+	PageNavi addParam(String key, Object value);
+	Object getParams(String key); 
+	Object getParam(String key); 
+	String getOrderText(boolean require); 
+	// String getOrderText(boolean require, OrderStore store);
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
 	 * @return PageNavi
 	 */ 
-	// public PageNavi order(Order order); 
+	// PageNavi order(Order order); 
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
@@ -84,121 +96,121 @@ public interface PageNavi extends Serializable{
 	 * @param override 如果已存在相同的排序列 是否覆盖
 	 * @return PageNavi
 	 */
-	public PageNavi order(String order, String type, boolean override);
-	public PageNavi order(String order, String type);
+	PageNavi order(String order, String type, boolean override);
+	PageNavi order(String order, String type);
 
-	public PageNavi order(String order, Order.TYPE type, boolean override);
-	public PageNavi order(String order, Order.TYPE type);
+	PageNavi order(String order, Order.TYPE type, boolean override);
+	PageNavi order(String order, Order.TYPE type);
 
-	public PageNavi order(String order, boolean override);
-	public PageNavi order(String order);
+	PageNavi order(String order, boolean override);
+	PageNavi order(String order);
 
-	public PageNavi order(Order order, boolean override);
-	public PageNavi order(Order order);
+	PageNavi order(Order order, boolean override);
+	PageNavi order(Order order);
 
 	/** 
 	 * 设置总行数 
 	 * @param totalRow  totalRow
 	 * @return PageNavi
 	 */
-	public PageNavi setTotalRow(long totalRow) ;
+	PageNavi setTotalRow(long totalRow) ;
 	/** 
 	 * 设置最后一页 
 	 * @param totalPage  totalPage
 	 * @return PageNavi
 	 */ 
-	public PageNavi setTotalPage(long totalPage) ;
+	PageNavi setTotalPage(long totalPage) ;
 	/** 
 	 * 设置当前页 
 	 * @param curPage  curPage
 	 * @return PageNavi
 	 */ 
-	public PageNavi setCurPage(long curPage) ;
+	PageNavi setCurPage(long curPage) ;
 	/** 
 	 * 设置每页显示的行数 
 	 * @param pageRows  pageRows
 	 * @return PageNavi
 	 */ 
-	public PageNavi setPageRows(int pageRows) ; 
-	public long getTotalRow() ;
+	PageNavi setPageRows(int pageRows) ; 
+	long getTotalRow() ;
 	 
-	public long getTotalPage() ;
+	long getTotalPage() ;
  
-	public long getCurPage() ;
+	long getCurPage() ;
 	 
-	public int getPageRows() ; 
+	int getPageRows() ; 
 	 
-	public String getBaseLink() ; 
-	public PageNavi setBaseLink(String baseLink) ; 
-	public PageNavi setFirstRow(long firstRow) ;
-	public PageNavi setLastRow(long lastRow) ;
+	String getBaseLink() ; 
+	PageNavi setBaseLink(String baseLink) ; 
+	PageNavi setFirstRow(long firstRow) ;
+	PageNavi setLastRow(long lastRow) ;
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @return boolean
 	 */
-	public boolean isLazy();
+	boolean isLazy();
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @return long
 	 */
-	public long getLazyPeriod();
+	long getLazyPeriod();
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param ms ms
 	 * @return PageNavi
 	 */
-	public PageNavi setLazyPeriod(long ms);
-	public PageNavi setLazyKey(String key);
-	public String getLazyKey();
+	PageNavi setLazyPeriod(long ms);
+	PageNavi setLazyKey(String key);
+	String getLazyKey();
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param ms ms
 	 * @return PageNavi
 	 */
-	public PageNavi setLazy(long ms);
-	public String html(String adapter);
-	public String form();
-	public String ajax();
-	public PageNavi setFlag(String flag);
-	public String getFlag();
-	public PageNavi setType(int type);
-	public int getType();
+	PageNavi setLazy(long ms);
+	String html(String adapter);
+	String form();
+	String ajax();
+	PageNavi setFlag(String flag);
+	String getFlag();
+	PageNavi setType(int type);
+	int getType();
 	/**
 	 * 是否显示跳到指定页
 	 * @param showJump 是否
 	 * @return PageNavi
 	 */
-	public PageNavi setShowJump(boolean showJump);
-	public boolean isShowJump();
+	PageNavi setShowJump(boolean showJump);
+	boolean isShowJump();
 	/**
 	 * 是否显示每页多少条设置
 	 * @param showVol 是否
 	 * @return PageNavi
 	 */
-	public PageNavi setShowVol(boolean showVol);
-	public boolean isShowVol();
+	PageNavi setShowVol(boolean showVol);
+	boolean isShowVol();
 	
-	public PageNavi setShowStat(boolean showStat);
-	public boolean isShowStat();
+	PageNavi setShowStat(boolean showStat);
+	boolean isShowStat();
 	/**
 	 * 样式分组
 	 * @param style style
 	 * @return PageNavi
 	 */
-	public PageNavi setStyle(String style);
-	public String getStyle();
+	PageNavi setStyle(String style);
+	String getStyle();
 	/**
 	 * 加载更多样式
 	 * @param guide guide
 	 * @return PageNavi
 	 */
-	public PageNavi setGuide(String guide);
-	public String getGuide();
-	public PageNavi setMethod(String method);
-	public String getMethod();
-	public String getHtml();
-	public String getForm();
+	PageNavi setGuide(String guide);
+	String getGuide();
+	PageNavi setMethod(String method);
+	String getMethod();
+	String getHtml();
+	String getForm();
 
-	public PageNavi scope(long first, long last);
-	public PageNavi limit(long offset, int rows);
+	PageNavi scope(long first, long last);
+	PageNavi limit(long offset, int rows);
 }
