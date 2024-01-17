@@ -156,7 +156,12 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	public static DataSource reg(String key, DataSource ds) throws Exception{
 		return init(key, ds, false);
 	}
-
+	public static DataSource reg(String key, Connection connection, boolean override){
+		return null;
+	}
+	public static DataSource reg(String key, Connection connection){
+		return reg(key, connection, false);
+	}
 	public static String reg(String key, String prefix, Environment env) {
 		try {
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
@@ -324,7 +329,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 					if(BasicUtil.isEmpty(adapter) && url.contains("adapter")){
 						adapter = RegularUtil.cut(url, "adapter=", "&");
 						if(BasicUtil.isEmpty(adapter)){
-							RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
+							adapter = RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
 						}
 					}
 					runtime.setAdapterKey(adapter);

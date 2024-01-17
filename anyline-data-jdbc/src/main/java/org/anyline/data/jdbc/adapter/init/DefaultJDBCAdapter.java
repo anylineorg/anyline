@@ -9614,6 +9614,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
 		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
+		TypeMetadata typeMetadata = column.getTypeMetadata();
+		TypeMetadata.ColumnMap map = null;
+		if(null != typeMetadata){
+			map = typeMetadata.getCategory();
+		}
+
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
@@ -9666,6 +9672,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
 		try {
+
 			Integer len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION","");
 			if (null == len || len == 0) {
 				len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");

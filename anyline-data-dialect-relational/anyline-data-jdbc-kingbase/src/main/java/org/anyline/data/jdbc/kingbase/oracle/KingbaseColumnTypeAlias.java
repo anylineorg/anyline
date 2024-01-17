@@ -63,7 +63,7 @@ public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {
     JSON                    (StandardColumnType.CLOB                  ),  
     JSONB                   (StandardColumnType.BLOB                  ), 
     LINE                    (StandardColumnType.ILLEGAL               ), 
-    LONG                    (StandardColumnType.LONG                  ), 
+    LONG                    (StandardColumnType.LONG_TEXT                  ), 
     LONGBLOB                (StandardColumnType.BLOB                  ),
     LONGTEXT                (StandardColumnType.CLOB                  ),
     LSEG                    (StandardColumnType.ILLEGAL               ), 

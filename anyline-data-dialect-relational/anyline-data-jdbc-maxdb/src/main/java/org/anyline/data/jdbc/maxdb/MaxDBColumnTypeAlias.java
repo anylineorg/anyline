@@ -63,7 +63,7 @@ public enum MaxDBColumnTypeAlias implements ColumnTypeAlias {
         JSONB                   (StandardColumnType.BLOB                  ), 
         LINE                    (StandardColumnType.ILLEGAL            ), 
         LINESTRING              (StandardColumnType.ILLEGAL            ),
-        LONG                    (StandardColumnType.LONG                ), 
+        LONG                    (StandardColumnType.LONG_TEXT                ), 
         LONGBLOB                (StandardColumnType.BLOB             ),
         LONGTEXT                (StandardColumnType.CLOB              ),
         LSEG                    (StandardColumnType.ILLEGAL               ), 

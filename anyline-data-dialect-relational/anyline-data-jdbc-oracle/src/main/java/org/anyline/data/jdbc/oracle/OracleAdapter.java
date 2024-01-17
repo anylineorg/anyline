@@ -80,6 +80,9 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		OracleConvert.reg();
 		for (OracleColumnTypeAlias alias : OracleColumnTypeAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.ColumnMap map = alias.columnMap();
+			this.typeColumnMaps.put(alias.name(), map);
+			this.typeColumnMaps.put(alias.standard().getName(), map);
 		}
 
 		for(OracleWriter writer: OracleWriter.values()){
@@ -95,6 +98,14 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		alias.put("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMP", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, true, true));
 		alias.put("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, true, true));
 		alias.put("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPLTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, true, true));
+
+		TypeMetadata.ColumnMap numberMap = new TypeMetadata.ColumnMap("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE");
+		typeCategoryColumnMaps.put(TypeMetadata.CATEGORY.INT, numberMap);
+		typeCategoryColumnMaps.put(TypeMetadata.CATEGORY.FLOAT, numberMap);
+		typeCategoryColumnMaps.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.ColumnMap("DATA_LENGTH"));
+		typeCategoryColumnMaps.put(TypeMetadata.CATEGORY.STRING, new TypeMetadata.ColumnMap("DATA_LENGTH"));
+		typeCategoryColumnMaps.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.ColumnMap("DATA_LENGTH", null,  "DATA_SCALE"));
+		typeCategoryColumnMaps.put(TypeMetadata.CATEGORY.NONE, new TypeMetadata.ColumnMap("DATA_LENGTH"));
 	}
 
 

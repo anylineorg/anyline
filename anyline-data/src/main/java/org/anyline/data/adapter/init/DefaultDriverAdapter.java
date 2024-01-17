@@ -93,7 +93,8 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	//根据名称定位数据类型
 	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 	//读取元数据时对应的列(如长度、小数位对应的列)
-	protected LinkedHashMap<String, TypeMetadata.ColumnMap> columnMaps = new LinkedHashMap<>();
+	protected LinkedHashMap<String, TypeMetadata.ColumnMap> typeColumnMaps = new LinkedHashMap<>();
+	protected LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.ColumnMap> typeCategoryColumnMaps = new LinkedHashMap<>();
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;

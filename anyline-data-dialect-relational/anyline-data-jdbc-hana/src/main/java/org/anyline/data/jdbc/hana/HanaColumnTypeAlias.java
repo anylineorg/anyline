@@ -64,7 +64,7 @@ public enum HanaColumnTypeAlias implements ColumnTypeAlias {
     JSON                    (StandardColumnType.NCLOB                 ), 
     JSONB                   (StandardColumnType.BLOB                  ),
     LINE                    (StandardColumnType.ILLEGAL               ), 
-    LONG                    (StandardColumnType.LONG                  ),
+    LONG                    (StandardColumnType.LONG_TEXT                  ),
     LONGBLOB                (StandardColumnType.BLOB                  ),
     LONGTEXT                (StandardColumnType.NCLOB                 ),
     LSEG                    (StandardColumnType.ST_GEOMETRY           ),

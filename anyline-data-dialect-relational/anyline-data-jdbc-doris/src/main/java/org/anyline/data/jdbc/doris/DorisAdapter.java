@@ -3736,6 +3736,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 				if(!vfirst){
 					builder.append(",");
 				}
+				vfirst = false;
 				builder.append(view.getName()).append("(");
 				delimiter(builder, Column.names(view.getColumns()));
 				builder.append(")");
