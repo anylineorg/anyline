@@ -21,6 +21,36 @@ package org.anyline.metadata.type;
 import java.lang.reflect.Field;
 
 public interface TypeMetadata {
+    class ColumnMap{
+        /**
+         * 读取元数据时 长度对应的列<br/>
+         * 正常情况下只有一列<br/>
+         * 如果需要取多列以,分隔
+         */
+        private String precision;
+        /**
+         * 读取元数据时 小数位对应的列<br/>
+         * 正常情况下只有一列<br/>
+         * 如果需要取多列以,分隔
+         */
+        private String scale;
+
+        public String precision(){
+            return precision;
+        }
+        public String scale(){
+            return scale;
+        }
+        public ColumnMap precision(String precision){
+            this.precision = precision;
+            return this;
+        }
+        public ColumnMap scale(String scale){
+            this.scale = scale;
+            return this;
+        }
+    }
+    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, BYTES, GEOMETRY, NONE}
     default boolean equals(TypeMetadata metadata){
         if(null == metadata){
             return false;
@@ -39,7 +69,7 @@ public interface TypeMetadata {
         }
         return false;
     }
-    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, BYTES, GEOMETRY, NONE}
+
     TypeMetadata ILLEGAL = new TypeMetadata() {
 
         @Override
