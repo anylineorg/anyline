@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>anyline-data-jdbc-gbase</artifactId>
-    <name>anyline-data-jdbc-gbase8a-oracle</name>
+    <name>anyline-data-jdbc-gbase</name>
     <url>http://www.anyline.org/gbase</url>
     <description>南大通用</description>
     <packaging>jar</packaging>
