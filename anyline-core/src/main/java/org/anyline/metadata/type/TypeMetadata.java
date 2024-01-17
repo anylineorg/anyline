@@ -21,7 +21,7 @@ package org.anyline.metadata.type;
 import java.lang.reflect.Field;
 
 public interface TypeMetadata {
-    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, TIMESTAMP, BYTES, GEOMETRY, NONE}
+    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, TIMESTAMP, COLLECTION, BYTES, GEOMETRY, NONE}
     default boolean equals(TypeMetadata metadata){
         if(null == metadata){
             return false;
@@ -190,58 +190,88 @@ public interface TypeMetadata {
     Object write(Object value, Object def, boolean array, boolean placeholder);
 
 
-    class ColumnMap{
+    class Config {
+        private int ignoreLength = -1;
+        private int ignorePrecision = -1;
+        private int ignoreScale = -1;
         /**
          * 读取元数据时 字符类型长度对应的列<br/>
          * 正常情况下只有一列<br/>
          * 如果需要取多列以,分隔
          */
-        private String length;
+        private String lengthColumn;
         /**
          * 读取元数据时 数字类型长度对应的列<br/>
          * 正常情况下只有一列<br/>
          * 如果需要取多列以,分隔
          */
-        private String precision;
+        private String precisionColumn;
         /**
          * 读取元数据时 小数位对应的列<br/>
          * 正常情况下只有一列<br/>
          * 如果需要取多列以,分隔
          */
-        private String scale;
-        public ColumnMap(){}
-        public ColumnMap(String precision){
-            this.precision = precision;
+        private String scaleColumn;
+        public Config(){}
+        public Config(String precision){
+            this.precisionColumn = precision;
         }
-        public ColumnMap(String length, String precision, String scale){
-            this.length = length;
-            this.precision = precision;
-            this.scale = scale;
+        public Config(String length, String precision, String scale){
+            this.lengthColumn = length;
+            this.precisionColumn = precision;
+            this.scaleColumn = scale;
         }
-        public ColumnMap(String precision, String scale){
-            this.precision = precision;
-            this.scale = scale;
+        public Config(String precision, String scale){
+            this.precisionColumn = precision;
+            this.scaleColumn = scale;
         }
-        public String length(){
-            return length;
+
+        public int getIgnoreLength() {
+            return ignoreLength;
         }
-        public String precision(){
-            return precision;
+
+        public void setIgnoreLength(int ignoreLength) {
+            this.ignoreLength = ignoreLength;
         }
-        public String scale(){
-            return scale;
+
+        public int getIgnorePrecision() {
+            return ignorePrecision;
         }
-        public ColumnMap length(String length){
-            this.length = length;
-            return this;
+
+        public void setIgnorePrecision(int ignorePrecision) {
+            this.ignorePrecision = ignorePrecision;
         }
-        public ColumnMap precision(String precision){
-            this.precision = precision;
-            return this;
+
+        public int getIgnoreScale() {
+            return ignoreScale;
         }
-        public ColumnMap scale(String scale){
-            this.scale = scale;
-            return this;
+
+        public void setIgnoreScale(int ignoreScale) {
+            this.ignoreScale = ignoreScale;
+        }
+
+        public String getLengthColumn() {
+            return lengthColumn;
+        }
+
+        public void setLengthColumn(String lengthColumn) {
+            this.lengthColumn = lengthColumn;
+        }
+
+        public String getPrecisionColumn() {
+            return precisionColumn;
+        }
+
+        public void setPrecisionColumn(String precisionColumn) {
+            this.precisionColumn = precisionColumn;
+        }
+
+        public String getScaleColumn() {
+            return scaleColumn;
+        }
+
+        public void setScaleColumn(String scaleColumn) {
+            this.scaleColumn = scaleColumn;
         }
     }
 }
