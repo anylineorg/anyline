@@ -1066,8 +1066,8 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }
 
         if(!BasicUtil.equals(typeMetadata, columnTypeMetadata, ignoreCase)
-                && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
-                && !BasicUtil.equals(typeMetadata, columnTypeMetadata, ignoreCase)
+                && !BasicUtil.equals(typeMetadata, columnOrigin, ignoreCase)
+                && !BasicUtil.equals(origin, columnTypeMetadata, ignoreCase)
                 && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
         ){
             return false;
