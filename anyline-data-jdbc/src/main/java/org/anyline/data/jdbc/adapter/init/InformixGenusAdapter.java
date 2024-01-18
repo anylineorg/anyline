@@ -2503,8 +2503,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
                 column.setPrecision(len, scale);
             }
             if(null == column.getTypeMetadata()) {
-                TypeMetadata columnType = typeMetadata(column.getTypeName());
-                column.setTypeMetadata(columnType);
+                typeMetadata(runtime, column);
             }
             columns.put(name.toUpperCase(), (T)column);
         }

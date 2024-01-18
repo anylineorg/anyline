@@ -2613,8 +2613,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter,
 			column.setSchema(table.getSchema());
 			column.setTypeName(row.getString("TYPE"));
 			column.setPrecision(row.getInt("LENGTH", 0));
-			TypeMetadata columnType = typeMetadata(column.getTypeName());
-			column.setTypeMetadata(columnType);
+			typeMetadata(runtime, column);
 		}
 		return columns;
 	}

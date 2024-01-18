@@ -4433,7 +4433,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				column = (T)new Column();
 			}
 			column.setName(name);
-			init(column, table, row);
+			init(runtime, column, table, row);
 			columns.put(name.toUpperCase(), column);
 		}
 		return columns;
@@ -4447,12 +4447,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			String name = row.getString("COLUMN_NAME","COLNAME");
 			T tmp = (T)new Column();
 			tmp.setName(name);
-			init(tmp, table, row);
+			init(runtime, tmp, table, row);
 			T column = column(tmp, columns);
 			if(null == column) {
 				column = (T) new Column();
 				column.setName(name);
-				init(column, table, row);
+				init(runtime, column, table, row);
 				columns.add(column);
 			}
 		}
@@ -4543,8 +4543,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
 				column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 				column.autoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
-				TypeMetadata columnType = typeMetadata(column.getTypeName());
-				column.setTypeMetadata(columnType);
+				typeMetadata(runtime, column);
 				column(runtime, column, set);
 				column.setName(name);
 			}
@@ -6230,8 +6229,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				for(Column column:columns){
 					TypeMetadata metadata = column.getTypeMetadata();
 					if(null == metadata){
-						metadata = typeMetadata(column.getTypeName());
-						column.setTypeMetadata(metadata);
+						metadata = typeMetadata(runtime, column);
 					}
 					if(pks.containsKey(column.getName().toUpperCase())){
 						column.setNullable(false);
@@ -7482,17 +7480,20 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		int ignoreLength = -1;
 		int ignorePrecision = -1;
-		int ignoreScale = -1; 
+		int ignoreScale = -1;
 		String typeName = meta.getTypeName();
-		TypeMetadata type = typeMetadata(typeName);
+		TypeMetadata type = meta.getTypeMetadata();
+		if(null == type){
+			type = typeMetadata(runtime, meta);
+		}
 		if(null != type){
 			if(!type.support()){
-				throw new RuntimeException("数据类型不支持:"+typeName);
+				throw new RuntimeException("数据类型不支持:" + typeName);
 			}
 			typeName = type.getName();
 		}
 
-		ignoreLength = ignorePrecision(runtime, meta);
+		ignoreLength = ignoreLength(runtime, meta);
 		ignorePrecision = ignorePrecision(runtime, meta);
 		ignoreScale = ignoreScale(runtime, meta);
 		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
@@ -9596,7 +9597,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param table
 	 * @param row
 	 */
-	protected void init(Column column, Table table, DataRow row){
+	protected void init(DataRuntime runtime, Column column, Table table, DataRow row){
 		String catalog = BasicUtil.evl(row.getString("TABLE_CATALOG"), column.getCatalogName());
 		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"), column.getSchemaName());
 		String tableName = null;
@@ -9764,8 +9765,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			column.setCollate(row.getString("COLLATION_NAME"));
 		}
 		if(null == column.getTypeMetadata()) {
-			TypeMetadata columnType = typeMetadata(column.getTypeName());
-			column.setTypeMetadata(columnType);
+			typeMetadata(runtime, column);
 		}
 	}
 	/**
@@ -9862,8 +9862,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}catch (Exception e){
 			log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 		}
-		TypeMetadata columnType = typeMetadata(column.getTypeName());
-		column.setTypeMetadata(columnType);
+		typeMetadata(runtime, column);
 		return column;
 	}
 
@@ -9957,8 +9956,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.autoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
-			TypeMetadata columnType = typeMetadata(column.getTypeName());
-			column.setTypeMetadata(columnType);
+			typeMetadata(runtime, column);
 			column(runtime, column, set);
 			column.setName(name);
 		}
@@ -10032,8 +10030,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if (BasicUtil.isEmpty(column.getDefaultValue())) {
 				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
 			}
-			TypeMetadata columnType = typeMetadata(column.getTypeName());
-			column.setTypeMetadata(columnType);
+			typeMetadata(runtime, column);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -10167,8 +10164,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
 			}
 
-			TypeMetadata columnType = typeMetadata(column.getTypeName());
-			column.setTypeMetadata(columnType);
+			typeMetadata(runtime, column);
 		}
 		return column;
 	}

@@ -387,55 +387,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             update.setTypeName(typeName);
             return this;
         }
-        if(null != typeName){
-            //数组类型
-            if(typeName.contains("[]")){
-                setArray(true);
-            }
-            //数组类型
-            if(typeName.startsWith("_")){
-                typeName = typeName.substring(1);
-                setArray(true);
-            }
-            typeName = typeName.trim().replace("'","");
-
-            if(typeName.toUpperCase().contains("IDENTITY")){
-                autoIncrement(true);
-                if(typeName.contains(" ")) {
-                    // TYPE_NAME=int identity
-                    typeName = typeName.split(" ")[0];
-                }
-            }
-
-            if(typeName.contains("(")){
-                //decimal(10, 2) varchar(10) geometry(Polygon, 4326) geometry(Polygon) geography(Polygon, 4326)
-                this.precision = 0;
-                this.scale = 0;
-                String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
-                if(tmp.contains(",")){
-                    //有精度或srid
-                    String[] lens = tmp.split("\\,");
-                    if(BasicUtil.isNumber(lens[0])) {
-                        setPrecision(BasicUtil.parseInt(lens[0], null));
-                        setScale(BasicUtil.parseInt(lens[1], null));
-                    }else{
-                        setChildTypeName(lens[0]);
-                        setSrid(BasicUtil.parseInt(lens[1], null));
-                    }
-                }else{
-                    //没有精度和srid
-                    if(BasicUtil.isNumber(tmp)){
-                        setPrecision(BasicUtil.parseInt(tmp, null));
-                    }else{
-                        setChildTypeName(tmp);
-                    }
-                }
-                typeName = typeName.substring(0, typeName.indexOf("(") );
-            }
-        }
-        if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
-            this.className = null;
-        }
         this.typeName = typeName;
         return this;
     }

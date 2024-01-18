@@ -166,12 +166,21 @@ public interface DriverAdapter {
 
 	/**
 	 * 转换成相应数据库类型<br/>
-	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
-	 * @param type 编码时输入的类型
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型<br/>
+	 * 同时解析长度、有效位数、精度<br/>
+	 * 如有些数据库中用bigint有些数据库中有long
+	 * @param meta 列
 	 * @return 具体数据库中对应的数据类型
 	 */
-	TypeMetadata typeMetadata(String type);
+	TypeMetadata typeMetadata(DataRuntime runtime, Column meta);
 
+	/**
+	 * 转换成相应数据库类型<br/>
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
+	 * @param type 编码时输入的类型(通常是java类)
+	 * @return 具体数据库中对应的数据类型
+	 */
+	TypeMetadata typeMetadata(DataRuntime runtime, String type);
 	/**
 	 * 写入数据库前 类型转换
 	 * @param supports 写入的原始类型 class ColumnType StringColumnType
@@ -3862,6 +3871,7 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	int ignoreLength(DataRuntime runtime, Column column);
+	int ignoreLength(DataRuntime runtime, TypeMetadata type);
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有效位数
@@ -3870,6 +3880,7 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	int ignorePrecision(DataRuntime runtime, Column column);
+	int ignorePrecision(DataRuntime runtime, TypeMetadata type);
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:定义列:是否忽略小数位
@@ -3878,6 +3889,7 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	int ignoreScale(DataRuntime runtime, Column column);
+	int ignoreScale(DataRuntime runtime, TypeMetadata type);
     /**
      * column[命令合成-子流程]<br/>
      * 定义列:是否忽略有效长度

@@ -6818,15 +6818,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 表
 	 * @return cols
 	 */
-	protected LinkedHashMap<String, Column> checkColumnAction(Table meta){
+	protected LinkedHashMap<String, Column> checkColumnAction(DataRuntime runtime, Table meta){
 		Table update = (Table)meta.getUpdate();
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
 		for(Column col:columns.values()){
-			col.setTypeMetadata(typeMetadata(col.getTypeName()));
+			typeMetadata(runtime, col);
 		}
 		for(Column col:ucolumns.values()){
-			col.setTypeMetadata(typeMetadata(col.getTypeName()));
+			typeMetadata(runtime, col);
 		}
 		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		// 更新列
@@ -6979,7 +6979,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 
-		LinkedHashMap<String, Column> cols = checkColumnAction(meta);
+		LinkedHashMap<String, Column> cols = checkColumnAction(runtime, meta);
 		//主键
 		PrimaryKey src_primary = primary(runtime, random, false, meta);
 		PrimaryKey cur_primary = update.getPrimaryKey();
@@ -9159,31 +9159,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		TypeMetadata.Config config = null;
 		TypeMetadata tm = meta.getTypeMetadata();
 		if(null == tm){
-			tm = typeMetadata(meta.getTypeName());
+			tm = typeMetadata(runtime, meta);
 		}
-
 		if(null != tm){
-			config = typeConfigs.get(tm.getName().toUpperCase());
+			result = ignoreLength(runtime, tm);
+		}
+		return result;
+	}
+
+	@Override
+	public int ignoreLength(DataRuntime runtime, TypeMetadata type) {
+		if(null == type){
+			return -1;
+		}
+ 		int result = -1;
+		TypeMetadata.Config config = typeConfigs.get(type.getName().toUpperCase());
+		if(null != config){
+			result = config.ignoreLength();
+		}
+		if(result == -1){
+			config = typeCategoryConfigs.get(type.getCategory());
 			if(null != config){
 				result = config.ignoreLength();
 			}
-			if(result == -1){
-				config = typeCategoryConfigs.get(tm.getCategory());
-				if(null != config){
-					result = config.ignoreLength();
-				}
-			}
-			if(result ==-1){
-				result = tm.ignoreLength();
-			}
-			if(result ==-1){
-				config = standardCategoryConfigs.get(tm.getCategory());
-				if(null != config){
-					result = config.ignoreLength();
-				}
+		}
+		if(result ==-1){
+			result = type.ignoreLength();
+		}
+		if(result ==-1){
+			config = standardCategoryConfigs.get(type.getCategory());
+			if(null != config){
+				result = config.ignoreLength();
 			}
 		}
 		return result;
@@ -9202,33 +9210,43 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		TypeMetadata.Config config = null;
 		TypeMetadata tm = meta.getTypeMetadata();
 		if(null == tm){
-			tm = typeMetadata(meta.getTypeName());
+			tm = typeMetadata(runtime, meta);
 		}
 
 		if(null != tm){
-			config = typeConfigs.get(tm.getName().toUpperCase());
+			result = ignorePrecision(runtime, tm);
+		}
+		return result;
+	}
+
+	@Override
+	public int ignorePrecision(DataRuntime runtime, TypeMetadata type) {
+		if(null == type){
+			return -1;
+		}
+		int result = -1;
+		TypeMetadata.Config config = typeConfigs.get(type.getName().toUpperCase());
+		if(null != config){
+			result = config.ignorePrecision();
+		}
+		if(result == -1){
+			config = typeCategoryConfigs.get(type.getCategory());
 			if(null != config){
 				result = config.ignorePrecision();
 			}
-			if(result == -1){
-				config = typeCategoryConfigs.get(tm.getCategory());
-				if(null != config){
-					result = config.ignorePrecision();
-				}
-			}
-			if(result ==-1){
-				result = tm.ignorePrecision();
-			}
-			if(result ==-1){
-				config = standardCategoryConfigs.get(tm.getCategory());
-				if(null != config){
-					result = config.ignorePrecision();
-				}
+		}
+		if(result ==-1){
+			result = type.ignorePrecision();
+		}
+		if(result ==-1){
+			config = standardCategoryConfigs.get(type.getCategory());
+			if(null != config){
+				result = config.ignorePrecision();
 			}
 		}
+
 		return result;
 	}
 	/**
@@ -9244,35 +9262,43 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		TypeMetadata.Config config = null;
 		TypeMetadata tm = meta.getTypeMetadata();
 		if(null == tm){
-			tm = typeMetadata(meta.getTypeName());
+			tm = typeMetadata(runtime, meta);
 		}
 
 		if(null != tm){
-			config = typeConfigs.get(tm.getName().toUpperCase());
-			if(null != config){
-				result = config.ignoreScale();
-			}
-			if(result == -1){
-				config = typeCategoryConfigs.get(tm.getCategory());
-				if(null != config){
-					result = config.ignoreScale();
-				}
-			}
-			if(result ==-1){
-				result = tm.ignoreScale();
-			}
-			if(result ==-1){
-				config = standardCategoryConfigs.get(tm.getCategory());
-				if(null != config){
-					result = config.ignoreScale();
-				}
-			}
+			result = ignoreScale(runtime, tm);
 		}
 		return result;
 	}
+    @Override
+    public int ignoreScale(DataRuntime runtime, TypeMetadata type) {
+        if(null == type){
+            return -1;
+        }
+        int result = -1;
+		TypeMetadata.Config config = typeConfigs.get(type.getName().toUpperCase());
+		if(null != config){
+			result = config.ignoreScale();
+		}
+		if(result == -1){
+			config = typeCategoryConfigs.get(type.getCategory());
+			if(null != config){
+				result = config.ignoreScale();
+			}
+		}
+		if(result ==-1){
+			result = type.ignoreScale();
+		}
+		if(result ==-1){
+			config = standardCategoryConfigs.get(type.getCategory());
+			if(null != config){
+				result = config.ignoreScale();
+			}
+		}
+        return result;
+    }
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:是否忽略有效长度
@@ -12184,12 +12210,111 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * 转换成相应数据库类型<br/>
+	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型<br/>
+	 * 同时解析长度、有效位数、精度<br/>
+	 * 如有些数据库中用bigint有些数据库中有long
+	 * @param meta 列
+	 * @return 具体数据库中对应的数据类型
+	 */
+	@Override
+	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta){
+		if(null == meta){
+			return null;
+		}
+		String typeName = meta.getTypeName();
+		if(null == typeName){
+			return null;
+		}
+		TypeMetadata typeMetadata = meta.getTypeMetadata();
+		if(null != typeMetadata){
+			return typeMetadata;
+		}
+		Integer precision = null;
+		Integer scale = null;
+
+		if(null != typeName){
+			//数组类型
+			if(typeName.contains("[]")){
+				meta.setArray(true);
+			}
+			//数组类型
+			if(typeName.startsWith("_")){
+				typeName = typeName.substring(1);
+				meta.setArray(true);
+			}
+			typeName = typeName.trim().replace("'","");
+
+			if(typeName.toUpperCase().contains("IDENTITY")){
+				meta.autoIncrement(true);
+				if(typeName.contains(" ")) {
+					// TYPE_NAME=int identity
+					typeName = typeName.split(" ")[0];
+				}
+			}
+
+			if(typeName.contains("(")){
+				//decimal(10, 2) varchar(10) geometry(Polygon, 4326) geometry(Polygon) geography(Polygon, 4326)
+				String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
+				if(tmp.contains(",")){
+					//有精度或srid
+					String[] lens = tmp.split("\\,");
+					if(BasicUtil.isNumber(lens[0])) {
+						precision = BasicUtil.parseInt(lens[0], null);
+						scale = BasicUtil.parseInt(lens[1], null);
+					}else{
+						meta.setChildTypeName(lens[0]);
+						meta.setSrid(BasicUtil.parseInt(lens[1], null));
+					}
+				}else{
+					//没有精度和srid
+					if(BasicUtil.isNumber(tmp)){
+						precision = BasicUtil.parseInt(tmp, null);
+					}else{
+						meta.setChildTypeName(tmp);
+					}
+				}
+				typeName = typeName.substring(0, typeName.indexOf("(") );
+			}
+		}
+		/*if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
+			this.className = null;
+		}*/
+		meta.setTypeName(typeName);
+		typeMetadata = alias.get(typeName.toUpperCase());
+		meta.setTypeMetadata(typeMetadata);
+		int ignoreLength = ignoreLength(runtime, typeMetadata);
+		int ignorePrecision = ignorePrecision(runtime, typeMetadata);
+		int ignoreScale = ignorePrecision(runtime, typeMetadata);
+		if(null != precision && precision > 0){
+			//指定了长度或有效位数
+			if(ignorePrecision != 1){
+				//设置有效位数
+				meta.setPrecision(precision);
+			}else if(ignoreLength != -1){
+				//不需要有效位数再考虑长度
+				meta.setLength(precision);
+			}
+		}
+		if(null != scale && scale > -1){
+			if(ignoreScale != 1){
+				meta.setScale(scale);
+			}
+		}
+		/*
+		if(null != ct){
+			ct.setArray(array);
+		}*/
+		return typeMetadata;
+	}
+
+	/**
+	 * 转换成相应数据库类型<br/>
 	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
 	 * @param type 编码时输入的类型
 	 * @return 具体数据库中对应的数据类型
 	 */
 	@Override
-	public TypeMetadata typeMetadata(String type){
+	public TypeMetadata typeMetadata(DataRuntime runtime, String type){
 		if(null == type){
 			return null;
 		}
@@ -12513,13 +12638,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != typeName) {
 					writer = writer(typeName);
 					if(null != columnType){
-						writer = writer(typeMetadata(typeName.toUpperCase()));
+						writer = writer(typeMetadata(runtime, metadata));
 					}
 				}
 			}
 		}
 		if(null == columnType){
-			columnType = typeMetadata(value.getClass().getSimpleName());
+			columnType = typeMetadata(runtime, value.getClass().getSimpleName());
 		}
 		if(null != columnType){
 			Class writeClass = columnType.compatible();
@@ -12589,7 +12714,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if (null != typeName) {
 					reader = reader(typeName);
 					if(null == reader) {
-						reader = reader(typeMetadata(typeName));
+						reader = reader(typeMetadata(runtime, metadata));
 					}
 				}
 			}
@@ -12625,7 +12750,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(value instanceof SQL_BUILD_IN_VALUE){
 				builder.append(value(runtime, null, (SQL_BUILD_IN_VALUE)value));
 			}else {
-				TypeMetadata type = typeMetadata(value.getClass().getName());
+				TypeMetadata type = typeMetadata(runtime, value.getClass().getName());
 				if (null != type) {
 					value = type.write(value, null, false);
 				}
@@ -12762,7 +12887,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != metadata) {
 				TypeMetadata columnType = metadata.getTypeMetadata();
 				if(null == columnType){
-					columnType = typeMetadata(metadata.getTypeName());
+					columnType = typeMetadata(runtime, metadata);
 					if(null != columnType) {
 						columnType.setArray(metadata.isArray());
 						metadata.setTypeMetadata(columnType);
