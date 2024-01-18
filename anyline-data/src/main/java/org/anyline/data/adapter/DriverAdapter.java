@@ -3845,46 +3845,63 @@ public interface DriverAdapter {
 	 * 定义列:列数据类型定义
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param column 列
+	 * @param meta 列
 	 * @param type 数据类型(已经过转换)
-	 * @param isIgnorePrecision 是否忽略长度
-	 * @param isIgnoreScale 是否忽略小数
+	 * @param ignoreLength 是否忽略长度
+	 * @param ignorePrecision 是否忽略有效位数
+	 * @param ignoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
-	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale);
+	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale);
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略长度
+	 * 定义列:是否忽略有长度
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
-	boolean isIgnorePrecision(DataRuntime runtime, Column column);
+	int ignoreLength(DataRuntime runtime, Column column);
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略精度
+	 * 定义列:是否忽略有效位数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @return boolean
 	 */
-	boolean isIgnoreScale(DataRuntime runtime, Column column);
+	int ignorePrecision(DataRuntime runtime, Column column);
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略长度
+	 * 定义列:定义列:是否忽略小数位
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @return boolean
+	 */
+	int ignoreScale(DataRuntime runtime, Column column);
+    /**
+     * column[命令合成-子流程]<br/>
+     * 定义列:是否忽略有效长度
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param type 列数据类型
+     * @return boolean
+     */
+    int checkIgnoreLength(DataRuntime runtime, String type);
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:是否忽略有效位数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 列数据类型
 	 * @return boolean
 	 */
-	Boolean checkIgnorePrecision(DataRuntime runtime, String type);
+	int checkIgnorePrecision(DataRuntime runtime, String type);
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略精度
+	 * 定义列:定义列:是否忽略小数位
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 列数据类型
 	 * @return boolean
 	 */
-	Boolean checkIgnoreScale(DataRuntime runtime, String type);
+	int checkIgnoreScale(DataRuntime runtime, String type);
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:非空

@@ -19,6 +19,8 @@ package org.anyline.metadata.type;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface TypeMetadata {
     enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, TIMESTAMP, COLLECTION, BYTES, GEOMETRY, NONE}
@@ -53,13 +55,17 @@ public interface TypeMetadata {
         }
 
         @Override
-        public boolean ignorePrecision() {
-            return false;
+        public int ignoreLength() {
+            return -1;
+        }
+        @Override
+        public int ignorePrecision() {
+            return -1;
         }
 
         @Override
-        public boolean ignoreScale() {
-            return false;
+        public int ignoreScale() {
+            return -1;
         }
 
         @Override
@@ -83,8 +89,8 @@ public interface TypeMetadata {
         }
 
         @Override
-        public DatabaseType[] dbs() {
-            return new DatabaseType[0];
+        public List<DatabaseType> databaseTypes() {
+            return new ArrayList<>();
         }
 
         @Override
@@ -142,8 +148,9 @@ public interface TypeMetadata {
     default TypeMetadata getOrigin(){
         return this;
     }
-    boolean ignorePrecision();
-    boolean ignoreScale();
+    int ignoreLength();
+    int ignorePrecision();
+    int ignoreScale();
     boolean support();
     default boolean isArray(){
         return false;
@@ -167,7 +174,7 @@ public interface TypeMetadata {
      * 支持的数据库
      * @return DatabaseType
      */
-    DatabaseType[] dbs();
+    List<DatabaseType> databaseTypes();
 
     Object convert(Object value, Object def);
     default Object convert(Object value, Class target){
@@ -191,6 +198,10 @@ public interface TypeMetadata {
 
 
     class Config {
+        /**
+         * 是否忽略长度，创建和比较时忽略，但元数据中可能会有对应的列也有值
+         * -1:未设置可以继承上级 0:不忽略 1:忽略 2:根据情况(是否提供)
+         */
         private int ignoreLength = -1;
         private int ignorePrecision = -1;
         private int ignoreScale = -1;
@@ -226,7 +237,7 @@ public interface TypeMetadata {
             this.scaleColumn = scale;
         }
 
-        public int getIgnoreLength() {
+        public int ignoreLength() {
             return ignoreLength;
         }
 
@@ -234,7 +245,7 @@ public interface TypeMetadata {
             this.ignoreLength = ignoreLength;
         }
 
-        public int getIgnorePrecision() {
+        public int ignorePrecision() {
             return ignorePrecision;
         }
 
@@ -242,7 +253,7 @@ public interface TypeMetadata {
             this.ignorePrecision = ignorePrecision;
         }
 
-        public int getIgnoreScale() {
+        public int ignoreScale() {
             return ignoreScale;
         }
 

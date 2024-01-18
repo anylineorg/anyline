@@ -90,8 +90,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	//根据名称定位数据类型
 	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 	//读取元数据时对应的列(如长度、小数位对应的列)
+	/**
+	 * 当前adapter 数据类型-配置
+	 */
 	protected LinkedHashMap<String, TypeMetadata.Config> typeConfigs = new LinkedHashMap<>();
+	/**
+	 * 当前adapter 数据类型大类-配置
+	 */
 	protected LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
+
+	/**
+	 * 通用标准类型大类-配置
+	 */
+	public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> standardCategoryConfigs = new LinkedHashMap<>();
+	static {
+
+	}
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -102,7 +116,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public AbstractDriverAdapter(){
 		//当前数据库支持的数据类型,子类根据情况覆盖
 		for(StandardColumnType type: StandardColumnType.values()){
-			DatabaseType[] dbs = type.dbs();
+			List<DatabaseType> dbs = type.databaseTypes();
 			for(DatabaseType db:dbs){
 				if(db == this.type()){
 					//column type支持当前db
@@ -8563,11 +8577,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
-	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale)
-	 * boolean isIgnorePrecision(DataRuntime runtime, Column column)
-	 * boolean isIgnoreScale(DataRuntime runtime, Column column)
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
+	 * int ignorePrecision(DataRuntime runtime, Column column)
+	 * int ignoreScale(DataRuntime runtime, Column column)
 	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
-	 * Boolean checkIgnoreScale(DataRuntime runtime, String datatype)
+	 * int checkIgnoreScale(DataRuntime runtime, String datatype)
 	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
@@ -9119,18 +9133,61 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param builder builder
 	 * @param meta 列
 	 * @param type 数据类型(已经过转换)
-	 * @param isIgnorePrecision 是否忽略长度
-	 * @param isIgnoreScale 是否忽略小数
+	 * @param ignoreLength 是否忽略长度
+	 * @param ignorePrecision 是否忽略有效位数
+	 * @param ignoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale)", 37));
 		}
 		return builder;
 	}
 
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略长度, 依次检测typeConfigs(当前adapter类型),typeCategoryConfigs(当前adapter大类),typeMetadata(标准类型) standardCategoryConfigs(标准大类)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 列
+	 * @return boolean
+	 */
+	@Override
+	public int ignoreLength(DataRuntime runtime, Column meta) {
+		if(null == meta){
+			return -1;
+		}
+		int result = -1;
+		TypeMetadata.Config config = null;
+		TypeMetadata tm = meta.getTypeMetadata();
+		if(null == tm){
+			tm = typeMetadata(meta.getTypeName());
+		}
+
+		if(null != tm){
+			config = typeConfigs.get(tm.getName().toUpperCase());
+			if(null != config){
+				result = config.ignoreLength();
+			}
+			if(result == -1){
+				config = typeCategoryConfigs.get(tm.getCategory());
+				if(null != config){
+					result = config.ignoreLength();
+				}
+			}
+			if(result ==-1){
+				result = tm.ignoreLength();
+			}
+			if(result ==-1){
+				config = standardCategoryConfigs.get(tm.getCategory());
+				if(null != config){
+					result = config.ignoreLength();
+				}
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -9140,115 +9197,114 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean isIgnorePrecision(DataRuntime runtime, Column meta) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean isIgnorePrecision(DataRuntime runtime, Column meta)", 37));
+	public int ignorePrecision(DataRuntime runtime, Column meta) {
+		if(null == meta){
+			return -1;
 		}
-		return false;
+		int result = -1;
+		TypeMetadata.Config config = null;
+		TypeMetadata tm = meta.getTypeMetadata();
+		if(null == tm){
+			tm = typeMetadata(meta.getTypeName());
+		}
+
+		if(null != tm){
+			config = typeConfigs.get(tm.getName().toUpperCase());
+			if(null != config){
+				result = config.ignorePrecision();
+			}
+			if(result == -1){
+				config = typeCategoryConfigs.get(tm.getCategory());
+				if(null != config){
+					result = config.ignorePrecision();
+				}
+			}
+			if(result ==-1){
+				result = tm.ignorePrecision();
+			}
+			if(result ==-1){
+				config = standardCategoryConfigs.get(tm.getCategory());
+				if(null != config){
+					result = config.ignorePrecision();
+				}
+			}
+		}
+		return result;
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略精度
+	 * 列定义:定义列:是否忽略小数位
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean
 	 */
 	@Override
-	public boolean isIgnoreScale(DataRuntime runtime, Column meta) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean isIgnoreScale(DataRuntime runtime, Column meta)", 37));
+	public int ignoreScale(DataRuntime runtime, Column meta) {
+		if(null == meta){
+			return -1;
 		}
-		return false;
+		int result = -1;
+		TypeMetadata.Config config = null;
+		TypeMetadata tm = meta.getTypeMetadata();
+		if(null == tm){
+			tm = typeMetadata(meta.getTypeName());
+		}
+
+		if(null != tm){
+			config = typeConfigs.get(tm.getName().toUpperCase());
+			if(null != config){
+				result = config.ignoreScale();
+			}
+			if(result == -1){
+				config = typeCategoryConfigs.get(tm.getCategory());
+				if(null != config){
+					result = config.ignoreScale();
+				}
+			}
+			if(result ==-1){
+				result = tm.ignoreScale();
+			}
+			if(result ==-1){
+				config = standardCategoryConfigs.get(tm.getCategory());
+				if(null != config){
+					result = config.ignoreScale();
+				}
+			}
+		}
+		return result;
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
+	 * 定义列:是否忽略有效长度
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type 列数据类型
+	 * @return boolean
+	 */
+	@Override
+	public int checkIgnoreLength(DataRuntime runtime, String type){
+		return -1;
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略长度,依次检测typeConfigs(当前adapter类型),typeCategoryConfigs(当前adapter大类),typeMetadata(标准类型)(标准大类)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 列数据类型
 	 * @return Boolean 检测不到时返回null
 	 */
 	@Override
-	public Boolean checkIgnorePrecision(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return false;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+	public int checkIgnorePrecision(DataRuntime runtime, String type) {
+		return -1;
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略精度
+	 * 列定义:定义列:是否忽略小数位
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 列数据类型
 	 * @return Boolean 检测不到时返回null
 	 */
 	@Override
-	public Boolean checkIgnoreScale(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return true;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+	public int checkIgnoreScale(DataRuntime runtime, String type) {
+		return -1;
 	}
 	/**
 	 * column[命令合成-子流程]<br/>

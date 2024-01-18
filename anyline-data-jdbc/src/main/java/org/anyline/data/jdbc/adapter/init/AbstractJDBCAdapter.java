@@ -7041,11 +7041,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
 	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
-	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale)
-	 * boolean isIgnorePrecision(DataRuntime runtime, Column column)
-	 * boolean isIgnoreScale(DataRuntime runtime, Column column)
+	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
+	 * int ignorePrecision(DataRuntime runtime, Column column)
+	 * int ignoreScale(DataRuntime runtime, Column column)
 	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
-	 * Boolean checkIgnoreScale(DataRuntime runtime, String datatype)
+	 * int checkIgnoreScale(DataRuntime runtime, String datatype)
 	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
@@ -7480,22 +7480,22 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == builder){
 			builder = new StringBuilder();
 		}
-		boolean isIgnorePrecision = false;
-		boolean isIgnoreScale = false;
+		int ignoreLength = -1;
+		int ignorePrecision = -1;
+		int ignoreScale = -1; 
 		String typeName = meta.getTypeName();
 		TypeMetadata type = typeMetadata(typeName);
 		if(null != type){
 			if(!type.support()){
 				throw new RuntimeException("数据类型不支持:"+typeName);
 			}
-			isIgnorePrecision = type.ignorePrecision();
-			isIgnoreScale = type.ignoreScale();
 			typeName = type.getName();
-		}else{
-			isIgnorePrecision = isIgnorePrecision(runtime, meta);
-			isIgnoreScale = isIgnoreScale(runtime, meta);
 		}
-		return type(runtime, builder, meta, typeName, isIgnorePrecision, isIgnoreScale);
+
+		ignoreLength = ignorePrecision(runtime, meta);
+		ignorePrecision = ignorePrecision(runtime, meta);
+		ignoreScale = ignoreScale(runtime, meta);
+		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
 	/**
@@ -7517,31 +7517,68 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param builder builder
 	 * @param meta 列
 	 * @param type 数据类型(已经过转换)
-	 * @param isIgnorePrecision 是否忽略长度
-	 * @param isIgnoreScale 是否忽略小数
+	 * @param ignoreLength 是否忽略长度
+	 * @param ignorePrecision 是否忽略有效位数
+	 * @param ignoreScale 是否忽略小数
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
 		if(null == builder){
 			builder = new StringBuilder();
 		}
 		builder.append(type);
-		if(!isIgnorePrecision) {
-			Integer precision =  meta.getPrecision();
-			if (null != precision) {
-				if (precision > 0) {
-					builder.append("(").append(precision);
-					Integer scale = meta.getScale();
-					if (null != scale && scale > 0 && !isIgnoreScale) {
-						builder.append(",").append(scale);
-					}
-					builder.append(")");
-				} else if (precision == -2) {
-					builder.append("(max)");
+		boolean appendLength = false;
+		boolean appendPrecision = false;
+		boolean appendScale = false;
+		Integer length = meta.getLength();
+		Integer precision = meta.getPrecision();
+		Integer scale = meta.getScale();
+		if(ignoreLength != 1){
+			if(null != length){
+				if(length > 0 || length == -2){ //-2:max
+					appendLength = true;
 				}
 			}
 		}
+		if(ignorePrecision != 1){
+			if(null != precision){
+				if(precision > 0){
+					appendPrecision = true;
+				}
+			}
+		}
+		if(ignoreScale != 1){
+			if(null != scale){
+				if(scale > 0){
+					appendScale = true;
+				}
+			}
+		}
+		if(appendLength || appendPrecision || appendScale){
+			builder.append("(");
+		}
+		if(appendLength){
+			if(length ==-2){
+				builder.append("max");
+			}else {
+				builder.append(length);
+			}
+		}else {
+			if (appendPrecision) {
+				builder.append(precision);
+			}
+			if(appendScale){//可能单独出现
+				if(appendPrecision){
+					builder.append(",");
+				}
+				builder.append(scale);
+			}
+		}
+		if(appendLength || appendPrecision || appendScale){
+			builder.append(")");
+		}
+
 		String child = meta.getChildTypeName();
 		Integer srid = meta.getSrid();
 		if(null != child){
@@ -7567,43 +7604,31 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return boolean
 	 */
 	@Override
-	public boolean isIgnorePrecision(DataRuntime runtime, Column meta) {
-		TypeMetadata type = meta.getTypeMetadata();
-		if(null != type){
-			return type.ignorePrecision();
-		}
-		String typeName = meta.getTypeName();
-		if(null != typeName){
-			String chk = typeName.toUpperCase();
-			Boolean chkResult = checkIgnorePrecision(runtime, chk);
-			if(null != chkResult){
-				return chkResult;
-			}
-		}
-		return false;
+	public int ignorePrecision(DataRuntime runtime, Column meta) {
+		return super.ignorePrecision(runtime, meta);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略精度
+	 * 列定义:定义列:是否忽略小数位
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean
 	 */
 	@Override
-	public boolean isIgnoreScale(DataRuntime runtime, Column meta) {
-		TypeMetadata type = meta.getTypeMetadata();
-		if(null != type){
-			return type.ignoreScale();
-		}
-		String name = meta.getTypeName();
-		if(null != name){
-			String chk = name.toUpperCase();
-			Boolean chkResult = checkIgnoreScale(runtime, chk);
-			if(null != chkResult){
-				return chkResult;
-			}
-		}
-		return false;
+	public int ignoreScale(DataRuntime runtime, Column meta) {
+		return super.ignoreScale(runtime, meta);
+	}
+	
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略长度
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type 列数据类型
+	 * @return Boolean 检测不到时返回null
+	 */
+	@Override
+	public int checkIgnoreLength(DataRuntime runtime, String type) {
+		return super.checkIgnoreLength(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -7613,18 +7638,18 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Boolean 检测不到时返回null
 	 */
 	@Override
-	public Boolean checkIgnorePrecision(DataRuntime runtime, String type) {
+	public int checkIgnorePrecision(DataRuntime runtime, String type) {
 		return super.checkIgnorePrecision(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略精度
+	 * 列定义:定义列:是否忽略小数位
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param type 列数据类型
 	 * @return Boolean 检测不到时返回null
 	 */
 	@Override
-	public Boolean checkIgnoreScale(DataRuntime runtime, String type) {
+	public int checkIgnoreScale(DataRuntime runtime, String type) {
 		return super.checkIgnoreScale(runtime, type);
 	}
 	/**
@@ -9185,24 +9210,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		builder.append(" ").append(parameter.getName());
 		TypeMetadata type = parameter.getColumnType();
-		boolean isIgnorePrecision= type.ignorePrecision();
-		boolean isIgnoreScale = type.ignoreScale();
-		builder.append(type);
-		if(!isIgnorePrecision) {
-			Integer precision =  parameter.getPrecision();
-			Integer scale = parameter.getScale();
-			if (null != precision) {
-				if (precision > 0) {
-					builder.append("(").append(precision);
-					if (null != scale && scale > 0 && !isIgnoreScale) {
-						builder.append(",").append(scale);
-					}
-					builder.append(")");
-				} else if (precision == -1) {
-					builder.append("(max)");
-				}
-			}
-		}
+		Column column = new Column();
+		column.setTypeMetadata(type).setLength(parameter.getLength()).setPrecision(parameter.getPrecision()).setScale(parameter.getScale());
+		int ignoreLength= ignoreLength(runtime, column);
+		int ignorePrecision= ignorePrecision(runtime, column);
+		int ignoreScale = ignoreScale(runtime, column);
+		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale);
 		return builder;
 	}
 
@@ -9636,9 +9649,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}
 		if(null != config){
-			ignore_length = config.getIgnoreLength();
-			ignore_precision = config.getIgnorePrecision();
-			ignore_scale = config.getIgnoreScale();
+			ignore_length = config.ignoreLength();
+			ignore_precision = config.ignorePrecision();
+			ignore_scale = config.ignoreScale();
 			length_column = config.getLengthColumn();
 			precision_column = config.getPrecisionColumn();
 			scale_column = config.getScaleColumn();

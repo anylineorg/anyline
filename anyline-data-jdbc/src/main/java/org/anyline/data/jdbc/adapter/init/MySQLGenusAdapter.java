@@ -4615,11 +4615,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
      * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
      * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
-     * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, boolean isIgnorePrecision, boolean isIgnoreScale)
-     * boolean isIgnorePrecision(DataRuntime runtime, Column column)
-     * boolean isIgnoreScale(DataRuntime runtime, Column column)
+     * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
+     * int ignorePrecision(DataRuntime runtime, Column column)
+     * int ignoreScale(DataRuntime runtime, Column column)
      * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
-     * Boolean checkIgnoreScale(DataRuntime runtime, String datatype)
+     * int checkIgnoreScale(DataRuntime runtime, String datatype)
      * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
      * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
      * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
@@ -4987,13 +4987,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @param builder builder
      * @param meta 列
      * @param type 数据类型(已经过转换)
-     * @param isIgnorePrecision 是否忽略长度
-     * @param isIgnoreScale 是否忽略小数
+     * @param ignorePrecision 是否忽略长度
+     * @param ignoreScale 是否忽略小数
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, boolean isIgnorePrecision, boolean isIgnoreScale){
-        return super.type(runtime, builder, meta, type, isIgnorePrecision, isIgnoreScale);
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
+        return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
     }
 
 
@@ -5005,19 +5005,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return boolean
      */
     @Override
-    public boolean isIgnorePrecision(DataRuntime runtime, Column meta) {
-        return super.isIgnorePrecision(runtime, meta);
+    public int ignorePrecision(DataRuntime runtime, Column meta) {
+        return super.ignorePrecision(runtime, meta);
     }
     /**
      * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略精度
+     * 列定义:定义列:是否忽略小数位
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 列
      * @return boolean
      */
     @Override
-    public boolean isIgnoreScale(DataRuntime runtime, Column meta) {
-        return super.isIgnoreScale(runtime, meta);
+    public int ignoreScale(DataRuntime runtime, Column meta) {
+        return super.ignoreScale(runtime, meta);
     }
     /**
      * column[命令合成-子流程]<br/>
@@ -5027,7 +5027,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return Boolean 检测不到时返回null
      */
     @Override
-    public Boolean checkIgnorePrecision(DataRuntime runtime, String type) {
+    public int checkIgnorePrecision(DataRuntime runtime, String type) {
         type = type.toUpperCase();
         if (type.contains("INT")) {
             return false;
@@ -5066,13 +5066,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
     }
     /**
      * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略精度
+     * 列定义:定义列:是否忽略小数位
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param type 列数据类型
      * @return Boolean 检测不到时返回null
      */
     @Override
-    public Boolean checkIgnoreScale(DataRuntime runtime, String type) {
+    public int checkIgnoreScale(DataRuntime runtime, String type) {
         type = type.toUpperCase();
         if (type.contains("INT")) {
             return true;

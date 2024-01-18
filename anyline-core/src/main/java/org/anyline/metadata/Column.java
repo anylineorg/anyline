@@ -1029,13 +1029,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }
         return getFullType(typeName, ignorePrecision());
     }
-    public String getFullType(String typeName, boolean ignorePrecision){
+    public String getFullType(String typeName, int ignorePrecision){
         if(getmap && null != update){
             return update.getFullType(typeName, ignorePrecision);
         }
         StringBuilder builder = new StringBuilder();
         builder.append(typeName);
-        if(!ignorePrecision) {
+        if(ignorePrecision != 1) {
             if (null != precision) {
                 if (precision > 0) {
                     builder.append("(").append(precision);
@@ -1090,12 +1090,17 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         ){
             return false;
         }
-        if(null == typeMetadata || !typeMetadata.ignorePrecision()) {
+        if(null == typeMetadata || 0 == typeMetadata.ignoreLength()) {
+            if (!BasicUtil.equals(getLength(), column.getLength())) {
+                return false;
+            }
+        }
+        if(null == typeMetadata || 0 == typeMetadata.ignorePrecision()) {
             if (!BasicUtil.equals(getPrecision(), column.getPrecision())) {
                 return false;
             }
         }
-        if(null == typeMetadata || !typeMetadata.ignoreScale()) {
+        if(null == typeMetadata ||  0 == typeMetadata.ignoreScale()) {
             if (!BasicUtil.equals(getScale(), column.getScale())) {
                 return false;
             }
@@ -1266,44 +1271,35 @@ public class Column extends BaseMetadata<Column> implements Serializable {
      * 精确判断通过adapter
      * @return boolean
      */
-    public boolean ignorePrecision(){
-        if(null != typeName) {
-            String chk = typeName.toLowerCase();
-            if (chk.contains("date")) {
-                return true;
-            }
-            if (chk.contains("time")) {
-                return true;
-            }
-            if (chk.contains("year")) {
-                return true;
-            }
-            if (chk.contains("text")) {
-                return true;
-            }
-            if (chk.contains("blob")) {
-                return true;
-            }
-            if (chk.contains("json")) {
-                return true;
-            }
-            if (chk.contains("point")) {
-                return true;
-            }
-            if (chk.contains("line")) {
-                return true;
-            }
-            if (chk.contains("polygon")) {
-                return true;
-            }
-            if (chk.contains("geometry")) {
-                return true;
-            }
-            if (chk.contains("geography")) {
-                return true;
-            }
+    public int ignoreLength(){
+        if(null != typeMetadata){
+            return typeMetadata.ignoreLength();
         }
-        return false;
+        return -1;
+    }
+
+    /**
+     * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
+     * 精确判断通过adapter
+     * @return boolean
+     */
+    public int ignorePrecision(){
+        if(null != typeMetadata){
+            return typeMetadata.ignorePrecision();
+        }
+        return -1;
+    }
+
+    /**
+     * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
+     * 精确判断通过adapter
+     * @return boolean
+     */
+    public int ignoreScale(){
+        if(null != typeMetadata){
+            return typeMetadata.ignoreScale();
+        }
+        return -1;
     }
     public String toString(){
         StringBuilder builder = new StringBuilder();

@@ -23,30 +23,43 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AbstractTypeMetadata implements TypeMetadata {
     private boolean array;
-    private DatabaseType[] dbs;
+    private List<DatabaseType> dbs = new ArrayList<>();
     private String name;
     private CATEGORY category;
     private Class transfer                  ; //中间转换类型 转换成其他格式前先转换成transfer类型
     private Class compatible                ; //从数据库中读写数据的类型
-    private Boolean ignorePrecision;
-    private Boolean ignoreScale;
-    public AbstractTypeMetadata(CATEGORY category, String name, DatabaseType db, Class transfer, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    private int ignoreLength;
+    private int ignorePrecision;
+    private int ignoreScale;
+    public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         this.name = name;
-        this.dbs = new DatabaseType[]{db};
+        if(null != dbs){
+            for (DatabaseType db:dbs){
+                this.dbs.add(db);
+            }
+        }
         this.transfer = transfer;
         this.compatible = compatible;
+        this.ignoreLength = ignoreLength;
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    public AbstractTypeMetadata(CATEGORY category, String name, DatabaseType db, Class compatible, Boolean ignorePrecision, Boolean ignoreScale){
+    public AbstractTypeMetadata(CATEGORY category, String name, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         this.name = name;
-        this.dbs = new DatabaseType[]{db};
+        if(null != dbs){
+            for (DatabaseType db:dbs){
+                this.dbs.add(db);
+            }
+        }
         this.compatible = compatible;
+        this.ignoreLength = ignoreLength;
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
@@ -150,12 +163,16 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public boolean ignorePrecision() {
+    public int ignoreLength() {
+        return ignoreLength;
+    }
+    @Override
+    public int ignorePrecision() {
         return ignorePrecision;
     }
 
     @Override
-    public boolean ignoreScale() {
+    public int ignoreScale() {
         return ignoreScale;
     }
 
@@ -175,7 +192,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public DatabaseType[] dbs() {
+    public List<DatabaseType> databaseTypes() {
         return dbs;
     }
 }

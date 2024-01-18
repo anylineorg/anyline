@@ -42,13 +42,17 @@ public interface DataType {
 
 
         @Override
-        public boolean ignorePrecision() {
-            return false;
+        public int ignoreLength() {
+            return -1;
+        }
+        @Override
+        public int ignorePrecision() {
+            return -1;
         }
 
         @Override
-        public boolean ignoreScale() {
-            return false;
+        public int ignoreScale() {
+            return -1;
         }
         @Override
         public boolean support() {
@@ -90,8 +94,9 @@ public interface DataType {
      * 定义列时 数据类型格式
      * @return boolean
      */
-    public abstract boolean ignorePrecision();
-    public abstract boolean ignoreScale();
+    public abstract int ignoreLength();
+    public abstract int ignorePrecision();
+    public abstract int ignoreScale();
     public abstract boolean support();
     public abstract Class supportClass();
 }
