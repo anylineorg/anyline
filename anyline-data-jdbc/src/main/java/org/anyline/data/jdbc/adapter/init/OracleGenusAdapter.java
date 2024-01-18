@@ -5123,7 +5123,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public int checkIgnorePrecision(DataRuntime runtime, String type) {
-        return checkIgnoreScale(runtime, type);
+        return super.checkIgnoreScale(runtime, type);
     }
     /**
      * column[命令合成-子流程]<br/>

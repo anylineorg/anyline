@@ -5050,7 +5050,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      */
     @Override
     public int checkIgnoreScale(DataRuntime runtime, String type) {
-        return checkIgnoreScale(runtime, type);
+        return super.checkIgnoreScale(runtime, type);
     }
     /**
      * column[命令合成-子流程]<br/>

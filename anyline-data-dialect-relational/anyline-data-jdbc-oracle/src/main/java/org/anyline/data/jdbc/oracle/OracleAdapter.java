@@ -90,13 +90,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		for(OracleReader reader: OracleReader.values()){
 			reg(reader.supports(), reader.reader());
 		}
-		alias.put("BFILE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.BYTES,"BFILE", DatabaseType.ORACLE, oracle.sql.BFILE.class, 1, 1, 1));
-		alias.put("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "ROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, 1, 1, 1));
-		alias.put("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "UROWID", DatabaseType.ORACLE, oracle.sql.ROWID.class, 1, 1, 1));
-		alias.put("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE", DatabaseType.ORACLE, java.util.Date.class, java.sql.Timestamp.class, 1, 1, 1));
-		alias.put("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMP", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, 1, 1, 1));
-		alias.put("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, 1, 1, 1));
-		alias.put("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPLTZ", DatabaseType.ORACLE, java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, 1, 1, 1));
+		alias.put("BFILE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.BYTES,"BFILE", oracle.sql.BFILE.class, 1, 1, 1, DatabaseType.ORACLE));
+		alias.put("ROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "ROWID",  oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
+		alias.put("UROWID", new AbstractTypeMetadata(TypeMetadata.CATEGORY.STRING, "UROWID", oracle.sql.ROWID.class, 1, 1, 1, DatabaseType.ORACLE));
+		alias.put("DATE", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "DATE",java.util.Date.class, java.sql.Timestamp.class, 1, 1, 1, DatabaseType.ORACLE));
+		alias.put("TIMESTAMP", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMP", java.sql.Timestamp.class, oracle.sql.TIMESTAMP.class, 1, 1, 1, DatabaseType.ORACLE));
+		alias.put("TIMESTAMPTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPTZ.class, 1, 1, 1, DatabaseType.ORACLE));
+		alias.put("TIMESTAMPLTZ", new AbstractTypeMetadata(TypeMetadata.CATEGORY.DATE, "TIMESTAMPLTZ", java.sql.Timestamp.class, oracle.sql.TIMESTAMPLTZ.class, 1, 1, 1, DatabaseType.ORACLE));
 
 		TypeMetadata.Config numberConfig = new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE");
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, numberConfig);
@@ -4621,6 +4621,17 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @return boolean
 	 */
 	@Override
+	public int ignoreLength(DataRuntime runtime, Column meta) {
+		return super.ignoreLength(runtime, meta);
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略有效位数
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 列
+	 * @return boolean
+	 */
+	@Override
 	public int ignorePrecision(DataRuntime runtime, Column meta) {
 		return super.ignorePrecision(runtime, meta);
 	}
@@ -4643,42 +4654,19 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 * @return Boolean 检测不到时返回null
 	 */
 	@Override
+	public int checkIgnoreLength(DataRuntime runtime, String type) {
+		return super.checkIgnoreLength(runtime, type);
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略有效位数
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type 列数据类型
+	 * @return Boolean 检测不到时返回null
+	 */
+	@Override
 	public int checkIgnorePrecision(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return false;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+		return super.checkIgnorePrecision(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4689,41 +4677,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public int checkIgnoreScale(DataRuntime runtime, String type) {
-		type = type.toUpperCase();
-		if (type.contains("INT")) {
-			return true;
-		}
-		if (type.contains("DATE")) {
-			return true;
-		}
-		if (type.contains("TIME")) {
-			return true;
-		}
-		if (type.contains("YEAR")) {
-			return true;
-		}
-		if (type.contains("TEXT")) {
-			return true;
-		}
-		if (type.contains("BLOB")) {
-			return true;
-		}
-		if (type.contains("JSON")) {
-			return true;
-		}
-		if (type.contains("POINT")) {
-			return true;
-		}
-		if (type.contains("LINE")) {
-			return true;
-		}
-		if (type.contains("POLYGON")) {
-			return true;
-		}
-		if (type.contains("GEOMETRY")) {
-			return true;
-		}
-		return null;
+		return super.checkIgnoreScale(runtime, type);
 	}
 	/**
 	 * column[命令合成-子流程]<br/>

@@ -7604,6 +7604,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return boolean
 	 */
 	@Override
+	public int ignoreLength(DataRuntime runtime, Column meta) {
+		return super.ignoreLength(runtime, meta);
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略有效位数
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 列
+	 * @return boolean
+	 */
+	@Override
 	public int ignorePrecision(DataRuntime runtime, Column meta) {
 		return super.ignorePrecision(runtime, meta);
 	}
@@ -7611,7 +7622,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:定义列:是否忽略小数位
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
+	 * @param meta ignoreLength
 	 * @return boolean
 	 */
 	@Override
@@ -7619,17 +7630,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.ignoreScale(runtime, meta);
 	}
 	
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnoreLength(DataRuntime runtime, String type) {
-		return super.checkIgnoreLength(runtime, type);
-	}
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略长度
