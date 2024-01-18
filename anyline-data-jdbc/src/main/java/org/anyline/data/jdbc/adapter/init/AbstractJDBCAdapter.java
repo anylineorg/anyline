@@ -7638,6 +7638,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Boolean 检测不到时返回null
 	 */
 	@Override
+	public int checkIgnoreLength(DataRuntime runtime, String type) {
+		return super.checkIgnoreLength(runtime, type);
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略有效位数
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type 列数据类型
+	 * @return Boolean 检测不到时返回null
+	 */
+	@Override
 	public int checkIgnorePrecision(DataRuntime runtime, String type) {
 		return super.checkIgnorePrecision(runtime, type);
 	}

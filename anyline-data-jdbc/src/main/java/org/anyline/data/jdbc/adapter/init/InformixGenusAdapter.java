@@ -4815,51 +4815,17 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
     public int ignoreScale(DataRuntime runtime, Column meta) {
         return super.ignoreScale(runtime, meta);
     }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnorePrecision(DataRuntime runtime, String type) {
-        type = type.toUpperCase();
-        if (type.contains("INT")) {
-            return false;
-        }
-        if (type.contains("DATE")) {
-            return true;
-        }
-        if (type.contains("TIME")) {
-            return true;
-        }
-        if (type.contains("YEAR")) {
-            return true;
-        }
-        if (type.contains("TEXT")) {
-            return true;
-        }
-        if (type.contains("BLOB")) {
-            return true;
-        }
-        if (type.contains("JSON")) {
-            return true;
-        }
-        if (type.contains("POINT")) {
-            return true;
-        }
-        if (type.contains("LINE")) {
-            return true;
-        }
-        if (type.contains("POLYGON")) {
-            return true;
-        }
-        if (type.contains("GEOMETRY")) {
-            return true;
-        }
-        return null;
-    }
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:是否忽略有效位数
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type 列数据类型
+	 * @return Boolean 检测不到时返回null
+	 */
+	@Override
+	public int checkIgnorePrecision(DataRuntime runtime, String type) {
+		return super.checkIgnorePrecision(runtime, type);
+	}
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:定义列:是否忽略小数位
@@ -4869,41 +4835,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
      */
     @Override
     public int checkIgnoreScale(DataRuntime runtime, String type) {
-        type = type.toUpperCase();
-        if (type.contains("INT")) {
-            return true;
-        }
-        if (type.contains("DATE")) {
-            return true;
-        }
-        if (type.contains("TIME")) {
-            return true;
-        }
-        if (type.contains("YEAR")) {
-            return true;
-        }
-        if (type.contains("TEXT")) {
-            return true;
-        }
-        if (type.contains("BLOB")) {
-            return true;
-        }
-        if (type.contains("JSON")) {
-            return true;
-        }
-        if (type.contains("POINT")) {
-            return true;
-        }
-        if (type.contains("LINE")) {
-            return true;
-        }
-        if (type.contains("POLYGON")) {
-            return true;
-        }
-        if (type.contains("GEOMETRY")) {
-            return true;
-        }
-        return null;
+        return super.checkIgnorePrecision(runtime, type);
     }
     /**
      * column[命令合成-子流程]<br/>
