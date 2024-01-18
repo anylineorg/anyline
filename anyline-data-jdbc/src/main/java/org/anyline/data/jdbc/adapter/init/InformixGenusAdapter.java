@@ -4728,6 +4728,39 @@ public abstract class InformixGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+
+        String type = meta.getTypeName();
+        if(null == type){
+            type ="";
+        }
+        type = type.toLowerCase();
+        //创建并自增时 或 非自增改自增时 用serial 其他情况用int
+        boolean serial = false;
+        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1){
+            serial = true;
+        }else {
+            Column update = meta.getUpdate();
+            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1){
+                serial = true;
+            }
+        }
+        if(serial){
+            if ("int4".equals(type) || "int".equals(type) || "integer".equals(type) || "int2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
+                meta.setType("SERIAL");
+            } else if ("int8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
+                meta.setType("SERIAL8");
+            }else{
+                meta.setType("SERIAL8");
+            }
+        }else if(type.contains("int") || type.contains("long") || type.contains("serial") || type.contains("short")){
+            if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type) || "serial2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
+                meta.setType("INT");
+            } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
+                meta.setType("INT8");
+            } else{
+                meta.setType("INT8");
+            }
+        }
         return super.type(runtime, builder, meta);
     }
     /**
@@ -4924,7 +4957,7 @@ public abstract class InformixGenusAdapter extends DefaultJDBCAdapter implements
 
     /**
      * column[命令合成-子流程]<br/>
-     * 列定义:递增列
+     * 列定义:递增列,需要通过serial实现递增的在type(DataRuntime runtime, StringBuilder builder, Column meta)中实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 列
@@ -6457,19 +6490,21 @@ public abstract class InformixGenusAdapter extends DefaultJDBCAdapter implements
                 || value == SQL_BUILD_IN_VALUE.CURRENT_TIME
                 || value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP
         ) {
-            String type = column.getTypeName();
-            if ("datetime".equalsIgnoreCase(type)) {
-                String scale = column.getDateScale();
-                if (null == scale) {
-                    if ("date".equalsIgnoreCase(type)) {
-                        scale = "DAY";
-                    } else {
-                        scale = "FRACTION";
+            if(null != column) {
+                String type = column.getTypeName();
+                if ("datetime".equalsIgnoreCase(type)) {
+                    String scale = column.getDateScale();
+                    if (null == scale) {
+                        if ("date".equalsIgnoreCase(type)) {
+                            scale = "DAY";
+                        } else {
+                            scale = "FRACTION";
+                        }
                     }
+                    return "CURRENT YEAR TO " + scale;
+                } else if ("date".equalsIgnoreCase(type)) {
+                    return "TODAY";
                 }
-                return "CURRENT YEAR TO " + scale;
-            }else if("date".equalsIgnoreCase(type)){
-                return "TODAY";
             }
         }
         return null;
@@ -6484,7 +6519,7 @@ public abstract class InformixGenusAdapter extends DefaultJDBCAdapter implements
      */
     @Override
     public String concat(DataRuntime runtime, String... args) {
-        return super.concatFun(runtime, args);
+        return super.concatOr(runtime, args);
     }
 
     /**

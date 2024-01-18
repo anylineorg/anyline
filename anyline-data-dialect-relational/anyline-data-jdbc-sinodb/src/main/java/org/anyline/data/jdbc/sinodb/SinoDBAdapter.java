@@ -138,6 +138,14 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      */
     @Override
     public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+        if(data instanceof Collection){
+            long qty = 0;
+            Collection list = (Collection) data;
+            for(Object item:list){
+                qty += super.insert(runtime, random, batch, dest, item, configs, columns);
+            }
+            return qty;
+        }
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -291,6 +299,14 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      */
     @Override
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+        if(data instanceof Collection){
+            long qty = 0;
+            Collection list = (Collection) data;
+            for(Object item:list){
+                qty += super.insert(runtime, random, item, configs, run, pks);
+            }
+            return qty;
+        }
         return super.insert(runtime, random, data, configs, run, pks);
     }
 
@@ -4714,7 +4730,7 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
 
     /**
      * column[命令合成-子流程]<br/>
-     * 列定义:递增列
+     * 列定义:递增列,需要通过serial实现递增的在type(DataRuntime runtime, StringBuilder builder, Column meta)中实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
      * @param meta 列
