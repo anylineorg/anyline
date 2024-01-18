@@ -23,6 +23,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
@@ -60,6 +61,9 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, Initi
                 if(null != version){
                     //11.2.0.1.0
                     version = version.split("\\.")[0];
+                }
+                if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+                    log.warn("[adapter match][Oracle版本检测][result:{}][runtime version:{}][adapter:{}]", false, version, this.getClass());
                 }
                 double v = BasicUtil.parseDouble(version, 0d);
                 if(v < 12.0){

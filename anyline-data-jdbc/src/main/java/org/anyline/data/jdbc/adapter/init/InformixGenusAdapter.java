@@ -25,7 +25,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
 
-public abstract class InformixGenusAdapter extends DefaultJDBCAdapter implements InitializingBean {
+public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
     public static Map<Integer, String> column_types = new HashMap<>();
     public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
@@ -3784,7 +3784,7 @@ public abstract class InformixGenusAdapter extends DefaultJDBCAdapter implements
         }else{
             pks = meta.primarys();
         }
-        if(!pks.isEmpty()){
+        if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
             builder.append(",PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);

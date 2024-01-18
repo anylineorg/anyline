@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.cassandra;
 
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
@@ -35,7 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Repository("anyline.data.jdbc.adapter.cassandra")
-public class CassandraAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
     
     public DatabaseType type(){
         return DatabaseType.Cassandra;

@@ -35,7 +35,7 @@ import java.util.Map;
  * 所有的非jdbc adapter复制这个源码，在这个基础上修改实现
  */
 
-public abstract class TemplateAdapter extends DefaultDriverAdapter {
+public abstract class TemplateAdapter extends AbstractDriverAdapter {
 
 
 	/* *****************************************************************************************************************

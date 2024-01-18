@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
 
-public abstract class MySQLGenusAdapter extends DefaultJDBCAdapter implements InitializingBean {
+public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
 
     /* *****************************************************************************************************************
      *

@@ -18,7 +18,7 @@
 package org.anyline.data.jdbc.derby;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.derby")
-public class DerbyAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
 		return DatabaseType.Derby;

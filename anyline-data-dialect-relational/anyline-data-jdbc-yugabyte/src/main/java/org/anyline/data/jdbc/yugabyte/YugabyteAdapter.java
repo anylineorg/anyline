@@ -18,14 +18,14 @@
 package org.anyline.data.jdbc.yugabyte;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.yugabyte")
-public class YugabyteAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class YugabyteAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
     
     public DatabaseType type(){
         return DatabaseType.YugabyteDB;

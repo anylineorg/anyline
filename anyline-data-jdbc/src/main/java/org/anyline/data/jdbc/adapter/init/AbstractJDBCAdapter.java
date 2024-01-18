@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.data.adapter.init.DefaultDriverAdapter;
+import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
@@ -50,8 +50,6 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.anyline.util.encrypt.MD5Util;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -69,10 +67,9 @@ import java.util.*;
 /**
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
-public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdapter {
-	protected static final Logger log = LoggerFactory.getLogger(DefaultJDBCAdapter.class);
+public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAdapter {
 
-	public DefaultJDBCAdapter(){
+	public AbstractJDBCAdapter(){
 		super();
 	}
 	@Override
@@ -974,7 +971,12 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 			if(batch > 1){
 				result = batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
-				result = jdbc.update(sql, values.toArray());
+				Object[] vals = values.toArray();
+				if(vals.length >0) {
+					result = jdbc.update(sql, vals);
+				}else{
+					result = jdbc.update(sql);
+				}
 			}
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
@@ -6132,7 +6134,7 @@ public class DefaultJDBCAdapter extends DefaultDriverAdapter implements JDBCAdap
 		}else{
 			pks = meta.primarys();
 		}
-		if(!pks.isEmpty()){
+		if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
 			Column.sort(primary.getPositions(), pks);

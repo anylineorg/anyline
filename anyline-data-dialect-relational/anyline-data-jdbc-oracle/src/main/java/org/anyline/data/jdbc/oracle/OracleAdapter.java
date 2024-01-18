@@ -130,6 +130,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 				}
 				double v = BasicUtil.parseDouble(version, 0d);
 				String key = null;
+				log.warn("[adapter match][Oracle版本检测][result:{}][runtime version:{}][adapter:{}]", false, version, this.getClass());
 				if(v >= 12.0){
 					return true;
 				}

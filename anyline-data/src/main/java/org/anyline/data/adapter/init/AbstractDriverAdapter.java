@@ -55,8 +55,6 @@ import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
@@ -68,8 +66,7 @@ import java.util.*;
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
 
-public abstract class DefaultDriverAdapter implements DriverAdapter {
-	protected static final Logger log = LoggerFactory.getLogger(DefaultDriverAdapter.class);
+public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	@Autowired(required = false)
 	protected DMListener dmListener;
@@ -102,7 +99,7 @@ public abstract class DefaultDriverAdapter implements DriverAdapter {
 	public DatabaseType compatible(){
 		return null;
 	}
-	public DefaultDriverAdapter(){
+	public AbstractDriverAdapter(){
 		//当前数据库支持的数据类型,子类根据情况覆盖
 		for(StandardColumnType type: StandardColumnType.values()){
 			DatabaseType[] dbs = type.dbs();

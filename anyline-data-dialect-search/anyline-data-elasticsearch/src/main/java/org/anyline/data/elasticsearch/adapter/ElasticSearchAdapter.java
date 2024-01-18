@@ -2,7 +2,7 @@ package org.anyline.data.elasticsearch.adapter;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.init.DefaultDriverAdapter;
+import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("anyline.data.adapter.elasticsearch")
-public class ElasticSearchAdapter extends DefaultDriverAdapter implements DriverAdapter {
+public class ElasticSearchAdapter extends AbstractDriverAdapter implements DriverAdapter {
     private static Logger log = LoggerFactory.getLogger(ElasticSearchAdapter.class);
 
     @Override

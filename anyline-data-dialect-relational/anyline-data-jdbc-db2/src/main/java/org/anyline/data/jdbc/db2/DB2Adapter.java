@@ -3568,7 +3568,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		}else{
 			pks = meta.primarys();
 		}
-		if(!pks.isEmpty()){
+		if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
 			Column.sort(primary.getPositions(), pks);

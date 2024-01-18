@@ -27,7 +27,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
 
-public abstract class OracleGenusAdapter extends DefaultJDBCAdapter implements InitializingBean {
+public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
 
 
     /* *****************************************************************************************************************

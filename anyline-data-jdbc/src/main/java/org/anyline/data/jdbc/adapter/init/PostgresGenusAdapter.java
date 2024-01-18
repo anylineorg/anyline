@@ -24,7 +24,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
 
-public abstract class PostgresGenusAdapter extends DefaultJDBCAdapter implements InitializingBean {
+public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
 
     /* *****************************************************************************************************************
      *

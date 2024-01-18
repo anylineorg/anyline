@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.neo4j;
 
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.jdbc.neo4j.entity.Neo4jDataRow;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -52,7 +52,7 @@ import java.sql.ResultSet;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.neo4j")
-public class Neo4jAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
     
     public DatabaseType type(){
         return DatabaseType.Neo4j;

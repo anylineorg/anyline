@@ -1,12 +1,11 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.data.jdbc.adapter.common")
-public class CommonJDBCAdapter extends DefaultJDBCAdapter{
+public class CommonJDBCAdapter extends AbstractJDBCAdapter {
     /**
      * 验证运行环境与当前适配器是否匹配<br/>
      * 默认不连接只根据连接参数<br/>

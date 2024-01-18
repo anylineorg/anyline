@@ -19,7 +19,7 @@
 package org.anyline.data.jdbc.influxdb;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.TableRun;
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("anyline.data.jdbc.adapter.influxdb")
-public class InfluxAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class InfluxAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
 		return DatabaseType.InfluxDB;

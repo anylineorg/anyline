@@ -33,6 +33,7 @@ import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
@@ -67,6 +68,9 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             if (null != version && version.contains(".")) {
                 version = version.split("\\.")[0];
                 double v = BasicUtil.parseDouble(version, 0d);
+                if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+                    log.warn("[adapter match][SQL Server版本检测][result:{}][runtime version:{}][adapter:{}]", false, version, this.getClass());
+                }
                 if (v < 9.0) {
                     return true;
                 }

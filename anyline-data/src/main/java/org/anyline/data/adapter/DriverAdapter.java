@@ -31,6 +31,9 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -44,6 +47,7 @@ import java.util.*;
  * 以上3步在子类中要全部实现，如果不实现，需要输出日志或调用super方法(用于异常堆栈输出)<br/>
  */
 public interface DriverAdapter {
+	Logger log = LoggerFactory.getLogger(DriverAdapter.class);
 
 	// 内置VALUE
 	 enum SQL_BUILD_IN_VALUE{
@@ -92,15 +96,18 @@ public interface DriverAdapter {
 	 */
 	default boolean match(DataRuntime runtime, boolean compensate){
 		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
-		String adapter_key = runtime.getAdapterKey();
-		if(BasicUtil.isNotEmpty(adapter_key)){
+		String config_adapter_key = runtime.getAdapterKey();
+		if(BasicUtil.isNotEmpty(config_adapter_key)){
 			String type = type().name();
-			if(adapter_key.equalsIgnoreCase(type)){
-				return true;
-			}else{
-				//如果明确指定了adapter 不考虑其他特征
-				return false;
+			//如果明确指定了adapter 不考虑其他特征
+			boolean result = false;
+			if(config_adapter_key.equalsIgnoreCase(type)){
+				result = true;
 			}
+			if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+				log.warn("[adapter match][result:{}][config adapter:{}][match adapter:{}]", result, config_adapter_key, type);
+			}
+			return result;
 		}
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
 		return match(feature, keywords, compensate);
@@ -114,13 +121,22 @@ public interface DriverAdapter {
 	 * @return 数据源特征中包含上以任何一项都可以通过
 	 */
 	default boolean match(String feature, List<String> keywords, boolean compensate){
+		if(null == feature){
+			return false;
+		}
 		feature = feature.toLowerCase();
 		if(null != keywords){
 			for (String k:keywords){
 				if(BasicUtil.isEmpty(k)){
+					if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+						log.warn("[adapter match][result:{}][feature:{}][key:{}][match adapter:{}]", false, feature, k, this.getClass());
+					}
 					continue;
 				}
 				if(feature.contains(k)){
+					if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+						log.warn("[adapter match][result:{}][feature:{}][key:{}][match adapter:{}]", true, feature, k, this.getClass());
+					}
 					return true;
 				}
 			}

@@ -18,7 +18,7 @@ import java.sql.ResultSetMetaData;
 import java.util.LinkedHashMap;
 
 //@Repository("anyline.data.jdbc.adapter.数据库类型简写")
-public abstract class TemplateJDBCAdapter extends DefaultJDBCAdapter {
+public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 
 /*    public DatabaseType type(){
         return DatabaseType.NONE;

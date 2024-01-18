@@ -19,7 +19,7 @@
 package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.DefaultJDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
 import org.anyline.data.metadata.StandardColumnType;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -30,6 +30,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -48,7 +49,7 @@ import java.util.*;
  * 2005(9.0)及以上版本
  */
 @Repository("anyline.data.jdbc.adapter.mssql") 
-public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, InitializingBean {
+public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type(){
 		return DatabaseType.MSSQL; 
@@ -88,6 +89,9 @@ public class MSSQLAdapter extends DefaultJDBCAdapter implements JDBCAdapter, Ini
 			if (null != version && version.contains(".")) {
 				version = version.split("\\.")[0];
 				double v = BasicUtil.parseDouble(version, 0d);
+				if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+					log.warn("[adapter match][SQL Server版本检测][result:{}][runtime version:{}][adapter:{}]", false, version, this.getClass());
+				}
 				if (v >= 9.0) {
 					//2005+
 					return true;
