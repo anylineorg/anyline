@@ -156,6 +156,13 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public CATEGORY getCategory() {
         return this.category;
     }
+    @Override
+    public CATEGORY_GROUP getCategoryGroup() {
+        if(null != category){
+            return category.group();
+        }
+        return CATEGORY_GROUP.NONE;
+    }
 
     @Override
     public String getName() {
@@ -195,4 +202,5 @@ public class AbstractTypeMetadata implements TypeMetadata {
     public List<DatabaseType> databaseTypes() {
         return dbs;
     }
+
 }
