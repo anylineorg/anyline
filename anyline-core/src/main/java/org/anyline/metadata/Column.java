@@ -972,18 +972,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(getmap && null != update){
             return update.getFullType();
         }
-        return getFullType(typeName);
-    }
-    public String getFullType(String typeName){
-        if(getmap && null != update){
-            return update.getFullType(typeName);
-        }
-        return getFullType(typeName, ignorePrecision());
-    }
-    public String getFullType(String typeName, int ignorePrecision){
-        if(getmap && null != update){
-            return update.getFullType(typeName, ignorePrecision);
-        }
         StringBuilder builder = new StringBuilder();
         builder.append(typeName);
         if(ignorePrecision != 1) {
