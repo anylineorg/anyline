@@ -1124,6 +1124,16 @@ public interface AnylineService<E>{
 	default long execute(String dest, String ... conditions){
 		return execute(dest, null, conditions);
 	}
+
+	/**
+	 * 执行命令<br/>
+	 * execute(10, sql, List&lt;List&lt;Object&gt;&gt;);<br/>
+	 * 批量执行要求SQL一样
+	 * @param batch 大于1时表示批量执行
+	 * @param sql sql
+	 * @param values 如果是批量执行，需要提供一个二维数组
+	 * @return 影响行娄
+	 */
 	long execute(int batch, String sql, List<Object> values);
 
 	/** 
