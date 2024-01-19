@@ -24,16 +24,16 @@ import org.anyline.util.ConfigTable;
 import java.io.Serializable;
 import java.util.*;
 
-public class Table<E extends Table<?>> extends BaseMetadata<E> implements Serializable {
+public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
     protected String keyword = "TABLE"            ;
     /**
      * 继承自
      */
-    protected Table<?> inherit;
+    protected Table inherit;
     /**
      * 主表(相对于分区表)
      */
-    protected Table<?> master;
+    protected Table master;
     /**
      * 分区
      * partition by :分区方式(LIST, RANGE, HASH)及 依据列
