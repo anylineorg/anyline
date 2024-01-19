@@ -18,9 +18,7 @@
 package org.anyline.data.jdbc.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.DefaultRuntime;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -64,6 +62,12 @@ public class JDBCRuntime extends DefaultRuntime implements DataRuntime {
 
     public JdbcTemplate jdbc(){
         return processor;
+    }
+    public DataSource getDatasource(){
+        if(null != processor){
+            return processor.getDataSource();
+        }
+        return null;
     }
 
     public Object getProcessor() {
