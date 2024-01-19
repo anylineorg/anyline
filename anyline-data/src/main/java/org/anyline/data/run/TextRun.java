@@ -232,11 +232,14 @@ public class TextRun extends BasicRun implements Run {
 			return; 
 		} 
 		String txt = builder.toString();
+
+		String condition = conditionChain.getRunText(null, runtime);
 		boolean where = endWithWhere(txt); 
-		if(!where){
+		if(!where && BasicUtil.isNotEmpty(condition)){
 			builder.append(" WHERE 1=1"); 
 		}
-		builder.append(conditionChain.getRunText(null, runtime));
+		builder.append(condition);
+
 		addValues(conditionChain.getRunValues());
 	}
 	 

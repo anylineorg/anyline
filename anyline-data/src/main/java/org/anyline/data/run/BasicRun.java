@@ -254,6 +254,12 @@ public abstract class BasicRun implements Run {
 	}
 	@Override
 	public void setValues(String key, List<Object> values) {
+		this.values = new ArrayList<>();
+		addValues(key, values);
+	}
+
+	@Override
+	public void addValues(String key, List<Object> values) {
 		if(null != values){
 			if(null == this.values){
 				this.values = new ArrayList<>();
@@ -263,7 +269,6 @@ public abstract class BasicRun implements Run {
 			}
 		}
 	}
-
 	/**
 	 * 添加参数值
 	 * @param compare  compare

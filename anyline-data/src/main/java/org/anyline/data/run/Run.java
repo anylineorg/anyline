@@ -194,6 +194,7 @@ public interface Run {
 
 	void setValue(Object value);
 	void setValues(String key, List<Object> values);
+	void addValues(String key, List<Object> values);
 	Object getValue();
 	void setBatch(int batch);
 	int getBatch();
