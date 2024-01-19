@@ -103,9 +103,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 通用标准类型大类-配置
 	 */
 	public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> standardCategoryConfigs = new LinkedHashMap<>();
-	static {
-
-	}
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -125,6 +122,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1,1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", null, 1, 0, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 0, 0));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
 	}
 
 	@Override
@@ -1869,7 +1880,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 				for(Column column:colums.values()){
 					TypeMetadata tm = column.getTypeMetadata();
-					if(null != tm && tm.getCategory() == TypeMetadata.CATEGORY.STRING) {
+					if(null != tm && tm.getCategoryGroup() == TypeMetadata.CATEGORY_GROUP.STRING) {
 						ors.or(Compare.LIKE, column.getName(), value);
 					}
 				}
