@@ -2283,16 +2283,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				list.addAll(col);
 			}
 			run.setValues(null, list);
+			run.setVol(((Collection)first).size());
 		}
 		run.setBatch(batch);
-		String[] strs = cmd.split("");
-		int vol = 0;
-		for(String str:strs){
-			if(str.equals("?")){
-				vol ++;
-			}
-		}
-		run.setVol(vol);
 		long result = execute(runtime, random, configs, run);
 		return result;
 	}
