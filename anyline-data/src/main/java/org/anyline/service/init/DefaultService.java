@@ -2633,21 +2633,24 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(Table table) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            Table otable = metadata.table(table.getCatalog(), table.getSchema(), table.getName());
-            if(null != otable){
-                otable.setAutoDropColumn(table.isAutoDropColumn());
-                Table update = (Table)table.getUpdate();
-                if(null == update){
-                    update = table;
+            try {
+                Table otable = metadata.table(table.getCatalog(), table.getSchema(), table.getName());
+                if (null != otable) {
+                    otable.setAutoDropColumn(table.isAutoDropColumn());
+                    Table update = (Table) table.getUpdate();
+                    if (null == update) {
+                        update = table;
+                    }
+                    otable.setUpdate(update, false, false);
+                    sort(table);
+                    result = dao.alter(otable);
+                } else {
+                    sort(table);
+                    result = dao.create(table);
                 }
-                otable.setUpdate(update, false, false);
-                sort(table);
-                result = dao.alter(otable);
-            }else{
-                sort(table);
-                result =  dao.create(table);
+            }finally {
+                CacheProxy.clear();
             }
-            CacheProxy.clear();
             return result;
         }
         
@@ -2673,15 +2676,18 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(Table table) throws Exception{
             CacheProxy.clear();
-            Table update = (Table) table.getUpdate();
-            if(null == update){
-                update = table;
+            try {
+                Table update = (Table) table.getUpdate();
+                if (null == update) {
+                    update = table;
+                }
+                table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
+                table.setUpdate(update, false, false);
+                boolean result = dao.alter(table);
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            table = metadata().table(table.getCatalog(), table.getSchema(), table.getName());
-            table.setUpdate(update, false, false);
-            boolean result = dao.alter(table);
-            CacheProxy.clear();
-            return result;
         }
 
 
@@ -2713,21 +2719,23 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(View view) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            View oview = metadata.view(view.getCatalog(), view.getSchema(), view.getName());
-            if(null != oview){
-                oview.setAutoDropColumn(view.isAutoDropColumn());
-                View update = (View)view.getUpdate();
-                if(null == update){
-                    update = view;
+            try {
+                View oview = metadata.view(view.getCatalog(), view.getSchema(), view.getName());
+                if (null != oview) {
+                    oview.setAutoDropColumn(view.isAutoDropColumn());
+                    View update = (View) view.getUpdate();
+                    if (null == update) {
+                        update = view;
+                    }
+                    oview.setUpdate(update, false, false);
+                    result = alter(oview);
+                } else {
+                    result = create(view);
                 }
-                oview.setUpdate(update, false, false);
-                result = alter(oview);
-            }else{
-                result =  create(view);
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-
-            CacheProxy.clear();
-            return result;
         }
         
         @Override
@@ -2770,16 +2778,19 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(MasterTable table) throws Exception {
             boolean result = false;
             CacheProxy.clear();
-            MasterTable otable = metadata.mtable(table.getCatalog(), table.getSchema(), table.getName());
-            if(null != otable){
-                otable.setUpdate(table, false, false);
-                result = alter(otable);
-            }else{
-                result =  create(table);
+            try {
+                MasterTable otable = metadata.mtable(table.getCatalog(), table.getSchema(), table.getName());
+                if (null != otable) {
+                    otable.setUpdate(table, false, false);
+                    result = alter(otable);
+                } else {
+                    result = create(table);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
 
-            CacheProxy.clear();
-            return result;
         }
         
         @Override
@@ -2824,16 +2835,18 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(PartitionTable table) throws Exception {
             boolean result = false;
             CacheProxy.clear();
-            PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
-            if(null != otable){
-                otable.setUpdate(table, false, false);
-                result = alter(otable);
-            }else{
-                result =  create(table);
+            try {
+                PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getMasterName(), table.getName());
+                if (null != otable) {
+                    otable.setUpdate(table, false, false);
+                    result = alter(otable);
+                } else {
+                    result = create(table);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-
-            CacheProxy.clear();
-            return result;
         }
 
         
@@ -2892,19 +2905,22 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(Column column) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName(true));
-            if(null == table){
-                throw new AnylineException("表不存在:"+column.getTableName(true));
+            try {
+                Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName(true));
+                if (null == table) {
+                    throw new AnylineException("表不存在:" + column.getTableName(true));
+                }
+                LinkedHashMap<String, Column> columns = table.getColumns();
+                Column original = columns.get(column.getName().toUpperCase());
+                if (null == original) {
+                    result = add(columns, column);
+                } else {
+                    result = alter(table, column);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            LinkedHashMap<String, Column> columns = table.getColumns();
-            Column original = columns.get(column.getName().toUpperCase());
-            if(null == original){
-                result = add(columns, column);
-            }else {
-                result = alter(table, column);
-            }
-            CacheProxy.clear();
-            return result;
         }
 
         @Override
@@ -2952,32 +2968,35 @@ public class DefaultService<E> implements AnylineService<E> {
         private boolean alter(Table table, Column column) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            LinkedHashMap<String, Column> columns = table.getColumns();
-            Column original = columns.get(column.getName().toUpperCase());
-
-            Column update = column.getUpdate();
-            if(null == update){
-                update = column.clone();
-            }
-            original.setUpdate(update, false, false);
-            String name = original.getName();
             try {
-                result = dao.alter(table, original);
-            }finally {
-                original.setName(name);
-            }
-            if(result) {
-                columns.remove(original.getName());
+                LinkedHashMap<String, Column> columns = table.getColumns();
+                Column original = columns.get(column.getName().toUpperCase());
 
-                BeanUtil.copyFieldValueWithoutNull(original, update);
+                Column update = column.getUpdate();
+                if (null == update) {
+                    update = column.clone();
+                }
                 original.setUpdate(update, false, false);
-                BeanUtil.copyFieldValue(column, original);
-                column.setUpdate(update, false, false);
-                columns.put(original.getName(), original);
+                String name = original.getName();
+                try {
+                    result = dao.alter(table, original);
+                } finally {
+                    original.setName(name);
+                }
+                if (result) {
+                    columns.remove(original.getName());
+
+                    BeanUtil.copyFieldValueWithoutNull(original, update);
+                    original.setUpdate(update, false, false);
+                    BeanUtil.copyFieldValue(column, original);
+                    column.setUpdate(update, false, false);
+                    columns.put(original.getName(), original);
+                }
+                column.setTable(table);
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            column.setTable(table);
-            CacheProxy.clear();
-            return result;
         }
 
         @Override
@@ -3013,19 +3032,22 @@ public class DefaultService<E> implements AnylineService<E> {
         public boolean save(Tag tag) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
-            if(null == table){
-                throw new AnylineException("表不存在:"+tag.getTableName(true));
+            try {
+                Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
+                if (null == table) {
+                    throw new AnylineException("表不存在:" + tag.getTableName(true));
+                }
+                LinkedHashMap<String, Tag> tags = table.getTags();
+                Tag original = tags.get(tag.getName().toUpperCase());
+                if (null == original) {
+                    result = add(tags, tag);
+                } else {
+                    result = alter(table, tag);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            LinkedHashMap<String, Tag> tags = table.getTags();
-            Tag original = tags.get(tag.getName().toUpperCase());
-            if(null == original){
-                result = add(tags, tag);
-            }else {
-                result = alter(table, tag);
-            }
-            CacheProxy.clear();
-            return result;
         }
 
 
@@ -3075,25 +3097,28 @@ public class DefaultService<E> implements AnylineService<E> {
         private boolean alter(Table table, Tag tag) throws Exception{
             boolean result = false;
             CacheProxy.clear();
-            LinkedHashMap<String, Tag> tags = table.getTags();
-            Tag original = tags.get(tag.getName().toUpperCase());
+            try {
+                LinkedHashMap<String, Tag> tags = table.getTags();
+                Tag original = tags.get(tag.getName().toUpperCase());
 
-            Tag update = tag.getUpdate();
-            if(null == update){
-                update = tag.clone();
-            }
-            original.setUpdate(update, false, false);
-            result = dao.alter(table, original);
-            if(result) {
-                tags.remove(original.getName());
-
-                BeanUtil.copyFieldValueWithoutNull(original, update);
+                Tag update = tag.getUpdate();
+                if (null == update) {
+                    update = tag.clone();
+                }
                 original.setUpdate(update, false, false);
-                BeanUtil.copyFieldValue(tag, original);
-                tags.put(original.getName(), original);
+                result = dao.alter(table, original);
+                if (result) {
+                    tags.remove(original.getName());
+
+                    BeanUtil.copyFieldValueWithoutNull(original, update);
+                    original.setUpdate(update, false, false);
+                    BeanUtil.copyFieldValue(tag, original);
+                    tags.put(original.getName(), original);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            CacheProxy.clear();
-            return result;
         }
 
         @Override
@@ -3342,7 +3367,7 @@ public class DefaultService<E> implements AnylineService<E> {
          ******************************************************************************************************************/
         /**
          * 函数
-         * @param function 函数
+         * @param sequence 序列
          * @return boolean
          * @throws Exception 异常 Exception
          */

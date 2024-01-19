@@ -26,6 +26,23 @@ import java.util.*;
 
 public class Column extends BaseMetadata<Column> implements Serializable {
 
+    public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
+    static {
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(0, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config(1,1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 0, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config(1, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config(1, 1, 1));
+    }
     public enum Aggregation {
         MIN			    ("MIN"  			, "最小"),
         MAX			    ("MAX"  			, "最大"),
@@ -152,6 +169,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected int onUpdate = -1                   ; // 是否在更新行时 更新这一列数据
     protected Object value                        ;
     protected boolean defaultCurrentDateTime = false;
+    protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
 
     public Column(){
     }
@@ -363,7 +381,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return update.getTypeName();
         }
         if(null == typeName){
-            if(null != typeMetadata){
+            if(null != typeMetadata && typeMetadata != TypeMetadata.ILLEGAL && typeMetadata != TypeMetadata.NONE){
                 typeName = typeMetadata.getName();
             }
         }
@@ -397,9 +415,154 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.typeName = typeName;
+        if(null != typeName){
+            //数组类型
+            if(typeName.contains("[]")){
+                setArray(true);
+            }
+            //数组类型
+            if(typeName.startsWith("_")){
+                typeName = typeName.substring(1);
+                setArray(true);
+            }
+            typeName = typeName.trim().replace("'","");
+
+            if(typeName.toUpperCase().contains("IDENTITY")){
+                autoIncrement(true);
+                if(typeName.contains(" ")) {
+                    // TYPE_NAME=int identity
+                    typeName = typeName.split(" ")[0];
+                }
+            }
+
+            if(typeName.contains("(")){
+                //decimal(10, 2) varchar(10) geometry(Polygon, 4326) geometry(Polygon) geography(Polygon, 4326)
+                this.precision = 0;
+                this.scale = 0;
+                String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
+                if(tmp.contains(",")){
+                    //有精度或srid
+                    String[] lens = tmp.split("\\,");
+                    if(BasicUtil.isNumber(lens[0])) {
+                        setPrecision(BasicUtil.parseInt(lens[0], null));
+                        setScale(BasicUtil.parseInt(lens[1], null));
+                    }else{
+                        setChildTypeName(lens[0]);
+                        setSrid(BasicUtil.parseInt(lens[1], null));
+                    }
+                }else{
+                    //没有精度和srid
+                    if(BasicUtil.isNumber(tmp)){
+                        setPrecision(BasicUtil.parseInt(tmp, null));
+                    }else{
+                        setChildTypeName(tmp);
+                    }
+                }
+                typeName = typeName.substring(0, typeName.indexOf("(") );
+            }
+        }
+        if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
+            this.className = null;
+        }
+        this.typeName = typeName;
+        parseLvl = 1;
+        fullType = null;
         return this;
     }
 
+    public int getParseLvl() {
+        return parseLvl;
+    }
+
+    public void setParseLvl(int parseLvl) {
+        this.parseLvl = parseLvl;
+    }
+
+    public Column setFullType(String fullType) {
+        this.fullType = fullType;
+        return this;
+    }
+    public String getFullType(){
+        if(getmap && null != update){
+            return update.getFullType();
+        }
+        if(null != fullType){
+            return fullType;
+        }
+        StringBuilder builder = new StringBuilder();
+        String type = null;
+        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL){
+            type = typeMetadata.getName();
+        }else{
+            type = getTypeName();
+        }
+        builder.append(type);
+        boolean appendLength = false;
+        boolean appendPrecision = false;
+        boolean appendScale = false;
+
+        if(ignoreLength() != 1){
+            if(null != length){
+                if(length > 0 || length == -2){ //-2:max
+                    appendLength = true;
+                }
+            }
+        }
+        if(ignorePrecision() != 1){
+            if(null != precision){
+                if(precision > 0){
+                    appendPrecision = true;
+                }
+            }
+        }
+        if(ignoreScale() != 1){
+            if(null != scale){
+                if(scale > 0){
+                    appendScale = true;
+                }
+            }
+        }
+        if(appendLength || appendPrecision || appendScale){
+            builder.append("(");
+        }
+        if(appendLength){
+            if(length == -2){
+                builder.append("max");
+            }else {
+                builder.append(length);
+            }
+        }else {
+            if (appendPrecision) {
+                builder.append(precision);
+            }
+            if(appendScale){//可能单独出现
+                if(appendPrecision){
+                    builder.append(",");
+                }
+                builder.append(scale);
+            }
+        }
+        if(appendLength || appendPrecision || appendScale){
+            builder.append(")");
+        }
+
+        String child = getChildTypeName();
+        Integer srid = getSrid();
+        if(null != child){
+            builder.append("(");
+            builder.append(child);
+            if(null != srid){
+                builder.append(",").append(srid);
+            }
+            builder.append(")");
+        }
+        if(isArray()){
+            builder.append("[]");
+        }
+
+        fullType = builder.toString();
+        return fullType;
+    }
     public Integer getLength() {
         if(getmap && null != update){
             return update.getLength();
@@ -977,88 +1140,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         this.before = before;
         return this;
     }
-
-    public Column setFullType(String fullType) {
-        this.fullType = fullType;
-        return this;
-    }
-
-    public String getFullType(){
-        if(getmap && null != update){
-            return update.getFullType();
-        }
-        if(null != fullType){
-            return fullType;
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append(getTypeName());
-        boolean appendLength = false;
-        boolean appendPrecision = false;
-        boolean appendScale = false;
-        if(ignoreLength() != 1){
-            if(null != length){
-                if(length > 0 || length == -2){ //-2:max
-                    appendLength = true;
-                }
-            }
-        }
-        if(ignorePrecision() != 1){
-            if(null != precision){
-                if(precision > 0){
-                    appendPrecision = true;
-                }
-            }
-        }
-        if(ignoreScale() != 1){
-            if(null != scale){
-                if(scale > 0){
-                    appendScale = true;
-                }
-            }
-        }
-        if(appendLength || appendPrecision || appendScale){
-            builder.append("(");
-        }
-        if(appendLength){
-            if(length ==-2){
-                builder.append("max");
-            }else {
-                builder.append(length);
-            }
-        }else {
-            if (appendPrecision) {
-                builder.append(precision);
-            }
-            if(appendScale){//可能单独出现
-                if(appendPrecision){
-                    builder.append(",");
-                }
-                builder.append(scale);
-            }
-        }
-        if(appendLength || appendPrecision || appendScale){
-            builder.append(")");
-        }
-
-        String child = getChildTypeName();
-        Integer srid = getSrid();
-        if(null != child){
-            builder.append("(");
-            builder.append(child);
-            if(null != srid){
-                builder.append(",").append(srid);
-            }
-            builder.append(")");
-        }
-        if(isArray()){
-            builder.append("[]");
-        }
-
-        fullType = builder.toString();
-        return fullType;
-    }
-
-
     public boolean equals(Column column) {
         return equals(column, true);
     }
@@ -1331,6 +1412,5 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
-
 }
 

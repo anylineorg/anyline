@@ -382,6 +382,11 @@ public interface TypeMetadata {
             this.scaleColumn = scale;
         }
 
+        public Config(int ignoreLength, int ignorePrecision, int ignoreScale){
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
+        }
         public int ignoreLength() {
             return ignoreLength;
         }
