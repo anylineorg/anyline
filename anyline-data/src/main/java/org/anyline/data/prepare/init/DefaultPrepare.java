@@ -45,6 +45,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected List<String> fetchKeys       = new ArrayList<>()	; // 最终需要封装的列
 	protected boolean valid 		       = true				;
 	protected String alias									;
+	protected int batch = 0;
 	protected boolean multiple		       = false				;
 	protected boolean strict		       = false				; // 严格格式 不能追加条件
 	protected String runtime		       = null				; //
@@ -501,4 +502,12 @@ public abstract class DefaultPrepare implements RunPrepare{
 		return this;
 	}
 
+	@Override
+	public int getBatch() {
+		return batch;
+	}
+
+	public void setBatch(int batch) {
+		this.batch = batch;
+	}
 }

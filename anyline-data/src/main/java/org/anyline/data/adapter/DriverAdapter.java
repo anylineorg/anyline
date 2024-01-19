@@ -998,7 +998,7 @@ public interface DriverAdapter {
 	 */
 	long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 
-	long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values);
+	long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values);
 	/**
 	 * procedure [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

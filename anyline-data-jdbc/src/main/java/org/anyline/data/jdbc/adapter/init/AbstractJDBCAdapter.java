@@ -1959,7 +1959,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
+	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values)
 	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
 	 * [命令合成]
 	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -1983,8 +1983,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		return super.execute(runtime, random, batch, configs, cmd, values);
+	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+		return super.execute(runtime, random, batch, configs, prepare, values);
 	}
 	/**
 	 * procedure [命令执行]<br/>
@@ -10639,7 +10639,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				if(var.getType() == Variable.VAR_TYPE_KEY){
 					// CD = :CD
 					List<Object> varValues = var.getValues();
-					if(BasicUtil.isNotEmpty(true, varValues)){
+					if(run.getBatch() >1){//批量执行时在下一步提供值
+						result = result.replace(var.getFullKey(), "?");
+					}else if(BasicUtil.isNotEmpty(true, varValues)){
 						if(var.getCompare() == Compare.IN){
 							// 多个值IN
 							String replaceDst = "";

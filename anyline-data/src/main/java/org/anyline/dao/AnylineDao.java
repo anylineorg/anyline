@@ -408,14 +408,14 @@ public interface AnylineDao<E>{
 	default long execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return execute(runtime(), null, prepare, configs, conditions);
 	}
-	long execute(DataRuntime runtime, String random, int batch, String sql, List<Object> values);
-	default long execute(int batch, String sql, List<Object> values){
-		return execute(runtime(), null, batch, sql, values);
-	}
 	default long execute(RunPrepare prepare, String ... conditions){
 		return execute(prepare, null, conditions);
 	}
- 
+
+	long execute(DataRuntime runtime, String random, int batch, RunPrepare prepare, Collection<Object> values);
+	default long execute(int batch, RunPrepare prepare, Collection<Object> values){
+		return execute(runtime(), null, batch, prepare, values);
+	}
 	/** 
 	 * 执行存储过程
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

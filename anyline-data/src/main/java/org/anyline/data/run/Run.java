@@ -179,6 +179,7 @@ public interface Run {
 	boolean isSetValue(String condition, String variable);
 	boolean isSetValue(String variable);
 	Variable getVariable(String var);
+	List<Variable> getVariables();
 
 	void setFilter(Object filter);
 	Object getFilter();

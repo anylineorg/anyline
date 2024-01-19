@@ -33,6 +33,7 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
@@ -2206,7 +2207,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
+	 * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values)
 	 * boolean execute(DataRuntime runtime, String random, Procedure procedure)
 	 * [命令合成]
 	 * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -2237,7 +2238,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 
-		Run run = buildExecuteRun(runtime, prepare, configs, conditions);
+		Run run = buildExecuteRun(runtime,  prepare, configs, conditions);
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
 				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
@@ -2267,25 +2268,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-		Run run = new SimpleRun(runtime);
+	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
 		if(null == random){
 			random = random(runtime);
 		}
-		StringBuilder builder = run.getBuilder();
-		builder.append(cmd);
-		run.setValues(null, values);
-		Object first = values.get(0);
+		prepare.setBatch(batch);
+		Run run = buildExecuteRun(runtime, prepare, configs);
+
+		Object first = values.iterator().next();
 		if(first instanceof Collection){
+			//?下标占位
 			List<Object> list = new ArrayList<>();
+			int vol = 0;
 			for(Object item:values){
 				Collection col = (Collection) item;
 				list.addAll(col);
+				vol = col.size();
 			}
 			run.setValues(null, list);
-			run.setVol(((Collection)first).size());
+			run.setVol(vol);
+		}else{
+			//${} #{}占位
+			List<Object> list = new ArrayList<>();
+			List<Variable> vars = run.getVariables();
+			List<String> keys = new ArrayList<>();
+			run.setVol(vars.size());
+			for(Variable var:vars){
+				keys.add(var.getKey());
+			}
+			for(Object item:values){
+				for(String key:keys){
+					Object value = BeanUtil.getFieldValue(item, key);
+					list.add(value);
+				}
+			}
+			run.setValues(null, list);
 		}
-		run.setBatch(batch);
 		long result = execute(runtime, random, configs, run);
 		return result;
 	}
@@ -2321,6 +2339,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run = new TextRun();
 		}
 		if(null != run){
+			run.setBatch(prepare.getBatch());
 			run.setRuntime(runtime);
 			run.setPrepare(prepare);
 			run.setConfigStore(configs);

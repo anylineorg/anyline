@@ -676,11 +676,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, String sql, List<Object> values){
+	public long execute(DataRuntime runtime, String random, int batch, RunPrepare prepare, Collection<Object> values){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().execute(runtime, random, batch, null, sql, values);
+		return runtime.getAdapter().execute(runtime, random, batch, null, prepare, values);
 	}
 
 	/**

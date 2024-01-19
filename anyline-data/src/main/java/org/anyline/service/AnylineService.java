@@ -1134,7 +1134,7 @@ public interface AnylineService<E>{
 	 * @param values 如果是批量执行，需要提供一个二维数组
 	 * @return 影响行娄
 	 */
-	long execute(int batch, String sql, List<Object> values);
+	long execute(int batch, String sql, Collection<Object> values);
 
 	/** 
 	 * 执行存储过程 

@@ -926,9 +926,6 @@ public abstract class BasicRun implements Run {
 	}
 
 
-	public List<Variable> getVariables() {
-		return variables;
-	}
 
 	public void setVariables(List<Variable> variables) {
 		this.variables = variables;
@@ -967,6 +964,9 @@ public abstract class BasicRun implements Run {
 			}
 		}
 		return null;
+	}
+	public List<Variable> getVariables(){
+		return variables;
 	}
 
 	@Override

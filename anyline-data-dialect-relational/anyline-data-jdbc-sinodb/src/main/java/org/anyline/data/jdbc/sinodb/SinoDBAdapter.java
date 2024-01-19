@@ -863,7 +863,7 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
      * long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
-     * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String sql, List<Object> values)
+     * long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values)
      * boolean execute(DataRuntime runtime, String random, Procedure procedure)
      * [命令合成]
      * Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
@@ -887,8 +887,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
     }
 
     @Override
-    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, String cmd, List<Object> values){
-        return super.execute(runtime, random, batch, configs, cmd, values);
+    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+        return super.execute(runtime, random, batch, configs, prepare, values);
     }
     /**
      * procedure [命令执行]<br/>

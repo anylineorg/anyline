@@ -1065,8 +1065,12 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-    public long execute(int batch, String sql, List<Object> values){
-        return dao.execute(batch, sql, values);
+    public long execute(int batch, String sql, Collection<Object> values){
+        RunPrepare prepare = createRunPrepare(sql);
+        if (null == prepare) {
+            return -1;
+        }
+        return dao.execute(batch, prepare, values);
     }
     @Override 
     public long execute(String src, ConfigStore configs, String... conditions) {

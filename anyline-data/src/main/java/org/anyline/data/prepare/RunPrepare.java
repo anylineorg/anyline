@@ -223,4 +223,6 @@ public interface RunPrepare extends Cloneable {
 	 */
 	boolean isStrict();
 	void setStrict(boolean strict);
+	void setBatch(int batch);
+	int getBatch();
 } 
