@@ -103,6 +103,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected Integer displaySize                 ; // display size
     protected Integer type                        ; // 类型
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected String fullType                     ; //完整类型名称
     protected TypeMetadata typeMetadata;
     protected String childTypeName                ;
     protected TypeMetadata childTypeMetadata;
@@ -112,6 +113,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
+    protected int ignoreLength = -1;
+    protected int ignorePrecision = -1;
+    protected int ignoreScale = -1;
     protected String dateScale                    ; // 日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
     protected int caseSensitive              = -1 ; // 是否区分大小写
@@ -320,7 +324,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
 
     public Integer getType() {
         if(getmap && null != update){
-            return update.type;
+            return update.getType();
         }
         return type;
     }
@@ -356,7 +360,12 @@ public class Column extends BaseMetadata<Column> implements Serializable {
 
     public String getTypeName() {
         if(getmap && null != update){
-            return update.typeName;
+            return update.getTypeName();
+        }
+        if(null == typeName){
+            if(null != typeMetadata){
+                typeName = typeMetadata.getName();
+            }
         }
         return typeName;
     }
@@ -967,37 +976,86 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }
         this.before = before;
         return this;
-    } 
+    }
+
+    public Column setFullType(String fullType) {
+        this.fullType = fullType;
+        return this;
+    }
+
     public String getFullType(){
         if(getmap && null != update){
             return update.getFullType();
         }
+        if(null != fullType){
+            return fullType;
+        }
         StringBuilder builder = new StringBuilder();
-        builder.append(typeName);
-        if(ignorePrecision != 1) {
-            if (null != precision) {
-                if (precision > 0) {
-                    builder.append("(").append(precision);
-                    if (null != scale && scale > 0) {
-                        builder.append(",").append(scale);
-                    }
-                    builder.append(")");
-                } else if (precision == -2) {
-                    builder.append("(max)");
+        builder.append(getTypeName());
+        boolean appendLength = false;
+        boolean appendPrecision = false;
+        boolean appendScale = false;
+        if(ignoreLength() != 1){
+            if(null != length){
+                if(length > 0 || length == -2){ //-2:max
+                    appendLength = true;
                 }
             }
         }
+        if(ignorePrecision() != 1){
+            if(null != precision){
+                if(precision > 0){
+                    appendPrecision = true;
+                }
+            }
+        }
+        if(ignoreScale() != 1){
+            if(null != scale){
+                if(scale > 0){
+                    appendScale = true;
+                }
+            }
+        }
+        if(appendLength || appendPrecision || appendScale){
+            builder.append("(");
+        }
+        if(appendLength){
+            if(length ==-2){
+                builder.append("max");
+            }else {
+                builder.append(length);
+            }
+        }else {
+            if (appendPrecision) {
+                builder.append(precision);
+            }
+            if(appendScale){//可能单独出现
+                if(appendPrecision){
+                    builder.append(",");
+                }
+                builder.append(scale);
+            }
+        }
+        if(appendLength || appendPrecision || appendScale){
+            builder.append(")");
+        }
+
         String child = getChildTypeName();
+        Integer srid = getSrid();
         if(null != child){
             builder.append("(");
             builder.append(child);
             if(null != srid){
-                builder.append(",");
-                builder.append(srid);
+                builder.append(",").append(srid);
             }
             builder.append(")");
         }
-        return builder.toString();
+        if(isArray()){
+            builder.append("[]");
+        }
+
+        fullType = builder.toString();
+        return fullType;
     }
 
 
@@ -1205,16 +1263,31 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
+    public void setIgnoreLength(int ignoreLength) {
+        this.ignoreLength = ignoreLength;
+    }
+
+    public void setIgnorePrecision(int ignorePrecision) {
+        this.ignorePrecision = ignorePrecision;
+    }
+
+    public void setIgnoreScale(int ignoreScale) {
+        this.ignoreScale = ignoreScale;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
      * @return boolean
      */
     public int ignoreLength(){
+        if(-1 != ignoreLength){
+            return ignoreLength;
+        }
         if(null != typeMetadata){
             return typeMetadata.ignoreLength();
         }
-        return -1;
+        return ignoreLength;
     }
 
     /**
@@ -1223,10 +1296,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
      * @return boolean
      */
     public int ignorePrecision(){
+        if(-1 != ignorePrecision){
+            return ignorePrecision;
+        }
         if(null != typeMetadata){
             return typeMetadata.ignorePrecision();
         }
-        return -1;
+        return ignorePrecision;
     }
 
     /**
@@ -1235,10 +1311,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
      * @return boolean
      */
     public int ignoreScale(){
+        if(-1 != ignoreScale){
+            return ignoreScale;
+        }
         if(null != typeMetadata){
             return typeMetadata.ignoreScale();
         }
-        return -1;
+        return ignoreScale;
     }
     public String toString(){
         StringBuilder builder = new StringBuilder();

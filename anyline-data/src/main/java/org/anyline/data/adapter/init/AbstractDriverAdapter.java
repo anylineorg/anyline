@@ -12221,7 +12221,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == meta){
 			return null;
 		}
-		String typeName = meta.getTypeName();
+		String srcTypeName = meta.getTypeName();
+		String typeName = srcTypeName;
 		if(null == typeName){
 			return null;
 		}
@@ -12279,8 +12280,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		/*if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
 			this.className = null;
 		}*/
-		meta.setTypeName(typeName);
 		typeMetadata = alias.get(typeName.toUpperCase());
+		if(null != typeMetadata) {
+			meta.setTypeName(typeMetadata.getName());
+		}else{
+			//没有对应的类型原们输出
+			meta.setFullType(srcTypeName);
+			meta.setTypeMetadata(TypeMetadata.NONE);
+		}
 		meta.setTypeMetadata(typeMetadata);
 		int ignoreLength = ignoreLength(runtime, typeMetadata);
 		int ignorePrecision = ignorePrecision(runtime, typeMetadata);

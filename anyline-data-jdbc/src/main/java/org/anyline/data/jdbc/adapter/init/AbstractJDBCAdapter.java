@@ -7528,71 +7528,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == builder){
 			builder = new StringBuilder();
 		}
-		builder.append(type);
-		boolean appendLength = false;
-		boolean appendPrecision = false;
-		boolean appendScale = false;
-		Integer length = meta.getLength();
-		Integer precision = meta.getPrecision();
-		Integer scale = meta.getScale();
-		if(ignoreLength != 1){
-			if(null != length){
-				if(length > 0 || length == -2){ //-2:max
-					appendLength = true;
-				}
-			}
-		}
-		if(ignorePrecision != 1){
-			if(null != precision){
-				if(precision > 0){
-					appendPrecision = true;
-				}
-			}
-		}
-		if(ignoreScale != 1){
-			if(null != scale){
-				if(scale > 0){
-					appendScale = true;
-				}
-			}
-		}
-		if(appendLength || appendPrecision || appendScale){
-			builder.append("(");
-		}
-		if(appendLength){
-			if(length ==-2){
-				builder.append("max");
-			}else {
-				builder.append(length);
-			}
-		}else {
-			if (appendPrecision) {
-				builder.append(precision);
-			}
-			if(appendScale){//可能单独出现
-				if(appendPrecision){
-					builder.append(",");
-				}
-				builder.append(scale);
-			}
-		}
-		if(appendLength || appendPrecision || appendScale){
-			builder.append(")");
-		}
-
-		String child = meta.getChildTypeName();
-		Integer srid = meta.getSrid();
-		if(null != child){
-			builder.append("(");
-			builder.append(child);
-			if(null != srid){
-				builder.append(",").append(srid);
-			}
-			builder.append(")");
-		}
-		if(meta.isArray()){
-			builder.append("[]");
-		}
+		meta.setIgnoreLength(ignoreLength);
+		meta.setIgnorePrecision(ignorePrecision);
+		meta.setIgnoreScale(ignoreScale);
+		builder.append(meta.getFullType());
 		return builder;
 	}
 

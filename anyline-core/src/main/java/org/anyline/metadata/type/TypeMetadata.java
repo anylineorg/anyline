@@ -143,6 +143,107 @@ public interface TypeMetadata {
             return null;
         }
     };
+    //不识别的类型 原样输出
+    TypeMetadata NONE = new TypeMetadata() {
+
+        @Override
+        public CATEGORY getCategory() {
+            return CATEGORY.NONE;
+        }
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public int ignoreLength() {
+            return -1;
+        }
+        @Override
+        public int ignorePrecision() {
+            return -1;
+        }
+
+        @Override
+        public int ignoreScale() {
+            return -1;
+        }
+
+        @Override
+        public boolean support() {
+            return false;
+        }
+
+        @Override
+        public void setArray(boolean array) {
+
+        }
+
+        @Override
+        public Class compatible() {
+            return null;
+        }
+
+        @Override
+        public Class transfer() {
+            return null;
+        }
+
+        @Override
+        public List<DatabaseType> databaseTypes() {
+            return new ArrayList<>();
+        }
+
+        @Override
+        public Object convert(Object value, Object def) {
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Class target) {
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Class target, Object def) {
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Class target, boolean array) {
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Class target, boolean array, Object def) {
+            return null;
+        }
+
+        @Override
+        public Object convert(Object value, Object obj, Field field) {
+            return null;
+        }
+
+        @Override
+        public Object read(Object value, Object def, Class clazz) {
+            return null;
+        }
+
+        @Override
+        public Object read(Object value, Object def, Class clazz, boolean array) {
+            return null;
+        }
+
+        @Override
+        public Object write(Object value, Object def, boolean placeholder) {
+            return null;
+        }
+
+        @Override
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            return null;
+        }
+    };
     CATEGORY getCategory();
     String getName();
     default TypeMetadata getOrigin(){
