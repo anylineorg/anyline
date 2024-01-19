@@ -23,7 +23,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TypeMetadata {
-    enum CATEGORY{STRING, INT, FLOAT, BOOLEAN, DATE, TIMESTAMP, COLLECTION, BYTES, GEOMETRY, NONE}
+    enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, OTHER, NONE}
+    //
+    enum CATEGORY{
+        CHAR(CATEGORY_GROUP.STRING, 0, 1, 1),
+        TEXT(CATEGORY_GROUP.STRING, 1, 1, 1),
+        BOOLEAN(CATEGORY_GROUP.BOOLEAN, 1, 1, 1),
+        BYTES(CATEGORY_GROUP.BYTES, 0, 1, 1),
+        BLOB(CATEGORY_GROUP.BYTES, 1, 1, 1),
+        INT(CATEGORY_GROUP.NUMBER, 0, 1, 1),
+        FLOAT(CATEGORY_GROUP.NUMBER, 1, 0, 0),
+        DATE(CATEGORY_GROUP.DATETIME, 1, 1, 1),
+        TIME(CATEGORY_GROUP.DATETIME, 1, 1, 1),
+        DATETIME(CATEGORY_GROUP.DATETIME, 1, 1, 1),
+        TIMESTAMP(CATEGORY_GROUP.DATETIME, 1, 1, 1),
+        COLLECTION(CATEGORY_GROUP.COLLECTION, 1, 1, 1),
+        GEOMETRY(CATEGORY_GROUP.GEOMETRY, 1, 1, 1),
+        OTHER(CATEGORY_GROUP.OTHER, 1, 1, 1),
+        NONE(CATEGORY_GROUP.NONE, 1, 1, 1);
+        private final CATEGORY_GROUP group;
+        private final int ignoreLength;
+        private final int ignorePrecision;
+        private final int ignoreScale;
+        CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale) {
+            this.group = group;
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
+        }
+        public CATEGORY_GROUP group(){
+            return group;
+        }
+    }
     default boolean equals(TypeMetadata metadata){
         if(null == metadata){
             return false;
@@ -49,6 +80,12 @@ public interface TypeMetadata {
         public CATEGORY getCategory() {
             return CATEGORY.NONE;
         }
+
+        @Override
+        public CATEGORY_GROUP getCategoryGroup() {
+            return CATEGORY_GROUP.NONE;
+        }
+
         @Override
         public String getName() {
             return null;
@@ -190,6 +227,11 @@ public interface TypeMetadata {
         }
 
         @Override
+        public CATEGORY_GROUP getCategoryGroup() {
+            return CATEGORY_GROUP.NONE;
+        }
+
+        @Override
         public List<DatabaseType> databaseTypes() {
             return new ArrayList<>();
         }
@@ -245,6 +287,7 @@ public interface TypeMetadata {
         }
     };
     CATEGORY getCategory();
+    CATEGORY_GROUP getCategoryGroup();
     String getName();
     default TypeMetadata getOrigin(){
         return this;
@@ -325,15 +368,16 @@ public interface TypeMetadata {
          */
         private String scaleColumn;
         public Config(){}
-        public Config(String precision){
-            this.precisionColumn = precision;
-        }
-        public Config(String length, String precision, String scale){
+        public Config(String length, String precision, String scale, int ignoreLength, int ignorePrecision, int ignoreScale){
             this.lengthColumn = length;
             this.precisionColumn = precision;
             this.scaleColumn = scale;
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
         }
-        public Config(String precision, String scale){
+        public Config(String length, String precision, String scale){
+            this.lengthColumn = length;
             this.precisionColumn = precision;
             this.scaleColumn = scale;
         }

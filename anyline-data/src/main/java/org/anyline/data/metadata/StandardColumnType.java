@@ -25,7 +25,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.geometry.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.metadata.type.TypeMetadata.CATEGORY;
 import org.anyline.util.Base64Util;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -170,7 +169,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              String
      *
      * ****************************************************************************************************************/
-    CHAR(CATEGORY.STRING, "CHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, Informix, HANA, Derby, Doris){
+    CHAR(CATEGORY.CHAR, "CHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, Informix, HANA, Derby, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -187,52 +186,52 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-   , NCHAR(CATEGORY.STRING, "NCHAR", null, String.class, 0, 1, 1, ORACLE, MSSQL, Informix, GBase8S, SinoDB){
+   , NCHAR(CATEGORY.CHAR, "NCHAR", null, String.class, 0, 1, 1, ORACLE, MSSQL, Informix, GBase8S, SinoDB){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , CLOB(CATEGORY.STRING, "CLOB", null, String.class,1, 1, 1, ORACLE, Informix, GBase8S, SinoDB, Derby, KingBase){
+   , CLOB(CATEGORY.TEXT, "CLOB", null, String.class,1, 1, 1, ORACLE, Informix, GBase8S, SinoDB, Derby, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , NCLOB(CATEGORY.STRING, "NCLOB", null, String.class,1, 1, 1, ORACLE, HANA){
+   , NCLOB(CATEGORY.TEXT, "NCLOB", null, String.class,1, 1, 1, ORACLE, HANA){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-    , NVARCHAR(CATEGORY.STRING, "NVARCHAR", null, String.class, 0, 1, 1, MSSQL, Informix, GBase8S, SinoDB, HANA, KingBase){
+    , NVARCHAR(CATEGORY.CHAR, "NVARCHAR", null, String.class, 0, 1, 1, MSSQL, Informix, GBase8S, SinoDB, HANA, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-    , LVARCHAR(CATEGORY.STRING, "LVARCHAR", null, String.class, 0, 1, 1, Informix, GBase8S, SinoDB, SinoDB){
+    , LVARCHAR(CATEGORY.CHAR, "LVARCHAR", null, String.class, 0, 1, 1, Informix, GBase8S, SinoDB, SinoDB){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , NVARCHAR2(CATEGORY.STRING, "NVARCHAR2", NVARCHAR, String.class, 0, 1, 1, ORACLE){
+   , NVARCHAR2(CATEGORY.CHAR, "NVARCHAR2", NVARCHAR, String.class, 0, 1, 1, ORACLE){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , LONGTEXT(CATEGORY.STRING, "LONGTEXT", null, String.class,1, 1, 1, MySQL){
+   , LONGTEXT(CATEGORY.TEXT, "LONGTEXT", null, String.class,1, 1, 1, MySQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , MEDIUMTEXT(CATEGORY.STRING, "MEDIUMTEXT", null, String.class,1, 1, 1, MySQL){
+   , MEDIUMTEXT(CATEGORY.TEXT, "MEDIUMTEXT", null, String.class,1, 1, 1, MySQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , TEXT(CATEGORY.STRING, "TEXT", null, String.class,1, 1, 1, MySQL, PostgreSQL, SQLite, Informix, GBase8S, SinoDB, IoTDB, KingBase){
+   , TEXT(CATEGORY.TEXT, "TEXT", null, String.class,1, 1, 1, MySQL, PostgreSQL, SQLite, Informix, GBase8S, SinoDB, IoTDB, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , NTEXT(CATEGORY.STRING, "NTEXT", null, String.class,1, 1, 1, MSSQL){
+   , NTEXT(CATEGORY.TEXT, "NTEXT", null, String.class,1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , TINYTEXT(CATEGORY.STRING, "TINYTEXT", null, String.class,1, 1, 1, MySQL){
+   , TINYTEXT(CATEGORY.TEXT, "TINYTEXT", null, String.class,1, 1, 1, MySQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
      * Informix(长度不超过 255 )
      */
-   , VARCHAR(CATEGORY.STRING, "VARCHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris){
+   , VARCHAR(CATEGORY.CHAR, "VARCHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , VARCHAR2(CATEGORY.STRING, "VARCHAR2", VARCHAR, String.class, 0, 1, 1, ORACLE, KingBase, DM, oscar){
+   , VARCHAR2(CATEGORY.CHAR, "VARCHAR2", VARCHAR, String.class, 0, 1, 1, ORACLE, KingBase, DM, oscar){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , SYSNAME(CATEGORY.STRING, "SYSNAME", null, String.class,1, 1, 1, MSSQL){
+   , SYSNAME(CATEGORY.TEXT, "SYSNAME", null, String.class,1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , UUID(CATEGORY.STRING, "UUID", null, String.class,1, 1, 1, PostgreSQL, KingBase){
+   , UUID(CATEGORY.TEXT, "UUID", null, String.class,1, 1, 1, PostgreSQL, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -246,7 +245,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-   , UNIQUEIDENTIFIER(CATEGORY.STRING, "UNIQUEIDENTIFIER", null, String.class,1, 1, 1, MSSQL){
+   , UNIQUEIDENTIFIER(CATEGORY.TEXT, "UNIQUEIDENTIFIER", null, String.class,1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     /**
@@ -255,10 +254,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , BINARY(CATEGORY.BYTES, "BINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA, ElasticSearch)
    , VARBINARY(CATEGORY.BYTES, "VARBINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA)
 
-    , STRING(CATEGORY.STRING, "STRING", null, String.class, 0, 1, 1, Doris){
+    , STRING(CATEGORY.TEXT, "STRING", null, String.class, 0, 1, 1, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-    , HLL(CATEGORY.STRING, "HLL", null, String.class, 0, 1, 1, Doris){
+    , HLL(CATEGORY.TEXT, "HLL", null, String.class, 0, 1, 1, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
 
@@ -267,7 +266,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              String-format
      *
      * ****************************************************************************************************************/
-   , JSON(CATEGORY.STRING, "JSON", null, String.class,1, 1, 1, MySQL, PostgreSQL, KingBase, Doris){
+   , JSON(CATEGORY.TEXT, "JSON", null, String.class,1, 1, 1, MySQL, PostgreSQL, KingBase, Doris){
         @Override
         public Object convert(Object value, Class target, Object def) {
             if(null == value){
@@ -332,7 +331,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;}
 
     }
-   , XML(CATEGORY.STRING, "XML", null, String.class,1, 1, 1, MSSQL, KingBase){}
+   , XML(CATEGORY.TEXT, "XML", null, String.class,1, 1, 1, MSSQL, KingBase){}
     /* *****************************************************************************************************************
      *
      *                                              number-int/long
@@ -348,7 +347,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB)
     , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB)
     , INFORMIX_INTEGER(CATEGORY.INT, "INTEGER", null, Integer.class,1, 1, 1, Informix, GBase8S, SinoDB)
-    , LONG_TEXT(CATEGORY.STRING, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch){}
+    , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch){}
     , INT2(CATEGORY.INT, "INT2", null, Integer.class,1, 1, 1, PostgreSQL)
     , INT4(CATEGORY.INT, "INT4", null, Integer.class,1, 1, 1, PostgreSQL)
     , INT8(CATEGORY.INT, "INT8", null, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
@@ -488,7 +487,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-   , DATETIME(CATEGORY.DATE, "DATETIME", null, LocalDateTime.class, 1, 1, 1, MySQL, Informix, GBase8S, SinoDB, Doris){
+   , DATETIME(CATEGORY.DATETIME, "DATETIME", null, LocalDateTime.class, 1, 1, 1, MySQL, Informix, GBase8S, SinoDB, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -509,26 +508,26 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-   , DATETIME2(CATEGORY.DATE, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
+   , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
     /**
      * MSSQL<br/>
      * 2020-01-01 15:10:10.0000011
      */
-   , DATETIMEOFFSET(CATEGORY.DATE, "DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
+   , DATETIMEOFFSET(CATEGORY.DATETIME, "DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
-   , SMALLDATETIME(CATEGORY.DATE, "SMALLDATETIME", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
+   , SMALLDATETIME(CATEGORY.DATETIME, "SMALLDATETIME", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
-   , SQL_DATETIMEOFFSET(CATEGORY.DATE, "SQL_DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
+   , SQL_DATETIMEOFFSET(CATEGORY.DATETIME, "SQL_DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
    , SECONDDATE(CATEGORY.DATE, "SECONDDATE", null, java.util.Date.class, 1, 1, 1, HANA){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
-   , TIME(CATEGORY.DATE, "TIME", null, java.sql.Time.class, 1, 1, 1, MySQL, PostgreSQL, HANA, Derby){
+   , TIME(CATEGORY.TIME, "TIME", null, java.sql.Time.class, 1, 1, 1, MySQL, PostgreSQL, HANA, Derby){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -549,32 +548,32 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return value;
         }
     }
-    , TIME_WITH_ZONE(CATEGORY.DATE, "TIME WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM){
+    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMEZ(CATEGORY.DATE, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL){
+   , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP(CATEGORY.DATE, "TIMESTAMP", null, java.sql.Timestamp.class, 1, 1, 1, MySQL, PostgreSQL, ORACLE, HANA, Derby){
+   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", null, java.sql.Timestamp.class, 1, 1, 1, MySQL, PostgreSQL, ORACLE, HANA, Derby){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP_WITH_ZONE(CATEGORY.DATE, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+   , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.DATE, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+   , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMPTZ(CATEGORY.DATE, "TIMESTAMPTZ", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+   , TIMESTAMPTZ(CATEGORY.TIMESTAMP, "TIMESTAMPTZ", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
@@ -784,6 +783,13 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     @Override
     public CATEGORY getCategory(){
         return category;
+    }
+    @Override
+    public CATEGORY_GROUP getCategoryGroup(){
+        if(null != category) {
+            return category.group();
+        }
+        return CATEGORY_GROUP.NONE;
     }
     @Override
     public Object convert(Object value, Object def){
