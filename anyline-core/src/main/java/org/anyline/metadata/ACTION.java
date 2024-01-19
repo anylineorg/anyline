@@ -111,6 +111,9 @@ public interface ACTION {
         public CMD getCmd() {
             return cmd;
         }
+        public String getTitle(){
+            return this.title;
+        }
     }
 
     /*
@@ -131,6 +134,9 @@ public interface ACTION {
         private final String title;
         SWITCH(String title){
             this.title = title;
+        }
+        public String getTitle(){
+            return this.title;
         }
     }
 

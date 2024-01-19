@@ -26,6 +26,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.metadata.ACTION;
 import org.anyline.metadata.ACTION.DDL;
 import org.anyline.metadata.ACTION.SWITCH;
+import org.anyline.metadata.BaseMetadata;
 import org.anyline.metadata.Procedure;
 import org.anyline.metadata.Table;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,54 +37,42 @@ import java.util.*;
 @Component("anyline.interceptor.proxy")
 public class InterceptorProxy {
 
-    private static Map<ACTION.DDL, List<DDInterceptor>> dds = new HashMap<>();
-    private static List<QueryInterceptor> queryInterceptors = new ArrayList<>();
-    private static List<CountInterceptor> countInterceptors = new ArrayList<>();
-    private static List<UpdateInterceptor> updateInterceptors = new ArrayList<>();
-    private static List<InsertInterceptor> insertInterceptors = new ArrayList<>();
-    private static List<DeleteInterceptor> deleteInterceptors = new ArrayList<>();
-    private static List<ExecuteInterceptor> executeInterceptors = new ArrayList<>();
+    private static final Map<ACTION.DDL, List<DDInterceptor>> dds = new HashMap<>();
+    private static final List<QueryInterceptor> queryInterceptors = new ArrayList<>();
+    private static final List<CountInterceptor> countInterceptors = new ArrayList<>();
+    private static final List<UpdateInterceptor> updateInterceptors = new ArrayList<>();
+    private static final List<InsertInterceptor> insertInterceptors = new ArrayList<>();
+    private static final List<DeleteInterceptor> deleteInterceptors = new ArrayList<>();
+    private static final List<ExecuteInterceptor> executeInterceptors = new ArrayList<>();
 
     @Autowired(required=false)
     public void setQueryInterceptors(Map<String, QueryInterceptor> interceptors) {
-        for(QueryInterceptor interceptor:interceptors.values()){
-            queryInterceptors.add(interceptor);
-        }
+        queryInterceptors.addAll(interceptors.values());
         JDBCInterceptor.sort(queryInterceptors);
     }
     @Autowired(required=false)
     public void setCountInterceptors(Map<String, CountInterceptor> interceptors) {
-        for(CountInterceptor interceptor:interceptors.values()){
-            countInterceptors.add(interceptor);
-        }
+        countInterceptors.addAll(interceptors.values());
         JDBCInterceptor.sort(countInterceptors);
     }
     @Autowired(required=false)
     public void setUpdateInterceptors(Map<String, UpdateInterceptor> interceptors) {
-        for(UpdateInterceptor interceptor:interceptors.values()){
-            updateInterceptors.add(interceptor);
-        }
+        updateInterceptors.addAll(interceptors.values());
         JDBCInterceptor.sort(updateInterceptors);
     }
     @Autowired(required=false)
     public void setInsertInterceptors(Map<String, InsertInterceptor> interceptors) {
-        for(InsertInterceptor interceptor:interceptors.values()){
-            insertInterceptors.add(interceptor);
-        }
+        insertInterceptors.addAll(interceptors.values());
         JDBCInterceptor.sort(insertInterceptors);
     }
     @Autowired(required=false)
     public void setDeleteInterceptors(Map<String, DeleteInterceptor> interceptors) {
-        for(DeleteInterceptor interceptor:interceptors.values()){
-            deleteInterceptors.add(interceptor);
-        }
+        deleteInterceptors.addAll(interceptors.values());
         JDBCInterceptor.sort(insertInterceptors);
     }
     @Autowired(required=false)
     public void setExecuteInterceptors(Map<String, ExecuteInterceptor> interceptors) {
-        for(ExecuteInterceptor interceptor:interceptors.values()){
-            executeInterceptors.add(interceptor);
-        }
+        executeInterceptors.addAll(interceptors.values());
         JDBCInterceptor.sort(executeInterceptors);
     }
     @Autowired(required=false)
@@ -424,7 +413,7 @@ public class InterceptorProxy {
      *
      * ****************************************************************************************************************/
 
-    public static SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, Object metadata){
+    public static <T extends BaseMetadata<T>> SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, BaseMetadata<T> metadata){
         SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -439,7 +428,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs){
+    public static <T extends BaseMetadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, BaseMetadata<T> metadata, List<Run> runs){
         SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -453,7 +442,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, Object metadata, List<Run> runs, boolean result, long millis){
+    public static <T extends BaseMetadata<T>> SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, BaseMetadata<T> metadata, List<Run> runs, boolean result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
