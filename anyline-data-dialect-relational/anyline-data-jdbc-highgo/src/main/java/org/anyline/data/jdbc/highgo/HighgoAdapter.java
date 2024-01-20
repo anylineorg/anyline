@@ -6058,6 +6058,41 @@ public class HighgoAdapter extends PostgresGenusAdapter implements JDBCAdapter, 
 		return super.identity(runtime, random, data, configs, keyholder);
 	}
 
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据长度列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.lengthColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.precisionColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字小数位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.scaleColumn(runtime, meta);
+	} 
 	public String insertHead(ConfigStore configs){
 		return super.insertHead(configs);
 	}

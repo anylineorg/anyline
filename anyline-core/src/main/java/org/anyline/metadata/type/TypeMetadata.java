@@ -411,7 +411,7 @@ public interface TypeMetadata {
             this.ignoreScale = ignoreScale;
         }
 
-        public String getLengthColumn() {
+        public String lengthColumn() {
             return lengthColumn;
         }
 
@@ -419,7 +419,7 @@ public interface TypeMetadata {
             this.lengthColumn = lengthColumn;
         }
 
-        public String getPrecisionColumn() {
+        public String precisionColumn() {
             return precisionColumn;
         }
 
@@ -427,7 +427,7 @@ public interface TypeMetadata {
             this.precisionColumn = precisionColumn;
         }
 
-        public String getScaleColumn() {
+        public String scaleColumn() {
             return scaleColumn;
         }
 

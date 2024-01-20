@@ -9537,7 +9537,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param table
 	 * @param row
 	 */
-	protected void init(DataRuntime runtime, Column column, Table table, DataRow row){
+	public Column init(DataRuntime runtime, Column column, Table table, DataRow row){
 		String catalog = BasicUtil.evl(row.getString("TABLE_CATALOG"), column.getCatalogName());
 		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"), column.getSchemaName());
 		String tableName = null;
@@ -9581,34 +9581,16 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
 		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
-		int ignore_length = -1;
-		int ignore_precision = -1;
-		int ignore_scale = -1;
-		String length_column = null;
-		String precision_column = null;
-		String scale_column = null;
-
-		TypeMetadata typeMetadata = column.getTypeMetadata();
-		TypeMetadata.Config config = null;
-		if(null != typeMetadata){
-			//先根据类型确定
-			config = typeConfigs.get(typeMetadata.getName());
-			if(null == config){
-				TypeMetadata.CATEGORY category = typeMetadata.getCategory();
-				if(null != category){
-					config = typeCategoryConfigs.get(category);
-				}
-			}
-		}
-		if(null != config){
-			ignore_length = config.ignoreLength();
-			ignore_precision = config.ignorePrecision();
-			ignore_scale = config.ignoreScale();
-			length_column = config.getLengthColumn();
-			precision_column = config.getPrecisionColumn();
-			scale_column = config.getScaleColumn();
-		}
-
+		TypeMetadata typeMetadata = typeMetadata(runtime, type);
+		column.setTypeMetadata(typeMetadata);/*
+		int ignore_length = ignoreLength(runtime, column);
+		int ignore_precision = ignorePrecision(runtime, column);
+		int ignore_scale = ignoreScale(runtime, column);*/
+		String length_column = lengthColumn(runtime, typeMetadata);
+		String precision_column = precisionColumn(runtime, typeMetadata);
+		String scale_column = scaleColumn(runtime, typeMetadata);
+		
+		
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
@@ -9662,41 +9644,35 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
 		try {
 			Integer len = null;
-			if(ignore_length != 1){
-				if(null != length_column){
-					len = row.getInt(length_column);
-				}else{
-					len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-					if (null == len || len == 0) {
-						len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
-					}
+			if(null != length_column){
+				len = row.getInt(length_column);
+			}else{
+				len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+				if (null == len || len == 0) {
+					len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
 				}
-				column.setLength(len);
 			}
+			column.setLength(len);
 		}catch (Exception e){}
 		try{
 			Integer precision = null;
-			if(ignore_precision != 1){
-				if(null != precision_column){
-					precision = row.getInt(precision_column);
-				}else{
-					precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-				}
-				column.setPrecision(precision);
+			if(null != precision_column){
+				precision = row.getInt(precision_column);
+			}else{
+				precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
 			}
+			column.setPrecision(precision);
 		}catch (Exception e){
 
 		}
 		try {
-			if (ignore_scale != 1) {
-				Integer scale = null;
-				if(null != scale_column){
-					scale = row.getInt(scale_column);
-				}else {
-					scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
-				}
-				column.setScale(scale);
+			Integer scale = null;
+			if(null != scale_column){
+				scale = row.getInt(scale_column);
+			}else {
+				scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
 			}
+			column.setScale(scale);
 		}catch (Exception e){}
 		if(null == column.getCharset()) {
 			column.setCharset(row.getString("CHARACTER_SET_NAME"));
@@ -9707,6 +9683,43 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == column.getTypeMetadata()) {
 			typeMetadata(runtime, column);
 		}
+		return column;
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据长度列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.lengthColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.precisionColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字小数位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.scaleColumn(runtime, meta);
 	}
 	/**
 	 *

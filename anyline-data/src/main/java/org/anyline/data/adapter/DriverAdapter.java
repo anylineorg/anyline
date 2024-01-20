@@ -2213,6 +2213,42 @@ public interface DriverAdapter {
 	 */
 	<T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
 
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param table 表
+	 * @param row 系统表查询SQL结果集
+	 * @return Column
+	 */
+	Column init(DataRuntime runtime, Column column, Table table, DataRow row);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据长度列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	String lengthColumn(DataRuntime runtime, TypeMetadata meta);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	String precisionColumn(DataRuntime runtime, TypeMetadata meta);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字小数位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	String scaleColumn(DataRuntime runtime, TypeMetadata meta);
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
