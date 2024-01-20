@@ -19,7 +19,7 @@ package org.anyline.metadata;
 
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
-import org.anyline.metadata.type.init.StandardColumnType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
@@ -476,7 +476,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             this.className = null;
         }
         try{
-            TypeMetadata tm = StandardColumnType.valueOf(typeName.toUpperCase());
+            TypeMetadata tm = StandardTypeMetadata.valueOf(typeName.toUpperCase());
             if(null != tm){
                 this.typeMetadata = tm;
                 ignoreLength = tm.ignoreLength();

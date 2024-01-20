@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.metadata.type.init.StandardColumnType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.entity.geometry.*;
 import org.anyline.util.DateUtil;
 import org.postgresql.geometric.*;
@@ -50,7 +50,7 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    PointWriter(new Object[]{Point.class, StandardColumnType.POINT}, new DataWriter() {
+    PointWriter(new Object[]{Point.class, StandardTypeMetadata.POINT}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof Point) {
@@ -65,7 +65,7 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    LineSegmentWriter(new Object[]{LineSegment.class, StandardColumnType.LSEG}, new DataWriter() {
+    LineSegmentWriter(new Object[]{LineSegment.class, StandardTypeMetadata.LSEG}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof LineSegment) {
@@ -80,7 +80,7 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    PathWriter(new Object[]{LineString.class, StandardColumnType.PATH}, new DataWriter() {
+    PathWriter(new Object[]{LineString.class, StandardTypeMetadata.PATH}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof LineString) {
@@ -95,7 +95,7 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    LineWriter(new Object[]{Line.class, StandardColumnType.LINE}, new DataWriter() {
+    LineWriter(new Object[]{Line.class, StandardTypeMetadata.LINE}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof Line) {
@@ -110,7 +110,7 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    BoxWriter(new Object[]{Box.class, StandardColumnType.BOX}, new DataWriter() {
+    BoxWriter(new Object[]{Box.class, StandardTypeMetadata.BOX}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof Box) {
@@ -125,7 +125,7 @@ public enum PostgresqlWriter {
             return value;
         }
     }),
-    CircleWriter(new Object[]{Circle.class, StandardColumnType.CIRCLE}, new DataWriter() {
+    CircleWriter(new Object[]{Circle.class, StandardTypeMetadata.CIRCLE}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof Circle) {

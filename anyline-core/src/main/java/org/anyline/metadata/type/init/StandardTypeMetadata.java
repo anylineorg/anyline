@@ -39,7 +39,7 @@ import java.util.*;
 import static org.anyline.metadata.type.DatabaseType.*;
 
 
-public enum StandardColumnType implements TypeMetadata {
+public enum StandardTypeMetadata implements TypeMetadata {
 
 /*
 
@@ -740,7 +740,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     private final int ignorePrecision;
     private final int ignoreScale;
     private boolean array;
-    StandardColumnType(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         if(null != origin) {
             this.origin = origin;
@@ -759,7 +759,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    StandardColumnType(CATEGORY category, String name, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         if(null != origin) {
             this.origin = origin;

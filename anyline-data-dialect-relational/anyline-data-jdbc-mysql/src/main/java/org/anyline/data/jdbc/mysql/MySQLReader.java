@@ -18,59 +18,59 @@
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.adapter.DataReader;
-import org.anyline.metadata.type.init.StandardColumnType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 
 public enum MySQLReader {
-    GeometryReader(new Object[]{StandardColumnType.GEOMETRY}, new DataReader() {
+    GeometryReader(new Object[]{StandardTypeMetadata.GEOMETRY}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parse(bytes);
         }
     }),
-    PointReader(new Object[]{StandardColumnType.POINT}, new DataReader() {
+    PointReader(new Object[]{StandardTypeMetadata.POINT}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parsePoint(bytes);
         }
     }),
-    LineReader(new Object[]{StandardColumnType.LINESTRING}, new DataReader() {
+    LineReader(new Object[]{StandardTypeMetadata.LINESTRING}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parseLine(bytes);
         }
     }),
-    PolygonReader(new Object[]{StandardColumnType.POLYGON}, new DataReader() {
+    PolygonReader(new Object[]{StandardTypeMetadata.POLYGON}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parsePolygon(bytes);
         }
     }),
-    MultiPointReader(new Object[]{StandardColumnType.MULTIPOINT}, new DataReader() {
+    MultiPointReader(new Object[]{StandardTypeMetadata.MULTIPOINT}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parseMultiPoint(bytes);
         }
     }),
-    MultiLineReader(new Object[]{StandardColumnType.MULTILINESTRING}, new DataReader() {
+    MultiLineReader(new Object[]{StandardTypeMetadata.MULTILINESTRING}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parseMultiLine(bytes);
         }
     }),
-    MultiPolygonReader(new Object[]{StandardColumnType.MULTIPOLYGON}, new DataReader() {
+    MultiPolygonReader(new Object[]{StandardTypeMetadata.MULTIPOLYGON}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;
             return MySQLGeometryAdapter.parseMultiPolygon(bytes);
         }
     }),
-    GeometryCollectionReader(new Object[]{StandardColumnType.GEOMETRYCOLLECTION}, new DataReader() {
+    GeometryCollectionReader(new Object[]{StandardTypeMetadata.GEOMETRYCOLLECTION}, new DataReader() {
         @Override
         public Object read(Object value) {
             byte[] bytes = (byte[]) value;

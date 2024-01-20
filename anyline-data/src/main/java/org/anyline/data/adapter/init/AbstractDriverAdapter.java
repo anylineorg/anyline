@@ -27,7 +27,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.metadata.type.init.StandardColumnType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -113,7 +113,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 	public AbstractDriverAdapter(){
 		//当前数据库支持的数据类型,子类根据情况覆盖
-		for(StandardColumnType type: StandardColumnType.values()){
+		for(StandardTypeMetadata type: StandardTypeMetadata.values()){
 			List<DatabaseType> dbs = type.databaseTypes();
 			for(DatabaseType db:dbs){
 				if(db == this.type()){

@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.mssql;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
-import org.anyline.metadata.type.init.StandardColumnType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -4948,7 +4948,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
 		if(null != meta){
 			TypeMetadata metadata = meta.getTypeMetadata();
-			if(metadata == StandardColumnType.VARCHAR || metadata == StandardColumnType.VARBINARY || metadata == StandardColumnType.NVARCHAR){
+			if(metadata == StandardTypeMetadata.VARCHAR || metadata == StandardTypeMetadata.VARBINARY || metadata == StandardTypeMetadata.NVARCHAR){
 				int len = meta.getPrecision();
 				if(len > 8000){
 					meta.setPrecision(-2);

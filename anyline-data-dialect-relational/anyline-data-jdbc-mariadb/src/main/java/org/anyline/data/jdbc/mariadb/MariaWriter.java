@@ -18,12 +18,12 @@
 package org.anyline.data.jdbc.mariadb;
 
 import org.anyline.adapter.DataWriter;
-import org.anyline.metadata.type.init.StandardColumnType;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.entity.geometry.*;
 
 public enum MariaWriter {
 
-    PointWriter(new Object[]{Point.class, StandardColumnType.POINT}, new DataWriter() {
+    PointWriter(new Object[]{Point.class, StandardTypeMetadata.POINT}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             Point point = null;
@@ -61,7 +61,7 @@ public enum MariaWriter {
         }
     }),
 
-    LineWriter(new Object[]{LineString.class, StandardColumnType.LINESTRING}, new DataWriter() {
+    LineWriter(new Object[]{LineString.class, StandardTypeMetadata.LINESTRING}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof LineString) {
@@ -76,7 +76,7 @@ public enum MariaWriter {
         }
     }),
 
-    PolygonWriter(new Object[]{Polygon.class, StandardColumnType.POLYGON}, new DataWriter() {
+    PolygonWriter(new Object[]{Polygon.class, StandardTypeMetadata.POLYGON}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof Polygon) {
@@ -91,7 +91,7 @@ public enum MariaWriter {
         }
     }),
 
-    MultiPointWriter(new Object[]{MultiPoint.class, StandardColumnType.MULTIPOINT}, new DataWriter() {
+    MultiPointWriter(new Object[]{MultiPoint.class, StandardTypeMetadata.MULTIPOINT}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof MultiPoint) {
@@ -106,7 +106,7 @@ public enum MariaWriter {
         }
     }),
 
-    MultiLineWriter(new Object[]{MultiLine.class, StandardColumnType.MULTILINESTRING}, new DataWriter() {
+    MultiLineWriter(new Object[]{MultiLine.class, StandardTypeMetadata.MULTILINESTRING}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof MultiLine) {
@@ -121,7 +121,7 @@ public enum MariaWriter {
         }
     }),
 
-    MultiPolygonWriter(new Object[]{MultiPolygon.class, StandardColumnType.MULTIPOLYGON}, new DataWriter() {
+    MultiPolygonWriter(new Object[]{MultiPolygon.class, StandardTypeMetadata.MULTIPOLYGON}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof MultiPolygon) {
@@ -136,7 +136,7 @@ public enum MariaWriter {
         }
     }),
 
-    GeometryCollectionWriter(new Object[]{GeometryCollection.class, StandardColumnType.GEOMETRYCOLLECTION}, new DataWriter() {
+    GeometryCollectionWriter(new Object[]{GeometryCollection.class, StandardTypeMetadata.GEOMETRYCOLLECTION}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
             if(value instanceof GeometryCollection) {
