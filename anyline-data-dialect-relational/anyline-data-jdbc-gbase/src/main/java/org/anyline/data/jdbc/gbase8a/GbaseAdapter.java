@@ -20,9 +20,6 @@ package org.anyline.data.jdbc.gbase8a;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
-import org.anyline.data.jdbc.gbase8s.GbaseColumnTypeAlias;
-import org.anyline.data.jdbc.gbase8s.GbaseReader;
-import org.anyline.data.jdbc.gbase8s.GbaseWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -30,6 +27,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
