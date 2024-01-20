@@ -7531,6 +7531,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		meta.setIgnoreLength(ignoreLength);
 		meta.setIgnorePrecision(ignorePrecision);
 		meta.setIgnoreScale(ignoreScale);
+		meta.parseType(2);
 		builder.append(meta.getFullType());
 		return builder;
 	}

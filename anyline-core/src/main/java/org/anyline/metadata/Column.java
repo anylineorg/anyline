@@ -116,12 +116,16 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     }
     protected String keyword = "COLUMN"           ;
     protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
+    protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected TypeMetadata typeMetadata;
+    protected int ignoreLength               = -1 ;
+    protected int ignorePrecision            = -1 ;
+    protected int ignoreScale                = -1 ;
+
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected Integer displaySize                 ; // display size
     protected Integer type                        ; // 类型
-    protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected String fullType                     ; //完整类型名称
-    protected TypeMetadata typeMetadata;
     protected String childTypeName                ;
     protected TypeMetadata childTypeMetadata;
     protected JavaType javaType                   ;
@@ -130,9 +134,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
     protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
     protected Integer scale                       ; // 小数部分的长度
-    protected int ignoreLength = -1;
-    protected int ignorePrecision = -1;
-    protected int ignoreScale = -1;
     protected String dateScale                    ; // 日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
     protected int caseSensitive              = -1 ; // 是否区分大小写
@@ -415,6 +416,15 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.typeName = typeName;
+        parseType(1);
+        fullType = null;
+        return this;
+    }
+    public Column parseType(int lvl){
+        if(lvl <= parseLvl){
+            return this;
+        }
+        String typeName = this.typeName;
         if(null != typeName){
             //数组类型
             if(typeName.contains("[]")){
@@ -465,8 +475,12 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             this.className = null;
         }
         this.typeName = typeName;
-        parseLvl = 1;
-        fullType = null;
+        if(ignorePrecision == 1){
+            if(null == length || length == -1){
+                length = precision;
+            }
+        }
+        parseLvl = lvl;
         return this;
     }
 
