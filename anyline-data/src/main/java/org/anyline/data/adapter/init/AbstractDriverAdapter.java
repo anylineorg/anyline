@@ -27,7 +27,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;

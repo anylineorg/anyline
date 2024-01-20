@@ -18,7 +18,7 @@
 package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum GbaseColumnTypeAlias implements ColumnTypeAlias {

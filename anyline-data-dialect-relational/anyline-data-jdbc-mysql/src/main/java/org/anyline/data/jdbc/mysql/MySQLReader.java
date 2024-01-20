@@ -18,7 +18,7 @@
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.adapter.DataReader;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 
 public enum MySQLReader {
     GeometryReader(new Object[]{StandardColumnType.GEOMETRY}, new DataReader() {

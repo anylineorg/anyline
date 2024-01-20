@@ -18,7 +18,7 @@
 package org.anyline.data.jdbc.mysql;
 
 import org.anyline.adapter.DataWriter;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.entity.geometry.*;
 
 public enum MySQLWriter {

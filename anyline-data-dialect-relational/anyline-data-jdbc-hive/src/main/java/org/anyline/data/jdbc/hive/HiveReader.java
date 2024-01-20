@@ -18,7 +18,6 @@
 package org.anyline.data.jdbc.hive;
 
 import org.anyline.adapter.DataReader;
-import org.anyline.data.metadata.StandardColumnType;
 
 public enum HiveReader {
     ;

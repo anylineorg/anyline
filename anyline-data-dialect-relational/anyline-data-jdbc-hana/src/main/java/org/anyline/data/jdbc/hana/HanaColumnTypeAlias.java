@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.hana;
 
 
 import org.anyline.data.metadata.ColumnTypeAlias;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum HanaColumnTypeAlias implements ColumnTypeAlias {

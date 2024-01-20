@@ -18,7 +18,7 @@
 package org.anyline.data.jdbc.kingbase.postgres;
 
 import org.anyline.data.metadata.ColumnTypeAlias;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {

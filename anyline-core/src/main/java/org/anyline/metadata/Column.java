@@ -19,6 +19,7 @@ package org.anyline.metadata;
 
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
@@ -474,6 +475,17 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
             this.className = null;
         }
+        try{
+            TypeMetadata tm = StandardColumnType.valueOf(typeName.toUpperCase());
+            if(null != tm){
+                this.typeMetadata = tm;
+                ignoreLength = tm.ignoreLength();
+                ignorePrecision = tm.ignorePrecision();
+                ignoreScale = tm.ignoreScale();
+            }
+        }catch (Exception e){
+
+        }
         this.typeName = typeName;
         if(ignorePrecision == 1){
             if(null == length || length == -1){
@@ -590,6 +602,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.length = length;
+        fullType = null;
         return this;
     }
 
@@ -606,6 +619,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.precision = precision;
+        fullType = null;
         return this;
     }
     public Column setPrecision(Integer precision, Integer scale) {
@@ -615,6 +629,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }
         this.precision = precision;
         this.scale = scale;
+        fullType = null;
         return this;
     }
 
@@ -766,6 +781,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.scale = scale;
+        fullType = null;
         return this;
     }
 
@@ -821,6 +837,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(autoIncrement == 1){
             nullable(false);
         }
+        fullType = null;
         return this;
     }
 

@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.init.ConvertAdapter;
-import org.anyline.data.metadata.StandardColumnType;
+import org.anyline.metadata.type.init.StandardColumnType;
 import org.anyline.entity.geometry.*;
 import org.anyline.util.DateUtil;
 import org.postgresql.geometric.*;

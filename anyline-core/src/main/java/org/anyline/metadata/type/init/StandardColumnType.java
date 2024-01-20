@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.metadata;
+package org.anyline.metadata.type.init;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.adapter.KeyAdapter;
