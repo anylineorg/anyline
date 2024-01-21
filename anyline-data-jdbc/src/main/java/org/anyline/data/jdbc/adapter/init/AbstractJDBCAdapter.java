@@ -7482,10 +7482,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		int ignorePrecision = -1;
 		int ignoreScale = -1;
 		String typeName = meta.getTypeName();
-		TypeMetadata type = meta.getTypeMetadata();
-		if(null == type){
-			type = typeMetadata(runtime, meta);
-		}
+		TypeMetadata type = typeMetadata(runtime, meta);
 		if(null != type){
 			if(!type.support()){
 				throw new RuntimeException("数据类型不支持:" + typeName);
@@ -10575,7 +10572,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 
 			if(alias && batch<=1){
-				builder.append(" AS ").append(key);
+				builder.append(" AS ");
+				delimiter(builder, key);
 			}
 		}
 		if(scope && batch<=1) {

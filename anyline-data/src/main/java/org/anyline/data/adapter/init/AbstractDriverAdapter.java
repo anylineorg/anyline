@@ -5683,9 +5683,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				indexs = indexs(runtime, true, indexs, table, false, false);
 				table.setIndexs(indexs);
 			} catch (Exception e) {
+				log.info("{}[table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}
+				indexs = new LinkedHashMap<>();
 			}
 			if(BasicUtil.isNotEmpty(pattern)){
 				T index = indexs.get(pattern.toUpperCase());
@@ -12345,7 +12347,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		TypeMetadata typeMetadata = meta.getTypeMetadata();
-		if(null != typeMetadata){
+		if(null != typeMetadata && meta.getParseLvl() >=2){
 			return typeMetadata;
 		}
 		Integer precision = null;
@@ -12429,6 +12431,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != ct){
 			ct.setArray(array);
 		}*/
+		meta.setParseLvl(2);
 		return typeMetadata;
 	}
 
@@ -13105,7 +13108,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				builder.append(split);
 			}
 			first = false;
-			builder.append(prefix).append(column);
+			builder.append(prefix);
+			//.append(column);
+			delimiter(builder, column);
 		}
 		return builder.toString();
 	}

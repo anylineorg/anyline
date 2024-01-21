@@ -755,7 +755,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
                     builder.append(",");
                 }
                 first = false;
-                builder.append(name).append(".").append(key).append(" AS ").append(name);
+                delimiter(builder,name);
+                builder.append(".").append(key).append(" AS ");
+                delimiter(builder,name);
             }
             String dummy = dummy();
             if(BasicUtil.isNotEmpty(dummy)) {
