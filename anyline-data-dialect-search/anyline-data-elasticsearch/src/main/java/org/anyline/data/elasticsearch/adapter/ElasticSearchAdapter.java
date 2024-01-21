@@ -2258,6 +2258,11 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         return super.columns(runtime, index, create, table, columns, set);
     }
 
+    @Override
+    public Column init(DataRuntime runtime, Column column, Table table, DataRow row) {
+        return null;
+    }
+
     /**
      * column[结果集封装]<br/>
      * 解析JDBC get columns结果

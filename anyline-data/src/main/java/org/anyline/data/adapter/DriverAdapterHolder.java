@@ -24,31 +24,36 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.data.DriverAdapterHolder")
 public class DriverAdapterHolder {
-
 	private static final Logger log = LoggerFactory.getLogger(DriverAdapterHolder.class);
-	private static HashSet<DriverAdapter> adapters= new HashSet<>();
-	private static HashSet<DatabaseType> supports= new HashSet<>();
+	/**
+	 * 项目注册adapter用来覆盖adapters
+	 */
+	public static LinkedHashMap<DatabaseType, DriverAdapter> user_adapters = new LinkedHashMap<>();
+	private static HashSet<DriverAdapter> adapters = new HashSet<>();
+	private static HashSet<DatabaseType> supports = new HashSet<>();
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
 	public DriverAdapterHolder(){}
-
+	public static void reg(DatabaseType type, DriverAdapter adapter){
+		user_adapters.put(type, adapter);
+	}
 	/**
 	 * 获取支持数据库的适配器,注意有可能获取到多个
 	 * @param type 数据库类型
 	 * @return DriverAdapter
 	 */
 	public static DriverAdapter getAdapter(DatabaseType type){
-		List<DriverAdapter> list = getAdapters(type);
-		if(list.isEmpty()){
-			return null;
+		DriverAdapter adapter = user_adapters.get(type);
+		if(null == adapter) {
+			List<DriverAdapter> list = getAdapters(type);
+			if (!list.isEmpty()) {
+				adapter = list.get(0);
+			}
 		}
-		return list.get(0);
+		return adapter;
 	}
 	public static List<DriverAdapter> getAdapters(DatabaseType type){
 		List<DriverAdapter> list = new ArrayList<>();
