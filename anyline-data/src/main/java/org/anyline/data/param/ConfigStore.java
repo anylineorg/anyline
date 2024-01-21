@@ -391,7 +391,10 @@ public interface ConfigStore {
 	}
 
 	/**
-	 * 构造查询条件
+	 * 构造查询条件<br/>
+	 * 最初ands是为了生成in条件，但and已经可以识别集合条件自动生成IN，<br/>
+	 * 2023-10-21后<br/>
+	 * ands改成了与ors类似的效果，即把之前所有的条件放在一个()内,然后and this<br/>
 	 * @param swt 遇到空值处理方式
 	 * @param var XML自定义SQL条件中指定变量赋值或占位符key或列名 在value值为空的情况下 如果以var+开头会生成var is null 如果以++开头当前SQL不执行 这与swt作用一样,不要与swt混用
 	 * @param value 值 可以是集合 如果是集合生成IN条件
