@@ -29,6 +29,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
     public static Map<Integer, String> column_types = new HashMap<>();
     public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
+    public InformixGenusAdapter(){
+        super();
+
+    }
+
     @Value("${anyline.data.jdbc.delimiter.informix:}")
     private String delimiter;
 
@@ -2476,44 +2481,213 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
         if(null == columns){
             columns = new LinkedHashMap<>();
         }
-
         for(DataRow row:set){
-            String name = row.getString("COLNAME");
-            Column column = columns.get(name.toUpperCase());
+            String name = row.getString("COLUMN_NAME","COLNAME");
+            T column = columns.get(name.toUpperCase());
             if(null == column){
-                column = new Column();
+                column = (T)new Column();
             }
-            column.setTable(table);
-            column.setTable(BasicUtil.evl(row.getString("TABNAME"), table.getName(), column.getTableName(true)));
             column.setName(name);
-            Integer coltype = row.getInt("COLTYPE", null);
-            if(null != coltype){
-                if(coltype >= 256){
-                    coltype -= 256;
-                    column.nullable(false);
-                }
-                String typeName = column_types.get(coltype);
-                column.setTypeName(typeName);
-            }
-            int len = row.getInt("COLLENGTH",0);
-            column.setPrecision(len);
-            if(coltype == 8 || coltype == 5){
-                int scale = len%256;
-                len = len/256;
-                column.setPrecision(len, scale);
-            }
-            if(null == column.getTypeMetadata()) {
-                typeMetadata(runtime, column);
-            }
-            columns.put(name.toUpperCase(), (T)column);
+            init(runtime, column, table, row);
+            columns.put(name.toUpperCase(), column);
         }
         return columns;
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception{
-        return super.columns(runtime, index, create, table, columns, set);
+        if(null == columns){
+            columns = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("COLNAME");
+            T tmp = (T)new Column();
+            tmp.setName(name);
+            init(runtime, tmp, table, row);
+            T column = column(tmp, columns);
+            if(null == column) {
+                column = (T) new Column();
+                column.setName(name);
+                init(runtime, column, table, row);
+                columns.add(column);
+            }
+        }
+        return columns;
     }
 
+    /**
+     * column [结果集封装-子流程](方法1)<br/>
+     * 方法(1)内部遍历
+     * @param column
+     * @param table
+     * @param row
+     */
+    public Column init(DataRuntime runtime, Column column, Table table, DataRow row){
+        /*
+        *
+        String name = row.getString("COLNAME");
+        Column column = columns.get(name.toUpperCase());
+        if(null == column){
+            column = new Column();
+        }
+        column.setTable(table);
+        column.setTable(BasicUtil.evl(row.getString("TABNAME"), table.getName(), column.getTableName(true)));
+        column.setName(name);
+        Integer coltype = row.getInt("COLTYPE", null);
+        if(null != coltype){
+            if(coltype >= 256){
+                coltype -= 256;
+                column.nullable(false);
+            }
+            String typeName = column_types.get(coltype);
+            column.setTypeName(typeName);
+        }
+        int len = row.getInt("COLLENGTH",0);
+        column.setLength(len);
+        column.setPrecision(len);
+        //DECIMAL 或 money
+        if(coltype == 8 || coltype == 5){
+            int scale = len%256;
+            int precision = len/256;
+            column.setPrecision(precision, scale);
+        }
+        if(null == column.getTypeMetadata()) {
+            typeMetadata(runtime, column);
+        }
+        */
+         String tableName = null;
+        if(null != table){
+            tableName = table.getName();
+        }
+        if(null != table) {//查询全部表
+            column.setTable(table);
+        }
+        column.setTable(BasicUtil.evl(row.getString("TABNAME"), column.getTableName(true), tableName));
+
+        if(null == column.getPosition()) {
+            try {
+                column.setPosition(row.getInt("COLNO"));
+            }catch (Exception e){}
+        }
+        String type = null;
+        Integer coltype = row.getInt("COLTYPE", null);
+        if(null != coltype){
+            if(coltype >= 256){
+                coltype -= 256;
+                column.nullable(false);
+            }
+            type = column_types.get(coltype);
+            column.setTypeName(type);
+        }
+
+        TypeMetadata typeMetadata = typeMetadata(runtime, type);
+        column.setTypeMetadata(typeMetadata);
+        String length_column = lengthColumn(runtime, typeMetadata);
+        String precision_column = precisionColumn(runtime, typeMetadata);
+        String scale_column = scaleColumn(runtime, typeMetadata);
+
+
+        String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
+        if(BasicUtil.isNotEmpty(def)) {
+            while(def.startsWith("(") && def.endsWith(")")){
+                def = def.substring(1, def.length()-1);
+            }
+            while(def.startsWith("'") && def.endsWith("'")){
+                def = def.substring(1, def.length()-1);
+            }
+            column.setDefaultValue(def);
+        }
+        //默认值约束
+        column.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
+        if(-1 == column.isAutoIncrement()){
+            column.autoIncrement(row.getBoolean("IS_IDENTITY", null));
+        }
+        if(-1 == column.isAutoIncrement()){
+            column.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
+        }
+        if(-1 == column.isAutoIncrement()){
+            column.autoIncrement(row.getBoolean("IDENTITY", null));
+        }
+        if(-1 == column.isAutoIncrement()){
+            if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
+                column.autoIncrement(true);
+            }
+        }
+        //mysql中的on update
+        if(row.getStringNvl("EXTRA").toLowerCase().contains("on update")){
+            column.setOnUpdate(true);
+        }
+        String defaultValue = column.getDefaultValue()+"";
+        if(defaultValue.toLowerCase().contains("nextval")){
+            column.autoIncrement(true);
+        }
+        column.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+        //主键
+        String column_key = row.getString("COLUMN_KEY");
+        if("PRI".equals(column_key)){
+            column.primary(1);
+        }
+        if(row.getBoolean("PK", Boolean.FALSE)){
+            column.primary(1);
+        }
+
+        //非空
+        if(-1 == column.isNullable()) {
+            try {
+                column.nullable(row.getBoolean("IS_NULLABLE","NULLABLE","NULLS"));
+            }catch (Exception e){}
+        }
+        //oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
+        try {
+            Integer len = null;
+            if(null != length_column){
+                len = row.getInt(length_column);
+            }else{
+                len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+                if (null == len || len == 0) {
+                    len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
+                }
+            }
+            //-1表示设置过了 null可能被precision覆盖(column.getFullType时会判断)
+            if(null == len){
+                len = -1;
+            }
+            column.setLength(len);
+        }catch (Exception e){}
+        try{
+            Integer precision = null;
+            if(null != precision_column){
+                precision = row.getInt(precision_column);
+            }else{
+                precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+            }
+            //-1表示设置过了 null可能被length覆盖(column.getFullType时会判断)
+            if(null == precision){
+                precision = -1;
+            }
+            column.setPrecision(precision);
+        }catch (Exception e){
+
+        }
+        try {
+            Integer scale = null;
+            if(null != scale_column){
+                scale = row.getInt(scale_column);
+            }else {
+                scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
+            }
+            column.setScale(scale);
+        }catch (Exception e){}
+        if(null == column.getCharset()) {
+            column.setCharset(row.getString("CHARACTER_SET_NAME"));
+        }
+        if(null == column.getCollate()) {
+            column.setCollate(row.getString("COLLATION_NAME"));
+        }
+        if(null == column.getTypeMetadata()) {
+            typeMetadata(runtime, column);
+        }
+        return column;
+    }
     /**
      * column[结果集封装]<br/>
      * 解析JDBC get columns结果
