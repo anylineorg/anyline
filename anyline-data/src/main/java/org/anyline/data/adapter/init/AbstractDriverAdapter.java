@@ -128,7 +128,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config( 1,1, 1));
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 0, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
 		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));

@@ -72,7 +72,7 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1,1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", null, 1, 0, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("DATA_LENGTH", "DATA_PRECISION", "DATA_SCALE", 1, 0, 0));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));

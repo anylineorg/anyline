@@ -30,7 +30,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1,1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 0, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 0, 0));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
