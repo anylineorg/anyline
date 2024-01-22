@@ -150,10 +150,10 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	public static String reg(String key, Map<String, Object> param) throws Exception{
 		return reg(key, param, true);
 	}
-	public static DataSource reg(String key, DataSource ds, boolean override) throws Exception{
+	public static DataRuntime reg(String key, DataSource ds, boolean override) throws Exception{
 		return init(key, ds, override);
 	}
-	public static DataSource reg(String key, DataSource ds) throws Exception{
+	public static DataRuntime reg(String key, DataSource ds) throws Exception{
 		return init(key, ds, false);
 	}
 	public static DataSource reg(String key, Connection connection, boolean override){
@@ -326,11 +326,8 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 					String url = param.get("url") + "";
 					runtime.setUrl(url);
 					String adapter = param.get("adapter")+"";
-					if(BasicUtil.isEmpty(adapter) && url.contains("adapter")){
-						adapter = RegularUtil.cut(url, "adapter=", "&");
-						if(BasicUtil.isEmpty(adapter)){
-							adapter = RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
-						}
+					if(BasicUtil.isEmpty(adapter)){
+						adapter = parseAdapterKey(url);
 					}
 					runtime.setAdapterKey(adapter);
 				}
@@ -338,12 +335,13 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		}
 		return datasource;
 	}
-	private static DataSource init(String key, DataSource datasource, boolean override) throws Exception{
+	private static DataRuntime init(String key, DataSource datasource, boolean override) throws Exception{
+		DataRuntime runtime = null;
 		if(null != datasource) {
 			if(null != factory) {
 				check(key, override);
 				regTransactionManager(key, datasource);
-				JDBCRuntimeHolder.reg(key, datasource);
+				runtime =JDBCRuntimeHolder.reg(key, datasource);
 			}else{
 				//spring还没加载完先缓存起来，最后统一注册
 				if(!caches.containsKey(key) || override){
@@ -351,9 +349,12 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 				}
 			}
 		}
-		return datasource;
+		return runtime;
 	}
 
+	/**
+	 * 在spring启动之前注册的数据源
+	 */
 	public static void loadCache(){
 		for(String key:caches.keySet()){
 			DataSource ds = caches.get(key);

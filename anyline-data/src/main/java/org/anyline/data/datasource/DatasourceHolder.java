@@ -42,7 +42,9 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.DatasourceHolderProxy;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -214,4 +216,15 @@ public abstract class DatasourceHolder {
 	}
 
 	public abstract  List<String> callCopy(DataRuntime runtime);
+
+	public static String parseAdapterKey(String url){
+		String adapter = null;
+		if(url.contains("adapter")){
+			adapter = RegularUtil.cut(url, "adapter=", "&");
+			if(BasicUtil.isEmpty(adapter)){
+				adapter = RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
+			}
+		}
+		return adapter;
+	}
 }

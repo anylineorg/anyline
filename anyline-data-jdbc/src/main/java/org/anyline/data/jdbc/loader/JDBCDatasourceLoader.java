@@ -21,6 +21,8 @@ import org.anyline.data.datasource.DatasourceHolder;
 import org.anyline.data.jdbc.datasource.JDBCDatasourceHolder;
 import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.listener.DatasourceLoader;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +58,9 @@ public class JDBCDatasourceLoader implements DatasourceLoader {
             try{
                 jdbc = SpringContextUtil.getBean(JdbcTemplate.class);
             }catch (Exception e){}
-
+            DataRuntime runtime = null;
             if(null != jdbc){
-                JDBCRuntimeHolder.reg("default", jdbc, null);
+                runtime = JDBCRuntimeHolder.reg("default", jdbc, null);
                 loadDefault = false;
             }else{
                 DataSource datasource = null;
@@ -67,10 +69,33 @@ public class JDBCDatasourceLoader implements DatasourceLoader {
                 }catch (Exception e){}
                 if(null != datasource){
                     try {
-                        JDBCDatasourceHolder.reg("default", datasource, false);
+                        runtime = JDBCDatasourceHolder.reg("default", datasource, false);
                         loadDefault = false;
                     }catch (Exception e){
                         e.printStackTrace();
+                    }
+                }
+            }
+            if(null != runtime) {
+                String url = DatasourceHolder.value(env, "spring.datasource.", "url", String.class, null);
+                if (BasicUtil.isEmpty(url)) {
+                    url = DatasourceHolder.value(env, "spring.datasource.", "jdbc-url", String.class, null);
+                }
+                if (BasicUtil.isEmpty(url)) {
+                    url = DatasourceHolder.value(env, "anyline.datasource.", "url", String.class, null);
+                }
+                if (BasicUtil.isEmpty(url)) {
+                    url = DatasourceHolder.value(env, "anyline.datasource.", "jdbc-url", String.class, null);
+                }
+                if (BasicUtil.isNotEmpty(url)) {
+                    runtime.setAdapterKey(DatasourceHolder.parseAdapterKey(url));
+                }else{
+                    String adapterKey = DatasourceHolder.value(env, "spring.datasource.", "adapter", String.class, null);
+                    if(BasicUtil.isEmpty()){
+                        adapterKey = DatasourceHolder.value(env, "anyline.datasource.", "adapter", String.class, null);
+                    }
+                    if(BasicUtil.isNotEmpty(adapterKey)){
+                        runtime.setAdapterKey(adapterKey);
                     }
                 }
             }
