@@ -71,6 +71,21 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		for (MSSQLColumnTypeAlias alias: MSSQLColumnTypeAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
+
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("max_length", null, null, 1,1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("max_length", null, null, 1,1,1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("max_length", "PRECISION", null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("max_length", "PRECISION", "SCALE", 1, 0, 0));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
 	}
 
 	/**
@@ -2365,11 +2380,11 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
-			builder.append("SELECT FTT.TABLE_CATALOG AS CATALOG_NAME, C.NAME AS COLUMN_NAME, SCHEMA_NAME(FT.SCHEMA_ID) AS SCHEMA_NAME, B.VALUE COLUMN_COMMENT, OBJECT_NAME(c.OBJECT_ID) AS TABLE_NAME,TYPE_NAME(user_type_id) AS TYPE_NAME, OBJECT_DEFINITION(c.default_object_id) AS DEFAULT_DEFINITION,OBJECT_NAME(C.default_object_id) AS DEFAULT_CONSTRAINT,C.* \n \n");
+			builder.append("SELECT FTT.TABLE_CATALOG AS CATALOG_NAME, C.NAME AS COLUMN_NAME, SCHEMA_NAME(FT.SCHEMA_ID) AS SCHEMA_NAME, B.VALUE COLUMN_COMMENT, OBJECT_NAME(c.OBJECT_ID) AS TABLE_NAME,TYPE_NAME(user_type_id) AS TYPE_NAME, OBJECT_DEFINITION(c.default_object_id) AS DEFAULT_DEFINITION,OBJECT_NAME(C.default_object_id) AS DEFAULT_CONSTRAINT,C.* \n");
 			builder.append("FROM SYS.COLUMNS C \n");
 			builder.append("LEFT JOIN SYS.TABLES AS FT ON C.OBJECT_ID = FT.OBJECT_ID \n");
 			//表catalog(库名)
-			builder.append("LEFT JOIN INFORMATION_SCHEMA.TABLES AS FTT ON OBJECT_ID(FTT.TABLE_CATALOG+'.'+FTT.TABLE_SCHEMA+'.'+FTT.TABLE_NAME) = C.OBJECT_ID\n \n");
+			builder.append("LEFT JOIN INFORMATION_SCHEMA.TABLES AS FTT ON OBJECT_ID(FTT.TABLE_CATALOG+'.'+FTT.TABLE_SCHEMA+'.'+FTT.TABLE_NAME) = C.OBJECT_ID\n");
 			builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES B ON B.MAJOR_ID = c.OBJECT_ID AND B.MINOR_ID = C.COLUMN_ID\n");
 			builder.append("WHERE 1=1 \n");
 			if(BasicUtil.isNotEmpty(catalog)){
