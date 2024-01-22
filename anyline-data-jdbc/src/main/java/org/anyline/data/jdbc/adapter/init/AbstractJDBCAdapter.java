@@ -9649,6 +9649,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
 				}
 			}
+			//-1表示设置过了 null可能被precision覆盖(column.getFullType时会判断)
+			if(null == len){
+				len = -1;
+			}
 			column.setLength(len);
 		}catch (Exception e){}
 		try{
@@ -9657,6 +9661,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				precision = row.getInt(precision_column);
 			}else{
 				precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+			}
+			//-1表示设置过了 null可能被length覆盖(column.getFullType时会判断)
+			if(null == precision){
+				precision = -1;
 			}
 			column.setPrecision(precision);
 		}catch (Exception e){

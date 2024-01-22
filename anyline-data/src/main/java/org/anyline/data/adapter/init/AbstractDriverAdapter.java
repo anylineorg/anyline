@@ -5683,7 +5683,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				indexs = indexs(runtime, true, indexs, table, false, false);
 				table.setIndexs(indexs);
 			} catch (Exception e) {
-				log.info("{}[table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
+				log.info("{}[{}][table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}

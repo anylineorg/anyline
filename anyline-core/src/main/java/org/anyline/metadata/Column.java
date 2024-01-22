@@ -528,6 +528,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         boolean appendScale = false;
 
         if(ignoreLength() != 1){
+            if(null == length){
+                //null表示没有设置过,有可能用的precision,复制precision值
+                // -1也表示设置过了不要再用length覆盖
+                if(null != precision && precision != -1){
+                    length = precision;
+                }
+            }
             if(null != length){
                 if(length > 0 || length == -2){ //-2:max
                     appendLength = true;
@@ -535,6 +542,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             }
         }
         if(ignorePrecision() != 1){
+            if(null == precision){
+                //null表示没有设置过,有可能用的length,复制length
+                // -1也表示设置过了不要再用length覆盖
+                if(null != length && length != -1){
+                    precision = length;
+                }
+            }
             if(null != precision){
                 if(precision > 0){
                     appendPrecision = true;
