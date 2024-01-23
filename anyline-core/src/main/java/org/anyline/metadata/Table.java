@@ -467,13 +467,55 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                 column.primary(false);
             }
         }
+        if(null != columns){
+            for(Column column:columns.values()){
+                column.primary(false);
+            }
+        }
         this.primaryKey = primaryKey;
         if (null != primaryKey) {
             primaryKey.setTable(this);
         }
-
+        checkColumnPrimary();
         return this;
     }
+
+    /**
+     * 检测主键<br/>
+     * 根据主键对象，设置列主键标识<br/>
+     * @return this
+     */
+    public Table checkColumnPrimary(){
+        if(null != primaryKey) {
+            LinkedHashMap<String, Column> pcs = primaryKey.getColumns();
+            if (null != pcs) {
+                for (Column column : pcs.values()) {
+                    column.primary(true);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 根据列主键标识创建主键
+     *
+     * @return this
+     */
+    public Table createPrimaryKey(){
+        if(null == primaryKey && null != columns) {
+            for(Column column:columns.values()){
+                if(column.isPrimaryKey() == 1){
+                    if(null == primaryKey){
+                        primaryKey = new PrimaryKey();
+                    }
+                    primaryKey.addColumn(column);
+                }
+            }
+        }
+        return this;
+    }
+
 
     public Table addTag(Tag tag){
         if(setmap && null != update){
@@ -1263,6 +1305,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
                 columns = new LinkedHashMap<>();
             }
             columns.put(column.getName().toUpperCase(), column);
+
             return this;
         }
         public Partition addColumn(String column){

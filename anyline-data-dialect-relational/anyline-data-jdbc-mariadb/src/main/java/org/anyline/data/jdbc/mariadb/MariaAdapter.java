@@ -3502,7 +3502,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 */

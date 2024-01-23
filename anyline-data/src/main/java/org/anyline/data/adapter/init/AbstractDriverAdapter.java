@@ -6904,6 +6904,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
+		//检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 		checkPrimary(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
@@ -7054,8 +7055,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		boolean result = true;
 		List<Run> runs = new ArrayList<>();
 		Table update = (Table)meta.getUpdate();
-		LinkedHashMap<String, Column> columns = meta.getColumns();
-
+		//检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 		checkPrimary(runtime, update);
 		String name = meta.getName();
 		String uname = update.getName();
@@ -7403,14 +7403,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增)
+	 * 检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 */
 	@Override
 	public void checkPrimary(DataRuntime runtime, Table table){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 void checkPrimary(DataRuntime runtime, Table meta)", 37));
+		if(null != table){
+			table.checkColumnPrimary();
 		}
 	}
 
@@ -10061,7 +10061,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 	/**
 	 * primary[调用入口]<br/>
-	 * 修改主键
+	 * 修改Table最后修改主键,注意不要与列上的主键标识重复,如果列上支持标识主键，这里不需要实现
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
 	 * @param origin 原主键
