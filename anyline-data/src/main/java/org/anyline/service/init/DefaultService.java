@@ -2750,23 +2750,32 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(View view) throws Exception{
             CacheProxy.clear();
-            boolean result = dao.alter(view);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.alter(view);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
         @Override
         public boolean drop(View view) throws Exception{
-            boolean result = dao.drop(view);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(view);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(View origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         /* *****************************************************************************************************************
          * 													master table
@@ -2806,23 +2815,33 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(MasterTable table) throws Exception {
             CacheProxy.clear();
-            boolean result = dao.alter(table);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.alter(table);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
         @Override
         public boolean drop(MasterTable table) throws Exception {
-            boolean result = dao.drop(table);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(table);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(MasterTable origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
+
         }
 
         /* *****************************************************************************************************************
@@ -2863,23 +2882,32 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(PartitionTable table) throws Exception {
             CacheProxy.clear();
-            boolean result = dao.alter(table);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.alter(table);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
         @Override
         public boolean drop(PartitionTable table) throws Exception {
-            boolean result = dao.drop(table);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(table);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(PartitionTable origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
 
@@ -2929,37 +2957,49 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Column column) throws Exception{
             CacheProxy.clear();
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName(true));
-            boolean result = add(columns, column);
-            CacheProxy.clear();
-            return result;
+            try {
+                LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName(true));
+                boolean result = add(columns, column);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         @Override
         public boolean alter(Column column) throws Exception{
             CacheProxy.clear();
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName(true));
-            boolean result = alter(table, column);
-            CacheProxy.clear();
-            return result;
+            try {
+                Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName(true));
+                boolean result = alter(table, column);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
 
         @Override
         public boolean drop(Column column) throws Exception{
-            boolean result = dao.drop(column);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(column);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
             CacheProxy.clear();
-            boolean result =  dao.add(column);
-            if(result) {
-                columns.put(column.getName(), column);
+            try {
+                boolean result = dao.add(column);
+                if (result) {
+                    columns.put(column.getName(), column);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            CacheProxy.clear();
-            return result;
         }
         /**
          * 修改列
@@ -3004,10 +3044,13 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean rename(Column origin, String name) throws Exception{
-            origin.setNewName(name);
-            boolean result = alter(origin);//dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                origin.setNewName(name);
+                boolean result = alter(origin);//dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         /* *****************************************************************************************************************
@@ -3058,37 +3101,49 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Tag tag) throws Exception{
             CacheProxy.clear();
-            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
-            boolean result = add(tags, tag);
-            CacheProxy.clear();
-            return result;
+            try {
+                LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
+                boolean result = add(tags, tag);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
         @Override
         public boolean alter(Tag tag) throws Exception{
             CacheProxy.clear();
-            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
-            boolean result = alter(table, tag);
-            CacheProxy.clear();
-            return result;
+            try {
+                Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName(true));
+                boolean result = alter(table, tag);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
         @Override
         public boolean drop(Tag tag) throws Exception{
-            boolean result = dao.drop(tag);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(tag);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception{
             CacheProxy.clear();
-            boolean result =  dao.add(tag);
-            if(result) {
-                tags.put(tag.getName(), tag);
+            try {
+                boolean result = dao.add(tag);
+                if (result) {
+                    tags.put(tag.getName(), tag);
+                }
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            CacheProxy.clear();
-            return result;
         }
         /**
          * 修改标签
@@ -3126,9 +3181,12 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean rename(Tag origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         /* *****************************************************************************************************************
          * 													primary
@@ -3142,7 +3200,11 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(PrimaryKey primary) throws Exception{
             CacheProxy.clear();
-            return dao.add(primary);
+            try {
+                return dao.add(primary);
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
@@ -3154,15 +3216,21 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(PrimaryKey primary) throws Exception{
-            boolean result = dao.drop(primary);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(primary);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(PrimaryKey origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         /* *****************************************************************************************************************
          * 													foreign
@@ -3171,34 +3239,45 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(ForeignKey foreign) throws Exception{
             CacheProxy.clear();
-            boolean result = dao.add(foreign);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.add(foreign);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean alter(ForeignKey foreign) throws Exception{
             CacheProxy.clear();
-            boolean result = dao.alter(foreign);
-
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.alter(foreign);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean drop(ForeignKey foreign) throws Exception{
-            if(BasicUtil.isEmpty(foreign.getName())){
-                List<String> names = Column.names(foreign.getColumns());
-                foreign = metadata.foreign(foreign.getTable(true), names);
+            try {
+                if (BasicUtil.isEmpty(foreign.getName())) {
+                    List<String> names = Column.names(foreign.getColumns());
+                    foreign = metadata.foreign(foreign.getTable(true), names);
+                }
+                boolean result = dao.drop(foreign);
+                return result;
+            }finally {
+                CacheProxy.clear();
             }
-            boolean result = dao.drop(foreign);
-            CacheProxy.clear();
-            return result;
         }
 
         @Override
         public boolean rename(ForeignKey origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         /* *****************************************************************************************************************
          * 													index
@@ -3212,9 +3291,12 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Index index) throws Exception{
             CacheProxy.clear();
-            boolean result = dao.add(index);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.add(index);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
@@ -3226,15 +3308,21 @@ public class DefaultService<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(Index index) throws Exception{
-            boolean result = dao.drop(index);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(index);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(Index origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         /* *****************************************************************************************************************
          * 													constraint
@@ -3247,9 +3335,12 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean add(Constraint constraint) throws Exception {
             CacheProxy.clear();
-            boolean result = dao.add(constraint);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.add(constraint);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         
@@ -3262,15 +3353,21 @@ public class DefaultService<E> implements AnylineService<E> {
         
         @Override
         public boolean drop(Constraint constraint) throws Exception {
-            boolean result = dao.drop(constraint);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(constraint);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(Constraint origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
 
         /* *****************************************************************************************************************
@@ -3290,21 +3387,30 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(Trigger trigger) throws Exception{
             CacheProxy.clear();
-            boolean result = dao.alter(trigger);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.alter(trigger);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean drop(Trigger trigger) throws Exception{
-            boolean result = dao.drop(trigger);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.drop(trigger);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         @Override
         public boolean rename(Trigger origin, String name) throws Exception{
-            boolean result = dao.rename(origin, name);
-            CacheProxy.clear();
-            return result;
+            try {
+                boolean result = dao.rename(origin, name);
+                return result;
+            }finally {
+                CacheProxy.clear();
+            }
         }
         /* *****************************************************************************************************************
          * 													procedure

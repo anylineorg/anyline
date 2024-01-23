@@ -5836,8 +5836,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		meta.addDdl(sql);
 		if(BasicUtil.isNotEmpty(sql)) {
 			if(meta.execute()) {
-				update(runtime, random, (Table)null, null, null, run);
-				CacheProxy.clear();
+				try {
+					update(runtime, random, (Table) null, null, null, run);
+				}finally {
+					CacheProxy.clear();
+				}
 			}
 			result = true;
 		}
