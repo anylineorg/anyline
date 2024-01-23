@@ -1231,31 +1231,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			boolean isUpdateNullColumn = IS_UPDATE_NULL_FIELD(configs);
 			boolean isUpdateEmptyColumn = IS_UPDATE_EMPTY_FIELD(configs);
 			List<String> keys = Column.names(cols);
-			int size = keys.size();
-			for(int i=size-1;i>=0; i--){
-				String key = keys.get(i);
+			for(String key:keys){
 				if(masters.containsKey(key)){
 					// 必须更新
 					continue;
 				}
-
 				Object value = BeanUtil.getFieldValue(obj, key);
 				if(null == value){
 					if(factKeys.contains(key)){
-						keys.remove(key);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 					if(!isUpdateNullColumn){
-						keys.remove(i);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 				}else if("".equals(value.toString().trim())){
 					if(factKeys.contains(key)){
-						keys.remove(key);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 					if(!isUpdateEmptyColumn){
-						keys.remove(i);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 				}

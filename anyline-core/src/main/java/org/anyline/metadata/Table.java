@@ -491,6 +491,12 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             if (null != pcs) {
                 for (Column column : pcs.values()) {
                     column.primary(true);
+                    if(null != columns) {
+                        Column col = columns.get(column.getName().toUpperCase());
+                        if (null != col) {
+                            col.setPrimary(true);
+                        }
+                    }
                 }
             }
         }
