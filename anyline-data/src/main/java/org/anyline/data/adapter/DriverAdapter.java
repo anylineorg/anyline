@@ -3299,7 +3299,6 @@ public interface DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	boolean create(DataRuntime runtime, View view) throws Exception;
-
 	/**
 	 * view[调用入口]<br/>
 	 * 修改视图,执行的SQL通过meta.ddls()返回
@@ -3340,7 +3339,26 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildCreateRun(DataRuntime runtime, View view) throws Exception;
-
+	/**
+	 * view[命令合成-子流程]<br/>
+	 * 创建视图头部
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 视图
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	StringBuilder buildCreateRunHead(DataRuntime runtime, StringBuilder builder, View meta) throws Exception;
+	/**
+	 * view[命令合成-子流程]<br/>
+	 * 创建视图选项
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 视图
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	StringBuilder buildCreateRunOption(DataRuntime runtime, StringBuilder builder, View meta) throws Exception;
 	/**
 	 * view[命令合成]<br/>
 	 * 修改视图

@@ -6600,11 +6600,42 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		builder.append("CREATE VIEW ");
-		name(runtime, builder, meta);
+		buildCreateRunHead(runtime, builder, meta);
+		buildCreateRunOption(runtime, builder, meta);
 		builder.append(" AS \n").append(meta.getDefinition());
 		runs.addAll(buildAppendCommentRun(runtime, meta));
 		return runs;
+	}
+	/**
+	 * view[命令合成-子流程]<br/>
+	 * 创建视图头部
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 视图
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder buildCreateRunHead(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
+		if (null == builder) {
+			builder = new StringBuilder();
+		}
+		builder.append("CREATE VIEW ");
+		name(runtime, builder, meta);
+		return builder;
+	}
+	/**
+	 * view[命令合成-子流程]<br/>
+	 * 创建视图选项
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 视图
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder buildCreateRunOption(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
+		return super.buildCreateRunOption(runtime, builder, meta);
 	}
 	/**
 	 * view[命令合成]<br/>
@@ -6614,7 +6645,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception{
 		List<Run> runs = new ArrayList<>();

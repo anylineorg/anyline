@@ -3793,7 +3793,43 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	public List<Run> buildCreateRun(DataRuntime runtime, View meta) throws Exception{
 		return super.buildCreateRun(runtime, meta);
 	}
+
 	/**
+	 * view[命令合成-子流程]<br/>
+	 * 创建视图头部
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 视图
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder buildCreateRunHead(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
+
+		if (null == builder) {
+			builder = new StringBuilder();
+		}
+		builder.append("CREATE ");
+		if(meta.isMaterialize()){
+			builder.append("MATERIALIZED");
+		}
+		builder.append(" VIEW ");
+		name(runtime, builder, meta);
+		return builder;
+	}
+	/**
+	 * view[命令合成-子流程]<br/>
+	 * 创建视图选项
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 视图
+	 * @return StringBuilder
+	 * @throws Exception 异常
+	 */
+	@Override
+	public StringBuilder buildCreateRunOption(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
+		return super.buildCreateRunOption(runtime, builder, meta);
+	}/**
 	 * view[命令合成]<br/>
 	 * 修改视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
