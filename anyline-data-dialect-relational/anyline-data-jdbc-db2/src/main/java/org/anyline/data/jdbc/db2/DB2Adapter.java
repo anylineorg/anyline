@@ -65,8 +65,12 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		return DatabaseType.DB2;
 	} 
 	public DB2Adapter(){
+		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
+		for (DB2ColumnTypeAlias alias: DB2ColumnTypeAlias.values()){
+			this.alias.put(alias.name(), alias.standard());
+		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.db2:}")
 	private String delimiter;
@@ -75,7 +79,6 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
 	}
-
 
 
 
