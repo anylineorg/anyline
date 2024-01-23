@@ -21,6 +21,7 @@ import java.io.Serializable;
 
 public class View extends Table<View> implements Serializable {
     protected String keyword = "VIEW"            ;
+    protected boolean materialize = false        ; //是否物化
     protected String definition;
 
     public String getDefinition() {
@@ -57,7 +58,16 @@ public class View extends Table<View> implements Serializable {
         return keyword;
     }
 
+    public boolean isMaterialize() {
+        return materialize;
+    }
+
+    public void setMaterialize(boolean materialize) {
+        this.materialize = materialize;
+    }
+
     public String toString(){
         return this.keyword+":"+name;
     }
+
 }
