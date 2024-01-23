@@ -1146,9 +1146,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();
 			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
 			List<String> keys = Column.names(cols);
-			int size = keys.size();
-			for(int i=size-1;i>=0; i--){
-				String key = keys.get(i);
+			for(String key:keys){
 				if(masters.containsKey(key)){
 					// 必须更新
 					continue;
@@ -1157,20 +1155,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				Object value = row.get(key);
 				if(null == value){
 					if(factKeys.contains(key)){
-						keys.remove(key);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 					if(!isUpdateNullColumn){
-						keys.remove(i);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 				}else if("".equals(value.toString().trim())){
 					if(factKeys.contains(key)){
-						keys.remove(key);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 					if(!isUpdateEmptyColumn){
-						keys.remove(i);
+						cols.remove(key.toUpperCase());
 						continue;
 					}
 				}
