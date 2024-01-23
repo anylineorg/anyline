@@ -10187,7 +10187,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					}
 					row.put(false, name, value);
 				}catch (Exception e){
-
+					log.error("[结果集封装][result:fail][msg:{}]", e.toString());
 				}
 			}
 			row.setMetadata(metadatas);
@@ -10195,7 +10195,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 				e.printStackTrace();
 			}else{
-				log.error("[结果集封装]<br/> [result:fail][msg:{}]", e.toString());
+				log.error("[结果集封装][result:fail][msg:{}]", e.toString());
 			}
 		}
 		return row;
