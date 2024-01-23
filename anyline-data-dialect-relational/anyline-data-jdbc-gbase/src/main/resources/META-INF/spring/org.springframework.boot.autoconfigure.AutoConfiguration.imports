@@ -1,4 +1,3 @@
-org.anyline.data.jdbc.gbase8a.oracle.GbaseAdapter
-org.anyline.data.jdbc.gbase8a.postgres.GbaseAdapter
-org.anyline.data.jdbc.gbase8s.oracle.GbaseAdapter
-org.anyline.data.jdbc.gbase8s.postgres.GbaseAdapter
+org.anyline.data.jdbc.gbase8a.GbaseAdapter
+org.anyline.data.jdbc.gbase8c.GbaseAdapter
+org.anyline.data.jdbc.gbase8s.GbaseAdapter
