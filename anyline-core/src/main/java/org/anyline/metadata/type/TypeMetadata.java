@@ -88,7 +88,7 @@ public interface TypeMetadata {
 
         @Override
         public String getName() {
-            return null;
+            return "ILLEGAL";
         }
 
         @Override
@@ -189,7 +189,7 @@ public interface TypeMetadata {
         }
         @Override
         public String getName() {
-            return null;
+            return "NONE";
         }
 
         @Override
