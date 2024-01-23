@@ -217,14 +217,4 @@ public abstract class DatasourceHolder {
 
 	public abstract  List<String> callCopy(DataRuntime runtime);
 
-	public static String parseAdapterKey(String url){
-		String adapter = null;
-		if(url.contains("adapter")){
-			adapter = RegularUtil.cut(url, "adapter=", "&");
-			if(BasicUtil.isEmpty(adapter)){
-				adapter = RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
-			}
-		}
-		return adapter;
-	}
 }

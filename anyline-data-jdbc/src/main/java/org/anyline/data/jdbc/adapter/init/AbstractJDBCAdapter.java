@@ -6603,7 +6603,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		builder.append("CREATE VIEW ");
 		name(runtime, builder, meta);
 		builder.append(" AS \n").append(meta.getDefinition());
-
 		runs.addAll(buildAppendCommentRun(runtime, meta));
 		return runs;
 	}

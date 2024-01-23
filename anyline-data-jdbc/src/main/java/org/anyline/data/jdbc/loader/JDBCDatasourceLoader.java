@@ -22,6 +22,7 @@ import org.anyline.data.jdbc.datasource.JDBCDatasourceHolder;
 import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.listener.DatasourceLoader;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SpringContextUtil;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class JDBCDatasourceLoader implements DatasourceLoader {
                     url = DatasourceHolder.value(env, "anyline.datasource.", "jdbc-url", String.class, null);
                 }
                 if (BasicUtil.isNotEmpty(url)) {
-                    runtime.setAdapterKey(DatasourceHolder.parseAdapterKey(url));
+                    runtime.setAdapterKey(RuntimeHolder.parseAdapterKey(url));
                 }else{
                     String adapterKey = DatasourceHolder.value(env, "spring.datasource.", "adapter", String.class, null);
                     if(BasicUtil.isEmpty()){

@@ -327,7 +327,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 					runtime.setUrl(url);
 					String adapter = param.get("adapter")+"";
 					if(BasicUtil.isEmpty(adapter)){
-						adapter = parseAdapterKey(url);
+						adapter = RuntimeHolder.parseAdapterKey(url);
 					}
 					runtime.setAdapterKey(adapter);
 				}

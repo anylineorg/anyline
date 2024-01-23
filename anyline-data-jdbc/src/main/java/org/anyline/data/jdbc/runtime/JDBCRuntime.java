@@ -19,7 +19,10 @@ package org.anyline.data.jdbc.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.DefaultRuntime;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
@@ -78,6 +81,7 @@ public class JDBCRuntime extends DefaultRuntime implements DataRuntime {
         this.processor = (JdbcTemplate) processor;
     }
 
+
     public String getFeature(boolean connection) {
         if(null == feature){
             if(connection || null == driver || null == url) {
@@ -89,8 +93,7 @@ public class JDBCRuntime extends DefaultRuntime implements DataRuntime {
                         ds = jdbc.getDataSource();
                         con = DataSourceUtils.getConnection(ds);
                         DatabaseMetaData meta = con.getMetaData();
-                        feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_"
-                                + meta.getURL();
+                        feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + meta.getURL();
                         if (null == version) {
                             version = meta.getDatabaseProductVersion();
                         }
@@ -103,8 +106,11 @@ public class JDBCRuntime extends DefaultRuntime implements DataRuntime {
                     }
                 }
             }else{
-                return driver + "_" + url;
+                feature = driver + "_" + url;
             }
+        }
+        if(null == adapterKey){
+            adapterKey = RuntimeHolder.parseAdapterKey(feature);
         }
         return feature;
     }
