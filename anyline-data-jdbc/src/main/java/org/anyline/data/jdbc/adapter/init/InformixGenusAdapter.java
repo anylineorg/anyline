@@ -2516,21 +2516,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
     }
 
     /**
-     * column [结果集封装-子流程](方法1)<br/>
-     * 方法(1)内部遍历
-     * @param column
-     * @param table
-     * @param row
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 列详细属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param column 列
+     * @param row 系统表查询SQL结果集
+     * @return Column
+     * @param <T> Column
      */
-    public Column init(DataRuntime runtime, Column column, Table table, DataRow row){
-         String tableName = null;
-        if(null != table){
-            tableName = table.getName();
-        }
-        if(null != table) {//查询全部表
-            column.setTable(table);
-        }
-        column.setTable(BasicUtil.evl(row.getString("TABNAME"), column.getTableName(true), tableName));
+    public <T extends Column> T detail(DataRuntime runtime, T column, DataRow row){
 
         if(null == column.getPosition()) {
             try {
