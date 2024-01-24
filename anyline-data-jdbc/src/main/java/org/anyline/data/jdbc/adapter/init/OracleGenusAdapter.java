@@ -31,7 +31,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 
     public OracleGenusAdapter(){
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1,1));
