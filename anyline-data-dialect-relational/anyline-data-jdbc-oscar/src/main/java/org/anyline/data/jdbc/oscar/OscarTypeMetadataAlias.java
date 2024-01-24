@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http:
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,38 +15,35 @@
  */
 
 
-package org.anyline.data.jdbc.dm;
+package org.anyline.data.jdbc.oscar;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum DMColumnTypeAlias implements ColumnTypeAlias {
-    
+public enum OscarTypeMetadataAlias implements TypeMetadataAlias {
+
     BFILE                   (StandardTypeMetadata.BFILE                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
-    BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE          ),
-    BIGINT                  (StandardTypeMetadata.BIGINT                ),
-    BIGSERIAL               (StandardTypeMetadata.BIGINT                ),
-    BINARY                  (StandardTypeMetadata.BINARY                  ),
-    BIT                     (StandardTypeMetadata.BIT                ),
+    BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE                 ),
+    BIGINT                  (StandardTypeMetadata.NUMBER                ),
+    BIGSERIAL               (StandardTypeMetadata.NUMBER                ),
+    BINARY                  (StandardTypeMetadata.BLOB                  ),
+    BIT                     (StandardTypeMetadata.NUMBER                ),
     BLOB                    (StandardTypeMetadata.BLOB                  ),
-    BOOL                    (StandardTypeMetadata.BOOL                ),
-    BOOLEAN                 (StandardTypeMetadata.BOOLEAN                ),
+    BOOL                    (StandardTypeMetadata.NUMBER                ),
     BOX                     (StandardTypeMetadata.ILLEGAL               ),
     BYTEA                   (StandardTypeMetadata.BLOB                  ),
-    BYTE                    (StandardTypeMetadata.BYTE                  ),
     CHAR                    (StandardTypeMetadata.CHAR                  ),
     CIDR                    (StandardTypeMetadata.ILLEGAL               ),
     CIRCLE                  (StandardTypeMetadata.ILLEGAL               ),
     CLOB                    (StandardTypeMetadata.CLOB                  ),
     DATE                    (StandardTypeMetadata.DATE                  ),
-    TIME_WITH_ZONE          (StandardTypeMetadata.TIME_WITH_ZONE        ),
-    DATETIME                (StandardTypeMetadata.DATETIME             ),
-    DATETIME2               (StandardTypeMetadata.DATETIME             ),
-    DATETIMEOFFSET          (StandardTypeMetadata.DATETIME             ),
-    DECIMAL                 (StandardTypeMetadata.DECIMAL               ),
-    DOUBLE                  (StandardTypeMetadata.DOUBLE                ),
+    DATETIME                (StandardTypeMetadata.TIMESTAMP             ),
+    DATETIME2               (StandardTypeMetadata.TIMESTAMP             ),
+    DATETIMEOFFSET          (StandardTypeMetadata.TIMESTAMP             ),
+    DECIMAL                 (StandardTypeMetadata.NUMBER                ),
+    DOUBLE                  (StandardTypeMetadata.NUMBER                ),
     ENUM                    (StandardTypeMetadata.ILLEGAL               ),
     FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE          ),
     FLOAT4                  (StandardTypeMetadata.FLOAT_ORACLE          ),
@@ -55,20 +52,20 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     GEOMETRY                (StandardTypeMetadata.ILLEGAL               ),
     GEOMETRYCOLLECTION      (StandardTypeMetadata.ILLEGAL               ),
     HIERARCHYID             (StandardTypeMetadata.ILLEGAL               ),
-    IMAGE                   (StandardTypeMetadata.IMAGE                  ),
+    IMAGE                   (StandardTypeMetadata.BLOB                  ),
     INET                    (StandardTypeMetadata.ILLEGAL               ),
     INTERVAL                (StandardTypeMetadata.ILLEGAL               ),
-    INT                     (StandardTypeMetadata.INT                   ),
-    INT2                    (StandardTypeMetadata.INT                   ),
-    INT4                    (StandardTypeMetadata.INT                   ),
-    INT8                    (StandardTypeMetadata.BIGINT                ),
-    INTEGER                 (StandardTypeMetadata.INTEGER               ),
+    INT                     (StandardTypeMetadata.NUMBER                ),
+    INT2                    (StandardTypeMetadata.NUMBER                ),
+    INT4                    (StandardTypeMetadata.NUMBER                ),
+    INT8                    (StandardTypeMetadata.NUMBER                ),
+    INTEGER                 (StandardTypeMetadata.NUMBER                ),
     JSON                    (StandardTypeMetadata.CLOB                  ),
     JSONB                   (StandardTypeMetadata.BLOB                  ),
     LINE                    (StandardTypeMetadata.ILLEGAL               ),
     LONG                    (StandardTypeMetadata.LONG_TEXT                  ),
     LONGBLOB                (StandardTypeMetadata.BLOB                  ),
-    LONGTEXT                (StandardTypeMetadata.TEXT                  ),
+    LONGTEXT                (StandardTypeMetadata.CLOB                  ),
     LSEG                    (StandardTypeMetadata.ILLEGAL               ),
     MACADDR                 (StandardTypeMetadata.ILLEGAL               ),
     MONEY                   (StandardTypeMetadata.NUMBER                ),
@@ -81,33 +78,33 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     PATH                    (StandardTypeMetadata.ILLEGAL               ),
     MEDIUMBLOB              (StandardTypeMetadata.BLOB                  ),
     MEDIUMINT               (StandardTypeMetadata.NUMBER                ),
-    MEDIUMTEXT              (StandardTypeMetadata.TEXT                  ),
+    MEDIUMTEXT              (StandardTypeMetadata.CLOB                  ),
     MULTILINESTRING         (StandardTypeMetadata.ILLEGAL               ),
     MULTIPOINT              (StandardTypeMetadata.ILLEGAL               ),
     MULTIPOLYGON            (StandardTypeMetadata.ILLEGAL               ),
     NUMERIC                 (StandardTypeMetadata.NUMBER                ),
     POINT                   (StandardTypeMetadata.ILLEGAL               ),
     POLYGON                 (StandardTypeMetadata.ILLEGAL               ),
-    REAL                    (StandardTypeMetadata.REAL          ),
+    REAL                    (StandardTypeMetadata.FLOAT_ORACLE          ),
     RAW                     (StandardTypeMetadata.RAW                   ),
     ROWID                   (StandardTypeMetadata.ROWID                 ),
-    SERIAL                  (StandardTypeMetadata.INT                   ),
-    SERIAL2                 (StandardTypeMetadata.INT                   ),
-    SERIAL4                 (StandardTypeMetadata.INT                   ),
-    SERIAL8                 (StandardTypeMetadata.BIGINT                ),
+    SERIAL                  (StandardTypeMetadata.NUMBER                ),
+    SERIAL2                 (StandardTypeMetadata.NUMBER                ),
+    SERIAL4                 (StandardTypeMetadata.NUMBER                ),
+    SERIAL8                 (StandardTypeMetadata.NUMBER                ),
     SET                     (StandardTypeMetadata.ILLEGAL               ),
     SMALLDATETIME           (StandardTypeMetadata.TIMESTAMP             ),
     SMALLMONEY              (StandardTypeMetadata.NUMBER                ),
-    SMALLINT                (StandardTypeMetadata.SMALLINT                ),
+    SMALLINT                (StandardTypeMetadata.NUMBER                ),
     SMALLSERIAL             (StandardTypeMetadata.NUMBER                ),
     SQL_VARIANT             (StandardTypeMetadata.ILLEGAL               ),
     SYSNAME                 (StandardTypeMetadata.ILLEGAL               ),
-    TEXT                    (StandardTypeMetadata.TEXT                  ),
-    TIME                    (StandardTypeMetadata.TIME             ),
-    TIMEZ                   (StandardTypeMetadata.TIME             ),
+    TEXT                    (StandardTypeMetadata.CLOB                  ),
+    TIME                    (StandardTypeMetadata.TIMESTAMP             ),
+    TIMEZ                   (StandardTypeMetadata.TIMESTAMP             ),
     TIMESTAMP               (StandardTypeMetadata.TIMESTAMP             ),
-    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP_WITH_ZONE),
-    TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE             ),
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP             ),
+    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP             ),
     TSQUERY                 (StandardTypeMetadata.ILLEGAL               ),
     TSVECTOR                (StandardTypeMetadata.ILLEGAL               ),
     TXID_SNAPSHOT           (StandardTypeMetadata.ILLEGAL               ),
@@ -116,15 +113,15 @@ public enum DMColumnTypeAlias implements ColumnTypeAlias {
     UROWID                  (StandardTypeMetadata.UROWID                ),
     VARBIT                  (StandardTypeMetadata.BLOB                  ),
     TINYBLOB                (StandardTypeMetadata.BLOB                  ),
-    TINYINT                 (StandardTypeMetadata.TINYINT                ),
-    TINYTEXT                (StandardTypeMetadata.TEXT                  ),
-    VARBINARY               (StandardTypeMetadata.VARBINARY                  ),
+    TINYINT                 (StandardTypeMetadata.NUMBER                ),
+    TINYTEXT                (StandardTypeMetadata.CLOB                  ),
+    VARBINARY               (StandardTypeMetadata.BLOB                  ),
     VARCHAR                 (StandardTypeMetadata.VARCHAR               ),
-    VARCHAR2                (StandardTypeMetadata.VARCHAR               ),
+    VARCHAR2                (StandardTypeMetadata.VARCHAR2               ),
     XML                     (StandardTypeMetadata.ILLEGAL               ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    DMColumnTypeAlias(TypeMetadata standard){
+    private OscarTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

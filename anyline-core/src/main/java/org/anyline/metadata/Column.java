@@ -118,23 +118,24 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String keyword = "COLUMN"           ;
     protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
-    protected TypeMetadata typeMetadata;
+    protected TypeMetadata typeMetadata           ;
+    protected String fullType                     ; //完整类型名称
     protected int ignoreLength               = -1 ;
     protected int ignorePrecision            = -1 ;
     protected int ignoreScale                = -1 ;
+    //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
+    protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
+    protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
+    protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
+    protected Integer scale                       ; // 小数部分的长度
 
     protected String className                    ; // 对应的Java数据类型 java.lang.Long
     protected Integer displaySize                 ; // display size
     protected Integer type                        ; // 类型
-    protected String fullType                     ; //完整类型名称
     protected String childTypeName                ;
     protected TypeMetadata childTypeMetadata;
     protected JavaType javaType                   ;
     protected String jdbcType                     ; // 有可能与typeName不一致 可能多个typeName对应一个jdbcType 如point>
-    //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
-    protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)
-    protected Integer precision                   ; // 有效位数 整个字段的长度(包含小数部分)  123.45：precision = 5, scale = 2 对于SQL Server 中 varchar(max)设置成 -1 null:表示未设置
-    protected Integer scale                       ; // 小数部分的长度
     protected String dateScale                    ; // 日期类型 精度
     protected int nullable                   = -1 ; // 是否可以为NULL -1:未配置 1:是  0:否
     protected int caseSensitive              = -1 ; // 是否区分大小写
@@ -161,7 +162,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String analyzer                     ; // 分词器
     protected String searchAnalyzer               ; // 查询分词器
     protected Integer ignoreAbove                 ; // 可创建索引的最大词长度
-
 
     protected Integer position                    ; // 在表或索引中的位置, 如果需要在第一列 设置成0
     protected String order                        ; // 在索引中的排序方式ASC | DESC
@@ -603,13 +603,28 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         fullType = builder.toString();
         return fullType;
     }
+
+    /**
+     * 精确长度 根据数据类型返回precision或length
+     * @return Integer
+     */
+    public Integer getPrecisionLength(){
+        if(null != precisionLength && precisionLength != -1){
+            return precisionLength;
+        }
+        if(null != precision && precision != -1){
+            precisionLength = precision;
+        }else{
+            precisionLength = length;
+        }
+        return precisionLength;
+    }
     public Integer getLength() {
         if(getmap && null != update){
             return update.getLength();
         }
         return length;
     }
-
     public Column setLength(Integer length) {
         if(setmap && null != update){
             update.setLength(length);

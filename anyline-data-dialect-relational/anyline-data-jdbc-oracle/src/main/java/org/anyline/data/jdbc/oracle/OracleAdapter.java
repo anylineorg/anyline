@@ -78,7 +78,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		OracleConvert.reg();
-		for (OracleColumnTypeAlias alias : OracleColumnTypeAlias.values()) {
+		for (OracleTypeMetadataAlias alias : OracleTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 			TypeMetadata.Config config = alias.config();
 			typeConfigs.put(alias.standard().getName(), config);

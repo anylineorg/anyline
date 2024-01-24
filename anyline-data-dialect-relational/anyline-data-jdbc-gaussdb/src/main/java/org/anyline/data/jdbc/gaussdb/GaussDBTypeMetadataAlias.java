@@ -15,13 +15,13 @@
  */
 
 
-package org.anyline.data.jdbc.opengauss;
+package org.anyline.data.jdbc.gaussdb;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
+public enum GaussDBTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL               ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
@@ -123,7 +123,7 @@ public enum OpenGaussColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.XML                   ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private OpenGaussColumnTypeAlias(TypeMetadata standard){
+    private GaussDBTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

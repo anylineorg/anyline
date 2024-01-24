@@ -52,7 +52,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (HiveColumnTypeAlias alias: HiveColumnTypeAlias.values()){
+		for (HiveTypeMetadataAlias alias: HiveTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(HiveWriter writer: HiveWriter.values()){

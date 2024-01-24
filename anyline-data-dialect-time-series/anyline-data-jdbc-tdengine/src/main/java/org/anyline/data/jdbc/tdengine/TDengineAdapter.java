@@ -51,7 +51,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter,
 	public TDengineAdapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (TDengineColumnTypeAlias alias: TDengineColumnTypeAlias.values()){
+		for (TDengineTypeMetadataAlias alias: TDengineTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 	}

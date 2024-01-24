@@ -15,13 +15,13 @@
  */
 
 
-package org.anyline.data.jdbc.highgo;
+package org.anyline.data.jdbc.postgresql;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum HighgoColumnTypeAlias implements ColumnTypeAlias {
+public enum PostresqlTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL               ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
@@ -48,9 +48,9 @@ public enum HighgoColumnTypeAlias implements ColumnTypeAlias {
     FLOAT                   (StandardTypeMetadata.FLOAT4                ),
     FLOAT4                  (StandardTypeMetadata.FLOAT4                ),
     FLOAT8                  (StandardTypeMetadata.FLOAT8                ),
-    GEOGRAPHY               (StandardTypeMetadata.ILLEGAL               ),
-    GEOMETRY                (StandardTypeMetadata.ILLEGAL               ),
-    GEOMETRYCOLLECTION      (StandardTypeMetadata.ILLEGAL               ),
+    GEOGRAPHY               (StandardTypeMetadata.GEOGRAPHY             ), //  , pg
+    GEOMETRY                (StandardTypeMetadata.GEOMETRY               ),
+    GEOMETRYCOLLECTION      (StandardTypeMetadata.GEOMETRYCOLLECTION    ),
     HIERARCHYID             (StandardTypeMetadata.ILLEGAL               ),
     IMAGE                   (StandardTypeMetadata.BYTEA                 ),
     INET                    (StandardTypeMetadata.INET                  ),
@@ -107,6 +107,7 @@ public enum HighgoColumnTypeAlias implements ColumnTypeAlias {
     TIMESTAMP               (StandardTypeMetadata.TIMESTAMP             ),
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE  ),
     TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP_WITH_ZONE        ),
+    TIMESTAMPTZ             (StandardTypeMetadata.TIMESTAMPTZ           ),
     TSQUERY                 (StandardTypeMetadata.TSQUERY               ),
     TSVECTOR                (StandardTypeMetadata.TSVECTOR              ),
     TXID_SNAPSHOT           (StandardTypeMetadata.TXID_SNAPSHOT         ),
@@ -123,7 +124,7 @@ public enum HighgoColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.XML                   ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private HighgoColumnTypeAlias(TypeMetadata standard){
+    private PostresqlTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

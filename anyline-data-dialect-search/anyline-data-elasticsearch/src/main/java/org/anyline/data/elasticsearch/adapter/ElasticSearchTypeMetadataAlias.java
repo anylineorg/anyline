@@ -17,11 +17,11 @@
 
 package org.anyline.data.elasticsearch.adapter;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum ElasticSearchColumnTypeAlias implements ColumnTypeAlias {
+public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.BINARY                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY         ),
@@ -123,7 +123,7 @@ public enum ElasticSearchColumnTypeAlias implements ColumnTypeAlias {
     OBJECT                  (StandardTypeMetadata.OBJECT                  ),
     KEYWORD                 (StandardTypeMetadata.KEYWORD                  );
     private final TypeMetadata standard;
-    private ElasticSearchColumnTypeAlias(TypeMetadata standard){
+    private ElasticSearchTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

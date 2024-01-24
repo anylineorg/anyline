@@ -57,7 +57,7 @@ public class HighgoAdapter extends PostgresGenusAdapter implements JDBCAdapter, 
 	public HighgoAdapter(){
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (HighgoColumnTypeAlias alias: HighgoColumnTypeAlias.values()){
+		for (HighgoTypeMetadataAlias alias: HighgoTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(HighgoWriter writer: HighgoWriter.values()){

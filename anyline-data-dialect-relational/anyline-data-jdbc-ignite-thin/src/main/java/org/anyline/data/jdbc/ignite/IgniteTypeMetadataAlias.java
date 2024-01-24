@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.ignite;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum IgniteColumnTypeAlias implements ColumnTypeAlias {
+public enum IgniteTypeMetadataAlias implements TypeMetadataAlias {
         BFILE                   (StandardTypeMetadata.ILLEGAL               ),
         BINARY_DOUBLE           (StandardTypeMetadata.ILLEGAL                ),
         BINARY_FLOAT            (StandardTypeMetadata.ILLEGAL           ),
@@ -124,7 +124,7 @@ public enum IgniteColumnTypeAlias implements ColumnTypeAlias {
         XML                     (StandardTypeMetadata.VARCHAR                  ),
         YEAR                    (StandardTypeMetadata.DATE                  );
         private final TypeMetadata standard;
-        IgniteColumnTypeAlias(TypeMetadata standard){
+        IgniteTypeMetadataAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 

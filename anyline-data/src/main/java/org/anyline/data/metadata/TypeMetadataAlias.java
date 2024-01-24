@@ -19,7 +19,7 @@ package org.anyline.data.metadata;
 
 import org.anyline.metadata.type.TypeMetadata;
 
-public interface ColumnTypeAlias {
+public interface TypeMetadataAlias {
     TypeMetadata standard();
 
     /**

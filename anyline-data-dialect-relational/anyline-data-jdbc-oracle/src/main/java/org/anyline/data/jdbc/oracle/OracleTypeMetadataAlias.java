@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.oracle;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum OracleColumnTypeAlias implements ColumnTypeAlias {
+public enum OracleTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.BFILE),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE),
@@ -142,22 +142,22 @@ public enum OracleColumnTypeAlias implements ColumnTypeAlias {
      * 如果需要取多列以,分隔
      */
     private String scale;
-    private OracleColumnTypeAlias(TypeMetadata standard){
+    private OracleTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
-    private OracleColumnTypeAlias(TypeMetadata standard, String length, String precision, String scale){
+    private OracleTypeMetadataAlias(TypeMetadata standard, String length, String precision, String scale){
         this.standard = standard;
         this.length = length;
         this.precision = precision;
         this.scale = scale;
     }
-    private OracleColumnTypeAlias(TypeMetadata standard, String precision, String scale){
+    private OracleTypeMetadataAlias(TypeMetadata standard, String precision, String scale){
         this.standard = standard;
         this.precision = precision;
         this.scale = scale;
     }
-    private OracleColumnTypeAlias(TypeMetadata standard, String length){
+    private OracleTypeMetadataAlias(TypeMetadata standard, String length){
         this.standard = standard;
         this.length = length;
     }

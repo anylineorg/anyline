@@ -72,7 +72,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (DMColumnTypeAlias alias : DMColumnTypeAlias.values()) {
+		for (DMTypeMetadataAlias alias : DMTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 		}
 

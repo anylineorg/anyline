@@ -61,7 +61,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (MariaColumnTypeAlias alias: MariaColumnTypeAlias.values()){
+		for (MariaTypeMetadataAlias alias: MariaTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(MySQLGenusWriter writer: MySQLGenusWriter.values()){

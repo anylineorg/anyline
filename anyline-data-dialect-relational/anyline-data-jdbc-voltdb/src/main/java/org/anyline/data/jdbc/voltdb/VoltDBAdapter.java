@@ -49,7 +49,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (VoltDBColumnTypeAlias alias: VoltDBColumnTypeAlias.values()){
+		for (VoltDBTypeMetadataAlias alias: VoltDBTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(VoltDBWriter writer: VoltDBWriter.values()){

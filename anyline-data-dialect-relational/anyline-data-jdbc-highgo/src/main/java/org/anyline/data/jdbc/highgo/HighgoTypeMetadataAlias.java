@@ -15,13 +15,13 @@
  */
 
 
-package org.anyline.data.jdbc.gaussdb;
+package org.anyline.data.jdbc.highgo;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum GaussDBColumnTypeAlias implements ColumnTypeAlias {
+public enum HighgoTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL               ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
@@ -31,7 +31,7 @@ public enum GaussDBColumnTypeAlias implements ColumnTypeAlias {
     BINARY                  (StandardTypeMetadata.BIT                   ),
     BIT                     (StandardTypeMetadata.BIT                   ),
     BLOB                    (StandardTypeMetadata.BYTEA                 ),
-    BOOL                    (StandardTypeMetadata.BOOL                   ),
+    BOOL                    (StandardTypeMetadata.BOOL                  ),
     BOX                     (StandardTypeMetadata.ILLEGAL               ),
     BYTEA                   (StandardTypeMetadata.BYTEA                 ),
     CHAR                    (StandardTypeMetadata.CHAR                  ),
@@ -123,7 +123,7 @@ public enum GaussDBColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.XML                   ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private GaussDBColumnTypeAlias(TypeMetadata standard){
+    private HighgoTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

@@ -29,7 +29,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
-        for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
+        for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
             this.alias.put(alias.name(), alias.standard());
         }
         for(MySQLWriter writer: MySQLWriter.values()){
@@ -50,7 +50,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
     /* *****************************************************************************************************************
      *
      * 													复制过程
-     * 1.添加ColumnTypeAlias
+     * 1.添加TypeMetadataAlias
      * 2.如果有类型转换需要添加writer reader
      * 3.放工以上注释
      * 4.复制TemplateAdapter到这里

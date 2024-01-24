@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.tdengine;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
+public enum TDengineTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL             ),
     BINARY_DOUBLE           (StandardTypeMetadata.ILLEGAL             ),
@@ -121,7 +121,7 @@ public enum TDengineColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.NCHAR               ),
     YEAR                    (StandardTypeMetadata.INT                 );
     private final TypeMetadata standard;
-    private TDengineColumnTypeAlias(TypeMetadata standard){
+    private TDengineTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

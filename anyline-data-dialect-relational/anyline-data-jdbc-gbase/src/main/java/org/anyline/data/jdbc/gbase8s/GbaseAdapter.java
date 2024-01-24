@@ -64,7 +64,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
+		for (GbaseTypeMetadataAlias alias : GbaseTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for (GbaseWriter writer : GbaseWriter.values()) {

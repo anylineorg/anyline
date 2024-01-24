@@ -17,10 +17,10 @@
 
 package org.anyline.data.jdbc.iotdb;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
-public enum IoTDBColumnTypeAlias implements ColumnTypeAlias {
+public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
         BFILE                   (StandardTypeMetadata.ILLEGAL      ),
         BINARY_DOUBLE           (StandardTypeMetadata.DOUBLE       ),
         BINARY_FLOAT            (StandardTypeMetadata.ILLEGAL      ),
@@ -123,7 +123,7 @@ public enum IoTDBColumnTypeAlias implements ColumnTypeAlias {
         XML                     (StandardTypeMetadata.TEXT         ),
         YEAR                    (StandardTypeMetadata.INT32        );
         private final TypeMetadata standard;
-        IoTDBColumnTypeAlias(TypeMetadata standard){
+        IoTDBTypeMetadataAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 

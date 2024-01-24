@@ -15,17 +15,17 @@
  */
 
 
-package org.anyline.data.jdbc.oscar;
+package org.anyline.data.jdbc.kingbase.oracle;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum OscarColumnTypeAlias implements ColumnTypeAlias {
+public enum KingbaseTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.BFILE                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
-    BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE                 ),
+    BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE          ),
     BIGINT                  (StandardTypeMetadata.NUMBER                ),
     BIGSERIAL               (StandardTypeMetadata.NUMBER                ),
     BINARY                  (StandardTypeMetadata.BLOB                  ),
@@ -121,7 +121,7 @@ public enum OscarColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.ILLEGAL               ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private OscarColumnTypeAlias(TypeMetadata standard){
+    private KingbaseTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

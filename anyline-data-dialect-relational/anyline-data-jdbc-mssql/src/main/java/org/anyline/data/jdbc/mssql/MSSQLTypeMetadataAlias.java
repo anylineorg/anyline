@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.mssql;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
+public enum MSSQLTypeMetadataAlias implements TypeMetadataAlias {
     BFILE                   (TypeMetadata.ILLEGAL                       ), 
     BINARY_DOUBLE           (StandardTypeMetadata.NUMERIC               ),
     BINARY_FLOAT            (StandardTypeMetadata.FLOAT_MSSQL              ),
@@ -120,7 +120,7 @@ public enum MSSQLColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.XML                   ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private MSSQLColumnTypeAlias(TypeMetadata standard){
+    private MSSQLTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

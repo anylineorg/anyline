@@ -58,7 +58,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		delimiterFr = "";
 		delimiterTo = "";
 
-		for (MaxDBColumnTypeAlias alias: MaxDBColumnTypeAlias.values()){
+		for (MaxDBTypeMetadataAlias alias: MaxDBTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 	}

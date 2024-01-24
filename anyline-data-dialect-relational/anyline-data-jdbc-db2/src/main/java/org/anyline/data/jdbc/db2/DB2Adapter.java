@@ -68,7 +68,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (DB2ColumnTypeAlias alias: DB2ColumnTypeAlias.values()){
+		for (DB2TypeMetadataAlias alias: DB2TypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 	}

@@ -15,13 +15,13 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8s;
+package org.anyline.data.jdbc.kingbase.postgres;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
+public enum KingbaseTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.BFILE                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
@@ -121,7 +121,7 @@ public enum GbaseColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.ILLEGAL               ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private GbaseColumnTypeAlias(TypeMetadata standard){
+    private KingbaseTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

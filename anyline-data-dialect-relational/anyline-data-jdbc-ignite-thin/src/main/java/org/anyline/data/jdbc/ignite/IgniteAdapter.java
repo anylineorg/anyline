@@ -53,7 +53,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (IgniteColumnTypeAlias alias: IgniteColumnTypeAlias.values()){
+		for (IgniteTypeMetadataAlias alias: IgniteTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 	}

@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.informix;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum InformixColumnTypeAlias implements ColumnTypeAlias {
+public enum InformixTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL               ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
@@ -125,7 +125,7 @@ public enum InformixColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.TEXT                  ),
     YEAR                    (StandardTypeMetadata.DATETIME              );
     private final TypeMetadata standard;
-    private InformixColumnTypeAlias(TypeMetadata standard){
+    private InformixTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

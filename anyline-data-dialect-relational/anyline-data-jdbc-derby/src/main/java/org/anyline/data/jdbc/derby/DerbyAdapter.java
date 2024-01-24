@@ -53,7 +53,7 @@ public class DerbyAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	public DerbyAdapter(){
 		delimiterFr = "";
 		delimiterTo = "";
-		for (DerbyColumnTypeAlias alias: DerbyColumnTypeAlias.values()){
+		for (DerbyTypeMetadataAlias alias: DerbyTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 	}

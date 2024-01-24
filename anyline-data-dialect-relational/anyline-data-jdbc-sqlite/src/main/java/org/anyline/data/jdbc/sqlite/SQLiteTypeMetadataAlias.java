@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.sqlite;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum SQLiteColumnTypeAlias implements ColumnTypeAlias {
+public enum SQLiteTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL            ),
     BINARY_DOUBLE           (StandardTypeMetadata.REAL               ),
@@ -121,7 +121,7 @@ public enum SQLiteColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.TEXT               ),
     YEAR                    (StandardTypeMetadata.INTEGER            );
     private final TypeMetadata standard;
-    private SQLiteColumnTypeAlias(TypeMetadata standard){
+    private SQLiteTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

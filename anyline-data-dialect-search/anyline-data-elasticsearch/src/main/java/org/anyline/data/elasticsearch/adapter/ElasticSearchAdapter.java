@@ -36,7 +36,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
     public ElasticSearchAdapter(){
         super();
-        for (ElasticSearchColumnTypeAlias alias : ElasticSearchColumnTypeAlias.values()) {
+        for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
             this.alias.put(alias.name(), alias.standard());
         }
     }

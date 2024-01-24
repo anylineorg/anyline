@@ -18,11 +18,11 @@
 package org.anyline.data.jdbc.hana;
 
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum HanaColumnTypeAlias implements ColumnTypeAlias {
+public enum HanaTypeMetadataAlias implements TypeMetadataAlias {
     BFILE                   (StandardTypeMetadata.ILLEGAL               ),
     BINARY_DOUBLE           (StandardTypeMetadata.ILLEGAL               ),
     BINARY_FLOAT            (StandardTypeMetadata.ILLEGAL               ),
@@ -126,7 +126,7 @@ public enum HanaColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.NVARCHAR              ),
     YEAR                    (StandardTypeMetadata.INTEGER               );
     private final TypeMetadata standard;
-    private HanaColumnTypeAlias(TypeMetadata standard){
+    private HanaTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

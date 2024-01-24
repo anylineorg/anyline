@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.gbase8c;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
-import org.anyline.data.jdbc.gbase8s.GbaseColumnTypeAlias;
+import org.anyline.data.jdbc.gbase8s.GbaseTypeMetadataAlias;
 import org.anyline.data.jdbc.gbase8s.GbaseReader;
 import org.anyline.data.jdbc.gbase8s.GbaseWriter;
 import org.anyline.data.param.ConfigStore;
@@ -67,7 +67,7 @@ public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, I
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (GbaseColumnTypeAlias alias : GbaseColumnTypeAlias.values()) {
+		for (GbaseTypeMetadataAlias alias : GbaseTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for (GbaseWriter writer : GbaseWriter.values()) {

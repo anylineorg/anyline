@@ -8,20 +8,20 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
 
-package org.anyline.data.jdbc.hive;
+package org.anyline.data.jdbc.mysql;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum HiveColumnTypeAlias implements ColumnTypeAlias {
+public enum MySQLTypeMetadataAlias implements TypeMetadataAlias {
         BFILE                   (StandardTypeMetadata.ILLEGAL               ),
         BINARY_DOUBLE           (StandardTypeMetadata.DOUBLE                ),
         BINARY_FLOAT            (StandardTypeMetadata.FLOAT_MySQL           ),
@@ -79,6 +79,7 @@ public enum HiveColumnTypeAlias implements ColumnTypeAlias {
         MEDIUMBLOB              (StandardTypeMetadata.MEDIUMBLOB            ),
         MEDIUMINT               (StandardTypeMetadata.MEDIUMINT             ),
         MEDIUMTEXT              (StandardTypeMetadata.MEDIUMTEXT            ),
+        MULTILINE               (StandardTypeMetadata.MULTILINESTRING       ),
         MULTILINESTRING         (StandardTypeMetadata.MULTILINESTRING       ),
         MULTIPOINT              (StandardTypeMetadata.MULTIPOINT            ),
         MULTIPOLYGON            (StandardTypeMetadata.MULTIPOLYGON          ),
@@ -123,7 +124,7 @@ public enum HiveColumnTypeAlias implements ColumnTypeAlias {
         XML                     (StandardTypeMetadata.TEXT                  ),
         YEAR                    (StandardTypeMetadata.DATE                  );
         private final TypeMetadata standard;
-        HiveColumnTypeAlias(TypeMetadata standard){
+        MySQLTypeMetadataAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 

@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.sinodb;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum SinoDBColumnTypeAlias implements ColumnTypeAlias {
+public enum SinoDBTypeMetadataAlias implements TypeMetadataAlias {
     //https://forum.sinoregal.cn/t/topic/149
     BFILE                   (StandardTypeMetadata.ILLEGAL            ),
     BINARY_DOUBLE           (StandardTypeMetadata.ILLEGAL               ),
@@ -124,7 +124,7 @@ public enum SinoDBColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.TEXT               ),
     YEAR                    (StandardTypeMetadata.INTEGER            );
     private final TypeMetadata standard;
-    private SinoDBColumnTypeAlias(TypeMetadata standard){
+    private SinoDBTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

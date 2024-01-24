@@ -67,7 +67,7 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter,
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (GaussDBColumnTypeAlias alias: GaussDBColumnTypeAlias.values()){
+		for (GaussDBTypeMetadataAlias alias: GaussDBTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(GaussDBWriter writer: GaussDBWriter.values()){

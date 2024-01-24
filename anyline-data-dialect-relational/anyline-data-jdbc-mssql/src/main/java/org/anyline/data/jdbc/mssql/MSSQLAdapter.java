@@ -68,7 +68,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		super();
 		delimiterFr = "[";
 		delimiterTo = "]";
-		for (MSSQLColumnTypeAlias alias: MSSQLColumnTypeAlias.values()){
+		for (MSSQLTypeMetadataAlias alias: MSSQLTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 

@@ -15,17 +15,17 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase.oracle;
+package org.anyline.data.jdbc.gbase8s;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {
+public enum GbaseTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.BFILE                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
-    BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE          ),
+    BINARY_FLOAT            (StandardTypeMetadata.FLOAT4                ),
     BIGINT                  (StandardTypeMetadata.NUMBER                ),
     BIGSERIAL               (StandardTypeMetadata.NUMBER                ),
     BINARY                  (StandardTypeMetadata.BLOB                  ),
@@ -117,11 +117,11 @@ public enum KingbaseColumnTypeAlias implements ColumnTypeAlias {
     TINYTEXT                (StandardTypeMetadata.CLOB                  ),
     VARBINARY               (StandardTypeMetadata.BLOB                  ),
     VARCHAR                 (StandardTypeMetadata.VARCHAR               ),
-    VARCHAR2                (StandardTypeMetadata.VARCHAR2               ),
+    VARCHAR2                (StandardTypeMetadata.VARCHAR               ),
     XML                     (StandardTypeMetadata.ILLEGAL               ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private KingbaseColumnTypeAlias(TypeMetadata standard){
+    private GbaseTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

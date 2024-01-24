@@ -15,13 +15,13 @@
  */
 
 
-package org.anyline.data.jdbc.postgresql;
+package org.anyline.data.jdbc.opengauss;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
+public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
 
     BFILE                   (StandardTypeMetadata.ILLEGAL               ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
@@ -31,7 +31,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     BINARY                  (StandardTypeMetadata.BIT                   ),
     BIT                     (StandardTypeMetadata.BIT                   ),
     BLOB                    (StandardTypeMetadata.BYTEA                 ),
-    BOOL                    (StandardTypeMetadata.BOOL                  ),
+    BOOL                    (StandardTypeMetadata.BOOL                   ),
     BOX                     (StandardTypeMetadata.ILLEGAL               ),
     BYTEA                   (StandardTypeMetadata.BYTEA                 ),
     CHAR                    (StandardTypeMetadata.CHAR                  ),
@@ -48,9 +48,9 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     FLOAT                   (StandardTypeMetadata.FLOAT4                ),
     FLOAT4                  (StandardTypeMetadata.FLOAT4                ),
     FLOAT8                  (StandardTypeMetadata.FLOAT8                ),
-    GEOGRAPHY               (StandardTypeMetadata.GEOGRAPHY             ), //  , pg
-    GEOMETRY                (StandardTypeMetadata.GEOMETRY               ),
-    GEOMETRYCOLLECTION      (StandardTypeMetadata.GEOMETRYCOLLECTION    ),
+    GEOGRAPHY               (StandardTypeMetadata.ILLEGAL               ),
+    GEOMETRY                (StandardTypeMetadata.ILLEGAL               ),
+    GEOMETRYCOLLECTION      (StandardTypeMetadata.ILLEGAL               ),
     HIERARCHYID             (StandardTypeMetadata.ILLEGAL               ),
     IMAGE                   (StandardTypeMetadata.BYTEA                 ),
     INET                    (StandardTypeMetadata.INET                  ),
@@ -107,7 +107,6 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     TIMESTAMP               (StandardTypeMetadata.TIMESTAMP             ),
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE  ),
     TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP_WITH_ZONE        ),
-    TIMESTAMPTZ             (StandardTypeMetadata.TIMESTAMPTZ           ),
     TSQUERY                 (StandardTypeMetadata.TSQUERY               ),
     TSVECTOR                (StandardTypeMetadata.TSVECTOR              ),
     TXID_SNAPSHOT           (StandardTypeMetadata.TXID_SNAPSHOT         ),
@@ -124,7 +123,7 @@ public enum PostresqlColumnTypeAlias implements ColumnTypeAlias {
     XML                     (StandardTypeMetadata.XML                   ),
     YEAR                    (StandardTypeMetadata.DATE                  );
     private final TypeMetadata standard;
-    private PostresqlColumnTypeAlias(TypeMetadata standard){
+    private OpenGaussTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 

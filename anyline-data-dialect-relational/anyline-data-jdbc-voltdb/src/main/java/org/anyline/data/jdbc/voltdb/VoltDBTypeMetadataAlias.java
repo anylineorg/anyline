@@ -17,11 +17,11 @@
 
 package org.anyline.data.jdbc.voltdb;
 
-import org.anyline.data.metadata.ColumnTypeAlias;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
+public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
         /*
         * 注意日期时间格式
         * For String variables, the text must be formatted as either YYYY-MM-DD hh.mm.ss.nnnnnn or just the date portion YYYY-MM-DD.
@@ -128,7 +128,7 @@ public enum VoltDBColumnTypeAlias implements ColumnTypeAlias {
         XML                     (StandardTypeMetadata.VARCHAR                  ),
         YEAR                    (StandardTypeMetadata.TIMESTAMP                  );
         private final TypeMetadata standard;
-        VoltDBColumnTypeAlias(TypeMetadata standard){
+        VoltDBTypeMetadataAlias(TypeMetadata standard){
                 this.standard = standard;
         }
 

@@ -57,7 +57,7 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
+		for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(MySQLGenusWriter writer: MySQLGenusWriter.values()){

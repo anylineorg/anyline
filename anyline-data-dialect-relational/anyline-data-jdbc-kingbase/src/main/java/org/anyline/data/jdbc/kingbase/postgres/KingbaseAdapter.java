@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.kingbase.postgres;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
-import org.anyline.data.jdbc.kingbase.oracle.KingbaseColumnTypeAlias;
+import org.anyline.data.jdbc.kingbase.oracle.KingbaseTypeMetadataAlias;
 import org.anyline.data.jdbc.kingbase.oracle.KingbaseReader;
 import org.anyline.data.jdbc.kingbase.oracle.KingbaseWriter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
@@ -69,7 +69,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (KingbaseColumnTypeAlias alias : KingbaseColumnTypeAlias.values()) {
+		for (KingbaseTypeMetadataAlias alias : KingbaseTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 		}
 
