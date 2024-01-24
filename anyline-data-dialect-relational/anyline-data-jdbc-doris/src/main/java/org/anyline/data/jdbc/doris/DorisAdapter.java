@@ -4811,6 +4811,9 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 			TypeMetadata tm = meta.getTypeMetadata();
 			if (tm == StandardTypeMetadata.VARCHAR) {
 				Integer length = meta.getLength();
+				if(null == length || length == -1){
+					length = meta.getPrecision();
+				}
 				if (null != length && length > 65533) {
 					meta.setFullType(null);
 					meta.setTypeMetadata(StandardTypeMetadata.STRING);
