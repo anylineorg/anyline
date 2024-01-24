@@ -1759,6 +1759,55 @@ public interface DriverAdapter {
 	 */
 	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception;
 	<T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception;
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	<T extends Table> T init(DataRuntime runtime, T table, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	<T extends Table> T detail(DataRuntime runtime, T table, DataRow row);
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询表名列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String tableMetadataNameColumn(DataRuntime runtime){
+		return "TABLE_NAME,NAME,TABNAME";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Catalog列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String tableMetadataCatalogNameColumn(DataRuntime runtime){
+		return "TABLE_CATALOG";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Schema列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String tableMetadataSchemaNameColumn(DataRuntime runtime){
+		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
+	}
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
@@ -1806,7 +1855,7 @@ public interface DriverAdapter {
 
 
 	/**
-	 *
+	 * 查询表创建SQL
 	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -2219,10 +2268,56 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @param table 表
 	 * @param row 系统表查询SQL结果集
-	 * @return Column
+	 * @param <T> Column
 	 */
-	Column init(DataRuntime runtime, Column column, Table table, DataRow row);
+	<T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row);
 
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param row 系统表查询SQL结果集
+	 * @return Column
+	 * @param <T> Column
+	 */
+	<T extends Column> T detail(DataRuntime runtime, T column, DataRow row);
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询名称列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String columnMetadataNameColumn(DataRuntime runtime){
+		return "COLUMN_NAME,COLNAME";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Catalog列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String columnMetadataCatalogNameColumn(DataRuntime runtime){
+		return "TABLE_CATALOG";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Schema列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String columnMetadataSchemaNameColumn(DataRuntime runtime){
+		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Table列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String columnMetadataTableNameColumn(DataRuntime runtime){
+		return "TABLE_NAME,TABNAME";
+	}
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列
