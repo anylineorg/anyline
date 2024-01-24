@@ -43,10 +43,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.beans.Transient;
+import java.io.Serializable;
 import java.util.*;
 
 
-public class DefaultPageNavi implements PageNavi{
+public class DefaultPageNavi implements PageNavi, Serializable {
 	protected static final long serialVersionUID = 3593100423479113410L;
 	protected static final Logger log = LoggerFactory.getLogger(DefaultPageNavi.class);
  

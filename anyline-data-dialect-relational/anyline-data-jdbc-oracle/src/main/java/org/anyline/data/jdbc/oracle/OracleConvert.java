@@ -26,7 +26,6 @@ import java.util.Date;
 
 public class OracleConvert {
     public static void reg(){
-
         ConvertAdapter.reg(new AbstractConvert(String.class, oracle.sql.DATE.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {

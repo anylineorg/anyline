@@ -20,6 +20,7 @@ package org.anyline.data.jdbc.oracle;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -78,7 +79,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		OracleConvert.reg();
-		for (OracleTypeMetadataAlias alias : OracleTypeMetadataAlias.values()) {
+		for (OracleGenusTypeMetadataAlias alias : OracleGenusTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 			TypeMetadata.Config config = alias.config();
 			typeConfigs.put(alias.standard().getName(), config);

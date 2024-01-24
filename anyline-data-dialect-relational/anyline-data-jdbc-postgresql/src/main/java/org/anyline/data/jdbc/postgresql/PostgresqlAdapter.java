@@ -20,6 +20,7 @@ package org.anyline.data.jdbc.postgresql;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.alias.PostgresGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -63,7 +64,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (PostresqlTypeMetadataAlias alias: PostresqlTypeMetadataAlias.values()){
+		for (PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(PostgresqlWriter writer: PostgresqlWriter.values()){

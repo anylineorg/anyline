@@ -1,0 +1,193 @@
+/*
+ * Copyright 2006-2023 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+package org.anyline.data.jdbc.adapter.init.alias;
+
+import org.anyline.data.metadata.TypeMetadataAlias;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
+import org.anyline.metadata.type.TypeMetadata;
+
+public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
+
+    BFILE                   (StandardTypeMetadata.BFILE),
+    BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE),
+    BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE),
+    BIGINT                  (StandardTypeMetadata.NUMBER),
+    BIGSERIAL               (StandardTypeMetadata.NUMBER),
+    BINARY                  (StandardTypeMetadata.BLOB),
+    BIT                     (StandardTypeMetadata.NUMBER),
+    BLOB                    (StandardTypeMetadata.BLOB),
+    BOOL                    (StandardTypeMetadata.NUMBER),
+    BOX                     (StandardTypeMetadata.ILLEGAL),
+    BYTEA                   (StandardTypeMetadata.BLOB),
+    CHAR                    (StandardTypeMetadata.CHAR),
+    CIDR                    (StandardTypeMetadata.ILLEGAL),
+    CIRCLE                  (StandardTypeMetadata.ILLEGAL),
+    CLOB                    (StandardTypeMetadata.CLOB),
+    DATE                    (StandardTypeMetadata.DATE),
+    DATETIME                (StandardTypeMetadata.TIMESTAMP),
+    DATETIME2               (StandardTypeMetadata.TIMESTAMP),
+    DATETIMEOFFSET          (StandardTypeMetadata.TIMESTAMP),
+    DECIMAL                 (StandardTypeMetadata.NUMBER),
+    DOUBLE                  (StandardTypeMetadata.NUMBER),
+    ENUM                    (StandardTypeMetadata.ILLEGAL),
+    FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE),
+    FLOAT4                  (StandardTypeMetadata.FLOAT_ORACLE),
+    FLOAT8                  (StandardTypeMetadata.FLOAT_ORACLE),
+    GEOGRAPHY               (StandardTypeMetadata.ILLEGAL),
+    GEOMETRY                (StandardTypeMetadata.ILLEGAL),
+    GEOMETRYCOLLECTION      (StandardTypeMetadata.ILLEGAL),
+    HIERARCHYID             (StandardTypeMetadata.ILLEGAL),
+    IMAGE                   (StandardTypeMetadata.BLOB),
+    INET                    (StandardTypeMetadata.ILLEGAL),
+    INTERVAL                (StandardTypeMetadata.ILLEGAL),
+    INT                     (StandardTypeMetadata.NUMBER),
+    INT2                    (StandardTypeMetadata.NUMBER),
+    INT4                    (StandardTypeMetadata.NUMBER),
+    INT8                    (StandardTypeMetadata.NUMBER),
+    INTEGER                 (StandardTypeMetadata.NUMBER),
+    JSON                    (StandardTypeMetadata.CLOB),
+    JSONB                   (StandardTypeMetadata.BLOB),
+    LINE                    (StandardTypeMetadata.ILLEGAL),
+    LONG                    (StandardTypeMetadata.LONG_TEXT),
+    LONGBLOB                (StandardTypeMetadata.BLOB),
+    LONGTEXT                (StandardTypeMetadata.CLOB),
+    LSEG                    (StandardTypeMetadata.ILLEGAL),
+    MACADDR                 (StandardTypeMetadata.ILLEGAL),
+    MONEY                   (StandardTypeMetadata.NUMBER),
+    NUMBER                  (StandardTypeMetadata.NUMBER),
+    NCHAR                   (StandardTypeMetadata.NCHAR),
+    NCLOB                   (StandardTypeMetadata.NCLOB),
+    NTEXT                   (StandardTypeMetadata.NCLOB),
+    NVARCHAR                (StandardTypeMetadata.NVARCHAR2),
+    NVARCHAR2               (StandardTypeMetadata.NVARCHAR2),
+    PATH                    (StandardTypeMetadata.ILLEGAL),
+    MEDIUMBLOB              (StandardTypeMetadata.BLOB),
+    MEDIUMINT               (StandardTypeMetadata.NUMBER),
+    MEDIUMTEXT              (StandardTypeMetadata.CLOB),
+    MULTILINESTRING         (StandardTypeMetadata.ILLEGAL),
+    MULTIPOINT              (StandardTypeMetadata.ILLEGAL),
+    MULTIPOLYGON            (StandardTypeMetadata.ILLEGAL),
+    NUMERIC                 (StandardTypeMetadata.NUMBER),
+    POINT                   (StandardTypeMetadata.ILLEGAL),
+    POLYGON                 (StandardTypeMetadata.ILLEGAL),
+    REAL                    (StandardTypeMetadata.FLOAT_ORACLE),
+    RAW                     (StandardTypeMetadata.RAW),
+    ROWID                   (StandardTypeMetadata.ROWID),
+    SERIAL                  (StandardTypeMetadata.NUMBER),
+    SERIAL2                 (StandardTypeMetadata.NUMBER),
+    SERIAL4                 (StandardTypeMetadata.NUMBER),
+    SERIAL8                 (StandardTypeMetadata.NUMBER),
+    SET                     (StandardTypeMetadata.ILLEGAL),
+    SMALLDATETIME           (StandardTypeMetadata.TIMESTAMP),
+    SMALLMONEY              (StandardTypeMetadata.NUMBER),
+    SMALLINT                (StandardTypeMetadata.NUMBER),
+    SMALLSERIAL             (StandardTypeMetadata.NUMBER),
+    SQL_VARIANT             (StandardTypeMetadata.ILLEGAL),
+    SYSNAME                 (StandardTypeMetadata.ILLEGAL),
+    TEXT                    (StandardTypeMetadata.CLOB),
+    TIME                    (StandardTypeMetadata.TIMESTAMP),
+    TIMEZ                   (StandardTypeMetadata.TIMESTAMP),
+    TIMESTAMP               (StandardTypeMetadata.TIMESTAMP),
+    TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE),
+    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP_WITH_ZONE),
+    TSQUERY                     (StandardTypeMetadata.ILLEGAL),
+    TSVECTOR                    (StandardTypeMetadata.ILLEGAL),
+    TXID_SNAPSHOT               (StandardTypeMetadata.ILLEGAL),
+    UNIQUEIDENTIFIER            (StandardTypeMetadata.ILLEGAL),
+    UUID                        (StandardTypeMetadata.ILLEGAL),
+    UROWID                      (StandardTypeMetadata.UROWID),
+    VARBIT                      (StandardTypeMetadata.BLOB),
+    TINYBLOB                    (StandardTypeMetadata.BLOB),
+    TINYINT                     (StandardTypeMetadata.NUMBER),
+    TINYTEXT                    (StandardTypeMetadata.CLOB),
+    VARBINARY                   (StandardTypeMetadata.BLOB),
+    VARCHAR                     (StandardTypeMetadata.VARCHAR2),
+    VARCHAR2                    (StandardTypeMetadata.VARCHAR2),
+    XML                         (StandardTypeMetadata.ILLEGAL),
+    YEAR                        (StandardTypeMetadata.DATE);
+    /**
+     * 标准类型
+     */
+    private final TypeMetadata standard;
+    /**
+     * 读取元数据时 长度对应的列<br/>
+     * 正常情况下只有一列<br/>
+     * 如果需要取多列以,分隔
+     */
+    private String length;
+    /**
+     * 读取元数据时 有效位数对应的列<br/>
+     * 正常情况下只有一列<br/>
+     * 如果需要取多列以,分隔
+     */
+    private String precision;
+    /**
+     * 读取元数据时 小数位对应的列<br/>
+     * 正常情况下只有一列<br/>
+     * 如果需要取多列以,分隔
+     */
+    private String scale;
+    private OracleGenusTypeMetadataAlias(TypeMetadata standard){
+        this.standard = standard;
+    }
+
+    private OracleGenusTypeMetadataAlias(TypeMetadata standard, String length, String precision, String scale){
+        this.standard = standard;
+        this.length = length;
+        this.precision = precision;
+        this.scale = scale;
+    }
+    private OracleGenusTypeMetadataAlias(TypeMetadata standard, String precision, String scale){
+        this.standard = standard;
+        this.precision = precision;
+        this.scale = scale;
+    }
+    private OracleGenusTypeMetadataAlias(TypeMetadata standard, String length){
+        this.standard = standard;
+        this.length = length;
+    }
+
+    @Override
+    public TypeMetadata standard() {
+        return standard;
+    }
+
+    @Override
+    public String length() {
+        return length;
+    }
+    @Override
+    public String precision() {
+        return precision;
+    }
+
+    @Override
+    public String scale() {
+        return scale;
+    }
+
+    @Override
+    public TypeMetadata.Config config() {
+        TypeMetadata.Config config = new TypeMetadata.Config();
+        config.setLengthColumn(this.length);
+        config.setPrecisionColumn(this.precision);
+        config.setScaleColumn(this.scale);
+        return config;
+    }
+
+}

@@ -3771,6 +3771,27 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
 
     /**
      * table[命令合成-子流程]<br/>
+     * 创建表完成后追加列备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Column meta)二选一实现
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 表
+     * @return sql
+     * @throws Exception 异常
+     */
+    @Override
+    public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
+        List<Run> runs = new ArrayList<>();
+        if(null != meta){
+            LinkedHashMap<String, Column> columns = meta.getColumns();
+            if(null != columns){
+                for(Column column:columns.values()){
+                    runs.addAll(buildChangeCommentRun(runtime, column));
+                }
+            }
+        }
+        return runs;
+    }
+    /**
+     * table[命令合成-子流程]<br/>
      * 创建表完成后追加表备注,创建过程能添加备注的不需要实现与comment(DataRuntime runtime, StringBuilder builder, Table meta)二选一实现
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param meta 表

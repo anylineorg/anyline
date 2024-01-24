@@ -20,6 +20,7 @@ package org.anyline.data.jdbc.mariadb;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.jdbc.adapter.init.reader.MySQLGenusReader;
 import org.anyline.data.jdbc.adapter.init.writer.MySQLGenusWriter;
 import org.anyline.data.param.ConfigStore;
@@ -61,7 +62,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (MariaTypeMetadataAlias alias: MariaTypeMetadataAlias.values()){
+		for (MySQLGenusTypeMetadataAlias alias: MySQLGenusTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
 		for(MySQLGenusWriter writer: MySQLGenusWriter.values()){
