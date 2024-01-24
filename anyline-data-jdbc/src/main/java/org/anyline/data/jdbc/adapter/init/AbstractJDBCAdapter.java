@@ -3270,7 +3270,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
-
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -3306,38 +3305,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String _catalog = row.getString("TABLE_CATALOG");
-			String _schema = row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME");
-			if(null == _catalog && null != catalog){
-				_catalog = catalog.getName();
-			}
-			if(null == _schema && null != schema){
-				_schema = schema.getName();
-			}
-			String name = row.getString("TABLE_NAME","NAME","TABNAME");
-			if(null == name){
-				continue;
-			}
-			T table = tables.get(name.toUpperCase());
-			if(null == table){
-				if("VIEW".equals(row.getString("TABLE_TYPE"))){
-					table = (T) new View();
-				}else {
-					table = (T) new Table();
-				}
-			}
-			if(null != _catalog){
-				_catalog = _catalog.trim();
-			}
-			if(null != _schema){
-				_schema = _schema.trim();
-			}
-			table.setCatalog(_catalog);
-			table.setSchema(_schema);
-			table.setName(name);
-			init(table, row);
-			tables.put(name.toUpperCase(), table);
-
+			T table = null;
+			table = init(runtime, table, catalog, schema, row);
+			table = detail(runtime, table, row);
+			tables.put(table.getName().toUpperCase(), table);
 		}
 		return tables;
 	}
@@ -3360,42 +3331,71 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			tables = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			String _catalog = row.getString("TABLE_CATALOG");
-			String _schema = row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME");
-			if(null == _catalog && null != catalog){
-				_catalog = catalog.getName();
-			}
-			if(null == _schema && null != schema){
-				_schema = schema.getName();
-			}
-			String name = row.getString("TABLE_NAME","NAME","TABNAME");
-			T table = table(tables, new Catalog(_catalog), new Schema(_schema), name);
-			boolean conains = true;
-			if(null == table){
-				conains = false;
-				if("VIEW".equals(row.getString("TABLE_TYPE"))){
-					table = (T)new View();
-				}else {
-					table = (T) new Table();
-				}
-			}
-			if(null != _catalog){
-				_catalog = _catalog.trim();
-			}
-			if(null != _schema){
-				_schema = _schema.trim();
-			}
-			table.setCatalog(_catalog);
-			table.setSchema(_schema);
-			table.setName(name);
-			init(table, row);
-			if(!conains) {
+			T table = null;
+			table = init(runtime, table, catalog, schema, row);
+			if(null != table(tables, table.getCatalog(), table.getSchema(), table.getName())){
 				tables.add(table);
 			}
+			detail(runtime, table, row);
 		}
 		return tables;
 	}
-	private void init(Table table, DataRow row){
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	public <T extends Table> T init(DataRuntime runtime, T table, Catalog catalog, Schema schema, DataRow row){
+		String _catalog = null;
+		String catalog_column = tableMetadataCatalogNameColumn(runtime);//"TABLE_CATALOG"
+		if(null != catalog_column) {
+			_catalog = row.getString(catalog_column.split(","));
+		}
+		String _schema = null;
+		String schema_colunn = tableMetadataSchemaNameColumn(runtime);//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME";
+		if(null != schema_colunn) {
+			_schema = row.getString(schema_colunn.split(","));
+		}
+		if(null == _catalog && null != catalog){
+			_catalog = catalog.getName();
+		}
+		if(null == _schema && null != schema){
+			_schema = schema.getName();
+		}
+		String name = null;
+		String name_column = tableMetadataNameColumn(runtime);//"TABLE_NAME","NAME","TABNAME"
+		if(null != name_column){
+			name = row.getString(name_column.split(","));
+		}
+		if(null == table){
+			if("VIEW".equals(row.getString("TABLE_TYPE"))){
+				table = (T)new View();
+			}else {
+				table = (T)new Table();
+			}
+		}
+		if(null != _catalog){
+			_catalog = _catalog.trim();
+		}
+		if(null != _schema){
+			_schema = _schema.trim();
+		}
+		table.setCatalog(_catalog);
+		table.setSchema(_schema);
+		table.setName(name);
+		return table;
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	public <T extends Table> T detail(DataRuntime runtime, T table, DataRow row){
 		table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		table.setEngine(row.getString("ENGINE"));
 		table.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
@@ -3410,6 +3410,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		table.setType(row.getString("TABLE_TYPE"));
 		table.setEngine(row.getString("ENGINE"));
 		table.setTemporary(row.getBoolean("IS_TEMPORARY", false));
+		return table;
 	}
 	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
 		try {
@@ -4428,14 +4429,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			columns = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("COLUMN_NAME","COLNAME");
-			T column = columns.get(name.toUpperCase());
-			if(null == column){
-				column = (T)new Column();
+			T column = null;
+			column = init(runtime, column, table, row);
+			if(null != column) {
+				column = detail(runtime, column, row);
+				columns.put(column.getName().toUpperCase(), column);
 			}
-			column.setName(name);
-			init(runtime, column, table, row);
-			columns.put(name.toUpperCase(), column);
 		}
 		return columns;
 	}
@@ -4445,17 +4444,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			columns = new ArrayList<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("COLUMN_NAME","COLNAME");
-			T tmp = (T)new Column();
-			tmp.setName(name);
-			init(runtime, tmp, table, row);
-			T column = column(tmp, columns);
-			if(null == column) {
-				column = (T) new Column();
-				column.setName(name);
-				init(runtime, column, table, row);
+			T column = null;
+			column = init(runtime, column, table, row);
+			if(null == column(column, columns)){
 				columns.add(column);
 			}
+			detail(runtime, column, row);
 		}
 		return columns;
 	}
@@ -9563,16 +9557,24 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	/**
 	 * column [结果集封装-子流程](方法1)<br/>
 	 * 方法(1)内部遍历
-	 * @param column
-	 * @param table
-	 * @param row
+	 * @param column 上一步封装结果
+	 * @param table 表
+	 * @param row 查询结果集
 	 */
-	public Column init(DataRuntime runtime, Column column, Table table, DataRow row){
-		String catalog = BasicUtil.evl(row.getString("TABLE_CATALOG"), column.getCatalogName());
-		String schema = BasicUtil.evl(row.getString("TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"), column.getSchemaName());
-		String tableName = null;
+	public <T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row){
+		String catalog = null;
+		String catalog_column = columnMetadataCatalogNameColumn(runtime);
+		if(null != catalog_column) {
+			catalog = row.getString(catalog_column.split(","));
+		}
+		catalog = BasicUtil.evl(catalog, column.getCatalogName());
+		String schema = null;
+		String schema_column = columnMetadataSchemaNameColumn(runtime); //"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+		if(null != schema_column){
+			schema = row.getString(schema_column.split(","));
+		}
+		schema = BasicUtil.evl(schema, column.getSchemaName());
 		if(null != table){
-			tableName = table.getName();
 			if(null == catalog){
 				catalog = table.getCatalogName();
 			}
@@ -9586,13 +9588,37 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != schema){
 			schema = schema.trim();
 		}
+		if(null == column){
+			column = (T)new Column();
+		}
 		column.setCatalog(catalog);
 		column.setSchema(schema);
 		if(null != table) {//查询全部表
 			column.setTable(table);
 		}
-		column.setTable(BasicUtil.evl(row.getString("TABLE_NAME","TABNAME"), column.getTableName(true), tableName));
+		String tableName = null;
+		String table_column = columnMetadataTableNameColumn(runtime);
+		if(null != table_column){
+			tableName = row.getString(table_column.split(","));//"TABLE_NAME","TABNAME"
+		}
+		column.setTable(BasicUtil.evl(tableName, column.getTableName(true), tableName));
 
+		return column;
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param row 系统表查询SQL结果集
+	 * @return Column
+	 * @param <T> Column
+	 */
+	public <T extends Column> T detail(DataRuntime runtime, T column, DataRow row){
+		if(null == column){
+			return null;
+		}
 		if(null == column.getPosition()) {
 			try {
 				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
@@ -9619,8 +9645,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String length_column = lengthColumn(runtime, typeMetadata);
 		String precision_column = precisionColumn(runtime, typeMetadata);
 		String scale_column = scaleColumn(runtime, typeMetadata);
-		
-		
+
+
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
@@ -9723,7 +9749,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		return column;
 	}
-
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据长度列
