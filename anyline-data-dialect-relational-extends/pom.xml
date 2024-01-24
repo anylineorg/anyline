@@ -31,7 +31,6 @@
 		<module>anyline-data-jdbc-questdb</module>
 		<module>anyline-data-jdbc-stardb</module>				<!--京东StarDB-->
 		<module>anyline-data-jdbc-tdsql</module>				<!--腾讯TDSQL PostgreSQL(TBase)-->
-		<module>anyline-data-jdbc-tidb</module>
 		<module>anyline-data-jdbc-timescale</module>
 		<module>anyline-data-jdbc-ubisql</module>				<!--平安科技-->
 		<module>anyline-data-jdbc-uxdb</module>				<!--优炫数据库-->
