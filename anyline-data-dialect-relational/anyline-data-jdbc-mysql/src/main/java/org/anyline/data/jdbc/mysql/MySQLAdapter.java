@@ -19,6 +19,8 @@ package org.anyline.data.jdbc.mysql;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.reader.MySQLGenusReader;
+import org.anyline.data.jdbc.adapter.init.writer.MySQLGenusWriter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -58,10 +60,10 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		for (MySQLColumnTypeAlias alias: MySQLColumnTypeAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
 		}
-		for(MySQLWriter writer: MySQLWriter.values()){
+		for(MySQLGenusWriter writer: MySQLGenusWriter.values()){
 			reg(writer.supports(), writer.writer());
 		}
-		for(MySQLReader reader: MySQLReader.values()){
+		for(MySQLGenusReader reader: MySQLGenusReader.values()){
 			reg(reader.supports(), reader.reader());
 		}
 	}

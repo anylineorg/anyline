@@ -44,6 +44,7 @@ public interface TypeMetadata {
         private final CATEGORY_GROUP group;
         private final int ignoreLength;
         private final int ignorePrecision;
+
         private final int ignoreScale;
         CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.group = group;
@@ -53,6 +54,18 @@ public interface TypeMetadata {
         }
         public CATEGORY_GROUP group(){
             return group;
+        }
+
+        public int ignoreLength() {
+            return ignoreLength;
+        }
+
+        public int ignorePrecision() {
+            return ignorePrecision;
+        }
+
+        public int ignoreScale() {
+            return ignoreScale;
         }
     }
     default boolean equals(TypeMetadata metadata){

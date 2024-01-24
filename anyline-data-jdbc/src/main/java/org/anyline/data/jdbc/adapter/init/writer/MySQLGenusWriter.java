@@ -15,13 +15,14 @@
  */
 
 
-package org.anyline.data.jdbc.mysql;
+package org.anyline.data.jdbc.adapter.init.writer;
 
 import org.anyline.adapter.DataWriter;
+import org.anyline.data.jdbc.adapter.init.geometry.MySQLGeometryAdapter;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.entity.geometry.*;
 
-public enum MySQLWriter {
+public enum MySQLGenusWriter {
 
     PointWriter(new Object[]{Point.class, StandardTypeMetadata.POINT}, new DataWriter() {
         @Override
@@ -160,7 +161,7 @@ public enum MySQLWriter {
     }
     private final Object[] supports;
     private final DataWriter writer;
-    MySQLWriter(Object[] supports, DataWriter writer){
+    MySQLGenusWriter(Object[] supports, DataWriter writer){
         this.supports = supports;
         this.writer = writer;
     }

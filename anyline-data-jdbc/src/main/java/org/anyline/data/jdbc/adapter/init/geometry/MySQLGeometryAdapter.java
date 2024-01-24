@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.mysql;
+package org.anyline.data.jdbc.adapter.init.geometry;
 
 import org.anyline.entity.geometry.*;
 import org.anyline.util.ByteBuffer;
