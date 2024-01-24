@@ -3743,7 +3743,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 			LinkedHashMap<String, Column> columns = meta.getColumns();
 			if(null != columns){
 				for(Column column:columns.values()){
-					runs.addAll(buildChangeCommentRun(runtime, column));
+					runs.addAll(buildAppendCommentRun(runtime, column));
 				}
 			}
 		}
