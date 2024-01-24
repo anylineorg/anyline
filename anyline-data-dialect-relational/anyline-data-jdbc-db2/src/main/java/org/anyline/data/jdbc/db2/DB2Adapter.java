@@ -34,6 +34,7 @@
 package org.anyline.data.jdbc.db2;
 
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -59,7 +60,7 @@ import java.sql.ResultSetMetaData;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.db2")
-public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
+public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, InitializingBean {
 	
 	public DatabaseType type(){
 		return DatabaseType.DB2;
@@ -1653,7 +1654,26 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		String catalogName = null;
+		String schemaName = null;
+		if(null != catalog){
+			catalogName = catalog.getName();
+		}
+		if(null != schema){
+			schemaName = schema.getName();
+		}
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYSCAT.TABLES  WHERE TYPE = 'T'");
+		if(BasicUtil.isNotEmpty(schemaName)){
+			builder.append(" AND TABSCHEMA ='").append(schemaName).append("'");
+		}
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABNAME LIKE '").append(pattern).append("'");
+		}
+		return runs;
 	}
 
 
@@ -1708,6 +1728,38 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception{
 		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询表名列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataNameColumn(DataRuntime runtime){
+		return "TABNAME";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Catalog列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataCatalogNameColumn(DataRuntime runtime){
+		return null;
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Schema列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataSchemaNameColumn(DataRuntime runtime){
+		return "TABSCHEMA";
+	}
+
 	/**
 	 * table[结果集封装]<br/> <br/>
 	 * 根据驱动内置方法补充
@@ -2326,6 +2378,47 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 	/**
+	 * column [结果集封装-子流程](方法1)<br/>
+	 * 方法(1)内部遍历
+	 * @param column 上一步封装结果
+	 * @param table 表
+	 * @param row 查询结果集
+	 */
+	public <T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row){
+		return super.init(runtime, column, table, row);
+	}
+	/**
+	 * column [结果集封装-子流程](方法1)<br/>
+	 * 方法(1)内部遍历
+	 * @param column
+	 * @param row
+	 */
+	public <T extends Column> T detail(DataRuntime runtime, T column, DataRow row){
+
+		if(null == column.getPosition()) {
+			try {
+				column.setPosition(row.getInt("COLNO"));
+			}catch (Exception e){}
+		}
+		String type = row.getString("TYPENAME");
+		column.setType(type);
+		int len = row.getInt("LENGTH",0);
+		column.setLength(len);
+		column.setPrecision(len);
+		int scale = row.getInt("SCALE",0);
+		if(null == column.getTypeMetadata()) {
+			typeMetadata(runtime, column);
+		}
+
+		TypeMetadata typeMetadata = typeMetadata(runtime, type);
+		column.setTypeMetadata(typeMetadata);
+
+		if(null == column.getTypeMetadata()) {
+			typeMetadata(runtime, column);
+		}
+		return column;
+	}
+	/**
 	 * column[结果集封装]<br/>
 	 * 解析JDBC get columns结果
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2341,6 +2434,46 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	}
 
 
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询名称列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataNameColumn(DataRuntime runtime){
+		return "COLNAME";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Catalog列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
+		return null;
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Schema列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
+		return "TABSCHEMA";
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 系统表查询Table列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataTableNameColumn(DataRuntime runtime){
+		return "TABNAME";
+	}
 
 
 	/* *****************************************************************************************************************
@@ -2448,7 +2581,7 @@ public class DB2Adapter extends OracleGenusAdapter implements JDBCAdapter, Initi
 	 */
 	@Override
 	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryPrimaryRun(runtime, table);
+		return new ArrayList<>();
 	}
 
 	/**
