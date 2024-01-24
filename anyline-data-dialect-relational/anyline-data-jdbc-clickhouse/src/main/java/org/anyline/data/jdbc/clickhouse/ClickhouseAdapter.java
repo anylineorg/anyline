@@ -1762,7 +1762,7 @@ public class ClickhouseAdapter extends MySQLGenusAdapter implements JDBCAdapter,
 	}
 
 	/**
-	 *
+	 * 查询表创建SQL
 	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -1784,7 +1784,7 @@ public class ClickhouseAdapter extends MySQLGenusAdapter implements JDBCAdapter,
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception{
-		return super.buildQueryDdlsRun(runtime, table);
+		return null;
 	}
 
 	/**
