@@ -2581,7 +2581,18 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildQueryPrimaryRun(DataRuntime runtime, Table table) throws Exception{
-		return new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYSCAT.KEYCOLUSE\n");
+		builder.append("WHERE CONSTNAME= 'PRIMARY'\n");
+		builder.append("AND TABNAME = '").append(table.getName()).append("'\n");
+		Schema schema = table.getSchema();
+		if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND TABSCHEMA = '").append(schema.getName()).append("'");
+		}
+		return runs;
 	}
 
 	/**
