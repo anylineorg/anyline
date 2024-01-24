@@ -6050,7 +6050,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Procedure> ArrayList<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern)", 37));
 		}
 		return new ArrayList<>();
-	}/**
+	}
+	/**
 	 *
 	 * procedure[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

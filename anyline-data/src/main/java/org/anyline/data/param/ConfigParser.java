@@ -259,7 +259,8 @@ public class ConfigParser {
 			result.setVar(var);
 		}
 		return result;
-	}/**
+	}
+	/**
 	 * 解析默认值
 	 * @param result  result
 	 * @return ParseResult

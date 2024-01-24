@@ -1435,7 +1435,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
     @Override
     public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set) throws Exception{
         return super.catalogs(runtime, index, create, catalogs, set);
-    }/**
+    }
+	/**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

@@ -1411,7 +1411,8 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	@Override
 	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set) throws Exception{
 		return super.catalogs(runtime, index, create, catalogs, set);
-	}/**
+	}
+	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3819,7 +3820,8 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	@Override
 	public StringBuilder buildCreateRunOption(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
 		return super.buildCreateRunOption(runtime, builder, meta);
-	}/**
+	}
+	/**
 	 * view[命令合成]<br/>
 	 * 修改视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

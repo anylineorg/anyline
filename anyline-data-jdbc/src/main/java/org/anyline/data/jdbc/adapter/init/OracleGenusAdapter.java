@@ -1514,7 +1514,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     @Override
     public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set) throws Exception{
         return super.catalogs(runtime, index, create, catalogs, set);
-    }/**
+    }
+	/**
      * catalog[结果集封装]<br/>
      * 根据驱动内置接口补充 catalog
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4221,6 +4222,33 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception{
         return super.buildAlterRun(runtime, meta);
     }
+    /**
+     * view[命令合成-子流程]<br/>
+     * 创建视图头部
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 视图
+     * @return StringBuilder
+     * @throws Exception 异常
+     */
+    @Override
+    public StringBuilder buildCreateRunHead(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
+        return super.buildCreateRunHead(runtime, builder, meta);
+    }
+    /**
+     * view[命令合成-子流程]<br/>
+     * 创建视图选项
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param meta 视图
+     * @return StringBuilder
+     * @throws Exception 异常
+     */
+    @Override
+    public StringBuilder buildCreateRunOption(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
+        return super.buildCreateRunOption(runtime, builder, meta);
+    }
+
     /**
      * view[命令合成]<br/>
      * 重命名

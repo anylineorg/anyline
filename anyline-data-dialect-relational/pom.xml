@@ -25,6 +25,7 @@
 		<module>anyline-data-jdbc-edb</module>
 		<module>anyline-data-jdbc-gbase</module>						<!--南大通用-->
 		<module>anyline-data-jdbc-h2</module>
+		<module>anyline-data-jdbc-gaussdb</module>
 		<module>anyline-data-jdbc-hana</module>
 		<module>anyline-data-jdbc-highgo</module>						<!--瀚高-->
 		<module>anyline-data-jdbc-hive</module>
