@@ -1704,6 +1704,10 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
+		String schemaName = null;
+		if(null != schema){
+			schemaName = schema.getName();
+		}
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT  O.NAME, FT.TABLE_CATALOG, FT.TABLE_SCHEMA, O.TYPE, O.TYPE_DESC,EP.VALUE AS COMMENT   \n");
 		builder.append("FROM SYS.OBJECTS O \n");
@@ -1713,8 +1717,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND O.NAME LIKE '").append(pattern).append("'");
 		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			builder.append(" AND FT.TABLE_SCHEMA ='").append(schema.getName()).append("'");
+		if(BasicUtil.isNotEmpty(schemaName)) {
+			builder.append(" AND FT.TABLE_SCHEMA ='").append(schemaName).append("'");
 		}
 		if(null != types){
 			String[] tps = types.toUpperCase().trim().split(",");
