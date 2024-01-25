@@ -157,6 +157,20 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	public static DataRuntime reg(String key, DataSource ds) throws Exception {
 		return init(key, ds, false);
 	}
+	public static DataRuntime reg(String key, DataSource ds, DatabaseType type, boolean override) throws Exception {
+		DataRuntime runtime = init(key, ds, override);
+		if(null != runtime && null != type){
+			runtime.setAdapterKey(type.name());
+		}
+		return runtime;
+	}
+	public static DataRuntime reg(String key, DataSource ds, DatabaseType type) throws Exception {
+		DataRuntime runtime = init(key, ds, false);
+		if(null != runtime && null != type){
+			runtime.setAdapterKey(type.name());
+		}
+		return runtime;
+	}
 	public static DataSource reg(String key, Connection connection, boolean override){
 		return null;
 	}
