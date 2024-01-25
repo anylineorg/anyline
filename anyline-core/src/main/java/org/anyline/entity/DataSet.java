@@ -2155,7 +2155,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
-    public List<Integer[]> getIntArrays(String ... keys) throws Exception{
+    public List<Integer[]> getIntArrays(String ... keys) throws Exception {
         List<Integer[]> result = new ArrayList<>();
         for(DataRow row:rows){
             int len = keys.length;
@@ -2212,7 +2212,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
-    public List<Long[]> getLongArrays(String ... keys) throws Exception{
+    public List<Long[]> getLongArrays(String ... keys) throws Exception {
         List<Long[]> result = new ArrayList<>();
         for(DataRow row:rows){
             int len = keys.length;
@@ -2269,7 +2269,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
 
     }
-    public List<Double[]> getDoubleArrays(String ... keys) throws Exception{
+    public List<Double[]> getDoubleArrays(String ... keys) throws Exception {
         List<Double[]> result = new ArrayList<>();
         for(DataRow row:rows){
             int len = keys.length;
@@ -4796,7 +4796,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataSet
      * @throws  Exception Exception
      */
-    public DataSet ognl(String key, String formula, Object values, int strategy, boolean exception) throws Exception{
+    public DataSet ognl(String key, String formula, Object values, int strategy, boolean exception) throws Exception {
         if(strategy == 0){
             for(DataRow row:rows){
                 try {
@@ -4830,10 +4830,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet ognl(String key, String formula, int strategy, boolean exception) throws Exception{
+    public DataSet ognl(String key, String formula, int strategy, boolean exception) throws Exception {
         return ognl(key, formula, null, strategy, exception);
     }
-    public DataSet ognl(String key, String formula) throws Exception{
+    public DataSet ognl(String key, String formula) throws Exception {
         return ognl(key, formula, null, 0, false);
     }
     /**
@@ -5590,10 +5590,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
             set = lessEqual(set, key, max);
             return set;
         }
-        public DataSet ognl(String formula) throws Exception{
+        public DataSet ognl(String formula) throws Exception {
             return ognl(DataSet.this, formula);
         }
-        private DataSet ognl(DataSet src, String formula) throws Exception{
+        private DataSet ognl(DataSet src, String formula) throws Exception {
             DataSet set = new DataSet();
             for(DataRow row:src){
                 OgnlContext context = new OgnlContext(null, null, new DefaultOgnlMemberAccess(true));

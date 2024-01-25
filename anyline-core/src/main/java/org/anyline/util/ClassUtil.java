@@ -795,7 +795,7 @@ public class ClassUtil {
 		}
 		return type;
 	}
-	public static Object newInstance(Class clazz) throws Exception{
+	public static Object newInstance(Class clazz) throws Exception {
 		if(!clazz.isInterface()
 				&& !clazz.isAnnotation()
 				&& !clazz.isEnum()

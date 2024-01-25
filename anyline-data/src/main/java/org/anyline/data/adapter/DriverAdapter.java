@@ -1375,13 +1375,13 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception;
-	default List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy) throws Exception{
+	default List<Run> buildQueryDatabaseRun(DataRuntime runtime, boolean greedy) throws Exception {
 		return buildQueryDatabasesRun(runtime, false, null);
 	}
-	default List<Run> buildQueryDatabaseRun(DataRuntime runtime, String name) throws Exception{
+	default List<Run> buildQueryDatabaseRun(DataRuntime runtime, String name) throws Exception {
 		return buildQueryDatabasesRun(runtime, false, name);
 	}
-	default List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception{
+	default List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception {
 		return buildQueryDatabasesRun(runtime, false, null);
 	}
 
@@ -1511,7 +1511,7 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception;
-	default List<Run> buildQueryCatalogsRun(DataRuntime runtime) throws Exception{
+	default List<Run> buildQueryCatalogsRun(DataRuntime runtime) throws Exception {
 		return buildQueryCatalogsRun(runtime, false, null);
 	}
 
@@ -1629,10 +1629,10 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception;
-	default List<Run> buildQuerySchemasRun(DataRuntime runtime, String name) throws Exception{
+	default List<Run> buildQuerySchemasRun(DataRuntime runtime, String name) throws Exception {
 		return buildQuerySchemasRun(runtime, false, null, name);
 	}
-	default List<Run> buildQuerySchemasRun(DataRuntime runtime, Catalog catalog) throws Exception{
+	default List<Run> buildQuerySchemasRun(DataRuntime runtime, Catalog catalog) throws Exception {
 		return buildQuerySchemasRun(runtime, false, catalog,null);
 	}
 
@@ -2288,7 +2288,7 @@ public interface DriverAdapter {
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
-	<T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row);
+	<T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row);
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
@@ -2299,7 +2299,7 @@ public interface DriverAdapter {
 	 * @return Column
 	 * @param <T> Column
 	 */
-	<T extends Column> T detail(DataRuntime runtime, T column, DataRow row);
+	<T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row);
 	/**
 	 * column[结果集封装]<br/>
 	 * Column元数据名称列
@@ -2454,14 +2454,27 @@ public interface DriverAdapter {
 
 	/**
 	 * primary[结构集封装]<br/>
-	 *  根据查询结果集构造PrimaryKey
+	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param primary 上一步封装结果
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	PrimaryKey primary(DataRuntime runtime, int index, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
+
+	/**
+	 * primary[结构集封装]<br/>
+	 * 根据查询结果集构造PrimaryKey更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param primary 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
 
 	/**
 	 * primary[结构集封装]<br/>
@@ -3807,7 +3820,7 @@ public interface DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	boolean alter(DataRuntime runtime, Table table, Column meta, boolean trigger) throws Exception;
-	default boolean alter(DataRuntime runtime, Table table, Column meta) throws Exception{
+	default boolean alter(DataRuntime runtime, Table table, Column meta) throws Exception {
 		return alter(runtime, table, meta, true);
 	}
 
@@ -3853,7 +3866,7 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-	default List<Run> buildAddRun(DataRuntime runtime, Column column) throws Exception{
+	default List<Run> buildAddRun(DataRuntime runtime, Column column) throws Exception {
 		return buildAddRun(runtime, column, false);
 	}
 
@@ -3868,7 +3881,7 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-	default List<Run> buildAlterRun(DataRuntime runtime, Column column) throws Exception{
+	default List<Run> buildAlterRun(DataRuntime runtime, Column column) throws Exception {
 		return buildAlterRun(runtime, column, false);
 	}
 
@@ -3882,7 +3895,7 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-	default List<Run> buildDropRun(DataRuntime runtime, Column column) throws Exception{
+	default List<Run> buildDropRun(DataRuntime runtime, Column column) throws Exception {
 		return buildDropRun(runtime, column, false);
 	}
 
@@ -4203,7 +4216,7 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	boolean alter(DataRuntime runtime, Table table, Tag meta, boolean trigger) throws Exception;
-	default boolean alter(DataRuntime runtime, Table table, Tag meta) throws Exception{
+	default boolean alter(DataRuntime runtime, Table table, Tag meta) throws Exception {
 		return alter(runtime, table, meta, true);
 	}
 
@@ -4403,7 +4416,7 @@ public interface DriverAdapter {
 	 * @return 是否执行成功
 	 * @throws Exception 异常
 	 */
-	default boolean alter(DataRuntime runtime, Table table, PrimaryKey meta) throws Exception{
+	default boolean alter(DataRuntime runtime, Table table, PrimaryKey meta) throws Exception {
 		return alter(runtime, table, table.getPrimaryKey(), meta);
 	}
 
@@ -4446,7 +4459,7 @@ public interface DriverAdapter {
 	 * @param meta 表
 	 * @return String
 	 */
-	default List<Run> buildAppendPrimaryRun(DataRuntime runtime, Table meta) throws Exception{
+	default List<Run> buildAppendPrimaryRun(DataRuntime runtime, Table meta) throws Exception {
 		return new ArrayList<>();
 	}
 
@@ -4460,7 +4473,7 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception;
-	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception{
+	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception {
 		return buildAlterRun(runtime, null, meta);
 	}
 
@@ -4473,7 +4486,7 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary, boolean slice) throws Exception;
-	default List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception{
+	default List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary) throws Exception {
 		return buildDropRun(runtime, primary, false);
 	}
 

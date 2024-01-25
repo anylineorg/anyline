@@ -95,7 +95,7 @@ public class DatasourceHolderProxy {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         DataRuntime runtime = null;
         if(null != datasource){
             Class clazz = datasource.getClass();
@@ -118,7 +118,7 @@ public class DatasourceHolderProxy {
         }
         return false;
     }
-    public static boolean hit(DataRuntime runtime) throws Exception{
+    public static boolean hit(DataRuntime runtime) throws Exception {
         DatasourceHolder holder = holder(runtime);
         return holder.callHit(runtime);
     }

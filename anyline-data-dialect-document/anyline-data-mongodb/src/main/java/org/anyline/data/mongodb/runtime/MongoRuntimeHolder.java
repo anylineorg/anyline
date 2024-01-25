@@ -46,7 +46,7 @@ public class MongoRuntimeHolder extends RuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         MongoRuntime runtime = new MongoRuntime();
         if(datasource instanceof MongoClient){
             String key = "temporary_mongo";

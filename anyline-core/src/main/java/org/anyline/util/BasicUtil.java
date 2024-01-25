@@ -391,7 +391,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Byte parseByte(Object value) throws Exception{
+	public static Byte parseByte(Object value) throws Exception {
 		return Byte.parseByte(value.toString());
 	}
 	public static Short parseShort(Object value, Short def) {
@@ -407,7 +407,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Short parseShort(Object value) throws Exception{
+	public static Short parseShort(Object value) throws Exception {
 		return (short) Double.parseDouble(value.toString());
 	}
 
@@ -424,7 +424,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Integer parseInt(Object value) throws Exception{
+	public static Integer parseInt(Object value) throws Exception {
 		return (int) Double.parseDouble(value.toString());
 	}
 
@@ -542,7 +542,7 @@ public class BasicUtil {
 		}
 	} 
  
-	public static Boolean parseBoolean(Object obj) throws Exception{
+	public static Boolean parseBoolean(Object obj) throws Exception {
 		if(obj instanceof Boolean){
 			return (Boolean)obj;
 		}

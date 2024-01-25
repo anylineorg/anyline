@@ -196,7 +196,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      */
 
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception {
         return super.columns(runtime, create, columns, dbmd, table, pattern);
     }
 
@@ -228,7 +228,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @throws Exception
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception{
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception {
         return super.columns(runtime, create, columns, table, set);
     }
 

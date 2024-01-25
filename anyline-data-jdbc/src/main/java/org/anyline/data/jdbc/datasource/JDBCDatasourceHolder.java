@@ -119,7 +119,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	public static String reg(String key, String pool, String driver, String url, String user, String password) throws Exception{
+	public static String reg(String key, String pool, String driver, String url, String user, String password) throws Exception {
 		Map<String, Object> param = new HashMap<>();
 		param.put("type", pool);
 		param.put("driver", driver);
@@ -139,22 +139,22 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	public static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
+	public static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception {
 		return reg(key, DATASOURCE_TYPE_DEFAULT, type.driver(), url, user, password);
 	}
 
-	public static String reg(String key, Map<String, Object> param, boolean override) throws Exception{
+	public static String reg(String key, Map<String, Object> param, boolean override) throws Exception {
 		String ds_id = inject(key, param, override);
 		return init(key, ds_id, override);
 	}
 
-	public static String reg(String key, Map<String, Object> param) throws Exception{
+	public static String reg(String key, Map<String, Object> param) throws Exception {
 		return reg(key, param, true);
 	}
-	public static DataRuntime reg(String key, DataSource ds, boolean override) throws Exception{
+	public static DataRuntime reg(String key, DataSource ds, boolean override) throws Exception {
 		return init(key, ds, override);
 	}
-	public static DataRuntime reg(String key, DataSource ds) throws Exception{
+	public static DataRuntime reg(String key, DataSource ds) throws Exception {
 		return init(key, ds, false);
 	}
 	public static DataSource reg(String key, Connection connection, boolean override){
@@ -204,7 +204,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-	private static String inject(String key, Map params, boolean over) throws Exception{
+	private static String inject(String key, Map params, boolean over) throws Exception {
 		return inject(key, null, params, null, over);
 	}
 
@@ -218,7 +218,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	 * @return bean.di
 	 * @throws Exception Exception
 	 */
-	private static String inject(String key, String prefix, Map params, Environment env, boolean override) throws Exception{
+	private static String inject(String key, String prefix, Map params, Environment env, boolean override) throws Exception {
 		Map<String, Object> cache = DatasourceHolder.params.get(key);
 		if(null == cache){
 			cache = new HashMap<>();
@@ -316,7 +316,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	private static String init(String key, String datasource, boolean override) throws Exception{
+	private static String init(String key, String datasource, boolean override) throws Exception {
 		if(null != datasource) {
 			check(key, override);
 			regTransactionManager(key, datasource);
@@ -337,7 +337,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		}
 		return datasource;
 	}
-	private static DataRuntime init(String key, DataSource datasource, boolean override) throws Exception{
+	private static DataRuntime init(String key, DataSource datasource, boolean override) throws Exception {
 		DataRuntime runtime = null;
 		if(null != datasource) {
 			if(null != factory) {
@@ -396,10 +396,10 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	}
 
 
-	public static boolean validate(JdbcTemplate jdbc) throws Exception{
+	public static boolean validate(JdbcTemplate jdbc) throws Exception {
 		return validate(jdbc.getDataSource());
 	}
-	public static boolean validate(DataSource ds) throws Exception{
+	public static boolean validate(DataSource ds) throws Exception {
 		Connection con = null;
 		try{
 			con = ds.getConnection();
@@ -410,7 +410,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		}
 		return true;
 	}
-	public static boolean exeValidate(DataRuntime runtime) throws Exception{
+	public static boolean exeValidate(DataRuntime runtime) throws Exception {
 		JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
 		return validate(jdbc);
 	}

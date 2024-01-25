@@ -99,7 +99,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * @return MongoDatabase
 	 * @throws Exception 异常 Exception
 	 */
-	public static String reg(String key, String uri, String database, String user, String password) throws Exception{
+	public static String reg(String key, String uri, String database, String user, String password) throws Exception {
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("uri", uri);
 		param.put("database", database);
@@ -107,18 +107,18 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		param.put("password", password);
 		return reg(key, param, true);
 	}
-	public static String reg(String key, Map param, boolean override) throws Exception{
+	public static String reg(String key, Map param, boolean override) throws Exception {
 		String ds_id = inject(key, param, override);
 		return init(key, ds_id, override);
 	}
 
-	public static MongoDatabase reg(String key, MongoDatabase ds, boolean over) throws Exception{
+	public static MongoDatabase reg(String key, MongoDatabase ds, boolean over) throws Exception {
 		return init(key, ds, over);
 	}
-	public static MongoDatabase reg(String key, MongoDatabase ds) throws Exception{
+	public static MongoDatabase reg(String key, MongoDatabase ds) throws Exception {
 		return init(key, ds, true);
 	}
-	public static String inject(String key, Map param, boolean override) throws Exception{
+	public static String inject(String key, Map param, boolean override) throws Exception {
 
 		return inject(key, null, param, null, override);
 	}
@@ -178,7 +178,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * @return bean.id
 	 * @throws Exception Exception
 	 */
-	public static String inject(String key, String prefix, Map params, Environment env, boolean override) throws Exception{
+	public static String inject(String key, String prefix, Map params, Environment env, boolean override) throws Exception {
 		Map<String, Object> cache = DatasourceHolder.params.get(key);
 		if(null == cache){
 			cache = new HashMap<>();
@@ -229,7 +229,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		return datasource_id;
 	}
 
-	public static String inject(String key, Map params) throws Exception{
+	public static String inject(String key, Map params) throws Exception {
 		return inject(key, params, true);
 	}
 
@@ -241,14 +241,14 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	 * @return MongoDatabase
 	 * @throws Exception 异常 Exception
 	 */
-	private static String init(String key, String datasource, boolean over) throws Exception{
+	private static String init(String key, String datasource, boolean over) throws Exception {
 		if(null != datasource) {
 			check(key, over);
 			MongoRuntimeHolder.reg(key);
 		}
 		return datasource;
 	}
-	private static MongoDatabase init(String key, MongoDatabase database, boolean over) throws Exception{
+	private static MongoDatabase init(String key, MongoDatabase database, boolean over) throws Exception {
 		if(null != database) {
 			check(key, over);
 			MongoRuntimeHolder.reg(key);
@@ -288,7 +288,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 		}
 	}
 
-	public static boolean exeValidate(MongoDatabase database) throws Exception{
+	public static boolean exeValidate(MongoDatabase database) throws Exception {
 		database.getName();
 		return true;
 	}
@@ -299,7 +299,7 @@ public class MongoDatasourceHolder extends DatasourceHolder {
 	}
 
 	@Override
-	public boolean callHit(DataRuntime runtime) throws Exception{
+	public boolean callHit(DataRuntime runtime) throws Exception {
 		return exeValidate( (MongoDatabase) runtime.getProcessor());
 	}
 

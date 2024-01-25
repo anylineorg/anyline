@@ -1880,7 +1880,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
         }
     }
-    public Integer getInt(int index) throws Exception{
+    public Integer getInt(int index) throws Exception {
         return getInt(key(index));
     }
     public Integer getInt(String key) throws Exception {
@@ -2144,10 +2144,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return result;
     }
 
-    public Date getDate(int index, String def) throws Exception{
+    public Date getDate(int index, String def) throws Exception {
         return getDate(key(index), def);
     }
-    public Date getDate(String key, String def) throws Exception{
+    public Date getDate(String key, String def) throws Exception {
         try {
             return getDate(key);
         } catch (Exception e) {

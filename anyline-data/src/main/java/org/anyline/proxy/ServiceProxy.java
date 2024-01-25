@@ -106,7 +106,7 @@ public class ServiceProxy {
      * @return service
      * @throws Exception 异常 Exception
      */
-    public static AnylineService temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static AnylineService temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         DataRuntime runtime =DatasourceHolderProxy.temporary(datasource, database, adapter);
         AnylineDao dao = new DefaultDao();
         //dao.setDatasource(key);
@@ -118,10 +118,10 @@ public class ServiceProxy {
         return service;
     }
 
-    public static AnylineService temporary(Object datasource) throws Exception{
+    public static AnylineService temporary(Object datasource) throws Exception {
         return temporary(datasource, null, null);
     }
-    public static AnylineService temporary(Object datasource, String database) throws Exception{
+    public static AnylineService temporary(Object datasource, String database) throws Exception {
         return temporary(datasource, database, null);
     }
 
@@ -1532,16 +1532,16 @@ public class ServiceProxy {
          * 													table
          ******************************************************************************************************************/
 
-        public static boolean save(Table table) throws Exception{
+        public static boolean save(Table table) throws Exception {
             return service.ddl().save(table);
         }
-        public static boolean create(Table table) throws Exception{
+        public static boolean create(Table table) throws Exception {
             return service.ddl().create(table);
         }
-        public static boolean alter(Table table) throws Exception{
+        public static boolean alter(Table table) throws Exception {
             return service.ddl().alter(table);
         }
-        public static boolean drop(Table table) throws Exception{
+        public static boolean drop(Table table) throws Exception {
             return service.ddl().drop(table);
         }
 
@@ -1550,16 +1550,16 @@ public class ServiceProxy {
          * 													master table
          ******************************************************************************************************************/
 
-        public static boolean save(MasterTable table) throws Exception{
+        public static boolean save(MasterTable table) throws Exception {
             return service.ddl().save(table);
         }
-        public static boolean create(MasterTable table) throws Exception{
+        public static boolean create(MasterTable table) throws Exception {
             return service.ddl().create(table);
         }
-        public static boolean alter(MasterTable table) throws Exception{
+        public static boolean alter(MasterTable table) throws Exception {
             return service.ddl().alter(table);
         }
-        public static boolean drop(MasterTable table) throws Exception{
+        public static boolean drop(MasterTable table) throws Exception {
             return service.ddl().drop(table);
         }
 
@@ -1568,16 +1568,16 @@ public class ServiceProxy {
          * 													partition table
          ******************************************************************************************************************/
 
-        public static boolean save(PartitionTable table) throws Exception{
+        public static boolean save(PartitionTable table) throws Exception {
             return service.ddl().save(table);
         }
-        public static boolean create(PartitionTable table) throws Exception{
+        public static boolean create(PartitionTable table) throws Exception {
             return service.ddl().create(table);
         }
-        public static boolean alter(PartitionTable table) throws Exception{
+        public static boolean alter(PartitionTable table) throws Exception {
             return service.ddl().alter(table);
         }
-        public static boolean drop(PartitionTable table) throws Exception{
+        public static boolean drop(PartitionTable table) throws Exception {
             return service.ddl().drop(table);
         }
 
@@ -1592,16 +1592,16 @@ public class ServiceProxy {
          * @param column 列
          * @throws Exception 异常 SQL异常
          */
-        public static boolean save(Column column) throws Exception{
+        public static boolean save(Column column) throws Exception {
             return service.ddl().save(column);
         }
-        public static boolean add(Column column) throws Exception{
+        public static boolean add(Column column) throws Exception {
             return service.ddl().add(column);
         }
-        public static boolean alter(Column column) throws Exception{
+        public static boolean alter(Column column) throws Exception {
             return service.ddl().alter(column);
         }
-        public static boolean drop(Column column) throws Exception{
+        public static boolean drop(Column column) throws Exception {
             return service.ddl().drop(column);
         }
 
@@ -1610,16 +1610,16 @@ public class ServiceProxy {
          * 													tag
          ******************************************************************************************************************/
 
-        public static boolean save(Tag tag) throws Exception{
+        public static boolean save(Tag tag) throws Exception {
             return service.ddl().save(tag);
         }
-        public static boolean add(Tag tag) throws Exception{
+        public static boolean add(Tag tag) throws Exception {
             return service.ddl().add(tag);
         }
-        public static boolean alter(Tag tag) throws Exception{
+        public static boolean alter(Tag tag) throws Exception {
             return service.ddl().alter(tag);
         }
-        public static boolean drop(Tag tag) throws Exception{
+        public static boolean drop(Tag tag) throws Exception {
             return service.ddl().drop(tag);
         }
 
@@ -1628,13 +1628,13 @@ public class ServiceProxy {
          * 													index
          ******************************************************************************************************************/
 
-        public static boolean add(Index index) throws Exception{
+        public static boolean add(Index index) throws Exception {
             return service.ddl().add(index);
         }
-        public static boolean alter(Index index) throws Exception{
+        public static boolean alter(Index index) throws Exception {
             return service.ddl().alter(index);
         }
-        public static boolean drop(Index index) throws Exception{
+        public static boolean drop(Index index) throws Exception {
             return service.ddl().drop(index);
         }
 
@@ -1648,13 +1648,13 @@ public class ServiceProxy {
          * @return boolean
          * @throws Exception 异常 Exception
          */
-        public static boolean add(Constraint constraint) throws Exception{
+        public static boolean add(Constraint constraint) throws Exception {
             return service.ddl().add(constraint);
         }
-        public static boolean alter(Constraint constraint) throws Exception{
+        public static boolean alter(Constraint constraint) throws Exception {
             return service.ddl().alter(constraint);
         }
-        public static boolean drop(Constraint constraint) throws Exception{
+        public static boolean drop(Constraint constraint) throws Exception {
             return service.ddl().drop(constraint);
         }
     }

@@ -56,7 +56,7 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         return exeTemporary( datasource, database, adapter);
     }
 
@@ -65,7 +65,7 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
         return exeTemporary( datasource, database, adapter);
     }
 
-    private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         JDBCRuntime runtime = new JDBCRuntime();
         if(datasource instanceof DataSource){
             String key = "temporary_jdbc";
@@ -208,7 +208,7 @@ public class JDBCRuntimeHolder extends RuntimeHolder {
             }
         }
     }
-    public static void closeConnection(Object ds) throws Exception{
+    public static void closeConnection(Object ds) throws Exception {
         Method method = ClassUtil.getMethod(ds.getClass(), "close");
         if(null != method){
             method.invoke(ds);

@@ -1309,7 +1309,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean drop(Table meta) throws Exception{
+	public boolean drop(Table meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
@@ -1347,7 +1347,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean drop(View meta) throws Exception{
+	public boolean drop(View meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
@@ -1367,17 +1367,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * boolean drop(MasterTable table) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean create(MasterTable meta) throws Exception{
+	public boolean create(MasterTable meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().create(runtime, meta);
 	}
 	@Override
-	public boolean alter(MasterTable meta) throws Exception{
+	public boolean alter(MasterTable meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean drop(MasterTable meta) throws Exception{
+	public boolean drop(MasterTable meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
@@ -1396,17 +1396,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public boolean create(PartitionTable meta) throws Exception{
+	public boolean create(PartitionTable meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().create(runtime, meta);
 	}
 	@Override
-	public boolean alter(PartitionTable meta) throws Exception{
+	public boolean alter(PartitionTable meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().create(runtime, meta);
 	}
 	@Override
-	public boolean drop(PartitionTable meta) throws Exception{
+	public boolean drop(PartitionTable meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
@@ -1427,21 +1427,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * private boolean alter(Table table, Column column, boolean trigger) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public boolean add(Column meta) throws Exception{
+	public boolean add(Column meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().add(runtime, meta);
 	}
 	@Override
-	public boolean drop(Column meta) throws Exception{
+	public boolean drop(Column meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table, Column column) throws Exception{
+	public boolean alter(Table table, Column column) throws Exception {
 		return alter(table, column, true);
 	}
 	@Override
-	public boolean alter(Column meta) throws Exception{
+	public boolean alter(Column meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
@@ -1453,7 +1453,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
-	public boolean alter(Table table, Column meta, boolean trigger) throws Exception{
+	public boolean alter(Table table, Column meta, boolean trigger) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, table, meta, trigger);
 	}
@@ -1477,21 +1477,21 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public boolean add(Tag meta) throws Exception{
+	public boolean add(Tag meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().add(runtime, meta);
 	}
 	@Override
-	public boolean drop(Tag meta) throws Exception{
+	public boolean drop(Tag meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table, Tag column) throws Exception{
+	public boolean alter(Table table, Tag column) throws Exception {
 		return alter(table, column, true);
 	}
 	@Override
-	public boolean alter(Tag meta) throws Exception{
+	public boolean alter(Tag meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
@@ -1503,7 +1503,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 * @throws Exception 异常 SQL异常
 	 */
-	public boolean alter(Table table, Tag meta, boolean trigger) throws Exception{
+	public boolean alter(Table table, Tag meta, boolean trigger) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, table, meta, trigger);
 	}
@@ -1534,7 +1534,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table, PrimaryKey meta) throws Exception{
+	public boolean alter(Table table, PrimaryKey meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, table, meta);
 	}
@@ -1569,7 +1569,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table, ForeignKey meta) throws Exception{
+	public boolean alter(Table table, ForeignKey meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, table, meta);
 	}
@@ -1603,7 +1603,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().alter(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table, Index meta) throws Exception{
+	public boolean alter(Table table, Index meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, table, meta);
 	}
@@ -1638,7 +1638,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().add(runtime, meta);
 	}
 	@Override
-	public boolean alter(Table table, Constraint meta) throws Exception{
+	public boolean alter(Table table, Constraint meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, table, meta);
 	}
@@ -1670,7 +1670,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 
 	@Override
-	public boolean alter(Trigger meta) throws Exception{
+	public boolean alter(Trigger meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
@@ -1702,7 +1702,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 
 	@Override
-	public boolean alter(Procedure meta) throws Exception{
+	public boolean alter(Procedure meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
@@ -1733,7 +1733,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 
 	@Override
-	public boolean alter(Function meta) throws Exception{
+	public boolean alter(Function meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
@@ -1764,7 +1764,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 
 	@Override
-	public boolean alter(Sequence meta) throws Exception{
+	public boolean alter(Sequence meta) throws Exception {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}

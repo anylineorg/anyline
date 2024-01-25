@@ -154,7 +154,7 @@ public abstract class DatasourceHolder {
 		return result;
 	}
 
-	protected static void check(String key, boolean override) throws Exception{
+	protected static void check(String key, boolean override) throws Exception {
 		if(contains(key)){
 			if(!override){
 				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
@@ -164,7 +164,7 @@ public abstract class DatasourceHolder {
 			}
 		}
 	}
-	public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+	public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
 		return DatasourceHolderProxy.temporary(datasource, database, adapter);
 	}
 	public abstract DataRuntime callTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception;
@@ -186,13 +186,13 @@ public abstract class DatasourceHolder {
 	public abstract boolean callValidate(DataRuntime runtime);
 
 
-	public static boolean hit(String ds) throws Exception{
+	public static boolean hit(String ds) throws Exception {
 		return hit(RuntimeHolder.runtime(ds));
 	}
-	public static boolean hit() throws Exception{
+	public static boolean hit() throws Exception {
 		return hit(RuntimeHolder.runtime());
 	}
-	public static boolean hit(DataRuntime runtime)  throws Exception{
+	public static boolean hit(DataRuntime runtime)  throws Exception {
 		return DatasourceHolderProxy.hit(runtime);
 	}
 	public abstract boolean callHit(DataRuntime runtime) throws Exception;

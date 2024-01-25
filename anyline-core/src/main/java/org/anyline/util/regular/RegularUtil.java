@@ -83,25 +83,25 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static synchronized List<List<String>> fetchs(String src, String regx, Regular.MATCH_MODE mode) throws Exception{
+	public static synchronized List<List<String>> fetchs(String src, String regx, Regular.MATCH_MODE mode) throws Exception {
 		List<List<String>> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetchs(src, regx);
 		return result;
 	}
-	public static List<List<String>> fetchs(String src, String regx) throws Exception{
+	public static List<List<String>> fetchs(String src, String regx) throws Exception {
 		return fetchs(src, regx, Regular.MATCH_MODE.CONTAIN);
 	}
-	public static List<String> fetch(String src, String regx) throws Exception{
+	public static List<String> fetch(String src, String regx) throws Exception {
 		return fetch(src, regx, Regular.MATCH_MODE.CONTAIN);
 	}
-	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode, int idx) throws Exception{
+	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode, int idx) throws Exception {
 		List<String> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx, idx);
 		return result;
 	}
-	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception{
+	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception {
 		List<String> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx);
@@ -253,7 +253,7 @@ public class RegularUtil {
 	 * @param value 属性值
 	 * @return String
 	 */
-	public static String removeTagByAttributeValue(String src, String attribute, String value) throws Exception{
+	public static String removeTagByAttributeValue(String src, String attribute, String value) throws Exception {
 		if(null == src || null == attribute || null == value){
 			return src;
 		}
@@ -273,7 +273,7 @@ public class RegularUtil {
 	 * @param attribute 属性名
 	 * @return String
 	 */
-	public static String removeTagByAttribute(String src, String attribute) throws Exception{
+	public static String removeTagByAttribute(String src, String attribute) throws Exception {
 		if(null == src || null == attribute){
 			return src;
 		}
@@ -298,7 +298,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> getTagWithBodyByAttribute(String src, String attribute) throws Exception{
+	public static List<List<String>> getTagWithBodyByAttribute(String src, String attribute) throws Exception {
 		List<List<String>> result = new ArrayList<>();
 		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	// 双标签
 				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			// 单标签
@@ -357,7 +357,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> getTagWithBodyByAttributeValue(String src, String attribute, String value) throws Exception{
+	public static List<List<String>> getTagWithBodyByAttributeValue(String src, String attribute, String value) throws Exception {
 		List<List<String>> result = new ArrayList<>();
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	// 双标签
@@ -527,25 +527,25 @@ public class RegularUtil {
 	 * @return list
 	 * @throws Exception 异常
 	 */
-	public static List<String> fetchUrls(String src) throws Exception{
+	public static List<String> fetchUrls(String src) throws Exception {
 		List<String> urls = null;
 		urls = fetch(src, Regular.PATTERN.HTML_TAG_A.getCode(), Regular.MATCH_MODE.CONTAIN, 4);
 		return urls;
 	}
 
-	public static String fetchUrl(String src) throws Exception{
+	public static String fetchUrl(String src) throws Exception {
 		List<String> urls = fetchUrls(src);
 		if(null != urls && urls.size()>0){
 			return urls.get(0);
 		}
 		return null;
 	}
-	public static List<String> fetchNumbers(String src) throws Exception{
+	public static List<String> fetchNumbers(String src) throws Exception {
 		List<String> numbers = null;
 		numbers = fetch(src, "(\\-|\\+)?\\d+(\\.\\d+)?", Regular.MATCH_MODE.CONTAIN, 0);
 		return numbers;
 	}
-	public static String fetchNumber(String src) throws Exception{
+	public static String fetchNumber(String src) throws Exception {
 		List<String> numbers = fetchNumbers(src);
 		if(null != numbers && numbers.size()>0){
 			return numbers.get(0);
@@ -565,7 +565,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> fetchPairedTag(String txt, String ... tags) throws Exception{
+	public static List<List<String>> fetchPairedTag(String txt, String ... tags) throws Exception {
 		List<List<String>> result = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
 			String tagNames = "";
@@ -593,7 +593,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> fetchSingleTag(String txt, String ... tags) throws Exception{
+	public static List<List<String>> fetchSingleTag(String txt, String ... tags) throws Exception {
 		List<List<String>> result = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
 			String tagNames = "";
@@ -620,7 +620,7 @@ public class RegularUtil {
 	 * @return List
 	 * @throws Exception 异常 Exception
 	 */
-	public static List<List<String>> fetchAllTag(String txt, String ... tags) throws Exception{
+	public static List<List<String>> fetchAllTag(String txt, String ... tags) throws Exception {
 		List<List<String>> result = new ArrayList<List<String>>();
 		List<List<String>> items = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){

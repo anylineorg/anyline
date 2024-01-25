@@ -64,7 +64,7 @@ public class RuntimeHolderProxy {
         return holder;
     }
 
-    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         RuntimeHolder holder = holder(database.getClass());
         if(null == holder){
             throw new Exception("根据datasource定位失败, 请直接调用相应的*DatasourceHolder.temporary()");

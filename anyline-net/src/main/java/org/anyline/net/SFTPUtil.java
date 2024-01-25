@@ -52,15 +52,15 @@ public class SFTPUtil {
 	private String password; 
 	private ChannelSftp client; 
 	private Session session;  
-	public SFTPUtil() throws Exception{
+	public SFTPUtil() throws Exception {
 	} 
-	public SFTPUtil(String host, int port, String user, String password) throws Exception{
+	public SFTPUtil(String host, int port, String user, String password) throws Exception {
 		this(host, user, password, 22);
 	} 
-	public SFTPUtil(String host, String user, String password) throws Exception{
+	public SFTPUtil(String host, String user, String password) throws Exception {
 		this(host, user, password, 22);
 	} 
-	public SFTPUtil(String host, String user, String password, int port) throws Exception{
+	public SFTPUtil(String host, String user, String password, int port) throws Exception {
 		this.host = host; 
 		this.user = user; 
 		this.password = password; 

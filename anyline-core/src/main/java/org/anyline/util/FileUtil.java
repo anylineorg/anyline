@@ -474,7 +474,7 @@ public class FileUtil {
 		return true;
 	}
 
-	public static File createTempFile(File file) throws Exception{
+	public static File createTempFile(File file) throws Exception {
 		File tempFile = File.createTempFile(file.getName(), null);
 		boolean renameOk = file.renameTo(tempFile);
 		if(!renameOk){

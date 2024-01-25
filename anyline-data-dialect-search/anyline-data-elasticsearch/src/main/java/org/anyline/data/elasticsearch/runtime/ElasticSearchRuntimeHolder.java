@@ -55,7 +55,7 @@ public class ElasticSearchRuntimeHolder extends RuntimeHolder {
      * @throws Exception 异常 Exception
      */
 
-    public static DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object client, String database, DriverAdapter adapter) throws Exception {
         return exeTemporary(client, database, adapter);
 
     }
@@ -65,7 +65,7 @@ public class ElasticSearchRuntimeHolder extends RuntimeHolder {
         return exeTemporary( datasource, database, adapter);
     }
 
-    private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         ElasticSearchRuntime runtime = new ElasticSearchRuntime();
         if(null == adapter){
             adapter = factory.getBean(ElasticSearchAdapter.class);

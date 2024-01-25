@@ -47,7 +47,7 @@ public abstract class RuntimeHolder {
      * @return DataRuntime
      * @throws Exception 异常 Exception
      */
-    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception{
+    public static DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         return DatasourceHolderProxy.temporary(datasource, database, adapter);
     }
     public abstract DataRuntime callTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception;
@@ -128,13 +128,13 @@ public abstract class RuntimeHolder {
         return DatasourceHolderProxy.validate(runtime);
     }
 
-    public static boolean hit(String ds) throws Exception{
+    public static boolean hit(String ds) throws Exception {
         return hit(runtime(ds));
     }
-    public static boolean hit() throws Exception{
+    public static boolean hit() throws Exception {
         return hit(runtime());
     }
-    public static boolean hit(DataRuntime runtime) throws Exception{
+    public static boolean hit(DataRuntime runtime) throws Exception {
         return DatasourceHolderProxy.hit(runtime);
     }
 

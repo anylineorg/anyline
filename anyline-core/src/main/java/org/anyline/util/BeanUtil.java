@@ -127,7 +127,7 @@ public class BeanUtil {
 	 * @return Collection&lt;Entity&gt;
 	 * @throws Exception
 	 */
-	public static Collection maps2object(Field field, Collection value) throws Exception{
+	public static Collection maps2object(Field field, Collection value) throws Exception {
 		Class clazz = field.getType();
 		Collection list = null;
 		Class itemClass = ClassUtil.getComponentClass(field);
@@ -176,7 +176,7 @@ public class BeanUtil {
 	 * @return Map&lt;?, Entity&gt;
 	 * @throws Exception
 	 */
-	public static Map maps2object(Field field, Map value) throws Exception{
+	public static Map maps2object(Field field, Map value) throws Exception {
 		Map map = value.getClass().newInstance();
 		Type type = field.getGenericType();
 		if(type instanceof ParameterizedType) {

@@ -107,7 +107,7 @@ public class RegularMatchPrefix implements Regular{
 		} 
 		return list; 
 	} 
-	public List<String> fetch(String src, String regx) throws Exception{
+	public List<String> fetch(String src, String regx) throws Exception {
 		return fetch(src, regx, 0);
 	}
 

@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 public class PersistenceAdapter {
 
 
-    public static OneToMany oneToMany(Field field) throws Exception{
+    public static OneToMany oneToMany(Field field) throws Exception {
         /*
          *     //考勤记录
          *     @OneToMany(mappedBy = "EMPLOYEE_ID")              // 关联表中与当前表关联的外键(这里可以是列名也可以是AttendanceRecord属性名)
@@ -63,7 +63,7 @@ public class PersistenceAdapter {
         }
         return join;
     }
-    public static ManyToMany manyToMany(Field field) throws Exception{
+    public static ManyToMany manyToMany(Field field) throws Exception {
         /*
          *     //多对多关系  一个在多个部门任职
          *     @ManyToMany
