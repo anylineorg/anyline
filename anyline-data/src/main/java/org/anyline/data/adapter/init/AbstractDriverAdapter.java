@@ -1811,6 +1811,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (null != dmListener) {
 				dmListener.beforeQuery(runtime, random, run, -1);
 			}
+			if(null != configs){
+				PageNavi navi = configs.getPageNavi();
+				if(null != navi) {
+					Boolean requiredTotal = navi.requiredTotal();
+					if (null != requiredTotal && requiredTotal) {
+						long total = count(runtime, random, run);
+						navi.setTotalRow(total);
+					}
+				}
+
+			}
+
 			maps = maps(runtime, random, configs, run);
 			cmd_success = true;
 		} else {
