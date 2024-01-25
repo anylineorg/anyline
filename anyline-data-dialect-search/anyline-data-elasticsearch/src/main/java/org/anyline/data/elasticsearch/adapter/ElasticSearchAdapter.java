@@ -1650,12 +1650,12 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
 
     @Override
-    public <T extends Table> T init(DataRuntime runtime, T table, Catalog catalog, Schema schema, DataRow row) {
+    public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row) {
         return null;
     }
 
     @Override
-    public <T extends Table> T detail(DataRuntime runtime, T table, DataRow row) {
+    public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row) {
         return null;
     }
 
@@ -2281,8 +2281,8 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @return columns 上一步查询结果
-     * @return pattern attern
+     * @param columns 上一步查询结果
+     * @param pattern 名称
      * @throws Exception 异常
      */
     @Override

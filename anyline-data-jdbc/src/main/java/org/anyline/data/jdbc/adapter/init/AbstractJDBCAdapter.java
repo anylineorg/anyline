@@ -3339,8 +3339,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		for(DataRow row:set){
 			T table = null;
-			table = init(runtime, table, catalog, schema, row);
-			table = detail(runtime, table, row);
+			table = init(runtime, index, table, catalog, schema, row);
+			table = detail(runtime, index, table, row);
 			tables.put(table.getName().toUpperCase(), table);
 		}
 		return tables;
@@ -3366,108 +3366,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		for(DataRow row:set){
 			T table = null;
-			table = init(runtime, table, catalog, schema, row);
+			table = init(runtime, index, table, catalog, schema, row);
 			if(null != table(tables, table.getCatalog(), table.getSchema(), table.getName())){
 				tables.add(table);
 			}
-			detail(runtime, table, row);
+			detail(runtime, index, table, row);
 		}
 		return tables;
-	}
-
-	/**
-	 * table[结果集封装]<br/>
-	 * 根据查询结果封装Table对象
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param row 查询结果集
-	 * @return Table
-	 */
-	public <T extends Table> T init(DataRuntime runtime, T table, Catalog catalog, Schema schema, DataRow row){
-		String _catalog = null;
-		String catalog_column = tableMetadataCatalogNameColumn(runtime);//"TABLE_CATALOG"
-		if(null != catalog_column) {
-			_catalog = row.getString(catalog_column.split(","));
-		}
-		String _schema = null;
-		String schema_colunn = tableMetadataSchemaNameColumn(runtime);//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME";
-		if(null != schema_colunn) {
-			_schema = row.getString(schema_colunn.split(","));
-		}
-		if(null == _catalog && null != catalog){
-			_catalog = catalog.getName();
-		}
-		if(null == _schema && null != schema){
-			_schema = schema.getName();
-		}
-		String name = null;
-		String name_column = tableMetadataNameColumn(runtime);//"TABLE_NAME","NAME","TABNAME"
-		if(null != name_column){
-			name = row.getString(name_column.split(","));
-		}
-		if(null == table){
-			if("VIEW".equals(row.getString("TABLE_TYPE"))){
-				table = (T)new View();
-			}else {
-				table = (T)new Table();
-			}
-		}
-		if(null != _catalog){
-			_catalog = _catalog.trim();
-		}
-		if(null != _schema){
-			_schema = _schema.trim();
-		}
-		table.setCatalog(_catalog);
-		table.setSchema(_schema);
-		table.setName(name);
-		return table;
-	}
-
-	/**
-	 * table[结果集封装]<br/>
-	 * 根据查询结果封装Table对象
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
-	 * @param row 查询结果集
-	 * @return Table
-	 */
-	public <T extends Table> T detail(DataRuntime runtime, T table, DataRow row){
-		table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-		table.setEngine(row.getString("ENGINE"));
-		table.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
-		table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
-		table.setCollate(row.getString("TABLE_COLLATION"));
-		table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
-		table.setDataFree(row.getLong("DATA_FREE", (Long)null));
-		table.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
-		table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
-		table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
-		table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
-		table.setType(row.getString("TABLE_TYPE"));
-		table.setEngine(row.getString("ENGINE"));
-		table.setTemporary(row.getBoolean("IS_TEMPORARY", false));
-		return table;
-	}
-	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
-		try {
-			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
-		}catch (Exception e){}
-		try {
-			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
-		}catch (Exception e){}
-		try {
-			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
-		}catch (Exception e){}
-		try {
-			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
-		}catch (Exception e){}
-		try {
-			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-		}catch (Exception e){}
-		try {
-			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-		}catch (Exception e){}
-
 	}
 
 	/**
@@ -3741,6 +3646,133 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
+		String _catalog = null;
+		String catalog_column = tableMetadataCatalog(runtime);//"TABLE_CATALOG"
+		if(null != catalog_column) {
+			_catalog = row.getString(catalog_column.split(","));
+		}
+		String _schema = null;
+		String schema_colunn = tableMetadataSchema(runtime);//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME";
+		if(null != schema_colunn) {
+			_schema = row.getString(schema_colunn.split(","));
+		}
+		if(null == _catalog && null != catalog){
+			_catalog = catalog.getName();
+		}
+		if(null == _schema && null != schema){
+			_schema = schema.getName();
+		}
+		String name = null;
+		String name_column = tableMetadataName(runtime);//"TABLE_NAME","NAME","TABNAME"
+		if(null != name_column){
+			name = row.getString(name_column.split(","));
+		}
+		if(null == table){
+			if("VIEW".equals(row.getString("TABLE_TYPE"))){
+				table = (T)new View();
+			}else {
+				table = (T)new Table();
+			}
+		}
+		if(null != _catalog){
+			_catalog = _catalog.trim();
+		}
+		if(null != _schema){
+			_schema = _schema.trim();
+		}
+		table.setCatalog(_catalog);
+		table.setSchema(_schema);
+		table.setName(name);
+		return table;
+	}
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
+		table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+		table.setEngine(row.getString("ENGINE"));
+		table.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
+		table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+		table.setCollate(row.getString("TABLE_COLLATION"));
+		table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
+		table.setDataFree(row.getLong("DATA_FREE", (Long)null));
+		table.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
+		table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
+		table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
+		table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
+		table.setType(row.getString("TABLE_TYPE"));
+		table.setEngine(row.getString("ENGINE"));
+		table.setTemporary(row.getBoolean("IS_TEMPORARY", false));
+		return table;
+	}
+	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
+		try {
+			table.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), table.getType()));
+		}catch (Exception e){}
+		try {
+			table.setComment(BasicUtil.evl(string(keys, "REMARKS", set), table.getComment()));
+		}catch (Exception e){}
+		try {
+			table.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), table.getTypeCat()));
+		}catch (Exception e){}
+		try {
+			table.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), table.getTypeName()));
+		}catch (Exception e){}
+		try {
+			table.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
+		}catch (Exception e){}
+		try {
+			table.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), table.getRefGeneration()));
+		}catch (Exception e){}
+
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table结果集表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataName(DataRuntime runtime){
+		return super.tableMetadataName(runtime);
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Catalog依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataCatalog(DataRuntime runtime){
+		return super.tableMetadataCatalog(runtime);
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Schema依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataSchema(DataRuntime runtime){
+		return super.tableMetadataSchema(runtime);
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -4509,7 +4541,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
-	 * @return pattern attern
+	 * @param pattern 名称
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -4789,7 +4821,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 	/**
 	 * primary[结构集封装]<br/>
-	 *  根据查询结果集构造PrimaryKey
+	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
@@ -4801,7 +4833,63 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.init(runtime, index, primary, table, set);
 	}
 
+	/**
+	 * primary[结构集封装]<br/>
+	 * 根据查询结果集构造PrimaryKey更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+		return super.detail(runtime, index, primary, table, set);
+	}
 
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据名称依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataName(DataRuntime runtime){
+		return super.primaryMetadataName(runtime);
+	}
+
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataTable(DataRuntime runtime){
+		return super.primaryMetadataTable(runtime);
+	}
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据列名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataColumn(DataRuntime runtime){
+		return super.primaryMetadataColumn(runtime);
+	}
+
+	/**
+	 * primary[结构集封装]<br/>
+	 *  根据驱动内置接口补充PrimaryKey
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 * @throws Exception 异常
+	 */
+	@Override
+	public PrimaryKey primary(DataRuntime runtime, Table table) throws Exception {
+		return super.primary(runtime, table);
+	}
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -9661,13 +9749,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
 		String catalog = null;
-		String catalog_column = columnMetadataCatalogNameColumn(runtime);
+		String catalog_column = columnMetadataCatalog(runtime);
 		if(null != catalog_column) {
 			catalog = row.getString(catalog_column.split(","));
 		}
 		catalog = BasicUtil.evl(catalog, column.getCatalogName());
 		String schema = null;
-		String schema_column = columnMetadataSchemaNameColumn(runtime); //"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+		String schema_column = columnMetadataSchema(runtime); //"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
 		if(null != schema_column){
 			schema = row.getString(schema_column.split(","));
 		}
@@ -9695,7 +9783,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			column.setTable(table);
 		}
 		String tableName = null;
-		String table_column = columnMetadataTableNameColumn(runtime);
+		String table_column = columnMetadataTable(runtime);
 		if(null != table_column){
 			tableName = row.getString(table_column.split(","));//"TABLE_NAME","TABNAME"
 		}
@@ -9740,9 +9828,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		int ignore_length = ignoreLength(runtime, column);
 		int ignore_precision = ignorePrecision(runtime, column);
 		int ignore_scale = ignoreScale(runtime, column);*/
-		String length_column = this.columnMetadataLengthColumn(runtime, typeMetadata);
-		String precision_column = this.columnMetadataPrecisionColumn(runtime, typeMetadata);
-		String scale_column = this.columnMetadataScaleColumn(runtime, typeMetadata);
+		String length_column = this.columnMetadataLength(runtime, typeMetadata);
+		String precision_column = this.columnMetadataPrecision(runtime, typeMetadata);
+		String scale_column = this.columnMetadataScale(runtime, typeMetadata);
 
 
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
@@ -9856,7 +9944,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
 		return "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME";
 	}
 
@@ -9868,8 +9956,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLengthColumn(runtime, meta);
+	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLength(runtime, meta);
 	}
 
 	/**
@@ -9880,8 +9968,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecisionColumn(runtime, meta);
+	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecision(runtime, meta);
 	}
 
 	/**
@@ -9892,8 +9980,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScaleColumn(runtime, meta);
+	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScale(runtime, meta);
 	}
 
 	/**

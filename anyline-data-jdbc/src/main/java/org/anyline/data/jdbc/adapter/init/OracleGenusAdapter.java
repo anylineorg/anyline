@@ -2597,8 +2597,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @return columns 上一步查询结果
-     * @return pattern attern
+     * @param columns 上一步查询结果
+     * @param pattern 名称
      * @throws Exception 异常
      */
     @Override
@@ -6675,8 +6675,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataLengthColumn(runtime, meta);
+    public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLength(runtime, meta);
     }
 
     /**
@@ -6687,8 +6687,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataPrecisionColumn(runtime, meta);
+    public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecision(runtime, meta);
     }
 
     /**
@@ -6699,8 +6699,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataScaleColumn(runtime, meta);
+    public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScale(runtime, meta);
     }
     /**
      *

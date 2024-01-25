@@ -4179,6 +4179,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
+	 * table[结果集封装-依据]<br/>
+	 * table结果集表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataName(DataRuntime runtime){
+		return "TABLE_NAME,NAME,TABNAME";
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Catalog依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataCatalog(DataRuntime runtime){
+		return "TABLE_CATALOG";
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Schema依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataSchema(DataRuntime runtime){
+		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
+	}
+
+	/**
 	 * table[结果集封装]<br/>
 	 * 表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5313,7 +5346,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataNameColumn(DataRuntime runtime){
+	public String columnMetadataName(DataRuntime runtime){
 		return "COLUMN_NAME,COLNAME";
 	}
 
@@ -5324,7 +5357,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
+	public String columnMetadataCatalog(DataRuntime runtime){
 		return "TABLE_CATALOG";
 	}
 
@@ -5335,7 +5368,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
+	public String columnMetadataSchema(DataRuntime runtime){
 		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
 	}
 
@@ -5346,7 +5379,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTableNameColumn(DataRuntime runtime){
+	public String columnMetadataTable(DataRuntime runtime){
 		return "TABLE_NAME,TABNAME";
 	}
 
@@ -5358,7 +5391,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
 		return "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME";
 	}
 	/**
@@ -5369,7 +5402,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
@@ -5401,7 +5434,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
@@ -5433,7 +5466,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
@@ -5654,6 +5687,48 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据名称依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataName(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String primaryMetadataName(DataRuntime runtime)", 37));
+		}
+		return null;
+	}
+
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataTable(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String primaryMetadataTable(DataRuntime runtime)", 37));
+		}
+		return null;
+	}
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据列名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataColumn(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String primaryMetadataColumn(DataRuntime runtime)", 37));
+		}
+		return null;
+	}
+
 	/**
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey

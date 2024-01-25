@@ -133,8 +133,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataLengthColumn(runtime, meta);
+    public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLength(runtime, meta);
     }
 
     /**
@@ -145,8 +145,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataPrecisionColumn(runtime, meta);
+    public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecision(runtime, meta);
     }
 
     /**
@@ -157,8 +157,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataScaleColumn(runtime, meta);
+    public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScale(runtime, meta);
     }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
         return super.insertFoot(configs, columns);

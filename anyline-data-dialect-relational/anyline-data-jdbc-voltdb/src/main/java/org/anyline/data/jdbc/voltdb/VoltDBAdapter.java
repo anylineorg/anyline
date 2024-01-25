@@ -1842,6 +1842,65 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	@Override
+	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
+		return super.init(runtime, index, table, catalog, schema,row);
+	}
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	@Override
+	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
+		return super.detail(runtime, index, table, row);
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table结果集表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataName(DataRuntime runtime){
+		return super.tableMetadataName(runtime);
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Catalog依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataCatalog(DataRuntime runtime){
+		return super.tableMetadataCatalog(runtime);
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Schema依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String tableMetadataSchema(DataRuntime runtime){
+		return super.tableMetadataSchema(runtime);
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -2374,7 +2433,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
-	 * @return pattern attern
+	 * @param pattern 名称
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2419,8 +2478,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataNameColumn(DataRuntime runtime){
-		return super.columnMetadataNameColumn(runtime);
+	public String columnMetadataName(DataRuntime runtime){
+		return super.columnMetadataName(runtime);
 	}
 
 	/**
@@ -2430,8 +2489,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
-		return super.columnMetadataCatalogNameColumn(runtime);
+	public String columnMetadataCatalog(DataRuntime runtime){
+		return super.columnMetadataCatalog(runtime);
 	}
 
 	/**
@@ -2441,8 +2500,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
-		return super.columnMetadataSchemaNameColumn(runtime);
+	public String columnMetadataSchema(DataRuntime runtime){
+		return super.columnMetadataSchema(runtime);
 	}
 
 	/**
@@ -2452,8 +2511,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTableNameColumn(DataRuntime runtime){
-		return super.columnMetadataTableNameColumn(runtime);
+	public String columnMetadataTable(DataRuntime runtime){
+		return super.columnMetadataTable(runtime);
 	}
 
 	/**
@@ -2464,8 +2523,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataTypeColumn(runtime, meta);
+	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataType(runtime, meta);
 	}
 
 	/**
@@ -2476,8 +2535,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLengthColumn(runtime, meta);
+	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLength(runtime, meta);
 	}
 
 	/**
@@ -2488,8 +2547,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecisionColumn(runtime, meta);
+	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecision(runtime, meta);
 	}
 
 	/**
@@ -2500,8 +2559,8 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScaleColumn(runtime, meta);
+	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScale(runtime, meta);
 	}
 
 

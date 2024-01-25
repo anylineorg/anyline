@@ -2337,7 +2337,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
-	 * @return pattern attern
+	 * @param pattern 名称
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2382,8 +2382,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataNameColumn(DataRuntime runtime){
-		return super.columnMetadataNameColumn(runtime);
+	public String columnMetadataName(DataRuntime runtime){
+		return super.columnMetadataName(runtime);
 	}
 
 	/**
@@ -2393,8 +2393,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
-		return super.columnMetadataCatalogNameColumn(runtime);
+	public String columnMetadataCatalog(DataRuntime runtime){
+		return super.columnMetadataCatalog(runtime);
 	}
 
 	/**
@@ -2404,8 +2404,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
-		return super.columnMetadataSchemaNameColumn(runtime);
+	public String columnMetadataSchema(DataRuntime runtime){
+		return super.columnMetadataSchema(runtime);
 	}
 
 	/**
@@ -2415,8 +2415,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTableNameColumn(DataRuntime runtime){
-		return super.columnMetadataTableNameColumn(runtime);
+	public String columnMetadataTable(DataRuntime runtime){
+		return super.columnMetadataTable(runtime);
 	}
 
 	/**
@@ -2427,8 +2427,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataTypeColumn(runtime, meta);
+	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataType(runtime, meta);
 	}
 
 	/**
@@ -2439,8 +2439,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLengthColumn(runtime, meta);
+	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLength(runtime, meta);
 	}
 
 	/**
@@ -2451,8 +2451,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecisionColumn(runtime, meta);
+	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecision(runtime, meta);
 	}
 
 	/**
@@ -2463,8 +2463,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScaleColumn(runtime, meta);
+	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScale(runtime, meta);
 	}
 
 
@@ -2582,7 +2582,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * primary[结构集封装]<br/>
-	 *  根据查询结果集构造PrimaryKey
+	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
@@ -2594,7 +2594,63 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.init(runtime, index, primary, table, set);
 	}
 
+	/**
+	 * primary[结构集封装]<br/>
+	 * 根据查询结果集构造PrimaryKey更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+		return super.detail(runtime, index, primary, table, set);
+	}
 
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据名称依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataName(DataRuntime runtime){
+		return super.primaryMetadataName(runtime);
+	}
+
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataTable(DataRuntime runtime){
+		return super.primaryMetadataTable(runtime);
+	}
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据列名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	@Override
+	public String primaryMetadataColumn(DataRuntime runtime){
+		return super.primaryMetadataColumn(runtime);
+	}
+
+	/**
+	 * primary[结构集封装]<br/>
+	 *  根据驱动内置接口补充PrimaryKey
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 * @throws Exception 异常
+	 */
+	@Override
+	public PrimaryKey primary(DataRuntime runtime, Table table) throws Exception {
+		return super.primary(runtime, table);
+	}
 	/* *****************************************************************************************************************
 	 * 													foreign
 	 * -----------------------------------------------------------------------------------------------------------------

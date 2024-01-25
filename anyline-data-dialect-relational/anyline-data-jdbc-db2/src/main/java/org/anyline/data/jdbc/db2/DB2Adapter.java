@@ -1765,35 +1765,35 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询表名列
+	 * table[结果集封装-依据]<br/>
+	 * table结果集表名依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	@Override
-	public String tableMetadataNameColumn(DataRuntime runtime){
+	public String tableMetadataName(DataRuntime runtime){
 		return "TABNAME";
 	}
 
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Catalog列
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Catalog依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	@Override
-	public String tableMetadataCatalogNameColumn(DataRuntime runtime){
+	public String tableMetadataCatalog(DataRuntime runtime){
 		return null;
 	}
 
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Schema列
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Schema依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	@Override
-	public String tableMetadataSchemaNameColumn(DataRuntime runtime){
+	public String tableMetadataSchema(DataRuntime runtime){
 		return "TABSCHEMA";
 	}
 
@@ -2431,7 +2431,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
-	 * @return pattern attern
+	 * @param pattern 名称
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2447,8 +2447,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataTypeColumn(runtime, meta);
+	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataType(runtime, meta);
 	}
 
 	/**
@@ -2459,8 +2459,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLengthColumn(runtime, meta);
+	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLength(runtime, meta);
 	}
 
 	/**
@@ -2471,8 +2471,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecisionColumn(runtime, meta);
+	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecision(runtime, meta);
 	}
 
 	/**
@@ -2483,8 +2483,8 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScaleColumn(runtime, meta);
+	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScale(runtime, meta);
 	}
 
 
@@ -2543,7 +2543,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataNameColumn(DataRuntime runtime){
+	public String columnMetadataName(DataRuntime runtime){
 		return "COLNAME";
 	}
 
@@ -2554,7 +2554,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
+	public String columnMetadataCatalog(DataRuntime runtime){
 		return null;
 	}
 
@@ -2565,7 +2565,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
+	public String columnMetadataSchema(DataRuntime runtime){
 		return "TABSCHEMA";
 	}
 
@@ -2576,7 +2576,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTableNameColumn(DataRuntime runtime){
+	public String columnMetadataTable(DataRuntime runtime){
 		return "TABNAME";
 	}
 
@@ -2700,21 +2700,6 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 		}
 		return runs;
 	}
-
-	/**
-	 * primary[结构集封装]<br/>
-	 *  根据查询结果集构造PrimaryKey
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
-	 * @param table 表
-	 * @param set sql查询结果
-	 * @throws Exception 异常
-	 */
-	@Override
-	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-		return super.init(runtime, index, primary, table, set);
-	}
-
 
 	/* *****************************************************************************************************************
 	 * 													foreign

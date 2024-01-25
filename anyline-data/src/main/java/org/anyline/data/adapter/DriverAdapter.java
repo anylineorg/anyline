@@ -1776,57 +1776,6 @@ public interface DriverAdapter {
 
 	/**
 	 * table[结果集封装]<br/>
-	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param row 查询结果集
-	 * @return Table
-	 */
-	<T extends Table> T init(DataRuntime runtime, T table, Catalog catalog, Schema schema, DataRow row);
-	/**
-	 * table[结果集封装]<br/>
-	 * 根据查询结果封装Table对象,更多属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
-	 * @param row 查询结果集
-	 * @return Table
-	 */
-	<T extends Table> T detail(DataRuntime runtime, T table, DataRow row);
-
-	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询表名列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String tableMetadataNameColumn(DataRuntime runtime){
-		return "TABLE_NAME,NAME,TABNAME";
-	}
-
-	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Catalog列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String tableMetadataCatalogNameColumn(DataRuntime runtime){
-		return "TABLE_CATALOG";
-	}
-
-	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Schema列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String tableMetadataSchemaNameColumn(DataRuntime runtime){
-		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
-	}
-
-	/**
-	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1902,6 +1851,57 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set);
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	<T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	<T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row);
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table结果集表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String tableMetadataName(DataRuntime runtime){
+		return "TABLE_NAME,NAME,TABNAME";
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Catalog依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String tableMetadataCatalog(DataRuntime runtime){
+		return "TABLE_CATALOG";
+	}
+
+	/**
+	 * table[结果集封装-依据]<br/>
+	 * table元数据结果集Schema依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	default String tableMetadataSchema(DataRuntime runtime){
+		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
@@ -2300,80 +2300,81 @@ public interface DriverAdapter {
 	 * @param <T> Column
 	 */
 	<T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row);
+
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据名称列
+	 * column[结果集封装-依据]<br/>
+	 * Column元数据名称依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
-	default String columnMetadataNameColumn(DataRuntime runtime){
+	default String columnMetadataName(DataRuntime runtime){
 		return "COLUMN_NAME,COLNAME";
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Catalog列
+	 * column[结果集封装-依据]<br/>
+	 * Column元数据Catalog依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
-	default String columnMetadataCatalogNameColumn(DataRuntime runtime){
+	default String columnMetadataCatalog(DataRuntime runtime){
 		return "TABLE_CATALOG";
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Schema列
+	 * column[结果集封装-依据]<br/>
+	 * Column元数据Schema依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
-	default String columnMetadataSchemaNameColumn(DataRuntime runtime){
+	default String columnMetadataSchema(DataRuntime runtime){
 		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Table列
+	 * column[结果集封装-依据]<br/>
+	 * Column元数据Table依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
-	default String columnMetadataTableNameColumn(DataRuntime runtime){
+	default String columnMetadataTable(DataRuntime runtime){
 		return "TABLE_NAME,TABNAME";
 	}
 
 	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * Column元数据数据类型列
+	 * column[结果集封装-依据]<br/>(方法1)<br/>
+	 * Column元数据数据类型依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataType(DataRuntime runtime, TypeMetadata meta);
 	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * Column元数据长度列
+	 * column[结果集封装-依据]<br/>(方法1)<br/>
+	 * Column元数据长度依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataLength(DataRuntime runtime, TypeMetadata meta);
 
 	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元Column元数据数字有效位数列
+	 * column[结果集封装-依据]<br/>(方法1)<br/>
+	 * 元Column元数据数字有效位数依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta);
 
 	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * Column元数据数字小数位数列
+	 * column[结果集封装-依据]<br/>(方法1)<br/>
+	 * Column元数据数字小数位数依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataScale(DataRuntime runtime, TypeMetadata meta);
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
@@ -2475,6 +2476,29 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
+
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据名称依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	String primaryMetadataName(DataRuntime runtime);
+
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据表名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	String primaryMetadataTable(DataRuntime runtime);
+	/**
+	 * primary[结构集封装-依据]<br/>
+	 * primary元数据列名依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return column name
+	 */
+	String primaryMetadataColumn(DataRuntime runtime);
 
 	/**
 	 * primary[结构集封装]<br/>

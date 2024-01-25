@@ -2498,7 +2498,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
 	 * @return columns 上一步查询结果
-	 * @return pattern attern
+	 * @param pattern 名称
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -2543,8 +2543,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataNameColumn(DataRuntime runtime){
-		return super.columnMetadataNameColumn(runtime);
+	public String columnMetadataName(DataRuntime runtime){
+		return super.columnMetadataName(runtime);
 	}
 
 	/**
@@ -2554,8 +2554,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
-		return super.columnMetadataCatalogNameColumn(runtime);
+	public String columnMetadataCatalog(DataRuntime runtime){
+		return super.columnMetadataCatalog(runtime);
 	}
 
 	/**
@@ -2565,8 +2565,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
-		return super.columnMetadataSchemaNameColumn(runtime);
+	public String columnMetadataSchema(DataRuntime runtime){
+		return super.columnMetadataSchema(runtime);
 	}
 
 	/**
@@ -2576,8 +2576,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTableNameColumn(DataRuntime runtime){
-		return super.columnMetadataTableNameColumn(runtime);
+	public String columnMetadataTable(DataRuntime runtime){
+		return super.columnMetadataTable(runtime);
 	}
 
 	/**
@@ -2588,8 +2588,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataTypeColumn(runtime, meta);
+	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataType(runtime, meta);
 	}
 
 	/**
@@ -2600,8 +2600,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLengthColumn(runtime, meta);
+	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLength(runtime, meta);
 	}
 
 	/**
@@ -2612,8 +2612,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecisionColumn(runtime, meta);
+	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecision(runtime, meta);
 	}
 
 	/**
@@ -2624,8 +2624,8 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScaleColumn(runtime, meta);
+	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScale(runtime, meta);
 	}
 
 
