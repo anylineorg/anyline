@@ -96,7 +96,19 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	default boolean match(DataRuntime runtime, boolean compensate){
+		String config_adapter_key = runtime.getAdapterKey();
+		if(BasicUtil.isNotEmpty(config_adapter_key)){
+			return matchByAdapter(runtime);
+		}
+		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
+		//获取特征时会重新解析 adapter参数
+		if(BasicUtil.isNotEmpty(config_adapter_key)){
+			return matchByAdapter(runtime);
+		}
 		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
+		return match(feature, keywords, compensate);
+	}
+	default boolean matchByAdapter(DataRuntime runtime){
 		String config_adapter_key = runtime.getAdapterKey();
 		if(BasicUtil.isNotEmpty(config_adapter_key)){
 			String type = type().name();
@@ -110,10 +122,8 @@ public interface DriverAdapter {
 			}
 			return result;
 		}
-		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
-		return match(feature, keywords, compensate);
+		return false;
 	}
-
 	/**
 	 *
 	 * @param feature 当前运行环境特征

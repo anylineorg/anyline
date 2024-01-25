@@ -416,7 +416,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	public static boolean validate(DataSource ds) throws Exception {
 		Connection con = null;
 		try{
-			con = ds.getConnection();
+			con = DataSourceUtils.getConnection(ds);
 		}finally {
 			if (null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
 				DataSourceUtils.releaseConnection(con, ds);
