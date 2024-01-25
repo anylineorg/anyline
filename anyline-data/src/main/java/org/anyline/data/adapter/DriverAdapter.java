@@ -96,13 +96,12 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	default boolean match(DataRuntime runtime, boolean compensate){
-		String config_adapter_key = runtime.getAdapterKey();
-		if(BasicUtil.isNotEmpty(config_adapter_key)){
+		if(BasicUtil.isNotEmpty(runtime.getAdapterKey())){
 			return matchByAdapter(runtime);
 		}
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
 		//获取特征时会重新解析 adapter参数
-		if(BasicUtil.isNotEmpty(config_adapter_key)){
+		if(BasicUtil.isNotEmpty(runtime.getAdapterKey())){
 			return matchByAdapter(runtime);
 		}
 		List<String> keywords = type().keywords(); //关键字+jdbc-url前缀+驱动类
