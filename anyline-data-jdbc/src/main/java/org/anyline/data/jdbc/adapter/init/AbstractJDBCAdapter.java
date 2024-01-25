@@ -3367,7 +3367,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		for(DataRow row:set){
 			T table = null;
 			table = init(runtime, index, table, catalog, schema, row);
-			if(null != table(tables, table.getCatalog(), table.getSchema(), table.getName())){
+			if(null == table(tables, table.getCatalog(), table.getSchema(), table.getName())){
 				tables.add(table);
 			}
 			detail(runtime, index, table, row);
