@@ -13121,7 +13121,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//根据值类型
 		if(!placeholder) {
-			if (BasicUtil.isNumber(value) || "NULL".equals(value)) {
+			if (null == value || BasicUtil.isNumber(value) || "NULL".equals(value)) {
 				result = value;
 			} else {
 				result = "'" + value + "'";

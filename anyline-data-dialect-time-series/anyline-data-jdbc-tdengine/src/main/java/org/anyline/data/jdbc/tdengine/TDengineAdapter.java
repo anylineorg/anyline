@@ -2604,9 +2604,6 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter,
 			catalog = table.getCatalog();
 			schema = table.getSchema();
 		}
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		if(metadata){
 			//不支持
 			/*builder.append("SELECT * FROM ");
@@ -2614,6 +2611,9 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter,
 			builder.append(" WHERE 1=0");*/
 		}else {
 			if(null != name) {
+				Run run = new SimpleRun(runtime);
+				runs.add(run);
+				StringBuilder builder = run.getBuilder();
 				builder.append("DESCRIBE ").append(name);
 			}
 		}

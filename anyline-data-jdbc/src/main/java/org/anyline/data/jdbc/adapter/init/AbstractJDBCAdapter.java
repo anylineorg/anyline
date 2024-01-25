@@ -3654,6 +3654,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Table
 	 */
 	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
+		if(null == table){
+			table = (T)new Table();
+		}
 		String _catalog = null;
 		String catalog_column = tableMetadataCatalog(runtime);//"TABLE_CATALOG"
 		if(null != catalog_column) {
@@ -7850,10 +7853,18 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
 		Object def = null;
 		boolean defaultCurrentDateTime = false;
-		if(null != meta.getUpdate()){
-			def = meta.getUpdate().getDefaultValue();
-			defaultCurrentDateTime = meta.getUpdate().isDefaultCurrentDateTime();
+		Column update = meta.getUpdate();
+		if(null != update){
+			//自增序列不要默认值nextval('crm_user_id_seq'::regclass)
+			if(update.isAutoIncrement() == 1){
+				return builder;
+			}
+			def = update.getDefaultValue();
+			defaultCurrentDateTime = update.isDefaultCurrentDateTime();
 		}else {
+			if(meta.isAutoIncrement() == 1){
+				return builder;
+			}
 			def = meta.getDefaultValue();
 			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
 		}
@@ -7878,6 +7889,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					builder.append(value);
 				}
 			}else {
+				//nextval('crm_user_id_seq'::regclass)
+				//DEFAULT NULL::timestamp with time zone,
+				if(null != def && def.toString().contains("::")){
+					def = def.toString().split("::")[0];
+				}
 				def = write(runtime, meta, def, false);
 				if(null == def){
 					def = meta.getDefaultValue();
@@ -9748,6 +9764,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param row 查询结果集
 	 */
 	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
+		if(null == column){
+			column = (T)new Column();
+		}
 		String catalog = null;
 		String catalog_column = columnMetadataCatalog(runtime);
 		if(null != catalog_column) {
@@ -9781,14 +9800,20 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		column.setSchema(schema);
 		if(null != table) {//查询全部表
 			column.setTable(table);
+		}else {
+			String tableName = null;
+			String table_column = columnMetadataTable(runtime);
+			if (null != table_column) {
+				tableName = row.getString(table_column.split(","));//"TABLE_NAME","TABNAME"
+			}
+			column.setTable(BasicUtil.evl(tableName, column.getTableName(true), tableName));
 		}
-		String tableName = null;
-		String table_column = columnMetadataTable(runtime);
-		if(null != table_column){
-			tableName = row.getString(table_column.split(","));//"TABLE_NAME","TABNAME"
+		String name = null;
+		String name_column = columnMetadataName(runtime);
+		if(null != name_column){
+			name = row.getString(name_column.split(","));
 		}
-		column.setTable(BasicUtil.evl(tableName, column.getTableName(true), tableName));
-
+		column.setName(name);
 		return column;
 	}
 

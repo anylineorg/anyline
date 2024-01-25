@@ -293,11 +293,11 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      */
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = table.getComment();
         if(BasicUtil.isNotEmpty(comment)){
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             builder.append("EXEC sp_addextendedproperty ");
             builder.append("'MS_Description', ");
             builder.append("N'").append(comment).append("', ");
@@ -313,11 +313,11 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     @Override
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = table.getComment();
         if(BasicUtil.isNotEmpty(comment)){
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             builder.append("EXEC sp_updateextendedproperty ");
             builder.append("'MS_Description', ");
             builder.append("N'").append(comment).append("', ");
@@ -338,12 +338,11 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
      */
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = column.getComment();
         if(BasicUtil.isNotEmpty(comment)){
-
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             Schema schema = column.getSchema();
             if(BasicUtil.isEmpty(schema)){
                 schema = column.getTable(true).getSchema();
@@ -380,9 +379,6 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
     @Override
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = null;
         if(null != column.getUpdate()){
             comment = column.getUpdate().getComment();
@@ -390,6 +386,9 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
             comment = column.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)){
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             Schema schema = column.getSchema();
             if(BasicUtil.isEmpty(schema)){
                 schema = column.getTable(true).getSchema();

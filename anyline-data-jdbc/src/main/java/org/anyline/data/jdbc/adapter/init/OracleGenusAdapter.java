@@ -5024,9 +5024,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     @Override
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = null;
         if(null != meta.getUpdate()){
             comment = meta.getUpdate().getComment();
@@ -5034,6 +5031,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
             comment = meta.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             builder.append("COMMENT ON COLUMN ");
             name(runtime, builder, meta.getTable(true)).append(".");
             Column update = meta.getUpdate();

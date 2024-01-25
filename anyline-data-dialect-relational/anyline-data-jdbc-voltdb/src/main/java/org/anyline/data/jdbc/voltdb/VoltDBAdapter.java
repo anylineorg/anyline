@@ -2382,15 +2382,15 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		if(metadata){
+			Run run = new SimpleRun(runtime);
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("SELECT * FROM ");
 			name(runtime, builder, table);
 			builder.append(" WHERE 1=0");
 		}else{
-			run = new ProcedureRun(runtime, new Procedure("@SystemCatalog").addInput("columns", Types.VARCHAR));
+			Run run = new ProcedureRun(runtime, new Procedure("@SystemCatalog").addInput("columns", Types.VARCHAR));
 			runs.add(run);
 		}
 		return runs;

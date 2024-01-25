@@ -590,14 +590,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
     @Override
     public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String key = "CURRVAL";
         if(next){
             key = "NEXTVAL";
         }
         if(null != names && names.length>0) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             builder.append("SELECT ");
             boolean first = true;
             for (String name : names) {
@@ -3818,11 +3818,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
     @Override
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = meta.getComment();
         if(BasicUtil.isNotEmpty(comment)) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             builder.append("COMMENT ON TABLE ");
             name(runtime, builder, meta);
             builder.append(" IS '").append(comment).append("'");
@@ -4815,9 +4815,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
     @Override
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
-        runs.add(run);
-        StringBuilder builder = run.getBuilder();
         String comment = null;
         Column update = meta.getUpdate();
         if(null != update){
@@ -4827,6 +4824,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
             comment = meta.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)) {
+            Run run = new SimpleRun(runtime);
+            runs.add(run);
+            StringBuilder builder = run.getBuilder();
             builder.append("COMMENT ON COLUMN ");
             name(runtime, builder, meta.getTable(true)).append(".");
             delimiter(builder, meta.getName());

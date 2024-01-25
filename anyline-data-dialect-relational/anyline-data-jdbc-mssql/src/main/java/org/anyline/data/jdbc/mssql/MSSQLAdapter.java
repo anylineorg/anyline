@@ -3958,11 +3958,11 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	@Override
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, Table meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = meta.getComment();
 		if(BasicUtil.isNotEmpty(comment)){
+			Run run = new SimpleRun(runtime);
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
@@ -3984,11 +3984,11 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	@Override
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, Table meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = meta.getComment();
 		if(BasicUtil.isNotEmpty(comment)){
+			Run run = new SimpleRun(runtime);
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			builder.append("EXEC sys.sp_updateextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
@@ -5093,9 +5093,6 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 	@Override
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
 		String comment = null;
 		if(null != meta.getUpdate()){
 			comment = meta.getUpdate().getComment();
@@ -5103,6 +5100,9 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 			comment = meta.getComment();
 		}
 		if(BasicUtil.isNotEmpty(comment)){
+			Run run = new SimpleRun(runtime);
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
 			Schema schema = meta.getSchema();
 			if(BasicUtil.isEmpty(schema)){
 				schema = meta.getTable(true).getSchema();
