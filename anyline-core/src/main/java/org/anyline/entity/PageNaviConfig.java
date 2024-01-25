@@ -135,6 +135,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	public static void parse(String content){
 		parse(PageNaviConfig.class, content, instances, compatibles);
 	}
+
 	/**
 	 * 初始化默认配置文件
 	 */

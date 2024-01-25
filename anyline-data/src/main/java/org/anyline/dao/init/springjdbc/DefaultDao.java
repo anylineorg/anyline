@@ -110,6 +110,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().querys(runtime, null, prepare, configs, conditions);
 
 	}
+
 	/**
 	 * 查询<br/>
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -130,7 +131,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return set;
 	}
-
 
 	/**
 	 * 查询序列值
@@ -639,7 +639,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 
-
 	/**
 	 * 查询
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -930,7 +929,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, strut);
 	}
 
-
 	/**
 	 * 查询表的创建SQL
 	 * @param table table
@@ -971,7 +969,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return runtime.getAdapter().views(runtime, random, greedy, catalog, schema, pattern, types);
 	}
-
 
 	/**
 	 * 查询view的创建SQL
@@ -1032,7 +1029,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return runtime.getAdapter().ptables(runtime, random, greedy, master, tags, name);
 	}
-
 
 	/**
 	 * 查询 PartitionTable 创建SQL
@@ -1317,6 +1313,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().drop(runtime, meta);
 	}
+
 	/**
 	 * 重命名
 	 * @param origin 原表
@@ -1448,6 +1445,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
+
 	/**
 	 * 修改列
 	 * @param meta 列
@@ -1497,6 +1495,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().alter(runtime, meta);
 	}
+
 	/**
 	 * 修改标签
 	 * @param meta 标签

@@ -134,6 +134,7 @@ public class FileUtil {
 		}
 		return type;
 	}
+
 	/**
 	 * 读取输入流
 	 * @param input  input
@@ -281,6 +282,7 @@ public class FileUtil {
 		}
 		return file;
 	}
+
 	/**
 	 * 读取文件
 	 * @param file  file
@@ -328,6 +330,7 @@ public class FileUtil {
 		}
 		return buffer;
 	}
+
 	/**
 	 *
 	 * @param content 写入内容
@@ -433,6 +436,7 @@ public class FileUtil {
 		}
 		return true;
 	}
+
 	/**
 	 * 创建文件
 	 * @param dir  dir
@@ -484,6 +488,7 @@ public class FileUtil {
 		}
 		return tempFile;
 	}
+
 	/**
 	 * 从URL中提取文件目录(删除查询参数)
 	 * @param url  url
@@ -495,6 +500,7 @@ public class FileUtil {
 			url = url.substring(0, to);
 		return url;
 	}
+
 	/**
 	 * 提取一个URL所在的目录
 	 * @param url  url
@@ -512,6 +518,7 @@ public class FileUtil {
 		}
 		return dir;
 	}
+
 	/**
 	 * path是否包含文件名
 	 * @param path  path
@@ -534,6 +541,7 @@ public class FileUtil {
 		}
 		return false;
 	}
+
 	/**
 	 * 提取url根目录
 	 * @param url  url
@@ -589,6 +597,7 @@ public class FileUtil {
 	public static String getSuffixFileName(String file){
 		return getSuffixFileName(new File(file));
 	}
+
 	/**
 	 * 复制文件  源文件  目标文件
 	 * @param src  源文件
@@ -690,6 +699,7 @@ public class FileUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 读取当前目录及子目录下所有子目录
 	 * @param dir  dir
@@ -719,6 +729,7 @@ public class FileUtil {
 		}
 		return list;
 	}
+
 	/**
 	 *
 	 * @param dir  dir
@@ -736,6 +747,7 @@ public class FileUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * ZIP文件中的所有子文件
 	 * @param zip  zip
@@ -766,6 +778,7 @@ public class FileUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 按类型(后缀)过滤文件
 	 * @param file  file
@@ -794,6 +807,7 @@ public class FileUtil {
 		}
 		return false;
 	}
+
 	/**
 	 * 后缀名
 	 * @param fileName  fileName
@@ -826,6 +840,7 @@ public class FileUtil {
 	public static boolean isFile(String file){
 		return isFile(new File(file));
 	}
+
 	/**
 	 * 识别文件类型(文件格式)
 	 * @param file  file
@@ -881,6 +896,7 @@ public class FileUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 计算文件行数
 	 * @param file file
@@ -908,6 +924,7 @@ public class FileUtil {
         }
         return size;
 	}
+
 	/**
 	 * 压缩文件
 	 * @param zip  zip
@@ -1012,6 +1029,7 @@ public class FileUtil {
 		title = length(finish) + "/" + length(total) + "("+rateTitle+"%)";
 		return title;
 	}
+
 	/**
 	 * 文件大小格式化
 	 * @param b b
@@ -1034,6 +1052,7 @@ public class FileUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 合并文件
 	 * @param dest 目标文件(新文件)
@@ -1137,6 +1156,7 @@ public class FileUtil {
 			write(content, file);
 		}
 	}
+
 	/**
 	 * 文件拆分
 	 * @param file file

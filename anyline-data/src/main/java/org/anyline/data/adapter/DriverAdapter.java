@@ -68,6 +68,7 @@ public interface DriverAdapter {
 			return name;
 		}
 	}
+
 	/**
 	 * 数据库类型
 	 * @return DatabaseType
@@ -189,6 +190,7 @@ public interface DriverAdapter {
 	default void reg(Object[] supports, DataWriter writer){
 		SystemDataWriterFactory.reg(type(), supports, writer);
 	}
+
 	/**
 	 * 写入数据库时 类型转换 写入的原始类型需要writer中实现supports
 	 * @param writer DataWriter
@@ -232,6 +234,7 @@ public interface DriverAdapter {
 		}
 		return reader;
 	}
+
 	/**
 	 * 根据写入的数据类型 定位DataWriter
 	 * @param type class ColumnType StringColumnType
@@ -331,6 +334,7 @@ public interface DriverAdapter {
 	default long insert(DataRuntime runtime, String random, String dest, Object data, String ... columns){
 		return insert(runtime, random, dest, data, BeanUtil.array2list(columns));
 	}
+
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -386,6 +390,7 @@ public interface DriverAdapter {
 	default void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, list, null, columns);
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -399,7 +404,6 @@ public interface DriverAdapter {
 	default void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, set, null, columns);
 	}
-
 
 	/**
 	 * insert [命令合成-子流程]<br/>
@@ -416,6 +420,7 @@ public interface DriverAdapter {
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, Collection list, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, list, null, columns);
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -431,6 +436,7 @@ public interface DriverAdapter {
 	default void fillInsertContent(DataRuntime runtime, Run run, String dest, DataSet set, LinkedHashMap<String, Column> columns){
 		fillInsertContent(runtime, run, dest, set, null, columns);
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
@@ -597,6 +603,7 @@ public interface DriverAdapter {
 	default long update(DataRuntime runtime, String random, String dest, Object data, String ... columns){
 		return update(runtime, random, 0, dest, data, BeanUtil.array2string(columns));
 	}
+
 	/**
 	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -677,6 +684,7 @@ public interface DriverAdapter {
 	default Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
 		return buildUpdateRunFromCollection(runtime, batch, DataSourceUtil.parseDest(dest, list, configs), list, configs, columns);
 	}
+
 	/**
 	 * 确认需要更新的列
 	 * @param row DataRow
@@ -706,6 +714,7 @@ public interface DriverAdapter {
 	default LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return confirmUpdateColumns(runtime, DataSourceUtil.parseDest(dest, obj, configs), obj, configs, columns);
 	}
+
 	/**
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -719,7 +728,6 @@ public interface DriverAdapter {
 	default long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
 		return update(runtime, random, DataSourceUtil.parseDest(dest, data, configs), data, configs, run);
 	}
-
 
 	/**
 	 * save [调用入口]<br/>
@@ -1094,6 +1102,7 @@ public interface DriverAdapter {
 	default <T> long deletes(DataRuntime runtime, String random, String table, String column, T ... values){
 		return deletes(runtime, random, 0, table, column, BeanUtil.array2list(values));
 	}
+
 	/**
 	 * delete [调用入口]<br/>
 	 * <br/>
@@ -1137,6 +1146,7 @@ public interface DriverAdapter {
 	default long truncate(DataRuntime runtime, String random, String table){
 		return truncate(runtime, random, new Table(table));
 	}
+
 	/**
 	 * delete[命令合成]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
@@ -1189,6 +1199,7 @@ public interface DriverAdapter {
 	default Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, String column, Object values){
 		return buildDeleteRunFromTable(runtime, batch, new Table(table), column, values);
 	}
+
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
@@ -1337,6 +1348,7 @@ public interface DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询当前数据源 数据库产品说明(产品名称+版本号)
@@ -1372,6 +1384,7 @@ public interface DriverAdapter {
 	default List<Run> buildQueryDatabaseRun(DataRuntime runtime) throws Exception{
 		return buildQueryDatabasesRun(runtime, false, null);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 product
@@ -1479,6 +1492,7 @@ public interface DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * catalog[命令合成]<br/>
 	 * 查询当前catalog
@@ -1790,6 +1804,7 @@ public interface DriverAdapter {
 	default String tableMetadataNameColumn(DataRuntime runtime){
 		return "TABLE_NAME,NAME,TABNAME";
 	}
+
 	/**
 	 * table[结果集封装]<br/>
 	 * 系统表查询Catalog列
@@ -1799,6 +1814,7 @@ public interface DriverAdapter {
 	default String tableMetadataCatalogNameColumn(DataRuntime runtime){
 		return "TABLE_CATALOG";
 	}
+
 	/**
 	 * table[结果集封装]<br/>
 	 * 系统表查询Schema列
@@ -1808,6 +1824,7 @@ public interface DriverAdapter {
 	default String tableMetadataSchemaNameColumn(DataRuntime runtime){
 		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
 	}
+
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
@@ -2264,6 +2281,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
 	 * @param table 表
@@ -2283,67 +2301,79 @@ public interface DriverAdapter {
 	 */
 	<T extends Column> T detail(DataRuntime runtime, T column, DataRow row);
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询名称列
+	 * column[结果集封装]<br/>
+	 * Column元数据名称列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	default String columnMetadataNameColumn(DataRuntime runtime){
 		return "COLUMN_NAME,COLNAME";
 	}
+
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Catalog列
+	 * column[结果集封装]<br/>
+	 * Column元数据Catalog列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	default String columnMetadataCatalogNameColumn(DataRuntime runtime){
 		return "TABLE_CATALOG";
 	}
+
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Schema列
+	 * column[结果集封装]<br/>
+	 * Column元数据Schema列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	default String columnMetadataSchemaNameColumn(DataRuntime runtime){
 		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
 	}
+
 	/**
-	 * table[结果集封装]<br/>
-	 * 系统表查询Table列
+	 * column[结果集封装]<br/>
+	 * Column元数据Table列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return String
 	 */
 	default String columnMetadataTableNameColumn(DataRuntime runtime){
 		return "TABLE_NAME,TABNAME";
 	}
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据长度列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	String lengthColumn(DataRuntime runtime, TypeMetadata meta);
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字有效位数列
+	 * Column元数据数据类型列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String precisionColumn(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta);
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * Column元数据长度列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta);
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字小数位数列
+	 * 元Column元数据数字有效位数列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String scaleColumn(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * Column元数据数字小数位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta);
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
@@ -3041,6 +3071,7 @@ public interface DriverAdapter {
 	default boolean slice(boolean slice){
 		return slice && slice();
 	}
+
 	/**
 	 * 执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3841,7 +3872,6 @@ public interface DriverAdapter {
 		return buildAlterRun(runtime, column, false);
 	}
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 删除列
@@ -4376,6 +4406,7 @@ public interface DriverAdapter {
 	default boolean alter(DataRuntime runtime, Table table, PrimaryKey meta) throws Exception{
 		return alter(runtime, table, table.getPrimaryKey(), meta);
 	}
+
 	/**
 	 * primary[调用入口]<br/>
 	 * 删除主键
@@ -4418,6 +4449,7 @@ public interface DriverAdapter {
 	default List<Run> buildAppendPrimaryRun(DataRuntime runtime, Table meta) throws Exception{
 		return new ArrayList<>();
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键

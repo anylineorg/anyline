@@ -53,6 +53,7 @@ public class RegularMatchPrefix implements Regular{
 		} 
 		return result; 
 	}
+
 	/** 
 	 * 提取子串 
 	 * @param src	输入字符串  src	输入字符串
@@ -109,6 +110,7 @@ public class RegularMatchPrefix implements Regular{
 	public List<String> fetch(String src, String regx) throws Exception{
 		return fetch(src, regx, 0);
 	}
+
 	/** 
 	 * 过滤 保留匹配项 
 	 * @param src  src

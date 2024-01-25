@@ -198,7 +198,6 @@ public interface ConfigStore {
 		return setPrimaryKey(BeanUtil.array2list(pks));
 	}
 
-
 	/**
 	 * 设置主键
 	 * @param pks keys
@@ -236,6 +235,7 @@ public interface ConfigStore {
 	default ConfigStore and(String var, Object value){
 		return and(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -268,6 +268,7 @@ public interface ConfigStore {
 	default ConfigStore and(String var, Object value, boolean overCondition, boolean overValue){
 		return and(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -293,6 +294,7 @@ public interface ConfigStore {
 	default ConfigStore and(Compare compare, String var, Object value){
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -308,6 +310,7 @@ public interface ConfigStore {
 	default ConfigStore and(Compare compare, String id, String var, Object value){
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -324,6 +327,7 @@ public interface ConfigStore {
 	default ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -370,6 +374,7 @@ public interface ConfigStore {
 	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object ... values){
 		return and(swt, Compare.IN, var, BeanUtil.array2list(values));
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param config 查询条件
@@ -406,6 +411,7 @@ public interface ConfigStore {
 	default ConfigStore ands(String var, Object value){
 		return ands(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -438,6 +444,7 @@ public interface ConfigStore {
 	default ConfigStore ands(String var, Object value, boolean overCondition, boolean overValue){
 		return ands(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -464,6 +471,7 @@ public interface ConfigStore {
 	default ConfigStore ands(Compare compare, String var, Object value){
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -479,6 +487,7 @@ public interface ConfigStore {
 	default ConfigStore ands(Compare compare, String id, String var, Object value){
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -495,6 +504,7 @@ public interface ConfigStore {
 	default ConfigStore ands(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -908,7 +918,6 @@ public interface ConfigStore {
 		return and(Compare.NOT_LIKE_SUFFIX, var, value);
 	}
 
-
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
 	 * @param swt 遇到空值处理方式
@@ -923,6 +932,7 @@ public interface ConfigStore {
 	default ConfigStore param(String id, String var, Object value){
 		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, id, var, value);
 	}
+
 	/**
 	 * 用来给占位符或自定义SQL中的参数赋值
 	 * Compare.NONE 只作为参数值为占位符赋值,不能独立生成新的查询条件
@@ -946,6 +956,7 @@ public interface ConfigStore {
 		}
 		return this;
 	}
+
 	/**
 	 * 根据占位符下标赋值
 	 * @param values values
@@ -1028,7 +1039,6 @@ public interface ConfigStore {
 		return or(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
 
-
 	/**
 	 * 构造查询条件
 	 * @param config ConfigStore
@@ -1055,6 +1065,7 @@ public interface ConfigStore {
 	default ConfigStore ors(Config config){
 		return ors(EMPTY_VALUE_SWITCH.NONE, config);
 	}
+
 	/**
 	 * 与ConfigStore中当前所有的条件合成or
 	 * @param swt 遇到空值处理方式
@@ -1100,6 +1111,7 @@ public interface ConfigStore {
 	default ConfigStore ors(Compare compare, String var, Object value){
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
+
 	/**
 	 * 与ConfigStore中当前所有的条件合成or<br/>
 	 * 	 * 这里不指定运算算，根据value情况生成IN或者=
@@ -1140,6 +1152,7 @@ public interface ConfigStore {
 			return and(var, value);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -1196,6 +1209,7 @@ public interface ConfigStore {
 			return and(var, value, overCondition, overValue);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -1247,6 +1261,7 @@ public interface ConfigStore {
 			return and(compare, var, value);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -1274,6 +1289,7 @@ public interface ConfigStore {
 			return and(compare, id, var, value);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -1302,6 +1318,7 @@ public interface ConfigStore {
 			return and(compare, var, value, overCondition, overValue);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param swt 遇到空值处理方式
@@ -1360,6 +1377,7 @@ public interface ConfigStore {
 			return and(id, var, value);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param config 查询条件
@@ -1374,6 +1392,7 @@ public interface ConfigStore {
 			return and(config);
 		}
 	}
+
 	/**
 	 * 构造查询条件
 	 * @param join and或者or
@@ -1410,6 +1429,7 @@ public interface ConfigStore {
 		}
 		return compare;
 	}
+
 	/** 
 	 * 添加排序 
 	 * @param order order
@@ -1584,7 +1604,6 @@ public interface ConfigStore {
 		return config("IS_LOG_SLOW_SQL", value);
 	}
 
-
 	/**
 	 * 异常时是否显示SQL
 	 * @return boolean
@@ -1595,6 +1614,7 @@ public interface ConfigStore {
 	default ConfigStore IS_LOG_SQL_WHEN_ERROR(boolean value){
 		return config("IS_LOG_SQL_WHEN_ERROR", value);
 	}
+
 	/**
 	 * 是否输出异常堆栈日志
 	 * @return boolean
@@ -1605,6 +1625,7 @@ public interface ConfigStore {
 	default ConfigStore IS_PRINT_EXCEPTION_STACK_TRACE(boolean value){
 		return config("IS_PRINT_EXCEPTION_STACK_TRACE", value);
 	}
+
 	/**
 	 * 是否显示SQL参数(占位符模式下有效)
 	 * @return boolean
@@ -1629,6 +1650,7 @@ public interface ConfigStore {
 	default ConfigStore IS_LOG_SQL_PARAM_WHEN_ERROR(boolean value){
 		return config("IS_LOG_SQL_PARAM_WHEN_ERROR", value);
 	}
+
 	/**
 	 * 是否显示SQL执行时间
 	 * @return boolean
@@ -1639,6 +1661,7 @@ public interface ConfigStore {
 	default ConfigStore IS_LOG_SQL_TIME(boolean value){
 		return config("IS_LOG_SQL_TIME", value);
 	}
+
 	/**
 	 * 是否抛出查询异常
 	 * @return boolean
@@ -1649,6 +1672,7 @@ public interface ConfigStore {
 	default ConfigStore IS_THROW_SQL_QUERY_EXCEPTION(boolean value){
 		return config("IS_THROW_SQL_QUERY_EXCEPTION", value);
 	}
+
 	/**
 	 * 是否抛出更新异常
 	 * @return boolean
@@ -1659,6 +1683,7 @@ public interface ConfigStore {
 	default ConfigStore IS_THROW_SQL_UPDATE_EXCEPTION(boolean value){
 		return config("IS_THROW_SQL_UPDATE_EXCEPTION", value);
 	}
+
 	/**
 	 * SQL日志是否启用占位符
 	 * @return boolean
@@ -1669,6 +1694,7 @@ public interface ConfigStore {
 	default ConfigStore IS_SQL_LOG_PLACEHOLDER(boolean value){
 		return config("IS_SQL_LOG_PLACEHOLDER", value);
 	}
+
 	/**
 	 * insert update 时是否自动检测表结构(删除表中不存在的属性)
 	 * @return boolean
@@ -1679,6 +1705,7 @@ public interface ConfigStore {
 	default ConfigStore IS_AUTO_CHECK_METADATA(boolean value){
 		return config("IS_AUTO_CHECK_METADATA", value);
 	}
+
 	/**
 	 * 查询返回空DataSet时，是否检测元数据信息
 	 * @return boolean
@@ -1690,7 +1717,6 @@ public interface ConfigStore {
 		return config("IS_CHECK_EMPTY_SET_METADATA", value);
 	}
 
-
 	/**
 	 * 慢SQL判断标准(ms)
 	 * @return long
@@ -1701,7 +1727,6 @@ public interface ConfigStore {
 	default ConfigStore SLOW_SQL_MILLIS(long value){
 		return config("SLOW_SQL_MILLIS", value);
 	}
-
 
 	/**
 	 * DataRow是否更新nul值的列(针对DataRow)
@@ -1724,6 +1749,7 @@ public interface ConfigStore {
 	default ConfigStore IS_UPDATE_EMPTY_COLUMN(boolean value){
 		return config("IS_UPDATE_EMPTY_COLUMN", value);
 	}
+
 	/**
 	 * DataRow是否插入nul值的列
 	 * @return boolean
@@ -1734,6 +1760,7 @@ public interface ConfigStore {
 	default ConfigStore IS_INSERT_NULL_COLUMN(boolean value){
 		return config("IS_INSERT_NULL_COLUMN", value);
 	}
+
 	/**
 	 * DataRow是否插入空值的列
 	 * @return boolean
@@ -1744,6 +1771,7 @@ public interface ConfigStore {
 	default ConfigStore IS_INSERT_EMPTY_COLUMN(boolean value){
 		return config("IS_INSERT_EMPTY_COLUMN", value);
 	}
+
 	/**
 	 * Entity是否更新nul值的属性(针对Entity)
 	 * @return boolean
@@ -1754,6 +1782,7 @@ public interface ConfigStore {
 	default ConfigStore IS_UPDATE_NULL_FIELD(boolean value){
 		return config("IS_UPDATE_NULL_FIELD", value);
 	}
+
 	/**
 	 * Entity是否更新空值的属性
 	 * @return boolean
@@ -1764,6 +1793,7 @@ public interface ConfigStore {
 	default ConfigStore IS_UPDATE_EMPTY_FIELD(boolean value){
 		return config("IS_UPDATE_EMPTY_FIELD", value);
 	}
+
 	/**
 	 * Entity是否更新nul值的属性
 	 * @return boolean
@@ -1774,6 +1804,7 @@ public interface ConfigStore {
 	default ConfigStore IS_INSERT_NULL_FIELD(boolean value){
 		return config("IS_INSERT_NULL_FIELD", value);
 	}
+
 	/**
 	 * Entity是否更新空值的属性
 	 * @return boolean
@@ -1816,6 +1847,7 @@ public interface ConfigStore {
 		config("IS_LOG_SLOW_SQL", false);
 		return this;
 	}
+
 	/**
 	 * 开启所有SQL日志
 	 * @return ConfigStore

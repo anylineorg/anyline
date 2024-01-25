@@ -113,6 +113,7 @@ public class ConfigParser {
 		result = parseEncrypt(result);
 		return result;
 	}
+
 	/**
 	 *
 	 * @param config +id.field:key | key
@@ -205,6 +206,7 @@ public class ConfigParser {
 		result.setKey(config);
 		return result;
 	}
+
 	/**
 	 * 解析 比较方式
 	 * @param result  result
@@ -260,6 +262,7 @@ public class ConfigParser {
 		}
 		return result;
 	}
+
 	/**
 	 * 解析默认值
 	 * @param result  result
@@ -294,6 +297,7 @@ public class ConfigParser {
 		}
 		return result;
 	}
+
 	/**
 	 * 解析加密方式
 	 * @param result  result
@@ -426,6 +430,7 @@ public class ConfigParser {
 		}
 		return list;
 	}
+
 	/**
 	 * 默认值
 	 * @param values values
@@ -500,6 +505,7 @@ public class ConfigParser {
 		}
 		return result;
 	}
+
 	/**
 	 * 默认值
 	 * @param parser  parser
@@ -533,6 +539,7 @@ public class ConfigParser {
 		}
 		return result;
 	}
+
 	/**
 	 * 生成SQL签名,用来唯一标签一条SQL
 	 * @param page  page
@@ -660,6 +667,7 @@ public class ConfigParser {
 		}
 		return decrypt(value.trim(), ENCRYPT_TYPE_VALUE);
 	}
+
 	/**
 	 * 加密
 	 *
@@ -734,6 +742,7 @@ public class ConfigParser {
 			return false;
 		}
 	}
+
 	/**
 	 * 解密
 	 *
@@ -763,6 +772,7 @@ public class ConfigParser {
 		}
 		return result;
 	}
+
 	/**
 	 * 解密
 	 *
@@ -1126,6 +1136,7 @@ public class ConfigParser {
 
 		return src;
 	}
+
 	/**
 	 * 密文中插入版本号位置
 	 *

@@ -71,6 +71,7 @@ public class Procedure extends BaseMetadata<Procedure> implements Serializable {
 		}
 		return this;
 	}
+
 	/**
 	 * 添加输入参数
 	 * @param value	值 value	值
@@ -119,7 +120,6 @@ public class Procedure extends BaseMetadata<Procedure> implements Serializable {
 		outputs.add(param);
 		return this;
 	}
-
 
 	/**
 	 * 注册输出参数(调用过程)

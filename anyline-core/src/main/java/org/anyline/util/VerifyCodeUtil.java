@@ -80,6 +80,7 @@ public class VerifyCodeUtil {
 		outputImage(w, h, outputFile, verifyCode);
 		return verifyCode; 
 	}
+
 	/**
 	 * 输出随机验证码图片流, 并返回验证码值
 	 * 
@@ -100,6 +101,7 @@ public class VerifyCodeUtil {
 	public static String outputVerifyImage(int w, int h, OutputStream os, int verifySize) throws IOException {
 		return outputVerifyImage(w, h, os, verifySize, true);
 	}
+
 	/**
 	 * 输出计算公式
 	 * @param w w

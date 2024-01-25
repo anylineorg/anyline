@@ -169,6 +169,7 @@ public class BeanUtil {
 		}*/
 		return list;
 	}
+
 	/**
 	 * 根据field集合条目泛型类转换
 	 * @param value Map&lt;?, Map&gt;
@@ -233,6 +234,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 属性赋值
 	 * @param obj 对象 如果给类静态属性赋值, 传null
@@ -551,6 +553,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 对象转换成Map
 	 * @param obj  obj
@@ -608,6 +611,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 过虑指定属性
 	 * @param objs  objs
@@ -673,6 +677,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 参考 DataSet.getRows
 	 * @param list  list
@@ -745,6 +750,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * @param params key1, value1, key2:value2, key3, value3
 	 *               "NM:zh%","AGE:&gt;20","NM","%zh%"
@@ -1286,6 +1292,7 @@ public class BeanUtil {
 	public static Map<String, Object> param2map(String url, boolean empty, boolean decode){
 		return param2map(url, empty, decode, "UTF-8");
 	}
+
 	/**
 	 * 提取集合中每个条目的key属性的值
 	 * 如提取用户列表中的所有用户ID
@@ -1303,6 +1310,7 @@ public class BeanUtil {
 		}
 		return values;
 	}
+
 	/**
 	 * 提取集合中每个条目的多个key属性的值
 	 * 如提取用户列表中的所有用户ID, CODE
@@ -1326,6 +1334,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 去重
 	 * @param <T> T
@@ -1367,6 +1376,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 是否包含
 	 * @param <T> T
@@ -2066,6 +2076,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 与toString不同的是 中间没有空格与引号[1, 2, 3]而不是[1, 2, 3]
 	 * @param list List
@@ -2143,6 +2154,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 截取数组
 	 * @param array 原数组
@@ -2255,6 +2267,7 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 删除空值
 	 * @param map  map
@@ -2275,6 +2288,7 @@ public class BeanUtil {
 	public static void clearEmpty(Map<String, Object> map){
 		clearEmpty(map, true);
 	}
+
 	/**
 	 * 删除空值
 	 * @param list  list
@@ -2294,6 +2308,7 @@ public class BeanUtil {
 	public static void clearEmpty(List<Object> list){
 		clearEmpty(list, true);
 	}
+
 	/**
 	 * 多个数组合并成一个数组(二维数组合成一维数组)
 	 * @param <T> T
@@ -2315,7 +2330,6 @@ public class BeanUtil {
 		}
 		return result;
 	}
-
 
 	/**
 	 * 集合中与value差值最小的成员的下标
@@ -2654,6 +2668,7 @@ public class BeanUtil {
 		}
 		return value;
 	}
+
 	/**
 	 * 集合截取
 	 * @param <T>  t
@@ -2759,6 +2774,7 @@ public class BeanUtil {
 	public static String Camel(String key){
 		return Camel(key, false);
 	}
+
 	/**
 	 * 解析 key:vlue形式参数age:20
 	 * 返回数组["age","20"]
@@ -2873,6 +2889,7 @@ public class BeanUtil {
 	public static Object extract(Object src, String ... keys) {
 		return extract(src, false, keys);
 	}
+
 	/**
 	 * 取第一个不为空的值
 	 * @param src 数据源
@@ -2907,6 +2924,7 @@ public class BeanUtil {
 		}
 		return value;
 	}
+
 	/**
 	 * 提取第一个不为空的value
 	 * @param map map
@@ -2954,6 +2972,7 @@ public class BeanUtil {
 		}
 		return value;
 	}
+
 	/**
 	 * 设置所有属性值
 	 * @param obj obj
@@ -3068,6 +3087,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 合成笛卡尔组合
 	 *
@@ -3172,7 +3192,6 @@ public class BeanUtil {
 		return result;
 	}
 
-
 	/**
 	 * maps合并成新map
 	 * @param maps map
@@ -3214,7 +3233,6 @@ public class BeanUtil {
 		return src;
 	}
 
-
 	/**
 	 * list与items合并成新集合
 	 * @param list list
@@ -3246,7 +3264,6 @@ public class BeanUtil {
 		}
 		return result;
 	}
-
 
 	/**
 	 * items拼接到list中
@@ -3501,6 +3518,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
+
 	/**
 	 * 行转列
 	 * 表结构(编号, 姓名, 年度, 科目, 分数, 等级)
@@ -3567,6 +3585,7 @@ public class BeanUtil {
 	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, String[] pks, String[] classKeys, String[] valueKeys) {
 		return pivot(datas, array2list(pks),array2list(classKeys),array2list(valueKeys));
 	}
+
 	/**
 	 * 行转列
 	 * @param datas    数据
@@ -3702,6 +3721,7 @@ public class BeanUtil {
 			}
 		}
 	}
+
 	/**
 	 * 复制copy的属性值到to
 	 * @param to 赋值给to
@@ -3713,6 +3733,7 @@ public class BeanUtil {
 			setFieldValue(to, field, getFieldValue(copy, field));
 		}
 	}
+
 	/**
 	 * 复制copy的属性值到to(copy属性值is not null的情况下生效)
 	 * @param to 赋值给to

@@ -487,6 +487,7 @@ public interface AnylineService<E>{
 	default DataRow query(Table dest, String ... conditions){
 		return query(dest, (ConfigStore) null, conditions);
 	}
+
 	/**
 	 * 查询序列cur 或 next value
 	 * @param next  是否生成返回下一个序列 false:cur true:next
@@ -502,6 +503,7 @@ public interface AnylineService<E>{
 	default BigDecimal sequence(String name){
 		return sequence(true, name);
 	}
+
 	/**
 	 * 查询序列cur 或 next value
 	 * @param names 序列名
@@ -512,6 +514,7 @@ public interface AnylineService<E>{
 	default DataRow sequences(String ... names){
 		return sequences(true, names);
 	}
+
 	/**
 	 * 根据SQL或自定义SQL返回实体
 	 * @param dest SQL或自定义SQL
@@ -616,6 +619,7 @@ public interface AnylineService<E>{
 	default <T> T select(Table dest, Class<T> clazz, String ... conditions){
 		return select(dest, clazz, (T) null, conditions);
 	}
+
 	/**
 	 *
 	 * @param clazz 返回类型
@@ -822,6 +826,7 @@ public interface AnylineService<E>{
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return caches(cache, dest, configs, obj, conditions);
 	}
+
 	/**
 	 * @param cache			对应ehcache缓存配置文件 中的cache.name
 	 * @param dest 			查询或操作的目标(表、存储过程、SQL等)
@@ -935,6 +940,7 @@ public interface AnylineService<E>{
 	default DataSet querys(RunPrepare prepare, long first, long last, String ... conditions){
 		return querys(prepare, first, last, null, conditions);
 	}
+
 	/**
 	 *
 	 * @param cache 缓存 channel
@@ -1014,6 +1020,7 @@ public interface AnylineService<E>{
 	default boolean removeCache(String channel, Table dest, long first, long last, String ... conditions){
 		return removeCache(channel, dest, new DefaultConfigStore(first, last), conditions);
 	}
+
 	/**
 	 * 清空缓存
 	 * @param channel channel

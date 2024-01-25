@@ -269,6 +269,7 @@ public abstract class BasicRun implements Run {
 			}
 		}
 	}
+
 	/**
 	 * 添加参数值
 	 * @param compare  compare
@@ -384,7 +385,6 @@ public abstract class BasicRun implements Run {
 		}
 		return rv;
 	}
-
 
 	/**
 	 * 添加参数值

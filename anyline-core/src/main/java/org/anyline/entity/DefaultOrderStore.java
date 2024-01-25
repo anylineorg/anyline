@@ -61,6 +61,7 @@ public class DefaultOrderStore implements OrderStore{
 	public void order(String col, String type) {
 		order(col, type, true);
 	}
+
 	/** 
 	 * 排序多列以, 分隔
 	 * order("CD","DESC");

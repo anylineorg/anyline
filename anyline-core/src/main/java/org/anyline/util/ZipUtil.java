@@ -109,6 +109,7 @@ public class ZipUtil {
 	public static String read(File zip, String item){
 		return read(zip, item, Charset.forName("UTF-8"));
 	}
+
 	/**
 	 * 替换内容
 	 * @param zip 源文件
@@ -333,6 +334,7 @@ public class ZipUtil {
 		files.add(item);
 		return append(files, zip);
 	}
+
 	/** 
 	 * 压缩文件 
 	 *  

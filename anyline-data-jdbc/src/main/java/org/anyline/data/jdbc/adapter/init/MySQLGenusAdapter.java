@@ -1440,6 +1440,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
 	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
 		return super.catalog(runtime, index, create, catalog, set);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充
@@ -6612,8 +6613,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.lengthColumn(runtime, meta);
+    public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthColumn(runtime, meta);
     }
 
     /**
@@ -6624,8 +6625,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.precisionColumn(runtime, meta);
+    public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionColumn(runtime, meta);
     }
 
     /**
@@ -6636,8 +6637,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.scaleColumn(runtime, meta);
+    public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleColumn(runtime, meta);
     }
     /**
      *

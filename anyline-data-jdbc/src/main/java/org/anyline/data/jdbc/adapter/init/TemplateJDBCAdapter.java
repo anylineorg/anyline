@@ -100,6 +100,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
 		super.correctSchemaFromJDBC(meta, catalog, schema);
 	}
+
 	/**
 	 * 在调用jdbc接口前处理业务中的catalog, schema, 部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
 	 * @param catalog catalog
@@ -132,8 +133,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.lengthColumn(runtime, meta);
+    public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthColumn(runtime, meta);
     }
 
     /**
@@ -144,8 +145,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.precisionColumn(runtime, meta);
+    public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionColumn(runtime, meta);
     }
 
     /**
@@ -156,8 +157,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.scaleColumn(runtime, meta);
+    public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleColumn(runtime, meta);
     }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
         return super.insertFoot(configs, columns);

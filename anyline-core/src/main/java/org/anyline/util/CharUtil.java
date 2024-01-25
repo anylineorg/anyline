@@ -214,6 +214,7 @@ public class CharUtil {
 		cs[0] = Character.toUpperCase(cs[0]);
 		return String.valueOf(cs);
 	}
+
 	/**
 	 * 半角转全角的(SBC case) 注意$没有转成￥
 	 *

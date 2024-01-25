@@ -242,7 +242,6 @@ public class DefaultPageNavi implements PageNavi, Serializable {
 		return displayPageLast; 
 	}
 
-
 	/** 
 	 * 设置页面显示的最后一页 
 	 * @param displayPageLast  displayPageLast
@@ -333,6 +332,7 @@ public class DefaultPageNavi implements PageNavi, Serializable {
 	public PageNavi order(Order order){
 		return order(order, true);
 	}
+
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
@@ -375,6 +375,7 @@ public class DefaultPageNavi implements PageNavi, Serializable {
 		calculate();
 		return this;
 	}
+
 	/** 
 	 * 设置最后一页 
 	 * @param totalPage  totalPage

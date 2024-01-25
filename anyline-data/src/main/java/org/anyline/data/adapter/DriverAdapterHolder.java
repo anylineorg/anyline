@@ -40,6 +40,7 @@ public class DriverAdapterHolder {
 	public static void reg(DatabaseType type, DriverAdapter adapter){
 		user_adapters.put(type, adapter);
 	}
+
 	/**
 	 * 获取支持数据库的适配器,注意有可能获取到多个
 	 * @param type 数据库类型

@@ -124,6 +124,7 @@ public class AESUtil {
 	public static String decrypt(String password, String content) {
 		return decrypt(CIPHER.PKCS5, password, null, content);
 	}
+
 	/** 
 	 * 生成加密秘钥 
 	 *  

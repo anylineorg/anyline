@@ -128,6 +128,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		param.put("password", password);
 		return reg(key, param);
 	}
+
 	/**
 	 * 注册数据源(生产环境不要调用这个方法，这里只设置几个必需参数用来测试)
 	 * @param key 切换数据源依据 默认key=dataSource
@@ -195,6 +196,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		}
 		return null;
 	}
+
 	/**
 	 * 根据params创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(key)
@@ -373,6 +375,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
 		return JDBCRuntimeHolder.temporary( datasource, database, adapter);
 	}
+
 	/**
 	 * 检测数据源是否连接正常
 	 * @param ds 数据源名称
@@ -583,6 +586,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		transactionStatus.put(status, datasource);
 		return status;
 	}
+
 	/**
 	 * 启动事务
 	 * @param datasource 数据源
@@ -613,6 +617,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 	public static TransactionStatus start(DefaultTransactionDefinition definition){
 		return start(RuntimeHolder.runtime().getKey(), definition);
 	}
+
 	/**
 	 * 开启事务
 	 * @param behavior 事务传播方式<br/>

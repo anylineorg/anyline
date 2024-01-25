@@ -57,6 +57,7 @@ public interface AnylineDao<E>{
 	default DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return querys(runtime(), null, prepare, configs, conditions);
 	}
+
 	/**
 	 * 查询entity列表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -111,6 +112,7 @@ public interface AnylineDao<E>{
 	default DataRow sequence(boolean next, String ... names){
 		return sequence(runtime(), null, next, names);
 	}
+
 	/**
 	 * 是否存在
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -306,6 +308,7 @@ public interface AnylineDao<E>{
 	default long insert(Table dest, Object data, ConfigStore configs, String ... columns){
 		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
+
 	/** 
 	 * 保存(insert|update)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -395,6 +398,7 @@ public interface AnylineDao<E>{
 	default long save(Table dest, Object data, ConfigStore configs, String ... columns){
 		return save(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
+
 	/**
 	 * 执行
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -416,6 +420,7 @@ public interface AnylineDao<E>{
 	default long execute(int batch, RunPrepare prepare, Collection<Object> values){
 		return execute(runtime(), null, batch, prepare, values);
 	}
+
 	/** 
 	 * 执行存储过程
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -427,6 +432,7 @@ public interface AnylineDao<E>{
 	default boolean execute(Procedure procedure){
 		return execute(runtime(), null, procedure);
 	}
+
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
@@ -462,6 +468,7 @@ public interface AnylineDao<E>{
 	default long delete(Table table, ConfigStore configs, String ... conditions){
 		return delete(runtime(), null, table, configs, conditions);
 	}
+
 	/**
 	 * 删除多行
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
@@ -679,6 +686,7 @@ public interface AnylineDao<E>{
 	default <T extends Table> LinkedHashMap<String, T> tables(String types){
 		return tables( null, null, types);
 	}
+
 	/**
 	 *
 	 * 查询表的创建SQL

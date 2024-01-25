@@ -154,6 +154,7 @@ public class DefaultSQLStore extends SQLStore {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * 解析目录或文件或jar
 	 * 遇到二级jar map中添加两个 一个带二级jar前缀 一个不带 遇到重名标记重复, 调用时抛出异常, 需要添加jar前缀才可以定位到
@@ -285,6 +286,7 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		return result;
 	}
+
 	/**
      * 解析SQL
 	 * @param prefix 用来标记SQL.ID(需要多个前缀的以, 分隔)如 crm.hr.user.f1:USER_LIST  prefix = crm.hr.user.f1

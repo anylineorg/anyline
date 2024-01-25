@@ -65,6 +65,7 @@ public class MD5Util {
 		//}
         return result;      
 	}
+
 	/** 
 	 * 字符MD5加密 
 	 * @param src  src

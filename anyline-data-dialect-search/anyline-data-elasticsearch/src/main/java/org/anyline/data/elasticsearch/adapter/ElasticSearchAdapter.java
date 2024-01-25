@@ -1167,6 +1167,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
 		return super.database(runtime, index, create, database, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 当前database 根据驱动内置接口补充
@@ -1195,6 +1196,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
 		return super.product(runtime, index, create, product, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 product
@@ -1208,6 +1210,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 	public String product(DataRuntime runtime, boolean create, String product){
 		return super.product(runtime, create, product);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 version
@@ -1222,6 +1225,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
 		return super.version(runtime, index, create, version, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 version
@@ -1358,6 +1362,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
 	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
 		return super.catalog(runtime, index, create, catalog, set);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充

@@ -1366,6 +1366,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
 		return super.database(runtime, index, create, database, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 当前database 根据驱动内置接口补充
@@ -1394,6 +1395,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
 		return super.product(runtime, index, create, product, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 product
@@ -1407,6 +1409,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	public String product(DataRuntime runtime, boolean create, String product){
 		return super.product(runtime, create, product);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 version
@@ -1421,6 +1424,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
 		return super.version(runtime, index, create, version, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 version
@@ -1557,6 +1561,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
 		return super.catalog(runtime, index, create, catalog, set);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充
@@ -6635,6 +6640,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
 		super.correctSchemaFromJDBC(meta, catalog, schema);
 	}
+
 	/**
 	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
 	 * @param catalog catalog
@@ -6670,8 +6676,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.lengthColumn(runtime, meta);
+    public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthColumn(runtime, meta);
     }
 
     /**
@@ -6682,8 +6688,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.precisionColumn(runtime, meta);
+    public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionColumn(runtime, meta);
     }
 
     /**
@@ -6694,8 +6700,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.scaleColumn(runtime, meta);
+    public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleColumn(runtime, meta);
     }
     /**
      *

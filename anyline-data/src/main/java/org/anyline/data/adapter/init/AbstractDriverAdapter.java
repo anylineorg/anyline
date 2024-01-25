@@ -286,6 +286,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		InterceptorProxy.afterInsert(runtime, random, run, dest, data, columns, cmd_success, cnt, System.currentTimeMillis() - fr);
 		return cnt;
 	}
+
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -503,6 +504,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean supportInsertPlaceholder(){
 		return true;
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 设置主键值
@@ -522,6 +524,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			BeanUtil.setFieldValue(obj, field, value);
 		}
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
@@ -704,6 +707,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		InterceptorProxy.afterUpdate(runtime, random, run, dest, data, configs, columns, cmd_success, result, System.currentTimeMillis() - fr);
 		return result;
 	}
+
 	/**
 	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1078,6 +1082,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		run.setRunValues(values);
 		return run;
 	}
+
 	/**
 	 * update [命令合成-子流程]<br/>
 	 * 确认需要更新的列
@@ -1265,6 +1270,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		cols = checkMetadata(runtime, dest, configs, cols);
 		return cols;
 	}
+
 	/**
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1421,6 +1427,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+
 	/**
 	 * 过滤掉表结构中不存在的列
 	 * @param table 表
@@ -1816,6 +1823,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null,System.currentTimeMillis() - fr);
 		return maps;
 	}
+
 	/**
 	 * select[命令合成]<br/> 最终可执行命令<br/>
 	 * 创建查询SQL
@@ -1934,6 +1942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
 		}
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 合成最终 select 命令 包含分页 排序
@@ -1945,6 +1954,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
 		return null;
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造 LIKE 查询条件
@@ -1962,6 +1972,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造 FIND_IN_SET 查询条件
@@ -1980,6 +1991,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造(NOT) IN 查询条件
@@ -1996,6 +2008,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2013,7 +2026,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new DataSet().setTable(table);
 	}
 
-
 	/**
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2028,6 +2040,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2134,6 +2147,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		InterceptorProxy.afterCount(runtime, random, run, cmd_success, count, System.currentTimeMillis() - fr);
 		return count;
 	}
+
 	/**
 	 * count [命令合成]<br/>
 	 * 合成最终 select count 命令
@@ -2302,6 +2316,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		long result = execute(runtime, random, configs, run);
 		return result;
 	}
+
 	/**
 	 * procedure [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2316,6 +2331,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+
 	/**
 	 * execute [命令合成]<br/>
 	 * 创建执行SQL
@@ -2382,6 +2398,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 	}
+
 	/**
 	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2626,7 +2643,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return runs;
 	}
 
-
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where column in (values)
@@ -2785,6 +2801,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * 当前数据源 数据库描述(产品名称+版本号)
@@ -2831,6 +2848,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return product;
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * 当前数据源 数据库类型
@@ -2877,6 +2895,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return version;
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2922,6 +2941,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return databases;
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2966,6 +2986,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return databases;
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询当前数据库
@@ -2980,6 +3001,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询当前数据源 数据库产品说明(产品名称+版本号)
@@ -2994,6 +3016,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
@@ -3008,6 +3031,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
@@ -3024,6 +3048,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3067,6 +3092,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 当前database 根据驱动内置接口补充
@@ -3101,6 +3127,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 product
@@ -3117,6 +3144,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 version
@@ -3134,6 +3162,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 version
@@ -3222,6 +3251,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return catalog;
 	}
+
 	/**
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3266,6 +3296,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return catalogs;
 	}
+
 	/**
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3325,6 +3356,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * catalog[命令合成]<br/>
 	 * 查询全部catalog
@@ -3341,6 +3373,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
@@ -3419,6 +3452,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充
@@ -3505,6 +3539,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return schema;
 	}
+
 	/**
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3550,6 +3585,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return schemas;
 	}
+
 	/**
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -3610,6 +3646,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * catalog[命令合成]<br/>
 	 * 查询全部数据库
@@ -3626,6 +3663,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Schema
@@ -3668,6 +3706,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 * schema[结果集封装]<br/>
 	 * 根据驱动内置接口补充 Schema
@@ -3683,6 +3722,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * schema[结果集封装]<br/>
 	 * 当前schema 根据查询结果集
@@ -4024,7 +4064,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
-
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -4090,6 +4129,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+
 	/**
 	 * table[结果集封装]<br/> <br/>
 	 * 根据驱动内置方法补充
@@ -4103,7 +4143,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception{
 		if(log.isDebugEnabled()) {
@@ -4440,6 +4479,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return views;
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 查询视图
@@ -4458,7 +4498,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * view[结果集封装]<br/>
@@ -4483,6 +4522,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return views;
 	}
+
 	/**
 	 * view[结果集封装]<br/>
 	 * 根据根据驱动内置接口补充
@@ -4701,6 +4741,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+
 	/**
 	 * master table[命令合成]<br/>
 	 * 查询主表
@@ -4741,6 +4782,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+
 	/**
 	 * master table[结果集封装]<br/>
 	 * 根据根据驱动内置接口
@@ -4798,6 +4840,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return list;
 	}
+
 	/**
 	 * master table[命令合成]<br/>
 	 * 查询 MasterTable DDL
@@ -4813,6 +4856,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
+
 	/**
 	 * master table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
@@ -4919,6 +4963,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -4936,6 +4981,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -4952,6 +4998,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * partition table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
@@ -4976,6 +5023,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 根据根据驱动内置接口
@@ -4998,6 +5046,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return tables;
 	}
+
 	/**
 	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5200,6 +5249,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
@@ -5213,6 +5263,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return columns
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception{
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set)", 37));
@@ -5220,6 +5271,84 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
+	/**
+	 * column[结果集封装]<br/>
+	 * (方法1)
+	 * <br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param table 表
+	 * @param row 系统表查询SQL结果集
+	 * @param <T> Column
+	 */
+	@Override
+	public <T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row)", 37));
+		}
+		return column;
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param row 系统表查询SQL结果集
+	 * @return Column
+	 * @param <T> Column
+	 */
+	@Override
+	public<T extends Column> T detail(DataRuntime runtime, T column, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, T column, DataRow row)", 37));
+		}
+		return column;
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据名称列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataNameColumn(DataRuntime runtime){
+		return "COLUMN_NAME,COLNAME";
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据Catalog列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
+		return "TABLE_CATALOG";
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据Schema列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
+		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据Table列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataTableNameColumn(DataRuntime runtime){
+		return "TABLE_NAME,TABNAME";
+	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
@@ -5229,7 +5358,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
@@ -5261,7 +5390,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
@@ -5293,7 +5422,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
@@ -5346,6 +5475,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 * tag[命令合成]<br/>
 	 * 查询表上的列
@@ -5384,6 +5514,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return tags;
 	}
+
 	/**
 	 *
 	 * tag[结果集封装]<br/>
@@ -5553,6 +5684,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return foreigns;
 	}
+
 	/**
 	 * foreign[命令合成]<br/>
 	 * 查询表上的外键
@@ -5566,6 +5698,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * foreign[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
@@ -5652,6 +5785,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexs;
 	}
+
 	/**
 	 *
 	 * index[调用入口]<br/>
@@ -5735,6 +5869,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexs;
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
@@ -5796,6 +5931,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexs;
 	}
+
 	/**
 	 * index[结果集封装]<br/>
 	 * 根据驱动内置接口
@@ -5817,6 +5953,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexs;
 	}
+
 	/**
 	 * index[结果集封装]<br/>
 	 * 根据驱动内置接口
@@ -5868,6 +6005,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 *
 	 * constraint[调用入口]<br/>
@@ -5924,6 +6062,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return constraints;
 	}
+
 	/**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
@@ -5975,6 +6114,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -5990,6 +6130,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -6051,6 +6192,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -6068,6 +6210,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -6084,6 +6227,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -6101,6 +6245,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -6152,6 +6297,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -6195,6 +6341,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return list;
 	}
+
 	/**
 	 * procedure[命令合成]<br/>
 	 * 查询存储DDL
@@ -6268,6 +6415,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 *
 	 * function[调用入口]<br/>
@@ -6285,6 +6433,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 * function[命令合成]<br/>
 	 * 查询表上的 Function
@@ -6318,6 +6467,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Function
@@ -6369,6 +6519,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 *
 	 * function[调用入口]<br/>
@@ -6427,6 +6578,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
@@ -6517,6 +6669,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return sequences;
 	}
+
 	/**
 	 *
 	 * sequence[调用入口]<br/>
@@ -6565,6 +6718,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return sequences;
 	}
+
 	/**
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Sequence
@@ -6598,6 +6752,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * sequence[结果集封装]<br/>
 	 * 根据查询结果集构造 Sequence
@@ -6649,6 +6804,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new LinkedHashMap<>();
 	}
+
 	/**
 	 *
 	 * sequence[调用入口]<br/>
@@ -6707,6 +6863,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
+
 	/**
 	 * sequence[结果集封装]<br/>
 	 * 查询 Sequence DDL
@@ -6803,6 +6960,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return null;
 	}
+
 	/**
 	 *
 	 * 根据 name检测databases集合中是否存在
@@ -6929,7 +7087,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * 检测列的执行命令,all drop alter等
 	 * @param meta 表
@@ -7039,6 +7196,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/**
 	 * table[调用入口]<br/>
 	 * 修改表,执行的SQL通过meta.ddls()返回
@@ -7125,6 +7283,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/**
 	 * table[调用入口]<br/>
 	 * 删除表,执行的SQL通过meta.ddls()返回
@@ -7222,7 +7381,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 部分数据库在创建主表时用主表关键字(默认)，部分数据库普通表主表子表都用table，部分数据库用collection、timeseries等
@@ -7254,6 +7412,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * table[命令合成]<br/>
 	 * 修改表
@@ -7316,6 +7475,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * table[命令合成]<br/>
 	 * 删除表
@@ -7363,6 +7523,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 修改备注
@@ -7378,7 +7539,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -7441,6 +7601,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 body部分包含column index
@@ -7456,6 +7617,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 columns部分
@@ -7471,6 +7633,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 索引部分
@@ -7486,6 +7649,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 编码
@@ -7565,6 +7729,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
@@ -7580,6 +7745,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 主表设置分区依据(根据哪几列分区)
@@ -7631,6 +7797,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 继承自table.getInherit
@@ -7762,7 +7929,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * view[调用入口]<br/>
 	 * 删除视图,执行的SQL通过meta.ddls()返回
@@ -7809,7 +7975,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
-
 
 	/**
 	 * view[调用入口]<br/>
@@ -7860,7 +8025,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * view[命令合成]<br/>
 	 * 创建视图
@@ -7876,6 +8040,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * view[命令合成-子流程]<br/>
 	 * 创建视图头部
@@ -7892,6 +8057,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * view[命令合成-子流程]<br/>
 	 * 创建视图选项
@@ -7908,6 +8074,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 修改视图
@@ -7916,7 +8083,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception{
 		if(log.isDebugEnabled()) {
@@ -7924,6 +8090,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 重命名
@@ -7940,6 +8107,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 删除视图
@@ -8309,6 +8477,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * master table[命令合成-子流程]<br/>
 	 * 修改主表
@@ -8324,6 +8493,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * master table[命令合成-子流程]<br/>
 	 * 主表重命名
@@ -8553,6 +8723,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/**
 	 * partition table[调用入口]<br/>
 	 * 创建分区表,执行的SQL通过meta.ddls()返回
@@ -8601,6 +8772,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 创建分区表
@@ -8664,6 +8836,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 分区表重命名
@@ -8982,7 +9155,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 添加列
@@ -9024,7 +9196,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return buildAlterRun(runtime, meta, false);
 	}
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 删除列
@@ -9061,7 +9232,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -9109,7 +9279,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
-
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 删除列引导<br/>
@@ -9141,7 +9310,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -9244,6 +9412,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:数据类型
@@ -9259,6 +9428,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:聚合类型
@@ -9274,6 +9444,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:数据类型定义
@@ -9397,6 +9568,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		return result;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:定义列:是否忽略小数位
@@ -9458,6 +9630,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public int checkIgnoreLength(DataRuntime runtime, String type){
 		return -1;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略长度,依次检测typeConfigs(当前adapter类型),typeCategoryConfigs(当前adapter大类),typeMetadata(标准类型)(标准大类)
@@ -9469,6 +9642,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public int checkIgnorePrecision(DataRuntime runtime, String type) {
 		return -1;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:定义列:是否忽略小数位
@@ -9480,6 +9654,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public int checkIgnoreScale(DataRuntime runtime, String type) {
 		return -1;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:非空
@@ -9495,6 +9670,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:编码
@@ -9557,6 +9733,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:更新行事件
@@ -9734,7 +9911,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * tag[调用入口]<br/>
 	 * 修改标签
@@ -9856,7 +10032,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * tag[命令合成]<br/>
 	 * 添加标签
@@ -9871,6 +10046,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改标签
@@ -9917,6 +10093,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改默认值
@@ -9980,7 +10157,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * tag[命令合成]<br/>
@@ -10087,6 +10263,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return alter(runtime, table, meta);
 	}
+
 	/**
 	 * primary[调用入口]<br/>
 	 * 修改Table最后修改主键,注意不要与列上的主键标识重复,如果列上支持标识主键，这里不需要实现
@@ -10232,6 +10409,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 添加主键
@@ -10247,6 +10425,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键
@@ -10263,6 +10442,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 删除主键
@@ -10278,6 +10458,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键名
@@ -10526,7 +10707,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * foreign[命令合成]<br/>
 	 * 添加外键
@@ -10540,6 +10720,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * foreign[命令合成]<br/>
 	 * 修改外键
@@ -10835,6 +11016,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 添加索引
@@ -10849,6 +11031,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 修改索引
@@ -10864,6 +11047,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 删除索引
@@ -10878,6 +11062,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 修改索引名
@@ -10908,6 +11093,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return builder;
 	}
+
 	/**
 	 * index[命令合成-子流程]<br/>
 	 * 索引备注
@@ -11154,7 +11340,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * constraint[命令合成]<br/>
 	 * 添加约束
@@ -11184,6 +11369,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * constraint[命令合成]<br/>
 	 * 删除约束
@@ -11427,6 +11613,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * trigger[命令合成]<br/>
 	 * 修改触发器
@@ -11473,6 +11660,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * trigger[命令合成-子流程]<br/>
 	 * 触发级别(行或整个命令)
@@ -11706,6 +11894,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
+
 	/**
 	 * procedure[命令合成]<br/>
 	 * 修改存储过程
@@ -11974,7 +12163,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * function[命令合成]<br/>
 	 * 添加函数
@@ -11988,7 +12176,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * function[命令合成]<br/>
@@ -12242,7 +12429,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return result;
 	}
 
-
 	/**
 	 * sequence[命令合成]<br/>
 	 * 添加序列
@@ -12256,7 +12442,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
 
 	/**
 	 * sequence[命令合成]<br/>
@@ -12509,6 +12694,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		builder.append(name);
 		return builder.toString();
 	}
+
 	/**
 	 * 构造完整表名
 	 * @param builder builder
@@ -12584,6 +12770,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+
 	/**
 	 * 是否同数字
 	 * @param column 列
@@ -12632,6 +12819,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean isCharColumn(DataRuntime runtime, Column column) {
 		return !isNumberColumn(runtime, column) && !isBooleanColumn(runtime, column);
 	}
+
 	/**
 	 * 内置函数
 	 * @param column 列属性
@@ -12836,6 +13024,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		return result;
 	}
+
 	/**
 	 * 从数据库中读取数据<br/>
 	 * 先由子类根据metadata.typeName(CHAR,INT)定位到具体的数据库类型ColumnType<br/>
@@ -13001,6 +13190,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
+
 	/**
 	 * 根据数据库列属性 类型转换(一般是在更新数据库时调用)
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
@@ -13184,7 +13374,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return BaseMetadata.search(list, name);
 	}
 
-
 	/**
 	 * 是否输出SQL日志
 	 * @param configs ConfigStore
@@ -13196,6 +13385,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_LOG_SQL;
 	}
+
 	/**
 	 * insert update 时是否自动检测表结构(删除表中不存在的属性)
 	 * @param configs ConfigStore
@@ -13207,6 +13397,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_AUTO_CHECK_METADATA;
 	}
+
 	/**
 	 * 查询返回空DataSet时，是否检测元数据信息
 	 * @param configs ConfigStore
@@ -13218,6 +13409,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_CHECK_EMPTY_SET_METADATA;
 	}
+
 	/**
 	 * 是否输出慢SQL日志
 	 * @param configs ConfigStore
@@ -13229,6 +13421,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_LOG_SLOW_SQL;
 	}
+
 	/**
 	 * 是否输出SQL参数日志(占位符模式下有效)
 	 * @param configs ConfigStore
@@ -13252,6 +13445,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_LOG_BATCH_SQL_PARAM;
 	}
+
 	/**
 	 * 异常时是否输出SQL日志
 	 * @param configs ConfigStore
@@ -13263,6 +13457,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_LOG_SQL_WHEN_ERROR;
 	}
+
 	/**
 	 * 是否输出异常堆栈日志
 	 * @param configs ConfigStore
@@ -13304,6 +13499,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_LOG_SQL_TIME;
 	}
+
 	/**
 	 * 慢SQL判断标准
 	 * @param configs ConfigStore
@@ -13315,6 +13511,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.SLOW_SQL_MILLIS;
 	}
+
 	/**
 	 * 是否抛出查询异常
 	 * @param configs ConfigStore
@@ -13326,6 +13523,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION;
 	}
+
 	/**
 	 * 是否抛出更新异常
 	 * @param configs ConfigStore

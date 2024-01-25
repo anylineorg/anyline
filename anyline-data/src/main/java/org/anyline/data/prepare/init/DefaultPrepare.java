@@ -272,6 +272,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 		}
 		return this;
 	}
+
 	/**
 	 * 设置主键 先清空之前设置过和主键
 	 * 当前对象处于容器中时, 设置容器主键, 否则设置自身主键
@@ -302,6 +303,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 		this.addPrimaryKey(primaryKeys);
 		return this;
 	}
+
 	/**
 	 * 读取主键
 	 * 主键为空时且容器有主键时, 读取容器主键, 否则返回默认主键
@@ -317,6 +319,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 		}
 		return null;
 	}
+
 	/**
 	 * 自身是否有主键
 	 * @return boolean

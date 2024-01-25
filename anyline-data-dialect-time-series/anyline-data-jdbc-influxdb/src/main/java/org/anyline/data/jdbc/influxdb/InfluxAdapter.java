@@ -71,7 +71,6 @@ public class InfluxAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
 		return concatOr(runtime, args);
 	}
 
-
 	/**
 	 * 创建 insert Run
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

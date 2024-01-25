@@ -135,6 +135,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
 		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
+
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
@@ -225,6 +226,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean supportInsertPlaceholder(){
 		return true;
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 设置主键值
@@ -235,6 +237,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	protected void setPrimaryValue(Object obj, Object value){
 		super.setPrimaryValue(obj, value);
 	}
+
 	/**
 	 * insert [命令合成-子流程]<br/>
 	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
@@ -272,7 +275,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String generatedKey() {
 		return "GENERATED_KEY";
 	}
-
 
 	/**
 	 * insert [命令执行]
@@ -335,6 +337,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
 		return super.update(runtime, random, batch, dest, data, configs, columns);
 	}
+
 	/**
 	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -374,6 +377,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
+
 	/**
 	 * update [命令合成-子流程]<br/>
 	 * 确认需要更新的列
@@ -404,6 +408,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
+
 	/**
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -485,6 +490,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	protected boolean isMultipleValue(Column column){
 		return super.isMultipleValue(column);
 	}
+
 	/**
 	 * 过滤掉表结构中不存在的列
 	 * @param table 表
@@ -596,6 +602,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
+
 	/**
 	 * select[命令合成]<br/> 最终可执行命令<br/>
 	 * 创建查询SQL
@@ -641,6 +648,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	protected void fillQueryContent(DataRuntime runtime, TableRun run){
 		super.fillQueryContent(runtime, run);
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 合成最终 select 命令 包含分页 排序
@@ -652,6 +660,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
 		return super.pageLimit(runtime, run);
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造 LIKE 查询条件
@@ -666,6 +675,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
 		return super.createConditionLike(runtime, builder, compare, value);
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造 FIND_IN_SET 查询条件
@@ -681,6 +691,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value) {
 		return super.createConditionFindInSet(runtime, builder, column, compare, value);
 	}
+
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造(NOT) IN 查询条件
@@ -694,6 +705,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value) {
 		return super.createConditionIn(runtime, builder, compare, value);
 	}
+
 	/**
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -708,7 +720,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.select(runtime, random, system, table, configs, run);
 	}
 
-
 	/**
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -720,6 +731,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.maps(runtime, random, configs, run);
 	}
+
 	/**
 	 * select [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -780,6 +792,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.count(runtime, random, prepare, configs, conditions);
 	}
+
 	/**
 	 * count [命令合成]<br/>
 	 * 合成最终 select count 命令
@@ -863,6 +876,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
 		return super.execute(runtime, random, batch, configs, prepare, values);
 	}
+
 	/**
 	 * procedure [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -874,6 +888,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
 		return super.execute(runtime, random, procedure);
 	}
+
 	/**
 	 * execute [命令合成]<br/>
 	 * 创建执行SQL
@@ -910,6 +925,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public void fillExecuteContent(DataRuntime runtime, Run run){
 		super.fillExecuteContent(runtime, run);
 	}
+
 	/**
 	 * execute [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1032,7 +1048,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.buildTruncateRun(runtime, table);
 	}
 
-
 	/**
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where column in (values)
@@ -1146,6 +1161,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public Database database(DataRuntime runtime, String random){
 		return super.database(runtime, random);
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * 当前数据源 数据库描述(产品名称+版本号)
@@ -1156,6 +1172,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String product(DataRuntime runtime, String random){
 		return super.product(runtime, random);
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * 当前数据源 数据库类型
@@ -1166,6 +1183,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String version(DataRuntime runtime, String random){
 		return super.version(runtime, random);
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1178,6 +1196,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
 		return super.databases(runtime, random, greedy, name);
 	}
+
 	/**
 	 * database[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1201,6 +1220,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception{
 		return super.buildQueryProductRun(runtime);
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询当前数据源 数据库版本 版本号比较复杂 不是全数字
@@ -1212,6 +1232,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception{
 		return super.buildQueryVersionRun(runtime);
 	}
+
 	/**
 	 * database[命令合成]<br/>
 	 * 查询全部数据库
@@ -1225,6 +1246,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
 		return super.buildQueryDatabasesRun(runtime, greedy, name);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1243,6 +1265,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception{
 		return super.databases(runtime, index, create, databases, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 当前database 根据查询结果集
@@ -1258,6 +1281,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public Database database(DataRuntime runtime, int index, boolean create, Database database, DataSet set) throws Exception{
 		return super.database(runtime, index, create, database, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 当前database 根据驱动内置接口补充
@@ -1286,6 +1310,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
 		return super.product(runtime, index, create, product, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 product
@@ -1299,6 +1324,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String product(DataRuntime runtime, boolean create, String product){
 		return super.product(runtime, create, product);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 version
@@ -1313,6 +1339,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
 		return super.version(runtime, index, create, version, set);
 	}
+
 	/**
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 version
@@ -1354,6 +1381,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
 		return super.catalogs(runtime, random, name);
 	}
+
 	/**
 	 * catalog[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1379,6 +1407,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception{
 		return super.buildQueryCatalogsRun(runtime, greedy, name);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
@@ -1394,6 +1423,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set) throws Exception{
 		return super.catalogs(runtime, index, create, catalogs, set);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
@@ -1409,6 +1439,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set) throws Exception{
 		return super.catalogs(runtime, index, create, catalogs, set);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 根据驱动内置接口补充 catalog
@@ -1436,6 +1467,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Catalog> catalogs(DataRuntime runtime, boolean create, List<Catalog> catalogs) throws Exception {
 		return super.catalogs(runtime, create, catalogs);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据查询结果集
@@ -1451,6 +1483,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public Catalog catalog(DataRuntime runtime, int index, boolean create, Catalog catalog, DataSet set) throws Exception{
 		return super.catalog(runtime, index, create, catalog, set);
 	}
+
 	/**
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充
@@ -1492,6 +1525,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
 		return super.schemas(runtime, random, catalog, name);
 	}
+
 	/**
 	 * schema[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1518,6 +1552,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception{
 		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
 	}
+
 	/**
 	 * schema[结果集封装]<br/>
 	 * 根据查询结果集构造 Database
@@ -1537,6 +1572,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception{
 		return super.schemas(runtime, index, create, schemas, set);
 	}
+
 	/**
 	 * schema[结果集封装]<br/>
 	 * 当前schema 根据查询结果集
@@ -1644,7 +1680,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
-
 	/**
 	 * table[命令合成]<br/>
 	 * 查询表备注
@@ -1696,6 +1731,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception{
 		return super.tables(runtime, index, create, catalog, schema, tables, set);
 	}
+
 	/**
 	 * table[结果集封装]<br/> <br/>
 	 * 根据驱动内置方法补充
@@ -1709,7 +1745,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception{
 		return super.tables(runtime, create, tables, catalog, schema, pattern, types);
@@ -1846,6 +1881,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
 		return super.views(runtime, random, greedy, catalog, schema, pattern, types);
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 查询视图
@@ -1861,7 +1897,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
 		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
 	}
-
 
 	/**
 	 * view[结果集封装]<br/>
@@ -1880,6 +1915,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set) throws Exception{
 		return super.views(runtime, index, create, catalog, schema, views, set);
 	}
+
 	/**
 	 * view[结果集封装]<br/>
 	 * 根据根据驱动内置接口补充
@@ -1972,6 +2008,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
 		return super.mtables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
+
 	/**
 	 * master table[命令合成]<br/>
 	 * 查询主表
@@ -2004,6 +2041,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.mtables(runtime, index, create, catalog, schema, tables, set);
 	}
+
 	/**
 	 * master table[结果集封装]<br/>
 	 * 根据根据驱动内置接口
@@ -2031,6 +2069,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
 		return super.ddl(runtime, random, table);
 	}
+
 	/**
 	 * master table[命令合成]<br/>
 	 * 查询 MasterTable DDL
@@ -2042,6 +2081,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception{
 		return super.buildQueryDdlsRun(runtime, table);
 	}
+
 	/**
 	 * master table[结果集封装]<br/>
 	 * 查询 MasterTable DDL
@@ -2105,6 +2145,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception{
 		return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -2119,6 +2160,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception{
 		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -2132,6 +2174,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception{
 		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
+
 	/**
 	 * partition table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
@@ -2151,6 +2194,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception{
 		return super.ptables(runtime, total, index, create, master, catalog, schema, tables, set);
 	}
+
 	/**
 	 * partition table[结果集封装]<br/>
 	 * 根据根据驱动内置接口
@@ -2167,6 +2211,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master) throws Exception{
 		return super.ptables(runtime, create, tables, catalog, schema, master);
 	}
+
 	/**
 	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2250,6 +2295,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
+
 	/**
 	 * column[命令合成]<br/>
 	 * 查询表上的列
@@ -2301,6 +2347,128 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 
 
 
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param table 表
+	 * @param row 系统表查询SQL结果集
+	 * @param <T> Column
+	 */
+	@Override
+	public <T extends Column> T init(DataRuntime runtime, T column, Table table, DataRow row){
+		return super.init(runtime, column, table, row);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param row 系统表查询SQL结果集
+	 * @return Column
+	 * @param <T> Column
+	 */
+	@Override
+	public <T extends Column> T detail(DataRuntime runtime, T column, DataRow row){
+		return super.detail(runtime, column, row);
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据名称列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataNameColumn(DataRuntime runtime){
+		return super.columnMetadataNameColumn(runtime);
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据Catalog列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataCatalogNameColumn(DataRuntime runtime){
+		return super.columnMetadataCatalogNameColumn(runtime);
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据Schema列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataSchemaNameColumn(DataRuntime runtime){
+		return super.columnMetadataSchemaNameColumn(runtime);
+	}
+
+	/**
+	 * column[结果集封装]<br/>
+	 * Column元数据Table列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataTableNameColumn(DataRuntime runtime){
+		return super.columnMetadataTableNameColumn(runtime);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * Column元数据数据类型列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataTypeColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataTypeColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据长度列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLengthColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecisionColumn(runtime, meta);
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字小数位数列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScaleColumn(runtime, meta);
+	}
+
+
+
 
 	/* *****************************************************************************************************************
 	 * 													tag
@@ -2328,6 +2496,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
 		return super.tags(runtime, random, greedy, table);
 	}
+
 	/**
 	 * tag[命令合成]<br/>
 	 * 查询表上的列
@@ -2357,6 +2526,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> tags, DataSet set) throws Exception{
 		return super.tags(runtime, index, create, table, tags, set);
 	}
+
 	/**
 	 *
 	 * tag[结果集封装]<br/>
@@ -2449,6 +2619,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
 		return super.foreigns(runtime, random, greedy,table);
 	}
+
 	/**
 	 * foreign[命令合成]<br/>
 	 * 查询表上的外键
@@ -2460,6 +2631,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception{
 		return super.buildQueryForeignsRun(runtime, table);
 	}
+
 	/**
 	 * foreign[结构集封装]<br/>
 	 *  根据查询结果集构造PrimaryKey
@@ -2506,6 +2678,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
 		return super.indexs(runtime, random, greedy, table, pattern);
 	}
+
 	/**
 	 *
 	 * index[调用入口]<br/>
@@ -2520,6 +2693,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
 		return super.indexs(runtime, random, table, pattern);
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
@@ -2549,6 +2723,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception{
 		return super.indexs(runtime, index, create, table, indexs, set);
 	}
+
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -2581,6 +2756,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
 		return super.indexs(runtime, create, indexs, table, unique, approximate);
 	}
+
 	/**
 	 * index[结果集封装]<br/>
 	 * 根据驱动内置接口
@@ -2625,6 +2801,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
 		return super.constraints(runtime, random, greedy, table, pattern);
 	}
+
 	/**
 	 *
 	 * constraint[调用入口]<br/>
@@ -2670,6 +2847,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception{
 		return super.constraints(runtime, index, create, table, constraints, set);
 	}
+
 	/**
 	 * constraint[结果集封装]<br/>
 	 * 根据查询结果集构造Constraint
@@ -2715,6 +2893,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
 		return super.triggers(runtime, random, greedy, table, events);
 	}
+
 	/**
 	 * trigger[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -2726,6 +2905,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
 		return super.buildQueryTriggersRun(runtime, table, events);
 	}
+
 	/**
 	 * trigger[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -2780,6 +2960,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
+
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -2795,6 +2976,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
+
 	/**
 	 * procedure[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -2808,6 +2990,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
 		return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
 	}
+
 	/**
 	 * procedure[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -2851,6 +3034,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, boolean create, LinkedHashMap<String, T> procedures) throws Exception {
 		return super.procedures(runtime, create, procedures);
 	}
+
 	/**
 	 *
 	 * procedure[调用入口]<br/>
@@ -2863,6 +3047,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
 		return super.ddl(runtime, random, procedure);
 	}
+
 	/**
 	 * procedure[命令合成]<br/>
 	 * 查询存储DDL
@@ -2927,6 +3112,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		return super.functions(runtime, random, greedy, catalog, schema, pattern);
 	}
+
 	/**
 	 *
 	 * function[调用入口]<br/>
@@ -2942,6 +3128,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		return super.functions(runtime, random, catalog, schema, pattern);
 	}
+
 	/**
 	 * function[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -2971,6 +3158,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception{
 		return super.functions(runtime, index, create, functions, set);
 	}
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -3025,6 +3213,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception{
 		return super.buildQueryDdlsRun(runtime, meta);
 	}
+
 	/**
 	 * function[结果集封装]<br/>
 	 * 查询 Function DDL
@@ -3076,6 +3265,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		return super.sequences(runtime, random, greedy, catalog, schema, pattern);
 	}
+
 	/**
 	 *
 	 * sequence[调用入口]<br/>
@@ -3091,6 +3281,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		return super.sequences(runtime, random, catalog, schema, pattern);
 	}
+
 	/**
 	 * sequence[命令合成]<br/>
 	 * 查询表上的 Trigger
@@ -3120,6 +3311,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception{
 		return super.sequences(runtime, index, create, sequences, set);
 	}
+
 	/**
 	 * sequence[结果集封装]<br/>
 	 * 根据查询结果集构造 Trigger
@@ -3174,6 +3366,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta) throws Exception{
 		return super.buildQueryDdlsRun(runtime, meta);
 	}
+
 	/**
 	 * sequence[结果集封装]<br/>
 	 * 查询 Sequence DDL
@@ -3234,6 +3427,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends Catalog> T catalog(List<T> catalogs, String name){
 		return super.catalog(catalogs, name);
 	}
+
 	/**
 	 *
 	 * 根据 name检测databases集合中是否存在
@@ -3324,11 +3518,11 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	@Override
 	public boolean alter(DataRuntime runtime, Table meta) throws Exception{
 		return super.alter(runtime, meta);
 	}
+
 	/**
 	 * table[调用入口]<br/>
 	 * 删除表,执行的SQL通过meta.ddls()返回
@@ -3337,7 +3531,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	@Override
 	public boolean drop(DataRuntime runtime, Table meta) throws Exception{
 		return super.drop(runtime, meta);
@@ -3352,12 +3545,10 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	@Override
 	public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
-
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -3388,6 +3579,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception{
 		return super.buildCreateRun(runtime, meta);
 	}
+
 	/**
 	 * table[命令合成]<br/>
 	 * 修改表
@@ -3428,6 +3620,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildRenameRun(DataRuntime runtime, Table meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
+
 	/**
 	 * table[命令合成]<br/>
 	 * 删除表
@@ -3466,6 +3659,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception{
 		return super.buildAppendColumnCommentRun(runtime, meta);
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 修改备注
@@ -3478,7 +3672,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, Table meta) throws Exception{
 		return super.buildChangeCommentRun(runtime, meta);
 	}
-
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -3493,7 +3686,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		return super.checkTableExists(runtime, builder, exists);
 	}
-
 
 	/**
 	 * table[命令合成-子流程]<br/>
@@ -3544,6 +3736,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.body(runtime, builder, meta);
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 创建表 columns部分
@@ -3569,6 +3762,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.indexs(runtime, builder, meta);
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 编码
@@ -3633,6 +3827,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.materialize(runtime, builder, meta);
 	}
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 扩展属性
@@ -3749,7 +3944,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.alter(runtime, meta);
 	}
 
-
 	/**
 	 * view[调用入口]<br/>
 	 * 删除视图,执行的SQL通过meta.ddls()返回
@@ -3762,7 +3956,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean drop(DataRuntime runtime, View meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
-
 
 	/**
 	 * view[调用入口]<br/>
@@ -3777,7 +3970,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean rename(DataRuntime runtime, View origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
-
 
 	/**
 	 * view[命令合成]<br/>
@@ -3805,6 +3997,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder buildCreateRunHead(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
 		return super.buildCreateRunHead(runtime, builder, meta);
 	}
+
 	/**
 	 * view[命令合成-子流程]<br/>
 	 * 创建视图选项
@@ -3818,6 +4011,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder buildCreateRunOption(DataRuntime runtime, StringBuilder builder, View meta) throws Exception{
 		return super.buildCreateRunOption(runtime, builder, meta);
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 修改视图
@@ -3826,11 +4020,11 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, View meta) throws Exception{
 		return super.buildAlterRun(runtime, meta);
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 重命名
@@ -3844,6 +4038,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildRenameRun(DataRuntime runtime, View meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
+
 	/**
 	 * view[命令合成]<br/>
 	 * 删除视图
@@ -4007,6 +4202,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildDropRun(DataRuntime runtime, MasterTable meta) throws Exception{
 		return super.buildDropRun(runtime, meta);
 	}
+
 	/**
 	 * master table[命令合成-子流程]<br/>
 	 * 修改主表
@@ -4019,6 +4215,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAlterRun(DataRuntime runtime, MasterTable meta) throws Exception{
 		return super.buildAlterRun(runtime, meta);
 	}
+
 	/**
 	 * master table[命令合成-子流程]<br/>
 	 * 主表重命名
@@ -4111,11 +4308,11 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
-
 	@Override
 	public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception{
 		return super.drop(runtime, meta);
 	}
+
 	/**
 	 * partition table[调用入口]<br/>
 	 * 创建分区表,执行的SQL通过meta.ddls()返回
@@ -4129,6 +4326,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 创建分区表
@@ -4154,6 +4352,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, PartitionTable meta) throws Exception{
 		return super.buildAppendCommentRun(runtime, meta);
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 修改分区表
@@ -4179,6 +4378,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildDropRun(DataRuntime runtime, PartitionTable meta) throws Exception{
 		return super.buildDropRun(runtime, meta);
 	}
+
 	/**
 	 * partition table[命令合成]<br/>
 	 * 分区表重命名
@@ -4318,7 +4518,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.rename(runtime, origin, name);
 	}
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 添加列
@@ -4354,7 +4553,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.buildAlterRun(runtime, meta);
 	}
 
-
 	/**
 	 * column[命令合成]<br/>
 	 * 删除列
@@ -4385,7 +4583,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4425,7 +4622,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.addColumnGuide(runtime, builder, meta);
 	}
 
-
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 删除列引导<br/>
@@ -4452,7 +4648,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception{
 		return super.buildChangeDefaultRun(runtime, meta);
 	}
-
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -4532,6 +4727,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
 		return super.checkColumnExists(runtime, builder, exists);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:数据类型
@@ -4544,6 +4740,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
 		return super.type(runtime, builder, meta);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:数据类型定义
@@ -4574,7 +4771,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.aggregation(runtime, builder, meta);
 	}
 
-
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略长度
@@ -4586,6 +4782,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public int ignoreLength(DataRuntime runtime, Column meta) {
 		return super.ignoreLength(runtime, meta);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略有效位数
@@ -4597,6 +4794,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public int ignorePrecision(DataRuntime runtime, Column meta) {
 		return super.ignorePrecision(runtime, meta);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:定义列:是否忽略小数位
@@ -4608,6 +4806,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public int ignoreScale(DataRuntime runtime, Column meta) {
 		return super.ignoreScale(runtime, meta);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略长度
@@ -4619,6 +4818,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public int checkIgnoreLength(DataRuntime runtime, String type) {
 		return super.checkIgnoreLength(runtime, type);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:是否忽略有效位数
@@ -4630,6 +4830,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public int checkIgnorePrecision(DataRuntime runtime, String type) {
 		return super.checkIgnorePrecision(runtime, type);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:定义列:是否忽略小数位
@@ -4641,6 +4842,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public int checkIgnoreScale(DataRuntime runtime, String type) {
 		return super.checkIgnoreScale(runtime, type);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:非空
@@ -4653,6 +4855,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
 		return super.nullable(runtime, builder, meta);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:编码
@@ -4703,6 +4906,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
 		return super.increment(runtime, builder, meta);
 	}
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:更新行事件
@@ -4791,7 +4995,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.alter(runtime, table, meta, trigger);
 	}
 
-
 	/**
 	 * tag[调用入口]<br/>
 	 * 修改标签
@@ -4832,7 +5035,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.rename(runtime, origin, name);
 	}
 
-
 	/**
 	 * tag[命令合成]<br/>
 	 * 添加标签
@@ -4844,6 +5046,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception{
 		return super.buildAddRun(runtime, meta);
 	}
+
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改标签
@@ -4881,6 +5084,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
+
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改默认值
@@ -4932,7 +5136,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception{
 		return super.buildChangeTypeRun(runtime, meta);
 	}
-
 
 	/**
 	 * tag[命令合成]<br/>
@@ -5004,6 +5207,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception{
 		return super.alter(runtime, table, origin, meta);
 	}
+
 	/**
 	 * primary[调用入口]<br/>
 	 * 修改主键
@@ -5043,6 +5247,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception{
 		return super.rename(runtime, origin, name);
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 添加主键
@@ -5055,6 +5260,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAddRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
 		return super.buildAddRun(runtime, meta, slice);
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键
@@ -5068,6 +5274,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception{
 		return super.buildAlterRun(runtime, origin, meta);
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 删除主键
@@ -5080,6 +5287,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception{
 		return super.buildDropRun(runtime, meta, slice);
 	}
+
 	/**
 	 * primary[命令合成]<br/>
 	 * 修改主键名
@@ -5175,7 +5383,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.rename(runtime, origin, name);
 	}
 
-
 	/**
 	 * foreign[命令合成]<br/>
 	 * 添加外键
@@ -5187,6 +5394,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAddRun(DataRuntime runtime, ForeignKey meta) throws Exception{
 		return super.buildAddRun(runtime, meta);
 	}
+
 	/**
 	 * foreign[命令合成]<br/>
 	 * 修改外键
@@ -5324,6 +5532,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception{
 		return super.buildAppendIndexRun(runtime, meta);
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 添加索引
@@ -5335,6 +5544,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception{
 		return super.buildAddRun(runtime, meta);
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 修改索引
@@ -5347,6 +5557,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAlterRun(DataRuntime runtime, Index meta) throws Exception{
 		return super.buildAlterRun(runtime, meta);
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 删除索引
@@ -5358,6 +5569,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildDropRun(DataRuntime runtime, Index meta) throws Exception{
 		return super.buildDropRun(runtime, meta);
 	}
+
 	/**
 	 * index[命令合成]<br/>
 	 * 修改索引名
@@ -5383,6 +5595,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
 		return super.type(runtime, builder, meta);
 	}
+
 	/**
 	 * index[命令合成-子流程]<br/>
 	 * 索引备注
@@ -5477,7 +5690,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.rename(runtime, origin, name);
 	}
 
-
 	/**
 	 * constraint[命令合成]<br/>
 	 * 添加约束
@@ -5502,6 +5714,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildAlterRun(DataRuntime runtime, Constraint meta) throws Exception{
 		return super.buildAlterRun(runtime, meta);
 	}
+
 	/**
 	 * constraint[命令合成]<br/>
 	 * 删除约束
@@ -5600,6 +5813,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildCreateRun(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.buildCreateRun(runtime, meta);
 	}
+
 	/**
 	 * trigger[命令合成]<br/>
 	 * 修改触发器
@@ -5637,6 +5851,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildRenameRun(DataRuntime runtime, Trigger meta) throws Exception{
 		return super.buildRenameRun(runtime, meta);
 	}
+
 	/**
 	 * trigger[命令合成-子流程]<br/>
 	 * 触发级别(行或整个命令)
@@ -5731,6 +5946,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public List<Run> buildCreateRun(DataRuntime runtime, Procedure meta) throws Exception{
 		return super.buildCreateRun(runtime, meta);
 	}
+
 	/**
 	 * procedure[命令合成]<br/>
 	 * 修改存储过程
@@ -5852,7 +6068,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.rename(runtime, origin, name);
 	}
 
-
 	/**
 	 * function[命令合成]<br/>
 	 * 添加函数
@@ -5970,7 +6185,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.rename(runtime, origin, name);
 	}
 
-
 	/**
 	 * sequence[命令合成]<br/>
 	 * 添加序列
@@ -6064,6 +6278,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
 		super.correctSchemaFromJDBC(meta, catalog, schema);
 	}
+
 	/**
 	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
 	 * @param catalog catalog
@@ -6074,6 +6289,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public String[] correctSchemaFromJDBC(String catalog, String schema){
 		return super.correctSchemaFromJDBC(catalog, schema);
 	}
+
 	/**
 	 * insert[命令执行后]
 	 * insert执行后 通过KeyHolder获取主键值赋值给data
@@ -6086,48 +6302,13 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public boolean identity(DataRuntime runtime, String random, Object data, ConfigStore configs, KeyHolder keyholder){
 		return super.identity(runtime, random, data, configs, keyholder);
 	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据长度列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.lengthColumn(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字有效位数列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.precisionColumn(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字小数位数列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
-		return super.scaleColumn(runtime, meta);
-	} 
 	public String insertHead(ConfigStore configs){
 		return super.insertHead(configs);
 	}
 	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.insertFoot(configs, columns);
 	}
+
 	/**
 	 *
 	 * column[结果集封装-子流程](方法2)<br/>
@@ -6138,12 +6319,10 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @param index 第几列
 	 * @return Column
 	 */
-
 	@Override
 	public Column column(DataRuntime runtime, Column column, ResultSetMetaData rsm, int index){
 		return super.column(runtime, column, rsm, index);
 	}
-
 
 	/**
 	 * column[结果集封装]<br/>(方法3)<br/>
@@ -6159,12 +6338,10 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * @param <T> Column
 	 * @throws Exception 异常
 	 */
-
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception{
 		return super.columns(runtime, create, columns, dbmd, table, pattern);
 	}
-
 
 	/**
 	 * column[结果集封装-子流程](方法3)<br/>
@@ -6178,7 +6355,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	public Column column(DataRuntime runtime, Column column, ResultSet rs){
 		return super.column(runtime, column, rs);
 	}
-
 
 	/**
 	 * column[结果集封装]<br/>(方法4)<br/>
@@ -6248,7 +6424,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		}
 		return null;
 	}
-
 
 	/**
 	 * 拼接字符串

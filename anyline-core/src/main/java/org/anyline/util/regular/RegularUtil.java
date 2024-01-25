@@ -116,6 +116,7 @@ public class RegularUtil {
 			return new ArrayList<>();
 		}
 	}
+
 	/**
 	 * 过滤 保留匹配项
 	 * @param src  src
@@ -127,6 +128,7 @@ public class RegularUtil {
 		regular = regularList.get(mode);
 		return regular.pick(src, regx);
 	}
+
 	/**
 	 * 过滤 删除匹配项
 	 * @param src  src
@@ -138,6 +140,7 @@ public class RegularUtil {
 		regular = regularList.get(mode);
 		return regular.wipe(src, regx);
 	}
+
 	/**
 	 * 字符串下标 regx在src中首次出现的位置
 	 * @param src     src
@@ -170,6 +173,7 @@ public class RegularUtil {
 	public static int indexOf(String src, String regx){
 		return indexOf(src, regx, 0);
 	}
+
 	/**
 	 * 表达式匹配值长度
 	 * @param src  src
@@ -190,6 +194,7 @@ public class RegularUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 删除所有 包含attribute属性 的标签 连同标签体一起删除<br/>
 	 * RegularUtil.removeTagWithBodyByAttribute(str, "class")<br/>
@@ -214,6 +219,7 @@ public class RegularUtil {
 		src = src.replaceAll(reg, "");
 		return src;
 	}
+
 	/**
 	 * 删除所有 包含attribute属性=value值  的标签连同标签体一起删除<br/>
 	 * RegularUtil.removeTagWithBodyByAttributeValue(s, "class","a")<br/>
@@ -260,6 +266,7 @@ public class RegularUtil {
 		}
 		return src;
 	}
+
 	/**
 	 * 根据属性名 删除标签(只删除标签, 保留标签体)
 	 * @param src xml/html
@@ -279,7 +286,6 @@ public class RegularUtil {
 		}
 		return src;
 	}
-
 
 	/**
 	 * 获取所有 包含attribute属性 的标签与标签体, 不支持相同标签嵌套<br/>
@@ -386,7 +392,6 @@ public class RegularUtil {
 		return result;
 	}
 
-
 	/**
 	 * 删除 tags之外的标签"&lt;b&gt;"与"&lt;/b&gt;"只写一次 "b"<br/>
 	 * 只删除标签不删除标签体
@@ -413,7 +418,6 @@ public class RegularUtil {
 		return removeTagExcept(src, tags);
 	}
 
-
 	/**
 	 * 清除所有标签(只清除标签, 不清除标签体)
 	 * @param src xml/html
@@ -437,6 +441,7 @@ public class RegularUtil {
 	public static String removeHtmlTag(String src, String ...tags){
 		return removeTag(src, tags);
 	}
+
 	/**
 	 * 删除标签及标签体
 	 * @param src xml/html
@@ -515,6 +520,7 @@ public class RegularUtil {
 		}
 		return src;
 	}
+
 	/**
 	 * 提取所有a棱中的url
 	 * @param src xml/html
@@ -546,6 +552,7 @@ public class RegularUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * 提取双标签&lt;div&gt;content&lt;div&gt;
 	 * 依次取出p, table, div中的内容 有嵌套时只取外层
@@ -576,7 +583,6 @@ public class RegularUtil {
 		return result;
 	}
 
-
 	/**
 	 * 提取单标签 如&lt;img&gt; &lt;br/&gt;
 	 * 如果传入div等带有结束标签的参数 则只取出开始标签 &lt;div&gt;
@@ -604,6 +610,7 @@ public class RegularUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 提取单标签+双标签
 	 * 不区分大小写
@@ -650,6 +657,7 @@ public class RegularUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 取出所有属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
@@ -668,6 +676,7 @@ public class RegularUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 取出属性及属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
@@ -719,6 +728,7 @@ public class RegularUtil {
 	public static String cut(String text, String ... tags){
 		return cut(text, false, tags);
 	}
+
 	/**
 	 * 取tags[i-2]与tags[i-1]之间的文本
 	 * @param text text

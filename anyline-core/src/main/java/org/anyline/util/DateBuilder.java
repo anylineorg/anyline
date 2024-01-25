@@ -167,7 +167,6 @@ public class DateBuilder{
 		return DateUtil.month(date);
 	}
 
-
 	/**
 	 * 当周第一天
 	 * 周日作为一周的第一天
@@ -187,7 +186,6 @@ public class DateBuilder{
 		date = DateUtil.getFirstDayOfNextWeek(date);
 		return this;
 	}
-
 
 	/**
 	 * 上个周第一天
@@ -216,7 +214,6 @@ public class DateBuilder{
 		date =  DateUtil.getLastDayOfNextWeek(date);
 		return this;
 	}
-
 
 	/**
 	 * 上个周最后天

@@ -159,6 +159,7 @@ public class DefaultConfig implements Config {
 		}
 		return values;
 	}
+
 	/** 
 	 *  createAutoCondition
 	 * @param chain 容器 

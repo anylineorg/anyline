@@ -417,6 +417,7 @@ public class DownloadTask {
 		} 
 		return expect; 
 	}
+
 	/**
 	 * 预计剩余时间
 	 * @return long

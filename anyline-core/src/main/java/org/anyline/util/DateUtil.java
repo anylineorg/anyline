@@ -331,7 +331,6 @@ public class DateUtil {
 		return getWeek(parse(date));
 	}
 
-
 	/**
 	 * 当周第一天
 	 * 周日作为一周的第一天
@@ -373,7 +372,6 @@ public class DateUtil {
 	public static Date getFirstDayOfNextWeek() {
 		return getFirstDayOfNextWeek(new Date());
 	}
-
 
 	/**
 	 * 上个周第一天
@@ -436,7 +434,6 @@ public class DateUtil {
 	public static Date getLastDayOfNextWeek() {
 		return getLastDayOfNextWeek(new Date());
 	}
-
 
 	/**
 	 * 上个周最后天
@@ -787,7 +784,6 @@ public class DateUtil {
 		}
 	}
 
-
 	/**
 	 * 本年第一天的日期
 	 * @param date 日期
@@ -825,7 +821,6 @@ public class DateUtil {
 	public static String getCurrentYearEnd() {
 		return getCurrentYearEnd(new Date());
 	}
-
 
 	/**
 	 * 上年第一天的日期
@@ -1220,6 +1215,7 @@ public class DateUtil {
 	public static int getDayOfWeek(String date) {
 		return getDayOfWeek(parse(date));
 	}
+
 	/**
 	 * 区间日期
 	 * @param fr  fr
@@ -1401,6 +1397,7 @@ public class DateUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 一年中的第几个星期
 	 * @param date date
@@ -1528,6 +1525,7 @@ public class DateUtil {
 	public static int month() {
 		return month(new Date());
 	}
+
 	/**
 	 * 星期几(礼拜几)
 	 * @param date date
@@ -1543,6 +1541,7 @@ public class DateUtil {
 	public static int dayOfWeek(String date) {
 		return getDayOfWeek(date);
 	}
+
 	/**
 	 * 日(号)
 	 * @param date date
@@ -1709,6 +1708,7 @@ public class DateUtil {
 	public static String conversion(double src){
 		return conversion((long)src);
 	}
+
 	/**
 	 *  毫秒转换成*天*时*分*秒*毫秒
 	 * @param src 毫秒

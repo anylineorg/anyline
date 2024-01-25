@@ -51,6 +51,7 @@ public class MapUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 去重
 	 * @param list list
@@ -317,6 +318,7 @@ public class MapUtil {
 		}
 		return builder.toString();
 	}
+
 	/**
 	 * 行转列
 	 * 表结构(编号, 姓名, 年度, 科目, 分数, 等级)
@@ -388,6 +390,7 @@ public class MapUtil {
 	public static Collection<Map<String, Object>> pivot(Collection<Map<String, Object>> datas, String[] pks, String[] classKeys, String[] valueKeys) {
 		return pivot(datas, BeanUtil.array2list(pks), BeanUtil.array2list(classKeys), BeanUtil.array2list(valueKeys));
 	}
+
 	/**
 	 * 行转列
 	 * @param datas    数据

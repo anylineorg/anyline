@@ -220,6 +220,7 @@ public class TextRun extends BasicRun implements Run {
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		} 
 	}
+
 	/** 
 	 * 拼接查询条件
 	 */

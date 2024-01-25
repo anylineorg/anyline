@@ -70,6 +70,7 @@ public class RSAUtil {
 		base64 = Base64.encodeBase64URLSafeString(key.getEncoded());
 		return base64;
 	}
+
 	/** 
 	 * 创建公钥
 	 *  
@@ -128,6 +129,7 @@ public class RSAUtil {
 	public static String encrypt(String data, String key) throws Exception{
 		return encrypt(data, createPublicKey(key));
 	}
+
 	/** 
 	 * 私钥解密 
 	 *  
@@ -247,6 +249,7 @@ public class RSAUtil {
 	public static boolean verify(byte[] data, String key, String sign) throws Exception {
 		return verify(data, createPublicKey(key), sign);
 	}
+
 	/**
 	 * 校验数字签名
 	 *
@@ -259,6 +262,7 @@ public class RSAUtil {
 	public static boolean verify(String data, String key, String sign) throws Exception {
 		return verify(data.getBytes(), key, sign);
 	}
+
 	/**
 	 * 校验数字签名
 	 *

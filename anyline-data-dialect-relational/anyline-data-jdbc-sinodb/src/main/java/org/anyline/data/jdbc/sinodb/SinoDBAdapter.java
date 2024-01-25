@@ -6083,8 +6083,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * @return String
      */
     @Override
-    public String lengthColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.lengthColumn(runtime, meta);
+    public String columnMetadataLengthColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthColumn(runtime, meta);
     }
 
     /**
@@ -6095,8 +6095,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * @return String
      */
     @Override
-    public String precisionColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.precisionColumn(runtime, meta);
+    public String columnMetadataPrecisionColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionColumn(runtime, meta);
     }
 
     /**
@@ -6107,8 +6107,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * @return String
      */
     @Override
-    public String scaleColumn(DataRuntime runtime, TypeMetadata meta){
-        return super.scaleColumn(runtime, meta);
+    public String columnMetadataScaleColumn(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleColumn(runtime, meta);
     }
     public String insertHead(ConfigStore configs){
         return super.insertHead(configs);

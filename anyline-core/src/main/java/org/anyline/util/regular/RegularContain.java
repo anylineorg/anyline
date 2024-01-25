@@ -113,6 +113,7 @@ public class RegularContain implements Regular{
 	public List<String> fetch(String src, String regx) throws Exception{
 		return fetch(src, regx, 0);
 	}
+
 	/** 
 	 * 过滤 保留匹配项 
 	 * @param src  src

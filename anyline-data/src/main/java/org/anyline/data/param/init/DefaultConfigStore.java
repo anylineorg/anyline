@@ -410,6 +410,7 @@ public class DefaultConfigStore implements ConfigStore {
 		this.setPageNavi(navi);
 		return this;
 	}
+
 	/**
 	 * 起止行 下标从0开始
 	 * @param offset 指定第一个返回记录行的偏移量（即从哪一行开始返回） 初始行的偏移量为0
@@ -527,6 +528,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return columns;
 	}
+
 	/**
 	 * 读取主键
 	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
@@ -1310,6 +1312,7 @@ public class DefaultConfigStore implements ConfigStore {
 		result.chain = chain;
 		return result;
 	}
+
 	/**
 	 * 开启记录总数懒加载 
 	 * @param ms 缓存有效期(毫秒)

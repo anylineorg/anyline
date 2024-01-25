@@ -184,6 +184,7 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 		}
 		return null;
 	}
+
 	/**
 	 * 根据params创建数据源, 同时注入到spring上下文
 	 * @param key 调用或注销数据源时需要用到  如ServiceProxy.service(key)
@@ -340,6 +341,7 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 	private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
 		return ElasticSearchRuntimeHolder.temporary( datasource, database, adapter);
 	}
+
 	/**
 	 * 检测数据源是否连接正常
 	 * @param ds 数据源名称
@@ -453,7 +455,6 @@ public class ElasticSearchDatasourceHolder extends DatasourceHolder {
 		}
 		return list;
 	}
-
 
 	/**
 	 * 设置请求头

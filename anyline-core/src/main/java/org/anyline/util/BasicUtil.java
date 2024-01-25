@@ -116,6 +116,7 @@ public class BasicUtil {
 	public static boolean isEmpty(Object obj) {
 		return isEmpty(false, obj);
 	}
+
 	/**
 	 * 是否全部为空
 	 * @param objs objs
@@ -287,6 +288,7 @@ public class BasicUtil {
 	public static String getRandomNumberString(int length) {
 		return getRandomString(length, new StringBuffer("123567890"));
 	}
+
 	/**
 	 * 随机中文字符(GBK)
 	 * @param length length
@@ -521,6 +523,7 @@ public class BasicUtil {
 		}
 		return Long.parseLong(value.toString());
 	}
+
 	/** 
 	 * 类型转换 
 	 *  
@@ -742,7 +745,6 @@ public class BasicUtil {
 		return fillChar(src+"", len);
 	}
 
-
 	/** 
 	 * 提取HashMap的key 
 	 *  
@@ -848,6 +850,7 @@ public class BasicUtil {
 		}
 		return src.substring(0, len);
 	}
+
 	/**
 	 * 从右侧开始取len位
 	 * @param src String
@@ -894,6 +897,7 @@ public class BasicUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 获取本机IP
 	 * @return List
@@ -1202,6 +1206,7 @@ public class BasicUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * v1与v2是否相等
 	 * @param v1 v1
@@ -1254,6 +1259,7 @@ public class BasicUtil {
 		}
 		return index;
 	}
+
 	/**
 	 * 确认边界
 	 * @param begin 开始

@@ -109,6 +109,7 @@ public class TableRun extends BasicRun implements Run {
 		}
 		return valid;
 	}
+
 	/** 
 	 * 拼接查询条件
 	 */ 

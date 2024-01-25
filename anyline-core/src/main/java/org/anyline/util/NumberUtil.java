@@ -69,6 +69,7 @@ public class NumberUtil {
 		DecimalFormat df = new DecimalFormat(pattern);
 		return df.format(src);
 	}
+
 	/**
 	 * 中文大写(简体)
 	 * @param num num
@@ -95,6 +96,7 @@ public class NumberUtil {
 		}
 		return max;
 	}
+
 	/**
 	 * 选取最小数
 	 *
@@ -128,6 +130,7 @@ public class NumberUtil {
 		}
 		return max;
 	}
+
 	/**
 	 * 选取最小数
 	 *
@@ -143,6 +146,7 @@ public class NumberUtil {
 		}
 		return min;
 	}
+
 	/**
 	 * 选取最大数
 	 *
@@ -364,7 +368,6 @@ public class NumberUtil {
 		return src == (int)src;
 	}
 
-
 	/**
 	 * 二进制转十进制
 	 * @param number number
@@ -374,7 +377,6 @@ public class NumberUtil {
 		return Integer.parseInt(number, 2);
 	}
 
-
 	/**
 	 * 十进制转二进制
 	 * @param number number
@@ -383,6 +385,7 @@ public class NumberUtil {
 	public static String dec2bin(int number) {
 		return Integer.toBinaryString((number & 0xFF) + 0x100).substring(1);
 	}
+
 	/**
 	 * 整形转换成网络传输的字节流（字节数组）型数据
 	 * @param in 一个整型数据
@@ -429,6 +432,7 @@ public class NumberUtil {
 		}
 		return bytes;
 	}
+
 	/**
 	 * 长整形转换成网络传输的字节流（字节数组）型数据
 	 *
@@ -494,6 +498,7 @@ public class NumberUtil {
 		}
 		return new BigInteger(bytes);
 	}
+
 	/**
 	 * 16进制转10进制
 	 * @param hex hex
@@ -576,6 +581,7 @@ public class NumberUtil {
 		}
 		return hex;
 	}
+
 	/**
 	 * 从byte数组中截取start开始len位转换成String 按charset编码格式
 	 * @param bytes bytes
@@ -655,6 +661,7 @@ public class NumberUtil {
 		}
 		return bcd;
 	}
+
 	/**
 	 * 将byte转成二进制
 	 * @param b byte
@@ -666,6 +673,7 @@ public class NumberUtil {
 	}public static int byte2decimal(byte res) {
 		return res & 0xff;
 	}
+
 	/**
 	 * ascii码
 	 * @param b byte<br/>
@@ -786,7 +794,6 @@ public class NumberUtil {
 		}
 		return result;
 	}
-
 
 	/**
 	 * 压缩最前位的0与小数最后的0
@@ -916,6 +923,7 @@ public class NumberUtil {
 	public static short byte2short(byte[] bytes, int start, boolean big) {
 		return (short)byte2int(bytes, start, min(2, bytes.length), big);
 	}
+
 	/**
 	 * 平均值
 	 * @param list 集合
@@ -963,6 +971,7 @@ public class NumberUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * 抽样方差variance
 	 * 抽样方差s^2=[（x1-x）^2+（x2-x）^2+......（xn-x）^2]/(n-1)（x为平均数）
@@ -1068,6 +1077,7 @@ public class NumberUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * 抽样标准差(空值不参与)
 	 * 抽样标准差σ=sqrt(s^2)，即标准差=方差的平方根
@@ -1101,6 +1111,7 @@ public class NumberUtil {
 		}
 		return  null;
 	}
+
 	/**
 	 * 总体标准差(空值不参与)
 	 * 总体标准差σ=sqrt(s^2)，即标准差=方差的平方根

@@ -57,6 +57,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 	public RunPrepare init(){
 		return this;
 	}
+
 	/**
 	 * 设置数据源
 	 * table(c1, c2)[pk1, pk2]
@@ -100,6 +101,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		chain.addCondition(condition);
 		return this;
 	}
+
 	/**
 	 * 添加静态文本查询条件
 	 */
@@ -117,6 +119,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		}
 		return this;
 	}
+
 	/*******************************************************************************************
 	 *
 	 * 										赋值
@@ -186,7 +189,6 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 		return this;
 	}
 
-
 	/**
 	 * 解析多列
 	 * @param src src
@@ -226,6 +228,7 @@ public class DefaultAutoPrepare extends DefaultPrepare implements AutoPrepare {
 			}
 		}
 	}
+
 	/**
 	 * 解析name
 	 * 支持的格式(以下按先后顺序即可)

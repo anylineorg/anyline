@@ -325,6 +325,7 @@ public class ConfigTable {
 		// 加载配置文件
 		loadConfig(flag);
 	}
+
 	/**
 	 * 加载配置文件
 	 * 首先加载anyline-config.xml

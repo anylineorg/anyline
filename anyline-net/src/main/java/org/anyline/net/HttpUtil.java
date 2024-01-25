@@ -349,6 +349,7 @@ public class HttpUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 创建完整HTTP路径
 	 * @param host  host
@@ -411,6 +412,7 @@ public class HttpUtil {
 		}
 		return url;
 	}
+
 	/**
 	 * 从URL中提取文件目录(删除查询参数)
 	 *
@@ -445,6 +447,7 @@ public class HttpUtil {
 		}
 		return dir;
 	}
+
 	/**
 	 * 提取一个URL指向的文件名
 	 *
@@ -534,7 +537,6 @@ public class HttpUtil {
 		return null;
 	}
 
-
 	/**
 	 * 合并参数
 	 * @param url  url
@@ -575,6 +577,7 @@ public class HttpUtil {
 		}
 		return builder;
 	}
+
 	/**
 	 * 合并参数
 	 * @param url  url

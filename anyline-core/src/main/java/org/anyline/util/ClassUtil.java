@@ -52,6 +52,7 @@ public class ClassUtil {
 	public static void regImplement(Class interfaceClass, Class implementClass){
 		INTERFACE_IMPLEMENT.put(interfaceClass, implementClass);
 	}
+
 	/**
 	 * 是否是基础类型(不包含String类型)
 	 * @param obj 对象或类, 如果是对象先getClass()
@@ -128,6 +129,7 @@ public class ClassUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 是否是bases子类或实现了bases接口(满足其中一个)
 	 * @param clazz  类
@@ -145,6 +147,7 @@ public class ClassUtil {
 		}
 		return false;
 	}
+
 	/**
 	 * 是否是bases子类或实现了basees接口(满足全部)
 	 * @param c  c
@@ -558,6 +561,7 @@ public class ClassUtil {
 		}
 		return list;
 	}
+
 	/**
 	 * 根据注解名称 获取属性上的注解
 	 * @param field 属性
@@ -571,6 +575,7 @@ public class ClassUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * 查询指定类的有annotation注解的属性
 	 * @param clazz  clazz
@@ -668,6 +673,7 @@ public class ClassUtil {
 		}
 		return null;
 	}
+
 	/**
 	 * 根据注解名与注解类属性 获取指定属性上的注解值
 	 * @param field field上的注解
@@ -755,6 +761,7 @@ public class ClassUtil {
 		}
 		return getComponentClass(obj.getClass());
 	}
+
 	/**
 	 * 对象类型<br/>
 	 * int[] > int[]<br/>
