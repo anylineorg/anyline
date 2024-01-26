@@ -64,7 +64,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
         LINE                            (StandardTypeMetadata.LINESTRING            ),
         LINESTRING                      (StandardTypeMetadata.LINESTRING            ),
         LONG                            (StandardTypeMetadata.BIGINT                ),
-        LONGBLOB                        (StandardTypeMetadata.VARBINARY             ),
+        LONGBLOB                        (StandardTypeMetadata.LONGBLOB              ),
         LONGTEXT                        (StandardTypeMetadata.LONGTEXT              ),
         LSEG                            (StandardTypeMetadata.ILLEGAL               ),
         MACADDR                         (StandardTypeMetadata.ILLEGAL               ),
@@ -97,7 +97,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
         SET                             (StandardTypeMetadata.SET                   ),
         SMALLDATETIME                   (StandardTypeMetadata.DATETIME              ),
         SMALLMONEY                      (StandardTypeMetadata.DECIMAL               ),
-        SMALLINT                        (StandardTypeMetadata.TINYINT               ),
+        SMALLINT                        (StandardTypeMetadata.SMALLINT              ),
         SMALLSERIAL                     (StandardTypeMetadata.TINYINT               ),
         SQL_VARIANT                     (StandardTypeMetadata.ILLEGAL               ),
         STRING                          (StandardTypeMetadata.VARCHAR               ),
@@ -122,7 +122,7 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
         VARCHAR                         (StandardTypeMetadata.VARCHAR               ),
         VARCHAR2                        (StandardTypeMetadata.VARCHAR               ),
         XML                             (StandardTypeMetadata.TEXT                  ),
-        YEAR                            (StandardTypeMetadata.DATE                  );
+        YEAR                            (StandardTypeMetadata.YEAR                  );
         private final TypeMetadata standard;
         MySQLGenusTypeMetadataAlias(TypeMetadata standard){
                 this.standard = standard;
