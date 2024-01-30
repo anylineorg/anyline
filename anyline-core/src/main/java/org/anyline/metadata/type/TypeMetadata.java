@@ -361,7 +361,7 @@ public interface TypeMetadata {
     class Config {
         /**
          * 是否忽略长度，创建和比较时忽略，但元数据中可能会有对应的列也有值
-         * -1:未设置可以继承上级 0:不忽略 1:忽略 2:根据情况(是否提供)
+         * -1:未设置可以继承上级 0:不忽略 1:忽略 2:根据情况(是否提供) 3:用来处理precision和scale相互依赖的情况,只有同时有值才生效,其中一个没值就全忽略
          */
         private int ignoreLength = -1;
         private int ignorePrecision = -1;
