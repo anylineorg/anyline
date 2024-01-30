@@ -416,6 +416,11 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             update.setTypeName(typeName);
             return this;
         }
+        if(null == this.typeName || !this.typeName.equalsIgnoreCase(typeName)){
+            //修改数据类型的重置解析状态
+            parseLvl = 0;
+        }
+
         this.typeName = typeName;
         parseType(1);
         fullType = null;
@@ -633,8 +638,8 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             update.setLength(length);
             return this;
         }
-        if(ignoreLength() == 1){
-            setPrecision(length);
+        if(ignoreLength == 1){
+            this.precision = length;
         }else {
             this.length = length;
         }
@@ -657,8 +662,8 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             update.setPrecision(precision);
             return this;
         }
-        if(ignorePrecision() == 1){
-            setLength(precision);
+        if(ignorePrecision == 1){
+            this.length = precision;
         }else {
             this.precision = precision;
         }
