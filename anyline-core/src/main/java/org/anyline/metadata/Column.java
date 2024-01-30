@@ -623,7 +623,10 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(getmap && null != update){
             return update.getLength();
         }
-        return length;
+        if(null != length && length != -1){
+            return length;
+        }
+        return precision;
     }
     public Column setLength(Integer length) {
         if(setmap && null != update){
@@ -639,7 +642,10 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(getmap && null != update){
             return update.getPrecision();
         }
-        return precision;
+        if(null != precision && precision != -1){
+            return precision;
+        }
+        return length;
     }
 
     public Column setPrecision(Integer precision) {
