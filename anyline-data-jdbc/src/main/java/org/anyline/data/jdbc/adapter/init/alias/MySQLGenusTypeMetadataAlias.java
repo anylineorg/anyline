@@ -23,8 +23,8 @@ import org.anyline.metadata.type.TypeMetadata;
 
 public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
         BFILE                           (StandardTypeMetadata.ILLEGAL               ),
-        BINARY_DOUBLE                   (StandardTypeMetadata.DOUBLE                ),
-        BINARY_FLOAT                    (StandardTypeMetadata.FLOAT_MySQL           ),
+        BINARY_DOUBLE                   (StandardTypeMetadata.DOUBLE                ,1, 3, 3),
+        BINARY_FLOAT                    (StandardTypeMetadata.FLOAT_MySQL           ,1, 3, 3),
         BIGINT                          (StandardTypeMetadata.BIGINT                ),
         BIGSERIAL                       (StandardTypeMetadata.BIGINT                ),
         BINARY                          (StandardTypeMetadata.BINARY                ),
@@ -39,8 +39,8 @@ public enum MySQLGenusTypeMetadataAlias implements TypeMetadataAlias {
         CLOB                            (StandardTypeMetadata.TEXT                  ),
         DATE                            (StandardTypeMetadata.DATE                  ),
         DATETIME                        (StandardTypeMetadata.DATETIME              ),
-        DATETIME2                       (StandardTypeMetadata.DATETIME2             ),
-        DATETIMEOFFSET                  (StandardTypeMetadata.DATETIMEOFFSET        ),
+        DATETIME2                       (StandardTypeMetadata.DATETIME              ),
+        DATETIMEOFFSET                  (StandardTypeMetadata.DATETIME              ),
         DECIMAL                         (StandardTypeMetadata.DECIMAL               ),
         DOUBLE                          (StandardTypeMetadata.DOUBLE                ),
         ENUM                            (StandardTypeMetadata.ENUM                  ),
