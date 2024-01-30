@@ -28,6 +28,7 @@ public interface TypeMetadata {
     enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, OTHER, NONE}
     //要用来区分 length/precision
     //BLOB不需要长度 BYTES需要长度
+    //TIMESTAMP在有些数据库中支持SCALE需要在单独的alias中设置如TIMESTAMP(6)
     enum CATEGORY{
         CHAR(CATEGORY_GROUP.STRING, 0, 1, 1),
         TEXT(CATEGORY_GROUP.STRING, 1, 1, 1),
