@@ -6317,16 +6317,16 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	@Override
 	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME){
-			return "CURRENT TIMESTAMP";
+			return "CURRENT_TIMESTAMP";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
-			return "CURRENT TIMESTAMP";
+			return "CURRENT_TIMESTAMP";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE){
-			return "CURRENT TIMESTAMP";
+			return "CURRENT_TIMESTAMP";
 		}
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP){
-			return "CURRENT TIMESTAMP";
+			return "CURRENT_TIMESTAMP";
 		}
 		return null;
 	}
