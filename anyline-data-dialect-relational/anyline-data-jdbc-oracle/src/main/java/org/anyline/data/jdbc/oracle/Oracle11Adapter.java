@@ -36,10 +36,14 @@ import java.util.List;
  */
 @Repository("anyline.data.jdbc.adapter.oracle.11")
 public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter, InitializingBean {
+
     public String version(){
         return "11";
     }
 
+    public Oracle11Adapter() {
+        super();
+    }
 	/**
 	 * 验证运行环境与当前适配器是否匹配<br/>
 	 * 默认不连接只根据连接参数<br/>
