@@ -34,8 +34,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 
     public OracleGenusAdapter(){
         for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()){
-            typeConfigs.put(alias.name().toUpperCase(), alias.config());
-            typeConfigs.put(alias.standard().getName().toUpperCase(), alias.config());
+            TypeMetadata.Config config = alias.config();
+            config(alias.name(), config);
+            config(alias.standard().getName(), config);
         }
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));

@@ -166,6 +166,23 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return alias;
 	}
 
+	/**
+	 * 注册数据类型配置
+	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
+	 * @param name 类型名称或别名
+	 * @param config 配置项
+	 * @return
+	 */
+	@Override
+	public TypeMetadata.Config config(String name, TypeMetadata.Config config){
+		TypeMetadata.Config src = typeConfigs.get(name.toUpperCase());
+		if(null == src){
+			src = config;
+		}else{
+			src.merge(config);
+		}
+		return src;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML

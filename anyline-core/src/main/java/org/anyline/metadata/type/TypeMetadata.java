@@ -502,5 +502,40 @@ public interface TypeMetadata {
             }
             return this;
         }
+
+        /**
+         * 合并copy的属性(非空并且!=-1的属性)
+         * @param copy
+         * @return
+         */
+        public Config merge(Config copy){
+            if(null != copy){
+                int ignoreLength = copy.ignoreLength();
+                int ignorePrecision = copy.ignorePrecision;
+                int ignoreScale = copy.ignoreScale();
+                if(-1 != ignoreLength){
+                    this.ignoreLength = ignoreLength;
+                }
+                if(-1 != ignorePrecision){
+                    this.ignorePrecision = ignorePrecision;
+                }
+                if(-1 != ignoreScale){
+                    this.ignoreScale = ignoreScale;
+                }
+                String[] lengthRefers = copy.getLengthRefers();;
+                String[] precisionRefers = copy.getPrecisionRefers();
+                String[] scaleRefers = copy.getScaleRefers();
+                if(null != lengthRefers && lengthRefers.length > 0){
+                    this.lengthRefers = lengthRefers;
+                }
+                if(null != precisionRefers && precisionRefers.length > 0){
+                    this.precisionRefers = precisionRefers;
+                }
+                if(null != scaleRefers && scaleRefers.length > 0){
+                    this.scaleRefers = scaleRefers;
+                }
+            }
+            return this;
+        }
     }
 }

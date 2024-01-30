@@ -33,6 +33,7 @@
 
 package org.anyline.data.jdbc.db2;
 
+import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -72,6 +73,9 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 		delimiterTo = "\"";
 		for (DB2TypeMetadataAlias alias: DB2TypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			config(alias.name(), config);
+			config(alias.standard().getName(), config);
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.db2:}")
