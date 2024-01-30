@@ -24,6 +24,9 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
+import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
+import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -584,7 +587,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return -1;
 	}
-	
+
 
 
 	/* *****************************************************************************************************************
@@ -3804,10 +3807,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut)
-	 * [命令合成] 
+	 * [命令合成]
 	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
 	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * [结果集封装]<br/> 
+	 * [结果集封装]<br/>
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
@@ -4095,7 +4098,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -4119,7 +4122,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -4143,7 +4146,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -4191,38 +4194,50 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * table[结果集封装-依据]<br/>
-	 * table结果集表名依据
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @param table 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Table
 	 */
 	@Override
-	public String tableMetadataName(DataRuntime runtime){
-		return "TABLE_NAME,NAME,TABNAME";
+	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return null;
 	}
-
 	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Catalog依据
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
 	 */
 	@Override
-	public String tableMetadataCatalog(DataRuntime runtime){
-		return "TABLE_CATALOG";
+	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row)", 37));
+		}
+		return null;
 	}
-
 	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Schema依据
+	 * table[结构集封装-依据]<br/>
+	 * 读取table元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @return TableMetadataAdapter
 	 */
 	@Override
-	public String tableMetadataSchema(DataRuntime runtime){
-		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
+	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return null;
 	}
-
 	/**
 	 * table[结果集封装]<br/>
 	 * 表备注
@@ -5257,7 +5272,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new LinkedHashMap<>();
 	}
 
-	
+
 
 	/**
 	 * column[命令合成]<br/>
@@ -5344,7 +5359,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public<T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
+	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row)", 37));
 		}
@@ -5352,87 +5367,62 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据名称列
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public String columnMetadataName(DataRuntime runtime){
-		return "COLUMN_NAME,COLNAME";
+	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return null;
+	}
+	/**
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据(需要区分数据类型)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
+	 * @return ColumnMetadataAdapter
+	 */
+	@Override
+	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+		return DriverAdapter.super.columnMetadataAdapter(runtime, meta);
 	}
 
-	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Catalog列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataCatalog(DataRuntime runtime){
-		return "TABLE_CATALOG";
-	}
-
-	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Schema列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataSchema(DataRuntime runtime){
-		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
-	}
-
-	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Table列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataTable(DataRuntime runtime){
-		return "TABLE_NAME,TABNAME";
-	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
-	 * Column元数据数据类型列
+	 * 元数据数字有效位数列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
-		return "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME";
-	}
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据长度列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
 		String result = null;
+		//具体数据类型
 		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
 		if(null != config){
-			result = config.lengthColumn();
+			result = config.getLengthRefer();
 		}
+		//当前adapter 数据类型大类
 		if(null == result){
 			config = typeCategoryConfigs.get(meta.getCategory());
 			if(null != config){
-				result = config.lengthColumn();
+				result = config.getLengthRefer();
 			}
 		}
+		//通用标准类型大类
 		if(null == result){
 			config = standardCategoryConfigs.get(meta.getCategory());
 			if(null != config){
-				result = config.lengthColumn();
+				result = config.getLengthRefer();
 			}
 		}
 		return result;
@@ -5440,31 +5430,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字有效位数列
+	 * 元数据长度列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
 		String result = null;
 		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
 		if(null != config){
-			result = config.precisionColumn();
+			result = config.getPrecisionRefer();
 		}
 		if(null == result){
 			config = typeCategoryConfigs.get(meta.getCategory());
 			if(null != config){
-				result = config.precisionColumn();
+				result = config.getPrecisionRefer();
 			}
 		}
 		if(null == result){
 			config = standardCategoryConfigs.get(meta.getCategory());
 			if(null != config){
-				result = config.precisionColumn();
+				result = config.getPrecisionRefer();
+			}
+		}
+		if(null == result){
+			ColumnMetadataAdapter cfg = columnMetadataAdapter(runtime);
+			if(null != cfg){
+				result = cfg.getPrecisionRefer();
 			}
 		}
 		return result;
@@ -5472,36 +5469,150 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字小数位数列
+	 * 元数据数字有效位数列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
 		if(null == meta){
 			return null;
 		}
 		String result = null;
 		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
 		if(null != config){
-			result = config.scaleColumn();
+			result = config.getScaleRefer();
 		}
 		if(null == result){
 			config = typeCategoryConfigs.get(meta.getCategory());
 			if(null != config){
-				result = config.scaleColumn();
+				result = config.getScaleRefer();
 			}
 		}
 		if(null == result){
 			config = standardCategoryConfigs.get(meta.getCategory());
 			if(null != config){
-				result = config.scaleColumn();
+				result = config.getScaleRefer();
+			}
+		}
+		if(null == result){
+			ColumnMetadataAdapter cfg = columnMetadataAdapter(runtime);
+			if(null != cfg){
+				result = cfg.getScaleRefer();
 			}
 		}
 		return result;
 	}
 
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 是否忽略长度<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public int columnMetadataIgnoreLength(DataRuntime runtime, TypeMetadata meta){
+		if(null == meta){
+			return -1;
+		}
+		int result = -1;
+		//具体数据类型
+		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		if(null != config){
+			result = config.ignoreLength();
+		}
+		//当前adapter 数据类型大类
+		if(-1 == result){
+			config = typeCategoryConfigs.get(meta.getCategory());
+			if(null != config){
+				result = config.ignoreLength();
+			}
+		}
+		//通用标准类型大类
+		if(-1 == result){
+			config = standardCategoryConfigs.get(meta.getCategory());
+			if(null != config){
+				result = config.ignoreLength();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 是否忽略有效位数<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public int columnMetadataIgnorePrecision(DataRuntime runtime, TypeMetadata meta){
+		if(null == meta){
+			return -1;
+		}
+		int result = -1;
+		//具体数据类型
+		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		if(null != config){
+			result = config.ignorePrecision();
+		}
+		//当前adapter 数据类型大类
+		if(-1 == result){
+			config = typeCategoryConfigs.get(meta.getCategory());
+			if(null != config){
+				result = config.ignorePrecision();
+			}
+		}
+		//通用标准类型大类
+		if(-1 == result){
+			config = standardCategoryConfigs.get(meta.getCategory());
+			if(null != config){
+				result = config.ignorePrecision();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 是否忽略小数位<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	@Override
+	public int columnMetadataIgnoreScale(DataRuntime runtime, TypeMetadata meta){
+		if(null == meta){
+			return -1;
+		}
+		int result = -1;
+		//具体数据类型
+		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		if(null != config){
+			result = config.ignoreScale();
+		}
+		//当前adapter 数据类型大类
+		if(-1 == result){
+			config = typeCategoryConfigs.get(meta.getCategory());
+			if(null != config){
+				result = config.ignoreScale();
+			}
+		}
+		//通用标准类型大类
+		if(-1 == result){
+			config = standardCategoryConfigs.get(meta.getCategory());
+			if(null != config){
+				result = config.ignoreScale();
+			}
+		}
+		return result;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
@@ -5697,7 +5808,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set)", 37));
 		}
-		return null;
+		return primary;
 	}
 
 	/**
@@ -5707,40 +5818,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return column name
 	 */
 	@Override
-	public String primaryMetadataName(DataRuntime runtime){
+	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String primaryMetadataName(DataRuntime runtime)", 37));
 		}
 		return null;
 	}
-
-	/**
-	 * primary[结构集封装-依据]<br/>
-	 * primary元数据表名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
-	 */
-	@Override
-	public String primaryMetadataTable(DataRuntime runtime){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String primaryMetadataTable(DataRuntime runtime)", 37));
-		}
-		return null;
-	}
-	/**
-	 * primary[结构集封装-依据]<br/>
-	 * primary元数据列名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
-	 */
-	@Override
-	public String primaryMetadataColumn(DataRuntime runtime){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String primaryMetadataColumn(DataRuntime runtime)", 37));
-		}
-		return null;
-	}
-
 	/**
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
@@ -7376,6 +7459,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		PrimaryKey src_primary = primary(runtime, random, false, meta);
 		PrimaryKey cur_primary = update.getPrimaryKey();
 		boolean change_pk = !meta.primaryEquals(update);
+		if(change_pk){
+			meta.setChangePrimary(1);
+		}
 		//如果主键有更新 先删除主键 避免alters中把原主键列的非空取消时与主键约束冲突
 		try {
 			checkAutoIncrement(runtime, null, meta);
@@ -7387,6 +7473,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			drop(runtime, src_primary);
 			src_primary = null;
 		}
+
 		//更新列
 		List<Run> alters = buildAlterRun(runtime, meta, cols.values());
 		if(null != alters && alters.size()>0){
@@ -9583,29 +9670,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return builder;
 	}
 
+
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度, 依次检测typeConfigs(当前adapter类型),typeCategoryConfigs(当前adapter大类),typeMetadata(标准类型) standardCategoryConfigs(标准大类)
+	 * 定义列:是否忽略有长度<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
+	 * @param column 列
 	 * @return boolean
 	 */
-	@Override
-	public int ignoreLength(DataRuntime runtime, Column meta) {
-		if(null == meta){
-			return -1;
-		}
-		int result = -1;
-		TypeMetadata tm = meta.getTypeMetadata();
-		if(null == tm){
-			tm = typeMetadata(runtime, meta);
-		}
-		if(null != tm){
-			result = ignoreLength(runtime, tm);
-		}
-		return result;
-	}
-
 	@Override
 	public int ignoreLength(DataRuntime runtime, TypeMetadata type) {
 		if(null == type){
@@ -9636,28 +9709,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
+	 * 定义列:是否忽略有效位数<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
+	 * @param type TypeMetadata
 	 * @return boolean
 	 */
-	@Override
-	public int ignorePrecision(DataRuntime runtime, Column meta) {
-		if(null == meta){
-			return -1;
-		}
-		int result = -1;
-		TypeMetadata tm = meta.getTypeMetadata();
-		if(null == tm){
-			tm = typeMetadata(runtime, meta);
-		}
-
-		if(null != tm){
-			result = ignorePrecision(runtime, tm);
-		}
-		return result;
-	}
-
 	@Override
 	public int ignorePrecision(DataRuntime runtime, TypeMetadata type) {
 		if(null == type){
@@ -9689,27 +9746,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列:是否忽略小数位
+	 * 定义列:定义列:是否忽略小数位<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
+	 * @param type TypeMetadata
 	 * @return boolean
 	 */
-	@Override
-	public int ignoreScale(DataRuntime runtime, Column meta) {
-		if(null == meta){
-			return -1;
-		}
-		int result = -1;
-		TypeMetadata tm = meta.getTypeMetadata();
-		if(null == tm){
-			tm = typeMetadata(runtime, meta);
-		}
-
-		if(null != tm){
-			result = ignoreScale(runtime, tm);
-		}
-		return result;
-	}
     @Override
     public int ignoreScale(DataRuntime runtime, TypeMetadata type) {
         if(null == type){
@@ -9737,41 +9779,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
         return result;
     }
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略有效长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return boolean
-	 */
-	@Override
-	public int checkIgnoreLength(DataRuntime runtime, String type){
-		return -1;
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度,依次检测typeConfigs(当前adapter类型),typeCategoryConfigs(当前adapter大类),typeMetadata(标准类型)(标准大类)
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnorePrecision(DataRuntime runtime, String type) {
-		return -1;
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnoreScale(DataRuntime runtime, String type) {
-		return -1;
-	}
 
 	/**
 	 * column[命令合成-子流程]<br/>

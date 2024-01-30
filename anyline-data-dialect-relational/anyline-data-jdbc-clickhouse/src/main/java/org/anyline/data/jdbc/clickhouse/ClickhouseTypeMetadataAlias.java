@@ -1,29 +1,11 @@
-/*
- * Copyright 2006-2023 www.anyline.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
-package org.anyline.data.jdbc.adapter.init.alias;
+package org.anyline.data.jdbc.clickhouse;
 
 import org.anyline.data.metadata.TypeMetadataAlias;
-import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 
-public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
-
+public enum ClickhouseTypeMetadataAlias implements TypeMetadataAlias {
+    //https://clickhouse.com/docs/en/sql-reference/data-types
     BFILE                   (StandardTypeMetadata.BFILE),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE),
     BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE),
@@ -44,11 +26,11 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
     DATETIME2               (StandardTypeMetadata.TIMESTAMP),
     DATETIMEOFFSET          (StandardTypeMetadata.TIMESTAMP),
     DECIMAL                 (StandardTypeMetadata.NUMBER),
-    DOUBLE                  (StandardTypeMetadata.NUMBER),
+    DOUBLE                  (StandardTypeMetadata.CLICKHOUSE_FLOAT64),
     ENUM                    (StandardTypeMetadata.ILLEGAL),
-    FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE),
-    FLOAT4                  (StandardTypeMetadata.FLOAT_ORACLE),
-    FLOAT8                  (StandardTypeMetadata.FLOAT_ORACLE),
+    FLOAT                   (StandardTypeMetadata.CLICKHOUSE_FLOAT32),
+    FLOAT4                  (StandardTypeMetadata.CLICKHOUSE_FLOAT32),
+    FLOAT8                  (StandardTypeMetadata.CLICKHOUSE_FLOAT32),
     GEOGRAPHY               (StandardTypeMetadata.ILLEGAL),
     GEOMETRY                (StandardTypeMetadata.ILLEGAL),
     GEOMETRYCOLLECTION      (StandardTypeMetadata.ILLEGAL),
@@ -56,10 +38,19 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
     IMAGE                   (StandardTypeMetadata.BLOB),
     INET                    (StandardTypeMetadata.ILLEGAL),
     INTERVAL                (StandardTypeMetadata.ILLEGAL),
-    INT                     (StandardTypeMetadata.NUMBER),
-    INT2                    (StandardTypeMetadata.NUMBER),
-    INT4                    (StandardTypeMetadata.NUMBER),
-    INT8                    (StandardTypeMetadata.NUMBER),
+    INT                     (StandardTypeMetadata.CLICKHOUSE_INT32),
+    INT8                    (StandardTypeMetadata.CLICKHOUSE_INT8),
+    INT16                   (StandardTypeMetadata.CLICKHOUSE_INT16),
+    INT32                   (StandardTypeMetadata.CLICKHOUSE_INT32),
+    INT64                   (StandardTypeMetadata.CLICKHOUSE_INT64),
+    INT128                  (StandardTypeMetadata.CLICKHOUSE_INT128),
+    INT256                  (StandardTypeMetadata.CLICKHOUSE_INT256),
+    UINT8                    (StandardTypeMetadata.CLICKHOUSE_UINT8),
+    UINT16                   (StandardTypeMetadata.CLICKHOUSE_UINT16),
+    UINT32                   (StandardTypeMetadata.CLICKHOUSE_UINT32),
+    UINT64                   (StandardTypeMetadata.CLICKHOUSE_UINT64),
+    UINT128                  (StandardTypeMetadata.CLICKHOUSE_UINT128),
+    UINT256                  (StandardTypeMetadata.CLICKHOUSE_UINT256),
     INTEGER                 (StandardTypeMetadata.NUMBER),
     JSON                    (StandardTypeMetadata.CLOB),
     JSONB                   (StandardTypeMetadata.BLOB),
@@ -131,11 +122,11 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
     private String scaleRefer;
     private TypeMetadata.Config config;
 
-    OracleGenusTypeMetadataAlias(TypeMetadata standard){
+    ClickhouseTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
     }
 
-    OracleGenusTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+    ClickhouseTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
         this.standard = standard;
         this.lengthRefer = lengthRefer;
         this.precisionRefer = precisionRefer;
@@ -145,7 +136,7 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
         this.ignoreScale = ignoreScale;
     }
 
-    OracleGenusTypeMetadataAlias(TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+    ClickhouseTypeMetadataAlias(TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
         this.standard = standard;
         this.ignoreLength = ignoreLength;
         this.ignorePrecision = ignorePrecision;
@@ -166,6 +157,5 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
         }
         return config;
     }
-
 
 }

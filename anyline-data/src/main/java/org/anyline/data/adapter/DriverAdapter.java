@@ -19,6 +19,9 @@ package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
+import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
+import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
+import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
@@ -100,7 +103,7 @@ public interface DriverAdapter {
 			return matchByAdapter(runtime);
 		}
 		String feature = runtime.getFeature();//数据源特征中包含上以任何一项都可以通过
-		//获取特征时会重新解析 adapter参数
+		//获取特征时会重新解析 adapter参数,因为有些数据源是通过DataSource对象注册的，这时需要打开连接后才能拿到url
 		if(BasicUtil.isNotEmpty(runtime.getAdapterKey())){
 			return matchByAdapter(runtime);
 		}
@@ -825,7 +828,7 @@ public interface DriverAdapter {
 	 */
 	List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * select[命令合成]<br/> <br/>
+	 * select[命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param configs 过滤条件及相关配置
@@ -834,7 +837,7 @@ public interface DriverAdapter {
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
 	/**
-	 * select[命令合成]<br/> <br/>
+	 * select[命令合成]<br/>
 	 * 创建 select sequence 最终可执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param next  是否生成返回下一个序列 false:cur true:next
@@ -1883,34 +1886,12 @@ public interface DriverAdapter {
 	<T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row);
 
 	/**
-	 * table[结果集封装-依据]<br/>
-	 * table结果集表名依据
+	 * table[结构集封装-依据]<br/>
+	 * 读取table元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @return TableMetadataAdapter
 	 */
-	default String tableMetadataName(DataRuntime runtime){
-		return "TABLE_NAME,NAME,TABNAME";
-	}
-
-	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Catalog依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String tableMetadataCatalog(DataRuntime runtime){
-		return "TABLE_CATALOG";
-	}
-
-	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Schema依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String tableMetadataSchema(DataRuntime runtime){
-		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME";
-	}
+	TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
 	 * 													view
 	 ******************************************************************************************************************/
@@ -2311,79 +2292,116 @@ public interface DriverAdapter {
 	<T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row);
 
 	/**
-	 * column[结果集封装-依据]<br/>
-	 * Column元数据名称依据
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据，主要返回column属性与查询结集之间的对应关系
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @return ColumnMetadataAdapter
 	 */
-	default String columnMetadataName(DataRuntime runtime){
-		return "COLUMN_NAME,COLNAME";
+	ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime);
+	/**
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据，主要在columnMetadataAdapter(DataRuntime runtime)项目上补充length/precision/sacle相关
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
+	 * @return ColumnMetadataAdapter
+	 */
+	default ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+		ColumnMetadataAdapter config = columnMetadataAdapter(runtime);
+		if(null == config){
+			config = new ColumnMetadataAdapter();
+		}
+		//长度列
+		String columnMetadataLengthRefer = columnMetadataLengthRefer(runtime, meta);
+		if(null != meta){
+			config.setLengthRefer(columnMetadataLengthRefer);
+		}
+		//有效位数列
+		String columnMetadataPrecisionRefer = columnMetadataPrecisionRefer(runtime, meta);
+		if(null != meta){
+			config.setPrecisionRefer(columnMetadataPrecisionRefer);
+		}
+		//小数位数列
+		String columnMetadataScaleRefer = columnMetadataScaleRefer(runtime, meta);
+		if(null != meta){
+			config.setScaleRefer(columnMetadataScaleRefer);
+		}
+		int ignoreLength = ignoreLength(runtime, meta);
+		if(-1 != ignoreLength){
+			config.setIgnoreLength(ignoreLength);
+		}
+		int ignorePrecision = ignorePrecision(runtime, meta);
+		if(-1 != ignorePrecision){
+			config.setIgnorePrecision(ignorePrecision);
+		}
+		int ignoreScale = ignoreScale(runtime, meta);
+		if(-1 != ignoreScale){
+			config.setIgnoreScale(ignoreScale);
+		}
+		return config;
 	}
 
-	/**
-	 * column[结果集封装-依据]<br/>
-	 * Column元数据Catalog依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String columnMetadataCatalog(DataRuntime runtime){
-		return "TABLE_CATALOG";
-	}
 
 	/**
-	 * column[结果集封装-依据]<br/>
-	 * Column元数据Schema依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String columnMetadataSchema(DataRuntime runtime){
-		return "TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER";
-	}
-
-	/**
-	 * column[结果集封装-依据]<br/>
-	 * Column元数据Table依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	default String columnMetadataTable(DataRuntime runtime){
-		return "TABLE_NAME,TABNAME";
-	}
-
-	/**
-	 * column[结果集封装-依据]<br/>(方法1)<br/>
-	 * Column元数据数据类型依据
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据长度列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataType(DataRuntime runtime, TypeMetadata meta);
-	/**
-	 * column[结果集封装-依据]<br/>(方法1)<br/>
-	 * Column元数据长度依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	String columnMetadataLength(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta);
 
 	/**
-	 * column[结果集封装-依据]<br/>(方法1)<br/>
-	 * 元Column元数据数字有效位数依据
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta);
 
 	/**
-	 * column[结果集封装-依据]<br/>(方法1)<br/>
-	 * Column元数据数字小数位数依据
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字小数位数列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta TypeMetadata
 	 * @return String
 	 */
-	String columnMetadataScale(DataRuntime runtime, TypeMetadata meta);
+	String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 是否忽略长度<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	int columnMetadataIgnoreLength(DataRuntime runtime, TypeMetadata meta);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 是否忽略有效位数<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	int columnMetadataIgnorePrecision(DataRuntime runtime, TypeMetadata meta);
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 是否忽略小数位数<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
+	 * @return String
+	 */
+	int columnMetadataIgnoreScale(DataRuntime runtime, TypeMetadata meta);
+
+
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
@@ -2485,30 +2503,13 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
-
 	/**
 	 * primary[结构集封装-依据]<br/>
-	 * primary元数据名称依据
+	 * 读取primary key元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
+	 * @return PrimaryMetadataAdapter
 	 */
-	String primaryMetadataName(DataRuntime runtime);
-
-	/**
-	 * primary[结构集封装-依据]<br/>
-	 * primary元数据表名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
-	 */
-	String primaryMetadataTable(DataRuntime runtime);
-	/**
-	 * primary[结构集封装-依据]<br/>
-	 * primary元数据列名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
-	 */
-	String primaryMetadataColumn(DataRuntime runtime);
-
+	PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime);
 	/**
 	 * primary[结构集封装]<br/>
 	 *  根据驱动内置接口补充PrimaryKey
@@ -4066,6 +4067,33 @@ public interface DriverAdapter {
 
 	/**
 	 * column[命令合成-子流程]<br/>
+	 * 定义列:是否忽略有长度<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @return boolean
+	 */
+	int ignoreLength(DataRuntime runtime, TypeMetadata type);
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:是否忽略有效位数<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type TypeMetadata
+	 * @return boolean
+	 */
+	int ignorePrecision(DataRuntime runtime, TypeMetadata type);
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 定义列:定义列:是否忽略小数位<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param type TypeMetadata
+	 * @return boolean
+	 */
+	int ignoreScale(DataRuntime runtime, TypeMetadata type);
+	/**
+	 * column[命令合成-子流程]<br/>
 	 * 定义列:聚合类型
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
@@ -4088,57 +4116,6 @@ public interface DriverAdapter {
 	 */
 	StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale);
 
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略有长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
-	 * @return boolean
-	 */
-	int ignoreLength(DataRuntime runtime, Column column);
-	int ignoreLength(DataRuntime runtime, TypeMetadata type);
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略有效位数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
-	 * @return boolean
-	 */
-	int ignorePrecision(DataRuntime runtime, Column column);
-	int ignorePrecision(DataRuntime runtime, TypeMetadata type);
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
-	 * @return boolean
-	 */
-	int ignoreScale(DataRuntime runtime, Column column);
-	int ignoreScale(DataRuntime runtime, TypeMetadata type);
-    /**
-     * column[命令合成-子流程]<br/>
-     * 定义列:是否忽略有效长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return boolean
-     */
-    int checkIgnoreLength(DataRuntime runtime, String type);
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:是否忽略有效位数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return boolean
-	 */
-	int checkIgnorePrecision(DataRuntime runtime, String type);
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 定义列:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return boolean
-	 */
-	int checkIgnoreScale(DataRuntime runtime, String type);
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:非空

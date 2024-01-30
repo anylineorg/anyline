@@ -120,13 +120,49 @@ public enum GbaseTypeMetadataAlias implements TypeMetadataAlias {
     VARCHAR2                (StandardTypeMetadata.VARCHAR               ),
     XML                     (StandardTypeMetadata.ILLEGAL               ),
     YEAR                    (StandardTypeMetadata.DATE                  );
+
     private final TypeMetadata standard;
-    private GbaseTypeMetadataAlias(TypeMetadata standard){
+    private int ignoreLength = -1;
+    private int ignorePrecision = -1;
+    private int ignoreScale = -1;
+    private String lengthRefer;
+    private String precisionRefer;
+    private String scaleRefer;
+    private TypeMetadata.Config config;
+
+    GbaseTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
+    }
+
+    GbaseTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+        this.standard = standard;
+        this.lengthRefer = lengthRefer;
+        this.precisionRefer = precisionRefer;
+        this.scaleRefer = scaleRefer;
+        this.ignoreLength = ignoreLength;
+        this.ignorePrecision = ignorePrecision;
+        this.ignoreScale = ignoreScale;
+    }
+
+    GbaseTypeMetadataAlias(TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+        this.standard = standard;
+        this.ignoreLength = ignoreLength;
+        this.ignorePrecision = ignorePrecision;
+        this.ignoreScale = ignoreScale;
     }
 
     @Override
     public TypeMetadata standard() {
         return standard;
+    }
+
+    @Override
+    public TypeMetadata.Config config() {
+        if(null == config){
+            config = new TypeMetadata.Config();
+            config.setLengthRefer(lengthRefer).setPrecisionRefer(precisionRefer).setScaleRefer(scaleRefer);
+            config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+        }
+        return config;
     }
 }

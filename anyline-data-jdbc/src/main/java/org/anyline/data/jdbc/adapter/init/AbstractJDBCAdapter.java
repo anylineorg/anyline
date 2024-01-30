@@ -19,6 +19,9 @@ package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
+import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
+import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -3320,7 +3323,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -3347,7 +3350,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -3376,7 +3379,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -3657,29 +3660,19 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == table){
 			table = (T)new Table();
 		}
-		String _catalog = null;
-		String catalog_column = tableMetadataCatalog(runtime);//"TABLE_CATALOG"
-		if(null != catalog_column) {
-			_catalog = row.getString(catalog_column.split(","));
-		}
-		String _schema = null;
-		String schema_colunn = tableMetadataSchema(runtime);//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME";
-		if(null != schema_colunn) {
-			_schema = row.getString(schema_colunn.split(","));
-		}
+		TableMetadataAdapter config = tableMetadataAdapter(runtime);
+		String _catalog = row.getString(config.getCatalogRefers());
+		String _schema = row.getString(config.getSchemaRefers());
 		if(null == _catalog && null != catalog){
 			_catalog = catalog.getName();
 		}
 		if(null == _schema && null != schema){
 			_schema = schema.getName();
 		}
-		String name = null;
-		String name_column = tableMetadataName(runtime);//"TABLE_NAME","NAME","TABNAME"
-		if(null != name_column){
-			name = row.getString(name_column.split(","));
-		}
+		String name = row.getString(config.getNameRefers());
+
 		if(null == table){
-			if("VIEW".equals(row.getString("TABLE_TYPE"))){
+			if("VIEW".equals(row.getString(config.getTypeRefers()))){
 				table = (T)new View();
 			}else {
 				table = (T)new Table();
@@ -3745,37 +3738,20 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	/**
-	 * table[结果集封装-依据]<br/>
-	 * table结果集表名依据
+	 * table[结构集封装-依据]<br/>
+	 * 读取table元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
+	 * @return TableMetadataAdapter
 	 */
 	@Override
-	public String tableMetadataName(DataRuntime runtime){
-		return super.tableMetadataName(runtime);
+	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime){
+		TableMetadataAdapter config = new TableMetadataAdapter();
+		config.setNameRefer("TABLE_NAME,NAME,TABNAME");
+		config.setCatalogRefer("TABLE_CATALOG");
+		config.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+		return config;
 	}
 
-	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Catalog依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String tableMetadataCatalog(DataRuntime runtime){
-		return super.tableMetadataCatalog(runtime);
-	}
-
-	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Schema依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String tableMetadataSchema(DataRuntime runtime){
-		return super.tableMetadataSchema(runtime);
-	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -4647,6 +4623,201 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 
+	/**
+	 * column [结果集封装-子流程](方法1)<br/>
+	 * 方法(1)内部遍历
+	 * @param column 上一步封装结果
+	 * @param table 表
+	 * @param row 查询结果集
+	 */
+	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
+		if(null == column){
+			column = (T)new Column();
+		}
+		ColumnMetadataAdapter config = columnMetadataAdapter(runtime);
+		String catalog = row.getString(config.getCatalogRefers());
+		String schema = row.getString(config.getSchemaRefers());//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
+		schema = BasicUtil.evl(schema, column.getSchemaName());
+		//如果上一步没有提供table有可能是查所有表的列,column单独创建自己的table对象
+		if(null != table){
+			if(null == catalog){
+				catalog = table.getCatalogName();
+			}
+			if(null == schema){
+				schema = table.getSchemaName();
+			}
+		}
+		if(null != catalog){
+			catalog = catalog.trim();
+		}
+		if(null != schema){
+			schema = schema.trim();
+		}
+		if(null == column){
+			column = (T)new Column();
+		}
+		column.setCatalog(catalog);
+		column.setSchema(schema);
+		if(null != table) {//查询全部表
+			column.setTable(table);
+		}else {
+			String tableName = row.getString(config.getTableRefers());
+			column.setTable(BasicUtil.evl(tableName, column.getTableName(true), tableName));
+		}
+		String name = row.getString(config.getNameRefers());
+		column.setName(name);
+		return column;
+	}
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param column 列
+	 * @param row 系统表查询SQL结果集
+	 * @return Column
+	 * @param <T> Column
+	 */
+	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
+		if(null == column){
+			return null;
+		}
+		if(null == column.getPosition()) {
+			try {
+				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
+			}catch (Exception e){}
+		}
+		column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS","REMARKS"), column.getComment()));
+		String type = row.getString("FULL_TYPE","DATA_TYPE","TYPE_NAME","TYPENAME","DATA_TYPE_NAME");
+		/*if(null != type){
+			type = type.replace("character varying","VARCHAR");
+		}*/
+		//FULL_TYPE pg中pg_catalog.format_type合成的
+		//character varying
+		//TODO timestamp without time zone
+		//TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
+		if(null != type && type.contains(" ")){
+			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
+		}
+		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
+		TypeMetadata typeMetadata = typeMetadata(runtime, type);
+		column.setTypeMetadata(typeMetadata);
+		ColumnMetadataAdapter config = columnMetadataAdapter(runtime, typeMetadata);
+
+		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
+		if(BasicUtil.isNotEmpty(def)) {
+			while(def.startsWith("(") && def.endsWith(")")){
+				def = def.substring(1, def.length()-1);
+			}
+			while(def.startsWith("'") && def.endsWith("'")){
+				def = def.substring(1, def.length()-1);
+			}
+			column.setDefaultValue(def);
+		}
+		//默认值约束
+		column.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
+		if(-1 == column.isAutoIncrement()){
+			column.autoIncrement(row.getBoolean("IS_IDENTITY", null));
+		}
+		if(-1 == column.isAutoIncrement()){
+			column.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
+		}
+		if(-1 == column.isAutoIncrement()){
+			column.autoIncrement(row.getBoolean("IDENTITY", null));
+		}
+		if(-1 == column.isAutoIncrement()){
+			if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
+				column.autoIncrement(true);
+			}
+		}
+		//mysql中的on update
+		if(row.getStringNvl("EXTRA").toLowerCase().contains("on update")){
+			column.setOnUpdate(true);
+		}
+		String defaultValue = column.getDefaultValue()+"";
+		if(defaultValue.toLowerCase().contains("nextval")){
+			column.autoIncrement(true);
+		}
+		column.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+		//主键
+		String column_key = row.getString("COLUMN_KEY");
+		if("PRI".equals(column_key)){
+			column.primary(1);
+		}
+		if(row.getBoolean("PK", Boolean.FALSE)){
+			column.primary(1);
+		}
+
+		//非空
+		if(-1 == column.isNullable()) {
+			try {
+				column.nullable(row.getBoolean(config.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
+			}catch (Exception e){}
+		}
+		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
+		try {
+			Integer len = row.getInt(null, config.getLengthRefers());
+			/*if(null == len){
+				len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+				if (null == len || len == 0) {
+					len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
+				}
+			}*/
+			//-1表示设置过了 null可能被precision覆盖(column.getFullType时会判断)
+			if(null == len){
+				len = -1;
+			}
+			column.setLength(len);
+		}catch (Exception e){}
+		try{
+			Integer precision = row.getInt(null, config.getPrecisionRefers());
+			/*if(null == precision){
+				precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
+			}*/
+			//-1表示设置过了 null可能被length覆盖(column.getFullType时会判断)
+			if(null == precision){
+				precision = -1;
+			}
+			column.setPrecision(precision);
+		}catch (Exception e){
+
+		}
+		try {
+			Integer scale = row.getInt(null, config.getScaleRefers());
+			/*if(null == scale){
+				scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
+			}*/
+			column.setScale(scale);
+		}catch (Exception e){}
+
+		if(null == column.getCharset()) {
+			column.setCharset(row.getString(config.getCharsetRefers()));//"CHARACTER_SET_NAME"
+		}
+		if(null == column.getCollate()) {
+			column.setCollate(row.getString(config.getCollateRefers()));//COLLATION_NAME
+		}
+		if(null == column.getTypeMetadata()) {
+			typeMetadata(runtime, column);
+		}
+		return column;
+	}
+
+	/**
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ColumnMetadataAdapter
+	 */
+	@Override
+	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+		ColumnMetadataAdapter config = new ColumnMetadataAdapter();
+		config.setNameRefer("COLUMN_NAME,COLNAME");
+		config.setCatalogRefer("TABLE_CATALOG");
+		config.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
+		config.setTableRefer("TABLE_NAME,TABNAME");
+		config.setTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+		return config;
+	}
 
 
 	/* *****************************************************************************************************************
@@ -4833,9 +5004,35 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-		return super.init(runtime, index, primary, table, set);
+		PrimaryMetadataAdapter config = primaryMetadataAdapter(runtime);
+		for(DataRow row:set){
+			if(null == primary){
+				primary = (T)new PrimaryKey();
+				primary.setName(row.getString(config.getNameRefers()));
+				if(null == table){
+					table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getNameRefers()));
+				}
+				primary.setTable(table);
+			}
+			String col = row.getString(config.getColumnRefers());
+			if(BasicUtil.isEmpty(col)){
+				throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
+			}
+			Column column = primary.getColumn(col);
+			if(null == column){
+				column = new Column(col);
+			}
+			column.setTable(table);
+			String position = row.getString(config.getColumnPositionRefer());
+			primary.setPosition(column, BasicUtil.parseInt(position, 0));
+			String order = row.getString(config.getColumnOrderRefer());
+			if(BasicUtil.isNotEmpty(order)) {
+				column.setOrder(order);
+			}
+			primary.addColumn(column);
+		}
+		return primary;
 	}
-
 	/**
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey更多属性
@@ -4852,34 +5049,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 	/**
 	 * primary[结构集封装-依据]<br/>
-	 * primary元数据名称依据
+	 * 读取primary key元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
+	 * @return PrimaryMetadataAdapter
 	 */
 	@Override
-	public String primaryMetadataName(DataRuntime runtime){
-		return super.primaryMetadataName(runtime);
-	}
-
-	/**
-	 * primary[结构集封装-依据]<br/>
-	 * primary元数据表名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
-	 */
-	@Override
-	public String primaryMetadataTable(DataRuntime runtime){
-		return super.primaryMetadataTable(runtime);
-	}
-	/**
-	 * primary[结构集封装-依据]<br/>
-	 * primary元数据列名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return column name
-	 */
-	@Override
-	public String primaryMetadataColumn(DataRuntime runtime){
-		return super.primaryMetadataColumn(runtime);
+	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
+		return new PrimaryMetadataAdapter();
 	}
 
 	/**
@@ -7688,10 +7864,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			typeName = type.getName();
 		}
-
-		ignoreLength = ignoreLength(runtime, meta);
-		ignorePrecision = ignorePrecision(runtime, meta);
-		ignoreScale = ignoreScale(runtime, meta);
+		ColumnMetadataAdapter config = columnMetadataAdapter(runtime, type);
+		ignoreLength = config.ignoreLength();
+		ignorePrecision = config.ignorePrecision();
+		ignoreScale = config.ignoreScale();
 		return type(runtime, builder, meta, typeName, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
@@ -7725,84 +7901,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == builder){
 			builder = new StringBuilder();
 		}
-		meta.setIgnoreLength(ignoreLength);
-		meta.setIgnorePrecision(ignorePrecision);
-		meta.setIgnoreScale(ignoreScale);
+		meta.ignoreLength(ignoreLength);
+		meta.ignorePrecision(ignorePrecision);
+		meta.ignoreScale(ignoreScale);
 		meta.parseType(2);
 		builder.append(meta.getFullType());
 		return builder;
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
-	 * @return boolean
-	 */
-	@Override
-	public int ignoreLength(DataRuntime runtime, Column meta) {
-		return super.ignoreLength(runtime, meta);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略有效位数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
-	 * @return boolean
-	 */
-	@Override
-	public int ignorePrecision(DataRuntime runtime, Column meta) {
-		return super.ignorePrecision(runtime, meta);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta ignoreLength
-	 * @return boolean
-	 */
-	@Override
-	public int ignoreScale(DataRuntime runtime, Column meta) {
-		return super.ignoreScale(runtime, meta);
-	}
-	
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnoreLength(DataRuntime runtime, String type) {
-		return super.checkIgnoreLength(runtime, type);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略有效位数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnorePrecision(DataRuntime runtime, String type) {
-		return super.checkIgnorePrecision(runtime, type);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnoreScale(DataRuntime runtime, String type) {
-		return super.checkIgnoreScale(runtime, type);
 	}
 
 	/**
@@ -9391,10 +9495,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		builder.append(" ").append(parameter.getName());
 		TypeMetadata type = parameter.getColumnType();
 		Column column = new Column();
-		column.setTypeMetadata(type).setLength(parameter.getLength()).setPrecision(parameter.getPrecision()).setScale(parameter.getScale());
-		int ignoreLength= ignoreLength(runtime, column);
-		int ignorePrecision= ignorePrecision(runtime, column);
-		int ignoreScale = ignoreScale(runtime, column);
+		column.setTypeMetadata(type);
+		ColumnMetadataAdapter config = columnMetadataAdapter(runtime, type);
+		int ignoreLength= config.ignoreLength();
+		int ignorePrecision= config.ignorePrecision();
+		int ignoreScale = config.ignoreScale();
 		type(runtime, builder, column, type.getName(), ignoreLength, ignorePrecision, ignoreScale);
 		return builder;
 	}
@@ -9756,258 +9861,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return true;
 	}
 
-	/**
-	 * column [结果集封装-子流程](方法1)<br/>
-	 * 方法(1)内部遍历
-	 * @param column 上一步封装结果
-	 * @param table 表
-	 * @param row 查询结果集
-	 */
-	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
-		if(null == column){
-			column = (T)new Column();
-		}
-		String catalog = null;
-		String catalog_column = columnMetadataCatalog(runtime);
-		if(null != catalog_column) {
-			catalog = row.getString(catalog_column.split(","));
-		}
-		catalog = BasicUtil.evl(catalog, column.getCatalogName());
-		String schema = null;
-		String schema_column = columnMetadataSchema(runtime); //"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
-		if(null != schema_column){
-			schema = row.getString(schema_column.split(","));
-		}
-		schema = BasicUtil.evl(schema, column.getSchemaName());
-		if(null != table){
-			if(null == catalog){
-				catalog = table.getCatalogName();
-			}
-			if(null == schema){
-				schema = table.getSchemaName();
-			}
-		}
-		if(null != catalog){
-			catalog = catalog.trim();
-		}
-		if(null != schema){
-			schema = schema.trim();
-		}
-		if(null == column){
-			column = (T)new Column();
-		}
-		column.setCatalog(catalog);
-		column.setSchema(schema);
-		if(null != table) {//查询全部表
-			column.setTable(table);
-		}else {
-			String tableName = null;
-			String table_column = columnMetadataTable(runtime);
-			if (null != table_column) {
-				tableName = row.getString(table_column.split(","));//"TABLE_NAME","TABNAME"
-			}
-			column.setTable(BasicUtil.evl(tableName, column.getTableName(true), tableName));
-		}
-		String name = null;
-		String name_column = columnMetadataName(runtime);
-		if(null != name_column){
-			name = row.getString(name_column.split(","));
-		}
-		column.setName(name);
-		return column;
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 列详细属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
-	 * @param row 系统表查询SQL结果集
-	 * @return Column
-	 * @param <T> Column
-	 */
-	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
-		if(null == column){
-			return null;
-		}
-		if(null == column.getPosition()) {
-			try {
-				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
-			}catch (Exception e){}
-		}
-		column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS","REMARKS"), column.getComment()));
-		String type = row.getString("FULL_TYPE","DATA_TYPE","TYPE_NAME","TYPENAME","DATA_TYPE_NAME");
-		/*if(null != type){
-			type = type.replace("character varying","VARCHAR");
-		}*/
-		//FULL_TYPE pg中pg_catalog.format_type合成的
-		//character varying
-		//TODO timestamp without time zone
-		//TODO 子类型  geometry(Polygon,4326) geometry(Polygon) geography(Polygon,4326)
-		if(null != type && type.contains(" ")){
-			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
-		}
-		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
-		TypeMetadata typeMetadata = typeMetadata(runtime, type);
-		column.setTypeMetadata(typeMetadata);/*
-		int ignore_length = ignoreLength(runtime, column);
-		int ignore_precision = ignorePrecision(runtime, column);
-		int ignore_scale = ignoreScale(runtime, column);*/
-		String length_column = this.columnMetadataLength(runtime, typeMetadata);
-		String precision_column = this.columnMetadataPrecision(runtime, typeMetadata);
-		String scale_column = this.columnMetadataScale(runtime, typeMetadata);
-
-
-		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
-		if(BasicUtil.isNotEmpty(def)) {
-			while(def.startsWith("(") && def.endsWith(")")){
-				def = def.substring(1, def.length()-1);
-			}
-			while(def.startsWith("'") && def.endsWith("'")){
-				def = def.substring(1, def.length()-1);
-			}
-			column.setDefaultValue(def);
-		}
-		//默认值约束
-		column.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
-		if(-1 == column.isAutoIncrement()){
-			column.autoIncrement(row.getBoolean("IS_IDENTITY", null));
-		}
-		if(-1 == column.isAutoIncrement()){
-			column.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
-		}
-		if(-1 == column.isAutoIncrement()){
-			column.autoIncrement(row.getBoolean("IDENTITY", null));
-		}
-		if(-1 == column.isAutoIncrement()){
-			if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
-				column.autoIncrement(true);
-			}
-		}
-		//mysql中的on update
-		if(row.getStringNvl("EXTRA").toLowerCase().contains("on update")){
-			column.setOnUpdate(true);
-		}
-		String defaultValue = column.getDefaultValue()+"";
-		if(defaultValue.toLowerCase().contains("nextval")){
-			column.autoIncrement(true);
-		}
-		column.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-		//主键
-		String column_key = row.getString("COLUMN_KEY");
-		if("PRI".equals(column_key)){
-			column.primary(1);
-		}
-		if(row.getBoolean("PK", Boolean.FALSE)){
-			column.primary(1);
-		}
-
-		//非空
-		if(-1 == column.isNullable()) {
-			try {
-				column.nullable(row.getBoolean("IS_NULLABLE","NULLABLE","NULLS"));
-			}catch (Exception e){}
-		}
-		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
-		try {
-			Integer len = null;
-			if(null != length_column){
-				len = row.getInt(length_column);
-			}else{
-				len = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-				if (null == len || len == 0) {
-					len = row.getInt("CHARACTER_MAXIMUM_LENGTH","MAX_LENGTH","DATA_LENGTH","LENGTH");
-				}
-			}
-			//-1表示设置过了 null可能被precision覆盖(column.getFullType时会判断)
-			if(null == len){
-				len = -1;
-			}
-			column.setLength(len);
-		}catch (Exception e){}
-		try{
-			Integer precision = null;
-			if(null != precision_column){
-				precision = row.getInt(precision_column);
-			}else{
-				precision = row.getInt("NUMERIC_PRECISION","PRECISION","DATA_PRECISION");
-			}
-			//-1表示设置过了 null可能被length覆盖(column.getFullType时会判断)
-			if(null == precision){
-				precision = -1;
-			}
-			column.setPrecision(precision);
-		}catch (Exception e){
-
-		}
-		try {
-			Integer scale = null;
-			if(null != scale_column){
-				scale = row.getInt(scale_column);
-			}else {
-				scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
-			}
-			column.setScale(scale);
-		}catch (Exception e){}
-		if(null == column.getCharset()) {
-			column.setCharset(row.getString("CHARACTER_SET_NAME"));
-		}
-		if(null == column.getCollate()) {
-			column.setCollate(row.getString("COLLATION_NAME"));
-		}
-		if(null == column.getTypeMetadata()) {
-			typeMetadata(runtime, column);
-		}
-		return column;
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * Column元数据数据类型列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
-		return "FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME";
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据长度列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLength(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字有效位数列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecision(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字小数位数列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScale(runtime, meta);
-	}
 
 	/**
 	 *

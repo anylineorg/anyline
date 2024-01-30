@@ -1,11 +1,11 @@
-package org.anyline.data.adapter.config;
+package org.anyline.data.adapter.metadata;
 
 import org.anyline.util.BasicUtil;
 
 /**
  * 读取元数据结果集依据(列名)
  */
-public class MetadataReaderConfig<T extends MetadataReaderConfig> {
+public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
     /**
      * 名称<br/>
      * 注意在读取column元数据时,表名要用name而不是column,其他类似<br/>

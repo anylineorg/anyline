@@ -1,8 +1,8 @@
-package org.anyline.data.adapter.config;
+package org.anyline.data.adapter.metadata;
 
 import org.anyline.util.BasicUtil;
 
-public class IndexMetadataReaderConfig extends MetadataReaderConfig{
+public class IndexMetadataAdapter extends AbstractMetadataAdapter {
     /**
      * 排序
      */
@@ -16,12 +16,12 @@ public class IndexMetadataReaderConfig extends MetadataReaderConfig{
         return columnOrderRefer;
     }
 
-    public IndexMetadataReaderConfig setColumnOrderRefer(String[] columnOrderRefer) {
+    public IndexMetadataAdapter setColumnOrderRefer(String[] columnOrderRefer) {
         this.columnOrderRefer = columnOrderRefer;
         return this;
     }
 
-    public IndexMetadataReaderConfig setColumnOrderRefer(String columnOrderRefer) {
+    public IndexMetadataAdapter setColumnOrderRefer(String columnOrderRefer) {
         if(BasicUtil.isNotEmpty(columnOrderRefer)) {
             this.columnOrderRefer = columnOrderRefer.split(",");
         }else{
@@ -33,11 +33,11 @@ public class IndexMetadataReaderConfig extends MetadataReaderConfig{
         return columnPositionRefer;
     }
 
-    public IndexMetadataReaderConfig setColumnPositionRefer(String[] columnPositionRefer) {
+    public IndexMetadataAdapter setColumnPositionRefer(String[] columnPositionRefer) {
         this.columnPositionRefer = columnPositionRefer;
         return this;
     }
-    public IndexMetadataReaderConfig setColumnPositionRefer(String columnPositionRefer) {
+    public IndexMetadataAdapter setColumnPositionRefer(String columnPositionRefer) {
         if(BasicUtil.isNotEmpty(columnPositionRefer)) {
             this.columnPositionRefer = columnPositionRefer.split(",");
         }else{

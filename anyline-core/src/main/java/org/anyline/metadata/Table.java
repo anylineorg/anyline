@@ -115,6 +115,10 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     protected int temporary                     ;
 
     /**
+     * 主键是否需要更新
+     */
+    protected int changePrimary = -1             ;
+    /**
      * 物化视图
      */
     protected LinkedHashMap<String, View> materializes;
@@ -791,6 +795,14 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             }
         }
         return primaryKey;
+    }
+
+    public int getChangePrimary() {
+        return changePrimary;
+    }
+
+    public void setChangePrimary(int changePrimary) {
+        this.changePrimary = changePrimary;
     }
 
     public <T extends Index> Table setIndexs(LinkedHashMap<String, T> indexs) {

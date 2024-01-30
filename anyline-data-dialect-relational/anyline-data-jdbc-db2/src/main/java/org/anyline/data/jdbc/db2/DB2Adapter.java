@@ -33,6 +33,8 @@
 
 package org.anyline.data.jdbc.db2;
 
+import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
+import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -1729,7 +1731,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1747,7 +1749,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1765,40 +1767,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	/**
-	 * table[结果集封装-依据]<br/>
-	 * table结果集表名依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String tableMetadataName(DataRuntime runtime){
-		return "TABNAME";
-	}
-
-	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Catalog依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String tableMetadataCatalog(DataRuntime runtime){
-		return null;
-	}
-
-	/**
-	 * table[结果集封装-依据]<br/>
-	 * table元数据结果集Schema依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String tableMetadataSchema(DataRuntime runtime){
-		return "TABSCHEMA";
-	}
-
-	/**
-	 * table[结果集封装]<br/> <br/>
+	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
@@ -1910,6 +1879,43 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
+		return super.init(runtime, index, table, catalog, schema, row);
+	}
+
+	/**
+	 * table[结果集封装]<br/>
+	 * 根据查询结果封装Table更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Table
+	 */
+	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
+		return super.detail(runtime, index, table, row);
+	}
+
+	/**
+	 * table[结构集封装-依据]<br/>
+	 * 读取table元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return TableMetadataAdapter
+	 */
+	@Override
+	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime){
+		TableMetadataAdapter config = new TableMetadataAdapter();
+		config.setNameRefer("TABNAME");
+		config.setCatalogRefer("");
+		config.setSchemaRefer("TABSCHEMA");
+		return config;
+	}
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -2441,57 +2447,6 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
-	 * Column元数据数据类型列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataType(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataType(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据长度列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataLength(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字有效位数列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataPrecision(runtime, meta);
-	}
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
-	 * 元数据数字小数位数列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta TypeMetadata
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
-		return super.columnMetadataScale(runtime, meta);
-	}
-
-
-
-
-	/**
-	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param column 列
@@ -2537,48 +2492,63 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据名称列
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ColumnMetadataAdapter
+	 */
+	@Override
+	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+		ColumnMetadataAdapter config = new ColumnMetadataAdapter();
+		config.setNameRefer("COLNAME");
+		config.setCatalogRefer("");
+		config.setSchemaRefer("TABSCEHMA");
+		config.setPositionRefer("COLNO");
+		config.setTableRefer("TABNAME");
+		config.setTypeRefer("TYPENAME");
+		config.setPrecisionRefer("LENGTH");
+		config.setScaleRefer("SCALE");
+		return config;
+	}
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataName(DataRuntime runtime){
-		return "COLNAME";
+	public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataLengthRefer(runtime, meta);
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Catalog列
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据长度列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataCatalog(DataRuntime runtime){
-		return null;
+	public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataPrecisionRefer(runtime, meta);
 	}
 
 	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Schema列
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 元数据数字有效位数列<br/>
+	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta TypeMetadata
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataSchema(DataRuntime runtime){
-		return "TABSCHEMA";
+	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataScaleRefer(runtime, meta);
 	}
 
-	/**
-	 * column[结果集封装]<br/>
-	 * Column元数据Table列
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return String
-	 */
-	@Override
-	public String columnMetadataTable(DataRuntime runtime){
-		return "TABNAME";
-	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
@@ -4869,78 +4839,6 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	@Override
 	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
 		return super.aggregation(runtime, builder, meta);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
-	 * @return boolean
-	 */
-	@Override
-	public int ignoreLength(DataRuntime runtime, Column meta) {
-		return super.ignoreLength(runtime, meta);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略有效位数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
-	 * @return boolean
-	 */
-	@Override
-	public int ignorePrecision(DataRuntime runtime, Column meta) {
-		return super.ignorePrecision(runtime, meta);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 列
-	 * @return boolean
-	 */
-	@Override
-	public int ignoreScale(DataRuntime runtime, Column meta) {
-		return super.ignoreScale(runtime, meta);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略长度
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnoreLength(DataRuntime runtime, String type) {
-		return super.checkIgnoreLength(runtime, type);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:是否忽略有效位数
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnorePrecision(DataRuntime runtime, String type) {
-		return super.checkIgnorePrecision(runtime, type);
-	}
-
-	/**
-	 * column[命令合成-子流程]<br/>
-	 * 列定义:定义列:是否忽略小数位
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param type 列数据类型
-	 * @return Boolean 检测不到时返回null
-	 */
-	@Override
-	public int checkIgnoreScale(DataRuntime runtime, String type) {
-		return super.checkIgnoreScale(runtime, type);
 	}
 
 	/**

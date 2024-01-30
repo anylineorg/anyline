@@ -1796,6 +1796,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return String
      */
     public String getString(String ... keys) {
+        if(null == keys){
+            return null;
+        }
         String result = null;
         for(String key:keys) {
             if (null == key) {
@@ -1914,6 +1917,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } catch (Exception e) {
             return def;
         }
+    }
+    public Integer getInt(Integer def, String ... keys){
+        Integer result = null;
+        for(String key:keys){
+            result = getInt(key, null);
+            if(null != result){
+                return result;
+            }
+        }
+        return def;
     }
 
     public Double getDouble(String ... keys) throws Exception {

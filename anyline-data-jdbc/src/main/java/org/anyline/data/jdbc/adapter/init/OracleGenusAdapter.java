@@ -1,5 +1,8 @@
 package org.anyline.data.jdbc.adapter.init;
 
+import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
+import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
+import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -30,6 +33,10 @@ import java.util.*;
 public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
 
     public OracleGenusAdapter(){
+        for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()){
+            typeConfigs.put(alias.name().toUpperCase(), alias.config());
+            typeConfigs.put(alias.standard().getName().toUpperCase(), alias.config());
+        }
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1, 1));
@@ -1916,7 +1923,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1934,7 +1941,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1951,7 +1958,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         return super.tables(runtime, index, create, catalog, schema, tables, set);
     }
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -2730,7 +2737,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 
     /**
      * primary[结构集封装]<br/>
-     *  根据查询结果集构造PrimaryKey
+     * 根据查询结果集构造PrimaryKey基础属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
      * @param table 表
@@ -2739,24 +2746,46 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-        for(DataRow row:set){
-            if(null == primary){
-                primary = (T)new PrimaryKey();
-                primary.setName(row.getString("CONSTRAINT_NAME"));
-                primary.setTable(table);
-            }
-            String col = row.getString("COLUMN_NAME");
-            Column column = primary.getColumn(col);
-            if(null == column){
-                column = new Column(col);
-            }
-            column.setTable(table);
-            column.setPosition(row.getInt("POSITION",0));
-            primary.addColumn(column);
-        }
-        return primary;
+        return super.init(runtime, index, primary, table, set);
     }
 
+    /**
+     * primary[结构集封装]<br/>
+     * 根据查询结果集构造PrimaryKey更多属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+     * @param table 表
+     * @param set sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+        return super.detail(runtime, index, primary, table, set);
+    }
+
+    /**
+     * primary[结构集封装-依据]<br/>
+     * 读取primary key元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return PrimaryMetadataAdapter
+     */
+    @Override
+    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
+        PrimaryMetadataAdapter config = super.primaryMetadataAdapter(runtime);
+        config.setNameRefer("CONSTRAINT_NAME");
+        config.setCatalogRefer((String)null);
+        config.setSchemaRefer("OWNER");
+        config.setTableRefer("TABLE_NAME");
+        config.setColumnRefer("COLUMN_NAME");
+        config.setColumnPositionRefer("POSITION");
+        config.setColumnOrderRefer((String)null);
+        return config;
+    }
+
+    @Override
+    public PrimaryKey primary(DataRuntime runtime, Table table) throws Exception {
+        return super.primary(runtime, table);
+    }
 
     /* *****************************************************************************************************************
      * 													foreign
@@ -5131,61 +5160,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     }
 
 
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignoreLength(DataRuntime runtime, Column meta) {
-        return super.ignoreLength(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略有效位数
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignorePrecision(DataRuntime runtime, Column meta) {
-        return super.ignorePrecision(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:定义列:是否忽略小数位
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignoreScale(DataRuntime runtime, Column meta) {
-        return super.ignoreScale(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnorePrecision(DataRuntime runtime, String type) {
-        return super.checkIgnoreScale(runtime, type);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:定义列:是否忽略小数位
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnoreScale(DataRuntime runtime, String type) {
-        return super.checkIgnoreScale(runtime, type);
-    }
+    
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:非空
@@ -6675,8 +6650,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataLength(runtime, meta);
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthRefer(runtime, meta);
     }
 
     /**
@@ -6687,8 +6662,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataPrecision(runtime, meta);
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
     /**
@@ -6699,8 +6674,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * @return String
      */
     @Override
-    public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataScale(runtime, meta);
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleRefer(runtime, meta);
     }
     /**
      *

@@ -1,5 +1,6 @@
 package org.anyline.data.jdbc.adapter.init;
 
+import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -24,14 +25,17 @@ import java.util.*;
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
     public MySQLGenusAdapter(){
         super();
-
+        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
+            typeConfigs.put(alias.name().toUpperCase(), alias.config());
+            typeConfigs.put(alias.standard().getName().toUpperCase(), alias.config());
+        }
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1,1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", null, 1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 0, 0));
+        typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", "NUMERIC_PRECISION", "NUMERIC_SCALE", 1, 2, 2));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
@@ -1717,7 +1721,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1737,7 +1741,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1756,7 +1760,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         return tables;
     }
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -4792,9 +4796,18 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         if(null == update){
             update = meta;
         }
-        builder.append(" CHANGE ");
+        String name = meta.getName();
+        String uname = update.getName();
+        boolean rename = !name.equalsIgnoreCase(uname);
+        if(rename){
+            builder.append(" CHANGE ");
+        }else{
+            builder.append(" MODIFY ");
+        }
         delimiter(builder, meta.getName()).append(" ");
-        delimiter(builder, update.getName()).append(" ");
+        if(rename) {
+            delimiter(builder, update.getName()).append(" ");
+        }
         define(runtime, builder, update);
         return runs;
     }
@@ -5018,61 +5031,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
 
     /**
      * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignorePrecision(DataRuntime runtime, Column meta) {
-        return super.ignorePrecision(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:定义列:是否忽略小数位
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignoreScale(DataRuntime runtime, Column meta) {
-        return super.ignoreScale(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnoreLength(DataRuntime runtime, String type) {
-        return super.checkIgnoreLength(runtime, type);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略有效位数
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnorePrecision(DataRuntime runtime, String type) {
-        return super.checkIgnorePrecision(runtime, type);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:定义列:是否忽略小数位
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnoreScale(DataRuntime runtime, String type) {
-        return super.checkIgnoreScale(runtime, type);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
      * 列定义:非空
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param builder builder
@@ -5133,6 +5091,20 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         if(null != meta && meta.isPrimaryKey()==1){
             Table table = meta.getTable();
             int size = table.getPrimaryKeySize();
+            //如果是修改状态 并且 列名没变 并且 主键没变 则忽略
+            if(meta.getAction() == ACTION.DDL.COLUMN_ALTER){
+                Column update = meta.getUpdate();
+                if(null == update){
+                    update = meta;
+                }
+                String name = meta.getName();
+                String uname = update.getName();
+                boolean rename = !name.equalsIgnoreCase(uname);
+                boolean repk = meta.getTable().getChangePrimary() == 1;
+                if(!rename && !repk){
+                    return builder;
+                }
+            }
             if(size ==1){//单键时 在列名上设置
                 builder.append(" PRIMARY KEY");
             }
@@ -6612,8 +6584,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataLength(runtime, meta);
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthRefer(runtime, meta);
     }
 
     /**
@@ -6624,8 +6596,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataPrecision(runtime, meta);
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
     /**
@@ -6636,8 +6608,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * @return String
      */
     @Override
-    public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataScale(runtime, meta);
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleRefer(runtime, meta);
     }
     /**
      *

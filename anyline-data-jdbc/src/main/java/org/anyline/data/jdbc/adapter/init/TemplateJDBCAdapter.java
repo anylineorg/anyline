@@ -29,6 +29,10 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
+        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
+            typeConfigs.put(alias.name().toUpperCase(), alias.config());
+            typeConfigs.put(alias.standard().getName().toUpperCase(), alias.config());
+        }
         for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
             this.alias.put(alias.name(), alias.standard());
         }
@@ -133,8 +137,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLength(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataLength(runtime, meta);
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthRefer(runtime, meta);
     }
 
     /**
@@ -145,8 +149,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecision(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataPrecision(runtime, meta);
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
     /**
@@ -157,8 +161,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScale(DataRuntime runtime, TypeMetadata meta){
-        return super.columnMetadataScale(runtime, meta);
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleRefer(runtime, meta);
     }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
         return super.insertFoot(configs, columns);

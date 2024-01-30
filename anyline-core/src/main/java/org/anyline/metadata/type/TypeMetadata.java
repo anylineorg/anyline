@@ -18,6 +18,8 @@
 package org.anyline.metadata.type;
 
 
+import org.anyline.util.BasicUtil;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -367,32 +369,32 @@ public interface TypeMetadata {
          * 正常情况下只有一列<br/>
          * 如果需要取多列以,分隔
          */
-        private String lengthColumn;
+        private String[] lengthRefers;
         /**
          * 读取元数据时 数字类型长度对应的列<br/>
          * 正常情况下只有一列<br/>
          * 如果需要取多列以,分隔
          */
-        private String precisionColumn;
+        private String[] precisionRefers;
         /**
          * 读取元数据时 小数位对应的列<br/>
          * 正常情况下只有一列<br/>
          * 如果需要取多列以,分隔
          */
-        private String scaleColumn;
+        private String[] scaleRefers;
         public Config(){}
-        public Config(String length, String precision, String scale, int ignoreLength, int ignorePrecision, int ignoreScale){
-            this.lengthColumn = length;
-            this.precisionColumn = precision;
-            this.scaleColumn = scale;
+        public Config(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+            setLengthRefer(lengthRefer);
+            setScaleRefer(scaleRefer);
+            setPrecisionRefer(precisionRefer);
             this.ignoreLength = ignoreLength;
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
         }
-        public Config(String length, String precision, String scale){
-            this.lengthColumn = length;
-            this.precisionColumn = precision;
-            this.scaleColumn = scale;
+        public Config(String lengthRefer, String precisionRefer, String scaleRefer){
+            setLengthRefer(lengthRefer);
+            setScaleRefer(scaleRefer);
+            setPrecisionRefer(precisionRefer);
         }
 
         public Config(int ignoreLength, int ignorePrecision, int ignoreScale){
@@ -404,48 +406,99 @@ public interface TypeMetadata {
             return ignoreLength;
         }
 
-        public void setIgnoreLength(int ignoreLength) {
+        public Config setIgnoreLength(int ignoreLength) {
             this.ignoreLength = ignoreLength;
+            return this;
         }
 
         public int ignorePrecision() {
             return ignorePrecision;
         }
 
-        public void setIgnorePrecision(int ignorePrecision) {
+        public Config setIgnorePrecision(int ignorePrecision) {
             this.ignorePrecision = ignorePrecision;
+            return this;
         }
 
         public int ignoreScale() {
             return ignoreScale;
         }
 
-        public void setIgnoreScale(int ignoreScale) {
+        public Config setIgnoreScale(int ignoreScale) {
             this.ignoreScale = ignoreScale;
+            return this;
         }
 
-        public String lengthColumn() {
-            return lengthColumn;
+        public String[] getLengthRefers() {
+            return lengthRefers;
+        }
+        public String getLengthRefer(){
+            if(null != lengthRefers && lengthRefers.length > 0){
+                return lengthRefers[0];
+            }
+            return null;
         }
 
-        public void setLengthColumn(String lengthColumn) {
-            this.lengthColumn = lengthColumn;
+        public Config setLengthRefers(String[] lengthRefers) {
+            this.lengthRefers = lengthRefers;
+            return this;
         }
 
-        public String precisionColumn() {
-            return precisionColumn;
+        public Config setLengthRefer(String lengthRefer) {
+            if(BasicUtil.isNotEmpty(lengthRefer)) {
+                this.lengthRefers = lengthRefer.split(",");
+            } else {
+
+                this.lengthRefers = null;
+            }
+            return this;
+        }
+        public String[] getPrecisionRefers() {
+            return precisionRefers;
         }
 
-        public void setPrecisionColumn(String precisionColumn) {
-            this.precisionColumn = precisionColumn;
+        public String getPrecisionRefer(){
+            if(null != precisionRefers && precisionRefers.length > 0){
+                return precisionRefers[0];
+            }
+            return null;
+        }
+        public Config setPrecisionRefers(String[] precisionRefers) {
+            this.precisionRefers = precisionRefers;
+            return this;
         }
 
-        public String scaleColumn() {
-            return scaleColumn;
+        public Config setPrecisionRefer(String precisionRefer) {
+            if(BasicUtil.isNotEmpty(precisionRefer)) {
+                this.precisionRefers = precisionRefer.split(",");
+            } else {
+                this.precisionRefers = null;
+            }
+            return this;
+        }
+        public String[] getScaleRefers() {
+            return scaleRefers;
         }
 
-        public void setScaleColumn(String scaleColumn) {
-            this.scaleColumn = scaleColumn;
+        public String getScaleRefer(){
+            if(null != scaleRefers && scaleRefers.length > 0){
+                return scaleRefers[0];
+            }
+            return null;
+        }
+        public Config setScaleRefers(String[] scaleRefers) {
+            this.scaleRefers = scaleRefers;
+            return this;
+        }
+
+        public Config setScaleRefer(String scaleRefer) {
+            if(BasicUtil.isNotEmpty(scaleRefer)) {
+                this.scaleRefers = scaleRefer.split(",");
+            } else {
+
+                this.scaleRefers = null;
+            }
+            return this;
         }
     }
 }

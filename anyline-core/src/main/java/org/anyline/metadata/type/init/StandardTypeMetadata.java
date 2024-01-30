@@ -462,6 +462,49 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , REAL(CATEGORY.FLOAT, "REAL", DOUBLE, Double.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
     }
+    ,CLICKHOUSE_INT8(CATEGORY.INT, "INT8", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_INT16(CATEGORY.INT, "INT16", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_INT32(CATEGORY.INT, "INT32", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_INT64(CATEGORY.INT, "INT64", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_INT128(CATEGORY.INT, "INT128", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_INT256(CATEGORY.INT, "INT256", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+
+    ,CLICKHOUSE_UINT8(CATEGORY.INT, "UINT8", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_UINT16(CATEGORY.INT, "UINT16", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_UINT32(CATEGORY.INT, "UINT32", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_UINT64(CATEGORY.INT, "UINT64", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_UINT128(CATEGORY.INT, "UINT128", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_UINT256(CATEGORY.INT, "UINT256", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "FLOAT32", FLOAT, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "FLOAT64", DOUBLE, Double.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    }
     /* *****************************************************************************************************************
      *
      *                                              date

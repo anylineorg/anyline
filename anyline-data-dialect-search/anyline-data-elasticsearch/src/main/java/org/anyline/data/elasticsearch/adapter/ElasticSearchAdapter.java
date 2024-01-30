@@ -1614,7 +1614,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1632,7 +1632,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      *  根据查询结果集构造Table
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条SQL 对照buildQueryTablesRun返回顺序
@@ -1660,7 +1660,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
 
     /**
-     * table[结果集封装]<br/> <br/>
+     * table[结果集封装]<br/>
      * 根据驱动内置方法补充
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param create 上一步没有查到的,这一步是否需要新创建
@@ -4436,73 +4436,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
         return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
     }
-    
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignoreLength(DataRuntime runtime, Column meta) {
-        return super.ignoreLength(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignorePrecision(DataRuntime runtime, Column meta) {
-        return super.ignorePrecision(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:定义列:是否忽略小数位
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta 列
-     * @return boolean
-     */
-    @Override
-    public int ignoreScale(DataRuntime runtime, Column meta) {
-        return super.ignoreScale(runtime, meta);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略长度
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnoreLength(DataRuntime runtime, String type) {
-        return super.checkIgnoreLength(runtime, type);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:是否忽略有效位数
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnorePrecision(DataRuntime runtime, String type) {
-        return super.checkIgnorePrecision(runtime, type);
-    }
-    /**
-     * column[命令合成-子流程]<br/>
-     * 列定义:定义列:是否忽略小数位
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param type 列数据类型
-     * @return Boolean 检测不到时返回null
-     */
-    @Override
-    public int checkIgnoreScale(DataRuntime runtime, String type) {
-        return super.checkIgnoreScale(runtime, type);
-    }
+
     /**
      * column[命令合成-子流程]<br/>
      * 列定义:非空

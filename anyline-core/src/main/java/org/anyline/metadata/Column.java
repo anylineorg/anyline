@@ -1404,15 +1404,15 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
-    public void setIgnoreLength(int ignoreLength) {
+    public void ignoreLength(int ignoreLength) {
         this.ignoreLength = ignoreLength;
     }
 
-    public void setIgnorePrecision(int ignorePrecision) {
+    public void ignorePrecision(int ignorePrecision) {
         this.ignorePrecision = ignorePrecision;
     }
 
-    public void setIgnoreScale(int ignoreScale) {
+    public void ignoreScale(int ignoreScale) {
         this.ignoreScale = ignoreScale;
     }
 

@@ -122,13 +122,49 @@ public enum HighgoTypeMetadataAlias implements TypeMetadataAlias {
     VARCHAR2                (StandardTypeMetadata.VARCHAR               ),
     XML                     (StandardTypeMetadata.XML                   ),
     YEAR                    (StandardTypeMetadata.DATE                  );
+
     private final TypeMetadata standard;
-    private HighgoTypeMetadataAlias(TypeMetadata standard){
+    private int ignoreLength = -1;
+    private int ignorePrecision = -1;
+    private int ignoreScale = -1;
+    private String lengthRefer;
+    private String precisionRefer;
+    private String scaleRefer;
+    private TypeMetadata.Config config;
+
+    HighgoTypeMetadataAlias(TypeMetadata standard){
         this.standard = standard;
+    }
+
+    HighgoTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+        this.standard = standard;
+        this.lengthRefer = lengthRefer;
+        this.precisionRefer = precisionRefer;
+        this.scaleRefer = scaleRefer;
+        this.ignoreLength = ignoreLength;
+        this.ignorePrecision = ignorePrecision;
+        this.ignoreScale = ignoreScale;
+    }
+
+    HighgoTypeMetadataAlias(TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+        this.standard = standard;
+        this.ignoreLength = ignoreLength;
+        this.ignorePrecision = ignorePrecision;
+        this.ignoreScale = ignoreScale;
     }
 
     @Override
     public TypeMetadata standard() {
         return standard;
+    }
+
+    @Override
+    public TypeMetadata.Config config() {
+        if(null == config){
+            config = new TypeMetadata.Config();
+            config.setLengthRefer(lengthRefer).setPrecisionRefer(precisionRefer).setScaleRefer(scaleRefer);
+            config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+        }
+        return config;
     }
 }
