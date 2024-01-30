@@ -117,6 +117,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public AbstractDriverAdapter(){
 		//当前数据库支持的数据类型,子类根据情况覆盖
 		for(StandardTypeMetadata type: StandardTypeMetadata.values()){
+			reg(type.getName(), type.config());
 			List<DatabaseType> dbs = type.databaseTypes();
 			for(DatabaseType db:dbs){
 				if(db == this.type()){

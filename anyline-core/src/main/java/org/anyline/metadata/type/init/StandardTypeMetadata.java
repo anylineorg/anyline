@@ -814,6 +814,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     private final int ignorePrecision;
     private final int ignoreScale;
     private boolean array;
+    private TypeMetadata.Config config;
     StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         if(null != origin) {
@@ -985,5 +986,14 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     @Override
     public void setArray(boolean array) {
         this.array = array;
+    }
+
+    @Override
+    public TypeMetadata.Config config() {
+        if(null == config){
+            config = new TypeMetadata.Config();
+            config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+        }
+        return config;
     }
 }

@@ -50,6 +50,7 @@ public interface TypeMetadata {
         private final int ignorePrecision;
 
         private final int ignoreScale;
+        private TypeMetadata.Config config;
         CATEGORY(CATEGORY_GROUP group, int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.group = group;
             this.ignoreLength = ignoreLength;
@@ -60,16 +61,12 @@ public interface TypeMetadata {
             return group;
         }
 
-        public int ignoreLength() {
-            return ignoreLength;
-        }
-
-        public int ignorePrecision() {
-            return ignorePrecision;
-        }
-
-        public int ignoreScale() {
-            return ignoreScale;
+        public TypeMetadata.Config config() {
+            if(null == config){
+                config = new TypeMetadata.Config();
+                config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+            }
+            return config;
         }
     }
     default boolean equals(TypeMetadata metadata){
@@ -196,6 +193,10 @@ public interface TypeMetadata {
         public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return null;
         }
+        @Override
+        public Config config() {
+            return new TypeMetadata.Config();
+        }
     };
     //不识别的类型 原样输出
     TypeMetadata NONE = new TypeMetadata() {
@@ -231,6 +232,11 @@ public interface TypeMetadata {
         @Override
         public void setArray(boolean array) {
 
+        }
+
+        @Override
+        public Config config() {
+            return new TypeMetadata.Config();
         }
 
         @Override
@@ -317,6 +323,7 @@ public interface TypeMetadata {
         return false;
     }
     void setArray(boolean array);
+    TypeMetadata.Config config();
     /**
      * 写入数据库或查询条件时的类型
      * @return Class

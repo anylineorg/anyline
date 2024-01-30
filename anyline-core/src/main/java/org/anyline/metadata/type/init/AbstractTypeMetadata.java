@@ -36,6 +36,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     private int ignoreLength;
     private int ignorePrecision;
     private int ignoreScale;
+    private TypeMetadata.Config config;
     public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         this.name = name;
@@ -201,6 +202,15 @@ public class AbstractTypeMetadata implements TypeMetadata {
     @Override
     public List<DatabaseType> databaseTypes() {
         return dbs;
+    }
+
+    @Override
+    public TypeMetadata.Config config() {
+        if(null == config){
+            config = new TypeMetadata.Config();
+            config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+        }
+        return config;
     }
 
 }
