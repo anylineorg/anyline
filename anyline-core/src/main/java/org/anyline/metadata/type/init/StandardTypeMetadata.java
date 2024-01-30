@@ -254,7 +254,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , BINARY(CATEGORY.BYTES, "BINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA, ElasticSearch)
    , VARBINARY(CATEGORY.BYTES, "VARBINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA)
 
-    , STRING(CATEGORY.TEXT, "STRING", null, String.class, 0, 1, 1, Doris){
+    , STRING(CATEGORY.TEXT, "STRING", null, String.class, 1, 1, 1, Doris, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    }
+    , FIXED_STRING(CATEGORY.TEXT, "FixedString", null, String.class, 0, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     , HLL(CATEGORY.TEXT, "HLL", null, String.class, 0, 1, 1, Doris){
@@ -344,8 +347,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
 
     , BYTE(CATEGORY.INT, "BYTE", null, Short.class,1, 1, 1)
     , INT(CATEGORY.INT, "INT", null, Integer.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
-    , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB)
-    , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB)
+    , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
+    , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
+    , INT128(CATEGORY.INT, "INT128", null, Integer.class, 1, 1, 1, ClickHouse)
+    , INT256(CATEGORY.INT, "INT256", null, Integer.class, 1, 1, 1, ClickHouse)
     , INFORMIX_INTEGER(CATEGORY.INT, "INTEGER", null, Integer.class,1, 1, 1, Informix, GBase8S, SinoDB)
     , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch){}
     , INT2(CATEGORY.INT, "INT2", null, Integer.class,1, 1, 1, PostgreSQL)
@@ -463,16 +468,16 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_INT8(CATEGORY.INT, "INT8", INTEGER, Double.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return SHORT.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_INT16(CATEGORY.INT, "INT16", INTEGER, Double.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return TINYINT.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_INT32(CATEGORY.INT, "INT32", INTEGER, Double.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return SMALLINT.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_INT64(CATEGORY.INT, "INT64", INTEGER, Double.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return BIGINT.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_INT128(CATEGORY.INT, "INT128", INTEGER, Double.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
@@ -500,10 +505,22 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "FLOAT32", FLOAT, Double.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
     ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "FLOAT64", DOUBLE, Double.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_DECIMAL32(CATEGORY.FLOAT, "DECIMAL32", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_DECIMAL64(CATEGORY.FLOAT, "DECIMAL64", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_DECIMAL128(CATEGORY.FLOAT, "DECIMAL128", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    ,CLICKHOUSE_DECIMAL256(CATEGORY.FLOAT, "DECIMAL256", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
      *
@@ -626,6 +643,16 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return DATE.write(value, def, placeholder);
         }
     }
+    , CLICKHOUSE_DATE32(CATEGORY.DATE, "DATE32", null, java.sql.Date.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            return DATE.write(value, def, placeholder);
+        }
+    }
+    , CLICKHOUSE_DATETIME64(CATEGORY.DATE, "DATETIME64", null, java.sql.Timestamp.class, 1, 1, 1, ClickHouse){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            return DATETIME.write(value, def, placeholder);
+        }
+    }
     /* *****************************************************************************************************************
      *
      *                                              byte[]
@@ -719,6 +746,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     }
    , GEOGRAPHY_POINT(CATEGORY.GEOMETRY, "GEOGRAPHY_POINT", null, Point.class, byte[].class, 1, 1, 1, VoltDB)
    , MULTIPOLYGON(CATEGORY.GEOMETRY, "MULTIPOLYGON", null, MultiPolygon.class, byte[].class, 1, 1, 1, MySQL)
+   , RING(CATEGORY.GEOMETRY, "RING", null, Ring.class, byte[].class, 1, 1, 1, ClickHouse)
    , MULTIPOINT(CATEGORY.GEOMETRY, "MULTIPOINT", null, MultiPoint.class, byte[].class, 1, 1, 1, MySQL)
    , POLYGON(CATEGORY.GEOMETRY, "POLYGON", null, Polygon.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL, KingBase)
    , GEOMETRY(CATEGORY.GEOMETRY, "GEOMETRY", null, byte[].class, 1, 1, 1, MySQL)
@@ -764,13 +792,19 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
 
     , OBJECT(CATEGORY.NONE, "OBJECT", null, null, 1, 1, 1, ElasticSearch)
 
-    , ARRAY(CATEGORY.NONE, "ARRAY", null, null, 1, 1, 1, Doris)
+    , ARRAY(CATEGORY.NONE, "ARRAY", null, null, 2, 2, 2, Doris)
 
     , MAP(CATEGORY.NONE, "MAP", null, null, 1, 1, 1, Doris)
 
     , STRUCT(CATEGORY.NONE, "STRUCT", null, null, 1, 1, 1, Doris)
 
     , AGG_STATE(CATEGORY.NONE, "AGG_STATE", null, null, 1, 1, 1, Doris)
+    , LowCardinality(CATEGORY.NONE, "LowCardinality", null, null, 1, 1, 1, ClickHouse)
+    , SimpleAggregateFunction(CATEGORY.NONE, "SimpleAggregateFunction", null, null, 1, 1, 1, ClickHouse)
+    , TUPLE(CATEGORY.NONE, "TUPLE", null, null, 1, 1, 1, ClickHouse)
+    , IPV4(CATEGORY.NONE, "IPV4", null, null, 1, 1, 1, ClickHouse)
+    , IPV6(CATEGORY.NONE, "IPV6", null, null, 1, 1, 1, ClickHouse)
+
     ;
 
     private final List<DatabaseType> dbs = new ArrayList<>();
