@@ -36,15 +36,14 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.entity.geometry.Geometry;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
-import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
@@ -7925,12 +7924,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			builder.append(" NOT NULL");
 			return builder;
 		}
-		int nullable = meta.isNullable();
-		if(nullable != -1) {
-			if (nullable == 0) {
-				builder.append(" NOT");
+		if(null == meta.getDefaultValue()){
+			int nullable = meta.isNullable();
+			if(nullable != -1) {
+				if (nullable == 0) {
+					builder.append(" NOT");
+				}
+				builder.append(" NULL");
 			}
-			builder.append(" NULL");
 		}
 		return builder;
 	}
