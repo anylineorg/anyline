@@ -633,7 +633,11 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             update.setLength(length);
             return this;
         }
-        this.length = length;
+        if(ignoreLength() == 1){
+            setPrecision(length);
+        }else {
+            this.length = length;
+        }
         fullType = null;
         return this;
     }
@@ -653,7 +657,11 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             update.setPrecision(precision);
             return this;
         }
-        this.precision = precision;
+        if(ignorePrecision() == 1){
+            setLength(precision);
+        }else {
+            this.precision = precision;
+        }
         fullType = null;
         return this;
     }
