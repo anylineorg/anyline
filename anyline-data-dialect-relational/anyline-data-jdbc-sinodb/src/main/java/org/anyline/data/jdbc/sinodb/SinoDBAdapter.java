@@ -64,7 +64,8 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
         for (SinoDBTypeMetadataAlias alias : SinoDBTypeMetadataAlias.values()) {
             this.alias.put(alias.name(), alias.standard());
             TypeMetadata.Config config = alias.config();
-            typeConfigs.put(alias.standard().getName(), config);
+            reg(alias.name(), config);
+            reg(alias.standard().getName(), config);
         }
 
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
