@@ -18,9 +18,8 @@
 package org.anyline.data.jdbc.adapter.init.alias;
 
 import org.anyline.data.metadata.TypeMetadataAlias;
-import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 
 public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
 
@@ -46,7 +45,7 @@ public enum OracleGenusTypeMetadataAlias implements TypeMetadataAlias {
     DECIMAL                 (StandardTypeMetadata.NUMBER),
     DOUBLE                  (StandardTypeMetadata.NUMBER),
     ENUM                    (StandardTypeMetadata.ILLEGAL),
-    FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE),
+    FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE, 1, 0, 1),
     FLOAT4                  (StandardTypeMetadata.FLOAT_ORACLE),
     FLOAT8                  (StandardTypeMetadata.FLOAT_ORACLE),
     GEOGRAPHY               (StandardTypeMetadata.ILLEGAL),
