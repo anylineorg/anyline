@@ -1,6 +1,5 @@
 package org.anyline.data.jdbc.adapter.init;
 
-import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
@@ -12,6 +11,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;

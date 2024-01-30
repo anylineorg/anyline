@@ -19,9 +19,6 @@ package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
-import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -39,9 +36,13 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.entity.geometry.Geometry;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
@@ -4702,8 +4703,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
 		TypeMetadata typeMetadata = typeMetadata(runtime, type);
 		column.setTypeMetadata(typeMetadata);
-		ColumnMetadataAdapter config = columnMetadataAdapter(runtime, typeMetadata);
-
+		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, typeMetadata);
+		TypeMetadata.Config config = adapter.getTypeConfig();
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
@@ -4751,7 +4752,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		//非空
 		if(-1 == column.isNullable()) {
 			try {
-				column.nullable(row.getBoolean(config.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
+				column.nullable(row.getBoolean(adapter.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
 			}catch (Exception e){}
 		}
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
@@ -4791,10 +4792,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}catch (Exception e){}
 
 		if(null == column.getCharset()) {
-			column.setCharset(row.getString(config.getCharsetRefers()));//"CHARACTER_SET_NAME"
+			column.setCharset(row.getString(adapter.getCharsetRefers()));//"CHARACTER_SET_NAME"
 		}
 		if(null == column.getCollate()) {
-			column.setCollate(row.getString(config.getCollateRefers()));//COLLATION_NAME
+			column.setCollate(row.getString(adapter.getCollateRefers()));//COLLATION_NAME
 		}
 		if(null == column.getTypeMetadata()) {
 			typeMetadata(runtime, column);
@@ -7864,7 +7865,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			typeName = type.getName();
 		}
-		ColumnMetadataAdapter config = columnMetadataAdapter(runtime, type);
+		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, type);
+		TypeMetadata.Config config = adapter.getTypeConfig();
 		ignoreLength = config.ignoreLength();
 		ignorePrecision = config.ignorePrecision();
 		ignoreScale = config.ignoreScale();
@@ -9496,7 +9498,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		TypeMetadata type = parameter.getColumnType();
 		Column column = new Column();
 		column.setTypeMetadata(type);
-		ColumnMetadataAdapter config = columnMetadataAdapter(runtime, type);
+		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, type);
+		TypeMetadata.Config config = adapter.getTypeConfig();
 		int ignoreLength= config.ignoreLength();
 		int ignorePrecision= config.ignorePrecision();
 		int ignoreScale = config.ignoreScale();

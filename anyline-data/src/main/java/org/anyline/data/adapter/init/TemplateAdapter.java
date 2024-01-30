@@ -18,14 +18,14 @@
 package org.anyline.data.adapter.init;
 
 
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 
 import java.util.Collection;

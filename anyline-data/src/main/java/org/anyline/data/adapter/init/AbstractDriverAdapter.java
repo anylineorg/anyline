@@ -24,12 +24,12 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
-import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
@@ -5459,9 +5459,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(null == result){
-			ColumnMetadataAdapter cfg = columnMetadataAdapter(runtime);
-			if(null != cfg){
-				result = cfg.getPrecisionRefer();
+			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+			if(null != adapter){
+				config = adapter.getTypeConfig();
+				if(null != config) {
+					result = config.getPrecisionRefer();
+				}
 			}
 		}
 		return result;
@@ -5498,9 +5501,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		if(null == result){
-			ColumnMetadataAdapter cfg = columnMetadataAdapter(runtime);
-			if(null != cfg){
-				result = cfg.getScaleRefer();
+			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+			if(null != adapter){
+				config = adapter.getTypeConfig();
+				if(null != config) {
+					result = config.getScaleRefer();
+				}
 			}
 		}
 		return result;

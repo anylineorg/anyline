@@ -19,8 +19,8 @@
 package org.anyline.data.jdbc.dm;
 
 
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.param.ConfigStore;

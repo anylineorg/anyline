@@ -17,8 +17,8 @@
 
 package org.anyline.data.jdbc.voltdb;
 
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.TableMetadataAdapter;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;

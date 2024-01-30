@@ -33,8 +33,8 @@
 
 package org.anyline.data.jdbc.db2;
 
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.TableMetadataAdapter;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;
@@ -2499,16 +2499,18 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
-		ColumnMetadataAdapter config = new ColumnMetadataAdapter();
-		config.setNameRefer("COLNAME");
-		config.setCatalogRefer("");
-		config.setSchemaRefer("TABSCEHMA");
-		config.setPositionRefer("COLNO");
-		config.setTableRefer("TABNAME");
-		config.setTypeRefer("TYPENAME");
+		ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
+		adapter.setNameRefer("COLNAME");
+		adapter.setCatalogRefer("");
+		adapter.setSchemaRefer("TABSCEHMA");
+		adapter.setPositionRefer("COLNO");
+		adapter.setTableRefer("TABNAME");
+		adapter.setTypeRefer("TYPENAME");
+		TypeMetadata.Config config = new TypeMetadata.Config();
 		config.setPrecisionRefer("LENGTH");
 		config.setScaleRefer("SCALE");
-		return config;
+		adapter.setTypeConfig(config);
+		return adapter;
 	}
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>

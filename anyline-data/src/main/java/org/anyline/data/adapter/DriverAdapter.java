@@ -19,9 +19,6 @@ package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
-import org.anyline.data.adapter.metadata.ColumnMetadataAdapter;
-import org.anyline.data.adapter.metadata.PrimaryMetadataAdapter;
-import org.anyline.data.adapter.metadata.TableMetadataAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
@@ -30,6 +27,9 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
@@ -2306,12 +2306,13 @@ public interface DriverAdapter {
 	 * @return ColumnMetadataAdapter
 	 */
 	default ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
-		ColumnMetadataAdapter config = columnMetadataAdapter(runtime);
-		if(null == config){
-			config = new ColumnMetadataAdapter();
+		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+		if(null == adapter){
+			adapter = new ColumnMetadataAdapter();
 		}
 		//长度列
 		String columnMetadataLengthRefer = columnMetadataLengthRefer(runtime, meta);
+		TypeMetadata.Config config = new TypeMetadata.Config();
 		if(null != meta){
 			config.setLengthRefer(columnMetadataLengthRefer);
 		}
@@ -2337,7 +2338,8 @@ public interface DriverAdapter {
 		if(-1 != ignoreScale){
 			config.setIgnoreScale(ignoreScale);
 		}
-		return config;
+		adapter.setTypeConfig(config);
+		return adapter;
 	}
 
 

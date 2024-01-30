@@ -1,4 +1,4 @@
-package org.anyline.data.adapter.metadata;
+package org.anyline.metadata.adapter;
 
 import org.anyline.util.BasicUtil;
 
