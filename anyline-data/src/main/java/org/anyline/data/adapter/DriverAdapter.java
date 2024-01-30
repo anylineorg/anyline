@@ -2319,20 +2319,23 @@ public interface DriverAdapter {
 		if(null == adapter){
 			adapter = new ColumnMetadataAdapter();
 		}
+		TypeMetadata.Config config = adapter.getTypeConfig();
+		if(null == config){
+			config = new TypeMetadata.Config();
+		}
 		//长度列
 		String columnMetadataLengthRefer = columnMetadataLengthRefer(runtime, meta);
-		TypeMetadata.Config config = new TypeMetadata.Config();
-		if(null != meta){
+		if(null != columnMetadataLengthRefer){
 			config.setLengthRefer(columnMetadataLengthRefer);
 		}
 		//有效位数列
 		String columnMetadataPrecisionRefer = columnMetadataPrecisionRefer(runtime, meta);
-		if(null != meta){
+		if(null != columnMetadataPrecisionRefer){
 			config.setPrecisionRefer(columnMetadataPrecisionRefer);
 		}
 		//小数位数列
 		String columnMetadataScaleRefer = columnMetadataScaleRefer(runtime, meta);
-		if(null != meta){
+		if(null != columnMetadataScaleRefer){
 			config.setScaleRefer(columnMetadataScaleRefer);
 		}
 		int ignoreLength = ignoreLength(runtime, meta);
@@ -4081,7 +4084,7 @@ public interface DriverAdapter {
 	 * 定义列:是否忽略有长度<br/>
 	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param type 数据类型
 	 * @return boolean
 	 */
 	int ignoreLength(DataRuntime runtime, TypeMetadata type);

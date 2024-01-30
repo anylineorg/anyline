@@ -25,11 +25,6 @@ import java.util.*;
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
     public MySQLGenusAdapter(){
         super();
-        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
-            TypeMetadata.Config config = alias.config();
-            config(alias.name(), config);
-            config(alias.standard().getName(), config);
-        }
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
@@ -44,6 +39,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+
+        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
+            TypeMetadata.Config config = alias.config();
+            config(alias.name(), config);
+            config(alias.standard().getName(), config);
+        }
     }
     /* *****************************************************************************************************************
      *

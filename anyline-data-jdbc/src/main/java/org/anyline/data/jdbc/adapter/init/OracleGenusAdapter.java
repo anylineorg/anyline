@@ -1,6 +1,5 @@
 package org.anyline.data.jdbc.adapter.init;
 
-import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -33,11 +32,7 @@ import java.util.*;
 public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
 
     public OracleGenusAdapter(){
-        for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()){
-            TypeMetadata.Config config = alias.config();
-            config(alias.name(), config);
-            config(alias.standard().getName(), config);
-        }
+        super();
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("DATA_LENGTH", null, null, 1,1, 1));
@@ -52,6 +47,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
+
+        for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()){
+            TypeMetadata.Config config = alias.config();
+            config(alias.name(), config);
+            config(alias.standard().getName(), config);
+        }
     }
 
     /* *****************************************************************************************************************

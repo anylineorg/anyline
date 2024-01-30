@@ -30,11 +30,6 @@ import java.util.*;
 public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implements InitializingBean {
     public PostgresGenusAdapter(){
         super();
-        for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
-            TypeMetadata.Config config = alias.config();
-            config(alias.name(), config);
-            config(alias.standard().getName(), config);
-        }
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1,1, 1));
@@ -49,6 +44,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
+
+        for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
+            TypeMetadata.Config config = alias.config();
+            config(alias.name(), config);
+            config(alias.standard().getName(), config);
+        }
     }
     /* *****************************************************************************************************************
      *
