@@ -174,13 +174,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return
 	 */
 	@Override
-	public TypeMetadata.Config config(String name, TypeMetadata.Config config){
+	public TypeMetadata.Config reg(String name, TypeMetadata.Config config){
 		TypeMetadata.Config src = typeConfigs.get(name.toUpperCase());
 		if(null == src){
 			src = config;
 		}else{
 			src.merge(config);
 		}
+		typeConfigs.put(name.toUpperCase(), src);
 		return src;
 	}
 	/* *****************************************************************************************************************

@@ -50,8 +50,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 
         for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()){
             TypeMetadata.Config config = alias.config();
-            config(alias.name(), config);
-            config(alias.standard().getName(), config);
+            reg(alias.name(), config);
+            reg(alias.standard().getName(), config);
         }
     }
 
