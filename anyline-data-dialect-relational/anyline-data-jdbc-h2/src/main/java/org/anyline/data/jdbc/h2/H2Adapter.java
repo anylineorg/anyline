@@ -54,8 +54,8 @@ public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter, Initi
 		return DatabaseType.H2;
 	} 
 	public H2Adapter(){
-		delimiterFr = "";
-		delimiterTo = "";
+		delimiterFr = "`";
+		delimiterTo = "`";
 	}
 	@Value("${anyline.data.jdbc.delimiter.h2:}")
 	private String delimiter;
