@@ -26,7 +26,8 @@ import java.util.List;
 
 public interface TypeMetadata {
     enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, OTHER, NONE}
-    //
+    //要用来区分 length/precision
+    //BLOB不需要长度 BYTES需要长度
     enum CATEGORY{
         CHAR(CATEGORY_GROUP.STRING, 0, 1, 1),
         TEXT(CATEGORY_GROUP.STRING, 1, 1, 1),

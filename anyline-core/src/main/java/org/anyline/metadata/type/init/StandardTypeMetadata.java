@@ -658,10 +658,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              byte[]
      *
      * ****************************************************************************************************************/
-    /**
-     * mysql(byte[]), oracle, sqlite
-     */
-   , BLOB(CATEGORY.BYTES, "BLOB", null, byte[].class, 1, 1, 1, MySQL, ORACLE, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase){
+   , BLOB(CATEGORY.BLOB, "BLOB", null, byte[].class, 1, 1, 1, MySQL, ORACLE, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase){
         public Object read(Object value, Object def, Class clazz){
             if(clazz == byte[].class){
 
