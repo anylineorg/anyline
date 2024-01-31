@@ -28,26 +28,11 @@ import java.util.*;
 public class Column extends BaseMetadata<Column> implements Serializable {
 
     public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
-    static {
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config(1,1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
-        typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config(1, 1, 1));
-    }
+
     public enum Aggregation {
         MIN			    ("MIN"  			, "最小"),
         MAX			    ("MAX"  			, "最大"),
-        SUM			    ("SUM"  			, "求和"),
+        SUM			        ("SUM"  			, "求和"),
         REPLACE			    ("REPLACE"  			, "替换"), //对于维度列相同的行，指标列会按照导入的先后顺序，后导入的替换先导入的。
         REPLACE_IF_NOT_NULL			    ("REPLACE_IF_NOT_NULL"  			, "非空值替换"), //和 REPLACE 的区别在于对于null值，不做替换。这里要注意的是字段默认值要给NULL，而不能是空字符串，如果是空字符串，会给你替换成空字符串。
         HLL_UNION			    ("HLL_UNION"  			, "HLL 类型的列的聚合方式"),//通过 HyperLogLog 算法聚合
