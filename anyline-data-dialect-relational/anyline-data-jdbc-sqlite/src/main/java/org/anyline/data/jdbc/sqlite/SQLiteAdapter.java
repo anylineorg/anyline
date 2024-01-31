@@ -60,6 +60,9 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
 		delimiterTo = "`";
 		for (SQLiteTypeMetadataAlias alias: SQLiteTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.sqlite:}")

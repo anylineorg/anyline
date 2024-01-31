@@ -18,6 +18,7 @@
 
 package org.anyline.data.jdbc.mssql;
 
+import org.anyline.data.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -72,22 +73,25 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		delimiterTo = "]";
 		for (MSSQLTypeMetadataAlias alias: MSSQLTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("max_length", null, null, 1,1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("max_length", null, null, 1,1,1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("max_length", "PRECISION", null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("max_length", "PRECISION", "SCALE", 1, 0, 0));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config("max_length", null, null, 1,1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config("max_length", null, null, 1,1,1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config("max_length", "PRECISION", null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config("max_length", "PRECISION", "SCALE", 1, 0, 0));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("max_length", null, null, 1, 1, 1));
 	}
 
 	/**

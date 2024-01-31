@@ -51,10 +51,14 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter,
 	}
 
 	public TDengineAdapter(){
+		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (TDengineTypeMetadataAlias alias: TDengineTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 	}
 

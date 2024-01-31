@@ -53,6 +53,9 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		delimiterTo = "`";
 		for (VoltDBTypeMetadataAlias alias: VoltDBTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 		for(VoltDBWriter writer: VoltDBWriter.values()){
 			reg(writer.supports(), writer.writer());

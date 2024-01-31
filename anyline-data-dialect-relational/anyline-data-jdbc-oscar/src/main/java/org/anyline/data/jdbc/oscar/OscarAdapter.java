@@ -54,11 +54,15 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 		return DatabaseType.oscar;
 	} 
 	public OscarAdapter(){
+		super();
 		delimiterFr = "";
 		delimiterTo = "";
 
 		for (OscarTypeMetadataAlias alias : OscarTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 		for(OscarWriter writer: OscarWriter.values()){
 			reg(writer.supports(), writer.writer());

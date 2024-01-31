@@ -10,6 +10,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -38,6 +39,9 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         super();
         for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
             this.alias.put(alias.name(), alias.standard());
+            TypeMetadata.Config config = alias.config();
+            reg(alias.name(), config);
+            reg(alias.standard(), config);
         }
     }
 

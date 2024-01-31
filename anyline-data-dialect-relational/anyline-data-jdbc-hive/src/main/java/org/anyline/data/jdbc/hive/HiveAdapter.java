@@ -56,6 +56,9 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		delimiterTo = "`";
 		for (HiveTypeMetadataAlias alias: HiveTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 		for(HiveWriter writer: HiveWriter.values()){
 			reg(writer.supports(), writer.writer());

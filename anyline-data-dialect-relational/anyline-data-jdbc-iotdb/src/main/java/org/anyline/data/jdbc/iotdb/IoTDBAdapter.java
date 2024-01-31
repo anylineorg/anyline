@@ -24,6 +24,7 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,9 @@ public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		delimiterTo = "`";
 		for (IoTDBTypeMetadataAlias alias: IoTDBTypeMetadataAlias.values()){
 			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
 		}
 	}
 
