@@ -7818,6 +7818,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta){
+		String define = meta.getDefine();
+		if(BasicUtil.isNotEmpty(define)){
+			builder.append(" ").append(define);
+			return builder;
+		}
 		// 数据类型
 		type(runtime, builder, meta);
 		//聚合

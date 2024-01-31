@@ -104,7 +104,8 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected TypeMetadata typeMetadata           ;
-    protected String fullType                     ; //完整类型名称
+    protected String fullType                     ; //完整类型名称 如果设置了fullType 生成SQL时 name fullType 其他属性
+    protected String define                       ; //完整定义(不包含名称) 如果设置了define 生成SQL时 name define
     protected int ignoreLength               = -1 ;
     protected int ignorePrecision            = -1 ;
     protected int ignoreScale                = -1 ;
@@ -1450,6 +1451,15 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return ignorePrecision;
     }
 
+    public String getDefine() {
+        return define;
+    }
+
+    public Column setDefine(String define) {
+        this.define = define;
+        return this;
+    }
+
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
      * 精确判断通过adapter
@@ -1476,5 +1486,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
+
+
 }
 
