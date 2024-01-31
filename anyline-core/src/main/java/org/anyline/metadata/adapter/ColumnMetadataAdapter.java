@@ -23,15 +23,7 @@ public class ColumnMetadataAdapter extends AbstractMetadataAdapter<ColumnMetadat
 
     protected TypeMetadata.Config typeConfig = null;
 
-    public String[] getCollateRefers() {
-        return collateRefers;
-    }
-    public String[] getCharsetRefers() {
-        return charsetRefers;
-    }
-    public String[] getNullableRefers() {
-        return nullableRefers;
-    }
+
 
     public String[] getTypeRefers() {
         return typeRefers;
@@ -76,5 +68,55 @@ public class ColumnMetadataAdapter extends AbstractMetadataAdapter<ColumnMetadat
         return this;
     }
 
+    public String[] getNullableRefers() {
+        return nullableRefers;
+    }
+    public ColumnMetadataAdapter setNullableRefers(String[] nullableRefers) {
+        this.nullableRefers = nullableRefers;
+        return this;
+    }
+    public ColumnMetadataAdapter setNullableRefers(String nullableRefers) {
+        if(BasicUtil.isNotEmpty(nullableRefers)) {
+            this.nullableRefers = nullableRefers.split(",");
+        } else {
 
+            this.nullableRefers = null;
+        }
+        return this;
+    }
+
+
+    public String[] getCharsetRefers() {
+        return charsetRefers;
+    }
+    public ColumnMetadataAdapter setCharsetRefers(String[] charsetRefers) {
+        this.charsetRefers = charsetRefers;
+        return this;
+    }
+    public ColumnMetadataAdapter setCharsetRefers(String charsetRefers) {
+        if(BasicUtil.isNotEmpty(charsetRefers)) {
+            this.charsetRefers = charsetRefers.split(",");
+        } else {
+
+            this.charsetRefers = null;
+        }
+        return this;
+    }
+
+    public String[] getCollateRefers() {
+        return collateRefers;
+    }
+    public ColumnMetadataAdapter setCollateRefers(String[] collateRefers) {
+        this.collateRefers = collateRefers;
+        return this;
+    }
+    public ColumnMetadataAdapter setCollateRefers(String collateRefers) {
+        if(BasicUtil.isNotEmpty(collateRefers)) {
+            this.collateRefers = collateRefers.split(",");
+        } else {
+
+            this.collateRefers = null;
+        }
+        return this;
+    }
 }
