@@ -1066,6 +1066,12 @@ public class ServiceProxy {
     /* *****************************************************************************************************************
      * 													DELETE
      ******************************************************************************************************************/
+    public static long truncate(String table){
+        return service.truncate(table);
+    }
+    public static long truncate(Table table){
+        return service.truncate(table);
+    }
     public static long delete(String table, ConfigStore configs, String ... conditions){
         return service.delete(table, configs, conditions);
     }
