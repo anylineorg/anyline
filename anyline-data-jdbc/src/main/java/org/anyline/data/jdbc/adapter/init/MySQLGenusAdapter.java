@@ -4798,9 +4798,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         if(null == update){
             update = meta;
         }
-        String name = meta.getName();
-        String uname = update.getName();
-        boolean rename = !name.equalsIgnoreCase(uname);
+        boolean rename = meta.isRename();
         if(rename){
             builder.append(" CHANGE ");
         }else{
@@ -5090,20 +5088,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      */
     @Override
     public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
-        if(null != meta && meta.isPrimaryKey()==1){
+        if(null != meta && meta.isPrimaryKey() == 1){
             Table table = meta.getTable();
             int size = table.getPrimaryKeySize();
             //如果是修改状态 并且 列名没变 并且 主键没变 则忽略
             if(meta.getAction() == ACTION.DDL.COLUMN_ALTER){
-                Column update = meta.getUpdate();
-                if(null == update){
-                    update = meta;
-                }
-                String name = meta.getName();
-                String uname = update.getName();
-                boolean rename = !name.equalsIgnoreCase(uname);
-                boolean repk = meta.getTable().getChangePrimary() == 1;
-                if(!rename && !repk){
+                if(!meta.isRename()){
                     return builder;
                 }
             }
