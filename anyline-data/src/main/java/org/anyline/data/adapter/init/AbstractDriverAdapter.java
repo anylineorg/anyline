@@ -24,6 +24,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.MetadataAdapterHolder;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -93,25 +94,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	//根据名称定位数据类型
 	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
-	//读取元数据时对应的列(如长度、小数位对应的列)
-	/**
-	 * 当前adapter 数据类型-配置
-	 */
-	protected LinkedHashMap<TypeMetadata, TypeMetadata.Config> typeConfigs = new LinkedHashMap<>();
-	/**
-	 * 当前adapter 数据类型名称-配置
-	 * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
-	 */
-	protected LinkedHashMap<String, TypeMetadata.Config> typeNameConfigs = new LinkedHashMap<>();
-	/**
-	 * 当前adapter 数据类型大类-配置
-	 */
-	protected LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
 
-	/**
-	 * 通用标准类型大类-配置
-	 */
-	public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> standardCategoryConfigs = new LinkedHashMap<>();
 
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
@@ -132,20 +115,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config(0, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config( 1,1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config( 1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
-		typeCategoryConfigs.put(TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config( 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config(0, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config( 1,1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config( 1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
+		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config( 1, 1, 1));
 	}
 
 	@Override
@@ -181,35 +164,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public TypeMetadata.Config reg(TypeMetadata type, TypeMetadata.Config config){
-		TypeMetadata.Config src = typeConfigs.get(type);
-		if(null == src){
-			src = config;
-		}else{
-			src.merge(config);
-		}
-		typeConfigs.put(type, src);
-
-		String name = type.getName();
-		reg(name, config);
-		return src;
+		return MetadataAdapterHolder.reg(type(), type, config);
 	}
 	/**
 	 * 注册数据类型配置
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
-	 * @param name 类型名称或别名
+	 * @param type 类型名称或别名
 	 * @param config 配置项
 	 * @return
 	 */
 	@Override
 	public TypeMetadata.Config reg(String type, TypeMetadata.Config config){
-		TypeMetadata.Config src = typeNameConfigs.get(type.toUpperCase());
-		if(null == src){
-			src = config;
-		}else{
-			src.merge(config);
-		}
-		typeNameConfigs.put(type.toUpperCase(), src);
-		return src;
+		return MetadataAdapterHolder.reg(type(), type, config);
 	}
 	/* *****************************************************************************************************************
 	 *
@@ -5451,32 +5417,45 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		String result = null;
-		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta);
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带(length/precision/scale)
+		4.配置类-数据类型大类
+		5.具体数据库实现的MetadataAdapter
+		 */
+
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), meta);
 		if(null != config){
 			result = config.getLengthRefer();
 		}
-		//具体数据类型名称
-		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
-		if(null == result){
-			config = typeNameConfigs.get(meta.getName().toUpperCase());
-			if(null != config){
-				result = config.getLengthRefer();
-			}
-		}
 
-		//当前adapter 数据类型大类
+		//2.配置类-数据类型名称
 		if(null == result){
-			config = typeCategoryConfigs.get(meta.getCategory());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), meta.getName());
 			if(null != config){
 				result = config.getLengthRefer();
 			}
 		}
-		//通用标准类型大类
+		//3.数据类型自带(length/precision/scale)
+
+		//4.配置类-数据类型大类
 		if(null == result){
-			config = standardCategoryConfigs.get(meta.getCategory());
+			config = MetadataAdapterHolder.get(type(), meta.getCategory());
 			if(null != config){
 				result = config.getLengthRefer();
+			}
+		}
+		//5.具体数据库实现的MetadataAdapter
+		if(null == result){
+			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+			if(null != adapter){
+				config = adapter.getTypeConfig();
+				if(null != config) {
+					result = config.getLengthRefer();
+				}
 			}
 		}
 		return result;
@@ -5496,32 +5475,31 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		String result = null;
-		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta);
+
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), meta);
 		if(null != config){
 			result = config.getPrecisionRefer();
 		}
-		//具体数据类型名称
-		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
-		if(null == result){
-			config = typeNameConfigs.get(meta.getName().toUpperCase());
-			if(null != config){
-				result = config.getPrecisionRefer();
-			}
-		}
 
+		//2.配置类-数据类型名称
 		if(null == result){
-			config = typeCategoryConfigs.get(meta.getCategory());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), meta.getName());
 			if(null != config){
 				result = config.getPrecisionRefer();
 			}
 		}
+		//3.数据类型自带(length/precision/scale)
+
+		//4.配置类-数据类型大类
 		if(null == result){
-			config = standardCategoryConfigs.get(meta.getCategory());
+			config = MetadataAdapterHolder.get(type(), meta.getCategory());
 			if(null != config){
 				result = config.getPrecisionRefer();
 			}
 		}
+		//5.具体数据库实现的MetadataAdapter
 		if(null == result){
 			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
 			if(null != adapter){
@@ -5548,31 +5526,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		String result = null;
-		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta);
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带(length/precision/scale)
+		4.配置类-数据类型大类
+		5.具体数据库实现的MetadataAdapter
+		 */
+
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), meta);
 		if(null != config){
 			result = config.getScaleRefer();
 		}
-		//具体数据类型名称
-		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+
+		//2.配置类-数据类型名称
 		if(null == result){
-			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), meta.getName());
 			if(null != config){
 				result = config.getScaleRefer();
 			}
 		}
+		//3.数据类型自带(length/precision/scale)
+
+		//4.配置类-数据类型大类
 		if(null == result){
-			config = typeCategoryConfigs.get(meta.getCategory());
+			config = MetadataAdapterHolder.get(type(), meta.getCategory());
 			if(null != config){
 				result = config.getScaleRefer();
 			}
 		}
-		if(null == result){
-			config = standardCategoryConfigs.get(meta.getCategory());
-			if(null != config){
-				result = config.getScaleRefer();
-			}
-		}
+		//5.具体数据库实现的MetadataAdapter
 		if(null == result){
 			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
 			if(null != adapter){
@@ -5599,31 +5584,48 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta);
+
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带(length/precision/scale)
+		4.配置类-数据类型大类
+		5.具体数据库实现的MetadataAdapter
+		 */
+
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), meta);
 		if(null != config){
 			result = config.ignoreLength();
 		}
-		//具体数据类型名称
-		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+
+		//2.配置类-数据类型名称
 		if(-1 == result){
-			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), meta.getName());
 			if(null != config){
 				result = config.ignoreLength();
 			}
 		}
-		//当前adapter 数据类型大类
+		//3.数据类型自带(length/precision/scale)
 		if(-1 == result){
-			config = typeCategoryConfigs.get(meta.getCategory());
+			result = meta.ignoreLength();
+		}
+		//4.配置类-数据类型大类
+		if(-1 == result){
+			config = MetadataAdapterHolder.get(type(), meta.getCategory());
 			if(null != config){
 				result = config.ignoreLength();
 			}
 		}
-		//通用标准类型大类
+		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result){
-			config = standardCategoryConfigs.get(meta.getCategory());
-			if(null != config){
-				result = config.ignoreLength();
+			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+			if(null != adapter){
+				config = adapter.getTypeConfig();
+				if(null != config) {
+					result = config.ignoreLength();
+				}
 			}
 		}
 		return result;
@@ -5643,31 +5645,48 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta);
+
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带(length/precision/scale)
+		4.配置类-数据类型大类
+		5.具体数据库实现的MetadataAdapter
+		 */
+
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), meta);
 		if(null != config){
 			result = config.ignorePrecision();
 		}
-		//具体数据类型名称
-		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+
+		//2.配置类-数据类型名称
 		if(-1 == result){
-			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), meta.getName());
 			if(null != config){
 				result = config.ignorePrecision();
 			}
 		}
-		//当前adapter 数据类型大类
+		//3.数据类型自带(length/precision/scale)
 		if(-1 == result){
-			config = typeCategoryConfigs.get(meta.getCategory());
+			result = meta.ignorePrecision();
+		}
+		//4.配置类-数据类型大类
+		if(-1 == result){
+			config = MetadataAdapterHolder.get(type(), meta.getCategory());
 			if(null != config){
 				result = config.ignorePrecision();
 			}
 		}
-		//通用标准类型大类
+		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result){
-			config = standardCategoryConfigs.get(meta.getCategory());
-			if(null != config){
-				result = config.ignorePrecision();
+			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+			if(null != adapter){
+				config = adapter.getTypeConfig();
+				if(null != config) {
+					result = config.ignorePrecision();
+				}
 			}
 		}
 		return result;
@@ -5687,31 +5706,48 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta);
+
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带(length/precision/scale)
+		4.配置类-数据类型大类
+		5.具体数据库实现的MetadataAdapter
+		 */
+
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), meta);
 		if(null != config){
 			result = config.ignoreScale();
 		}
-		//具体数据类型名称
-		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+
+		//2.配置类-数据类型名称
 		if(-1 == result){
-			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), meta.getName());
 			if(null != config){
 				result = config.ignoreScale();
 			}
 		}
-		//当前adapter 数据类型大类
+		//3.数据类型自带(length/precision/scale)
 		if(-1 == result){
-			config = typeCategoryConfigs.get(meta.getCategory());
+			result = meta.ignoreScale();
+		}
+		//4.配置类-数据类型大类
+		if(-1 == result){
+			config = MetadataAdapterHolder.get(type(), meta.getCategory());
 			if(null != config){
 				result = config.ignoreScale();
 			}
 		}
-		//通用标准类型大类
+		//5.具体数据库实现的MetadataAdapter
 		if(-1 == result){
-			config = standardCategoryConfigs.get(meta.getCategory());
-			if(null != config){
-				result = config.ignoreScale();
+			ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+			if(null != adapter){
+				config = adapter.getTypeConfig();
+				if(null != config) {
+					result = config.ignoreScale();
+				}
 			}
 		}
 		return result;
@@ -9789,21 +9825,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
  		int result = -1;
-		TypeMetadata.Config config = typeNameConfigs.get(type.getName().toUpperCase());
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), type);
 		if(null != config){
 			result = config.ignoreLength();
 		}
+		//2.配置类-数据类型名称
 		if(result == -1){
-			config = typeCategoryConfigs.get(type.getCategory());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), type.getName());
 			if(null != config){
 				result = config.ignoreLength();
 			}
 		}
+		//3.数据类型自带
 		if(result ==-1){
 			result = type.ignoreLength();
 		}
+		//4.配置类-数据类型大类
 		if(result ==-1){
-			config = standardCategoryConfigs.get(type.getCategory());
+			config = MetadataAdapterHolder.get(type(), type.getCategory());
 			if(null != config){
 				result = config.ignoreLength();
 			}
@@ -9825,26 +9872,36 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		TypeMetadata.Config config = typeNameConfigs.get(type.getName().toUpperCase());
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), type);
 		if(null != config){
 			result = config.ignorePrecision();
 		}
+		//2.配置类-数据类型名称
 		if(result == -1){
-			config = typeCategoryConfigs.get(type.getCategory());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), type.getName());
 			if(null != config){
 				result = config.ignorePrecision();
 			}
 		}
+		//3.数据类型自带
 		if(result ==-1){
 			result = type.ignorePrecision();
 		}
+		//4.配置类-数据类型大类
 		if(result ==-1){
-			config = standardCategoryConfigs.get(type.getCategory());
+			config = MetadataAdapterHolder.get(type(), type.getCategory());
 			if(null != config){
 				result = config.ignorePrecision();
 			}
 		}
-
 		return result;
 	}
 
@@ -9861,27 +9918,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
         if(null == type){
             return -1;
         }
-        int result = -1;
-		TypeMetadata.Config config = typeNameConfigs.get(type.getName().toUpperCase());
+		int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+		//1.配置类 数据类型
+		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), type);
 		if(null != config){
 			result = config.ignoreScale();
 		}
+		//2.配置类-数据类型名称
 		if(result == -1){
-			config = typeCategoryConfigs.get(type.getCategory());
+			//根据数据类型名称
+			config = MetadataAdapterHolder.get(type(), type.getName());
 			if(null != config){
 				result = config.ignoreScale();
 			}
 		}
+		//3.数据类型自带
 		if(result ==-1){
-			result = type.ignoreScale();
+			result = type.ignorePrecision();
 		}
+		//4.配置类-数据类型大类
 		if(result ==-1){
-			config = standardCategoryConfigs.get(type.getCategory());
+			config = MetadataAdapterHolder.get(type(), type.getCategory());
 			if(null != config){
 				result = config.ignoreScale();
 			}
 		}
-        return result;
+		return result;
     }
 
 	/**
