@@ -4775,7 +4775,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         for (int i = 0; i < qty; i++) {
             while (true) {
                 int idx = BasicUtil.getRandomNumber(0, size - 1);
-                DataRow row = set.getRow(idx);
+                DataRow row = getRow(idx);
                 if (!set.contains(row)) {
                     set.add(row);
                     break;
