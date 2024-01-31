@@ -175,7 +175,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * 注册数据类型配置
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
-	 * @param name 类型名称或别名
+	 * @param type 数据类型
 	 * @param config 配置项
 	 * @return
 	 */
@@ -190,15 +190,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		typeConfigs.put(type, src);
 
 		String name = type.getName();
-		src = typeNameConfigs.get(name.toUpperCase());
+		reg(name, config);
+		return src;
+	}
+	/**
+	 * 注册数据类型配置
+	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
+	 * @param name 类型名称或别名
+	 * @param config 配置项
+	 * @return
+	 */
+	@Override
+	public TypeMetadata.Config reg(String type, TypeMetadata.Config config){
+		TypeMetadata.Config src = typeNameConfigs.get(type.toUpperCase());
 		if(null == src){
 			src = config;
 		}else{
 			src.merge(config);
 		}
-		typeNameConfigs.put(name.toUpperCase(), src);
-
-
+		typeNameConfigs.put(type.toUpperCase(), src);
 		return src;
 	}
 	/* *****************************************************************************************************************

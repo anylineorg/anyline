@@ -92,8 +92,18 @@ public interface DriverAdapter {
 	LinkedHashMap<String, TypeMetadata> alias();
 
 	/**
-	 * 注册数据类型配置
-	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
+	 * 注册数据类型配置<br/>
+	 * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
+	 * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+	 * @param type 数据类型名称
+	 * @param config 配置项
+	 * @return Config
+	 */
+	TypeMetadata.Config reg(String type, TypeMetadata.Config config);
+	/**
+	 * 注册数据类型配置<br/>
+	 * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
+	 * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
 	 * @param type 数据类型
 	 * @param config 配置项
 	 * @return Config
