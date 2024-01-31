@@ -21,10 +21,11 @@ import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
+//https://www.postgresql.org/docs/16/datatype.html
 public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
     BFILE                       (StandardTypeMetadata.ILLEGAL                   ),
-    BINARY_DOUBLE               (StandardTypeMetadata.BINARY_DOUBLE             ),
-    BINARY_FLOAT                (StandardTypeMetadata.BINARY_FLOAT              ),
+    BINARY_DOUBLE               (StandardTypeMetadata.DOUBLE             ),
+    BINARY_FLOAT                (StandardTypeMetadata.FLOAT              ),
     BIGINT                      (StandardTypeMetadata.INT8                      ),
     BIGSERIAL                   (StandardTypeMetadata.BIGSERIAL                 ),
     BINARY                      (StandardTypeMetadata.BIT                       ),
