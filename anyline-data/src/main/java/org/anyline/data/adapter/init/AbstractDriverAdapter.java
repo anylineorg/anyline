@@ -97,7 +97,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 * 当前adapter 数据类型-配置
 	 */
-	protected LinkedHashMap<String, TypeMetadata.Config> typeConfigs = new LinkedHashMap<>();
+	protected LinkedHashMap<TypeMetadata, TypeMetadata.Config> typeConfigs = new LinkedHashMap<>();
+	/**
+	 * 当前adapter 数据类型名称-配置
+	 * 数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+	 */
+	protected LinkedHashMap<String, TypeMetadata.Config> typeNameConfigs = new LinkedHashMap<>();
 	/**
 	 * 当前adapter 数据类型大类-配置
 	 */
@@ -117,7 +122,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public AbstractDriverAdapter(){
 		//当前数据库支持的数据类型,子类根据情况覆盖
 		for(StandardTypeMetadata type: StandardTypeMetadata.values()){
-			reg(type.getName(), type.config());
+			reg(type, type.config());
 			List<DatabaseType> dbs = type.databaseTypes();
 			for(DatabaseType db:dbs){
 				if(db == this.type()){
@@ -175,14 +180,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return
 	 */
 	@Override
-	public TypeMetadata.Config reg(String name, TypeMetadata.Config config){
-		TypeMetadata.Config src = typeConfigs.get(name.toUpperCase());
+	public TypeMetadata.Config reg(TypeMetadata type, TypeMetadata.Config config){
+		TypeMetadata.Config src = typeConfigs.get(type);
 		if(null == src){
 			src = config;
 		}else{
 			src.merge(config);
 		}
-		typeConfigs.put(name.toUpperCase(), src);
+		typeConfigs.put(type, src);
+
+		String name = type.getName();
+		src = typeNameConfigs.get(name.toUpperCase());
+		if(null == src){
+			src = config;
+		}else{
+			src.merge(config);
+		}
+		typeNameConfigs.put(name.toUpperCase(), src);
+
+
 		return src;
 	}
 	/* *****************************************************************************************************************
@@ -5426,10 +5442,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		String result = null;
 		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		TypeMetadata.Config config = typeConfigs.get(meta);
 		if(null != config){
 			result = config.getLengthRefer();
 		}
+		//具体数据类型名称
+		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+		if(null == result){
+			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			if(null != config){
+				result = config.getLengthRefer();
+			}
+		}
+
 		//当前adapter 数据类型大类
 		if(null == result){
 			config = typeCategoryConfigs.get(meta.getCategory());
@@ -5461,10 +5486,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		String result = null;
-		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		//具体数据类型
+		TypeMetadata.Config config = typeConfigs.get(meta);
 		if(null != config){
 			result = config.getPrecisionRefer();
 		}
+		//具体数据类型名称
+		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+		if(null == result){
+			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			if(null != config){
+				result = config.getPrecisionRefer();
+			}
+		}
+
 		if(null == result){
 			config = typeCategoryConfigs.get(meta.getCategory());
 			if(null != config){
@@ -5503,9 +5538,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return null;
 		}
 		String result = null;
-		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		//具体数据类型
+		TypeMetadata.Config config = typeConfigs.get(meta);
 		if(null != config){
 			result = config.getScaleRefer();
+		}
+		//具体数据类型名称
+		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+		if(null == result){
+			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			if(null != config){
+				result = config.getScaleRefer();
+			}
 		}
 		if(null == result){
 			config = typeCategoryConfigs.get(meta.getCategory());
@@ -5546,9 +5590,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		int result = -1;
 		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		TypeMetadata.Config config = typeConfigs.get(meta);
 		if(null != config){
 			result = config.ignoreLength();
+		}
+		//具体数据类型名称
+		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+		if(-1 == result){
+			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			if(null != config){
+				result = config.ignoreLength();
+			}
 		}
 		//当前adapter 数据类型大类
 		if(-1 == result){
@@ -5582,9 +5634,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		int result = -1;
 		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		TypeMetadata.Config config = typeConfigs.get(meta);
 		if(null != config){
 			result = config.ignorePrecision();
+		}
+		//具体数据类型名称
+		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+		if(-1 == result){
+			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			if(null != config){
+				result = config.ignorePrecision();
+			}
 		}
 		//当前adapter 数据类型大类
 		if(-1 == result){
@@ -5618,9 +5678,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		int result = -1;
 		//具体数据类型
-		TypeMetadata.Config config = typeConfigs.get(meta.getName().toUpperCase());
+		TypeMetadata.Config config = typeConfigs.get(meta);
 		if(null != config){
 			result = config.ignoreScale();
+		}
+		//具体数据类型名称
+		//数据类型 与 数据类型名称 的区别:如ORACLE_FLOAT,FLOAT 这两个对象的name都是float所以会相互覆盖
+		if(-1 == result){
+			config = typeNameConfigs.get(meta.getName().toUpperCase());
+			if(null != config){
+				result = config.ignoreScale();
+			}
 		}
 		//当前adapter 数据类型大类
 		if(-1 == result){
@@ -9711,7 +9779,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
  		int result = -1;
-		TypeMetadata.Config config = typeConfigs.get(type.getName().toUpperCase());
+		TypeMetadata.Config config = typeNameConfigs.get(type.getName().toUpperCase());
 		if(null != config){
 			result = config.ignoreLength();
 		}
@@ -9747,7 +9815,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return -1;
 		}
 		int result = -1;
-		TypeMetadata.Config config = typeConfigs.get(type.getName().toUpperCase());
+		TypeMetadata.Config config = typeNameConfigs.get(type.getName().toUpperCase());
 		if(null != config){
 			result = config.ignorePrecision();
 		}
@@ -9784,7 +9852,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
             return -1;
         }
         int result = -1;
-		TypeMetadata.Config config = typeConfigs.get(type.getName().toUpperCase());
+		TypeMetadata.Config config = typeNameConfigs.get(type.getName().toUpperCase());
 		if(null != config){
 			result = config.ignoreScale();
 		}
