@@ -7343,6 +7343,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					column.setTable(update);
 					column.setUpdate(ucolumn, false, false);
 					column.setAction(ACTION.DDL.COLUMN_ALTER);
+					ucolumn.setAction(ACTION.DDL.COLUMN_ALTER);
 					cols.put(column.getName().toUpperCase(), column);
 				}
 			} else {
