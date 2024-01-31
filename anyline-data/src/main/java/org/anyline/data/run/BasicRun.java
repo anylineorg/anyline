@@ -359,6 +359,10 @@ public abstract class BasicRun implements Run {
 								break;
 							}
 						}
+					}else{
+						//byte[]等
+						rv = new RunValue(column, obj);
+						addValues(rv);
 					}
 				}else if(obj instanceof Collection && !json){
 					Collection list = (Collection)obj;
