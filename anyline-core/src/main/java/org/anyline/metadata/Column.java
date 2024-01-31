@@ -104,7 +104,8 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected TypeMetadata typeMetadata           ;
-    protected String fullType                     ; //完整类型名称 如果设置了fullType 生成SQL时 name fullType 其他属性
+    protected String fullType                     ; //完整类型名称
+    protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
     protected String define                       ; //完整定义(不包含名称) 如果设置了define 生成SQL时 name define
     protected int ignoreLength               = -1 ;
     protected int ignorePrecision            = -1 ;
@@ -1457,6 +1458,15 @@ public class Column extends BaseMetadata<Column> implements Serializable {
 
     public Column setDefine(String define) {
         this.define = define;
+        return this;
+    }
+
+    public String getFinalType() {
+        return finalType;
+    }
+
+    public Column setFinalType(String finalType) {
+        this.finalType = finalType;
         return this;
     }
 

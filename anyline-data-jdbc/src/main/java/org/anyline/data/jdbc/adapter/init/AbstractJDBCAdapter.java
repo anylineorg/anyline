@@ -7923,6 +7923,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == builder){
 			builder = new StringBuilder();
 		}
+		String finalType = meta.getFinalType();
+		if(BasicUtil.isNotEmpty(finalType)){
+			builder.append(finalType);
+			return builder;
+		}
 		meta.ignoreLength(ignoreLength);
 		meta.ignorePrecision(ignorePrecision);
 		meta.ignoreScale(ignoreScale);
