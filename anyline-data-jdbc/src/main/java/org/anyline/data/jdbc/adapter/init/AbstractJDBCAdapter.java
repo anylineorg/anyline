@@ -19,6 +19,7 @@ package org.anyline.data.jdbc.adapter.init;
 
 
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -4802,6 +4803,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return column;
 	}
 
+
 	/**
 	 * column[结构集封装-依据]<br/>
 	 * 读取column元数据结果集的依据
@@ -4815,10 +4817,24 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		config.setCatalogRefer("TABLE_CATALOG");
 		config.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
 		config.setTableRefer("TABLE_NAME,TABNAME");
+		config.setNullableRefers("IS_NULLABLE,NULLABLE,NULLS");
+		config.setCharsetRefers("CHARACTER_SET_NAME");
+		config.setCollateRefers("COLLATION_NAME");
 		config.setTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
 		return config;
 	}
 
+	/**
+	 * column[结构集封装-依据]<br/>
+	 * 读取column元数据结果集的依据(需要区分数据类型)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
+	 * @return ColumnMetadataAdapter
+	 */
+	@Override
+	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+		return super.columnMetadataAdapter(runtime, meta);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
