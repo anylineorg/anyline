@@ -362,7 +362,12 @@ public class BaseMetadata<T extends BaseMetadata> {
         return (T)this;
     }
 
-
+    public boolean isRename(){
+        if(null != update){
+            return !BasicUtil.equalsIgnoreCase(name, update.getName());
+        }
+        return false;
+    }
     public String getDdl() {
         if(null != ddls && ddls.size()>0){
             return ddls.get(0);
