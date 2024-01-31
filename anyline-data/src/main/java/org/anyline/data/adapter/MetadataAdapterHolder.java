@@ -55,10 +55,9 @@ public class MetadataAdapterHolder {
         }
         TypeMetadata.Config src = configs.get(type);
         if(null == src){
-            src = config;
-        }else{
-            src.merge(config);
+            src = new TypeMetadata.Config();
         }
+        src.merge(config);
         configs.put(type, src);
 
         String name = type.getName();
@@ -81,10 +80,9 @@ public class MetadataAdapterHolder {
         }
         TypeMetadata.Config src = configs.get(type.toUpperCase());
         if(null == src){
-            src = config;
-        }else{
-            src.merge(config);
+            src = new TypeMetadata.Config();
         }
+        src.merge(config);
         configs.put(type.toUpperCase(), src);
         return src;
     }
