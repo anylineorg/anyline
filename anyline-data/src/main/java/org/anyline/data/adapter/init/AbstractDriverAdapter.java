@@ -3857,15 +3857,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try{
 			long fr = System.currentTimeMillis();
 			Table search = new Table();
-			if(null == catalog || null == schema){
+			if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 				Table tmp = new Table();
 				if(!greedy) {
 					checkSchema(runtime, tmp);
 				}
-				if(null == catalog){
+				if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 					catalog = tmp.getCatalog();
 				}
-				if(null == schema){
+				if(null == schema || BasicUtil.isEmpty(schema.getName())){
 					schema = tmp.getSchema();
 				}
 			}
@@ -4443,15 +4443,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try{
 			long fr = System.currentTimeMillis();
 			View search = new View();
-			if(null == catalog || null == schema){
+			if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 				View tmp = new View();
 				if(!greedy) {
 					checkSchema(runtime, tmp);
 				}
-				if(null == catalog){
+				if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 					catalog = tmp.getCatalog();
 				}
-				if(null == schema){
+				if(null == schema || BasicUtil.isEmpty(schema.getName())){
 					schema = tmp.getSchema();
 				}
 			}
@@ -4729,15 +4729,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		try{
 			long fr = System.currentTimeMillis();
-			if(null == catalog || null == schema){
+			if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 				Table tmp = new Table();
 				if(!greedy) {
 					checkSchema(runtime, tmp);
 				}
-				if(null == catalog){
+				if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 					catalog = tmp.getCatalog();
 				}
-				if(null == schema){
+				if(null == schema || BasicUtil.isEmpty(schema.getName())){
 					schema = tmp.getSchema();
 				}
 			}

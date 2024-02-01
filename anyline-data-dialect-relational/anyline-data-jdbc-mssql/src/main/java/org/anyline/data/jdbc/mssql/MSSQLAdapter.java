@@ -5133,15 +5133,14 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		StringBuilder builder = run.getBuilder();
 		String comment = meta.getComment();
 		if(BasicUtil.isNotEmpty(comment)){
-			Schema schema = meta.getSchema();
+			String schema = meta.getSchemaName();
 			if(BasicUtil.isEmpty(schema)){
-				schema = meta.getTable(true).getSchema();
+				schema = meta.getTable(true).getSchemaName();
 			}
-
 			builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
 			builder.append(",@value=N'").append(comment).append("'");
 			builder.append(",@level0type=N'SCHEMA'");
-			builder.append(",@level0name=N'").append(schema.getName()).append("'");
+			builder.append(",@level0name=N'").append(schema).append("'");
 			builder.append(",@level1type=N'TABLE'");
 			builder.append(",@level1name=N'").append(meta.getTableName(true)).append("'");
 			builder.append(",@level2type=N'COLUMN'");

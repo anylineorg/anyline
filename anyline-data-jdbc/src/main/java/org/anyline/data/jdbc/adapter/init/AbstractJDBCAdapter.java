@@ -5553,13 +5553,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			random = random(runtime);
 		}
 
-		if(null == catalog || null == schema){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())){
 				schema = tmp.getSchema();
 			}
 		}
@@ -5599,13 +5599,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			random = random(runtime);
 		}
 
-		if(null == catalog || null == schema){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())){
 				schema = tmp.getSchema();
 			}
 		}
@@ -5765,13 +5765,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			random = random(runtime);
 		}
 
-		if(null == catalog || null == schema){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())){
 				schema = tmp.getSchema();
 			}
 		}
@@ -5810,13 +5810,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == random){
 			random = random(runtime);
 		}
-		if(null == catalog || null == schema){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())){
 				schema = tmp.getSchema();
 			}
 		}
