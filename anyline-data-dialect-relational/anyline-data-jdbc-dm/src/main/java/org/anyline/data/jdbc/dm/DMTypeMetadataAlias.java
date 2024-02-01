@@ -22,7 +22,6 @@ import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum DMTypeMetadataAlias implements TypeMetadataAlias {
-    
     BFILE                   (StandardTypeMetadata.BFILE                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.BINARY_DOUBLE         ),
     BINARY_FLOAT            (StandardTypeMetadata.FLOAT_ORACLE          ),
@@ -48,7 +47,7 @@ public enum DMTypeMetadataAlias implements TypeMetadataAlias {
     DECIMAL                 (StandardTypeMetadata.DECIMAL               ),
     DOUBLE                  (StandardTypeMetadata.DOUBLE                ),
     ENUM                    (StandardTypeMetadata.ILLEGAL               ),
-    FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE          ),
+    FLOAT                   (StandardTypeMetadata.FLOAT_ORACLE          , 1, 0, 1),
     FLOAT4                  (StandardTypeMetadata.FLOAT_ORACLE          ),
     FLOAT8                  (StandardTypeMetadata.FLOAT_ORACLE          ),
     GEOGRAPHY               (StandardTypeMetadata.ILLEGAL               ),
@@ -88,7 +87,7 @@ public enum DMTypeMetadataAlias implements TypeMetadataAlias {
     NUMERIC                 (StandardTypeMetadata.NUMBER                ),
     POINT                   (StandardTypeMetadata.ILLEGAL               ),
     POLYGON                 (StandardTypeMetadata.ILLEGAL               ),
-    REAL                    (StandardTypeMetadata.REAL          ),
+    REAL                    (StandardTypeMetadata.REAL                  , 1, 1, 1),
     RAW                     (StandardTypeMetadata.RAW                   ),
     ROWID                   (StandardTypeMetadata.ROWID                 ),
     SERIAL                  (StandardTypeMetadata.INT                   ),
