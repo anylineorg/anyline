@@ -1705,7 +1705,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (log.isInfoEnabled() && IS_LOG_SQL(configs)) {
 				log.info("[查询记录总数][行数:{}]", total);
 			}
-
 		}
 		fr = System.currentTimeMillis();
 		if (run.isValid()) {
