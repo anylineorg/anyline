@@ -3726,7 +3726,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, Table meta) throws Exception {
-		return super.buildAppendCommentRun(runtime, meta);
+		return buildChangeCommentRun(runtime, meta);
 	}
 
 	/**
