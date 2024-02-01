@@ -28,7 +28,7 @@ public enum DMTypeMetadataAlias implements TypeMetadataAlias {
     BIGINT                  (StandardTypeMetadata.BIGINT                ),
     BIGSERIAL               (StandardTypeMetadata.BIGINT                ),
     BINARY                  (StandardTypeMetadata.BINARY                  ),
-    BIT                     (StandardTypeMetadata.BIT                ),
+    BIT                     (StandardTypeMetadata.BIT                   , 1, 1, 1),
     BLOB                    (StandardTypeMetadata.BLOB                  ),
     BOOL                    (StandardTypeMetadata.BOOL                ),
     BOOLEAN                 (StandardTypeMetadata.BOOLEAN                ),
