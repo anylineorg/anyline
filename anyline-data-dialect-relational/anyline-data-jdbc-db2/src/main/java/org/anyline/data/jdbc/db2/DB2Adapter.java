@@ -3739,7 +3739,16 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception {
-		return super.buildAppendColumnCommentRun(runtime, meta);
+		List<Run> runs = new ArrayList<>();
+		if(null != meta){
+			LinkedHashMap<String, Column> columns = meta.getColumns();
+			if(null != columns){
+				for(Column column:columns.values()){
+					runs.addAll(buildChangeCommentRun(runtime, column));
+				}
+			}
+		}
+		return runs;
 	}
 
 	/**
