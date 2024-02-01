@@ -10573,7 +10573,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		Connection con = null;
 		try {
-			if (null == meta.getCatalog() || null == meta.getSchema()) {
+			if (BasicUtil.isEmpty(meta.getCatalogName()) || BasicUtil.isEmpty(meta.getSchemaName())) {
 				con = DataSourceUtils.getConnection(ds);
 				checkSchema(runtime, con, meta);
 			}
@@ -10594,10 +10594,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		try {
 			String catalog = null;
 			String schema = null;
-			if (null == meta.getCatalog()) {
+			if (BasicUtil.isEmpty(meta.getCatalogName())) {
 				catalog = con.getCatalog();
 			}
-			if (null == meta.getSchema()) {
+			if (BasicUtil.isEmpty(meta.getSchemaName())) {
 				schema = con.getSchema();
 			}
 			correctSchemaFromJDBC(meta, catalog, schema);
