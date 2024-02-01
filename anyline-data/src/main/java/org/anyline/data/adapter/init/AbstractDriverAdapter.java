@@ -171,7 +171,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
 	 * @param type 类型名称或别名
 	 * @param config 配置项
-	 * @return
+	 * @return TypeMetadata.Config
 	 */
 	@Override
 	public TypeMetadata.Config reg(String type, TypeMetadata.Config config){
@@ -9816,7 +9816,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 定义列:是否忽略有长度<br/>
 	 * 不直接调用 用来覆盖columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param type 数据类型
 	 * @return boolean
 	 */
 	@Override
