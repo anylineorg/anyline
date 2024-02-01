@@ -46,6 +46,7 @@ import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -4747,7 +4748,18 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeCommentRun(runtime, meta);
+		List<Run> runs = new ArrayList<>();
+		String comment = meta.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			Run run = new SimpleRun(runtime);
+			runs.add(run);
+			StringBuilder builder = run.getBuilder();
+			builder.append("COMMENT ON COLUMN ");
+			name(runtime, builder, meta.getTable(true));
+			builder.append(".");
+			SQLUtil.delimiter(builder, meta.getName(), getDelimiterFr(), getDelimiterTo()).append(" IS '").append(comment).append("'");
+		}
+		return runs;
 	}
 
 	/**
@@ -4760,7 +4772,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAppendCommentRun(runtime, meta);
+		return super.buildChangeCommentRun(runtime, meta);
 	}
 
 	/**
