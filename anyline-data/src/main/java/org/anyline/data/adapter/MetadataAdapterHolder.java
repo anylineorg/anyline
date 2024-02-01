@@ -24,20 +24,20 @@ public class MetadataAdapterHolder {
 
 
     static {
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config(1,1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
-        reg(DatabaseType.NONE, TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config(1,1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BLOB, new TypeMetadata.Config(1,1,1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.INT, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.FLOAT, new TypeMetadata.Config(1, 0, 0));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.DATE, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TIME, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.DATETIME, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TIMESTAMP, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.COLLECTION, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config(1, 1, 1));
+        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config(1, 1, 1));
     }
     /**
      * 注册数据类型配置
