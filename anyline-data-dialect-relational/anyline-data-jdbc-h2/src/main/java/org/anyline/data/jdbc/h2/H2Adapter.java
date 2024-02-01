@@ -56,6 +56,12 @@ public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter, Initi
 	public H2Adapter(){
 		delimiterFr = "`";
 		delimiterTo = "`";
+		for (H2TypeMetadataAlias alias : H2TypeMetadataAlias.values()) {
+			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata.Config config = alias.config();
+			reg(alias.name(), config);
+			reg(alias.standard(), config);
+		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.h2:}")
 	private String delimiter;

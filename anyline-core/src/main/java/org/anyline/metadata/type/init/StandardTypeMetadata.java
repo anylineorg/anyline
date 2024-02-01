@@ -406,6 +406,9 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return result;
         }
     }
+    , DOUBLE_PRECISION(CATEGORY.FLOAT, "DOUBLE PRECISION", null, Double.class, 1, 1, 1, H2){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
+    }
     /**
      * mysql(p, s)
      * pg:
@@ -443,7 +446,10 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
    , FLOAT(CATEGORY.FLOAT, "FLOAT", null, Float.class, 1, 2, 1, IoTDB, ElasticSearch, Derby, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT_MySQL.write(value, def, placeholder);}
     }
-   , FLOAT8(CATEGORY.FLOAT, "FLOAT8", null, Double.class, 1, 2, 1, PostgreSQL){
+    , FLOAT8(CATEGORY.FLOAT, "FLOAT8", null, Double.class, 1, 2, 1, PostgreSQL){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+    }
+    , DECFLOAT(CATEGORY.FLOAT, "DECFLOAT", null, Double.class, 1, 2, 1, H2){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
     }
    , BINARY_DOUBLE(CATEGORY.FLOAT, "BINARY_DOUBLE", null, Double.class, 1, 0, 0, ORACLE){
@@ -741,24 +747,24 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return POINT.write(value, def, placeholder);
         }
     }
-   , GEOGRAPHY_POINT(CATEGORY.GEOMETRY, "GEOGRAPHY_POINT", null, Point.class, byte[].class, 1, 1, 1, VoltDB)
-   , MULTIPOLYGON(CATEGORY.GEOMETRY, "MULTIPOLYGON", null, MultiPolygon.class, byte[].class, 1, 1, 1, MySQL)
-   , RING(CATEGORY.GEOMETRY, "RING", null, Ring.class, byte[].class, 1, 1, 1, ClickHouse)
-   , MULTIPOINT(CATEGORY.GEOMETRY, "MULTIPOINT", null, MultiPoint.class, byte[].class, 1, 1, 1, MySQL)
-   , POLYGON(CATEGORY.GEOMETRY, "POLYGON", null, Polygon.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL, KingBase)
-   , GEOMETRY(CATEGORY.GEOMETRY, "GEOMETRY", null, byte[].class, 1, 1, 1, MySQL)
-   , ST_GEOMETRY(CATEGORY.GEOMETRY, "ST_GEOMETRY", null, byte[].class, 1, 1, 1, HANA)
-   , GEOMETRYCOLLECTION(CATEGORY.GEOMETRY, "GEOMETRYCOLLECTION", null, byte[].class, 1, 1, 1, MySQL)
-   , HIERARCHYID(CATEGORY.GEOMETRY, "HIERARCHYID", null, byte[].class, 1, 1, 1, MSSQL)
-   , LINE(CATEGORY.GEOMETRY, "LINE", null, LineString.class, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
-   , LINESTRING(CATEGORY.GEOMETRY, "LINESTRING", null, LineString.class, byte[].class, 1, 1, 1, MySQL)
-   , PATH(CATEGORY.GEOMETRY, "PATH", null, LineString.class, 1, 1, 1, PostgreSQL, KingBase)
-   , LSEG(CATEGORY.GEOMETRY, "LSEG", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
-   , GEOGRAPHY(CATEGORY.GEOMETRY, "GEOGRAPHY", null, byte[].class, 1, 1, 1, MSSQL, PostgreSQL)
-   , BOX(CATEGORY.GEOMETRY, "BOX", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
-   , CIDR(CATEGORY.GEOMETRY, "CIDR", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
-   , CIRCLE(CATEGORY.GEOMETRY, "CIRCLE", null, byte[].class, 1, 1, 1, PostgreSQL)
-   , INET(CATEGORY.GEOMETRY, "INET", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
+    , GEOGRAPHY_POINT(CATEGORY.GEOMETRY, "GEOGRAPHY_POINT", null, Point.class, byte[].class, 1, 1, 1, VoltDB)
+    , MULTIPOLYGON(CATEGORY.GEOMETRY, "MULTIPOLYGON", null, MultiPolygon.class, byte[].class, 1, 1, 1, MySQL)
+    , RING(CATEGORY.GEOMETRY, "RING", null, Ring.class, byte[].class, 1, 1, 1, ClickHouse)
+    , MULTIPOINT(CATEGORY.GEOMETRY, "MULTIPOINT", null, MultiPoint.class, byte[].class, 1, 1, 1, MySQL)
+    , POLYGON(CATEGORY.GEOMETRY, "POLYGON", null, Polygon.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL, KingBase)
+    , GEOMETRY(CATEGORY.GEOMETRY, "GEOMETRY", null, byte[].class, 1, 1, 1, MySQL)
+    , ST_GEOMETRY(CATEGORY.GEOMETRY, "ST_GEOMETRY", null, byte[].class, 1, 1, 1, HANA)
+    , GEOMETRYCOLLECTION(CATEGORY.GEOMETRY, "GEOMETRYCOLLECTION", null, byte[].class, 1, 1, 1, MySQL)
+    , HIERARCHYID(CATEGORY.GEOMETRY, "HIERARCHYID", null, byte[].class, 1, 1, 1, MSSQL)
+    , LINE(CATEGORY.GEOMETRY, "LINE", null, LineString.class, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
+    , LINESTRING(CATEGORY.GEOMETRY, "LINESTRING", null, LineString.class, byte[].class, 1, 1, 1, MySQL)
+    , PATH(CATEGORY.GEOMETRY, "PATH", null, LineString.class, 1, 1, 1, PostgreSQL, KingBase)
+    , LSEG(CATEGORY.GEOMETRY, "LSEG", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
+    , GEOGRAPHY(CATEGORY.GEOMETRY, "GEOGRAPHY", null, byte[].class, 1, 1, 1, MSSQL, PostgreSQL)
+    , BOX(CATEGORY.GEOMETRY, "BOX", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
+    , CIDR(CATEGORY.GEOMETRY, "CIDR", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
+    , CIRCLE(CATEGORY.GEOMETRY, "CIRCLE", null, byte[].class, 1, 1, 1, PostgreSQL)
+    , INET(CATEGORY.GEOMETRY, "INET", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase)
 
 
     /* *****************************************************************************************************************
@@ -766,17 +772,19 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              待实现
      *
      * ****************************************************************************************************************/
-   , ENUM(CATEGORY.NONE, "ENUM", null, String.class, 1, 1, 1, MySQL)
-   , INTERVAL(CATEGORY.NONE, "INTERVAL", null, null, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
-   , RAW(CATEGORY.NONE, "RAW", null, byte[].class, 1, 1, 1, ORACLE)
-   , ROWID(CATEGORY.NONE, "ROWID", null, null, 1, 1, 1, ORACLE)
-   , SET(CATEGORY.NONE, "SET", null, String.class, 1, 1, 1, MySQL, SinoDB)
-   , MULTISET(CATEGORY.NONE, "MULTISET", null, String.class, 1, 1, 1, SinoDB)
-   , LIST(CATEGORY.NONE, "LIST", null, String.class, 1, 1, 1, SinoDB)
-   , TSQUERY(CATEGORY.NONE, "TSQUERY", null, null, 1, 1, 1, PostgreSQL, KingBase)
-   , TSVECTOR(CATEGORY.NONE, "TSVECTOR", null, null, 1, 1, 1, PostgreSQL, KingBase)
-   , MACADDR(CATEGORY.NONE, "MACADDR", null, null, 1, 1, 1, PostgreSQL, KingBase)
-   , PG_SNAPSHOT(CATEGORY.NONE, "PG_SNAPSHOT", null, null, 1, 1, 1, PostgreSQL)
+    , JAVA_OBJECT(CATEGORY.NONE, "JAVA_OBJECT", null, String.class, 1, 1, 1, H2)
+    , ENUM(CATEGORY.NONE, "ENUM", null, String.class, 1, 1, 1, MySQL)
+    , INTERVAL(CATEGORY.NONE, "INTERVAL", null, null, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
+    , RAW(CATEGORY.NONE, "RAW", null, byte[].class, 1, 1, 1, ORACLE)
+    , ROW(CATEGORY.NONE, "ROW", null, null, 1, 1, 1, H2)
+    , ROWID(CATEGORY.NONE, "ROWID", null, null, 1, 1, 1, ORACLE)
+    , SET(CATEGORY.NONE, "SET", null, String.class, 1, 1, 1, MySQL, SinoDB)
+    , MULTISET(CATEGORY.NONE, "MULTISET", null, String.class, 1, 1, 1, SinoDB)
+    , LIST(CATEGORY.NONE, "LIST", null, String.class, 1, 1, 1, SinoDB)
+    , TSQUERY(CATEGORY.NONE, "TSQUERY", null, null, 1, 1, 1, PostgreSQL, KingBase)
+    , TSVECTOR(CATEGORY.NONE, "TSVECTOR", null, null, 1, 1, 1, PostgreSQL, KingBase)
+    , MACADDR(CATEGORY.NONE, "MACADDR", null, null, 1, 1, 1, PostgreSQL, KingBase)
+    , PG_SNAPSHOT(CATEGORY.NONE, "PG_SNAPSHOT", null, null, 1, 1, 1, PostgreSQL)
     /**
      * pg
      * 弃用 换成pg_snapshot
