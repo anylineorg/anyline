@@ -24,8 +24,8 @@ import org.anyline.metadata.type.TypeMetadata;
 //https://www.postgresql.org/docs/16/datatype.html
 public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
     BFILE                       (StandardTypeMetadata.ILLEGAL                   ),
-    BINARY_DOUBLE               (StandardTypeMetadata.DOUBLE             ),
-    BINARY_FLOAT                (StandardTypeMetadata.FLOAT              ),
+    BINARY_DOUBLE               (StandardTypeMetadata.DECIMAL                   ),
+    BINARY_FLOAT                (StandardTypeMetadata.FLOAT4                    ),
     BIGINT                      (StandardTypeMetadata.INT8                      ),
     BIGSERIAL                   (StandardTypeMetadata.BIGSERIAL                 ),
     BINARY                      (StandardTypeMetadata.BIT                       ),
@@ -46,8 +46,8 @@ public enum PostgresGenusTypeMetadataAlias implements TypeMetadataAlias {
     DOUBLE                      (StandardTypeMetadata.DECIMAL                   ),
     ENUM                        (StandardTypeMetadata.ILLEGAL                   ),
     FLOAT                       (StandardTypeMetadata.FLOAT4                    ),
-    FLOAT4                      (StandardTypeMetadata.FLOAT4                    ),
-    FLOAT8                      (StandardTypeMetadata.FLOAT8                    ),
+    FLOAT4                      (StandardTypeMetadata.FLOAT4                    , 1, 1, 1),
+    FLOAT8                      (StandardTypeMetadata.FLOAT8                    , 1, 1, 1),
     GEOGRAPHY                   (StandardTypeMetadata.GEOGRAPHY                 ),
     GEOMETRY                    (StandardTypeMetadata.GEOMETRY                  ),
     GEOMETRYCOLLECTION          (StandardTypeMetadata.GEOMETRYCOLLECTION        ),
