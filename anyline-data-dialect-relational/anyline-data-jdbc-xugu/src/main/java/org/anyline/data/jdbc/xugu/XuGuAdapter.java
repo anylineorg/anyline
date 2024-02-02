@@ -18,14 +18,15 @@
 
 package org.anyline.data.jdbc.xugu;
 
-import com.sun.javafx.text.TextRun;
-import com.sun.org.apache.xml.internal.resolver.Catalog;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.*;
+import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
@@ -36,10 +37,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
-import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Repository;
 
-import javax.sound.midi.Sequence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
