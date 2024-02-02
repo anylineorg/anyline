@@ -463,6 +463,7 @@ public enum DatabaseType implements Serializable {
         Weaviate            	("Weaviate"                         	,KEY_CASE.SRC	,849	,null	,""	,""),
         Xapian              	("Xapian"                           	,KEY_CASE.SRC	,792	,null	,""	,""),
         xigemaDB            	("华胜信泰"                             	,KEY_CASE.SRC	,900	,null	,"com.informix.jdbc.IfxDriver"	,"jdbc:informix-sqli://{host}:{port}/{database}:INFORMIXSERVER={server}"),
+        XuGu                	("XuGu"                             	,KEY_CASE.SRC	,645	,null	,"com.xugu.cloudjdbc.Driver"	,"jdbc:xugu://{host}:{port:5138}/database"),
         XTDB                	("XTDB"                             	,KEY_CASE.SRC	,645	,null	,""	,""),
         XtremeData          	("XtremeData"                       	,KEY_CASE.SRC	,638	,null	,""	,""),
         YDB                 	("YDB"                              	,KEY_CASE.SRC	,703	,null	,""	,""),

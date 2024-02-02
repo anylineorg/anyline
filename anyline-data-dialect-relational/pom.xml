@@ -48,6 +48,7 @@
 		<module>anyline-data-jdbc-sybase</module>
 		<module>anyline-data-jdbc-tidb</module>
 		<module>anyline-data-jdbc-voltdb</module>
+		<module>anyline-data-jdbc-xugu</module>							<!--虚谷-->
 		<module>anyline-data-jdbc-yugabyte</module>
     </modules>
 	<build>
