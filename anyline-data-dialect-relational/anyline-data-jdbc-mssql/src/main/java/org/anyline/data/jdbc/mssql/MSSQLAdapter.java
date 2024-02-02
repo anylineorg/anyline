@@ -6639,10 +6639,10 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 			return;
 		}
 		try {
-			if (BasicUtil.isEmpty(meta.getCatalogName())) {
+			if (empty(meta.getCatalog())) {
 				meta.setCatalog(con.getCatalog());
 			}
-			if (BasicUtil.isEmpty(meta.getSchemaName())) {
+			if (empty(meta.getSchema())) {
 				//meta.setSchema("dbo");
 				meta.setSchema(con.getSchema());
 			}

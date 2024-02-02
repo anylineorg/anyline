@@ -3857,23 +3857,26 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try{
 			long fr = System.currentTimeMillis();
 			Table search = new Table();
-			if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
+			if(
+				(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
+				|| (supportSchema() && empty(schema))	//支持schema 但schema为空
+			){
 				Table tmp = new Table();
-				if(!greedy) {
+				if(!greedy) { //非贪婪模式下 检测当前catalog schema
 					checkSchema(runtime, tmp);
 				}
-				if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
+				if(supportCatalog() && empty(catalog)){
 					catalog = tmp.getCatalog();
 				}
-				if(null == schema || BasicUtil.isEmpty(schema.getName())){
+				if(supportSchema() && empty(schema)){
 					schema = tmp.getSchema();
 				}
 			}
-			String origin = CacheProxy.name(greedy, catalog, schema, pattern);
+			String origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE){
 				//先查出所有key并以大写缓存 用来实现忽略大小写
 				tableMap(runtime, random, greedy, catalog, schema);
-				origin = CacheProxy.name(greedy, catalog, schema, pattern);
+				origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
 			}
 			if(null == origin){
 				origin = pattern;
@@ -3913,7 +3916,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						int size = list.size();
 						for(int i=size-1;i>=0; i--){
 							Table item = list.get(i);
-							if(!(catalog+"_"+schema).equalsIgnoreCase(item.getCatalog()+"_"+item.getSchema())){
+							if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())){
 								list.remove(i);
 							}
 						}
@@ -3960,18 +3963,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				origin = origin.replace("%",".*");
 				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
-				String catalog_name = null;
-				String schema_name = null;
-				if(null != catalog){
-					catalog_name = catalog.getName();
-				}
-				if(null != schema){
-					schema_name = schema.getName();
-				}
 				for(T item:list){
 					String name = item.getName(greedy)+"";
 					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)){
-						if(BasicUtil.equalsIgnoreCase(catalog_name, item.getCatalogName()) && BasicUtil.equalsIgnoreCase(schema_name, item.getSchemaName())) {
+						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
 							tmp.add(item);
 						}
 					}
@@ -3993,8 +3988,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							if(null != tObjectId && null != cObjectId && tObjectId == cObjectId){
 								cols.put(column.getName().toUpperCase(), column);
 							}else{
-								if(BasicUtil.equalsIgnoreCase(cCatalog, column.getCatalog())
-										&& BasicUtil.equalsIgnoreCase(schema, column.getSchema())){
+								if(equals(cCatalog, column.getCatalog())
+										&& equals(schema, column.getSchema())){
 										cols.put(column.getName().toUpperCase(), column);
 								}
 							}
@@ -4022,7 +4017,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 */
 	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
-		Map<String, String> names = CacheProxy.names(catalog, schema);
+		Map<String, String> names = CacheProxy.names(this, catalog, schema);
 		if(null == names || names.isEmpty()){
 			if(null == random){
 				random = random(runtime);
@@ -4041,7 +4036,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						tables = tables(runtime, idx++, true, catalog, schema, tables, set);
-						CacheProxy.name(tables);
+						CacheProxy.name(this, tables);
 						sys = true;
 					}
 				}
@@ -4051,7 +4046,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(!sys){
 				try {
 					tables = tables(runtime, true, tables, catalog, schema, null, null);
-					CacheProxy.name(tables);
+					CacheProxy.name(this, tables);
 				}catch (Exception e){
 					e.printStackTrace();
 				}
@@ -4473,7 +4468,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					LinkedHashMap<String,View> all = views(runtime, random, greedy, catalog, schema, null, types);
 					if(!greedy) {
 						for (View view : all.values()) {
-							if (BasicUtil.equalsIgnoreCase(catalog, view.getCatalog()) && BasicUtil.equalsIgnoreCase(schema, view.getSchema())) {
+							if (equals(catalog, view.getCatalog()) && equals(schema, view.getSchema())) {
 								view_map.put(view.getName(greedy).toUpperCase(), view.getName(greedy));
 							}
 						}
@@ -7238,19 +7233,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-		String catalog_name = null;
-		String schema_name = null;
-		if(null != catalog){
-			catalog_name = catalog.getName();
-		}
-		if(null != schema){
-			schema_name = schema.getName();
-		}
 		if(null != tables){
 			for(T table:tables){
-				if(BasicUtil.equalsIgnoreCase(catalog_name, table.getCatalogName())
-						&& BasicUtil.equalsIgnoreCase(schema_name, table.getSchemaName())
-						&& table.getName().equalsIgnoreCase(name)
+				if(equals(catalog, table.getCatalog())
+						&& equals(schema, table.getSchema())
+						&& BasicUtil.equalsIgnoreCase(table.getName(),name)
 				){
 					return table;
 				}

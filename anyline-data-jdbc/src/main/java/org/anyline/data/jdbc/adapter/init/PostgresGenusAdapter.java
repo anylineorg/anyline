@@ -52,6 +52,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
             reg(alias.standard(), config);
         }
     }
+    @Override
+    public boolean supportCatalog() {
+        return super.supportSchema();
+    }
+
+    @Override
+    public boolean supportSchema() {
+        return super.supportSchema();
+    }
     /* *****************************************************************************************************************
      *
      * 													DML

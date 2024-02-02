@@ -80,6 +80,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	public DatabaseType type() {
 		return DatabaseType.COMMON;
 	}
+
+	@Override
+	public boolean supportCatalog() {
+		return true;
+	}
+
+	@Override
+	public boolean supportSchema() {
+		return true;
+	}
+
 	protected JdbcTemplate jdbc(DataRuntime runtime){
 		Object processor = runtime.getProcessor();
 		return (JdbcTemplate) processor;
@@ -4270,7 +4281,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		Catalog catalog = table.getCatalog();
 		Schema schema = table.getSchema();
 
-		LinkedHashMap<String,T> columns = CacheProxy.columns(runtime.getKey(), table);
+		LinkedHashMap<String,T> columns = CacheProxy.columns(this, runtime.getKey(), table);
 		if(null != columns && !columns.isEmpty()){
 			return columns;
 		}
@@ -4405,7 +4416,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}
 		if(null != columns) {
-			CacheProxy.columns(runtime.getKey(), table, columns);
+			CacheProxy.columns(this, runtime.getKey(), table, columns);
 		}else{
 			columns = new LinkedHashMap<>();
 		}
@@ -4864,7 +4875,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			return new LinkedHashMap();
 		}
 		checkName(runtime, null, table);
-		LinkedHashMap<String,T> tags = CacheProxy.tags(runtime.getKey(), table);
+		LinkedHashMap<String,T> tags = CacheProxy.tags(this, runtime.getKey(), table);
 		if(null != tags && !tags.isEmpty()){
 			return tags;
 		}
@@ -4922,7 +4933,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 			}
 		}
-		CacheProxy.tags(runtime.getKey(), table, tags);
+		CacheProxy.tags(this, runtime.getKey(), table, tags);
 		return tags;
 	}
 
@@ -5297,7 +5308,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					String catalog = BasicUtil.evl(string(keys, "TABLE_CATALOG", set), string(keys, "TABLE_CAT", set));
 					String schema = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
 					correctSchemaFromJDBC(index, catalog, schema);
-					if(!BasicUtil.equals(table.getCatalogName(), index.getCatalogName()) || !BasicUtil.equals(table.getSchemaName(), index.getSchemaName())){
+					if(!equals(table.getCatalog(), index.getCatalog()) || !equals(table.getSchema(), index.getSchema())){
 						continue;
 					}
 					index.setTable(string(keys, "TABLE_NAME", set));
@@ -10573,7 +10584,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		Connection con = null;
 		try {
-			if (BasicUtil.isEmpty(meta.getCatalogName()) || BasicUtil.isEmpty(meta.getSchemaName())) {
+			if (empty(meta.getCatalog()) || empty(meta.getSchema())) {
 				con = DataSourceUtils.getConnection(ds);
 				checkSchema(runtime, con, meta);
 			}
@@ -10594,14 +10605,16 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		try {
 			String catalog = null;
 			String schema = null;
-			if (BasicUtil.isEmpty(meta.getCatalogName())) {
+			//这一步不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
+			if (empty(meta.getCatalog())) {
 				catalog = con.getCatalog();
 			}
-			if (BasicUtil.isEmpty(meta.getSchemaName())) {
+			if (empty(meta.getSchema())) {
 				schema = con.getSchema();
 			}
 			correctSchemaFromJDBC(meta, catalog, schema);
 		}catch (Exception e){
+			log.warn("[check schema][result:fail][exexption:{}]", e.toString());
 		}
 		meta.setCheckSchemaTime(new Date());
 	}

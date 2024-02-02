@@ -19,6 +19,8 @@ package org.anyline.proxy;
 
 import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
+import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.entity.DataRow;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
@@ -48,33 +50,60 @@ public class CacheProxy {
     private static Map<String, Map<String, String>>  cache_names = new HashMap<>();
     private static Map<String, DataRow> cache_table_maps = new HashMap<>();
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
-    public static void name(List<Table> tables){
+    public static void name(DriverAdapter adapter, List<Table> tables){
         if(null != tables) {
             for (Table table : tables) {
-                name(table.getCatalog(), table.getSchema(), table.getName(), table.getName());
+                name(adapter, table.getCatalog(), table.getSchema(), table.getName(), table.getName());
             }
         }
     }
-    private static String key(Catalog catalog, Schema schema){
+    private static String key(DriverAdapter adapter, Catalog catalog, Schema schema){
+        String key = null;
         String catalog_name = null;
         String schema_name = null;
-        if(null != catalog){
+        if(null != catalog && adapter.supportCatalog()){
             catalog_name = catalog.getName();
         }
-        if(null != schema){
+        if(null != schema && adapter.supportSchema()){
             schema_name = schema.getName();
         }
-        return (catalog_name + "_" + schema_name).toUpperCase();
+        if(null != catalog_name){
+            key = catalog_name;
+        }
+        if(null != schema_name){
+            if(null != key){
+                key += "_" + schema_name;
+            }else{
+                key = schema_name;
+            }
+        }
+        if(null != key){
+            key = key.toUpperCase();
+        }else{
+            key = "ALL";
+        }
+        return key;
     }
-    private static String key(Catalog catalog, Schema schema, Table table){
+    private static String key(DriverAdapter adapter, Catalog catalog, Schema schema, Table table){
         String table_name = null;
         if(null != table){
             table_name = table.getName();
         }
-        return (key(catalog, schema) + ":" + table_name).toUpperCase();
+        String key = key(adapter, catalog, schema);
+        if(null != table_name){
+            if(null != key){
+                key += ":" + table_name;
+            }else{
+                key = table_name;
+            }
+        }
+        if(null != key){
+            key = key.toUpperCase();
+        }
+        return key;
     }
-    public static void name(Catalog catalog, Schema schema, String name, String origin){
-        String group_key = key(catalog, schema);
+    public static void name(DriverAdapter adapter, Catalog catalog, Schema schema, String name, String origin){
+        String group_key = key(adapter, catalog, schema);
         Map<String, String> maps = cache_names.get(group_key);
         if(null == maps){
             maps = new HashMap<>();
@@ -83,14 +112,14 @@ public class CacheProxy {
         String name_key = (group_key + ":" + name).toUpperCase();
         maps.put(name_key, origin);
     }
-    public static Map<String, String> names(Catalog catalog, Schema schema){
-        return cache_names.get(key(catalog, schema));
+    public static Map<String, String> names(DriverAdapter adapter, Catalog catalog, Schema schema){
+        return cache_names.get(key(adapter, catalog, schema));
     }
-    public static String name(boolean greedy, Catalog catalog, Schema schema, String name){
+    public static String name(DriverAdapter adapter, boolean greedy, Catalog catalog, Schema schema, String name){
         if(null == name){
             return null;
         }
-        String group_key = key(catalog, schema);
+        String group_key = key(adapter, catalog, schema);
         Map<String, String> maps = cache_names.get(group_key);
         if(null != maps){
             String name_key = (group_key + ":" + name).toUpperCase();
@@ -173,13 +202,13 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public  static  <T extends Column> LinkedHashMap<String, T> columns(String datasource, Table table){
+    public  static  <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, String datasource, Table table){
         if(null == table){
             return null;
         }
         LinkedHashMap<String, T> columns = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource) + "_COLUMNS_" + key(table.getCatalog(), table.getSchema(), table);
+        String key = datasource(datasource) + "_COLUMNS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
@@ -204,12 +233,12 @@ public class CacheProxy {
      * @param table 表
      * @param columns 列
      */
-    public static  <T extends Column> void columns(String datasource, Table table, LinkedHashMap<String, T> columns){
+    public static  <T extends Column> void columns(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> columns){
         if(null == table){
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource) + "_COLUMNS_" + key(table.getCatalog(), table.getSchema(), table);
+        String key = datasource(datasource) + "_COLUMNS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
         key = key.toUpperCase();
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, columns);
@@ -227,13 +256,13 @@ public class CacheProxy {
      * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
      * @return LinkedHashMap
      */
-    public static <T extends Tag> LinkedHashMap<String, T> tags(String datasource, Table table){
+    public static <T extends Tag> LinkedHashMap<String, T> tags(DriverAdapter adapter, String datasource, Table table){
         if(null == table){
             return null;
         }
         LinkedHashMap<String, T> tags = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_TAGS_" + key(table.getCatalog(), table.getSchema(), table);
+        String key = datasource(datasource)+"_TAGS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             CacheElement cacheElement = provider.get(cache, key);
             if(null != cacheElement){
@@ -257,12 +286,12 @@ public class CacheProxy {
      * @param table 表
      * @param tags Tag
      */
-    public static <T extends Tag> void tags(String datasource, Table table, LinkedHashMap<String, T> tags){
+    public static <T extends Tag> void tags(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> tags){
         if(null == table){
             return;
         }
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_TAGS_" + key(table.getCatalog(), table.getSchema(), table);
+        String key = datasource(datasource)+"_TAGS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
         if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED){
             provider.put(cache, key, tags);
         }else{

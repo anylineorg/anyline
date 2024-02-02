@@ -91,6 +91,101 @@ public interface DriverAdapter {
 	 */
 	LinkedHashMap<String, TypeMetadata> alias();
 
+	boolean supportCatalog();
+	boolean supportSchema();
+
+	/**
+	 * 根据catalog+schema+name 比较,过程中需要检测是否支持catalog,schema不支持的不判断
+	 * @param m1 BaseMetadata
+	 * @param m2 BaseMetadata
+	 * @return boolean
+	 */
+	default boolean equals(BaseMetadata m1, BaseMetadata m2){
+		String c1 = null;
+		String c2 = null;
+		String s1 = null;
+		String s2 = null;
+		String n1 = null;
+		String n2 = null;
+		if(null != m1){
+			if(null == m2){
+				return false;
+			}
+			c1 = m1.getCatalogName();
+			s1 = m1.getSchemaName();
+			n1 = m1.getName();
+		}
+		if(null != m2){
+			if(null == m1){
+				return false;
+			}
+			c2 = m2.getCatalogName();
+			s2 = m2.getSchemaName();
+			n2 = m2.getName();
+		}
+		if(supportCatalog()){
+			if(!BasicUtil.equals(c1, c2, true)){
+				return false;
+			}
+		}
+		if(supportSchema()){
+			if(!BasicUtil.equals(s1, s2, true)){
+				return false;
+			}
+		}
+		return BasicUtil.equals(n1, n2, true);
+	}
+	default boolean empty(BaseMetadata meta){
+		if(null == meta){
+			return true;
+		}
+		if(BasicUtil.isEmpty(meta.getName())){
+			return true;
+		}
+		return false;
+	}
+	default boolean equals(Catalog c1, Catalog c2){
+		if(!supportCatalog()){
+			//如果数据库不支持直接返回true
+			return true;
+		}
+		String n1 = null;
+		String n2 = null;
+		if(null != c1){
+			if(null == c2){
+				return false;
+			}
+			n1 = c1.getName();
+		}
+		if(null != c2){
+			if(null == c1){
+				return false;
+			}
+			n2 = c2.getName();
+		}
+		return BasicUtil.equals(n1, n2, true);
+	}
+	default boolean equals(Schema s1, Schema s2){
+		//如果数据库不支持直接返回true
+		if(!supportCatalog()){
+			return true;
+		}
+		String n1 = null;
+		String n2 = null;
+		if(null != s1){
+			if(null == s2){
+				return false;
+			}
+			n1 = s1.getName();
+		}
+		if(null != s2){
+			if(null == s1){
+				return false;
+			}
+			n2 = s2.getName();
+		}
+		return BasicUtil.equals(n1, n2, true);
+	}
 	/**
 	 * 注册数据类型配置<br/>
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>
@@ -1299,19 +1394,35 @@ public interface DriverAdapter {
 	 * @param <T> BaseMetadata
 	 */
 	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
-		if(override || BasicUtil.isEmpty(meta.getCatalogName())) {
-			meta.setCatalog(catalog);
+		if(supportCatalog()) {
+			if (override || empty(meta.getCatalog())) {
+				meta.setCatalog(catalog);
+			}
+		}else{
+			meta.setCatalog((Catalog) null);
 		}
-		if(override || BasicUtil.isEmpty(meta.getSchemaName())) {
-			meta.setSchema(schema);
+		if(supportSchema()) {
+			if (override || empty(meta.getSchema())) {
+				meta.setSchema(schema);
+			}
+		}else{
+			meta.setSchema((Schema) null);
 		}
 	}
 	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
-		if(BasicUtil.isEmpty(meta.getCatalogName())) {
-			meta.setCatalog(catalog);
+		if(supportCatalog()) {
+			if (empty(meta.getCatalog())) {
+				meta.setCatalog(catalog);
+			}
+		}else{
+			meta.setCatalog((Catalog) null);
 		}
-		if(BasicUtil.isEmpty(meta.getSchemaName())) {
-			meta.setSchema(schema);
+		if(supportSchema()){
+			if(empty(meta.getSchema())) {
+				meta.setSchema(schema);
+			}
+		}else{
+			meta.setSchema((Schema) null);
 		}
 	}
 

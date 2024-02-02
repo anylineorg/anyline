@@ -56,6 +56,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         }
     }
 
+    @Override
+    public boolean supportCatalog() {
+        return false;
+    }
+
+    @Override
+    public boolean supportSchema() {
+        return super.supportSchema();
+    }
     /* *****************************************************************************************************************
      *
      * 													DML

@@ -47,6 +47,15 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
             reg(alias.standard(), config);
         }
     }
+    @Override
+    public boolean supportCatalog() {
+        return false;
+    }
+
+    @Override
+    public boolean supportSchema() {
+        return super.supportSchema();
+    }
     /* *****************************************************************************************************************
      *
      * 													DML
@@ -6516,13 +6525,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
 	 */
 	@Override
     public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
-        if(override || BasicUtil.isEmpty(meta.getSchema())) {
+        if(override || empty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
     }
     @Override
     public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
-        if(BasicUtil.isEmpty(meta.getSchema())) {
+        if(empty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
     }

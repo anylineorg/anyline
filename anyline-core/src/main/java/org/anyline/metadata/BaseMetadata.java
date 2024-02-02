@@ -497,10 +497,10 @@ public class BaseMetadata<T extends BaseMetadata> {
     }
     public static  <T extends BaseMetadata> T search(List<T> list, String catalog, String name){
         for(T item:list){
-            if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
-                    && BasicUtil.equalsIgnoreCase(item.getName(), name)
-            ){
-                return item;
+            if(BasicUtil.equalsIgnoreCase(item.getName(), name)){
+                if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)){
+                    return item;
+                }
             }
         }
         return null;

@@ -35,6 +35,17 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public DatabaseType type() {
         return DatabaseType.ElasticSearch;
     }
+
+    @Override
+    public boolean supportCatalog() {
+        return false;
+    }
+
+    @Override
+    public boolean supportSchema() {
+        return false;
+    }
+
     public ElasticSearchAdapter(){
         super();
         for (ElasticSearchTypeMetadataAlias alias : ElasticSearchTypeMetadataAlias.values()) {
