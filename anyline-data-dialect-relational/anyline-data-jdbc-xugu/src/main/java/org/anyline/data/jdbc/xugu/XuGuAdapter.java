@@ -48,7 +48,7 @@ import java.sql.ResultSetMetaData;
 import java.util.*;
 
 @Repository("anyline.data.jdbc.adapter.xugu")
-public class XuguAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
+public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter, InitializingBean {
 
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
@@ -65,11 +65,11 @@ public class XuguAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 	}
 
 
-	public XuguAdapter(){
+	public XuGuAdapter(){
 		super();
 		delimiterFr = "";
 		delimiterTo = "";
-		for (XuguTypeMetadataAlias alias : XuguTypeMetadataAlias.values()) {
+		for (XuGuTypeMetadataAlias alias : XuGuTypeMetadataAlias.values()) {
 			this.alias.put(alias.name(), alias.standard());
 			TypeMetadata.Config config = alias.config();
 			reg(alias.name(), config);
