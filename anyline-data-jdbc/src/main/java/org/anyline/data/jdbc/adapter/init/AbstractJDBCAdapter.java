@@ -23,6 +23,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.*;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
+import org.anyline.data.jdbc.handler.SimpleConnectionHandler;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -1673,7 +1674,52 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			final StreamHandler handler = _handler;
 			final long[] mid = {System.currentTimeMillis()};
 			if(null != handler){
-				jdbc.query(con -> {
+				DataSource ds = null;
+				Connection con = null;
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				//read(ResultSet result)之后 是否保存ResultSet连接状态，如果保持则需要在调用方关闭
+				boolean keep = handler.keep();
+				try {
+					ds = jdbc.getDataSource();
+					con = DataSourceUtils.getConnection(ds);
+					ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+					ps.setFetchSize(handler.size());
+					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+					if (null != values && values.size() > 0) {
+						int idx = 0;
+						for (Object value : values) {
+							ps.setObject(++idx, value);
+						}
+					}
+					rs = ps.executeQuery();
+					if(keep && handler instanceof ResultSetHandler){
+						ConnectionHandler ch = new SimpleConnectionHandler(ds, con, ps, rs);
+						handler.handler(ch);
+						((ResultSetHandler)handler).read(rs);
+					}else {
+						while (rs.next()) {
+							count[0] ++;
+							boolean next = stream(handler, rs, configs, true, runtime, null);
+							if(!next){
+								break;
+							}
+						}
+					}
+				}finally {
+					if(!keep) {//保持连接的由调用方关闭
+						if(null != ps && !ps.isClosed()) {
+							rs.close();
+						}
+						if(null != ps && !ps.isClosed()) {
+							ps.close();
+						}
+						if (null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
+							DataSourceUtils.releaseConnection(con, ds);
+						}
+					}
+				}
+				/*jdbc.query(con -> {
 					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
@@ -1691,7 +1737,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					}
 					stream(handler, rs, configs, true, runtime, null);
 					count[0] ++;
-				});
+				});*/
 				maps = new ArrayList<>();
 				//end stream handler
 			}else {
@@ -10466,7 +10512,52 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			long[] count = new long[]{0};
 			final StreamHandler handler = _handler;
 			if(null != handler){
-				jdbc.query(con -> {
+				DataSource ds = null;
+				Connection con = null;
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				//read(ResultSet result)之后 是否保存ResultSet连接状态，如果保持则需要在调用方关闭
+				boolean keep = handler.keep();
+				try {
+					ds = jdbc.getDataSource();
+					con = DataSourceUtils.getConnection(ds);
+					ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+					ps.setFetchSize(handler.size());
+					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+					if (null != values && values.size() > 0) {
+						int idx = 0;
+						for (Object value : values) {
+							ps.setObject(++idx, value);
+						}
+					}
+					rs = ps.executeQuery();
+					if(keep && handler instanceof ResultSetHandler){
+						ConnectionHandler ch = new SimpleConnectionHandler(ds, con, ps, rs);
+						handler.handler(ch);
+						((ResultSetHandler)handler).read(rs);
+					}else {
+						while (rs.next()) {
+							count[0] ++;
+							boolean next = stream(handler, rs, configs, true, runtime, null);
+							if(!next){
+								break;
+							}
+						}
+					}
+				}finally {
+					if(!keep) {//保持连接的由调用方关闭
+						if(null != ps && !ps.isClosed()) {
+							rs.close();
+						}
+						if(null != ps && !ps.isClosed()) {
+							ps.close();
+						}
+						if (null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
+							DataSourceUtils.releaseConnection(con, ds);
+						}
+					}
+				}
+				/*jdbc.query(con -> {
 					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
@@ -10484,7 +10575,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					}
 					stream(handler, rs, configs, system, runtime, metadatas);
 					count[0] ++;
-				});
+				});*/
 				//end stream handler
 			}else {
 				if(null != values && values.size()>0){

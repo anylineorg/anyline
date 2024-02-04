@@ -1,16 +1,30 @@
-package org.anyline.data.handler.init;
+package org.anyline.data.jdbc.handler;
 
+import org.anyline.data.handler.ConnectionHandler;
 import org.anyline.data.handler.ResultSetHandler;
 import org.anyline.entity.DataRow;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class SimpleResultSetHandler implements ResultSetHandler {
+    private ConnectionHandler handler;
     private ResultSet result;
     private List<String> keys;
     private int size;
+
+    @Override
+    public void handler(ConnectionHandler handler) {
+        this.handler = handler;
+    }
+
+    @Override
+    public boolean keep() {
+       return true;
+    }
 
     @Override
     public boolean read(ResultSet result) {
@@ -32,7 +46,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         if(result.next()){
             map = new LinkedHashMap<>();
             for (int i = 1; i <= size; i++) {
-                map.put(keys.get(i), result.getObject(i));
+                map.put(keys.get(i-1), result.getObject(i));
             }
         }
         return map;
@@ -43,11 +57,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     public ResultSet result(){
         return result;
     }
-    public void close(){
-        try {
-            result.close();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public void close() throws Exception{
+        handler.close();
     }
 }
