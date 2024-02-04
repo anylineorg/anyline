@@ -23,7 +23,7 @@ import org.anyline.metadata.type.init.StandardTypeMetadata;
 //https://docs.xugudb.com/%E8%99%9A%E8%B0%B7%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E5%A4%96%E5%8F%91%E5%B8%83/07%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/JDBC%E6%A0%87%E5%87%86%E6%8E%A5%E5%8F%A3%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/
 public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 
-    BFILE                   (StandardTypeMetadata.BFILE                 ),
+    BFILE                   (StandardTypeMetadata.ILLEGAL                 ),
     BINARY_DOUBLE           (StandardTypeMetadata.DOUBLE         ),
     BINARY_FLOAT            (StandardTypeMetadata.FLOAT          ),
     BIGINT                  (StandardTypeMetadata.NUMERIC                ),
