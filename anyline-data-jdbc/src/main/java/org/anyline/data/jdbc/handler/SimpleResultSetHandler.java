@@ -48,6 +48,8 @@ public class SimpleResultSetHandler implements ResultSetHandler {
             for (int i = 1; i <= size; i++) {
                 map.put(keys.get(i-1), result.getObject(i));
             }
+        }else{
+            handler.close();
         }
         return map;
     }

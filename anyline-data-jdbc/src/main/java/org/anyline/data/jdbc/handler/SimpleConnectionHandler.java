@@ -64,7 +64,7 @@ public class SimpleConnectionHandler implements ConnectionHandler {
             statement.close();
         }
         if(null != connection){
-            if (null != connection && !DataSourceUtils.isConnectionTransactional(connection, datasource)) {
+            if (!DataSourceUtils.isConnectionTransactional(connection, datasource)) {
                 DataSourceUtils.releaseConnection(connection, datasource);
             }
         }
