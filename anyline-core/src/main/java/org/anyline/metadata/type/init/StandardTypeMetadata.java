@@ -41,113 +41,6 @@ import static org.anyline.metadata.type.DatabaseType.*;
 
 public enum StandardTypeMetadata implements TypeMetadata {
 
-/*
-
--- DROP TABLE "public"."chk_column";
-, kingbase
-CREATE TABLE "public"."chk_column" (
-	"c2" aclitem NULL,
-	"c6" binary_integer NULL,
-	"c7" bit(1) NULL,
-	"c8" bit varying NULL,
-	"c13" bpchar NULL,
-	"c14" bpcharbyte NULL,
-	"c15" character(1 char) NULL,
-	"c16" character(1 char) NULL,
-	"c17" character(1 char) NULL,
-	"c20" clob NULL,
-	"c22" bytea NULL,
-	"c23" date NULL,
-	"c24" daterange NULL,
-	"c25" datetime NULL,
-	"c18" cid NULL,
-	"c26" dbms_id NULL,
-	"c27" dbms_id_30 NULL,
-	"c28" dbms_quoted_id_30 NULL,
-	"c29" dbms_quoted_id_30 NULL,
-	"c30" "dbms_sql.desc_rec" NULL,
-	"c32" double precision NULL,
-	"c33" double precision NULL,
-	"c34" dsinterval NULL,
-	"c35" real NULL,
-	"c36" double precision NULL,
-	"c37" gtsvector NULL,
-	"c41" int4range NULL,
-	"c43" int8range NULL,
-	"c45" pg_catalog.interval NULL,
-	"c46" interval day(2) NULL,
-	"c47" interval day(2) NULL,
-	"c48" interval day(2) to hour NULL,
-	"c49" interval day(2) to minute NULL,
-	"c50" interval day(2) to second(6) NULL,
-	"c51" interval hour(2) NULL,
-	"c52" interval hour(2) NULL,
-	"c53" interval hour(2) to minute NULL,
-	"c54" interval hour(2) to second(6) NULL,
-	"c55" interval minute(2) NULL,
-	"c56" interval minute(2) NULL,
-	"c57" interval minute(2) to second(6) NULL,
-	"c58" interval month(2) NULL,
-	"c59" interval month(2) NULL,
-	"c60" interval second(2, 6) NULL,
-	"c61" interval year(2) NULL,
-	"c62" interval year(2) to month NULL,
-	"c65" jsonpath NULL,
-	"c69" macaddr8 NULL,
-	"c71" mysql_date NULL,
-	"c72" mysql_time NULL,
-	"c73" name NULL COLLATE "c",
-	"c74" character(1 char) NULL,
-	"c77" "natural" NULL,
-	"c78" naturaln NULL,
-	"c79" character(1 char) NULL,
-	"c84" numrange NULL,
-	"c87" oid NULL,
-	"c88" ora_date NULL,
-	"c92" positive NULL,
-	"c93" positiven NULL,
-	"c95" refcursor NULL,
-	"c96" regclass NULL,
-	"c97" regconfig NULL,
-	"c98" regdictionary NULL,
-	"c99" regnamespace NULL,
-	"c100" regoper NULL,
-	"c101" regoperator NULL,
-	"c102" regproc NULL,
-	"c103" regprocedure NULL,
-	"c104" regtype NULL,
-	"c105" regrole NULL,
-	"c110" signtype NULL,
-	"c111" simple_double NULL,
-	"c112" simple_integer NULL,
-	"c113" simple_float NULL,
-	"c116" string NULL,
-	"c118" tid NULL,
-	"c119" time without time zone NULL,
-	"c120" time with time zone NULL,
-	"c121" time without time zone NULL,
-	"c122" time_tz_unconstrained NULL,
-	"c123" time_unconstrained NULL,
-	"c124" timestamp without time zone NULL,
-	"c125" timestamp with time zone NULL,
-	"c126" time without time zone NULL,
-	"c127" timestamp_ltz_unconstrained NULL,
-	"c128" timestamp_tz_unconstrained NULL,
-	"c129" timestamp_unconstrained NULL,
-	"c130" timestamp with time zone NULL,
-	"c131" time with time zone NULL,
-	"c135" tsrange NULL,
-	"c136" tstzrange NULL,
-	"c140" bit varying NULL,
-	"c142" varcharbyte NULL,
-	"c143" xid NULL,
-	"c145" yminterval NULL
-);
-
--- Column comments
-
-COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
-
     /* *****************************************************************************************************************
      *
      * 													SQL DATA TYPE
@@ -547,7 +440,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
                 if(placeholder){
                     value = new java.sql.Date(date.getTime());
                 }else{
-                    value = "'" + DateUtil.format(date, "yyyy-MM-dd");
+                    value = "'" + DateUtil.format(date, "yyyy-MM-dd") +"'";
                 }
             }
             return value;
@@ -659,6 +552,20 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
             return DATETIME.write(value, def, placeholder);
         }
     }
+    , INTERVAL_DAY(CATEGORY.NONE, "INTERVAL DAY", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY_HOUR(CATEGORY.NONE, "INTERVAL DAY TO HOUR", "INTERVAL DAY({P}) TO HOUR({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY_MINUTE(CATEGORY.NONE, "INTERVAL DAY TO MINUTE","INTERVAL DAY({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY_SECOND(CATEGORY.NONE, "INTERVAL DAY TO SECOND", "INTERVAL DAY({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_HOUR(CATEGORY.NONE, "INTERVAL HOUR", "INTERVAL HOUR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_HOUR_MINUTE(CATEGORY.NONE, "INTERVAL HOUR TO MINUTE", "INTERVAL HOUR({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_HOUR_SECOND(CATEGORY.NONE, "INTERVAL HOUR TO SECOND", "INTERVAL HOUR({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_MINUTE(CATEGORY.NONE, "INTERVAL MINUTE", "INTERVAL MINUTE({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_MINUTE_SECOND(CATEGORY.NONE, "INTERVAL MINUTE TO SECOND", "INTERVAL MINUTE({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_MONTH(CATEGORY.NONE, "INTERVAL MONTH", "INTERVAL MONTH({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_SECOND(CATEGORY.NONE, "INTERVAL SECOND", "INTERVAL SECOND({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_YEAR(CATEGORY.NONE, "INTERVAL YEAR", "INTERVAL YEAR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_YEAR_MONTH(CATEGORY.NONE, "INTERVAL YEAR TO MONTH", "INTERVAL YEAR({P}) TO MONTH({S})",null, null, 1, 2, 2, ORACLE, KingBase)
+
     /* *****************************************************************************************************************
      *
      *                                              byte[]
@@ -772,21 +679,73 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
      *                                              待实现
      *
      * ****************************************************************************************************************/
-    , JAVA_OBJECT(CATEGORY.NONE, "JAVA_OBJECT", null, String.class, 1, 1, 1, H2)
+
+    , ACLITEM(CATEGORY.NONE, "ACLITEM", null, null, 1, 1, 1, KingBase)
+    , BINARY_INTEGER(CATEGORY.NONE, "BINARY_INTEGER", null, null, 1, 1, 1, KingBase)
+    , BIT_VARYING(CATEGORY.NONE, "BIT VARYING", null, null, 1, 1, 1, KingBase)
+    , BPCHAR(CATEGORY.NONE, "BPCHAR", null, null, 1, 1, 1, KingBase)
+    , BPCHARBYTE(CATEGORY.NONE, "BPCHARBYTE", null, null, 1, 1, 1, KingBase)
+    , CHARACTER(CATEGORY.NONE, "CHARACTER", null, null, 1, 1, 1, KingBase)
+    , CID(CATEGORY.NONE, "CID", null, null, 1, 1, 1, KingBase)
+    , DATERANGE(CATEGORY.NONE, "DATERANGE", null, null, 1, 1, 1, KingBase)
+    , DSINTERVAL(CATEGORY.NONE, "DSINTERVAL", null, null, 1, 1, 1, KingBase)
+    , GTSVECTOR(CATEGORY.NONE, "GTSVECTOR", null, null, 1, 1, 1, KingBase)
+    , INT4RANGE(CATEGORY.NONE, "INT4RANGE", null, null, 1, 1, 1, KingBase)
+    , INT8RANGE(CATEGORY.NONE, "INT8RANGE", null, null, 1, 1, 1, KingBase)
+    , JSONPATH(CATEGORY.NONE, "JSONPATH", null, null, 1, 1, 1, KingBase)
+    , MACADDR8(CATEGORY.NONE, "JSONPATH", null, null, 1, 1, 1, KingBase)
+    , KINGBASE_MYSQL_DATE(CATEGORY.NONE, "MYSQL_DATE", null, null, 1, 1, 1, KingBase)
+    , KINGBASE_MYSQL_TIME(CATEGORY.NONE, "MYSQL_TIME", null, null, 1, 1, 1, KingBase)
+    , NATURALN(CATEGORY.NONE, "NATURALN", null, null, 1, 1, 1, KingBase)
+    , NUMRANGE(CATEGORY.NONE, "NUMRANGE", null, null, 1, 1, 1, KingBase)
+    , OID(CATEGORY.NONE, "OID", null, null, 1, 1, 1, KingBase)
+    , ORA_DATE(CATEGORY.NONE, "ORA_DATE", null, null, 1, 1, 1, KingBase)
+    , POSITIVE(CATEGORY.NONE, "POSITIVE", null, null, 1, 1, 1, KingBase)
+    , POSITIVEN(CATEGORY.NONE, "POSITIVEN", null, null, 1, 1, 1, KingBase)
+    , REFCURSOR(CATEGORY.NONE, "REFCURSOR", null, null, 1, 1, 1, KingBase)
+    , REGCLASS(CATEGORY.NONE, "REGCLASS", null, null, 1, 1, 1, KingBase)
+    , REGCONFIG(CATEGORY.NONE, "REGCONFIG", null, null, 1, 1, 1, KingBase)
+    , REGDICTIONARY(CATEGORY.NONE, "REGDICTIONARY", null, null, 1, 1, 1, KingBase)
+    , REGNAMESPACE(CATEGORY.NONE, "REGNAMESPACE", null, null, 1, 1, 1, KingBase)
+    , REGOPER(CATEGORY.NONE, "REGOPER", null, null, 1, 1, 1, KingBase)
+    , REGOPERATOR(CATEGORY.NONE, "REGOPERATOR", null, null, 1, 1, 1, KingBase)
+    , REGPROC(CATEGORY.NONE, "REGPROC", null, null, 1, 1, 1, KingBase)
+    , REGPROCEDURE(CATEGORY.NONE, "REGPROCEDURE", null, null, 1, 1, 1, KingBase)
+    , REGTYPE(CATEGORY.NONE, "REGTYPE", null, null, 1, 1, 1, KingBase)
+    , REGROLE(CATEGORY.NONE, "REGROLE", null, null, 1, 1, 1, KingBase)
+    , SIGNTYPE(CATEGORY.NONE, "SIGNTYPE", null, null, 1, 1, 1, KingBase)
+    , SIMPLE_DOUBLE(CATEGORY.NONE, "SIMPLE_DOUBLE", null, null, 1, 1, 1, KingBase)
+    , SIMPLE_INTEGER(CATEGORY.NONE, "SIMPLE_INTEGER", null, null, 1, 1, 1, KingBase)
+    , SIMPLE_FLOAT(CATEGORY.NONE, "SIMPLE_FLOAT", null, null, 1, 1, 1, KingBase)
+    , TID(CATEGORY.NONE, "TID", null, null, 1, 1, 1, KingBase)
+    , TIME_WITHOUT_TIME_ZONE(CATEGORY.NONE, "TIME WITHOUT TIME ZONE", null, null, 1, 1, 1, KingBase)
+    , TIME_WITH_TIME_ZONE(CATEGORY.NONE, "TIME WITH TIME ZONE", null, null, 1, 1, 1, KingBase)
+    , TIME_TZ_UNCONSTRAINED(CATEGORY.NONE, "TIME TZ UNCONSTRAINED", null, null, 1, 1, 1, KingBase)
+    , TIME_UNCONSTRAINED(CATEGORY.NONE, "TIME_UNCONSTRAINED", null, null, 1, 1, 1, KingBase)
+    , TIMESTAMP_WITHOUT_TIME_ZONE(CATEGORY.NONE, "TIMESTAMP WITHOUT TIME ZONE", null, null, 1, 1, 1, KingBase)
+    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.NONE, "TIMESTAMP WITH TIME ZONE", null, null, 1, 1, 1, KingBase)
+    , TSRANGE(CATEGORY.NONE, "TSRANGE", null, null, 1, 1, 1, KingBase)
+    , TSTZRANGE(CATEGORY.NONE, "TSTZRANGE", null, null, 1, 1, 1, KingBase)
+    , VARCHARBYTE(CATEGORY.NONE, "VARCHARBYTE", null, null, 1, 1, 1, KingBase)
+    , XID(CATEGORY.NONE, "XID", null, null, 1, 1, 1, KingBase)
+    , YMINTERVAL(CATEGORY.NONE, "YMINTERVAL", null, null, 1, 1, 1, KingBase)
+
+
+    , CURSOR(CATEGORY.NONE, "CURSOR", null, null, 1, 1, 1, XuGu)
     , ENUM(CATEGORY.NONE, "ENUM", null, String.class, 1, 1, 1, MySQL)
     , INTERVAL(CATEGORY.NONE, "INTERVAL", null, null, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
+    , GUID(CATEGORY.NONE, "GUID", null, null, 1, 1, 1, XuGu)
+    , MACADDR(CATEGORY.NONE, "MACADDR", null, null, 1, 1, 1, PostgreSQL, KingBase)
+    , MULTISET(CATEGORY.NONE, "MULTISET", null, String.class, 1, 1, 1, SinoDB)
+    , JAVA_OBJECT(CATEGORY.NONE, "JAVA_OBJECT", null, String.class, 1, 1, 1, H2)
     , RAW(CATEGORY.NONE, "RAW", null, byte[].class, 1, 1, 1, ORACLE)
     , ROW(CATEGORY.NONE, "ROW", null, null, 1, 1, 1, H2)
     , ROWID(CATEGORY.NONE, "ROWID", null, null, 1, 1, 1, ORACLE)
-    , GUID(CATEGORY.NONE, "GUID", null, null, 1, 1, 1, XuGu)
     , SYS_REFCURSOR(CATEGORY.NONE, "SYS_REFCURSOR", null, null, 1, 1, 1, XuGu)
-    , CURSOR(CATEGORY.NONE, "CURSOR", null, null, 1, 1, 1, XuGu)
     , SET(CATEGORY.NONE, "SET", null, String.class, 1, 1, 1, MySQL, SinoDB)
-    , MULTISET(CATEGORY.NONE, "MULTISET", null, String.class, 1, 1, 1, SinoDB)
     , LIST(CATEGORY.NONE, "LIST", null, String.class, 1, 1, 1, SinoDB)
     , TSQUERY(CATEGORY.NONE, "TSQUERY", null, null, 1, 1, 1, PostgreSQL, KingBase)
     , TSVECTOR(CATEGORY.NONE, "TSVECTOR", null, null, 1, 1, 1, PostgreSQL, KingBase)
-    , MACADDR(CATEGORY.NONE, "MACADDR", null, null, 1, 1, 1, PostgreSQL, KingBase)
     , PG_SNAPSHOT(CATEGORY.NONE, "PG_SNAPSHOT", null, null, 1, 1, 1, PostgreSQL)
     /**
      * pg
@@ -818,7 +777,17 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     private final List<DatabaseType> dbs = new ArrayList<>();
     private final CATEGORY category;
     private final TypeMetadata origin;
+    /**
+     * 主要用来跟输入值对比 定位数据类型
+     */
     private final String name;
+    /**
+     * 主要用来生成SQL 默认与name一致,一些结构复杂的情况需要如:
+     * formula = INTERVAL DAY({P}) TO SECOND({P})用来生成SQL
+     * name = INTERVAL DAY TO SECOND 用来定位数据类型
+     *
+     */
+    private String formula;
     private Class transfer                  ; //中间转换类型 转换成其他格式前先转换成transfer类型
     private final Class compatible          ; //从数据库中读写数据的类型
     private final int ignoreLength;
@@ -826,7 +795,7 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     private final int ignoreScale;
     private boolean array;
     private TypeMetadata.Config config;
-    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
         this.category = category;
         if(null != origin) {
             this.origin = origin;
@@ -844,24 +813,16 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
         this.ignoreLength = ignoreLength;
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
+        this.formula = formula;
+    }
+    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+        this(category, name, name, origin, transfer, compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
     StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
-        this.category = category;
-        if(null != origin) {
-            this.origin = origin;
-        }else{
-            this.origin = this;
-        }
-        if(null != dbs){
-            for(DatabaseType db:dbs){
-                this.dbs.add(db);
-            }
-        }
-        this.name = name;
-        this.compatible = compatible;
-        this.ignoreLength = ignoreLength;
-        this.ignorePrecision = ignorePrecision;
-        this.ignoreScale = ignoreScale;
+        this(category, name, name, origin, compatible, null, ignoreLength, ignorePrecision, ignoreScale, dbs);
+    }
+    StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+        this(category, name, formula, origin, compatible, null, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
     public TypeMetadata getOrigin(){
         return origin;
@@ -968,6 +929,11 @@ COMMENT ON COLUMN "public"."chk_column"."c1" IS '12';*/
     @Override
     public boolean support() {
         return true;
+    }
+
+    @Override
+    public String formula() {
+        return formula;
     }
 
     @Override

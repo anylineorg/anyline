@@ -319,6 +319,9 @@ public interface TypeMetadata {
     int ignorePrecision();
     int ignoreScale();
     boolean support();
+    default String formula() {
+        return getName();
+    }
     default boolean isArray(){
         return false;
     }
