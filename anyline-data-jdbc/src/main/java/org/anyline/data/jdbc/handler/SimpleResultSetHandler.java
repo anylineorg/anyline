@@ -80,5 +80,6 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     }
     public void close() throws Exception{
         handler.close();
+        result = null;
     }
 }
