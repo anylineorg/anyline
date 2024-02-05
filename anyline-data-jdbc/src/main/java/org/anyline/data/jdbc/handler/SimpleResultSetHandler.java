@@ -15,13 +15,27 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     private ConnectionHandler handler;
     private ResultSet result;
     private List<String> keys;
+    /**
+     * 批量数量
+     */
     private int size;
+    /**
+     * 结果集多少列
+     */
+    private int vol;
 
+    public SimpleResultSetHandler(){}
+    public SimpleResultSetHandler(int size){
+        this.size = size;
+    }
+
+    public int size(){
+        return size;
+    }
     @Override
     public void handler(ConnectionHandler handler) {
         this.handler = handler;
     }
-
     @Override
     public boolean keep() {
        return true;
@@ -33,8 +47,8 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         try {
             keys = new ArrayList<>();
             ResultSetMetaData rsmd = result.getMetaData();
-            size = rsmd.getColumnCount();
-            for (int i = 1; i <= size; i++) {
+            vol = rsmd.getColumnCount();
+            for (int i = 1; i <= vol; i++) {
                 keys.add(rsmd.getColumnLabel(i));
             }
         }catch (Exception e){
@@ -46,7 +60,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         LinkedHashMap<String,Object> map = null;
         if(null != result && !result.isClosed() && result.next()){
             map = new LinkedHashMap<>();
-            for (int i = 1; i <= size; i++) {
+            for (int i = 1; i <= vol; i++) {
                 map.put(keys.get(i-1), result.getObject(i));
             }
         }else{
