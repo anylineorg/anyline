@@ -9,6 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SimpleResultSetHandler implements ResultSetHandler {
     private ConnectionHandler handler;
@@ -54,7 +55,11 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         return map;
     }
     public DataRow row() throws Exception{
-        return new DataRow(map());
+        Map<String, Object> map = map();
+        if(null != map) {
+            return new DataRow(map);
+        }
+        return null;
     }
     public ResultSet result(){
         return result;
