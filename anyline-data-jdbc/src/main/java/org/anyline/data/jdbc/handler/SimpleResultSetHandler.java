@@ -44,7 +44,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     }
     public LinkedHashMap<String, Object> map() throws Exception{
         LinkedHashMap<String,Object> map = null;
-        if(result.next()){
+        if(!result.isClosed() && result.next()){
             map = new LinkedHashMap<>();
             for (int i = 1; i <= size; i++) {
                 map.put(keys.get(i-1), result.getObject(i));
