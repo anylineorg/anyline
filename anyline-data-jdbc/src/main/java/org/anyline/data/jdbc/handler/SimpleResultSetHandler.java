@@ -58,13 +58,15 @@ public class SimpleResultSetHandler implements ResultSetHandler {
     }
     public LinkedHashMap<String, Object> map() throws Exception{
         LinkedHashMap<String,Object> map = null;
-        if(null != result && !result.isClosed() && result.next()){
-            map = new LinkedHashMap<>();
-            for (int i = 1; i <= vol; i++) {
-                map.put(keys.get(i-1), result.getObject(i));
+        if(null != result && !result.isClosed()) {
+            if (result.next()) {
+                map = new LinkedHashMap<>();
+                for (int i = 1; i <= vol; i++) {
+                    map.put(keys.get(i - 1), result.getObject(i));
+                }
+            } else {
+                handler.close();
             }
-        }else{
-            handler.close();
         }
         return map;
     }
