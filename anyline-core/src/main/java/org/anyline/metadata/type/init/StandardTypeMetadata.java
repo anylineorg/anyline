@@ -694,8 +694,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INT8RANGE(CATEGORY.NONE, "INT8RANGE", null, null, 1, 1, 1, KingBase)
     , JSONPATH(CATEGORY.NONE, "JSONPATH", null, null, 1, 1, 1, KingBase)
     , MACADDR8(CATEGORY.NONE, "JSONPATH", null, null, 1, 1, 1, KingBase)
-    , KINGBASE_MYSQL_DATE(CATEGORY.NONE, "MYSQL_DATE", null, null, 1, 1, 1, KingBase)
-    , KINGBASE_MYSQL_TIME(CATEGORY.NONE, "MYSQL_TIME", null, null, 1, 1, 1, KingBase)
     , NATURALN(CATEGORY.NONE, "NATURALN", null, null, 1, 1, 1, KingBase)
     , NUMRANGE(CATEGORY.NONE, "NUMRANGE", null, null, 1, 1, 1, KingBase)
     , OID(CATEGORY.NONE, "OID", null, null, 1, 1, 1, KingBase)
