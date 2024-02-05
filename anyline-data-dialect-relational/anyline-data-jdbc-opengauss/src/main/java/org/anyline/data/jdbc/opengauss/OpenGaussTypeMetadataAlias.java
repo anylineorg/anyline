@@ -106,7 +106,7 @@ public enum OpenGaussTypeMetadataAlias implements TypeMetadataAlias {
     TIMEZ                   (StandardTypeMetadata.TIMEZ                 ),
     TIMESTAMP               (StandardTypeMetadata.TIMESTAMP             ),
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP_WITH_LOCAL_ZONE  ),
-    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP_WITH_ZONE        ),
+    TIMESTAMP_WITH_TIME_ZONE          (StandardTypeMetadata.TIMESTAMP_WITH_TIME_ZONE        ),
     TSQUERY                 (StandardTypeMetadata.TSQUERY               ),
     TSVECTOR                (StandardTypeMetadata.TSVECTOR              ),
     TXID_SNAPSHOT           (StandardTypeMetadata.TXID_SNAPSHOT         ),

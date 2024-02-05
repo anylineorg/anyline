@@ -107,7 +107,7 @@ public enum SinoDBTypeMetadataAlias implements TypeMetadataAlias {
     TIMEZ                   (StandardTypeMetadata.DATETIME               ),
     TIMESTAMP               (StandardTypeMetadata.DATETIME            ),
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.DATETIME            ),
-    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.DATETIME            ),
+    TIMESTAMP_WITH_TIME_ZONE          (StandardTypeMetadata.DATETIME            ),
     TSQUERY                 (StandardTypeMetadata.ILLEGAL            ),
     TSVECTOR                (StandardTypeMetadata.ILLEGAL            ),
     TXID_SNAPSHOT           (StandardTypeMetadata.ILLEGAL            ),

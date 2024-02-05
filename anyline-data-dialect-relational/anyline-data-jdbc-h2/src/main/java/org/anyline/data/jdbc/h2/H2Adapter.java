@@ -57,7 +57,9 @@ public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter, Initi
 		delimiterFr = "`";
 		delimiterTo = "`";
 		for (H2TypeMetadataAlias alias : H2TypeMetadataAlias.values()) {
-			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata standard = alias.standard();
+			this.alias.put(alias.name(), standard);			//根据别名
+			this.alias.put(standard.getName(), standard);	//根据实现SQL数据类型名称
 			TypeMetadata.Config config = alias.config();
 			reg(alias.name(), config);
 			reg(alias.standard(), config);

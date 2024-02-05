@@ -111,7 +111,7 @@ public enum VoltDBTypeMetadataAlias implements TypeMetadataAlias {
         TIMEZ                   (StandardTypeMetadata.TIMESTAMP                  ),
         TIMESTAMP               (StandardTypeMetadata.TIMESTAMP             ),
         TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.TIMESTAMP             ),
-        TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.TIMESTAMP             ),
+        TIMESTAMP_WITH_TIME_ZONE          (StandardTypeMetadata.TIMESTAMP             ),
         TSQUERY                 (StandardTypeMetadata.ILLEGAL               ),
         TSVECTOR                (StandardTypeMetadata.ILLEGAL               ),
         TXID_SNAPSHOT           (StandardTypeMetadata.ILLEGAL               ),

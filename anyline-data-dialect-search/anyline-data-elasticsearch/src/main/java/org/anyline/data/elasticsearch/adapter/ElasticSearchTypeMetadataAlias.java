@@ -104,7 +104,7 @@ public enum ElasticSearchTypeMetadataAlias implements TypeMetadataAlias {
     TIMEZ                   (StandardTypeMetadata.DATE             ),
     TIMESTAMP               (StandardTypeMetadata.DATE             ),
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.DATE             ),
-    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.DATE             ),
+    TIMESTAMP_WITH_TIME_ZONE          (StandardTypeMetadata.DATE             ),
     TSQUERY                 (StandardTypeMetadata.ILLEGAL               ),
     TSVECTOR                (StandardTypeMetadata.ILLEGAL               ),
     TXID_SNAPSHOT           (StandardTypeMetadata.ILLEGAL               ),

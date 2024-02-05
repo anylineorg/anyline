@@ -66,7 +66,9 @@ public class InformixAdapter extends InformixGenusAdapter implements JDBCAdapter
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 		for (InformixTypeMetadataAlias alias: InformixTypeMetadataAlias.values()){
-			this.alias.put(alias.name(), alias.standard());
+			TypeMetadata standard = alias.standard();
+			this.alias.put(alias.name(), standard);			//根据别名
+			this.alias.put(standard.getName(), standard);	//根据实现SQL数据类型名称
 			TypeMetadata.Config config = alias.config();
 			reg(alias.name(), config);
 			reg(alias.standard(), config);

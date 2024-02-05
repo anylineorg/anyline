@@ -104,7 +104,7 @@ public enum SQLiteTypeMetadataAlias implements TypeMetadataAlias {
     TIMEZ                   (StandardTypeMetadata.TEXT               ),
     TIMESTAMP               (StandardTypeMetadata.INTEGER            ),
     TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.INTEGER            ),
-    TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.INTEGER            ),
+    TIMESTAMP_WITH_TIME_ZONE          (StandardTypeMetadata.INTEGER            ),
     TSQUERY                 (StandardTypeMetadata.ILLEGAL            ),
     TSVECTOR                (StandardTypeMetadata.ILLEGAL            ),
     TXID_SNAPSHOT           (StandardTypeMetadata.ILLEGAL            ),

@@ -106,7 +106,7 @@ public enum IoTDBTypeMetadataAlias implements TypeMetadataAlias {
         TIMEZ                   (StandardTypeMetadata.INT64        ),
         TIMESTAMP               (StandardTypeMetadata.INT64        ),
         TIMESTAMP_WITH_LOCAL_ZONE    (StandardTypeMetadata.INT64        ),
-        TIMESTAMP_WITH_ZONE          (StandardTypeMetadata.INT64        ),
+        TIMESTAMP_WITH_TIME_ZONE          (StandardTypeMetadata.INT64        ),
         TSQUERY                 (StandardTypeMetadata.ILLEGAL      ),
         TSVECTOR                (StandardTypeMetadata.ILLEGAL      ),
         TXID_SNAPSHOT           (StandardTypeMetadata.ILLEGAL      ),
