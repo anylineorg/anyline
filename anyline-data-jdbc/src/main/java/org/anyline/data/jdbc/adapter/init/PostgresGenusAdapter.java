@@ -47,9 +47,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
 
         for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
-            TypeMetadata.Config config = alias.config();
-            reg(alias.name(), config);
-            reg(alias.standard(), config);
+            reg(alias);
         }
     }
     @Override

@@ -16,15 +16,12 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8c;
+package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
-import org.anyline.data.jdbc.gbase8s.GbaseTypeMetadataAlias;
-import org.anyline.data.jdbc.gbase8s.GbaseReader;
-import org.anyline.data.jdbc.gbase8s.GbaseWriter;
+import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -50,14 +47,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.gbase8c")
-public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, InitializingBean {
+@Repository("anyline.data.jdbc.adapter.gbase8s")
+public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type() {
-		return DatabaseType.GBase8C;
+		return DatabaseType.GBase8S;
 	}
 
-	@Value("${anyline.data.jdbc.delimiter.gbase8c:}")
+	@Value("${anyline.data.jdbc.delimiter.gbase8s:}")
 	private String delimiter;
 
 	@Override
@@ -65,22 +62,17 @@ public class GbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter, I
 		setDelimiter(delimiter);
 	}
 
-	public GbaseAdapter() {
+	public GBaseAdapter() {
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (GbaseTypeMetadataAlias alias : GbaseTypeMetadataAlias.values()) {
-			TypeMetadata standard = alias.standard();
-			this.alias.put(alias.name(), standard);			//根据别名
-			this.alias.put(standard.getName(), standard);	//根据实现SQL数据类型名称
-			TypeMetadata.Config config = alias.config();
-			reg(alias.name(), config);
-			reg(alias.standard(), config);
+		for (GBase8sTypeMetadataAlias alias : GBase8sTypeMetadataAlias.values()) {
+			reg(alias);
 		}
-		for (GbaseWriter writer : GbaseWriter.values()) {
+		for (GBaseWriter writer : GBaseWriter.values()) {
 			reg(writer.supports(), writer.writer());
 		}
-		for (GbaseReader reader : GbaseReader.values()) {
+		for (GBaseReader reader : GBaseReader.values()) {
 			reg(reader.supports(), reader.reader());
 		}
 	}

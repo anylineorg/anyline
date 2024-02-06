@@ -30,15 +30,10 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
         delimiterFr = "`";
         delimiterTo = "`";
         for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
-            TypeMetadata.Config config = alias.config();
-            reg(alias.name(), config);
-            reg(alias.standard(), config);
+            reg(alias);
         }
         for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
-            this.alias.put(alias.name(), alias.standard());
-			TypeMetadata.Config config = alias.config();
-			reg(alias.name(), config);
-			reg(alias.standard(), config);
+			reg(alias);
         }
         for(MySQLWriter writer: MySQLWriter.values()){
             reg(writer.supports(), writer.writer());

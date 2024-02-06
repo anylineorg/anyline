@@ -18,6 +18,7 @@
 
 package org.anyline.data.jdbc.kingbase.oracle;
 
+import org.anyline.data.jdbc.kingbase.KingBaseTypeMetadataAlias;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -68,13 +69,8 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 		super();
 		delimiterFr = "";
 		delimiterTo = "";
-		for (KingbaseTypeMetadataAlias alias : KingbaseTypeMetadataAlias.values()) {
-			TypeMetadata standard = alias.standard();
-			this.alias.put(alias.name(), standard);			//根据别名
-			this.alias.put(standard.getName(), standard);	//根据实现SQL数据类型名称
-			TypeMetadata.Config config = alias.config();
-			reg(alias.name(), config);
-			reg(alias.standard(), config);
+		for (KingBaseTypeMetadataAlias alias : KingBaseTypeMetadataAlias.values()) {
+			reg(alias);
 		}
 
 		for(KingbaseWriter writer: KingbaseWriter.values()){

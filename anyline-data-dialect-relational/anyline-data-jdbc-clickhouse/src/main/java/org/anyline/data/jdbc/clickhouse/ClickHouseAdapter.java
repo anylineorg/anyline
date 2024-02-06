@@ -1,4 +1,3 @@
- 
 /*
  * Copyright 2006-2023 www.anyline.org
  *
@@ -16,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8a;
+package org.anyline.data.jdbc.clickhouse;
 
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
@@ -42,30 +41,29 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@Repository("anyline.data.jdbc.adapter.gbase8a")
-public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
-
-	public DatabaseType type() {
-		return DatabaseType.GBase8A;
+@Repository("anyline.data.jdbc.adapter.clickhouse")
+public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
+	
+	public DatabaseType type(){
+		return DatabaseType.ClickHouse;
 	}
 
-	@Value("${anyline.data.jdbc.delimiter.gbase8a:}")
+	public ClickHouseAdapter(){
+		delimiterFr = "";
+		delimiterTo = "";
+		for(ClickHouseTypeMetadataAlias alias:ClickHouseTypeMetadataAlias.values()){
+			reg(alias);
+		}
+	}
+
+	@Value("${anyline.data.jdbc.delimiter.clickhouse:}")
 	private String delimiter;
 
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet()  {
 		setDelimiter(delimiter);
-	}
-
-	public GbaseAdapter() {
-		super();
-		delimiterFr = "\"";
-		delimiterTo = "\"";
 	}
 
 
@@ -587,7 +585,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	/**
 	 * query [调用入口]<br/>
 	 * <br/>
-	 * 对性能有要求的场景调用，返回java原生map集合,结果中不包含元数据信息
+	 * 对性能有要求的场景调用，返回java原生map集合, 结果中不包含元数据信息
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
@@ -596,7 +594,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 
@@ -655,7 +653,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
-		return super.mergeFinalQuery(runtime, run);
+		return super.pageLimit(runtime, run);
 	}
 
 	/**
@@ -725,7 +723,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.maps(runtime, random, configs, run);
 	}
 
@@ -737,7 +735,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return map
 	 */
 	@Override
-	public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		return super.map(runtime, random, configs, run);
 	}
 
@@ -762,7 +760,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
+	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
 		return super.process(runtime, list);
 	}
 
@@ -959,7 +957,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param values 列对应的值
 	 * @return 影响行数
 	 * @param <T> T
@@ -1016,7 +1014,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * delete[命令合成]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1030,7 +1028,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * delete[命令合成]<br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param key 根据属性解析出列
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1049,7 +1047,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where column in (values)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param column 列
 	 * @param values values
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1063,7 +1061,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * delete[命令合成-子流程]<br/>
 	 * 合成 where k1 = v1 and k2 = v2
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
+	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源 如果为空 可以根据obj解析
 	 * @param obj entity或DataRow
 	 * @param columns 删除条件的列或属性，根据columns取obj值并合成删除条件
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -1248,7 +1246,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * database[结果集封装]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param databases 上一步查询结果
 	 * @param set 查询结果集
 	 * @return LinkedHashMap
@@ -1268,7 +1266,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 当前database 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param database 上一步查询结果
 	 * @param set 查询结果集
 	 * @return database
@@ -1283,7 +1281,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * database[结果集封装]<br/>
 	 * 当前database 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param database 上一步查询结果
 	 * @return database
 	 * @throws Exception 异常
@@ -1297,7 +1295,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 product
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param product 上一步查询结果
 	 * @param set 查询结果集
 	 * @return product
@@ -1312,7 +1310,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 product
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param product 上一步查询结果
 	 * @return product
 	 * @throws Exception 异常
@@ -1326,7 +1324,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * database[结果集封装]<br/>
 	 * 根据查询结果集构造 version
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param version 上一步查询结果
 	 * @param set 查询结果集
 	 * @return version
@@ -1341,7 +1339,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * database[结果集封装]<br/>
 	 * 根据JDBC内置接口 version
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param version 上一步查询结果
 	 * @return version
 	 * @throws Exception 异常
@@ -1410,7 +1408,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
@@ -1426,7 +1424,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
@@ -1441,7 +1439,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * catalog[结果集封装]<br/>
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @return databases
 	 * @throws Exception 异常
@@ -1455,7 +1453,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * catalog[结果集封装]<br/>
 	 * 根据驱动内置接口补充 catalog
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalogs 上一步查询结果
 	 * @return catalogs
 	 * @throws Exception 异常
@@ -1470,7 +1468,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 当前catalog 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalog 上一步查询结果
 	 * @param set 查询结果集
 	 * @return Catalog
@@ -1485,7 +1483,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * catalog[结果集封装]<br/>
 	 * 当前catalog 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param catalog 上一步查询结果
 	 * @return Catalog
 	 * @throws Exception 异常
@@ -1555,7 +1553,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 根据查询结果集构造 Database
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDatabaseRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param schemas 上一步查询结果
 	 * @param set 查询结果集
 	 * @return databases
@@ -1575,7 +1573,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * 当前schema 根据查询结果集
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQuerySchemaRun 返回顺序
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param schema 上一步查询结果
 	 * @param set 查询结果集
 	 * @return schema
@@ -1590,7 +1588,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * schema[结果集封装]<br/>
 	 * 当前schema 根据驱动内置接口补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param create 上一步没有查到的, 这一步是否需要新创建
 	 * @param schema 上一步查询结果
 	 * @return schema
 	 * @throws Exception 异常
@@ -1802,7 +1800,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 *
+	 * 查询表创建SQL
 	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
@@ -1824,7 +1822,13 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SHOW CREATE TABLE ");
+		name(runtime, builder, table);
+		return runs;
 	}
 
 	/**
@@ -1839,7 +1843,14 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
-		return super.ddl(runtime, index, table, ddls, set);
+
+		if(null == ddls){
+			ddls = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			ddls.add(row.getString("statement"));
+		}
+		return ddls;
 	}
 
 	/* *****************************************************************************************************************
@@ -1932,7 +1943,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * view[调用入口]
+	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
@@ -2056,7 +2067,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * master table[调用入口]
+	 * master table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table MasterTable
@@ -2210,7 +2221,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * partition table[调用入口]
+	 * partition table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table PartitionTable
@@ -3887,6 +3898,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		return super.inherit(runtime, builder, meta);
 	}
 
+
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -5234,7 +5246,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 ******************************************************************************************************************/
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5247,7 +5259,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5260,7 +5272,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5273,7 +5285,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5286,7 +5298,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * foreign[调用入口]
+	 * foreign[调用入口]<br/>
 	 * 重命名外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 外键
@@ -5931,7 +5943,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 ******************************************************************************************************************/
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5944,7 +5956,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 修改函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5957,7 +5969,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 删除函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5970,7 +5982,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	}
 
 	/**
-	 * function[调用入口]
+	 * function[调用入口]<br/>
 	 * 重命名函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 函数
@@ -6148,9 +6160,6 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	public List<Run> buildRenameRun(DataRuntime runtime, Sequence meta) throws Exception {
 		return super.buildRenameRun(runtime, meta);
 	}
-
-
-
 	/* *****************************************************************************************************************
 	 *
 	 * 														JDBC
@@ -6218,6 +6227,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	public boolean identity(DataRuntime runtime, String random, Object data, ConfigStore configs, KeyHolder keyholder){
 		return super.identity(runtime, random, data, configs, keyholder);
 	}
+
 	public String insertHead(ConfigStore configs){
 		return super.insertHead(configs);
 	}
@@ -6337,7 +6347,7 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 */
 	@Override
 	public String concat(DataRuntime runtime, String... args) {
-		return super.concat(runtime, args);
+		return super.concatFun(runtime, args);
 	}
 
 	/**
@@ -6347,10 +6357,4 @@ public class GbaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	protected String dummy(){
 		return super.dummy();
 	}
-	/* *****************************************************************************************************************
-	 *
-	 * 														具体数据库
-	 *
-	 *  ***************************************************************************************************************/
-
 }

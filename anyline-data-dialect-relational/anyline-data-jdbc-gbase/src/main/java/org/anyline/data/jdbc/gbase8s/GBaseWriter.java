@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public enum GbaseWriter {
+public enum GBaseWriter {
     DateWriter(new Object[]{java.sql.Date.class, Timestamp.class, Date.class, LocalDate.class, LocalDateTime.class}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder) {
@@ -46,7 +46,7 @@ public enum GbaseWriter {
     }
     private final Object[] supports;
     private final DataWriter writer;
-    GbaseWriter(Object[] supports, DataWriter writer){
+    GBaseWriter(Object[] supports, DataWriter writer){
         this.supports = supports;
         this.writer = writer;
     }

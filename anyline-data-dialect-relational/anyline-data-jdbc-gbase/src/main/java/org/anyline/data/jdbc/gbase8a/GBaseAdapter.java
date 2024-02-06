@@ -16,12 +16,12 @@
  */
 
 
-package org.anyline.data.jdbc.gbase8s;
+package org.anyline.data.jdbc.gbase8a;
 
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -47,14 +47,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.data.jdbc.adapter.gbase8s")
-public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, InitializingBean {
+@Repository("anyline.data.jdbc.adapter.gbase8a")
+public class GBaseAdapter extends MySQLGenusAdapter implements JDBCAdapter, InitializingBean {
 
 	public DatabaseType type() {
-		return DatabaseType.GBase8S;
+		return DatabaseType.GBase8A;
 	}
 
-	@Value("${anyline.data.jdbc.delimiter.gbase8s:}")
+	@Value("${anyline.data.jdbc.delimiter.gbase8a:}")
 	private String delimiter;
 
 	@Override
@@ -62,24 +62,10 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 		setDelimiter(delimiter);
 	}
 
-	public GbaseAdapter() {
+	public GBaseAdapter() {
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (GbaseTypeMetadataAlias alias : GbaseTypeMetadataAlias.values()) {
-			TypeMetadata standard = alias.standard();
-			this.alias.put(alias.name(), standard);			//根据别名
-			this.alias.put(standard.getName(), standard);	//根据实现SQL数据类型名称
-			TypeMetadata.Config config = alias.config();
-			reg(alias.name(), config);
-			reg(alias.standard(), config);
-		}
-		for (GbaseWriter writer : GbaseWriter.values()) {
-			reg(writer.supports(), writer.writer());
-		}
-		for (GbaseReader reader : GbaseReader.values()) {
-			reg(reader.supports(), reader.reader());
-		}
 	}
 
 
@@ -120,10 +106,10 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 
 	/**
 	 * insert [调用入口]<br/>
-	 * 执行前根据主键生成器补充主键值,执行完成后会补齐自增主键值
+	 * 执行前根据主键生成器补充主键值, 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 需要插入入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 *                列可以加前缀<br/>
@@ -131,15 +117,15 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -151,7 +137,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 需要插入的数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -166,7 +152,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param set 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -180,7 +166,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 需要插入的数据集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
@@ -193,7 +179,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * insert [命令合成-子流程]<br/>
 	 * 确认需要插入的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj  Entity或DataRow
 	 * @param batch  是否批量，批量时不检测值是否为空
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -202,15 +188,15 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 *                -:表示必须不插入<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
@@ -220,7 +206,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 
 	/**
 	 * insert [命令合成-子流程]<br/>
-	 * 批量插入数据时,多行数据之间分隔符
+	 * 批量插入数据时, 多行数据之间分隔符
 	 * @return String
 	 */
 	@Override
@@ -253,7 +239,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * insert [命令合成-子流程]<br/>
 	 * 根据entity创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj 数据
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -267,7 +253,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * insert [命令合成-子流程]<br/>
 	 * 根据collection创建 INSERT RunPrepare由buildInsertRun调用
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param list 对象集合
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
@@ -313,10 +299,10 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * [命令合成]
 	 * Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
 	 * long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
@@ -324,7 +310,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * UPDATE [调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -333,15 +319,15 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -352,7 +338,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	/**
 	 * update [命令合成]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param obj Entity或DtaRow
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -361,15 +347,15 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
@@ -381,11 +367,11 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
@@ -400,23 +386,23 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 
@@ -424,7 +410,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * update [命令执行]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return 影响行数
@@ -443,7 +429,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * 执行完成后会补齐自增主键值
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @param data 数据
 	 * @param configs 更新条件
 	 * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
@@ -452,15 +438,15 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 *                -:表示必须不更新<br/>
 	 *                ?:根据是否有值<br/>
 	 *
-	 *        如果没有提供columns,长度为0也算没有提供<br/>
+	 *        如果没有提供columns, 长度为0也算没有提供<br/>
 	 *        则解析obj(遍历所有的属性工Key)获取insert列<br/>
 	 *
 	 *        如果提供了columns则根据columns获取insert列<br/>
 	 *
-	 *        但是columns中出现了添加前缀列,则解析完columns后,继续解析obj<br/>
+	 *        但是columns中出现了添加前缀列, 则解析完columns后, 继续解析obj<br/>
 	 *
-	 *        以上执行完后,如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
-	 *        则把执行结果与表结构对比,删除表中没有的列<br/>
+	 *        以上执行完后, 如果开启了ConfigTable.IS_AUTO_CHECK_METADATA=true<br/>
+	 *        则把执行结果与表结构对比, 删除表中没有的列<br/>
 	 * @return 影响行数
 	 */
 	@Override
@@ -481,7 +467,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 		return super.checkOverride(obj);
 	}
 	@Override
-	protected Map<String,Object> checkPv(Object obj){
+	protected Map<String, Object> checkPv(Object obj){
 		return super.checkPv(obj);
 	}
 
@@ -520,7 +506,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
@@ -531,10 +517,10 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1946,7 +1932,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * view[调用入口]<br/>
+	 * view[调用入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
@@ -2070,7 +2056,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * master table[调用入口]<br/>
+	 * master table[调用入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table MasterTable
@@ -2224,7 +2210,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * partition table[调用入口]<br/>
+	 * partition table[调用入口]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table PartitionTable
@@ -2576,6 +2562,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
 		return super.detail(runtime, index, primary, table, set);
 	}
+
 	/**
 	 * primary[结构集封装-依据]<br/>
 	 * 读取primary key元数据结果集的依据
@@ -3842,7 +3829,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
 		return super.property(runtime, builder, meta);
 	}
- 
+
 	/**
 	 * table[命令合成-子流程]<br/>
 	 * 主表设置分区依据(根据哪几列分区)
@@ -3899,7 +3886,6 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
 		return super.inherit(runtime, builder, meta);
 	}
-
 
 	/* *****************************************************************************************************************
 	 * 													view
@@ -5248,7 +5234,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 ******************************************************************************************************************/
 
 	/**
-	 * foreign[调用入口]<br/>
+	 * foreign[调用入口]
 	 * 添加外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5261,7 +5247,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * foreign[调用入口]<br/>
+	 * foreign[调用入口]
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5274,7 +5260,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * foreign[调用入口]<br/>
+	 * foreign[调用入口]
 	 * 修改外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5287,7 +5273,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * foreign[调用入口]<br/>
+	 * foreign[调用入口]
 	 * 删除外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 外键
@@ -5300,7 +5286,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * foreign[调用入口]<br/>
+	 * foreign[调用入口]
 	 * 重命名外键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 外键
@@ -5945,7 +5931,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	 ******************************************************************************************************************/
 
 	/**
-	 * function[调用入口]<br/>
+	 * function[调用入口]
 	 * 添加函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5958,7 +5944,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * function[调用入口]<br/>
+	 * function[调用入口]
 	 * 修改函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5971,7 +5957,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * function[调用入口]<br/>
+	 * function[调用入口]
 	 * 删除函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 函数
@@ -5984,7 +5970,7 @@ public class GbaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 	}
 
 	/**
-	 * function[调用入口]<br/>
+	 * function[调用入口]
 	 * 重命名函数
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 函数

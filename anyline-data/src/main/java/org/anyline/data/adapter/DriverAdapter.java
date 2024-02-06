@@ -19,6 +19,7 @@ package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
@@ -186,6 +187,12 @@ public interface DriverAdapter {
 		}
 		return BasicUtil.equals(n1, n2, true);
 	}
+	/**
+	 * 注册数据类型别名(包含对应的标准类型、length/precision/scale等配置)
+	 * @param alias 数据类型别名
+	 * @return Config
+	 */
+	TypeMetadata.Config reg(TypeMetadataAlias alias);
 	/**
 	 * 注册数据类型配置<br/>
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖<br/>

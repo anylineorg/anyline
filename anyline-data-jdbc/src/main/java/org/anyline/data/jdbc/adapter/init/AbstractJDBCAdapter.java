@@ -4477,6 +4477,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(column.isPrimaryKey() != 1){
 				column.setPrimary(false);
 			}
+			if(null == column.getTable() && !greedy){
+				column.setTable(table);
+			}
 		}
 		return columns;
 	}

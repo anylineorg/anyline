@@ -1,25 +1,25 @@
-package org.anyline.data.jdbc.xugu;
+package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
-public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
+public enum GBase8sTypeMetadataAlias implements TypeMetadataAlias {
 	ACLITEM                            ("ACLITEM"                          ,StandardTypeMetadata.NONE                               ),
 	AGG_STATE                          ("AGG_STATE"                        ,StandardTypeMetadata.NONE                               ),
 	ARRAY                              ("ARRAY"                            ,StandardTypeMetadata.NONE                               ),
-	BFILE                              ("BFILE"                            ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
-	BIGINT                             ("BIGINT"                           ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	BIGSERIAL                          ("BIGSERIAL"                        ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	BINARY                             ("BINARY"                           ,StandardTypeMetadata.BINARY                             , 0, 1, 1),
-	BINARY_DOUBLE                      ("BINARY_DOUBLE"                    ,StandardTypeMetadata.DOUBLE                             , 1, 0, 0),
-	BINARY_FLOAT                       ("BINARY_FLOAT"                     ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
+	BFILE                              ("BFILE"                            ,StandardTypeMetadata.BFILE                              , 1, 1, 1),
+	BIGINT                             ("BIGINT"                           ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	BIGSERIAL                          ("BIGSERIAL"                        ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	BINARY                             ("BINARY"                           ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
+	BINARY_DOUBLE                      ("BINARY_DOUBLE"                    ,StandardTypeMetadata.BINARY_DOUBLE                      , 1, 0, 0),
+	BINARY_FLOAT                       ("BINARY_FLOAT"                     ,StandardTypeMetadata.FLOAT4                             , 1, 2, 1),
 	BINARY_INTEGER                     ("BINARY_INTEGER"                   ,StandardTypeMetadata.NONE                               ),
-	BIT                                ("BIT"                              ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	BIT                                ("BIT"                              ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	BIT_VARYING                        ("BIT VARYING"                      ,StandardTypeMetadata.NONE                               ),
 	BITMAP                             ("BITMAP"                           ,StandardTypeMetadata.NONE                               ),
 	BLOB                               ("BLOB"                             ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
-	BOOL                               ("BOOL"                             ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	BOOL                               ("BOOL"                             ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	BOOLEAN                            ("BOOLEAN"                          ,StandardTypeMetadata.NONE                               ),
 	BOX                                ("BOX"                              ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	BPCHAR                             ("BPCHAR"                           ,StandardTypeMetadata.NONE                               ),
@@ -52,43 +52,43 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	CLICKHOUSE_UINT64                  ("UINT64"                           ,StandardTypeMetadata.NONE                               ),
 	CLICKHOUSE_UINT8                   ("UINT8"                            ,StandardTypeMetadata.NONE                               ),
 	CLOB                               ("CLOB"                             ,StandardTypeMetadata.CLOB                               , 1, 1, 1),
-	CURSOR                             ("CURSOR"                           ,StandardTypeMetadata.CURSOR                             , 1, 1, 1),
+	CURSOR                             ("CURSOR"                           ,StandardTypeMetadata.NONE                               ),
 	DATE                               ("DATE"                             ,StandardTypeMetadata.DATE                               , 1, 1, 1),
 	DATERANGE                          ("DATERANGE"                        ,StandardTypeMetadata.NONE                               ),
 	DATETIME                           ("DATETIME"                         ,StandardTypeMetadata.TIMESTAMP                          , 1, 1, 1),
 	DATETIME2                          ("DATETIME2"                        ,StandardTypeMetadata.TIMESTAMP                          , 1, 1, 1),
 	DATETIMEOFFSET                     ("DATETIMEOFFSET"                   ,StandardTypeMetadata.TIMESTAMP                          , 1, 1, 1),
 	DECFLOAT                           ("DECFLOAT"                         ,StandardTypeMetadata.NONE                               ),
-	DECIMAL                            ("DECIMAL"                          ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	DOUBLE                             ("DOUBLE"                           ,StandardTypeMetadata.DOUBLE                             , 1, 0, 0),
+	DECIMAL                            ("DECIMAL"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	DOUBLE                             ("DOUBLE"                           ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	DOUBLE_PRECISION                   ("DOUBLE PRECISION"                 ,StandardTypeMetadata.NONE                               ),
 	DSINTERVAL                         ("DSINTERVAL"                       ,StandardTypeMetadata.NONE                               ),
 	ENUM                               ("ENUM"                             ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	FIXEDSTRING                        ("FixedString"                      ,StandardTypeMetadata.NONE                               ),
 	FLOAT                              ("FLOAT"                            ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
-	FLOAT4                             ("FLOAT4"                           ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
+	FLOAT4                             ("FLOAT4"                           ,StandardTypeMetadata.FLOAT4                             , 1, 2, 1),
 	FLOAT8                             ("FLOAT8"                           ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
 	GEOGRAPHY                          ("GEOGRAPHY"                        ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	GEOGRAPHY_POINT                    ("GEOGRAPHY_POINT"                  ,StandardTypeMetadata.NONE                               ),
 	GEOMETRY                           ("GEOMETRY"                         ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	GEOMETRYCOLLECTION                 ("GEOMETRYCOLLECTION"               ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	GTSVECTOR                          ("GTSVECTOR"                        ,StandardTypeMetadata.NONE                               ),
-	GUID                               ("GUID"                             ,StandardTypeMetadata.GUID                               , 1, 1, 1),
+	GUID                               ("GUID"                             ,StandardTypeMetadata.NONE                               ),
 	HIERARCHYID                        ("HIERARCHYID"                      ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	HLL                                ("HLL"                              ,StandardTypeMetadata.NONE                               ),
 	IMAGE                              ("IMAGE"                            ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
 	INET                               ("INET"                             ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
-	INT                                ("INT"                              ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	INT                                ("INT"                              ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	INT128                             ("INT128"                           ,StandardTypeMetadata.NONE                               ),
-	INT2                               ("INT2"                             ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	INT2                               ("INT2"                             ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	INT256                             ("INT256"                           ,StandardTypeMetadata.NONE                               ),
 	INT32                              ("INT32"                            ,StandardTypeMetadata.NONE                               ),
-	INT4                               ("INT4"                             ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	INT4                               ("INT4"                             ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	INT4RANGE                          ("INT4RANGE"                        ,StandardTypeMetadata.NONE                               ),
 	INT64                              ("INT64"                            ,StandardTypeMetadata.NONE                               ),
-	INT8                               ("INT8"                             ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	INT8                               ("INT8"                             ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	INT8RANGE                          ("INT8RANGE"                        ,StandardTypeMetadata.NONE                               ),
-	INTEGER                            ("INTEGER"                          ,StandardTypeMetadata.INTEGER                            , 1, 1, 1),
+	INTEGER                            ("INTEGER"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	INTERVAL                           ("INTERVAL"                         ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	INTERVAL_DAY                       ("INTERVAL DAY"                     ,StandardTypeMetadata.NONE                               ),
 	INTERVAL_DAY_HOUR                  ("INTERVAL DAY TO HOUR"             ,StandardTypeMetadata.NONE                               ),
@@ -124,9 +124,9 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	MACADDR8                           ("MACADDR8"                         ,StandardTypeMetadata.NONE                               ),
 	MAP                                ("MAP"                              ,StandardTypeMetadata.NONE                               ),
 	MEDIUMBLOB                         ("MEDIUMBLOB"                       ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
-	MEDIUMINT                          ("MEDIUMINT"                        ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	MEDIUMINT                          ("MEDIUMINT"                        ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	MEDIUMTEXT                         ("MEDIUMTEXT"                       ,StandardTypeMetadata.CLOB                               , 1, 1, 1),
-	MONEY                              ("MONEY"                            ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	MONEY                              ("MONEY"                            ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	MULTILINESTRING                    ("MULTILINESTRING"                  ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	MULTIPOINT                         ("MULTIPOINT"                       ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	MULTIPOLYGON                       ("MULTIPOLYGON"                     ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
@@ -135,10 +135,10 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	NCHAR                              ("NCHAR"                            ,StandardTypeMetadata.NCHAR                              , 0, 1, 1),
 	NCLOB                              ("NCLOB"                            ,StandardTypeMetadata.NCLOB                              , 1, 1, 1),
 	NTEXT                              ("NTEXT"                            ,StandardTypeMetadata.NCLOB                              , 1, 1, 1),
-	NUMBER                             ("NUMBER"                           ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	NUMERIC                            ("NUMERIC"                          ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	NUMBER                             ("NUMBER"                           ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	NUMERIC                            ("NUMERIC"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	NUMRANGE                           ("NUMRANGE"                         ,StandardTypeMetadata.NONE                               ),
-	NVARCHAR                           ("NVARCHAR"                         ,StandardTypeMetadata.NVARCHAR                           , 0, 1, 1),
+	NVARCHAR                           ("NVARCHAR"                         ,StandardTypeMetadata.NVARCHAR2                          , 0, 1, 1),
 	NVARCHAR2                          ("NVARCHAR2"                        ,StandardTypeMetadata.NVARCHAR2                          , 0, 1, 1),
 	OBJECT                             ("OBJECT"                           ,StandardTypeMetadata.NONE                               ),
 	OID                                ("OID"                              ,StandardTypeMetadata.NONE                               ),
@@ -166,10 +166,10 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	ROW                                ("ROW"                              ,StandardTypeMetadata.NONE                               ),
 	ROWID                              ("ROWID"                            ,StandardTypeMetadata.ROWID                              , 1, 1, 1),
 	SECONDDATE                         ("SECONDDATE"                       ,StandardTypeMetadata.NONE                               ),
-	SERIAL                             ("SERIAL"                           ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	SERIAL2                            ("SERIAL2"                          ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	SERIAL4                            ("SERIAL4"                          ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	SERIAL8                            ("SERIAL8"                          ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	SERIAL                             ("SERIAL"                           ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	SERIAL2                            ("SERIAL2"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	SERIAL4                            ("SERIAL4"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	SERIAL8                            ("SERIAL8"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	SET                                ("SET"                              ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	SHORT                              ("SHORT"                            ,StandardTypeMetadata.NONE                               ),
 	SIGNTYPE                           ("SIGNTYPE"                         ,StandardTypeMetadata.NONE                               ),
@@ -180,16 +180,16 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	SMALLDATETIME                      ("SMALLDATETIME"                    ,StandardTypeMetadata.TIMESTAMP                          , 1, 1, 1),
 	SMALLDECIMAL                       ("SMALLDECIMAL"                     ,StandardTypeMetadata.NONE                               ),
 	SMALLFLOAT                         ("SMALLFLOAT"                       ,StandardTypeMetadata.NONE                               ),
-	SMALLINT                           ("SMALLINT"                         ,StandardTypeMetadata.SMALLINT                           , 1, 1, 1),
-	SMALLMONEY                         ("SMALLMONEY"                       ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
-	SMALLSERIAL                        ("SMALLSERIAL"                      ,StandardTypeMetadata.NUMERIC                            , 1, 0, 0),
+	SMALLINT                           ("SMALLINT"                         ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	SMALLMONEY                         ("SMALLMONEY"                       ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
+	SMALLSERIAL                        ("SMALLSERIAL"                      ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	SQL_DATETIMEOFFSET                 ("SQL_DATETIMEOFFSET"               ,StandardTypeMetadata.NONE                               ),
 	SQL_VARIANT                        ("SQL_VARIANT"                      ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	ST_GEOMETRY                        ("ST_GEOMETRY"                      ,StandardTypeMetadata.NONE                               ),
 	ST_POINT                           ("ST_POINT"                         ,StandardTypeMetadata.NONE                               ),
 	STRING                             ("STRING"                           ,StandardTypeMetadata.NONE                               ),
 	STRUCT                             ("STRUCT"                           ,StandardTypeMetadata.NONE                               ),
-	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.SYS_REFCURSOR                      , 1, 1, 1),
+	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.NONE                               ),
 	SYSNAME                            ("SYSNAME"                          ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	TEXT                               ("TEXT"                             ,StandardTypeMetadata.CLOB                               , 1, 1, 1),
 	TID                                ("TID"                              ,StandardTypeMetadata.NONE                               ),
@@ -205,7 +205,7 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	TIMESTAMPTZ                        ("TIMESTAMPTZ"                      ,StandardTypeMetadata.NONE                               ),
 	TIMEZ                              ("TIMEZ"                            ,StandardTypeMetadata.TIMESTAMP                          , 1, 1, 1),
 	TINYBLOB                           ("TINYBLOB"                         ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
-	TINYINT                            ("TINYINT"                          ,StandardTypeMetadata.TINYINT                            , 1, 1, 1),
+	TINYINT                            ("TINYINT"                          ,StandardTypeMetadata.NUMBER                             , 1, 2, 2),
 	TINYTEXT                           ("TINYTEXT"                         ,StandardTypeMetadata.CLOB                               , 1, 1, 1),
 	TSQUERY                            ("TSQUERY"                          ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	TSRANGE                            ("TSRANGE"                          ,StandardTypeMetadata.NONE                               ),
@@ -219,7 +219,7 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	VARBINARY                          ("VARBINARY"                        ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
 	VARBIT                             ("VARBIT"                           ,StandardTypeMetadata.BLOB                               , 1, 1, 1),
 	VARCHAR                            ("VARCHAR"                          ,StandardTypeMetadata.VARCHAR                            , 0, 1, 1),
-	VARCHAR2                           ("VARCHAR2"                         ,StandardTypeMetadata.VARCHAR2                           , 0, 1, 1),
+	VARCHAR2                           ("VARCHAR2"                         ,StandardTypeMetadata.VARCHAR                            , 0, 1, 1),
 	VARCHARBYTE                        ("VARCHARBYTE"                      ,StandardTypeMetadata.NONE                               ),
 	XID                                ("XID"                              ,StandardTypeMetadata.NONE                               ),
 	XML                                ("XML"                              ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
@@ -236,7 +236,7 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Config config       ; // 集成元数据读写配置
 
-	XuGuTypeMetadataAlias(String compatible, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	GBase8sTypeMetadataAlias(String compatible, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this.compatible = compatible;
 		this.standard = standard;
 		this.lengthRefer = lengthRefer;
@@ -247,20 +247,20 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	XuGuTypeMetadataAlias(String compatible, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+	GBase8sTypeMetadataAlias(String compatible, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(compatible, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	XuGuTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+	GBase8sTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	XuGuTypeMetadataAlias(String compatible, TypeMetadata standard){
+	GBase8sTypeMetadataAlias(String compatible, TypeMetadata standard){
 		this.compatible = compatible;
 		this.standard = standard;
 	}
 
-	XuGuTypeMetadataAlias(TypeMetadata standard){
+	GBase8sTypeMetadataAlias(TypeMetadata standard){
 		this.standard = standard;
 	}
 

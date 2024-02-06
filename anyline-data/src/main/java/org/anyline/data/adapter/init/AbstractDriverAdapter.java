@@ -28,6 +28,7 @@ import org.anyline.data.adapter.MetadataAdapterHolder;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
@@ -155,6 +156,24 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return alias;
 	}
 
+	/**
+	 * 注册数据类型别名(包含对应的标准类型、length/precision/scale等配置)
+	 * @param alias 数据类型别名
+	 * @return Config
+	 */
+	@Override
+	public TypeMetadata.Config reg(TypeMetadataAlias alias){
+		TypeMetadata standard = alias.standard();
+		if(standard == StandardTypeMetadata.NONE){
+			return null;
+		}
+		this.alias.put(alias.compatible(), standard);												//根据别名
+		this.alias.put(standard.getName(), standard);										//根据实现SQL数据类型名称
+		TypeMetadata.Config config = alias.config();
+		reg(alias.compatible(), config);
+		reg(alias.standard(), config);
+		return config;
+	}
 	/**
 	 * 注册数据类型配置
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖

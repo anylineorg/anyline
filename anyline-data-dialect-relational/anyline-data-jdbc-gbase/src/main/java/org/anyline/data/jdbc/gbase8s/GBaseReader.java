@@ -19,7 +19,7 @@ package org.anyline.data.jdbc.gbase8s;
 
 import org.anyline.adapter.DataReader;
 
-public enum GbaseReader {
+public enum GBaseReader {
     ;
     public Object[] supports(){
         return supports;
@@ -29,7 +29,7 @@ public enum GbaseReader {
     }
     private final Object[] supports;
     private final DataReader reader;
-    GbaseReader(Object[] supports, DataReader reader){
+    GBaseReader(Object[] supports, DataReader reader){
         this.supports = supports;
         this.reader = reader;
     }
