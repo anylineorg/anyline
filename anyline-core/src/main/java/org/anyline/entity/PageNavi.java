@@ -18,10 +18,8 @@
 package org.anyline.entity;
 
 import java.io.Serializable;
- 
- 
- 
- 
+
+
 public interface PageNavi extends Serializable{
 	/**
 	 * 查询结果行数
@@ -107,6 +105,7 @@ public interface PageNavi extends Serializable{
 
 	PageNavi order(Order order, boolean override);
 	PageNavi order(Order order);
+	OrderStore getOrders();
 
 	/** 
 	 * 设置总行数 

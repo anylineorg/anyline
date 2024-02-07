@@ -1216,6 +1216,11 @@ public class DefaultConfigStore implements ConfigStore {
 	} 
 	@Override 
 	public OrderStore getOrders() {
+		if(null == orders || orders.getOrders().isEmpty()){
+			if(null != navi){
+				orders = navi.getOrders();
+			}
+		}
 		return orders; 
 	} 
 	@Override 

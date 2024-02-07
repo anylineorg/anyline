@@ -345,6 +345,10 @@ public class DefaultPageNavi implements PageNavi, Serializable {
 		return this; 
 	}
 	@Override
+	public OrderStore getOrders(){
+		return orders;
+	}
+	@Override
 	public PageNavi order(Order order){
 		return order(order, true);
 	}
