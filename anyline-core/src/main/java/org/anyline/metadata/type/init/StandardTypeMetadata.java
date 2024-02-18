@@ -802,10 +802,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
         this(category, name, name, origin, transfer, compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
     StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
-        this(category, name, name, origin, compatible, null, ignoreLength, ignorePrecision, ignoreScale, dbs);
+        this(category, name, name, origin, null, compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
     StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
-        this(category, name, formula, origin, compatible, null, ignoreLength, ignorePrecision, ignoreScale, dbs);
+        this(category, name, formula, origin,null,  compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
     public TypeMetadata getOrigin(){
         return origin;
