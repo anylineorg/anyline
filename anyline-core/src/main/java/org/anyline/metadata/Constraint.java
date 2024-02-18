@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 public class Constraint<E extends Constraint> extends BaseMetadata<E> implements Serializable {
     protected String keyword = "CONSTRAINT"           ;
     public enum TYPE{
-        PRIMARY_KEY, UNIQUE, NOT_NULL, FOREIGN_KEY, DEFAULT
+        PRIMARY_KEY, UNIQUE, NOT_NULL, FOREIGN_KEY, CHECK, DEFAULT
     }
     protected TYPE type;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
