@@ -2969,6 +2969,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      */
     @Override
     public <T extends Constraint> List<T> constraints(DataRuntime runtime, int index, boolean create, Table table, List<T> constraints, DataSet set) throws Exception {
+        set.removeColumn("CONSTRAINT_CATALOG");
         return super.constraints(runtime, index, create, table, constraints, set);
     }
     /**
@@ -2986,6 +2987,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      */
     @Override
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
+        set.removeColumn("CONSTRAINT_CATALOG");
         return super.constraints(runtime, index, create, table, column, constraints, set);
     }
 
