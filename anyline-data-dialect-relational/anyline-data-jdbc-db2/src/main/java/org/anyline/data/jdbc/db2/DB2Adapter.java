@@ -1884,18 +1884,23 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index index
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
 	 * @param row 查询结果集
 	 * @return Table
+	 * @param <T> Table
 	 */
-	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
-		return super.init(runtime, index, table, catalog, schema, row);
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		return super.init(runtime, index, meta, catalog, schema, row);
 	}
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return Table
 	 */
@@ -2450,14 +2455,14 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
-		return super.init(runtime, index, column, table, row);
+	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+		return super.init(runtime, index, meta, table, row);
 	}
 
 	/**
@@ -2466,30 +2471,29 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 	 * @param column
 	 * @param row
 	 */
-	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
-
-		if(null == column.getPosition()) {
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(null == meta.getPosition()) {
 			try {
-				column.setPosition(row.getInt("COLNO"));
+				meta.setPosition(row.getInt("COLNO"));
 			}catch (Exception e){}
 		}
 		String type = row.getString("TYPENAME");
-		column.setType(type);
+		meta.setType(type);
 		int len = row.getInt("LENGTH",0);
-		column.setLength(len);
-		column.setPrecision(len);
+		meta.setLength(len);
+		meta.setPrecision(len);
 		int scale = row.getInt("SCALE",0);
-		if(null == column.getTypeMetadata()) {
-			typeMetadata(runtime, column);
+		if(null == meta.getTypeMetadata()) {
+			typeMetadata(runtime, meta);
 		}
 
 		TypeMetadata typeMetadata = typeMetadata(runtime, type);
-		column.setTypeMetadata(typeMetadata);
+		meta.setTypeMetadata(typeMetadata);
 
-		if(null == column.getTypeMetadata()) {
-			typeMetadata(runtime, column);
+		if(null == meta.getTypeMetadata()) {
+			typeMetadata(runtime, meta);
 		}
-		return column;
+		return meta;
 	}
 
 	/**

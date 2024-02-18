@@ -2528,16 +2528,16 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
      * column[结果集封装]<br/>(方法1)<br/>
      * 列详细属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param column 列
+     * @param meta 上一步封装结果
      * @param row 系统表查询SQL结果集
      * @return Column
      * @param <T> Column
      */
-    public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row){
 
-        if(null == column.getPosition()) {
+        if(null == meta.getPosition()) {
             try {
-                column.setPosition(row.getInt("COLNO"));
+                meta.setPosition(row.getInt("COLNO"));
             }catch (Exception e){}
         }
         String type = null;
@@ -2545,32 +2545,32 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
         if(null != coltype){
             if(coltype >= 256){
                 coltype -= 256;
-                column.nullable(false);
+                meta.nullable(false);
             }
             type = column_types.get(coltype);
-            column.setTypeName(type);
+            meta.setTypeName(type);
         }
         int len = row.getInt("COLLENGTH",0);
-        column.setLength(len);
-        column.setPrecision(len);
+        meta.setLength(len);
+        meta.setPrecision(len);
         //DECIMAL 或 money
         if(coltype == 8 || coltype == 5){
             int precision = len/256;
             int scale = len%256;
-            column.setPrecision(precision, scale);
+            meta.setPrecision(precision, scale);
         }
 
-        if(null == column.getTypeMetadata()) {
-            typeMetadata(runtime, column);
+        if(null == meta.getTypeMetadata()) {
+            typeMetadata(runtime, meta);
         }
 
         TypeMetadata typeMetadata = typeMetadata(runtime, type);
-        column.setTypeMetadata(typeMetadata);
+        meta.setTypeMetadata(typeMetadata);
 
-        if(null == column.getTypeMetadata()) {
-            typeMetadata(runtime, column);
+        if(null == meta.getTypeMetadata()) {
+            typeMetadata(runtime, meta);
         }
-        return column;
+        return meta;
     }
     /**
      * column[结果集封装]<br/>

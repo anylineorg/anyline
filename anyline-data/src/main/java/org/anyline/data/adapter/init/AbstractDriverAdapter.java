@@ -4221,7 +4221,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param row 查询结果集
@@ -4238,7 +4238,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return Table
 	 */
@@ -4704,6 +4704,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ddls;
 	}
+
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装view对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	@Override
+	public <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装view对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	@Override
+	public <T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -4961,6 +4994,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ddls;
 	}
+
+	/**
+	 * master table[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 */
+	@Override
+	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * master table[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 */
+	@Override
+	public <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -5203,6 +5269,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ddls;
 	}
+
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果封装PartitionTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return PartitionTable
+	 */
+	@Override
+	public <T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果封装PartitionTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return PartitionTable
+	 */
+	@Override
+	public <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -5360,34 +5459,34 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * (方法1)
 	 * <br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
+	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row)", 37));
 		}
-		return column;
+		return meta;
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列详细属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param row 系统表查询SQL结果集
 	 * @return Column
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
 		}
-		return column;
+		return meta;
 	}
 
 	/**
@@ -5857,6 +5956,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return tags;
 	}
 
+	/**
+	 * tag[结果集封装]<br/>
+	 * 列基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param row 系统表查询SQL结果集
+	 * @return Tag
+	 * @param <T> Tag
+	 */
+	@Override
+	public <T extends Tag> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row)", 37));
+		}
+		return meta;
+	}
+
+	/**
+	 * tag[结果集封装]<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 系统表查询SQL结果集
+	 * @return Tag
+	 * @param <T> Tag
+	 */
+	@Override
+	public <T extends Tag> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													primary
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6012,6 +6145,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @return PrimaryKey
 	 */
+	@Override
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
 		LinkedHashMap<String, T> foreigns = new LinkedHashMap<>();
 		if(null == random) {
@@ -6045,6 +6179,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @return sqls
 	 */
+	@Override
 	public List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryForeignsRun(DataRuntime runtime, Table table)", 37));
@@ -6062,6 +6197,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set)", 37));
@@ -6069,7 +6205,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new LinkedHashMap<>();
 	}
 
+	/**
+	 * foreign[结构集封装]<br/>
+	 * 根据查询结果集构造ForeignKey基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+		}
+		return meta;
+	}
 
+	/**
+	 * foreign[结构集封装]<br/>
+	 * 根据查询结果集构造ForeignKey更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+		}
+		return meta;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													index
@@ -6329,6 +6499,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return indexs;
 	}
 
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+		}
+		return meta;
+	}
+
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception{
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6440,6 +6645,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return constraints;
 	}
 
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 根据查询结果封装Constraint对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Constraint
+	 */
+	@Override
+	public <T extends Constraint> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 根据查询结果封装Constraint对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Constraint
+	 */
+	@Override
+	public <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6507,6 +6744,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return triggers;
 	}
 
+	/**
+	 * trigger[结果集封装]<br/>
+	 * 根据查询结果封装trigger对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Trigger
+	 */
+	@Override
+	public <T extends Trigger> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * trigger[结果集封装]<br/>
+	 * 根据查询结果封装trigger对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Trigger
+	 */
+	@Override
+	public <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													procedure
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6729,7 +6998,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
-
+	/**
+	 * procedure[结果集封装]<br/>
+	 * 根据查询结果封装procedure对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Procedure
+	 */
+	@Override
+	public <T extends Procedure> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * procedure[结果集封装]<br/>
+	 * 根据查询结果封装procedure对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Procedure
+	 */
+	@Override
+	public <T extends Procedure> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6953,6 +7253,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
+	/**
+	 * function[结果集封装]<br/>
+	 * 根据查询结果封装function对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Function
+	 */
+	@Override
+	public <T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * function[结果集封装]<br/>
+	 * 根据查询结果封装function对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Function
+	 */
+	@Override
+	public <T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
+	}
 	/* *****************************************************************************************************************
 	 * 													sequence
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -7236,6 +7568,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set)", 37));
 		}
 		return ddls;
+	}
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果封装sequence对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Sequence
+	 */
+	@Override
+	public <T extends Sequence> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return meta;
+	}
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果封装sequence对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Sequence
+	 */
+	@Override
+	public <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+		}
+		return meta;
 	}
 	/* *****************************************************************************************************************
 	 * 													common

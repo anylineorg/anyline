@@ -2005,22 +2005,22 @@ public interface DriverAdapter {
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	<T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row);
+	<T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	<T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row);
+	<T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
 	/**
 	 * table[结构集封装-依据]<br/>
@@ -2117,7 +2117,30 @@ public interface DriverAdapter {
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
+
 	List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set);
+
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装view对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	<T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装view对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	<T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row);
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
@@ -2202,6 +2225,27 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set);
+
+	/**
+	 * master table[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 */
+	<T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * master table[结果集封装]<br/>
+	 * 根据查询结果封装MasterTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return MasterTable
+	 */
+	<T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
@@ -2312,6 +2356,27 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set);
+
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果封装PartitionTable对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return PartitionTable
+	 */
+	<T extends PartitionTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * partition table[结果集封装]<br/>
+	 * 根据查询结果封装PartitionTable对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return PartitionTable
+	 */
+	<T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 	/* *****************************************************************************************************************
 	 * 													column
 	 * 获取表的几种方法和场景
@@ -2410,23 +2475,23 @@ public interface DriverAdapter {
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
-	<T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row);
+	<T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row);
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列详细属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param row 系统表查询SQL结果集
 	 * @return Column
 	 * @param <T> Column
 	 */
-	<T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row);
+	<T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
 	/**
 	 * column[结构集封装-依据]<br/>
@@ -2597,7 +2662,28 @@ public interface DriverAdapter {
 	 */
 	<T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tags, Table table, String pattern) throws Exception;
 
+	/**
+	 * tag[结果集封装]<br/>
+	 * 列基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param row 系统表查询SQL结果集
+	 * @return Tag
+	 * @param <T> Tag
+	 */
+	<T extends Tag> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row);
 
+	/**
+	 * tag[结果集封装]<br/>
+	 * 列详细属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 系统表查询SQL结果集
+	 * @return Tag
+	 * @param <T> Tag
+	 */
+	<T extends Tag> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 	/* *****************************************************************************************************************
 	 * 													primary
 	 ******************************************************************************************************************/
@@ -2627,24 +2713,24 @@ public interface DriverAdapter {
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
-	 * @param primary 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 
 	/**
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
-	 * @param primary 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 	/**
 	 * primary[结构集封装-依据]<br/>
 	 * 读取primary key元数据结果集的依据
@@ -2698,7 +2784,29 @@ public interface DriverAdapter {
 	 */
 	<T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception;
 
+	/**
+	 * foreign[结构集封装]<br/>
+	 * 根据查询结果集构造ForeignKey基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	<T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 
+	/**
+	 * foreign[结构集封装]<br/>
+	 * 根据查询结果集构造ForeignKey更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	<T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
@@ -2778,7 +2886,29 @@ public interface DriverAdapter {
 	 */
 	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception;
 
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	<T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param set sql查询结果
+	 * @throws Exception 异常
+	 */
+	<T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
@@ -2845,7 +2975,26 @@ public interface DriverAdapter {
 	 */
 	<T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception;
 
-
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 根据查询结果封装Constraint对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Constraint
+	 */
+	<T extends Constraint> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * catalog[结果集封装]<br/>
+	 * 根据查询结果封装Constraint对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Constraint
+	 */
+	<T extends Constraint> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
 	/* *****************************************************************************************************************
 	 * 													trigger
@@ -2885,7 +3034,26 @@ public interface DriverAdapter {
 	 */
 	<T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception;
 
-
+	/**
+	 * trigger[结果集封装]<br/>
+	 * 根据查询结果封装trigger对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Trigger
+	 */
+	<T extends Trigger> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * trigger[结果集封装]<br/>
+	 * 根据查询结果封装trigger对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Trigger
+	 */
+	<T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
 	/* *****************************************************************************************************************
 	 * 													procedure
@@ -3000,6 +3168,27 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set);
+
+	/**
+	 * procedure[结果集封装]<br/>
+	 * 根据查询结果封装procedure对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Procedure
+	 */
+	<T extends Procedure> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * procedure[结果集封装]<br/>
+	 * 根据查询结果封装procedure对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Procedure
+	 */
+	<T extends Procedure> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -3115,6 +3304,26 @@ public interface DriverAdapter {
 	 */
 	List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set);
 
+	/**
+	 * function[结果集封装]<br/>
+	 * 根据查询结果封装function对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Function
+	 */
+	<T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * function[结果集封装]<br/>
+	 * 根据查询结果封装function对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Function
+	 */
+	<T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
 	/* *****************************************************************************************************************
 	 * 													sequence
@@ -3230,6 +3439,28 @@ public interface DriverAdapter {
 	 * @return List
 	 */
 	List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set);
+
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果封装sequence对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return Sequence
+	 */
+	<T extends Sequence> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row);
+	/**
+	 * sequence[结果集封装]<br/>
+	 * 根据查询结果封装sequence对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return Sequence
+	 */
+	<T extends Sequence> T detail(DataRuntime runtime, int index, T meta, DataRow row);
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL

@@ -1848,27 +1848,27 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param row 查询结果集
 	 * @return Table
 	 */
 	@Override
-	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
-		return super.init(runtime, index, table, catalog, schema,row);
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		return super.init(runtime, index, meta, catalog, schema,row);
 	}
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return Table
 	 */
 	@Override
-	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
-		return super.detail(runtime, index, table, row);
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		return super.detail(runtime, index, meta, row);
 	}
 
 	/**
@@ -2427,28 +2427,28 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param row 系统表查询SQL结果集
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
-		return super.init(runtime, index, column, table, row);
+	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+		return super.init(runtime, index, meta, table, row);
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列详细属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param row 系统表查询SQL结果集
 	 * @return Column
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
-		return super.detail(runtime, index, column, row);
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		return super.detail(runtime, index, meta, row);
 	}
 
 	/**

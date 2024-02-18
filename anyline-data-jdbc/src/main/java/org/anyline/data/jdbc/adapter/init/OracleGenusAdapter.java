@@ -3057,7 +3057,26 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-        return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM USER_CONSTRAINTS WHERE 1=1");
+        String catalog = null;
+        String schema = null;
+        String tab = null;
+        if(null != table){
+            catalog = table.getCatalogName();
+            schema = table.getSchemaName();
+            tab = table.getName();
+        }
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND OWNER = '").append(schema).append("'");
+        }
+        if(BasicUtil.isNotEmpty(catalog)){
+            builder.append(" AND TABLE_NAME = '").append(tab).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -3091,7 +3110,40 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-        return super.constraints(runtime, index, create, table, column, constraints, set);
+        if(null == constraints){
+            constraints = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("CONSTRAINT_NAME");
+            if(null == name){
+                continue;
+            }
+            T constraint = constraints.get(name.toUpperCase());
+            if(null == constraint && create){
+                constraint = (T)new Constraint();
+                constraints.put(name.toUpperCase(), constraint);
+            };
+
+            String schema = row.getString("OWNER");
+            constraint.setSchema(schema);
+            if(null == table){
+                table = new Table(null, schema, row.getString("TABLE_NAME"));
+            }
+            constraint.setTable(table);
+            constraint.setName(name);
+            String type = row.getString("CONSTRAINT_TYPE");
+            if("P".equalsIgnoreCase(type)){
+                constraint.setType(Constraint.TYPE.PRIMARY_KEY);
+            }else if("R".equalsIgnoreCase(type)){
+                constraint.setType(Constraint.TYPE.FOREIGN_KEY);
+            }else if("C".equalsIgnoreCase(type)){
+                String chk = row.getString("SEARCH_CONDITION");
+                if(null != chk && chk.contains("IS NOT NULL")){
+                    constraint.setType(Constraint.TYPE.NOT_NULL);
+                }
+            }
+        }
+        return constraints;
     }
 
 

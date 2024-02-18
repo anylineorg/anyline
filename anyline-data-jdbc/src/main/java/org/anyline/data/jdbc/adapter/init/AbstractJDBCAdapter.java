@@ -3707,16 +3707,22 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
+
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index index
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
 	 * @param row 查询结果集
 	 * @return Table
+	 * @param <T> Table
 	 */
-	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
-		if(null == table){
-			table = (T)new Table();
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(null == meta){
+			meta = (T)new Table();
 		}
 		TableMetadataAdapter config = tableMetadataAdapter(runtime);
 		String _catalog = row.getString(config.getCatalogRefers());
@@ -3729,11 +3735,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		String name = row.getString(config.getNameRefers());
 
-		if(null == table){
+		if(null == meta){
 			if("VIEW".equals(row.getString(config.getTypeRefers()))){
-				table = (T)new View();
+				meta = (T)new View();
 			}else {
-				table = (T)new Table();
+				meta = (T)new Table();
 			}
 		}
 		if(null != _catalog){
@@ -3742,36 +3748,36 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != _schema){
 			_schema = _schema.trim();
 		}
-		table.setCatalog(_catalog);
-		table.setSchema(_schema);
-		table.setName(name);
-		return table;
+		meta.setCatalog(_catalog);
+		meta.setSchema(_schema);
+		meta.setName(name);
+		return meta;
 	}
 
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据查询结果封装Table更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
-		table.setObjectId(row.getLong("OBJECT_ID", (Long)null));
-		table.setEngine(row.getString("ENGINE"));
-		table.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
-		table.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
-		table.setCollate(row.getString("TABLE_COLLATION"));
-		table.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
-		table.setDataFree(row.getLong("DATA_FREE", (Long)null));
-		table.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
-		table.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
-		table.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
-		table.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
-		table.setType(row.getString("TABLE_TYPE"));
-		table.setEngine(row.getString("ENGINE"));
-		table.setTemporary(row.getBoolean("IS_TEMPORARY", false));
-		return table;
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+		meta.setEngine(row.getString("ENGINE"));
+		meta.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
+		meta.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+		meta.setCollate(row.getString("TABLE_COLLATION"));
+		meta.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
+		meta.setDataFree(row.getLong("DATA_FREE", (Long)null));
+		meta.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
+		meta.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
+		meta.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
+		meta.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
+		meta.setType(row.getString("TABLE_TYPE"));
+		meta.setEngine(row.getString("ENGINE"));
+		meta.setTemporary(row.getBoolean("IS_TEMPORARY", false));
+		return meta;
 	}
 	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
 		try {
@@ -4687,18 +4693,18 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	/**
 	 * column [结果集封装-子流程](方法1)<br/>
 	 * 方法(1)内部遍历
-	 * @param column 上一步封装结果
+	 * @param meta 上一步封装结果
 	 * @param table 表
 	 * @param row 查询结果集
 	 */
-	public <T extends Column> T init(DataRuntime runtime, int index, T column, Table table, DataRow row){
-		if(null == column){
-			column = (T)new Column();
+	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+		if(null == meta){
+			meta = (T)new Column();
 		}
 		ColumnMetadataAdapter config = columnMetadataAdapter(runtime);
 		String catalog = row.getString(config.getCatalogRefers());
 		String schema = row.getString(config.getSchemaRefers());//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
-		schema = BasicUtil.evl(schema, column.getSchemaName());
+		schema = BasicUtil.evl(schema, meta.getSchemaName());
 		//如果上一步没有提供table有可能是查所有表的列,column单独创建自己的table对象
 		if(null != table){
 			if(null == catalog){
@@ -4714,41 +4720,41 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != schema){
 			schema = schema.trim();
 		}
-		if(null == column){
-			column = (T)new Column();
+		if(null == meta){
+			meta = (T)new Column();
 		}
-		column.setCatalog(catalog);
-		column.setSchema(schema);
+		meta.setCatalog(catalog);
+		meta.setSchema(schema);
 		if(null != table) {//查询全部表
-			column.setTable(table);
+			meta.setTable(table);
 		}else {
 			String tableName = row.getString(config.getTableRefers());
-			column.setTable(BasicUtil.evl(tableName, column.getTableName(true), tableName));
+			meta.setTable(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
 		}
 		String name = row.getString(config.getNameRefers());
-		column.setName(name);
-		return column;
+		meta.setName(name);
+		return meta;
 	}
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 列详细属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param column 列
+	 * @param meta 上一步封装结果
 	 * @param row 系统表查询SQL结果集
 	 * @return Column
 	 * @param <T> Column
 	 */
-	public <T extends Column> T detail(DataRuntime runtime, int index, T column, DataRow row){
-		if(null == column){
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		if(null == meta){
 			return null;
 		}
-		if(null == column.getPosition()) {
+		if(null == meta.getPosition()) {
 			try {
-				column.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
+				meta.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
 			}catch (Exception e){}
 		}
-		column.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS","REMARKS"), column.getComment()));
+		meta.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS","REMARKS"), meta.getComment()));
 		String type = row.getString("FULL_TYPE","DATA_TYPE","TYPE_NAME","TYPENAME","DATA_TYPE_NAME");
 		/*if(null != type){
 			type = type.replace("character varying","VARCHAR");
@@ -4760,12 +4766,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != type && type.contains(" ")){
 			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
-		column.setTypeName(BasicUtil.evl(type, column.getTypeName()));
+		meta.setTypeName(BasicUtil.evl(type, meta.getTypeName()));
 		TypeMetadata typeMetadata = typeMetadata(runtime, type);
-		column.setTypeMetadata(typeMetadata);
+		meta.setTypeMetadata(typeMetadata);
 		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, typeMetadata);
 		TypeMetadata.Config config = adapter.getTypeConfig();
-		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), column.getDefaultValue())+"";
+		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), meta.getDefaultValue())+"";
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
 				def = def.substring(1, def.length()-1);
@@ -4773,46 +4779,46 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			while(def.startsWith("'") && def.endsWith("'")){
 				def = def.substring(1, def.length()-1);
 			}
-			column.setDefaultValue(def);
+			meta.setDefaultValue(def);
 		}
 		//默认值约束
-		column.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
-		if(-1 == column.isAutoIncrement()){
-			column.autoIncrement(row.getBoolean("IS_IDENTITY", null));
+		meta.setDefaultConstraint(row.getString("DEFAULT_CONSTRAINT"));
+		if(-1 == meta.isAutoIncrement()){
+			meta.autoIncrement(row.getBoolean("IS_IDENTITY", null));
 		}
-		if(-1 == column.isAutoIncrement()){
-			column.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
+		if(-1 == meta.isAutoIncrement()){
+			meta.autoIncrement(row.getBoolean("IS_AUTOINCREMENT", null));
 		}
-		if(-1 == column.isAutoIncrement()){
-			column.autoIncrement(row.getBoolean("IDENTITY", null));
+		if(-1 == meta.isAutoIncrement()){
+			meta.autoIncrement(row.getBoolean("IDENTITY", null));
 		}
-		if(-1 == column.isAutoIncrement()){
+		if(-1 == meta.isAutoIncrement()){
 			if(row.getStringNvl("EXTRA").toLowerCase().contains("auto_increment")){
-				column.autoIncrement(true);
+				meta.autoIncrement(true);
 			}
 		}
 		//mysql中的on update
 		if(row.getStringNvl("EXTRA").toLowerCase().contains("on update")){
-			column.setOnUpdate(true);
+			meta.setOnUpdate(true);
 		}
-		String defaultValue = column.getDefaultValue()+"";
+		String defaultValue = meta.getDefaultValue()+"";
 		if(defaultValue.toLowerCase().contains("nextval")){
-			column.autoIncrement(true);
+			meta.autoIncrement(true);
 		}
-		column.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+		meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		//主键
 		String column_key = row.getString("COLUMN_KEY");
 		if("PRI".equals(column_key)){
-			column.primary(1);
+			meta.primary(1);
 		}
 		if(row.getBoolean("PK", Boolean.FALSE)){
-			column.primary(1);
+			meta.primary(1);
 		}
 
 		//非空
-		if(-1 == column.isNullable()) {
+		if(-1 == meta.isNullable()) {
 			try {
-				column.nullable(row.getBoolean(adapter.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
+				meta.nullable(row.getBoolean(adapter.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
 			}catch (Exception e){}
 		}
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
@@ -4828,7 +4834,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(null == len){
 				len = -1;
 			}
-			column.setLength(len);
+			meta.setLength(len);
 		}catch (Exception e){}
 		try{
 			Integer precision = row.getInt(null, config.getPrecisionRefers());
@@ -4839,7 +4845,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(null == precision){
 				precision = -1;
 			}
-			column.setPrecision(precision);
+			meta.setPrecision(precision);
 		}catch (Exception e){
 
 		}
@@ -4848,19 +4854,19 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			/*if(null == scale){
 				scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
 			}*/
-			column.setScale(scale);
+			meta.setScale(scale);
 		}catch (Exception e){}
 
-		if(null == column.getCharset()) {
-			column.setCharset(row.getString(adapter.getCharsetRefers()));//"CHARACTER_SET_NAME"
+		if(null == meta.getCharset()) {
+			meta.setCharset(row.getString(adapter.getCharsetRefers()));//"CHARACTER_SET_NAME"
 		}
-		if(null == column.getCollate()) {
-			column.setCollate(row.getString(adapter.getCollateRefers()));//COLLATION_NAME
+		if(null == meta.getCollate()) {
+			meta.setCollate(row.getString(adapter.getCollateRefers()));//COLLATION_NAME
 		}
-		if(null == column.getTypeMetadata()) {
-			typeMetadata(runtime, column);
+		if(null == meta.getTypeMetadata()) {
+			typeMetadata(runtime, meta);
 		}
-		return column;
+		return meta;
 	}
 
 
