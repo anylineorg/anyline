@@ -94,7 +94,7 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
     public E setType(String type) {
         if(null != type){
             type = type.toUpperCase();
-            if(type.contains("PRIMARY")){
+            if(type.contains("PRIMARY") || type.equals("P")){
                 this.type = TYPE.PRIMARY_KEY;
             }else if(type.contains("FOREIGN")){
                 this.type = TYPE.FOREIGN_KEY;
@@ -102,6 +102,10 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
                 this.type = TYPE.UNIQUE;
             }else if(type.contains("NOT")){
                 this.type = TYPE.NOT_NULL;
+            }else if(type.contains("DEFAULT")){
+                this.type = TYPE.DEFAULT;
+            }else if(type.contains("CHECK") || type.equals("C")){
+                this.type = TYPE.CHECK;
             }
         }
         return (E)this;
@@ -112,6 +116,8 @@ public class Constraint<E extends Constraint> extends BaseMetadata<E> implements
             return update.columns;
         }
         return columns;
+
+
     }
     public Column getColumn(String name) {
         if(getmap && null != update){
