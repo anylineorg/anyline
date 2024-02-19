@@ -747,6 +747,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , MAP(CATEGORY.NONE, "MAP", null, null, 1, 1, 1, Doris)
 
     , STRUCT(CATEGORY.NONE, "STRUCT", null, null, 1, 1, 1, Doris)
+    , STRUCTS(CATEGORY.NONE, "STRUCTS", null, null, 1, 1, 1, Hive)
 
     , AGG_STATE(CATEGORY.NONE, "AGG_STATE", null, null, 1, 1, 1, Doris)
     , LowCardinality(CATEGORY.NONE, "LowCardinality", null, null, 1, 1, 1, ClickHouse)

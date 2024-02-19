@@ -29,6 +29,7 @@ import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;
@@ -2821,7 +2822,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+		return new ArrayList<>();
 	}
 
 	/**
@@ -4764,6 +4765,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 		return super.aggregation(runtime, builder, meta);
 	}
 
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:非空
@@ -4774,7 +4776,21 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.nullable(runtime, builder, meta);
+		if(meta.isPrimaryKey() == 1){
+			builder.append(" NOT NULL");
+			return builder;
+		}
+		if(null == meta.getDefaultValue()){
+			int nullable = meta.isNullable();
+			if(nullable != -1) {
+				if (nullable == 0) {
+					builder.append(" NOT NULL");
+				}
+				//null 忽略
+				//builder.append(" NULL");
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -6361,6 +6377,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 * 伪表
 	 * @return String
 	 */
+	@Override
 	protected String dummy(){
 		return super.dummy();
 	}
@@ -6370,4 +6387,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 *
 	 *  ***************************************************************************************************************/
 
+	@Override
+	protected boolean IS_KEYHOLDER_IDENTITY(ConfigStore configs){
+		return false;
+	}
 }

@@ -189,6 +189,7 @@ public enum DB2TypeMetadataAlias implements TypeMetadataAlias {
 	ST_POINT                           ("ST_POINT"                         ,StandardTypeMetadata.NONE                               ),
 	STRING                             ("STRING"                           ,StandardTypeMetadata.CLOB                               , 1, 1, 1),
 	STRUCT                             ("STRUCT"                           ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
+	STRUCTS                            ("STRUCTS"                          ,StandardTypeMetadata.NONE                               ),
 	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.NONE                               ),
 	SYSNAME                            ("SYSNAME"                          ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	TEXT                               ("TEXT"                             ,StandardTypeMetadata.CLOB                               , 1, 1, 1),

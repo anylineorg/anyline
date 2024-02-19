@@ -189,6 +189,7 @@ public enum TDengineTypeMetadataAlias implements TypeMetadataAlias {
 	ST_POINT                           ("ST_POINT"                         ,StandardTypeMetadata.NONE                               ),
 	STRING                             ("STRING"                           ,StandardTypeMetadata.NONE                               ),
 	STRUCT                             ("STRUCT"                           ,StandardTypeMetadata.NONE                               ),
+	STRUCTS                            ("STRUCTS"                          ,StandardTypeMetadata.NONE                               ),
 	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.NONE                               ),
 	SYSNAME                            ("SYSNAME"                          ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	TEXT                               ("TEXT"                             ,StandardTypeMetadata.NCHAR                              , 0, 1, 1),

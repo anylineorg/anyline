@@ -189,6 +189,7 @@ public enum DorisTypeMetadataAlias implements TypeMetadataAlias {
 	ST_POINT                           ("ST_POINT"                         ,StandardTypeMetadata.NONE                               ),
 	STRING                             ("STRING"                           ,StandardTypeMetadata.STRING                             , 1, 1, 1),
 	STRUCT                             ("STRUCT"                           ,StandardTypeMetadata.STRUCT                             , 1, 1, 1),
+	STRUCTS                            ("STRUCTS"                          ,StandardTypeMetadata.NONE                               ),
 	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.NONE                               ),
 	SYSNAME                            ("SYSNAME"                          ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	TEXT                               ("TEXT"                             ,StandardTypeMetadata.VARCHAR                            , 0, 1, 1),

@@ -189,6 +189,7 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 	ST_POINT                           ("ST_POINT"                         ,StandardTypeMetadata.NONE                               ),
 	STRING                             ("STRING"                           ,StandardTypeMetadata.NONE                               ),
 	STRUCT                             ("STRUCT"                           ,StandardTypeMetadata.NONE                               ),
+	STRUCTS                            ("STRUCTS"                          ,StandardTypeMetadata.NONE                               ),
 	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.SYS_REFCURSOR                      , 1, 1, 1),
 	SYSNAME                            ("SYSNAME"                          ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	TEXT                               ("TEXT"                             ,StandardTypeMetadata.CLOB                               , 1, 1, 1),

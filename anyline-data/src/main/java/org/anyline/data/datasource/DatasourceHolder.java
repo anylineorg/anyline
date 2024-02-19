@@ -99,31 +99,44 @@ public abstract class DatasourceHolder {
 	public static Object value(Environment env, String prefix, String name){
 		return value(env, prefix, name, Object.class, null);
 	}
-	public static <T> T value(Environment env, String prefix, String name, Class<T> clazz, T def){
-		T result = null;
-		if(null != env && null != prefix && null != name) {
-			String value = BeanUtil.value(prefix, env, name);
-			if (null == value) {
-				HashSet<String> alias = DataSourceKeyMap.alias(name);
-				if (null != alias) {
-					for (String item : alias) {
-						if (null == value) {
-							value = BeanUtil.value(prefix, env, item);
+
+	/**
+	 * 从配置文件中取值
+	 * @param env Environment
+	 * @param prefix 前缀 如果有多个用,分隔如如spring.datasource,anyline.datasource
+	 * @param key 如果有多个用,分隔如driver,driver-class
+	 * @param clazz 返回数据类型
+	 * @param def 默认值
+	 * @return T
+	 * @param <T> T
+	 */
+	public static <T> T value(Environment env, String prefix, String key, Class<T> clazz, T def){
+		if(null != env && null != prefix && null != key) {
+			String ps[] = prefix.split(",");
+			String ks[] = key.split(",");
+			for(String p:ps) {
+				for (String k : ks) {
+					String value = BeanUtil.value(p, env, k);
+					if (null == value) {
+						HashSet<String> alias = DataSourceKeyMap.alias(k);
+						if (null != alias) {
+							for (String item : alias) {
+								if (null == value) {
+									value = BeanUtil.value(p, env, item);
+								}
+								if (BasicUtil.isNotEmpty(value)) {
+									break;
+								}
+							}
 						}
-						if (null != value) {
-							break;
-						}
+					}
+					if (BasicUtil.isNotEmpty(value)) {
+						return (T) ConvertAdapter.convert(value, clazz, false);
 					}
 				}
 			}
-			if(null != value){
-				result = (T) ConvertAdapter.convert(value, clazz, false);
-			}
-			if(null == result){
-				result = def;
-			}
 		}
-		return result;
+		return def;
 	}
 
 	public static Object value(Map map, String name){
