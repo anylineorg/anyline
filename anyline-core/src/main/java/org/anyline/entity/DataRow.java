@@ -2283,7 +2283,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return this;
     }
-
+    public boolean equals(DataRow row, String ... columns){
+        if(null == row || null == columns || columns.length == 0){
+            return false;
+        }
+        for(String column:columns){
+            String v1 = getString(column);
+            String v2 = row.getString(column);
+            if(!BasicUtil.equals(v1, v2)){
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * 轮换成xml格式
      * @return String
