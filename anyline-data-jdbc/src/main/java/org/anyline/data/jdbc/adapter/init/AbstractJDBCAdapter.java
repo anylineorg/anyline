@@ -650,6 +650,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 									ps.setObject(++idx, obj);
 								}
 							}
+							params(ps, configs);
 							return ps;
 						}
 					}, keyholder);
@@ -1224,6 +1225,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 						}
 
 					}
+					params(cs, null);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>(){
@@ -1686,6 +1688,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+					params(ps, configs);
 					if (null != values && values.size() > 0) {
 						int idx = 0;
 						for (Object value : values) {
@@ -10604,6 +10607,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+					params(ps, configs);
 					if (null != values && values.size() > 0) {
 						int idx = 0;
 						for (Object value : values) {
@@ -11393,6 +11397,15 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		return result;
 	}
-
+	private void params(Statement statement, ConfigStore configs){
+		int timeout = SQL_QUERY_TIMEOUT(configs);
+		if(timeout > 0){
+			try {
+				statement.setQueryTimeout(timeout);
+			}catch (Exception e){
+				log.warn("设置超时时间异常:{}", e);
+			}
+		}
+	}
 
 }

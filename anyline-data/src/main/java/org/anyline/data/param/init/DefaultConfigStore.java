@@ -54,12 +54,12 @@ public class DefaultConfigStore implements ConfigStore {
 	protected GroupStore groups;
 	protected List<String> queryColumns     = new ArrayList<>()		; // 查询的列
 	protected List<String> excludeColumns 	= new ArrayList<>()		; // 不查询的列
-	protected List<Object> values											; // 保存values后续parse用到
+	protected List<Object> values									; // 保存values后续parse用到
 
 	protected Boolean override              = null                  ; //如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected List<String> overrideByColumns		= null			; //中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库null不检测
 	protected Constraint overrideByConstraint		= null			; //中存在相同数据(根据Constraint)是否覆盖 true或false会检测数据库null不检测
-	protected List<String> primaryKeys    	= new ArrayList()       ; // 主键
+	protected List<String> primaryKeys    	= new ArrayList<>()     ; // 主键
 	protected boolean integrality 			= true					; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	protected List<Run> runs				= new ArrayList<>()		; // 执行过的命令 包括ddl dml
 	protected KeyAdapter.KEY_CASE kc 		= null					; //

@@ -122,6 +122,7 @@ public class ConfigTable {
 	public static boolean IS_OPEN_PRIMARY_TRANSACTION_MANAGER 			= false			;	// 是否需要设置一个主事务管理器, 多数据源时为注解事务指定一个事务管理器
 	public static String ALTER_COLUMN_TYPE_SUFFIX						= "___"			;	// ORACLE系修改数据类型过程中，需要中间列，这里指定中间列名称的后缀
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000			;   // DDL修改列异常后 -1：抛出异常 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+	public static int SQL_QUERY_TIMEOUT									= -1			;	// 等待 SQL 语句完成的最大时间(s), 超过则抛出异常
 	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false			;   // DDL执行时是否自动删除定义中不存在的列
 	public static boolean IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY			= false			;   // 查询列时，是否自动检测主键标识
 	public static String SQL_STORE_DIR									= null			;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
@@ -934,7 +935,9 @@ public class ConfigTable {
 	public int AFTER_ALTER_COLUMN_EXCEPTION_ACTION() {
 		return AFTER_ALTER_COLUMN_EXCEPTION_ACTION;
 	}
-
+	public int SQL_QUERY_TIMEOUT(){
+		return SQL_QUERY_TIMEOUT;
+	}
 	public boolean  IS_DDL_AUTO_DROP_COLUMN() {
 		return IS_DDL_AUTO_DROP_COLUMN;
 	}

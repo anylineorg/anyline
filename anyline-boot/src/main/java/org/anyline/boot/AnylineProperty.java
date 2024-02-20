@@ -237,6 +237,8 @@ public class AnylineProperty {
      * ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
      */
     protected int afterAlterColumnExceptionAction				= 1000		    ;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+
+    protected int sqlQueryTimeout                               = -1            ;   // 等待 SQL 语句完成的最大时间(s), 超过则抛出异常
     /**
      * ddl执行时是否自动删除定义中不存在的列
      */
@@ -716,6 +718,15 @@ public class AnylineProperty {
     public void setAfterAlterColumnExceptionAction(int afterAlterColumnExceptionAction) {
         this.afterAlterColumnExceptionAction = afterAlterColumnExceptionAction;
         ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION = afterAlterColumnExceptionAction;
+    }
+
+    public int getSqlQueryTimeout() {
+        return sqlQueryTimeout;
+    }
+
+    public void setSqlQueryTimeout(int sqlQueryTimeout) {
+        this.sqlQueryTimeout = sqlQueryTimeout;
+        ConfigTable.SQL_QUERY_TIMEOUT = sqlQueryTimeout;
     }
 
     public boolean isDdlAutoDropColumn() {

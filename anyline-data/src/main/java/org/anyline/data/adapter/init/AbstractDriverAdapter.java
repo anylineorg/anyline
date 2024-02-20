@@ -14273,5 +14273,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_KEYHOLDER_IDENTITY;
 	}
-
+	protected int SQL_QUERY_TIMEOUT(ConfigStore configs){
+		if(null != configs){
+			return configs.SQL_QUERY_TIMEOUT();
+		}
+		return ConfigTable.SQL_QUERY_TIMEOUT;
+	}
 }

@@ -19,6 +19,7 @@ package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.StreamHandler;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
@@ -1841,6 +1842,12 @@ public interface ConfigStore {
 	}
 	default boolean IS_KEYHOLDER_IDENTITY(){
 		return getBoolean("IS_KEYHOLDER_IDENTITY", ConfigTable.IS_KEYHOLDER_IDENTITY);
+	}
+	default int SQL_QUERY_TIMEOUT(){
+		return getInt("SQL_QUERY_TIMEOUT", ConfigTable.SQL_QUERY_TIMEOUT);
+	}
+	default ConfigStore SQL_QUERY_TIMEOUT(int s){
+		return config("SQL_QUERY_TIMEOUT", s);
 	}
 	/**
 	 * 关闭所有SQL日志
