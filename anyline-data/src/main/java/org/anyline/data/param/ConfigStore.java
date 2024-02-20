@@ -1849,6 +1849,12 @@ public interface ConfigStore {
 	default ConfigStore SQL_QUERY_TIMEOUT(int s){
 		return config("SQL_QUERY_TIMEOUT", s);
 	}
+	default int SQL_UPDATE_TIMEOUT(){
+		return getInt("SQL_UPDATE_TIMEOUT", ConfigTable.SQL_UPDATE_TIMEOUT);
+	}
+	default ConfigStore SQL_UPDATE_TIMEOUT(int s){
+		return config("SQL_UPDATE_TIMEOUT", s);
+	}
 	/**
 	 * 关闭所有SQL日志
 	 * @return ConfigStore

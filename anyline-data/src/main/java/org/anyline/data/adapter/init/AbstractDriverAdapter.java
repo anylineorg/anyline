@@ -14279,4 +14279,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.SQL_QUERY_TIMEOUT;
 	}
+	protected int SQL_UPDATE_TIMEOUT(ConfigStore configs){
+		if(null != configs){
+			return configs.SQL_UPDATE_TIMEOUT();
+		}
+		return ConfigTable.SQL_UPDATE_TIMEOUT;
+	}
 }
