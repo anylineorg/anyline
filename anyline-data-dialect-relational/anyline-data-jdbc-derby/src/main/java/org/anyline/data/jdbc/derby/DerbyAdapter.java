@@ -35,7 +35,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
-import sun.swing.StringUIClientPropertyKey;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

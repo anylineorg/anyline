@@ -373,7 +373,7 @@ public class ConfigParser {
 			String className = parser.getClazz();
 			String methodName = parser.getMethod();
 			// int fetchValueType = parser.getParamFetchType();
-			int fetchValueType = Config.FETCH_REQUEST_VALUE_TYPE_MULTIPLE;
+			int fetchValueType = parser.getParamFetchType();//Config.FETCH_REQUEST_VALUE_TYPE_MULTIPLE;
 			boolean isKeyEncrypt = parser.isKeyEncrypt();
 			boolean isValueEncrypt = parser.isValueEncrypt();
 
@@ -1039,6 +1039,7 @@ public class ConfigParser {
 				Object obj = values.get(key);
 				if(null != obj){
 					if (obj instanceof Collection) {
+						//集合
 						Collection cols = (Collection)obj;
 						for (Object value : cols) {
 							if (null == value) {
@@ -1059,11 +1060,14 @@ public class ConfigParser {
 							result.add(value);
 						}
 					}else{
+						//单个值
+						String value = null;
 						if (valueEncrypt) {
-							result.add(decryptParamValue(obj.toString()));
+							value = decryptParamValue(obj.toString());
 						}else{
-							result.add(obj.toString());
+							value = obj.toString();
 						}
+						result.add(value);
 					}
 				}else{
 					//result.add("");
