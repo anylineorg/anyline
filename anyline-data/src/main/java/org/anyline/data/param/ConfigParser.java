@@ -231,13 +231,20 @@ public class ConfigParser {
 		} else if (key.startsWith("<")) {
 			result.setCompare(Compare.LESS);
 			key = key.substring(1);
-		} else if (key.startsWith("[") && key.endsWith("]")) {
+		} else if ((key.startsWith("[") || key.startsWith("![")) && key.endsWith("]")) {
 			// [1,2,3]或[1,2,3]:[1,2,3]
 			// id:[id:cd:{[1,2,3]}]
 			result.setCompare(Compare.IN);
+			if(key.startsWith("!")){
+				result.setCompare(Compare.NOT_IN);
+			}
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE);
 			if(isKey){
-				key = key.substring(1,key.length()-1);
+				if(key.startsWith("!")){
+					key = key.substring(2, key.length() - 1);
+				}else {
+					key = key.substring(1, key.length() - 1);
+				}
 			}
 
 		} else if (key.startsWith("%")) {
