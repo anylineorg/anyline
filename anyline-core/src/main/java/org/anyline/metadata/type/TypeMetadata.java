@@ -370,6 +370,11 @@ public interface TypeMetadata {
 
     class Config {
         /**
+         * SQL生成公式如INTERVAL DAY(｛p｝) TO HOUR
+         * 不提供则根据NAME 生成
+         */
+        private String formula;
+        /**
          * 是否忽略长度，创建和比较时忽略，但元数据中可能会有对应的列也有值
          * -1:未设置可以继承上级 0:不忽略 1:忽略 2:根据情况(是否提供) 3:用来处理precision和scale相互依赖的情况,只有同时有值才生效,其中一个没值就全忽略
          */
@@ -513,6 +518,14 @@ public interface TypeMetadata {
             return this;
         }
 
+        public String getFormula() {
+            return formula;
+        }
+
+        public void setFormula(String formula) {
+            this.formula = formula;
+        }
+
         /**
          * 合并copy的属性(非空并且!=-1的属性)
          * @param copy
@@ -520,9 +533,13 @@ public interface TypeMetadata {
          */
         public Config merge(Config copy){
             if(null != copy){
+                String formula = copy.getFormula();
                 int ignoreLength = copy.ignoreLength();
                 int ignorePrecision = copy.ignorePrecision;
                 int ignoreScale = copy.ignoreScale();
+                if(BasicUtil.isNotEmpty(formula)){
+                    this.formula = formula;
+                }
                 if(-1 != ignoreLength){
                     this.ignoreLength = ignoreLength;
                 }
