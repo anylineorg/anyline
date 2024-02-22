@@ -5532,7 +5532,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(BasicUtil.isNotEmpty(schema)){
 			builder.append(" AND CONSTRAINT_SCHEMA = '").append(schema).append("'");
 		}
-		if(BasicUtil.isNotEmpty(catalog)){
+		if(BasicUtil.isNotEmpty(tab)){
 			builder.append(" AND TABLE_NAME = '").append(tab).append("'");
 		}
 		return runs;
