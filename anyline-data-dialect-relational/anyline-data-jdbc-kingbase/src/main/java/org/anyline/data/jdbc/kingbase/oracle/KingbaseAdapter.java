@@ -71,6 +71,7 @@ public class KingbaseAdapter extends OracleGenusAdapter implements JDBCAdapter, 
 		delimiterTo = "";
 		for (KingBaseTypeMetadataAlias alias : KingBaseTypeMetadataAlias.values()) {
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 
 		for(KingbaseWriter writer: KingbaseWriter.values()){

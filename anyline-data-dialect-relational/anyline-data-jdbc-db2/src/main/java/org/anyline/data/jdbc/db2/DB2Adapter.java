@@ -73,6 +73,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter, Ini
 		delimiterTo = "\"";
 		for (DB2TypeMetadataAlias alias: DB2TypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.db2:}")

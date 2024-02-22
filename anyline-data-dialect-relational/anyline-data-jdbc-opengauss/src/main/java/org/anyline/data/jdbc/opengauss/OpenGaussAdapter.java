@@ -71,6 +71,7 @@ public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapte
 		delimiterTo = "\"";
 		for (OpenGaussTypeMetadataAlias alias: OpenGaussTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 		for(OpenGaussWriter writer: OpenGaussWriter.values()){
 			reg(writer.supports(), writer.writer());

@@ -62,6 +62,7 @@ public class MaxDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 
 		for (MaxDBTypeMetadataAlias alias: MaxDBTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.maxdb:}")

@@ -83,6 +83,7 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 		OracleConvert.reg();
 		for (OracleGenusTypeMetadataAlias alias : OracleGenusTypeMetadataAlias.values()) {
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 
 		for(OracleWriter writer: OracleWriter.values()){

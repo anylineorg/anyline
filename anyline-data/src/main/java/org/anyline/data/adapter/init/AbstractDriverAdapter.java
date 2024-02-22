@@ -111,7 +111,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			for(DatabaseType db:dbs){
 				if(db == this.type()){
 					//column type支持当前db
-					alias.put(type.getName(), type);
+					alias(type.getName(), type);
+					alias(type.name(), type);
 					break;
 				}
 			}
@@ -167,12 +168,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(standard == StandardTypeMetadata.NONE){
 			return null;
 		}
-		this.alias.put(alias.compatible(), standard);												//根据别名
-		this.alias.put(standard.getName(), standard);										//根据实现SQL数据类型名称
+		alias(alias.compatible(), standard);										//根据别名
+		alias(standard.getName(), standard);										//根据实现SQL数据类型名称
 		TypeMetadata.Config config = alias.config();
 		reg(alias.compatible(), config);
 		reg(alias.standard(), config);
 		return config;
+	}
+	protected void alias(String key, TypeMetadata value){
+		if(null != key) {
+			this.alias.put(key, value);
+			this.alias.put(key.replace("_", " "), value);
+			this.alias.put(key.replace(" ", "_"), value);
+		}
 	}
 	/**
 	 * 注册数据类型配置

@@ -51,6 +51,7 @@ public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 		delimiterTo = "`";
 		for (IoTDBTypeMetadataAlias alias: IoTDBTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 

@@ -60,6 +60,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter, Ini
 
 		for (OscarTypeMetadataAlias alias : OscarTypeMetadataAlias.values()) {
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 		for(OscarWriter writer: OscarWriter.values()){
 			reg(writer.supports(), writer.writer());

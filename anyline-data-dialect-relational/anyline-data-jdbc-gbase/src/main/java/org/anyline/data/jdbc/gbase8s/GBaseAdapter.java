@@ -68,6 +68,7 @@ public class GBaseAdapter extends InformixGenusAdapter implements JDBCAdapter, I
 		delimiterTo = "\"";
 		for (GBase8sTypeMetadataAlias alias : GBase8sTypeMetadataAlias.values()) {
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 		for (GBaseWriter writer : GBaseWriter.values()) {
 			reg(writer.supports(), writer.writer());

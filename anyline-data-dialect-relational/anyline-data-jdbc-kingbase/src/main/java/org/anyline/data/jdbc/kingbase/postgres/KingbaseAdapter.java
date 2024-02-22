@@ -73,6 +73,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		delimiterTo = "\"";
 		for (KingBaseTypeMetadataAlias alias : KingBaseTypeMetadataAlias.values()) {
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 
 		for(KingbaseWriter writer: KingbaseWriter.values()){

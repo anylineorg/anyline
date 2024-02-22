@@ -69,6 +69,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 		delimiterTo = "";
 		for (HanaTypeMetadataAlias alias : HanaTypeMetadataAlias.values()) {
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 

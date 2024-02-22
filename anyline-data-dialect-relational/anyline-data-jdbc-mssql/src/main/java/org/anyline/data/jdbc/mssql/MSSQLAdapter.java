@@ -73,6 +73,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		delimiterTo = "]";
 		for (MSSQLTypeMetadataAlias alias: MSSQLTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 
 		MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("max_length", null, null, 0, 1, 1));

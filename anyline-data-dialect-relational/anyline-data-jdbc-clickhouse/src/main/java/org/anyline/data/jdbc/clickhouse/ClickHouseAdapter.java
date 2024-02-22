@@ -55,6 +55,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter,
 		delimiterTo = "";
 		for(ClickHouseTypeMetadataAlias alias:ClickHouseTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 

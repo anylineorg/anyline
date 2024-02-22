@@ -57,6 +57,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
 		delimiterTo = "`";
 		for (IgniteTypeMetadataAlias alias: IgniteTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.mysql:}")

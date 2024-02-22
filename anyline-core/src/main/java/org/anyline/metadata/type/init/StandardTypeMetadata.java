@@ -499,6 +499,11 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return TIME.write(value, def, placeholder);
         }
     }
+    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            return TIME.write(value, def, placeholder);
+        }
+    }
    , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
@@ -509,12 +514,22 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
+    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            return DATETIME.write(value, def, placeholder);
+        }
+    }
+    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            return DATETIME.write(value, def, placeholder);
+        }
+    }
+    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }

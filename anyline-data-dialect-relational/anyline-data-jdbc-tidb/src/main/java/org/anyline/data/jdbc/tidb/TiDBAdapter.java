@@ -63,6 +63,7 @@ public class TiDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Initi
 		delimiterTo = "`";
 		for (TiDBTypeMetadataAlias alias: TiDBTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
 		}
 	}
 	@Value("${anyline.data.jdbc.delimiter.tidb:}")

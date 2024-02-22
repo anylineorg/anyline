@@ -34,6 +34,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
         }
         for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
 			reg(alias);
+			alias(alias.name(), alias.standard());
         }
         for(MySQLWriter writer: MySQLWriter.values()){
             reg(writer.supports(), writer.writer());
