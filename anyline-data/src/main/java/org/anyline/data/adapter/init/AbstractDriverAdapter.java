@@ -80,25 +80,46 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	protected DDListener ddListener;
 
 
-	public DMListener getListener() {
+	protected DMListener getListener() {
 		return dmListener;
 	}
 
 	@Autowired(required=false)
-	public void setListener(DMListener listener) {
+	protected void setListener(DMListener listener) {
 		this.dmListener = listener;
 	}
 
 
-	public String delimiterFr = "";
-	public String delimiterTo = "";
+	protected String delimiterFr = "";
+	protected String delimiterTo = "";
+	//拼写兼容 下划线空格兼容
+	protected static Map<String,String> spells = new HashMap<>();
 
 	//根据名称定位数据类型
 	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
 
-
 	@Autowired(required=false)
 	protected PrimaryGenerator primaryGenerator;
+
+	static {
+		for(StandardTypeMetadata type: StandardTypeMetadata.values()){
+			String name = type.name().toUpperCase();//变量名
+			String standard = type.getName().toUpperCase(); //标准SQL类型名
+			spells.put(name, standard);
+			if(name.contains(" ")) {
+				spells.put(name.replace(" ", "_"), standard);
+			}
+			if(name.contains("_")){
+				spells.put(name.replace("_", " "), standard);
+			}
+			if(standard.contains(" ")) {
+				spells.put(standard.replace(" ", "_"), standard);
+			}
+			if(standard.contains("_")) {
+				spells.put(standard.replace("_", " "), standard);
+			}
+		}
+	}
 
 	public DatabaseType compatible(){
 		return null;
@@ -13289,6 +13310,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			this.className = null;
 		}*/
 		typeMetadata = alias.get(typeName.toUpperCase());
+		if(null == typeMetadata){//拼写兼容  下划线空格兼容
+			typeMetadata = alias.get(spells.get(typeName.toUpperCase()));
+		}
 		if(null != typeMetadata) {
 			meta.setTypeName(typeMetadata.getName());
 		}else{
