@@ -67,7 +67,7 @@ public enum TDengineTypeMetadataAlias implements TypeMetadataAlias {
 	FIXEDSTRING                        ("FixedString"                      ,StandardTypeMetadata.NONE                               ),
 	FLOAT                              ("FLOAT"                            ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
 	FLOAT4                             ("FLOAT4"                           ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
-	FLOAT8                             ("FLOAT8"                           ,StandardTypeMetadata.DOUBLE                             , 1, 0, 0),
+	FLOAT8                             ("FLOAT8"                           ,StandardTypeMetadata.DOUBLE                             , 1, 1, 1),
 	GEOGRAPHY                          ("GEOGRAPHY"                        ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	GEOGRAPHY_POINT                    ("GEOGRAPHY_POINT"                  ,StandardTypeMetadata.NONE                               ),
 	GEOMETRY                           ("GEOMETRY"                         ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),

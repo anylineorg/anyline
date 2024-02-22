@@ -1583,27 +1583,62 @@ public interface AnylineService<E>{
 		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 		 * @return tables
 		 */
-		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct);
+		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, int struct);
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct){
+			int config = 0;
+			if(struct){
+				config = 251;
+			}
+			return tables(greedy, catalog, schema, name, types, config);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, int struct){
+			return tables(greedy, null, schema, name, types, struct);
+		}
 		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, boolean struct){
 			return tables(greedy, null, schema, name, types, struct);
 		}
 		default <T extends Table> List<T> tables(boolean greedy, String name, String types, boolean struct){
 			return tables(greedy, null, null, name, types, struct);
 		}
+		default <T extends Table> List<T> tables(boolean greedy, String name, String types, int struct){
+			return tables(greedy, null, null, name, types, struct);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, String types, int struct){
+			return tables(greedy, null, types, struct);
+		}
 		default <T extends Table> List<T> tables(boolean greedy, String types, boolean struct){
 			return tables(greedy, null, types, struct);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, int struct){
+			return tables(greedy, null, struct);
 		}
 		default <T extends Table> List<T> tables(boolean greedy, boolean struct){
 			return tables(greedy, null, struct);
 		}
 
-		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean struct);
+		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, int struct);
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean struct){
+			int config = 0;
+			if(struct){
+				config = 251;
+			}
+			return tables(catalog, schema, name, types, config);
+		}
 
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, int struct){
+			return tables( null, schema, name, types, struct);
+		}
 		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, boolean struct){
 			return tables( null, schema, name, types, struct);
 		}
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, int struct){
+			return tables( null, null, name, types, struct);
+		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, boolean struct){
 			return tables( null, null, name, types, struct);
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(String types, int struct){
+			return tables( null, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String types, boolean struct){
 			return tables( null, types, struct);
@@ -1648,26 +1683,50 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param struct 是否查询详细结构(列、索引、主外键、约束等)
+		 * @param struct 是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
 		 * @return Table
 		 */
-		Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct);
+		Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
+		default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct){
+			int config = 0;
+			if(struct){
+				config = 251;
+			}
+			return table(greedy, catalog, schema, name, config);
+		}
+		default Table table(boolean greedy, Schema schema, String name, int struct){
+			return table(greedy, null, schema, name, struct);
+		}
 		default Table table(boolean greedy, Schema schema, String name, boolean struct){
 			return table(greedy, null, schema, name, struct);
+		}
+		default Table table(boolean greedy, String name, int struct){
+			return table(greedy, null, null, name, struct);
 		}
 		default Table table(boolean greedy, String name, boolean struct){
 			return table(greedy, null, null, name, struct);
 		}
 
-		Table table(Catalog catalog, Schema schema, String name, boolean struct);
+		Table table(Catalog catalog, Schema schema, String name, int struct);
+		default Table table(Catalog catalog, Schema schema, String name, boolean struct){
+			int config = 0;
+			if(struct){
+				config = 251;
+			}
+			return table(catalog, schema, name, config);
+		}
+		default Table table(Schema schema, String name, int struct){
+			return table(false, null, schema, name, struct);
+		}
 		default Table table(Schema schema, String name, boolean struct){
 			return table(false, null, schema, name, struct);
+		}
+		default Table table(String name, int struct){
+			return table(false, null, null, name, struct);
 		}
 		default Table table(String name, boolean struct){
 			return table(false, null, null, name, struct);
 		}
-
-
 		default Table table(boolean greedy, Catalog catalog, Schema schema, String name){
 			return table(greedy, catalog, schema, name, true);
 		}
@@ -1804,22 +1863,22 @@ public interface AnylineService<E>{
 			return mtables(false);
 		}
 
-		MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean strut);
-		default MasterTable mtable(boolean greedy, Schema schema, String name, boolean strut){
-			return mtable(greedy, null, schema, name, strut);
+		MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct);
+		default MasterTable mtable(boolean greedy, Schema schema, String name, boolean struct){
+			return mtable(greedy, null, schema, name, struct);
 		}
-		default MasterTable mtable(boolean greedy, String name, boolean strut){
-			return mtable(greedy, null, null, name, strut);
+		default MasterTable mtable(boolean greedy, String name, boolean struct){
+			return mtable(greedy, null, null, name, struct);
 		}
 
-		default MasterTable mtable(Catalog catalog, Schema schema, String name, boolean strut){
-			return mtable(false, catalog, schema, name, strut);
+		default MasterTable mtable(Catalog catalog, Schema schema, String name, boolean struct){
+			return mtable(false, catalog, schema, name, struct);
 		}
-		default MasterTable mtable(Schema schema, String name, boolean strut){
-			return mtable(false, schema, name, strut);
+		default MasterTable mtable(Schema schema, String name, boolean struct){
+			return mtable(false, schema, name, struct);
 		}
-		default MasterTable mtable(String name, boolean strut){
-			return mtable(false, name, strut);
+		default MasterTable mtable(String name, boolean struct){
+			return mtable(false, name, struct);
 		}
 
 

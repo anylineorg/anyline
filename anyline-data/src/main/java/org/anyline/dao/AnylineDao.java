@@ -617,35 +617,76 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
-	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean strut);
-	default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean strut){
-		return tables(runtime(), null, greedy, catalog, schema, name, types, strut);
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types, int struct);
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct){
+		int config = 0;
+		if(struct){
+			config = 251;
+		}
+		return tables(runtime, random, greedy, catalog, schema, name, types, config);
 	}
-	default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, boolean strut){
-		return tables(greedy, null, schema, name, types, strut);
+	default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, int struct){
+		return tables(runtime(), null, greedy, catalog, schema, name, types, struct);
 	}
-	default <T extends Table> List<T> tables(boolean greedy, String name, String types, boolean strut){
-		return tables(greedy, null, null, name, types, strut);
+	default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct){
+		return tables(runtime(), null, greedy, catalog, schema, name, types, struct);
 	}
-	default <T extends Table> List<T> tables(boolean greedy, String types, boolean strut){
-		return tables(greedy, null, null, types, strut);
+	default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, int struct){
+		return tables(greedy, null, schema, name, types, struct);
 	}
-	default <T extends Table> List<T> tables(boolean greedy, boolean strut){
-		return tables(greedy, null, null, null, "TABLE", strut);
+	default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, boolean struct){
+		return tables(greedy, null, schema, name, types, struct);
 	}
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, String types, boolean strut);
-	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean strut){
-		return tables(runtime(), null, catalog, schema, name, types, strut);
+	default <T extends Table> List<T> tables(boolean greedy, String name, String types, int struct){
+		return tables(greedy, null, null, name, types, struct);
+	}
+	default <T extends Table> List<T> tables(boolean greedy, String name, String types, boolean struct){
+		return tables(greedy, null, null, name, types, struct);
+	}
+	default <T extends Table> List<T> tables(boolean greedy, String types, int struct){
+		return tables(greedy, null, null, types, struct);
+	}
+	default <T extends Table> List<T> tables(boolean greedy, String types, boolean struct){
+		return tables(greedy, null, null, types, struct);
+	}
+	default <T extends Table> List<T> tables(boolean greedy, int struct){
+		return tables(greedy, null, null, null, "TABLE", struct);
+	}
+	default <T extends Table> List<T> tables(boolean greedy, boolean struct){
+		return tables(greedy, null, null, null, "TABLE", struct);
+	}
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, String types, int struct);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, String types, boolean struct){
+		int config = 0;
+		if(struct){
+			config = 251;
+		}
+		return tables(runtime, random, catalog, schema, name, types, config);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, int struct){
+		return tables(runtime(), null, catalog, schema, name, types, struct);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean struct){
+		return tables(runtime(), null, catalog, schema, name, types, struct);
 	}
 
-	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, boolean strut){
-		return tables( null, schema, name, types, strut);
+	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, int struct){
+		return tables( null, schema, name, types, struct);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, boolean strut){
-		return tables( null, null, name, types, strut);
+	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, boolean struct){
+		return tables( null, schema, name, types, struct);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(String types, boolean strut){
-		return tables( null, null, types, strut);
+	default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, int struct){
+		return tables( null, null, name, types, struct);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, boolean struct){
+		return tables( null, null, name, types, struct);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(String types, int struct){
+		return tables( null, null, types, struct);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(String types, boolean struct){
+		return tables( null, null, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(){
 		return tables( null, null, null, "TABLE", false);

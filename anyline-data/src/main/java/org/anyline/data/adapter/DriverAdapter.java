@@ -1868,15 +1868,29 @@ public interface DriverAdapter {
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
-	 * @param strut 是否查询表结构
+	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> Table
 	 */
-	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut);
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, int struct);
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean struct){
+		int config = 0;
+		if(struct){
+			config = 251;
+		}
+		return tables(runtime, random, greedy, catalog, schema, pattern, types, config);
+	}
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut);
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, int struct);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct){
+		int config = 0;
+		if(struct){
+			config = 251;
+		}
+		return tables(runtime, random, catalog, schema, pattern, types, config);
+	}
 	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types){
 		return tables(runtime, random, catalog, schema, pattern, types, false);
 	}

@@ -260,7 +260,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SERIAL8(CATEGORY.INT, "SERIAL8", BIGINT, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , SMALLSERIAL(CATEGORY.INT, "SMALLSERIAL", SMALLINT, Integer.class,1, 1, 1, PostgreSQL)
     , BIGSERIAL(CATEGORY.INT, "BIGSERIAL", BIGINT, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
-    , BOOLEAN(CATEGORY.BOOLEAN, "BOOLEAN", null, Boolean.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB, HANA, ElasticSearch, KingBase)
+    , BOOLEAN(CATEGORY.BOOLEAN, "BOOLEAN", null, Boolean.class,1, 1, 1, Informix, GBase8S, SinoDB, HANA, ElasticSearch, KingBase)
     , BOOL(CATEGORY.BOOLEAN, "BOOL", null, Boolean.class,1, 1, 1, PostgreSQL, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return BOOLEAN.write(value, def, placeholder);}
     }

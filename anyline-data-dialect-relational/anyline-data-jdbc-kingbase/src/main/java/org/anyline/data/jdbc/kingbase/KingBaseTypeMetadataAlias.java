@@ -174,7 +174,7 @@ public enum KingBaseTypeMetadataAlias implements TypeMetadataAlias {
 	SHORT                              ("SHORT"                            ,StandardTypeMetadata.NONE                               ),
 	SIGNTYPE                           ("SIGNTYPE"                         ,StandardTypeMetadata.SIGNTYPE                           , 1, 1, 1),
 	SIMPLE_DOUBLE                      ("SIMPLE_DOUBLE"                    ,StandardTypeMetadata.SIMPLE_DOUBLE                      , 1, 1, 1),
-	SIMPLE_FLOAT                       ("SIMPLE_FLOAT"                     ,StandardTypeMetadata.SIMPLE_FLOAT                       , 1, 1, 1),
+	SIMPLE_FLOAT                       ("SIMPLE_FLOAT"                     ,StandardTypeMetadata.SIMPLE_FLOAT                       , 1, 2, 1),
 	SIMPLE_INTEGER                     ("SIMPLE_INTEGER"                   ,StandardTypeMetadata.SIMPLE_INTEGER                     , 1, 1, 1),
 	SIMPLEAGGREGATEFUNCTION            ("SimpleAggregateFunction"          ,StandardTypeMetadata.NONE                               ),
 	SMALLDATETIME                      ("SMALLDATETIME"                    ,StandardTypeMetadata.TIMESTAMP                          , 1, 1, 1),

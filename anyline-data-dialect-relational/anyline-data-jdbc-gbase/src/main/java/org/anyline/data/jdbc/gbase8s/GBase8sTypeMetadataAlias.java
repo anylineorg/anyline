@@ -66,7 +66,7 @@ public enum GBase8sTypeMetadataAlias implements TypeMetadataAlias {
 	ENUM                               ("ENUM"                             ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	FIXEDSTRING                        ("FixedString"                      ,StandardTypeMetadata.NONE                               ),
 	FLOAT                              ("FLOAT"                            ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
-	FLOAT4                             ("FLOAT4"                           ,StandardTypeMetadata.FLOAT4                             , 1, 2, 1),
+	FLOAT4                             ("FLOAT4"                           ,StandardTypeMetadata.FLOAT4                             , 1, 2, 3),
 	FLOAT8                             ("FLOAT8"                           ,StandardTypeMetadata.FLOAT                              , 1, 2, 3),
 	GEOGRAPHY                          ("GEOGRAPHY"                        ,StandardTypeMetadata.ILLEGAL                            , -1, -1, -1),
 	GEOGRAPHY_POINT                    ("GEOGRAPHY_POINT"                  ,StandardTypeMetadata.NONE                               ),

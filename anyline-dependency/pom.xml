@@ -510,7 +510,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-struts</artifactId>
+				<artifactId>anyline-structs</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -793,19 +793,19 @@
 				<version>${minio.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-core</artifactId>
-				<version>${apache.struts.version}</version>
+				<groupId>org.apache.structs</groupId>
+				<artifactId>structs2-core</artifactId>
+				<version>${apache.structs.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-spring-plugin</artifactId>
-				<version>${apache.struts.version}</version>
+				<groupId>org.apache.structs</groupId>
+				<artifactId>structs2-spring-plugin</artifactId>
+				<version>${apache.structs.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-convention-plugin</artifactId>
-				<version>${apache.struts.version}</version>
+				<groupId>org.apache.structs</groupId>
+				<artifactId>structs2-convention-plugin</artifactId>
+				<version>${apache.structs.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.aliyun.oss</groupId>

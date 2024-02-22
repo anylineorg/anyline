@@ -1849,77 +1849,89 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean strut) {
+        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
-                return ServiceProxy.service(ps[0]).metadata().tables(greedy, catalog, schema, ps[1], types, strut);
+                return ServiceProxy.service(ps[0]).metadata().tables(greedy, catalog, schema, ps[1], types, struct);
             }
             if(null == types){
                 types = "TABLE";
             }
-            return dao.tables(greedy, catalog, schema, name, types, strut);
+            return dao.tables(greedy, catalog, schema, name, types, struct);
         }
         @Override
-        public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean strut) {
+        public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
-                return ServiceProxy.service(ps[0]).metadata().tables(catalog, schema, ps[1], types, strut);
+                return ServiceProxy.service(ps[0]).metadata().tables(catalog, schema, ps[1], types, struct);
             }
             if(null == types){
                 types = "TABLE";
             }
-            return dao.tables(catalog, schema, name, types, strut);
+            return dao.tables(catalog, schema, name, types, struct);
         }
 
 
-        private void struct(Table table){
+        private void struct(Table table, int struct){
+            //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = table.getColumns();
             if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
-                columns = columns(table);
-                table.setColumns(columns);
-                table.setTags(tags(table));
-                PrimaryKey pk = primary(table);
-                if (null != pk) {
-                    for (Column col : pk.getColumns().values()) {
-                        Column column = columns.get(col.getName().toUpperCase());
-                        if (null != column) {
-                            column.primary(true);
-                            BeanUtil.copyFieldValue(col, column);
+                if((struct & 1) == 1) {
+                    columns = columns(table);
+                    table.setColumns(columns);
+                    table.setTags(tags(table));
+                }
+
+                if((struct & 2) == 2) {
+                    PrimaryKey pk = primary(table);
+                    if (null != pk) {
+                        for (Column col : pk.getColumns().values()) {
+                            Column column = columns.get(col.getName().toUpperCase());
+                            if (null != column) {
+                                column.primary(true);
+                                BeanUtil.copyFieldValue(col, column);
+                            }
                         }
                     }
+                    table.setPrimaryKey(pk);
                 }
-                table.setPrimaryKey(pk);
-                table.setIndexs(indexs(table));
-                table.setConstraints(constraints(table));
-                if(null == table.ddl()){
-                    ddl(table);
+                if((struct & 4) == 4) {
+                    table.setIndexs(indexs(table));
+                }
+                if((struct & 16) == 16) {
+                    table.setConstraints(constraints(table));
+                }
+                if((struct & 16) == 128) {
+                    if (null == table.ddl()) {
+                        ddl(table);
+                    }
                 }
             }
         }
         @Override
-        public Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
+        public Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
             Table table = null;
             List<Table> tables = tables(greedy, catalog, schema, name, null);
             if (tables.size() > 0) {
                 table = tables.get(0);
-                if(null != table && struct) {
+                if(null != table && struct>0) {
                     ddl(table);
                     LinkedHashMap<String, Column> columns = table.getColumns();
-                    if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
-                        struct(table);
+                    if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
+                        struct(table, struct);
                     }
                 }
             }
             return table;
         }
         @Override
-        public Table table(Catalog catalog, Schema schema, String name, boolean struct) {
+        public Table table(Catalog catalog, Schema schema, String name, int struct) {
             Table table = null;
             LinkedHashMap<String, Table> tables = tables(catalog, schema, name, null);
             if (tables.size() > 0) {
                 table = tables.values().iterator().next();
-                if(null != table && struct) {
-                   struct(table);
+                if(null != table && struct > 0) {
+                   struct(table, struct);
                 }
             }
             return table;
@@ -2039,7 +2051,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean strut) {
+        public MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
             LinkedHashMap<String, MasterTable> tables = mtables(greedy, catalog, schema, name, "STABLE");
             if (tables.size() == 0) {
                 return null;

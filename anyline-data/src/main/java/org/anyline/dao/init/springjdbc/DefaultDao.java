@@ -914,19 +914,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean strut){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, int struct){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().tables(runtime, random, greedy, catalog, schema, pattern, types, strut);
+		return runtime.getAdapter().tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean strut){
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, int struct){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, strut);
+		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
 	/**
