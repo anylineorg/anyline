@@ -18,6 +18,7 @@
 package org.anyline.metadata;
 
 import org.anyline.exception.AnylineException;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
@@ -420,12 +421,24 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     public Column addColumn(String name, String type){
         return addColumn(name, type, true, null);
     }
+    public Column addColumn(String name, TypeMetadata type){
+        return addColumn(name, type, true, null);
+    }
     public Column addColumn(String name, String type, boolean nullable, Object def){
         Column column = new Column();
         column.setName(name);
         column.nullable(nullable);
         column.setDefaultValue(def);
         column.setTypeName(type);
+        addColumn(column);
+        return column;
+    }
+    public Column addColumn(String name, TypeMetadata type, boolean nullable, Object def){
+        Column column = new Column();
+        column.setName(name);
+        column.nullable(nullable);
+        column.setDefaultValue(def);
+        column.setTypeMetadata(type);
         addColumn(column);
         return column;
     }
