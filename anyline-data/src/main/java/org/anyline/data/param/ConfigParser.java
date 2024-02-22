@@ -195,7 +195,7 @@ public class ConfigParser {
 				int len = tmps.length;
 				for(int i=1; i<len; i++){
 					String arg = tmps[i];
-					arg.replace("'","").replace("\"","");
+					arg = arg.replace("'","").replace("\"","");
 					result.addArg(arg);
 				}
 				config = tmps[0];
@@ -456,15 +456,7 @@ public class ConfigParser {
 					// col:value
 					key = key.substring(2, key.length()-1);
 					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
-						if(key.startsWith("[") && key.endsWith("]")){
-							key = key.substring(1, key.length()-1);
-						}
-						String tmps[] = key.split(",");
-						for(String tmp:tmps){
-							if(BasicUtil.isNotEmpty(tmp)){
-								result.add(tmp);
-							}
-						}
+						result = parseArrayValue(key);
 					}else{
 						if(BasicUtil.isNotEmpty(key)){
 							result.add(key);
@@ -494,15 +486,7 @@ public class ConfigParser {
 		String value = parser.getKey();
 		if(BasicUtil.isNotEmpty(value)){
 			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
-				if(value.startsWith("[") && value.endsWith("]")){
-					value = value.substring(1, value.length()-1);
-				}
-				String[] values = value.split(",");
-				for(String tmp:values){
-					if(BasicUtil.isNotEmpty(tmp)){
-						result.add(tmp);
-					}
-				}
+				result = parseArrayValue(value);
 			}else{
 				result.add(parser.getKey());
 			}
@@ -513,6 +497,23 @@ public class ConfigParser {
 		return result;
 	}
 
+	/**
+	 * 解析,分隔的参数值(主要来自http参数)
+	 * @return list
+	 */
+	public static List<Object> parseArrayValue(String value){
+		List<Object> result = new ArrayList<>();
+		if(value.startsWith("[") && value.endsWith("]")){
+			value = value.substring(1, value.length()-1);
+		}
+		String[] values = value.split(",");
+		for(String tmp:values){
+			if(BasicUtil.isNotEmpty(tmp)){
+				result.add(tmp);
+			}
+		}
+		return result;
+	}
 	/**
 	 * 默认值
 	 * @param parser  parser
@@ -525,15 +526,7 @@ public class ConfigParser {
 			for(ParseResult def:defs){
 				String key = def.getKey();
 				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
-					if(key.startsWith("[") && key.endsWith("]")){
-						key = key.substring(1, key.length()-1);
-					}
-					String tmps[] = key.split(",");
-					for(String tmp:tmps){
-						if(BasicUtil.isNotEmpty(tmp)){
-							result.add(tmp);
-						}
-					}
+					result = parseArrayValue(key);
 				}else{
 					if(BasicUtil.isNotEmpty(key)){
 						result.add(key);
