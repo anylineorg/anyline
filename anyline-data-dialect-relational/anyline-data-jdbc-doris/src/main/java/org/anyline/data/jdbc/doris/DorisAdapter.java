@@ -2130,8 +2130,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern)
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
 	 * [结果集封装]<br/>
 	 * <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> ptables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
@@ -2184,7 +2184,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String name) throws Exception {
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String name) throws Exception {
 		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
 	}
 
@@ -2198,7 +2198,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception {
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception {
 		return super.buildQueryPartitionTablesRun(runtime, master, tags);
 	}
 
@@ -2211,7 +2211,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master) throws Exception {
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception {
 		return super.buildQueryPartitionTablesRun(runtime, master);
 	}
 

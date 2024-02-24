@@ -2298,7 +2298,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags, String pattern) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern) throws Exception;
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -2308,7 +2308,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception;
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表
@@ -2317,7 +2317,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception;
 
 
 	/**
