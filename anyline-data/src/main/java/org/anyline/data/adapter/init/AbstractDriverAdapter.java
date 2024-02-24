@@ -8025,6 +8025,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(meta.getPrimaryKeySize() > 1) {//复合主键的单独添加
 			alter(runtime, meta, src_primary, cur_primary);
 		}
+		/*
+		修改索引
+		先删除再创建
+		没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引)
+		在索引上标记删除的才删除
+		*/
+		LinkedHashMap<String, Index> indexs = meta.getIndexs();
 		return result;
 	}
 
@@ -8380,7 +8387,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 创建表 索引部分
+	 * 创建表 索引部分，与buildAppendIndexRun二选一
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
@@ -11707,10 +11714,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
-		if(log.isDebugEnabled()) {
+		/*if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)", 37));
 		}
-		return new ArrayList<>();
+		return new ArrayList<>();*/
+		List<Run> runs = new ArrayList<>();
+		if(null != meta) {
+			LinkedHashMap<String, Index> indexs = meta.getIndexs();
+			if(null != indexs){
+				for(Index index:indexs.values()){
+					runs.addAll(buildAddRun(runtime, index));
+				}
+			}
+		}
+		return runs;
 	}
 
 	/**

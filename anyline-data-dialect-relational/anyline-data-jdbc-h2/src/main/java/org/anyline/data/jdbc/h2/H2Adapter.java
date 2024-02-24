@@ -3742,7 +3742,7 @@ public class H2Adapter extends AbstractJDBCAdapter implements JDBCAdapter, Initi
 
 	/**
 	 * table[命令合成-子流程]<br/>
-	 * 创建表 索引部分
+	 * 创建表 索引部分，与buildAppendIndexRun二选一
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 表
