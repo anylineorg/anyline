@@ -798,9 +798,9 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
-	<T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types);
 	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Catalog catalog, Schema schema, String name, String types){
-		return mtables(runtime(), null, greedy, catalog, schema, name, types);
+		return masterTables(runtime(), null, greedy, catalog, schema, name, types);
 	}
 	default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Schema schema, String name, String types){
 		return mtables(greedy, null, schema, name, types);
@@ -837,7 +837,7 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	<T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
+	<T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name);
 
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, Catalog catalog, Schema schema, String master, String name){
 		return ptables(greedy, new MasterTable(catalog, schema, master), null, name);
@@ -855,10 +855,10 @@ public interface AnylineDao<E>{
 		return ptables(greedy, master, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags, String name){
-		return ptables(runtime(), null, greedy, master, tags, name);
+		return partitionTables(runtime(), null, greedy, master, tags, name);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(boolean greedy, MasterTable master, Map<String, Object> tags){
-		return ptables(runtime(), null, greedy, master, tags, null);
+		return partitionTables(runtime(), null, greedy, master, tags, null);
 	}
 	default <T extends PartitionTable> LinkedHashMap<String, T> ptables(Catalog catalog, Schema schema, String master, String name){
 		MasterTable mtable = new MasterTable(catalog, schema, master);

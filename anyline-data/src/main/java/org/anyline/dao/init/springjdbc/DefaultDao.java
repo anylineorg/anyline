@@ -992,11 +992,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, MasterTable> mtables()
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> mtables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) {
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().mtables(runtime, random, greedy, catalog, schema, pattern, types);
+		return runtime.getAdapter().masterTables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
 	/**
@@ -1023,11 +1023,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> ptables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
 		if(null == runtime){
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ptables(runtime, random, greedy, master, tags, name);
+		return runtime.getAdapter().partitionTables(runtime, random, greedy, master, tags, name);
 	}
 
 	/**
