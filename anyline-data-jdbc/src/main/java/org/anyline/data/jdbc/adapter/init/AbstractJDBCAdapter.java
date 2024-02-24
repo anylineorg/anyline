@@ -9054,7 +9054,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Index meta) throws Exception {
-		return super.buildAlterRun(runtime, meta);
+		List<Run> runs = buildDropRun(runtime, meta);
+		Index update = (Index)meta.getUpdate();
+		if(null != update){
+			runs.addAll(buildAddRun(runtime, update));
+		}else {
+			runs.addAll(buildAddRun(runtime, meta));
+		}
+		return runs;
 	}
 
 	/**
