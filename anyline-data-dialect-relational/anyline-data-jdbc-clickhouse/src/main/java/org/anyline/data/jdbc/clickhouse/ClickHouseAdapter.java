@@ -2185,6 +2185,19 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter,
 	}
 
 	/**
+	 * partition table[命令合成]<br/>
+	 * 根据主表查询分区表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param master 主表=
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master) throws Exception {
+		return super.buildQueryPartitionTablesRun(runtime, master);
+	}
+
+	/**
 	 * partition table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

@@ -2309,6 +2309,15 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master, Map<String,Object> tags) throws Exception;
+	/**
+	 * partition table[命令合成]<br/>
+	 * 根据主表查询分区表
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param master 主表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, MasterTable master) throws Exception;
 
 
 	/**

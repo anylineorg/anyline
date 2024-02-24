@@ -1670,7 +1670,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT M.*, obj_description(f.relfilenode,'pg_class')  AS TABLE_COMMENT  FROM  INFORMATION_SCHEMA.TABLES AS M \n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname\n");
-        builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");
+        builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE I.inhrelid IS NULL\n"); //过滤分区表
         if(BasicUtil.isNotEmpty(schema)){
             builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
