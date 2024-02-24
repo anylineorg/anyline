@@ -621,7 +621,7 @@ public interface AnylineDao<E>{
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct){
 		int config = 0;
 		if(struct){
-			config = 251;
+			config = 255;
 		}
 		return tables(runtime, random, greedy, catalog, schema, name, types, config);
 	}
@@ -659,7 +659,7 @@ public interface AnylineDao<E>{
 	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, String types, boolean struct){
 		int config = 0;
 		if(struct){
-			config = 251;
+			config = 255;
 		}
 		return tables(runtime, random, catalog, schema, name, types, config);
 	}

@@ -1587,7 +1587,7 @@ public interface AnylineService<E>{
 		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct){
 			int config = 0;
 			if(struct){
-				config = 251;
+				config = 255;
 			}
 			return tables(greedy, catalog, schema, name, types, config);
 		}
@@ -1620,7 +1620,7 @@ public interface AnylineService<E>{
 		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean struct){
 			int config = 0;
 			if(struct){
-				config = 251;
+				config = 255;
 			}
 			return tables(catalog, schema, name, types, config);
 		}
@@ -1690,7 +1690,7 @@ public interface AnylineService<E>{
 		default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct){
 			int config = 0;
 			if(struct){
-				config = 251;
+				config = 255;
 			}
 			return table(greedy, catalog, schema, name, config);
 		}
@@ -1711,7 +1711,7 @@ public interface AnylineService<E>{
 		default Table table(Catalog catalog, Schema schema, String name, boolean struct){
 			int config = 0;
 			if(struct){
-				config = 251;
+				config = 255;
 			}
 			return table(catalog, schema, name, config);
 		}

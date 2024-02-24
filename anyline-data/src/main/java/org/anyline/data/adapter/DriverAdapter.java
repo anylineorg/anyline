@@ -1876,7 +1876,7 @@ public interface DriverAdapter {
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean struct){
 		int config = 0;
 		if(struct){
-			config = 251;
+			config = 255;
 		}
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, config);
 	}
@@ -1887,7 +1887,7 @@ public interface DriverAdapter {
 	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct){
 		int config = 0;
 		if(struct){
-			config = 251;
+			config = 255;
 		}
 		return tables(runtime, random, catalog, schema, pattern, types, config);
 	}

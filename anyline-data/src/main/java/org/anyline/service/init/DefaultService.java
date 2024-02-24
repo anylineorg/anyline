@@ -1875,15 +1875,18 @@ public class DefaultService<E> implements AnylineService<E> {
         private void struct(Table table, int struct){
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = table.getColumns();
-            if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
-                if((struct & 1) == 1) {
+            if((struct & 1) == 1) {
+                if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                     columns = columns(table);
                     table.setColumns(columns);
                     table.setTags(tags(table));
                 }
+            }
 
-                if((struct & 2) == 2) {
-                    PrimaryKey pk = primary(table);
+            if((struct & 2) == 2) {
+                PrimaryKey pk = table.getPrimaryKey();
+                if(null == pk){
+                    pk = primary(table);
                     if (null != pk) {
                         for (Column col : pk.getColumns().values()) {
                             Column column = columns.get(col.getName().toUpperCase());
@@ -1895,18 +1898,25 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                     table.setPrimaryKey(pk);
                 }
-                if((struct & 4) == 4) {
+            }
+            if((struct & 4) == 4) {
+                LinkedHashMap<String, Index> indexs = table.getIndexs();
+                if(null == indexs || indexs.isEmpty()) {
                     table.setIndexs(indexs(table));
                 }
-                if((struct & 16) == 16) {
+            }
+            if((struct & 16) == 16) {
+                LinkedHashMap<String, Constraint> constraints = table.getConstraints();
+                if(null == constraints || constraints.isEmpty()) {
                     table.setConstraints(constraints(table));
                 }
-                if((struct & 16) == 128) {
-                    if (null == table.ddl()) {
-                        ddl(table);
-                    }
+            }
+            if((struct & 128) == 128) {
+                if (null == table.ddl()) {
+                    ddl(table);
                 }
             }
+
         }
         @Override
         public Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
@@ -1915,11 +1925,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if (tables.size() > 0) {
                 table = tables.get(0);
                 if(null != table && struct>0) {
-                    ddl(table);
-                    LinkedHashMap<String, Column> columns = table.getColumns();
-                    if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
-                        struct(table, struct);
-                    }
+                    struct(table, struct);
                 }
             }
             return table;

@@ -8027,11 +8027,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		/*
 		修改索引
-		先删除再创建
-		没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引)
-		在索引上标记删除的才删除
+		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexs中)
 		*/
-		LinkedHashMap<String, Index> indexs = meta.getIndexs();
+		LinkedHashMap<String, Index> oindexs = meta.getIndexs();		//原索引
+		LinkedHashMap<String, Index> indexs = update.getIndexs();		//新索引
+		for(Index index:indexs.values()){
+			if(index.isDrop()){
+				//项目中调用drop()明确要删除的
+				drop(runtime, index);
+			}else{
+				if(null != index.getUpdate()){
+					//改名或设置过update的
+					alter(runtime, index);
+				}else {
+					Index oindex = indexs.get(index.getName().toUpperCase());
+					if (null == oindex) {
+						//名称不存在的
+						add(runtime, index);
+					}else{
+						//有同名的
+						if(!index.equals(oindex)) {
+							oindex.setUpdate(index, false, false);
+							alter(runtime, oindex);
+						}
+					}
+				}
+			}
+		}
 		return result;
 	}
 
