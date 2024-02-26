@@ -45,6 +45,7 @@
 		<jdbc-dm.veriosn>8.1.1.49</jdbc-dm.veriosn>
 		<jdbc-sqlite.veriosn>3.36.0.3</jdbc-sqlite.veriosn>
 		<jdbc-neo4j.veriosn>4.0.0</jdbc-neo4j.veriosn>
+		<jdbc-nebula.veriosn>3.3.0</jdbc-nebula.veriosn>
 		<jdbc-tdengine.version>3.0.0</jdbc-tdengine.version>
 		<jdbc-jcouchdb.version>1.0.1-1</jdbc-jcouchdb.version>
 		<jdbc-informix.version>4.50.10</jdbc-informix.version>
@@ -694,6 +695,11 @@
 				<version>${jdbc-neo4j.veriosn}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.nebula-contrib</groupId>
+				<artifactId>nebula-jdbc</artifactId>
+				<version>${jdbc-nebula.veriosn}</version>
+			</dependency>
+			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${jdbc-mysql.version}</version>
@@ -793,19 +799,19 @@
 				<version>${minio.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.structs</groupId>
-				<artifactId>structs2-core</artifactId>
-				<version>${apache.structs.version}</version>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-core</artifactId>
+				<version>${apache.struts.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.structs</groupId>
-				<artifactId>structs2-spring-plugin</artifactId>
-				<version>${apache.structs.version}</version>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-spring-plugin</artifactId>
+				<version>${apache.struts.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.structs</groupId>
-				<artifactId>structs2-convention-plugin</artifactId>
-				<version>${apache.structs.version}</version>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-convention-plugin</artifactId>
+				<version>${apache.struts.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.aliyun.oss</groupId>
