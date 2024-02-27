@@ -403,7 +403,7 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
 <a style="display:inline-block;" href="https://www.coveo.com"><img alt="Coveo" src="http://cdn.anyline.org/img/logo/coveo.svg" width="100"/>Coveo</a>
 <a style="display:inline-block;" href="https://www.ibm.com/products/ims"><img alt="IMS" src="http://cdn.anyline.org/img/logo/ibm.svg" width="100"/>IMS</a>
 <a style="display:inline-block;" href="https://www.symas.com/symas-embedded-database-lmdb"><img alt="LMDB" src="http://cdn.anyline.org/img/logo/symas.webp" width="100"/>LMDB</a>
-<a style="display:inline-block;" href="https://github.com/vesoft-inc/nebula"><img alt="NebulaGraph" src="http://cdn.anyline.org/img/logo/nebula.ico" width="100"/>NebulaGraph</a>
+<a style="display:inline-block;" href="https://github.com/vesoft-inc/nebula"><img alt="Nebula" src="http://cdn.anyline.org/img/logo/nebula.ico" width="100"/>Nebula</a>
 <a style="display:inline-block;" href="https://aws.amazon.com/neptune/"><img alt="AmazonNeptune" src="http://cdn.anyline.org/img/logo/amazon.webp" width="100"/>AmazonNeptune</a>
 <a style="display:inline-block;" href="https://www.oracle.com/java/coherence/"><img alt="OracleCoherence" src="http://cdn.anyline.org/img/logo/oracle.avif" width="100"/>OracleCoherence</a>
 <a style="display:inline-block;" href="https://geode.apache.org/"><img alt="Geode" src="http://cdn.anyline.org/img/logo/geode.png" width="100"/>Geode</a>
