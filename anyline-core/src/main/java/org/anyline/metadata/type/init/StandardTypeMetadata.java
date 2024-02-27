@@ -153,6 +153,9 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , FixedString(CATEGORY.TEXT, "FixedString", null, String.class, 0, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
+    , FIXED_STRING(CATEGORY.TEXT, "FIXED_STRING", null, String.class, 0, 1, 1, Nebula){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    }
     , HLL(CATEGORY.TEXT, "HLL", null, String.class, 0, 1, 1, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
@@ -241,6 +244,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , BYTE(CATEGORY.INT, "BYTE", null, Short.class,1, 1, 1)
     , INT(CATEGORY.INT, "INT", null, Integer.class,1, 1, 1, MySQL, MSSQL, Informix, GBase8S, SinoDB, Derby, Doris)
     , INT32(CATEGORY.INT, "INT32", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
+    , INT16(CATEGORY.INT, "INT16", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT128(CATEGORY.INT, "INT128", null, Integer.class, 1, 1, 1, ClickHouse)
     , INT256(CATEGORY.INT, "INT256", null, Integer.class, 1, 1, 1, ClickHouse)
@@ -567,6 +571,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INTERVAL_SECOND(CATEGORY.NONE, "INTERVAL SECOND", "INTERVAL SECOND({P})", null, null, 1, 2, 1, ORACLE, KingBase)
     , INTERVAL_YEAR(CATEGORY.NONE, "INTERVAL YEAR", "INTERVAL YEAR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
     , INTERVAL_YEAR_MONTH(CATEGORY.NONE, "INTERVAL YEAR TO MONTH", "INTERVAL YEAR({P}) TO MONTH({S})",null, null, 1, 2, 2, ORACLE, KingBase)
+    , DURATION(CATEGORY.NONE, "DURATION", null, null, 1, 1, 1, Nebula)
 
     /* *****************************************************************************************************************
      *
