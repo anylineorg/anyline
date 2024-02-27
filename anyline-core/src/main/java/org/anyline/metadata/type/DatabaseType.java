@@ -294,7 +294,7 @@ public enum DatabaseType implements Serializable {
         MyScale             	("MyScale"                          	,KEY_CASE.SRC	,655	,null	,""	,""),
         MySQL               	("MySQL"                            	,KEY_CASE.SRC	,999	,null	,"com.mysql.cj.jdbc.Driver"	,"jdbc:mysql://{host}:{port:3306}/{database}"),
         NCache              	("NCache"                           	,KEY_CASE.SRC	,801	,null	,""	,""),
-        NebulaGraph         	("NebulaGraph"                      	,KEY_CASE.SRC	,873	,null	,"NebulaDriver"	,"jdbc:nebula://{host}"),
+        Nebula         	        ("Nebula"                      	     ,KEY_CASE.SRC	,873	,null	,"NebulaDriver"	,"jdbc:nebula://{host}"),
         Neo4j               	("Neo4j"                            	,KEY_CASE.SRC	,980	,null	,"org.neo4j.jdbc.Driver"	,"jdbc:neo4j:http://{host}:{port:7474}"),
         Netezza             	("Netezza"                          	,KEY_CASE.SRC	,956	,null	,"org.netezza.Driver"	,"j dbc:netezza://{host}:{port}/{database}"),
         NEventStore         	("NEventStore"                      	,KEY_CASE.SRC	,684	,null	,""	,""),
