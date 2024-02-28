@@ -6615,6 +6615,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
+		//oracle中取了两列COLUMN_EXPRESSION,COLUMN_NAME("NAME",SYS_NC00009$)
 		String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
 		if(null == columnName){
 			return meta;
@@ -13476,11 +13477,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == meta){
 			return null;
 		}
+		boolean array = false;
 		String srcTypeName = meta.getTypeName();
 		String typeName = srcTypeName;
 		if(null == typeName){
 			return null;
 		}
+		String up = typeName.toUpperCase();
 		TypeMetadata typeMetadata = meta.getTypeMetadata();
 		if(null != typeMetadata && meta.getParseLvl() >=2){
 			return typeMetadata;
@@ -13488,64 +13491,135 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		Integer precision = null;
 		Integer scale = null;
 
-		if(null != typeName){
+		if(null != typeName) {
 			//数组类型
-			if(typeName.contains("[]")){
-				meta.setArray(true);
+			if (typeName.contains("[]")) {
+				array = true;
 			}
 			//数组类型
-			if(typeName.startsWith("_")){
+			if (typeName.startsWith("_")) {
 				typeName = typeName.substring(1);
-				meta.setArray(true);
+				array = true;
 			}
-			typeName = typeName.trim().replace("'","");
+			typeName = typeName.trim().replace("'", "");
 
-			if(typeName.toUpperCase().contains("IDENTITY")){
+			if (typeName.toUpperCase().contains("IDENTITY")) {
 				meta.autoIncrement(true);
-				if(typeName.contains(" ")) {
+				if (typeName.contains(" ")) {
 					// TYPE_NAME=int identity
 					typeName = typeName.split(" ")[0];
 				}
 			}
+			typeMetadata = spell(typeName);
+		}
+			/*
+			decimal(10, 2)
+			varchar(10)
+			INTERVAL YEAR(4) TO MONTH
+			TIMESTAMP (6) WITH TIME ZONE
+			TIMESTAMP WITH LOCAL TIME ZONE
+			geometry(Polygon, 4326)
+			geometry(Polygon)
 
-			if(typeName.contains("(")){
-				//decimal(10, 2) varchar(10) geometry(Polygon, 4326) geometry(Polygon) geography(Polygon, 4326)
-				String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
-				if(tmp.contains(",")){
+			TIME WITH TIME ZONE
+			TIMESTAMP WITH LOCAL TIME ZONE
+			TIMESTAMP WITH TIME ZONE
+			DOUBLE PRECISION
+			BIT VARYING
+			INTERVAL DAY
+			INTERVAL DAY TO HOUR
+			INTERVAL DAY TO MINUTE
+			INTERVAL DAY TO SECOND
+			INTERVAL HOUR
+			INTERVAL HOUR TO MINUTE
+			INTERVAL HOUR TO SECOND
+			INTERVAL MINUTE
+			INTERVAL MINUTE TO SECOND
+			INTERVAL MONTH
+			INTERVAL SECOND
+			INTERVAL YEAR
+			INTERVAL YEAR TO MONTH
+			TIME TZ UNCONSTRAINED
+			TIME WITHOUT TIME ZONE
+			TIMESTAMP WITHOUT TIME ZONE
+			*/
+
+		if(null == typeMetadata){
+			if (null == typeMetadata) {
+				try{
+					//varchar(10)
+					//TIMESTAMP (6) WITH TIME ZONE
+					List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\)");
+					if(!fetchs.isEmpty()){
+						List<String> items = fetchs.get(0);
+						String full = items.get(0);//(6)
+						typeName = typeName.replace(full, "");
+						scale = BasicUtil.parseInt(items.get(1), 0);
+						typeMetadata = spell(typeName);
+					}
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		if(null == typeMetadata){
+			if (null == typeMetadata) {
+				try{
+					//varchar(10)
+					//TIMESTAMP (6) WITH TIME ZONE
+					List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
+					if(!fetchs.isEmpty()){
+						List<String> items = fetchs.get(0);
+						String full = items.get(0);//(6,2)
+						typeName = typeName.replace(full, "");
+						precision = BasicUtil.parseInt(items.get(1), 0);
+						scale = BasicUtil.parseInt(items.get(2), 0);
+						typeMetadata = spell(typeName);
+					}
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		if(null == typeMetadata){
+			if (typeName.contains("(")) {
+				String tmp = typeName.substring(typeName.indexOf("(") + 1, typeName.indexOf(")"));
+				if (tmp.contains(",")) {
 					//有精度或srid
 					String[] lens = tmp.split("\\,");
-					if(BasicUtil.isNumber(lens[0])) {
+					if (BasicUtil.isNumber(lens[0])) {
 						precision = BasicUtil.parseInt(lens[0], null);
 						scale = BasicUtil.parseInt(lens[1], null);
-					}else{
+					} else {
 						meta.setChildTypeName(lens[0]);
 						meta.setSrid(BasicUtil.parseInt(lens[1], null));
 					}
-				}else{
+				} else {
 					//没有精度和srid
-					if(BasicUtil.isNumber(tmp)){
+					if (BasicUtil.isNumber(tmp)) {
 						precision = BasicUtil.parseInt(tmp, null);
-					}else{
+					} else {
 						meta.setChildTypeName(tmp);
 					}
 				}
-				typeName = typeName.substring(0, typeName.indexOf("(") );
+				typeName = typeName.substring(0, typeName.indexOf("("));
 			}
 		}
 		/*if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
 			this.className = null;
 		}*/
-		typeMetadata = alias.get(typeName.toUpperCase());
-		if(null == typeMetadata){//拼写兼容  下划线空格兼容
-			typeMetadata = alias.get(spells.get(typeName.toUpperCase()));
+		if(null == typeMetadata) {
+			typeMetadata = spell(typeName);
 		}
 		if(null != typeMetadata) {
-			meta.setTypeName(typeMetadata.getName());
+			meta.setArray(array);
+			meta.setTypeName(typeMetadata.getName(), false);
 		}else{
 			//没有对应的类型原们输出
 			meta.setFullType(srcTypeName);
 			meta.setTypeMetadata(TypeMetadata.NONE);
 		}
+		meta.setArray(array);
 		meta.setTypeMetadata(typeMetadata);
 		int ignoreLength = ignoreLength(runtime, typeMetadata);
 		int ignorePrecision = ignorePrecision(runtime, typeMetadata);
@@ -13565,14 +13639,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				meta.setScale(scale);
 			}
 		}
-		/*
-		if(null != ct){
-			ct.setArray(array);
-		}*/
 		meta.setParseLvl(2);
 		return typeMetadata;
 	}
-
+	public TypeMetadata spell(String name){
+		TypeMetadata typeMetadata = alias.get(name.toUpperCase());
+		if(null == typeMetadata){//拼写兼容  下划线空格兼容
+			typeMetadata = alias.get(spells.get(name.toUpperCase()));
+		}
+		return typeMetadata;
+	}
 	/**
 	 * 转换成相应数据库类型<br/>
 	 * 把编码时输入的数据类型如(long)转换成具体数据库中对应的数据类型，如有些数据库中用bigint有些数据库中有long
@@ -13584,26 +13660,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == type){
 			return null;
 		}
-		boolean array = false;
-		if(type.startsWith("_")){
-			type = type.substring(1);
-			array = true;
-		}
-		if(type.endsWith("[]")){
-			type = type.replace("[]","");
-			array = true;
-		}
-		if(type.contains(" ")){
-			type = type.split(" ")[0];
-		}
-		if(type.contains("(")){
-			type = type.split("\\(")[0];
-		}
-		TypeMetadata ct = alias.get(type.toUpperCase());
-		if(null != ct){
-			ct.setArray(array);
-		}
-		return ct;
+		Column tmp = new Column();
+		tmp.setTypeName(type, false);
+		return typeMetadata(runtime, tmp);
 	}
 	public String name(BaseMetadata meta){
 		StringBuilder builder = new StringBuilder();

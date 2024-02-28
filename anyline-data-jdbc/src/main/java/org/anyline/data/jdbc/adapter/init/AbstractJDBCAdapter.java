@@ -4782,9 +4782,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != type && type.contains(" ")){
 			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
-		meta.setTypeName(BasicUtil.evl(type, meta.getTypeName()));
-		TypeMetadata typeMetadata = typeMetadata(runtime, type);
-		meta.setTypeMetadata(typeMetadata);
+		meta.setTypeName(BasicUtil.evl(type, meta.getTypeName()), false);
+		TypeMetadata typeMetadata = typeMetadata(runtime, meta);
 		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, typeMetadata);
 		TypeMetadata.Config config = adapter.getTypeConfig();
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), meta.getDefaultValue())+"";
@@ -8047,7 +8046,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		TypeMetadata type = typeMetadata(runtime, meta);
 		if(null != type){
 			if(!type.support()){
-				throw new RuntimeException("数据类型不支持:" + typeName);
+				throw new RuntimeException("数据类型不支持:"+meta.getName() + " " + typeName);
 			}
 			typeName = type.getName();
 		}

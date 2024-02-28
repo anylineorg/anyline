@@ -4974,7 +4974,7 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
         TypeMetadata type = typeMetadata(runtime, meta);
         if(null != type){
             if(!type.support()){
-                throw new RuntimeException("数据类型不支持:" + typeName);
+                throw new RuntimeException("数据类型不支持:" + meta.getName() + " " + typeName);
             }
             typeName = type.getName();
         }

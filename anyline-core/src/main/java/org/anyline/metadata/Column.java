@@ -393,14 +393,17 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
+    public Column setTypeName(String typeName) {
+        return setTypeName(typeName, true);
+    }
     /**
      * 设置数据类型 根据数据库定义的数据类型
      * @param typeName 数据类型 如 int  varchar(10) decimal(18, 6)
      * @return Column
      */
-    public Column setTypeName(String typeName) {
+    public Column setTypeName(String typeName, boolean parse) {
         if(setmap && null != update){
-            update.setTypeName(typeName);
+            update.setTypeName(typeName, parse);
             return this;
         }
         if(null == this.typeName || !this.typeName.equalsIgnoreCase(typeName)){
@@ -409,7 +412,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }
 
         this.typeName = typeName;
-        parseType(1);
+        if(parse) {
+            parseType(1);
+        }
         fullType = null;
         return this;
     }
@@ -438,8 +443,38 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 }
             }
 
+			/*
+			decimal(10, 2)
+			varchar(10)
+			TIMESTAMP (6) WITH TIME ZONE
+			TIMESTAMP WITH LOCAL TIME ZONE
+			INTERVAL YEAR(4) TO MONTH
+			geometry(Polygon, 4326)
+			geometry(Polygon)
+
+			TIME WITH TIME ZONE
+			TIMESTAMP WITH LOCAL TIME ZONE
+			TIMESTAMP WITH TIME ZONE
+			DOUBLE PRECISION
+			BIT VARYING
+			INTERVAL DAY
+			INTERVAL DAY TO HOUR
+			INTERVAL DAY TO MINUTE
+			INTERVAL DAY TO SECOND
+			INTERVAL HOUR
+			INTERVAL HOUR TO MINUTE
+			INTERVAL HOUR TO SECOND
+			INTERVAL MINUTE
+			INTERVAL MINUTE TO SECOND
+			INTERVAL MONTH
+			INTERVAL SECOND
+			INTERVAL YEAR
+			INTERVAL YEAR TO MONTH
+			TIME TZ UNCONSTRAINED
+			TIME WITHOUT TIME ZONE
+			TIMESTAMP WITHOUT TIME ZONE
+			*/
             if(typeName.contains("(")){
-                //decimal(10, 2) varchar(10) geometry(Polygon, 4326) geometry(Polygon) geography(Polygon, 4326)
                 this.precision = 0;
                 this.scale = 0;
                 String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
