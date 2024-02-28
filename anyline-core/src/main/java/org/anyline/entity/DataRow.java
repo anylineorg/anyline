@@ -1791,6 +1791,76 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
+     * 返回第1个非空值
+     * @param keys keys
+     * @return String
+     */
+    public String getStringWithoutEmpty(String ... keys) {
+        if(null == keys){
+            return null;
+        }
+        String result = null;
+        for(String key:keys) {
+            if (null == key) {
+                continue;
+            }
+            if (key.contains("${") && key.contains("}")) {
+                result = BeanUtil.parseFinalValue(this, key);
+            } else {
+                if(!contains(key)){
+                    continue;
+                }
+                Object value = get(key);
+                if (null != value) {
+                    if(value instanceof byte[]){
+                        result = new String((byte[])value);
+                    }else {
+                        result = value.toString();
+                    }
+                }
+            }
+            if(BasicUtil.isNotEmpty(result)){
+                break;
+            }
+        }
+        return result;
+    }
+    /**
+     * 返回第1个非NULL值
+     * @param keys keys
+     * @return String
+     */
+    public String getStringWithoutNull(String ... keys) {
+        if(null == keys){
+            return null;
+        }
+        String result = null;
+        for(String key:keys) {
+            if (null == key) {
+                continue;
+            }
+            if (key.contains("${") && key.contains("}")) {
+                result = BeanUtil.parseFinalValue(this, key);
+            } else {
+                if(!contains(key)){
+                    continue;
+                }
+                Object value = get(key);
+                if (null != value) {
+                    if(value instanceof byte[]){
+                        result = new String((byte[])value);
+                    }else {
+                        result = value.toString();
+                    }
+                }
+            }
+            if(null != result){
+                break;
+            }
+        }
+        return result;
+    }
+    /**
      * 返回第1个存在的key对应的值, 有可能返回null或""
      * @param keys keys
      * @return String

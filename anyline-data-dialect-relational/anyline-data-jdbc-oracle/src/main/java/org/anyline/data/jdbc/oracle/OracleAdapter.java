@@ -19,6 +19,7 @@
 package org.anyline.data.jdbc.oracle;
 
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.OracleGenusAdapter;
@@ -2839,6 +2840,45 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	}
 
 
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index基础属性(name,table,schema,catalog)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param row sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+		return super.init(runtime, index, meta, table, row);
+	}
+
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index更多属性(column,order, position)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param row sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+		return super.detail(runtime, index, meta, table, row);
+	}
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+		return super.indexMetadataAdapter(runtime);
+	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------

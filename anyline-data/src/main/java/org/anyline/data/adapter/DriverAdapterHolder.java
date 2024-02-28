@@ -93,9 +93,16 @@ public class DriverAdapterHolder {
 		if(null != defaultAdapter){
 			return defaultAdapter;
 		}
-		if(adapters.size() ==1){
+		if(adapters.size() == 1){
 			defaultAdapter = adapters.iterator().next();
 			return defaultAdapter;
+		}else if(adapters.size() == 2){
+			for (DriverAdapter adapter:adapters){
+				if(!adapter.getClass().getName().toLowerCase().contains("common")){
+					defaultAdapter = adapter;
+					return defaultAdapter;
+				}
+			}
 		}
 		DriverAdapter adapter = null;
 		try {

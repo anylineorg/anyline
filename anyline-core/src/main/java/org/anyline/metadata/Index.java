@@ -17,6 +17,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.entity.Order;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
@@ -31,6 +32,7 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
     protected boolean fulltext    ;
     protected boolean spatial     ;
     protected LinkedHashMap<String, Integer> positions = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
 
     protected boolean unique;
     public Index(){}
@@ -74,8 +76,26 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
         this.positions.put(column.getName().toUpperCase(), position);
         return (M)this;
     }
+    public Integer getPosition(String column){
+        return positions.get(column.toUpperCase());
+    }
 
+    public M setOrders(LinkedHashMap<String, Order.TYPE> orders) {
+        this.orders = orders;
+        return (M)this;
+    }
 
+    public M setOrder(String column, Order.TYPE order) {
+        this.orders.put(column.toUpperCase(), order);
+        return (M)this;
+    }
+    public M setOrder(Column column, Order.TYPE order) {
+        this.orders.put(column.getName().toUpperCase(), order);
+        return (M)this;
+    }
+    public Order.TYPE getOrder(String column){
+        return orders.get(column.toUpperCase());
+    }
     public M addColumn(Column column){
         if(null == columns){
             columns = new LinkedHashMap<>();

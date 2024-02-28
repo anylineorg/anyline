@@ -12,7 +12,7 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
      */
     private String[] columnPositionRefer;
 
-    public String[] getColumnOrderRefer() {
+    public String[] getColumnOrderRefers() {
         return columnOrderRefer;
     }
 
@@ -29,8 +29,14 @@ public class IndexMetadataAdapter extends AbstractMetadataAdapter {
         }
         return this;
     }
-    public String[] getColumnPositionRefer() {
+    public String[] getColumnPositionRefers() {
         return columnPositionRefer;
+    }
+    public String getColumnPositionRefer() {
+        if(null != columnOrderRefer || columnOrderRefer.length > 0) {
+            return columnPositionRefer[0];
+        }
+        return null;
     }
 
     public IndexMetadataAdapter setColumnPositionRefer(String[] columnPositionRefer) {

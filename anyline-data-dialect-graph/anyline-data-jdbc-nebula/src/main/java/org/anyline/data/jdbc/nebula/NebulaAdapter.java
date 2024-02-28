@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.nebula;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
-import org.anyline.data.jdbc.nebula.entity.Neo4jDataRow;
+import org.anyline.data.jdbc.nebula.entity.NebulaDataRow;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -55,7 +55,7 @@ import java.util.*;
 public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, InitializingBean {
     
     public DatabaseType type(){
-        return DatabaseType.Neo4j;
+        return DatabaseType.Nebula;
     }
     public NebulaAdapter(){
         delimiterFr = "`";
@@ -406,7 +406,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
                 SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
-                ex.setSql(sql);
+                ex.setCmd(sql);
                 ex.setValues(values);
                 throw ex;
             }else{
@@ -851,7 +851,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
             primaryKeys.putAll(EntityAdapterProxy.primaryKeys(obj.getClass()));
         }else{
             primaryKeys = new LinkedHashMap<>();
-            primaryKeys.put(Neo4jDataRow.DEFAULT_PRIMARY_KEY, new Column(Neo4jDataRow.DEFAULT_PRIMARY_KEY));
+            primaryKeys.put(NebulaDataRow.DEFAULT_PRIMARY_KEY, new Column(NebulaDataRow.DEFAULT_PRIMARY_KEY));
         }
         // 不更新主键 除非显示指定
         for(String pk:primaryKeys.keySet()){
@@ -860,8 +860,8 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.containsKey(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
-            keys.remove(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        if(!columns.containsKey(NebulaDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            keys.remove(NebulaDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
 
@@ -950,8 +950,8 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.containsKey(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
-            cols.remove(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        if(!columns.containsKey(NebulaDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            cols.remove(NebulaDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
 

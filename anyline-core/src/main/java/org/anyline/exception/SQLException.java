@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SQLException extends RuntimeException{
 	protected Exception src;
-	protected String sql;
+	protected String cmd;
 	protected List<Object> values;
 	public SQLException(){
 		super(); 
@@ -48,12 +48,12 @@ public class SQLException extends RuntimeException{
 		this.src = src;
 	}
 
-	public String getSql() {
-		return sql;
+	public String getCmd() {
+		return cmd;
 	}
 
-	public void setSql(String sql) {
-		this.sql = sql;
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
 	}
 
 	public List<Object> getValues() {

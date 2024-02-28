@@ -41,6 +41,7 @@ import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
@@ -690,7 +691,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
 				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
-				ex.setSql(sql);
+				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
 			}
@@ -1024,7 +1025,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			if (IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
 				SQLUpdateException ex = new SQLUpdateException("update异常:" + e.toString(), e);
-				ex.setSql(sql);
+				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
 			}
@@ -1777,7 +1778,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			if(IS_THROW_SQL_QUERY_EXCEPTION(configs)){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
-				ex.setSql(sql);
+				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
 			}
@@ -2174,7 +2175,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
 				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(), e);
-				ex.setSql(sql);
+				ex.setCmd(sql);
 				throw ex;
 			}else{
 				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
@@ -5120,9 +5121,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				column = new Column(col);
 			}
 			column.setTable(table);
-			String position = row.getString(config.getColumnPositionRefer());
+			String position = row.getString(config.getColumnPositionRefers());
 			primary.setPosition(column, BasicUtil.parseInt(position, 0));
-			String order = row.getString(config.getColumnOrderRefer());
+			String order = row.getString(config.getColumnOrderRefers());
 			if(BasicUtil.isNotEmpty(order)) {
 				column.setOrder(order);
 			}
@@ -5422,7 +5423,45 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return indexs;
 	}
 
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index基础属性(name,table,schema,catalog)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param row sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+		return super.init(runtime, index, meta, table, row);
+	}
 
+	/**
+	 * index[结构集封装]<br/>
+	 * 根据查询结果集构造index更多属性(column,order, position)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+	 * @param meta 上一步封装结果
+	 * @param table 表
+	 * @param row sql查询结果
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+		return super.detail(runtime, index, meta, table, row);
+	}
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+		return super.indexMetadataAdapter(runtime);
+	}
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -6738,6 +6777,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					TypeMetadata metadata = column.getTypeMetadata();
 					if(null == metadata){
 						metadata = typeMetadata(runtime, column);
+						column.setTypeMetadata(metadata);
 					}
 					if(pks.containsKey(column.getName().toUpperCase())){
 						column.setNullable(false);
@@ -7970,33 +8010,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta){
-		String define = meta.getDefine();
-		if(BasicUtil.isNotEmpty(define)){
-			builder.append(" ").append(define);
-			return builder;
-		}
-		// 数据类型
-		type(runtime, builder, meta);
-		//聚合
-		aggregation(runtime, builder, meta);
-		// 编码
-		charset(runtime, builder, meta);
-		// 默认值
-		defaultValue(runtime, builder, meta);
-		// 非空
-		nullable(runtime, builder, meta);
-		//主键
-		primary(runtime, builder, meta);
-		// 递增(注意有些数据库不需要是主键)
-		increment(runtime, builder, meta);
-		// 更新行事件
-		onupdate(runtime, builder, meta);
-		// 备注
-		comment(runtime, builder, meta);
-		// 位置
-		position(runtime, builder, meta);
-
-		return builder;
+		return super.define(runtime, builder, meta);
 	}
 
 	/**
@@ -8072,20 +8086,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
-		if(null == builder){
-			builder = new StringBuilder();
-		}
-		String finalType = meta.getFinalType();
-		if(BasicUtil.isNotEmpty(finalType)){
-			builder.append(finalType);
-			return builder;
-		}
-		meta.ignoreLength(ignoreLength);
-		meta.ignorePrecision(ignorePrecision);
-		meta.ignoreScale(ignoreScale);
-		meta.parseType(2);
-		builder.append(meta.getFullType());
-		return builder;
+		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
 	/**
@@ -8098,20 +8099,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
-		if(meta.isPrimaryKey() == 1){
-			builder.append(" NOT NULL");
-			return builder;
-		}
-		if(null == meta.getDefaultValue()){
-			int nullable = meta.isNullable();
-			if(nullable != -1) {
-				if (nullable == 0) {
-					builder.append(" NOT");
-				}
-				builder.append(" NULL");
-			}
-		}
-		return builder;
+		return super.nullable(runtime, builder, meta);
 	}
 
 	/**
@@ -8136,58 +8124,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
-		Object def = null;
-		boolean defaultCurrentDateTime = false;
-		Column update = meta.getUpdate();
-		if(null != update){
-			//自增序列不要默认值nextval('crm_user_id_seq'::regclass)
-			if(update.isAutoIncrement() == 1){
-				return builder;
-			}
-			def = update.getDefaultValue();
-			defaultCurrentDateTime = update.isDefaultCurrentDateTime();
-		}else {
-			if(meta.isAutoIncrement() == 1){
-				return builder;
-			}
-			def = meta.getDefaultValue();
-			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
-		}
-		if(null == def && defaultCurrentDateTime){
-			String type = meta.getFullType().toLowerCase();
-			if (type.contains("timestamp")) {
-				def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
-			}else{
-				def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
-			}
-		}
-		if(null != def) {
-			builder.append(" DEFAULT ");
-			//boolean isCharColumn = isCharColumn(runtime, column);
-			SQL_BUILD_IN_VALUE val = checkDefaultBuildInValue(runtime, def);
-			if(null != val){
-				def = val;
-			}
-			if(def instanceof SQL_BUILD_IN_VALUE){
-				String value = value(runtime, meta, (SQL_BUILD_IN_VALUE)def);
-				if(null != value){
-					builder.append(value);
-				}
-			}else {
-				//nextval('crm_user_id_seq'::regclass)
-				//DEFAULT NULL::timestamp with time zone,
-				if(null != def && def.toString().contains("::")){
-					def = def.toString().split("::")[0];
-				}
-				def = write(runtime, meta, def, false);
-				if(null == def){
-					def = meta.getDefaultValue();
-				}
-				//format(builder, def);
-				builder.append(def);
-			}
-		}
-		return builder;
+		return super.defaultValue(runtime, builder, meta);
 	}
 
 	/**
@@ -10739,7 +10676,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			if(IS_THROW_SQL_QUERY_EXCEPTION(configs)){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
-				ex.setSql(sql);
+				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
 			}

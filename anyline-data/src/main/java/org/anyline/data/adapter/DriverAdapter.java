@@ -29,6 +29,7 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
@@ -1444,7 +1445,7 @@ public interface DriverAdapter {
 	}
 
 	/**
-	 *  根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+	 * 根据sql获取列结构,如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
 	 * @param comment 是否需要查询列注释
@@ -2741,7 +2742,7 @@ public interface DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
 
 	/**
 	 * primary[结构集封装]<br/>
@@ -2753,7 +2754,7 @@ public interface DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
 	/**
 	 * primary[结构集封装-依据]<br/>
 	 * 读取primary key元数据结果集的依据
@@ -2817,7 +2818,7 @@ public interface DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
+	<T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception;
 
 	/**
 	 * foreign[结构集封装]<br/>
@@ -2829,7 +2830,7 @@ public interface DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
+	<T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
@@ -2911,27 +2912,34 @@ public interface DriverAdapter {
 
 	/**
 	 * index[结构集封装]<br/>
-	 * 根据查询结果集构造index基础属性
+	 * 根据查询结果集构造index基础属性(name,table,schema,catalog)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
+	<T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception;
 
 	/**
 	 * index[结构集封装]<br/>
-	 * 根据查询结果集构造index更多属性
+	 * 根据查询结果集构造index更多属性(column,order, position)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
+	<T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception;
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
@@ -5133,7 +5141,6 @@ public interface DriverAdapter {
 	 * @return StringBuilder
 	 */
 	StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta);
-
 
 	/* *****************************************************************************************************************
 	 * 													constraint

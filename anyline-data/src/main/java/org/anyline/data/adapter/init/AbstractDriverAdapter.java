@@ -30,6 +30,7 @@ import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.TypeMetadataAlias;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
@@ -6110,34 +6111,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
 		}
-		return null;
+		return meta;
 	}
 
 	/**
 	 * primary[结构集封装]<br/>
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
+	public <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
 		}
-		return primary;
+		return meta;
 	}
 
 	/**
@@ -6260,9 +6259,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
+	public <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -6278,9 +6277,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception {
+	public <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -6321,18 +6320,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!greedy) {
 			checkSchema(runtime, table);
 		}
-		if(null != table.getName()) {
-			try {
-				LinkedHashMap<String,T> maps = indexs(runtime, true, new LinkedHashMap<>(), table, false, false);
-				table.setIndexs(maps);
-			} catch (Exception e) {
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}
-			}
-		}
 		List<Run> runs = buildQueryIndexsRun(runtime, table, pattern);
-
 		if(null != runs){
 			int idx = 0;
 			for(Run run:runs){
@@ -6345,6 +6333,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				idx ++;
+			}
+		}
+		if(null == indexs || indexs.isEmpty()){
+			if(null != table.getName()) {
+				try {
+					LinkedHashMap<String,T> maps = indexs(runtime, true, new LinkedHashMap<>(), table, false, false);
+					table.setIndexs(maps);
+				} catch (Exception e) {
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		if(null == indexs){
@@ -6374,23 +6374,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		checkSchema(runtime, table);
 
-		if(null != table.getName()) {
-			try {
-				indexs = indexs(runtime, true, indexs, table, false, false);
-				table.setIndexs(indexs);
-			} catch (Exception e) {
-				log.info("{}[{}][table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
-				}
-				indexs = new LinkedHashMap<>();
-			}
-			if(BasicUtil.isNotEmpty(pattern)){
-				T index = indexs.get(pattern.toUpperCase());
-				indexs = new LinkedHashMap<>();
-				indexs.put(pattern.toUpperCase(), index);
-			}
-		}
 		List<Run> runs = buildQueryIndexsRun(runtime, table, pattern);
 
 		if(null != runs){
@@ -6405,6 +6388,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				idx ++;
+			}
+		}
+		if(null == indexs || indexs.isEmpty()){
+			if(null != table.getName()) {
+				try {
+					indexs = indexs(runtime, true, indexs, table, false, false);
+					table.setIndexs(indexs);
+				} catch (Exception e) {
+					log.info("{}[{}][table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
+					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					}
+					indexs = new LinkedHashMap<>();
+				}
+				if(BasicUtil.isNotEmpty(pattern)){
+					T index = indexs.get(pattern.toUpperCase());
+					indexs = new LinkedHashMap<>();
+					indexs.put(pattern.toUpperCase(), index);
+				}
 			}
 		}
 		Index pk = null;
@@ -6467,11 +6469,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)", 37));
-		}
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
+		}
+		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
+		for(DataRow row:set){
+			String name = row.getString(config.getNameRefers());
+			if(null == name){
+				continue;
+			}
+			T meta = indexs.get(name.toUpperCase());
+			meta = init(runtime, index, meta, table, row);
+			meta = detail(runtime, index, meta, table, row);
+			if(null != meta){
+				indexs.put(meta.getName().toUpperCase(), meta);
+			}
 		}
 		return indexs;
 	}
@@ -6545,38 +6557,104 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * index[结构集封装]<br/>
-	 * 根据查询结果集构造index基础属性
+	 * 根据查询结果集构造index基础属性(name,table,schema,catalog)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+	public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
+		String name = row.getString(config.getNameRefers());
+		if(null == meta){
+			meta = (T)new Index();
+			meta.setName(name);
+			Catalog catalog = null;
+			Schema schema = null;
+			String catalogName = row.getString(config.getCatalogRefers());
+			if(BasicUtil.isNotEmpty(catalogName)){
+				catalog = new Catalog(catalogName);
+			}else{
+				if(null != table){
+					catalog = table.getCatalog();
+				}
+			}
+			String schemaName = row.getString(config.getSchemaRefers());
+			if(BasicUtil.isNotEmpty(schemaName)){
+				schema = new Schema(schemaName);
+			}else{
+				if(null != table){
+					schema = table.getSchema();
+				}
+			}
+
+			if(null == table){
+				String tableName = row.getString(config.getTableRefers());
+				table = new Table(catalog, schema, tableName);
+			}
+			meta.setCatalog(catalog);
+			meta.setSchema(schema);
+			meta.setTable(table);
 		}
 		return meta;
 	}
 
 	/**
 	 * index[结构集封装]<br/>
-	 * 根据查询结果集构造index更多属性
+	 * 根据查询结果集构造index更多属性(column,order, position)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception{
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set)", 37));
+	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
+		String columnName = row.getStringWithoutEmpty(config.getColumnRefers());
+		if(null == columnName){
+			return meta;
+		}
+		columnName = columnName.replace("\"", "");
+		Column column = meta.getColumn(columnName.toUpperCase());
+		if(null == column){
+			column = new Column();
+		}
+		column.setName(columnName);
+		meta.addColumn(column);
+		Integer position = row.getInt(config.getColumnPositionRefers());
+		if(null == position){
+			position = 0;
+		}
+		column.setPosition(position);
+		meta.setPosition(column, position);
+		String order = row.getString(config.getColumnOrderRefers());
+		if(null != order){
+			order = order.toUpperCase();
+			Order.TYPE type = Order.TYPE.ASC;
+			if(order.contains("DESC")){
+				type = Order.TYPE.DESC;
+			}
+			meta.setOrder(column, type);
 		}
 		return meta;
+	}
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new IndexMetadataAdapter();
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
@@ -10181,9 +10259,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
+		String define = meta.getDefine();
+		if(BasicUtil.isNotEmpty(define)){
+			builder.append(" ").append(define);
+			return builder;
 		}
+		// 数据类型
+		type(runtime, builder, meta);
+		//聚合
+		aggregation(runtime, builder, meta);
+		// 编码
+		charset(runtime, builder, meta);
+		// 默认值
+		defaultValue(runtime, builder, meta);
+		// 非空
+		nullable(runtime, builder, meta);
+		//主键
+		primary(runtime, builder, meta);
+		// 递增(注意有些数据库不需要是主键)
+		increment(runtime, builder, meta);
+		// 更新行事件
+		onupdate(runtime, builder, meta);
+		// 备注
+		comment(runtime, builder, meta);
+		// 位置
+		position(runtime, builder, meta);
+
 		return builder;
 	}
 
@@ -10250,9 +10351,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale)", 37));
+		if(null == builder){
+			builder = new StringBuilder();
 		}
+		String finalType = meta.getFinalType();
+		if(BasicUtil.isNotEmpty(finalType)){
+			builder.append(finalType);
+			return builder;
+		}
+		meta.ignoreLength(ignoreLength);
+		meta.ignorePrecision(ignorePrecision);
+		meta.ignoreScale(ignoreScale);
+		meta.parseType(2);
+		builder.append(meta.getFullType());
 		return builder;
 	}
 
@@ -10408,8 +10519,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
+		if(meta.isPrimaryKey() == 1){
+			builder.append(" NOT NULL");
+			return builder;
+		}
+		if(null == meta.getDefaultValue()){
+			int nullable = meta.isNullable();
+			if(nullable != -1) {
+				if (nullable == 0) {
+					builder.append(" NOT");
+				}
+				builder.append(" NULL");
+			}
 		}
 		return builder;
 	}
@@ -10439,8 +10560,56 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
+		Object def = null;
+		boolean defaultCurrentDateTime = false;
+		Column update = meta.getUpdate();
+		if(null != update){
+			//自增序列不要默认值nextval('crm_user_id_seq'::regclass)
+			if(update.isAutoIncrement() == 1){
+				return builder;
+			}
+			def = update.getDefaultValue();
+			defaultCurrentDateTime = update.isDefaultCurrentDateTime();
+		}else {
+			if(meta.isAutoIncrement() == 1){
+				return builder;
+			}
+			def = meta.getDefaultValue();
+			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
+		}
+		if(null == def && defaultCurrentDateTime){
+			String type = meta.getFullType().toLowerCase();
+			if (type.contains("timestamp")) {
+				def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
+			}else{
+				def = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
+			}
+		}
+		if(null != def) {
+			builder.append(" DEFAULT ");
+			//boolean isCharColumn = isCharColumn(runtime, column);
+			SQL_BUILD_IN_VALUE val = checkDefaultBuildInValue(runtime, def);
+			if(null != val){
+				def = val;
+			}
+			if(def instanceof SQL_BUILD_IN_VALUE){
+				String value = value(runtime, meta, (SQL_BUILD_IN_VALUE)def);
+				if(null != value){
+					builder.append(value);
+				}
+			}else {
+				//nextval('crm_user_id_seq'::regclass)
+				//DEFAULT NULL::timestamp with time zone,
+				if(null != def && def.toString().contains("::")){
+					def = def.toString().split("::")[0];
+				}
+				def = write(runtime, meta, def, false);
+				if(null == def){
+					def = meta.getDefaultValue();
+				}
+				//format(builder, def);
+				builder.append(def);
+			}
 		}
 		return builder;
 	}

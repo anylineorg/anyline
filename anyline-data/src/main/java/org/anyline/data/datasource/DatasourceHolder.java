@@ -139,23 +139,40 @@ public abstract class DatasourceHolder {
 		return def;
 	}
 
-	public static Object value(Map map, String name){
-		return value(map, name, Object.class, null);
+	public static Object value(Map map, String keys){
+		return value(map, keys, Object.class, null);
 	}
-	public static <T> T value(Map map, String name, Class<T> clazz, T def){
+
+	/**
+	 * 从map中取值
+	 * @param map map
+	 * @param keys 多个key以,分隔
+	 * @param clazz 返回值类型
+	 * @param def 默认值
+	 * @return T
+	 * @param <T> T
+	 */
+	public static <T> T value(Map map, String keys, Class<T> clazz, T def){
 		T result = null;
-		Object value = map.get(name);
-		if(null == value) {
-			HashSet<String> alias = DataSourceKeyMap.alias(name);
-			if (null != alias) {
-				for (String item : alias) {
-					if (null == value) {
-						value = map.get(item);
-					}
-					if (null != value) {
-						break;
+		String[] ks = keys.split(",");
+		Object value = null;
+		for(String key:ks){
+			value = map.get(key);
+			if(null == value) {
+				HashSet<String> alias = DataSourceKeyMap.alias(key);
+				if (null != alias) {
+					for (String item : alias) {
+						if (null == value) {
+							value = map.get(item);
+						}
+						if (null != value) {
+							break;
+						}
 					}
 				}
+			}
+			if(null != value){
+				break;
 			}
 		}
 		if(null != value){

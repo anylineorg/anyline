@@ -11,12 +11,14 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.LogUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -2841,7 +2843,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
         if(null != table){
             if(BasicUtil.isNotEmpty(table.getCatalogName())){
-                builder.append(" AND OWNER = '").append(table.getCatalogName()).append("'\n");
+                builder.append(" AND UC.OWNER = '").append(table.getCatalogName()).append("'\n");
             }
             builder.append(" AND UC.TABLE_NAME = '").append(table.getName()).append("'\n");
         }
@@ -2936,7 +2938,26 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public List<Run> buildQueryIndexsRun(DataRuntime runtime, Table table, String name){
-        return super.buildQueryIndexsRun(runtime, table, name);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT M.*, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
+        builder.append("LEFT JOIN ALL_IND_EXPRESSIONS F\n");
+        builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
+        builder.append("WHERE 1=1\n");
+        String schema = table.getSchemaName();
+        String tab = table.getName();
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append("AND M.INDEX_OWNER = '").append(schema).append("'\n");
+        }
+        if(BasicUtil.isNotEmpty(tab)){
+            builder.append("AND M.TABLE_NAME = '").append(tab).append("'\n");
+        }
+        if(BasicUtil.isNotEmpty(name)){
+            builder.append("AND M.INDEX_NAME = '").append(name).append("'\n");
+        }
+        return runs;
     }
 
     /**
@@ -2969,7 +2990,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-        return super.indexs(runtime, index, create, table, indexs, set);
+        if(null == indexs){
+            indexs = new ArrayList<>();
+        }
+        return indexs;
     }
 
     /**
@@ -3004,6 +3028,53 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
     }
 
 
+    /**
+     * index[结构集封装]<br/>
+     * 根据查询结果集构造index基础属性(name,table,schema,catalog)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+        return super.init(runtime, index, meta, table, row);
+    }
+
+    /**
+     * index[结构集封装]<br/>
+     * 根据查询结果集构造index更多属性(column,order, position)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+        return super.detail(runtime, index, meta, table, row);
+    }
+    /**
+     * index[结构集封装-依据]<br/>
+     * 读取index元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return IndexMetadataAdapter
+     */
+    @Override
+    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setNameRefer("INDEX_NAME");
+        adapter.setTableRefer("TABLE_NAME");
+        adapter.setSchemaRefer("INDEX_OWNER");
+        adapter.setCatalogRefer("");
+        adapter.setColumnRefer("COLUMN_EXPRESSION,COLUMN_NAME");
+        adapter.setColumnOrderRefer("DESCEND");
+        adapter.setColumnPositionRefer("COLUMN_POSITION");
+        return adapter;
+    }
     /* *****************************************************************************************************************
      * 													constraint
      * -----------------------------------------------------------------------------------------------------------------
@@ -3073,7 +3144,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         if(BasicUtil.isNotEmpty(schema)){
             builder.append(" AND OWNER = '").append(schema).append("'");
         }
-        if(BasicUtil.isNotEmpty(catalog)){
+        if(BasicUtil.isNotEmpty(tab)){
             builder.append(" AND TABLE_NAME = '").append(tab).append("'");
         }
         return runs;

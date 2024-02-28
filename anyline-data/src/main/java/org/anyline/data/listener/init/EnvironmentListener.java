@@ -48,9 +48,8 @@ public class EnvironmentListener implements ApplicationContextAware {
         DefaultListableBeanFactory factory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
         DatasourceHolder.init(factory);
         RuntimeHolder.init(factory);
-        List<String> ds = new ArrayList<>();
         for(DatasourceLoader loader:loaders.values()){
-            ds.addAll(loader.load(applicationContext));
+            loader.load(applicationContext);
         }
     }
 }
