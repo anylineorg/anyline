@@ -46,6 +46,7 @@
 		<jdbc-sqlite.veriosn>3.36.0.3</jdbc-sqlite.veriosn>
 		<jdbc-neo4j.veriosn>4.0.0</jdbc-neo4j.veriosn>
 		<jdbc-nebula.veriosn>3.3.0</jdbc-nebula.veriosn>
+		<data-nebula.veriosn>3.3.0</data-nebula.veriosn>
 		<jdbc-tdengine.version>3.0.0</jdbc-tdengine.version>
 		<jdbc-jcouchdb.version>1.0.1-1</jdbc-jcouchdb.version>
 		<jdbc-informix.version>4.50.10</jdbc-informix.version>
@@ -386,6 +387,16 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-jdbc-nebula</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-nebula</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-oceanbase</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -698,6 +709,11 @@
 				<groupId>org.nebula-contrib</groupId>
 				<artifactId>nebula-jdbc</artifactId>
 				<version>${jdbc-nebula.veriosn}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.vesoft</groupId>
+				<artifactId>client</artifactId>
+				<version>${data-nebula.veriosn}</version>
 			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>
