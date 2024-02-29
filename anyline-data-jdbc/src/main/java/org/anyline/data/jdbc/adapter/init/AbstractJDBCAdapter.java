@@ -10746,7 +10746,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			correctSchemaFromJDBC(meta, catalog, schema);
 		}catch (Exception e){
-			log.warn("[check schema][result:fail][exexption:{}]", e.toString());
+			log.warn("[check schema][result:fail][exception:{}]", e.toString());
 		}
 		meta.setCheckSchemaTime(new Date());
 	}
