@@ -2742,7 +2742,7 @@ public interface DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T init(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 
 	/**
 	 * primary[结构集封装]<br/>
@@ -2754,7 +2754,7 @@ public interface DriverAdapter {
 	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
-	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception;
+	<T extends PrimaryKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataSet set) throws Exception;
 	/**
 	 * primary[结构集封装-依据]<br/>
 	 * 读取primary key元数据结果集的依据
@@ -2815,7 +2815,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	<T extends ForeignKey> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception;
@@ -2827,7 +2827,7 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	<T extends ForeignKey> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception;
@@ -3611,7 +3611,7 @@ public interface DriverAdapter {
 	 * 2.单独创建 buildCreateRun(DataRuntime runtime, PrimaryKey primary)<br/>
 	 * 其中1.x三选一 不要重复
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
@@ -3621,7 +3621,7 @@ public interface DriverAdapter {
 	 * table[命令合成]<br/>
 	 * 修改表
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */
@@ -3632,7 +3632,7 @@ public interface DriverAdapter {
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @param columns 列
 	 * @return List
 	 */
@@ -3642,7 +3642,7 @@ public interface DriverAdapter {
 	 * table[命令合成]<br/>
 	 * 重命名
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @return sql
 	 * @throws Exception 异常
 	 */

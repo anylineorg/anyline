@@ -209,7 +209,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 要从配置项中取出每个属性检测合并,不要整个覆盖
 	 * @param type 数据类型
 	 * @param config 配置项
-	 * @return
+	 * @return Config
 	 */
 	@Override
 	public TypeMetadata.Config reg(TypeMetadata type, TypeMetadata.Config config){
@@ -4235,6 +4235,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
 	 * @return tables
 	 * @throws Exception 异常
+	 * @param <T> Table
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception {
@@ -4256,6 +4257,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 * @param row 查询结果集
 	 * @return Table
+	 * @param <T> Table
 	 */
 	@Override
 	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
@@ -4271,6 +4273,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return Table
+	 * @param <T> Table
 	 */
 	@Override
 	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
@@ -6112,7 +6115,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果集构造PrimaryKey基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
-	 * @param row sql查询结果
+	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -6128,7 +6131,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 根据查询结果集构造PrimaryKey更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param table 表
-	 * @param row sql查询结果
+	 * @param set sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -6255,7 +6258,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -6273,7 +6276,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
 	 * @param meta 上一步封装结果
 	 * @param table 表
-	 * @param set sql查询结果
+	 * @param row sql查询结果
 	 * @throws Exception 异常
 	 */
 	@Override
@@ -8303,7 +8306,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @param columns 列
 	 * @return List
 	 */

@@ -535,8 +535,8 @@ public interface TypeMetadata {
 
         /**
          * 合并copy的属性(非空并且!=-1的属性)
-         * @param copy
-         * @return
+         * @param copy 复本
+         * @return Config
          */
         public Config merge(Config copy){
             if(null != copy){
