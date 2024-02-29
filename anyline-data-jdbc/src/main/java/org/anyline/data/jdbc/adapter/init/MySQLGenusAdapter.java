@@ -3866,7 +3866,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
      * 修改列
      * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param meta 表
      * @param columns 列
      * @return List
      */
@@ -3876,8 +3876,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
         if (columns.size() > 0) {
             Run run = new SimpleRun(runtime);
             StringBuilder builder = run.getBuilder();
-            builder.append("ALTER ").append(keyword(table)).append(" ");
-            name(runtime, builder, table);
+            builder.append("ALTER ").append(keyword(meta)).append(" ");
+            name(runtime, builder, meta);
             List<Run> slices = new ArrayList<>();
             for(Column column:columns){
                 ACTION.DDL action = column.getAction();

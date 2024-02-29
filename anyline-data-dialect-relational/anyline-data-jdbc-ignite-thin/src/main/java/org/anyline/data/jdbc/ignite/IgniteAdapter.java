@@ -3922,13 +3922,13 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
 	 * 修改列
 	 * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table 表
+	 * @param meta 表
 	 * @param columns 列
 	 * @return List
 	 */
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
-		return super.buildAlterRun(runtime, table, columns);
+		return super.buildAlterRun(runtime, meta, columns);
 	}
 
 	/**
