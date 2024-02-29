@@ -80,6 +80,11 @@ public abstract class DatasourceHolder {
 		return RuntimeHolder.keys();
 	}
 
+	/**
+	 * 数据源对应的数据库类型
+	 * @param datasource 数据源名称
+	 * @return 数据库类型
+	 */
 	public static DatabaseType dialect(String datasource){
 		return types.get(datasource);
 	}
