@@ -7856,11 +7856,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * boolean drop(DataRuntime runtime, Table meta)
 	 * boolean rename(DataRuntime runtime, Table origin, String name)
 	 * [命令合成]
-	 * List<Run> buildCreateRun(DataRuntime runtime, Table table)
-	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
-	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns)
-	 * List<Run> buildRenameRun(DataRuntime runtime, Table table)
-	 * List<Run> buildDropRun(DataRuntime runtime, Table table)
+	 * List<Run> buildCreateRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Table meta)
 	 * [命令合成-子流程]
 	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Table table)
@@ -8307,7 +8307,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		for(Column column:columns){
 			ACTION.DDL action = column.getAction();
@@ -11822,15 +11822,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
-		/*if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta)", 37));
-		}
-		return new ArrayList<>();*/
 		List<Run> runs = new ArrayList<>();
 		if(null != meta) {
 			LinkedHashMap<String, Index> indexs = meta.getIndexs();
 			if(null != indexs){
 				for(Index index:indexs.values()){
+					if(index.isPrimary()){
+						continue;
+					}
 					runs.addAll(buildAddRun(runtime, index));
 				}
 			}
@@ -13372,8 +13371,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta){
-		TypeMetadata typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
-		meta.setParseLvl(2);
+		TypeMetadata typeMetadata = meta.getTypeMetadata();
+		if(null == typeMetadata || meta.getParseLvl() < 2) {
+			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
+			meta.setParseLvl(2);
+		}
 		return typeMetadata;
 	}
 	public TypeMetadata spell(String name){

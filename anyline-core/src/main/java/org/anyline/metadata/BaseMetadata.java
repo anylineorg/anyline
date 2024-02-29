@@ -75,6 +75,12 @@ public class BaseMetadata<T extends BaseMetadata> {
         return names;
     }
 
+    /**
+     * 排序
+     * @param positions 列名,排序...
+     * @param columns 列
+     * @param <T> T
+     */
     public static <T extends BaseMetadata> void sort(LinkedHashMap<String, Integer> positions, LinkedHashMap<String, T> columns){
         if(null == positions || positions.isEmpty()){
             return;

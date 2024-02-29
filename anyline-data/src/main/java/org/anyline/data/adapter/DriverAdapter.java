@@ -3615,7 +3615,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildCreateRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
@@ -3625,7 +3625,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAlterRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Table meta) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
@@ -3636,7 +3636,7 @@ public interface DriverAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
@@ -3646,7 +3646,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildRenameRun(DataRuntime runtime, Table table) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Table meta) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>

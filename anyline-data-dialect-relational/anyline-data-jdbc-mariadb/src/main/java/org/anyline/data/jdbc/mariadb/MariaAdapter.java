@@ -3539,11 +3539,11 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * boolean drop(DataRuntime runtime, Table meta)
 	 * boolean rename(DataRuntime runtime, Table origin, String name)
 	 * [命令合成]
-	 * List<Run> buildCreateRun(DataRuntime runtime, Table table)
-	 * List<Run> buildAlterRun(DataRuntime runtime, Table table)
-	 * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns)
-	 * List<Run> buildRenameRun(DataRuntime runtime, Table table)
-	 * List<Run> buildDropRun(DataRuntime runtime, Table table)
+	 * List<Run> buildCreateRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Table meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Table meta)
 	 * [命令合成-子流程]
 	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Table table)
@@ -3660,7 +3660,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
 		return super.buildAlterRun(runtime, table, columns);
 	}
 

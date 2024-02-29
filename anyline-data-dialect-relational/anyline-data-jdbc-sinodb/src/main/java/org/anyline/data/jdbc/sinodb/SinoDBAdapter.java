@@ -3317,11 +3317,11 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * boolean drop(DataRuntime runtime, Table meta)
      * boolean rename(DataRuntime runtime, Table origin, String name)
      * [命令合成]
-     * List<Run> buildCreateRun(DataRuntime runtime, Table table)
-     * List<Run> buildAlterRun(DataRuntime runtime, Table table)
-     * List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns)
-     * List<Run> buildRenameRun(DataRuntime runtime, Table table)
-     * List<Run> buildDropRun(DataRuntime runtime, Table table)
+     * List<Run> buildCreateRun(DataRuntime runtime, Table meta)
+     * List<Run> buildAlterRun(DataRuntime runtime, Table meta)
+     * List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns)
+     * List<Run> buildRenameRun(DataRuntime runtime, Table meta)
+     * List<Run> buildDropRun(DataRuntime runtime, Table meta)
      * [命令合成-子流程]
      * List<Run> buildAppendCommentRun(DataRuntime runtime, Table table)
      * List<Run> buildChangeCommentRun(DataRuntime runtime, Table table)
@@ -3435,13 +3435,13 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * 修改列
      * 有可能生成多条SQL,根据数据库类型优先合并成一条执行
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
+     * @param meta 表
      * @param columns 列
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception {
-        return super.buildAlterRun(runtime, table, columns);
+    public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
+        return super.buildAlterRun(runtime, meta, columns);
     }
 
     /**

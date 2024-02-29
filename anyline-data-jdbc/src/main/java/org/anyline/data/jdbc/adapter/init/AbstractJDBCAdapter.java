@@ -4782,11 +4782,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != type && type.contains(" ")){
 			type = row.getString("UDT_NAME","DATA_TYPE","TYPENAME","DATA_TYPE_NAME");
 		}
-		meta.setTypeName(BasicUtil.evl(type, meta.getTypeName()), false);
+		meta.setOriginType(BasicUtil.evl(type, meta.getTypeName()));
 		TypeMetadata typeMetadata = typeMetadata(runtime, meta);
 		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, typeMetadata);
 		TypeMetadata.Config config = adapter.getTypeConfig();
 		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), meta.getDefaultValue())+"";
+		def = def.trim();//oracle 会取出\t\n
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
 				def = def.substring(1, def.length()-1);
@@ -6553,7 +6554,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Table table, Collection<Column> columns) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
 		return super.buildAlterRun(runtime, table, columns);
 	}
 
@@ -8975,13 +8976,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		builder.append("(");
 		int qty = 0;
 		LinkedHashMap<String, Column> columns = meta.getColumns();
+		//排序
 		Column.sort(meta.getPositions(), columns);
 		for(Column column:columns.values()){
 			if(qty>0){
 				builder.append(",");
 			}
 			delimiter(builder, column.getName());
-			String order = column.getOrder();
+			Order.TYPE order = meta.getOrder(column.getName());
 			if(BasicUtil.isNotEmpty(order)){
 				builder.append(" ").append(order);
 			}

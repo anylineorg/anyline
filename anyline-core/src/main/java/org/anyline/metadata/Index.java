@@ -17,6 +17,7 @@
 
 package org.anyline.metadata;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import org.anyline.entity.Order;
 import org.anyline.util.BeanUtil;
 
@@ -108,11 +109,16 @@ public class Index<M extends Index> extends BaseMetadata<M>  implements Serializ
     }
 
     public M addColumn(String column, String order){
-        return addColumn(new Column(column).setOrder(order));
+        return addColumn(column, order, 0);
     }
     public M addColumn(String column, String order, int position){
         positions.put(column.toUpperCase(), position);
-        return addColumn(new Column(column).setOrder(order));
+        Order.TYPE type = Order.TYPE.ASC;
+        if(null != order && order.toUpperCase().contains("DESC")){
+            type = Order.TYPE.DESC;
+        }
+        setOrder(column, type);
+        return addColumn(new Column(column));
     }
     public M addColumn(String column, int position){
         positions.put(column.toUpperCase(), position);

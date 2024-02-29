@@ -333,6 +333,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     }
 
     public String getOriginType() {
+        if(null == originType){
+            return typeName;
+        }
         return originType;
     }
 
@@ -421,9 +424,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             //修改数据类型的重置解析状态
             parseLvl = 0;
         }
-        setOriginType(typeName);
         this.typeName = typeName;
         if(parse) {
+            setOriginType(typeName);
             parseType(1);
         }
         fullType = null;

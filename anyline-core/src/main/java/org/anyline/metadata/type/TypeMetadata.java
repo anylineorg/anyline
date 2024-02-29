@@ -327,7 +327,7 @@ public interface TypeMetadata {
     int ignoreScale();
     boolean support();
     default String formula() {
-        return getName();
+        return null;
     }
     default boolean isArray(){
         return false;
@@ -753,6 +753,7 @@ public interface TypeMetadata {
             meta.setFullType(originType);
             meta.setTypeMetadata(TypeMetadata.NONE);
         }
+        meta.setOriginType(originType);
         meta.setArray(array);
         int ignoreLength = MetadataAdapterHolder.ignoreLength(database, typeMetadata);
         int ignorePrecision = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
