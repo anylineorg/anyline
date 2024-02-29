@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.adapter.init;
 
-import org.anyline.data.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -18,7 +18,6 @@ import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;

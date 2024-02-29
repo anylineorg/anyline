@@ -1,6 +1,6 @@
 package org.anyline.data.jdbc.adapter.init;
 
-import org.anyline.data.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;

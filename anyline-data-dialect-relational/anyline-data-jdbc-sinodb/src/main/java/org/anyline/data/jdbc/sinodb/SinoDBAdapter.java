@@ -17,7 +17,7 @@
 
 package org.anyline.data.jdbc.sinodb;
 
-import org.anyline.data.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.InformixGenusAdapter;
 import org.anyline.data.param.ConfigStore;

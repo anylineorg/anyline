@@ -18,14 +18,20 @@
 package org.anyline.metadata.type;
 
 
+import org.anyline.metadata.Column;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TypeMetadata {
-    enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, OTHER, NONE}
+    enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, INTERVAL, OTHER, NONE}
     //要用来区分 length/precision
     //BLOB不需要长度 BYTES需要长度
     //TIMESTAMP在有些数据库中支持SCALE需要在单独的alias中设置如TIMESTAMP(6)
@@ -43,6 +49,7 @@ public interface TypeMetadata {
         TIMESTAMP(CATEGORY_GROUP.DATETIME, 1, 1, 1),
         COLLECTION(CATEGORY_GROUP.COLLECTION, 1, 1, 1),
         GEOMETRY(CATEGORY_GROUP.GEOMETRY, 1, 1, 1),
+        INTERVAL(CATEGORY_GROUP.INTERVAL, 1, 2, 3),
         OTHER(CATEGORY_GROUP.OTHER, 1, 1, 1),
         NONE(CATEGORY_GROUP.NONE, 1, 1, 1);
         private final CATEGORY_GROUP group;
@@ -564,5 +571,241 @@ public interface TypeMetadata {
             }
             return this;
         }
+    }
+
+    /**
+     * 解析数据类型
+     * @param database 数据库类型 不确定的 可以用NONE
+     * @param meta 列
+     * @param alias 别名
+     * @param spells 拼写兼容
+     * @return TypeMetadata
+     */
+    static TypeMetadata parse(DatabaseType database, Column meta, LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells){
+        if(null == meta){
+            return null;
+        }
+        boolean array = false;
+        String originType = meta.getOriginType();
+        if(null == originType){
+            return null;
+        }
+        String typeName = originType;
+        String up = typeName.toUpperCase();
+        TypeMetadata typeMetadata = meta.getTypeMetadata();
+        if(null != typeMetadata && meta.getParseLvl() >=2){
+            return typeMetadata;
+        }
+        Integer length = null;
+        Integer precision = null;
+        Integer scale = null;
+
+        //数组类型
+        if (typeName.contains("[]")) {
+            array = true;
+            typeName = typeName.replace("[]", "");
+        }
+        //数组类型
+        if (typeName.startsWith("_")) {
+            typeName = typeName.substring(1);
+            array = true;
+        }
+        typeName = typeName.trim().replace("'", "");
+
+        if (typeName.toUpperCase().contains("IDENTITY")) {
+            meta.autoIncrement(true);
+            if (typeName.contains(" ")) {
+                // TYPE_NAME=int identity
+                typeName = typeName.split(" ")[0];
+            }
+        }
+        typeMetadata = parse(alias, spells, typeName);
+
+        /*
+        decimal(10, 2)
+        varchar(10)
+        INTERVAL YEAR(4) TO MONTH
+        INTERVAL YEAR(4) TO MONTH(2)
+        INTERVAL DAY({P}) TO HOUR({S})
+        TIMESTAMP (6) WITH TIME ZONE
+        TIMESTAMP WITH LOCAL TIME ZONE
+        geometry(Polygon, 4326)
+        geometry(Polygon)
+
+        TIME WITH TIME ZONE
+        TIMESTAMP WITH LOCAL TIME ZONE
+        TIMESTAMP WITH TIME ZONE
+        DOUBLE PRECISION
+        BIT VARYING
+        INTERVAL DAY
+        INTERVAL DAY TO HOUR
+        INTERVAL DAY TO MINUTE
+        INTERVAL DAY TO SECOND
+        INTERVAL HOUR
+        INTERVAL HOUR TO MINUTE
+        INTERVAL HOUR TO SECOND
+        INTERVAL MINUTE
+        INTERVAL MINUTE TO SECOND
+        INTERVAL MONTH
+        INTERVAL SECOND
+        INTERVAL YEAR
+        INTERVAL YEAR TO MONTH
+        TIME TZ UNCONSTRAINED
+        TIME WITHOUT TIME ZONE
+        TIMESTAMP WITHOUT TIME ZONE
+        */
+
+        if(null == typeMetadata){
+            try{
+                //varchar(10)
+                //TIMESTAMP (6) WITH TIME ZONE
+                //INTERVAL YEAR(4) TO MONTH
+                //INTERVAL YEAR(4) TO MONTH(2)
+                List<List<String>> fetches = RegularUtil.fetchs(up, "\\((\\d+)\\)");
+                if(!fetches.isEmpty()){
+                    if(fetches.size() == 2){
+                        //INTERVAL YEAR(4) TO MONTH(2)
+                        precision = BasicUtil.parseInt(fetches.get(0).get(1), null);
+                        scale = BasicUtil.parseInt(fetches.get(1).get(1), null);
+                    }else{
+                        //varchar(10)
+                        //decimal(20)
+                        //TIMESTAMP (6) WITH TIME ZONE
+                        //INTERVAL YEAR(4) TO MONTH
+                        List<String> items = fetches.get(0);
+                        typeName = typeName.replace(items.get(0), ""); // TIMESTAMP (6) WITH TIME ZONE > TIMESTAMP WITH TIME ZONE
+                        Integer num = BasicUtil.parseInt(items.get(1), null);
+                        typeMetadata = parse(alias, spells, typeName);
+                        if(null != typeMetadata){
+                            TypeMetadata.CATEGORY_GROUP group = typeMetadata.getCategoryGroup();
+                            if(group == TypeMetadata.CATEGORY_GROUP.NUMBER){
+                                precision = num;
+                            }else if(group == TypeMetadata.CATEGORY_GROUP.DATETIME){
+                                scale = num;
+                            }else if(group == CATEGORY_GROUP.INTERVAL){
+                                precision = num;
+                            }else{
+                                length = num;
+                            }
+                        }
+                    }
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        if(null == typeMetadata){
+            if (null == typeMetadata) {
+                try{
+                    //decimal(10,2)
+                    List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
+                    if(!fetchs.isEmpty()){
+                        List<String> items = fetchs.get(0);
+                        String full = items.get(0);//(6,2)
+                        typeName = typeName.replace(full, "").trim(); // decimal(10,2) > decimal
+                        precision = BasicUtil.parseInt(items.get(1), 0);
+                        scale = BasicUtil.parseInt(items.get(2), 0);
+                        typeMetadata = parse(alias, spells, typeName);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(null == typeMetadata){
+            //geometry(Polygon)
+            //geometry(Polygon, 4326)
+            if (typeName.contains("(")) {
+                String tmp = typeName.substring(typeName.indexOf("(") + 1, typeName.indexOf(")"));
+                if (tmp.contains(",")) {
+                    //有精度或srid
+                    String[] lens = tmp.split("\\,");
+                    if (BasicUtil.isNumber(lens[0])) {
+                        precision = BasicUtil.parseInt(lens[0], null);
+                        scale = BasicUtil.parseInt(lens[1], null);
+                    } else {
+                        meta.setChildTypeName(lens[0]);
+                        meta.setSrid(BasicUtil.parseInt(lens[1], null));
+                    }
+                } else {
+                    //没有精度和srid
+                    if (BasicUtil.isNumber(tmp)) {
+                        precision = BasicUtil.parseInt(tmp, null);
+                    } else {
+                        meta.setChildTypeName(tmp);
+                    }
+                }
+                typeName = typeName.substring(0, typeName.indexOf("("));
+            }
+        }
+		/*if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
+			this.className = null;
+		}*/
+        if(null == typeMetadata) {
+            typeMetadata = parse(alias, spells, typeName);
+        }
+        if(null != typeMetadata) {
+            meta.setTypeMetadata(typeMetadata);
+            meta.setTypeName(typeMetadata.getName(), false);
+        }else{
+            //没有对应的类型原们输出
+            meta.setFullType(originType);
+            meta.setTypeMetadata(TypeMetadata.NONE);
+        }
+        meta.setArray(array);
+        int ignoreLength = MetadataAdapterHolder.ignoreLength(database, typeMetadata);
+        int ignorePrecision = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
+        int ignoreScale = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
+
+        if(null != precision && precision > 0){
+            //指定了长度或有效位数
+            if(ignorePrecision != 1){
+                //设置有效位数
+                meta.setPrecision(precision);
+            }else if(ignoreLength != 1){
+                //不需要有效位数再考虑长度
+                if(null == length || length <= 0){
+                    length = precision;
+                }
+            }
+        }
+        if(null != scale && scale > -1){
+            if(ignoreScale != 1){
+                meta.setScale(scale);
+            }
+        }
+
+        meta.setLength(length);
+        if(null != database && database != DatabaseType.NONE) {
+            meta.setParseLvl(2);
+        }
+        return typeMetadata;
+    }
+    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name){
+        if(null == name){
+            return null;
+        }
+        TypeMetadata type = null;
+        name = name.toUpperCase();
+        if(null != alias) {
+            type = alias.get(name);
+        }
+        if(null == type){
+            try {
+                type = StandardTypeMetadata.valueOf(name);
+            }catch (Exception ignored){}
+        }
+        if(null == type && null != spells){//拼写兼容  下划线空格兼容
+            if(null != alias) {
+                type = alias.get(spells.get(name));
+            }
+            if(null == type){
+                try {
+                    type = StandardTypeMetadata.valueOf(spells.get(name));
+                }catch (Exception ignored){}
+            }
+        }
+        return type;
     }
 }

@@ -18,7 +18,7 @@
 
 package org.anyline.data.jdbc.mssql;
 
-import org.anyline.data.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;

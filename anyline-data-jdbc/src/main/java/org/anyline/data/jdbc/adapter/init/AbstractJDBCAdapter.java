@@ -2695,7 +2695,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					label = label.trim();
 					Column column = columns.get(label);
 					if(null != column){
-						column.setOriginalName(original);
+						column.setOriginName(original);
 					}
 				}
 				//TODO JDBC没有返回列.表名的 解析SQL确认表与列的关系
@@ -2714,7 +2714,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 						for(Column column:columns.values()){
 							if(column.getTableName(false).equals(ccol.getTableName(false))){
 								String label = column.getName();
-								String original = column.getOriginalName();
+								String original = column.getOriginName();
 								if(name.equalsIgnoreCase(label) || name.equalsIgnoreCase(original)){
 									column.setComment(ccol.getComment());
 								}
@@ -10031,7 +10031,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			log.debug("[获取MetaData失败][驱动未实现:isCurrency]");
 		}
 		try{
-			column.setOriginalName(rsm.getColumnName(index));
+			column.setOriginName(rsm.getColumnName(index));
 		}catch (Exception e){
 			log.debug("[获取MetaData失败][驱动未实现:getColumnName]");
 		}
@@ -10329,7 +10329,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				log.debug("[获取MetaData失败][驱动未实现:isCurrency]");
 			}
 			try {
-				column.setOriginalName(rsm.getColumnName(index));
+				column.setOriginName(rsm.getColumnName(index));
 			} catch (Exception e) {
 				log.debug("[获取MetaData失败][驱动未实现:getColumnName]");
 			}

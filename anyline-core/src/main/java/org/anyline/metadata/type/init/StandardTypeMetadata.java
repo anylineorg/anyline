@@ -558,20 +558,20 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , INTERVAL_DAY(CATEGORY.NONE, "INTERVAL DAY", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_DAY_HOUR(CATEGORY.NONE, "INTERVAL DAY TO HOUR", "INTERVAL DAY({P}) TO HOUR({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_DAY_MINUTE(CATEGORY.NONE, "INTERVAL DAY TO MINUTE","INTERVAL DAY({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_DAY_SECOND(CATEGORY.NONE, "INTERVAL DAY TO SECOND", "INTERVAL DAY({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_HOUR(CATEGORY.NONE, "INTERVAL HOUR", "INTERVAL HOUR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_HOUR_MINUTE(CATEGORY.NONE, "INTERVAL HOUR TO MINUTE", "INTERVAL HOUR({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_HOUR_SECOND(CATEGORY.NONE, "INTERVAL HOUR TO SECOND", "INTERVAL HOUR({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_MINUTE(CATEGORY.NONE, "INTERVAL MINUTE", "INTERVAL MINUTE({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_MINUTE_SECOND(CATEGORY.NONE, "INTERVAL MINUTE TO SECOND", "INTERVAL MINUTE({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
-    , INTERVAL_MONTH(CATEGORY.NONE, "INTERVAL MONTH", "INTERVAL MONTH({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_SECOND(CATEGORY.NONE, "INTERVAL SECOND", "INTERVAL SECOND({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_YEAR(CATEGORY.NONE, "INTERVAL YEAR", "INTERVAL YEAR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
-    , INTERVAL_YEAR_MONTH(CATEGORY.NONE, "INTERVAL YEAR TO MONTH", "INTERVAL YEAR({P}) TO MONTH({S})",null, null, 1, 2, 2, ORACLE, KingBase)
-    , DURATION(CATEGORY.NONE, "DURATION", null, null, 1, 1, 1, Nebula)
+    , INTERVAL_DAY(CATEGORY.INTERVAL, "INTERVAL DAY", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY_HOUR(CATEGORY.INTERVAL, "INTERVAL DAY TO HOUR", "INTERVAL DAY({P}) TO HOUR({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY_MINUTE(CATEGORY.INTERVAL, "INTERVAL DAY TO MINUTE","INTERVAL DAY({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_DAY_SECOND(CATEGORY.INTERVAL, "INTERVAL DAY TO SECOND", "INTERVAL DAY({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_HOUR(CATEGORY.INTERVAL, "INTERVAL HOUR", "INTERVAL HOUR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_HOUR_MINUTE(CATEGORY.INTERVAL, "INTERVAL HOUR TO MINUTE", "INTERVAL HOUR({P}) TO MINUTE({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_HOUR_SECOND(CATEGORY.INTERVAL, "INTERVAL HOUR TO SECOND", "INTERVAL HOUR({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_MINUTE(CATEGORY.INTERVAL, "INTERVAL MINUTE", "INTERVAL MINUTE({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_MINUTE_SECOND(CATEGORY.INTERVAL, "INTERVAL MINUTE TO SECOND", "INTERVAL MINUTE({P}) TO SECOND({S})", null, null, 1, 2, 2, ORACLE, KingBase)
+    , INTERVAL_MONTH(CATEGORY.INTERVAL, "INTERVAL MONTH", "INTERVAL MONTH({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_SECOND(CATEGORY.INTERVAL, "INTERVAL SECOND", "INTERVAL SECOND({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_YEAR(CATEGORY.INTERVAL, "INTERVAL YEAR", "INTERVAL YEAR({P})", null, null, 1, 2, 1, ORACLE, KingBase)
+    , INTERVAL_YEAR_MONTH(CATEGORY.INTERVAL, "INTERVAL YEAR TO MONTH", "INTERVAL YEAR({P}) TO MONTH({S})",null, null, 1, 2, 2, ORACLE, KingBase)
+    , DURATION(CATEGORY.INTERVAL, "DURATION", null, null, 1, 1, 1, Nebula)
 
     /* *****************************************************************************************************************
      *
@@ -787,7 +787,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     private final String name;
     /**
      * 主要用来生成SQL 默认与name一致,一些结构复杂的情况需要如:
-     * formula = INTERVAL DAY({P}) TO SECOND({P})用来生成SQL
+     * formula = INTERVAL DAY({P}) TO SECOND({S})用来生成SQL
      * name = INTERVAL DAY TO SECOND 用来定位数据类型
      *
      */

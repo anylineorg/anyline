@@ -1,4 +1,4 @@
-package org.anyline.data.adapter;
+package org.anyline.metadata.adapter;
 
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
@@ -166,4 +166,135 @@ public class MetadataAdapterHolder {
         }
         return config;
     }
+
+
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int ignoreLength(DatabaseType database, TypeMetadata type) {
+        if(null == type){
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        if(null != config){
+            result = config.ignoreLength();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1){
+            //根据数据类型名称
+            config = MetadataAdapterHolder.get(database, type.getName());
+            if(null != config){
+                result = config.ignoreLength();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1){
+            result = type.ignoreLength();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1){
+            config = MetadataAdapterHolder.get(database, type.getCategory());
+            if(null != config){
+                result = config.ignoreLength();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int ignorePrecision(DatabaseType database, TypeMetadata type) {
+        if(null == type){
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        if(null != config){
+            result = config.ignorePrecision();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1){
+            //根据数据类型名称
+            config = MetadataAdapterHolder.get(database, type.getName());
+            if(null != config){
+                result = config.ignorePrecision();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1){
+            result = type.ignorePrecision();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1){
+            config = MetadataAdapterHolder.get(database, type.getCategory());
+            if(null != config){
+                result = config.ignorePrecision();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return int
+     */
+    public static int ignoreScale(DatabaseType database, TypeMetadata type) {
+        if(null == type){
+            return -1;
+        }
+        int result = -1;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        if(null != config){
+            result = config.ignoreScale();
+        }
+        //2.配置类-数据类型名称
+        if(result == -1){
+            //根据数据类型名称
+            config = MetadataAdapterHolder.get(database, type.getName());
+            if(null != config){
+                result = config.ignoreScale();
+            }
+        }
+        //3.数据类型自带
+        if(result ==-1){
+            result = type.ignorePrecision();
+        }
+        //4.配置类-数据类型大类
+        if(result ==-1){
+            config = MetadataAdapterHolder.get(database, type.getCategory());
+            if(null != config){
+                result = config.ignoreScale();
+            }
+        }
+        return result;
+    }
+
 }

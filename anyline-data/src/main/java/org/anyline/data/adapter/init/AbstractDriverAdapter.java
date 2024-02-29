@@ -24,7 +24,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.MetadataAdapterHolder;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
@@ -10379,41 +10379,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public int ignoreLength(DataRuntime runtime, TypeMetadata type) {
-		if(null == type){
-			return -1;
-		}
- 		int result = -1;
-		/*
-		1.配置类-数据类型
-		2.配置类-数据类型名称
-		3.数据类型自带
-		4.配置类-数据类型大类
-		 */
-		//1.配置类 数据类型
-		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), type);
-		if(null != config){
-			result = config.ignoreLength();
-		}
-		//2.配置类-数据类型名称
-		if(result == -1){
-			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), type.getName());
-			if(null != config){
-				result = config.ignoreLength();
-			}
-		}
-		//3.数据类型自带
-		if(result ==-1){
-			result = type.ignoreLength();
-		}
-		//4.配置类-数据类型大类
-		if(result ==-1){
-			config = MetadataAdapterHolder.get(type(), type.getCategory());
-			if(null != config){
-				result = config.ignoreLength();
-			}
-		}
-		return result;
+		return MetadataAdapterHolder.ignoreLength(type(), type);
 	}
 
 	/**
@@ -10426,41 +10392,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public int ignorePrecision(DataRuntime runtime, TypeMetadata type) {
-		if(null == type){
-			return -1;
-		}
-		int result = -1;
-		/*
-		1.配置类-数据类型
-		2.配置类-数据类型名称
-		3.数据类型自带
-		4.配置类-数据类型大类
-		 */
-		//1.配置类 数据类型
-		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), type);
-		if(null != config){
-			result = config.ignorePrecision();
-		}
-		//2.配置类-数据类型名称
-		if(result == -1){
-			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), type.getName());
-			if(null != config){
-				result = config.ignorePrecision();
-			}
-		}
-		//3.数据类型自带
-		if(result ==-1){
-			result = type.ignorePrecision();
-		}
-		//4.配置类-数据类型大类
-		if(result ==-1){
-			config = MetadataAdapterHolder.get(type(), type.getCategory());
-			if(null != config){
-				result = config.ignorePrecision();
-			}
-		}
-		return result;
+		return MetadataAdapterHolder.ignorePrecision(type(), type);
 	}
 
 	/**
@@ -10473,41 +10405,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
     @Override
     public int ignoreScale(DataRuntime runtime, TypeMetadata type) {
-        if(null == type){
-            return -1;
-        }
-		int result = -1;
-		/*
-		1.配置类-数据类型
-		2.配置类-数据类型名称
-		3.数据类型自带
-		4.配置类-数据类型大类
-		 */
-		//1.配置类 数据类型
-		TypeMetadata.Config config = MetadataAdapterHolder.get(type(), type);
-		if(null != config){
-			result = config.ignoreScale();
-		}
-		//2.配置类-数据类型名称
-		if(result == -1){
-			//根据数据类型名称
-			config = MetadataAdapterHolder.get(type(), type.getName());
-			if(null != config){
-				result = config.ignoreScale();
-			}
-		}
-		//3.数据类型自带
-		if(result ==-1){
-			result = type.ignorePrecision();
-		}
-		//4.配置类-数据类型大类
-		if(result ==-1){
-			config = MetadataAdapterHolder.get(type(), type.getCategory());
-			if(null != config){
-				result = config.ignoreScale();
-			}
-		}
-		return result;
+		return MetadataAdapterHolder.ignoreScale(type(), type);
     }
 
 	/**
@@ -13474,171 +13372,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta){
-		if(null == meta){
-			return null;
-		}
-		boolean array = false;
-		String srcTypeName = meta.getTypeName();
-		String typeName = srcTypeName;
-		if(null == typeName){
-			return null;
-		}
-		String up = typeName.toUpperCase();
-		TypeMetadata typeMetadata = meta.getTypeMetadata();
-		if(null != typeMetadata && meta.getParseLvl() >=2){
-			return typeMetadata;
-		}
-		Integer precision = null;
-		Integer scale = null;
-
-		if(null != typeName) {
-			//数组类型
-			if (typeName.contains("[]")) {
-				array = true;
-			}
-			//数组类型
-			if (typeName.startsWith("_")) {
-				typeName = typeName.substring(1);
-				array = true;
-			}
-			typeName = typeName.trim().replace("'", "");
-
-			if (typeName.toUpperCase().contains("IDENTITY")) {
-				meta.autoIncrement(true);
-				if (typeName.contains(" ")) {
-					// TYPE_NAME=int identity
-					typeName = typeName.split(" ")[0];
-				}
-			}
-			typeMetadata = spell(typeName);
-		}
-			/*
-			decimal(10, 2)
-			varchar(10)
-			INTERVAL YEAR(4) TO MONTH
-			TIMESTAMP (6) WITH TIME ZONE
-			TIMESTAMP WITH LOCAL TIME ZONE
-			geometry(Polygon, 4326)
-			geometry(Polygon)
-
-			TIME WITH TIME ZONE
-			TIMESTAMP WITH LOCAL TIME ZONE
-			TIMESTAMP WITH TIME ZONE
-			DOUBLE PRECISION
-			BIT VARYING
-			INTERVAL DAY
-			INTERVAL DAY TO HOUR
-			INTERVAL DAY TO MINUTE
-			INTERVAL DAY TO SECOND
-			INTERVAL HOUR
-			INTERVAL HOUR TO MINUTE
-			INTERVAL HOUR TO SECOND
-			INTERVAL MINUTE
-			INTERVAL MINUTE TO SECOND
-			INTERVAL MONTH
-			INTERVAL SECOND
-			INTERVAL YEAR
-			INTERVAL YEAR TO MONTH
-			TIME TZ UNCONSTRAINED
-			TIME WITHOUT TIME ZONE
-			TIMESTAMP WITHOUT TIME ZONE
-			*/
-
-		if(null == typeMetadata){
-			if (null == typeMetadata) {
-				try{
-					//varchar(10)
-					//TIMESTAMP (6) WITH TIME ZONE
-					List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\)");
-					if(!fetchs.isEmpty()){
-						List<String> items = fetchs.get(0);
-						String full = items.get(0);//(6)
-						typeName = typeName.replace(full, "");
-						scale = BasicUtil.parseInt(items.get(1), 0);
-						typeMetadata = spell(typeName);
-					}
-				}catch (Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		if(null == typeMetadata){
-			if (null == typeMetadata) {
-				try{
-					//varchar(10)
-					//TIMESTAMP (6) WITH TIME ZONE
-					List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
-					if(!fetchs.isEmpty()){
-						List<String> items = fetchs.get(0);
-						String full = items.get(0);//(6,2)
-						typeName = typeName.replace(full, "");
-						precision = BasicUtil.parseInt(items.get(1), 0);
-						scale = BasicUtil.parseInt(items.get(2), 0);
-						typeMetadata = spell(typeName);
-					}
-				}catch (Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
-		if(null == typeMetadata){
-			if (typeName.contains("(")) {
-				String tmp = typeName.substring(typeName.indexOf("(") + 1, typeName.indexOf(")"));
-				if (tmp.contains(",")) {
-					//有精度或srid
-					String[] lens = tmp.split("\\,");
-					if (BasicUtil.isNumber(lens[0])) {
-						precision = BasicUtil.parseInt(lens[0], null);
-						scale = BasicUtil.parseInt(lens[1], null);
-					} else {
-						meta.setChildTypeName(lens[0]);
-						meta.setSrid(BasicUtil.parseInt(lens[1], null));
-					}
-				} else {
-					//没有精度和srid
-					if (BasicUtil.isNumber(tmp)) {
-						precision = BasicUtil.parseInt(tmp, null);
-					} else {
-						meta.setChildTypeName(tmp);
-					}
-				}
-				typeName = typeName.substring(0, typeName.indexOf("("));
-			}
-		}
-		/*if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
-			this.className = null;
-		}*/
-		if(null == typeMetadata) {
-			typeMetadata = spell(typeName);
-		}
-		if(null != typeMetadata) {
-			meta.setArray(array);
-			meta.setTypeName(typeMetadata.getName(), false);
-		}else{
-			//没有对应的类型原们输出
-			meta.setFullType(srcTypeName);
-			meta.setTypeMetadata(TypeMetadata.NONE);
-		}
-		meta.setArray(array);
-		meta.setTypeMetadata(typeMetadata);
-		int ignoreLength = ignoreLength(runtime, typeMetadata);
-		int ignorePrecision = ignorePrecision(runtime, typeMetadata);
-		int ignoreScale = ignorePrecision(runtime, typeMetadata);
-		if(null != precision && precision > 0){
-			//指定了长度或有效位数
-			if(ignorePrecision != 1){
-				//设置有效位数
-				meta.setPrecision(precision);
-			}else if(ignoreLength != -1){
-				//不需要有效位数再考虑长度
-				meta.setLength(precision);
-			}
-		}
-		if(null != scale && scale > -1){
-			if(ignoreScale != 1){
-				meta.setScale(scale);
-			}
-		}
+		TypeMetadata typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
 		meta.setParseLvl(2);
 		return typeMetadata;
 	}
