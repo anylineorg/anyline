@@ -1668,8 +1668,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, obj_description(f.relfilenode,'pg_class')  AS TABLE_COMMENT  FROM  INFORMATION_SCHEMA.TABLES AS M \n");
-        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname\n");
+        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
+        builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
+        builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
+        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR f.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
         if(BasicUtil.isNotEmpty(schema)){
@@ -2157,10 +2159,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, obj_description(f.relfilenode,'pg_class')  AS TABLE_COMMENT  FROM  INFORMATION_SCHEMA.TABLES AS M \n");
-        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname\n");
+        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
+        builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
+        builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
+        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
-        builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent\n");//主表
+        builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent AND N.oid = FM.relnamespace\n");//主表
         builder.append("WHERE FM.relname ='").append(master.getName()).append("'\n");
         String schema = master.getSchemaName();
         if(BasicUtil.isNotEmpty(schema)){
@@ -2169,6 +2173,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         if(BasicUtil.isNotEmpty(name)){
             builder.append(" AND M.table_name LIKE '").append(name).append("'");
         }
+
         return runs;
     }
     /**

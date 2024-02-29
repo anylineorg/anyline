@@ -10694,17 +10694,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		//batch insert保持SQL一致,如果不一致应该调用save方法
 		//返回每个SQL的影响行数
 		jdbc.batchUpdate(sql,
-				new BatchPreparedStatementSetter() {
-					public void setValues(PreparedStatement ps, int i) throws SQLException {
-						//i从0开始 参数下标从1开始
-						for(int p=1; p<=vol; p++){
-							ps.setObject(p, values.get(vol*i+p-1));
-						}
+			new BatchPreparedStatementSetter() {
+				public void setValues(PreparedStatement ps, int i) throws SQLException {
+					//i从0开始 参数下标从1开始
+					for(int p=1; p<=vol; p++){
+						ps.setObject(p, values.get(vol*i+p-1));
 					}
-					public int getBatchSize() {
-						return line;
-					}
-				});
+				}
+				public int getBatchSize() {
+					return line;
+				}
+			});
 		return line;
 	}
 
@@ -10734,20 +10734,24 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta){
 			return;
 		}
+		String catalog = null;
+		String schema = null;
 		try {
-			String catalog = null;
-			String schema = null;
 			//这一步不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
 			if (empty(meta.getCatalog())) {
 				catalog = con.getCatalog();
 			}
+		}catch (Exception e){
+			log.warn("[check catalog][result:fail][exception:{}]", e.toString());
+		}
+		try {
 			if (empty(meta.getSchema())) {
 				schema = con.getSchema();
 			}
-			correctSchemaFromJDBC(meta, catalog, schema);
 		}catch (Exception e){
 			log.warn("[check schema][result:fail][exception:{}]", e.toString());
 		}
+		correctSchemaFromJDBC(meta, catalog, schema);
 		meta.setCheckSchemaTime(new Date());
 	}
 	@Override
@@ -11050,7 +11054,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		OrderStore orders = run.getOrderStore();
 		if(null != orders){
-			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
+			sql += orders.getRunText(getDelimiterFr() + getDelimiterTo());
 		}
 		PageNavi navi = run.getPageNavi();
 		if(null != navi){
@@ -11119,13 +11123,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
-			builder.append("SELECT "+cols+" FROM( \n");
+			builder.append("SELECT ").append(cols).append(" FROM( \n");
 			builder.append("SELECT TAB_I.*,ROWNUM AS PAGE_ROW_NUMBER_ \n");
 			builder.append("FROM( \n");
 			builder.append(sql);
 			builder.append("\n").append(order);
 			builder.append(")  TAB_I \n");
-			builder.append(")  TAB_O WHERE PAGE_ROW_NUMBER_ >= "+(first+1)+" AND PAGE_ROW_NUMBER_ <= "+(last+1));
+			builder.append(")  TAB_O WHERE PAGE_ROW_NUMBER_ >= ").append(first + 1).append(" AND PAGE_ROW_NUMBER_ <= ").append(last + 1);
 
 		}
 
@@ -11173,7 +11177,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String cols = run.getQueryColumn();
 		if(!"*".equals(cols)){
 			String reg = "(?i)^select[\\s\\S]+from";
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
+			sql = sql.replaceAll(reg,"SELECT " + cols + " FROM ");
 		}
 		OrderStore orders = run.getOrderStore();
 		if(null != orders){
@@ -11185,7 +11189,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(limit < 0){
 				limit = 0;
 			}
-			String sub = sql.substring(sql.toUpperCase().indexOf("SELECT")+6);
+			String sub = sql.substring(sql.toUpperCase().indexOf("SELECT") + 6);
 			sql = "SELECT SKIP " + navi.getFirstRow() + " FIRST " + limit + sub;
 		}
 		return sql;
