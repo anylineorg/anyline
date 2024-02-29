@@ -17,10 +17,12 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 
 import java.io.Serializable;
 import java.util.*;
@@ -101,8 +103,9 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         });
     }
     protected String keyword = "COLUMN"           ;
-    protected String originalName                 ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
+    protected String originName                   ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
+    protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; //完整类型名称
     protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
@@ -329,6 +332,14 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
+    public String getOriginType() {
+        return originType;
+    }
+
+    public void setOriginType(String originType) {
+        this.originType = originType;
+    }
+
     public Integer getType() {
         if(getmap && null != update){
             return update.getType();
@@ -410,7 +421,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             //修改数据类型的重置解析状态
             parseLvl = 0;
         }
-
+        setOriginType(typeName);
         this.typeName = typeName;
         if(parse) {
             parseType(1);
@@ -422,104 +433,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(lvl <= parseLvl){
             return this;
         }
-        String typeName = this.typeName;
-        if(null != typeName){
-            //数组类型
-            if(typeName.contains("[]")){
-                setArray(true);
-            }
-            //数组类型
-            if(typeName.startsWith("_")){
-                typeName = typeName.substring(1);
-                setArray(true);
-            }
-            typeName = typeName.trim().replace("'","");
-
-            if(typeName.toUpperCase().contains("IDENTITY")){
-                autoIncrement(true);
-                if(typeName.contains(" ")) {
-                    // TYPE_NAME=int identity
-                    typeName = typeName.split(" ")[0];
-                }
-            }
-
-			/*
-			decimal(10, 2)
-			varchar(10)
-			TIMESTAMP (6) WITH TIME ZONE
-			TIMESTAMP WITH LOCAL TIME ZONE
-			INTERVAL YEAR(4) TO MONTH
-			geometry(Polygon, 4326)
-			geometry(Polygon)
-
-			TIME WITH TIME ZONE
-			TIMESTAMP WITH LOCAL TIME ZONE
-			TIMESTAMP WITH TIME ZONE
-			DOUBLE PRECISION
-			BIT VARYING
-			INTERVAL DAY
-			INTERVAL DAY TO HOUR
-			INTERVAL DAY TO MINUTE
-			INTERVAL DAY TO SECOND
-			INTERVAL HOUR
-			INTERVAL HOUR TO MINUTE
-			INTERVAL HOUR TO SECOND
-			INTERVAL MINUTE
-			INTERVAL MINUTE TO SECOND
-			INTERVAL MONTH
-			INTERVAL SECOND
-			INTERVAL YEAR
-			INTERVAL YEAR TO MONTH
-			TIME TZ UNCONSTRAINED
-			TIME WITHOUT TIME ZONE
-			TIMESTAMP WITHOUT TIME ZONE
-			*/
-            if(typeName.contains("(")){
-                this.precision = 0;
-                this.scale = 0;
-                String tmp = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
-                if(tmp.contains(",")){
-                    //有精度或srid
-                    String[] lens = tmp.split("\\,");
-                    if(BasicUtil.isNumber(lens[0])) {
-                        setPrecision(BasicUtil.parseInt(lens[0], null));
-                        setScale(BasicUtil.parseInt(lens[1], null));
-                    }else{
-                        setChildTypeName(lens[0]);
-                        setSrid(BasicUtil.parseInt(lens[1], null));
-                    }
-                }else{
-                    //没有精度和srid
-                    if(BasicUtil.isNumber(tmp)){
-                        setPrecision(BasicUtil.parseInt(tmp, null));
-                    }else{
-                        setChildTypeName(tmp);
-                    }
-                }
-                typeName = typeName.substring(0, typeName.indexOf("(") );
-            }
-        }
-        if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
-            this.className = null;
-        }
-        try{
-            TypeMetadata tm = StandardTypeMetadata.valueOf(typeName.toUpperCase());
-            if(null != tm){
-                this.typeMetadata = tm;
-                ignoreLength = tm.ignoreLength();
-                ignorePrecision = tm.ignorePrecision();
-                ignoreScale = tm.ignoreScale();
-            }
-        }catch (Exception e){
-
-        }
-        this.typeName = typeName;
-        if(ignorePrecision == 1){
-            if(null == length || length == -1){
-                length = precision;
-            }
-        }
-        parseLvl = lvl;
+        TypeMetadata.parse(DatabaseType.NONE, this, null, null);
         return this;
     }
 
@@ -542,14 +456,14 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(null != fullType){
             return fullType;
         }
-        StringBuilder builder = new StringBuilder();
         String type = null;
+        String formula = null;
         if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL){
             type = typeMetadata.getName();
+            formula = typeMetadata.formula();
         }else{
             type = getTypeName();
         }
-        builder.append(type);
         boolean appendLength = false;
         boolean appendPrecision = false;
         boolean appendScale = false;
@@ -589,45 +503,54 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 }
             }
         }
-        if(appendLength || appendPrecision || appendScale){
-            builder.append("(");
-        }
-        if(appendLength){
-            if(length == -2){
-                builder.append("max");
-            }else {
-                builder.append(length);
+        if(BasicUtil.isNotEmpty(formula)){
+            formula = formula.replace("{L}", length+"");
+            formula = formula.replace("{P}", precision+"");
+            formula = formula.replace("{S}", scale+"");
+            fullType = formula.replace("(null)","");
+        }else{
+            StringBuilder builder = new StringBuilder();
+            builder.append(type);
+            if(appendLength || appendPrecision || appendScale){
+                builder.append("(");
             }
-        }else {
-            if (appendPrecision) {
-                builder.append(precision);
-            }
-            if(appendScale){//可能单独出现
-                if(appendPrecision){
-                    builder.append(",");
+            if(appendLength){
+                if(length == -2){
+                    builder.append("max");
+                }else {
+                    builder.append(length);
                 }
-                builder.append(scale);
+            }else {
+                if (appendPrecision) {
+                    builder.append(precision);
+                }
+                if(appendScale){//可能单独出现
+                    if(appendPrecision){
+                        builder.append(",");
+                    }
+                    builder.append(scale);
+                }
             }
-        }
-        if(appendLength || appendPrecision || appendScale){
-            builder.append(")");
+            if(appendLength || appendPrecision || appendScale){
+                builder.append(")");
+            }
+
+            String child = getChildTypeName();
+            Integer srid = getSrid();
+            if(null != child){
+                builder.append("(");
+                builder.append(child);
+                if(null != srid){
+                    builder.append(",").append(srid);
+                }
+                builder.append(")");
+            }
+            if(isArray()){
+                builder.append("[]");
+            }
+            fullType = builder.toString();
         }
 
-        String child = getChildTypeName();
-        Integer srid = getSrid();
-        if(null != child){
-            builder.append("(");
-            builder.append(child);
-            if(null != srid){
-                builder.append(",").append(srid);
-            }
-            builder.append(")");
-        }
-        if(isArray()){
-            builder.append("[]");
-        }
-
-        fullType = builder.toString();
         return fullType;
     }
 
@@ -1179,19 +1102,19 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
 
-    public String getOriginalName() {
+    public String getOriginName() {
         if(getmap && null != update){
-            return update.originalName;
+            return update.originName;
         }
-        return originalName;
+        return originName;
     }
 
-    public Column setOriginalName(String originalName) {
+    public Column setOriginName(String originName) {
         if(setmap && null != update){
-            update.setOriginalName(originalName);
+            update.setOriginName(originName);
             return this;
         }
-        this.originalName = originalName;
+        this.originName = originName;
         return this;
     }
 
@@ -1531,7 +1454,5 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
-
-
 }
 
