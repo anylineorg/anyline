@@ -850,9 +850,10 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore params(Object... values) {
 		if(null == this.values){
-			this.values = Arrays.asList(values);
-		}else{
-			this.values.add(Arrays.asList(values));
+			this.values = new ArrayList<>();
+		}
+		if(null != values){
+            this.values.addAll(Arrays.asList(values));
 		}
 		return this;
 	}
