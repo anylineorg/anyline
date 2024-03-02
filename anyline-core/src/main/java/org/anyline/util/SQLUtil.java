@@ -33,12 +33,9 @@
  */
 
 
-package org.anyline.data.util;
+package org.anyline.util;
 
-import org.anyline.data.prepare.RunPrepare;
 import org.anyline.metadata.BaseMetadata;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 
 import java.util.HashSet;
@@ -248,9 +245,5 @@ public class SQLUtil {
 			return static_holder;
 		}
 		return null;
-	}
-	public RunPrepare parse(String sql){
-		RunPrepare run = null;
-		return run;
 	}
 } 

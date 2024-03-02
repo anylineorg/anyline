@@ -25,7 +25,7 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
-import org.anyline.data.prepare.init.AbstractPrepare;
+import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Order;
 import org.anyline.entity.Join;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class DefaultAutoPrepare extends AbstractPrepare implements AutoPrepare {
+public class DefaultAutoPrepare extends AbstractRunPrepare implements AutoPrepare {
 	protected String datasoruce;
 	protected Catalog catalog;
 	protected Schema schema;

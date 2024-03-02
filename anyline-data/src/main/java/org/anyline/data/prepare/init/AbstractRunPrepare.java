@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public abstract class AbstractPrepare implements RunPrepare{
+public abstract class AbstractRunPrepare implements RunPrepare{
 
-	protected static final Logger log     = LoggerFactory.getLogger(AbstractPrepare.class);
+	protected static final Logger log     = LoggerFactory.getLogger(AbstractRunPrepare.class);
 	protected String id 									;
 	protected ConditionChain chain							; // 查询条件
 	protected OrderStore orders								; // 排序
@@ -63,7 +63,7 @@ public abstract class AbstractPrepare implements RunPrepare{
 		return 0; 
 	} 
  
-	public AbstractPrepare(){
+	public AbstractRunPrepare(){
 	} 
 	protected void initRunValues(){
 		if(null == runValues){
@@ -120,7 +120,7 @@ public abstract class AbstractPrepare implements RunPrepare{
 		} 
 		 
 		if(null == groups){
-			groups = new DefaultGroupStore();
+			groups = new AbstractGroupStore();
 		} 
 		group = group.trim().toUpperCase(); 
 		groups.group(group); 

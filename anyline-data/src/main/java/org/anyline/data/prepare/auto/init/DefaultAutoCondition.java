@@ -20,14 +20,14 @@ package org.anyline.data.prepare.auto.init;
 import org.anyline.data.param.Config;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.auto.AutoCondition;
-import org.anyline.data.prepare.init.DefaultCondition;
+import org.anyline.data.prepare.init.AbstractCondition;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.data.util.SQLUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public class DefaultAutoCondition extends DefaultCondition implements AutoCondition {
+public class DefaultAutoCondition extends AbstractCondition implements AutoCondition {
 	private String table;			// 表或表别名
 	private String column;			// 列
 	private Object values;			// 参数值

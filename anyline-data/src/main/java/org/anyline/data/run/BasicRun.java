@@ -24,9 +24,9 @@ import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
-import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.data.prepare.init.AbstractGroupStore;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.util.SQLUtil;
+import org.anyline.util.SQLUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
@@ -201,7 +201,7 @@ public abstract class BasicRun implements Run {
 		} 
 		 
 		if(null == groupStore){
-			groupStore = new DefaultGroupStore();
+			groupStore = new AbstractGroupStore();
 		} 
  
 		group = group.trim().toUpperCase(); 
@@ -819,7 +819,7 @@ public abstract class BasicRun implements Run {
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						if(null == groupStore){
-							groupStore = new DefaultGroupStore();
+							groupStore = new AbstractGroupStore();
 						}
 						groupStore.group(item);
 					}
