@@ -17,6 +17,7 @@
 
 package org.anyline.data.prepare.init;
 
+import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.GroupStore;
@@ -33,9 +34,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public abstract class DefaultPrepare implements RunPrepare{
+public abstract class AbstractPrepare implements RunPrepare{
 
-	protected static final Logger log     = LoggerFactory.getLogger(DefaultPrepare.class);
+	protected static final Logger log     = LoggerFactory.getLogger(AbstractPrepare.class);
 	protected String id 									;
 	protected ConditionChain chain							; // 查询条件
 	protected OrderStore orders								; // 排序
@@ -52,6 +53,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 	protected EMPTY_VALUE_SWITCH swt       = EMPTY_VALUE_SWITCH.IGNORE;
 	protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();	//查询列
 	protected List<String> excludes = new ArrayList<>();  //不查询列
+	protected ConfigStore condition;
 
 
 	// 运行时参数值 
@@ -61,7 +63,7 @@ public abstract class DefaultPrepare implements RunPrepare{
 		return 0; 
 	} 
  
-	public DefaultPrepare(){
+	public AbstractPrepare(){
 	} 
 	protected void initRunValues(){
 		if(null == runValues){
@@ -512,5 +514,16 @@ public abstract class DefaultPrepare implements RunPrepare{
 
 	public void setBatch(int batch) {
 		this.batch = batch;
+	}
+
+	@Override
+	public ConfigStore condition() {
+		return condition;
+	}
+
+	@Override
+	public RunPrepare condition(ConfigStore condition) {
+		this.condition = condition;
+		return this;
 	}
 }

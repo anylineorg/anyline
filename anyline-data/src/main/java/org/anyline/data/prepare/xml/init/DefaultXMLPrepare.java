@@ -23,7 +23,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
-import org.anyline.data.prepare.init.DefaultPrepare;
+import org.anyline.data.prepare.init.AbstractPrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.xml.XMLPrepare;
@@ -38,7 +38,7 @@ import org.anyline.util.regular.RegularUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-public class DefaultXMLPrepare extends DefaultPrepare implements XMLPrepare {
+public class DefaultXMLPrepare extends AbstractPrepare implements XMLPrepare {
 	/*解析XML*/ 
 	private String id; 
 	private String text;

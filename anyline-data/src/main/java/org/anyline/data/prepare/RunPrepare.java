@@ -17,17 +17,13 @@
 
 package org.anyline.data.prepare;
 
-import org.anyline.entity.Compare;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.Join;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.entity.*;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -225,4 +221,7 @@ public interface RunPrepare extends Cloneable {
 	void setStrict(boolean strict);
 	void setBatch(int batch);
 	int getBatch();
+
+	ConfigStore condition();
+	RunPrepare condition(ConfigStore configs);
 } 

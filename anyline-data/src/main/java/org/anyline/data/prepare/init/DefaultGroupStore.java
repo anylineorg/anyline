@@ -20,7 +20,7 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.SQLUtil;
+import org.anyline.data.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -27,7 +27,7 @@ import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.SQLUtil;
+import org.anyline.data.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

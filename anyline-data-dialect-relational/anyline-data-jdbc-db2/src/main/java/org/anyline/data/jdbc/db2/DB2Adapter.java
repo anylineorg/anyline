@@ -47,7 +47,7 @@ import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.SQLUtil;
+import org.anyline.data.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.support.KeyHolder;

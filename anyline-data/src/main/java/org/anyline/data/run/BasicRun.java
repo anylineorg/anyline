@@ -26,6 +26,7 @@ import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.util.SQLUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
