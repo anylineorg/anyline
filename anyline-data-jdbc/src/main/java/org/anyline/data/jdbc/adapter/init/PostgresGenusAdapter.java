@@ -1671,7 +1671,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
         builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
         builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
-        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND AND N.oid = F.relnamespace\n");
+        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR f.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
         if(BasicUtil.isNotEmpty(schema)){
@@ -4992,7 +4992,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
             }else{
                 meta.setType("SERIAL8");
             }
-        }else if(type.contains("int") || type.contains("long") || type.contains("serial") || type.contains("short")){
+        }else if(type.equals("int") || type.contains("long") || type.contains("serial") || type.contains("short")){
             if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type)) {
                 meta.setType("int4");
             } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
