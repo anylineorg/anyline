@@ -231,5 +231,16 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		for(Config config:configs){
 			config.setValue(values);
 		}
-	} 
+	}
+
+	public boolean isEmpty() {
+		if(null != configs){
+			for(Config config:configs){
+				if(null != config && !config.isEmpty()){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }

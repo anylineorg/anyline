@@ -849,9 +849,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
 			}
 		}
-		if(primaryKeys.isEmpty()){
+		/*if(primaryKeys.isEmpty()){
 			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
-		}
+		}*/
 		// 不更新主键 除非显示指定
 		for(String pk:primaryKeys){
 			if(!columns.containsKey(pk.toUpperCase())) {
@@ -924,13 +924,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			builder.append(BR);
 			builder.append("\nWHERE 1=1").append(BR_TAB);
-
-			for (String pk : primaryKeys) {
-				if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
-					Field field = EntityAdapterProxy.field(obj.getClass(), pk);
-					configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, field));
-				} else {
-					configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk));
+			if(configs.isEmptyCondition()) {
+				for (String pk : primaryKeys) {
+					if (EntityAdapterProxy.hasAdapter(obj.getClass())) {
+						Field field = EntityAdapterProxy.field(obj.getClass(), pk);
+						configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, field));
+					} else {
+						configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, BeanUtil.getFieldValue(obj, pk));
+					}
 				}
 			}
 
@@ -963,16 +964,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(primaryKeys.isEmpty()){
 			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
 		}
-		for (String pk : primaryKeys) {
-			Object pv = row.get(pk);
-			pv = convert(runtime, cols.get(pk.toUpperCase()), pv); //统一调用
-			if(null != pv) {
-				configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
-			}
+		if(configs.isEmptyCondition()) {
+			//没有其他条件时添加 主键作条件
+			for (String pk : primaryKeys) {
+				Object pv = row.get(pk);
+				pv = convert(runtime, cols.get(pk.toUpperCase()), pv); //统一调用
+				if (null != pv) {
+					configs.and(Compare.EMPTY_VALUE_SWITCH.SRC, pk, pv);
+				}
                 /*builder.append(" AND ");
                 delimiter(builder, pk).append(" = ?");
                 updateColumns.add(pk);
                 addRunValue(runtime, run, Compare.EQUAL, new Column(pk), row.get(pk));*/
+			}
 		}
 
 		// 不更新主键 除非显示指定

@@ -228,7 +228,7 @@ public class DefaultConfig implements Config {
 	} 
  
 	public boolean isEmpty() {
-		return empty; 
+		return BasicUtil.isEmpty(true, this.values);
 	} 
  
 	public void setEmpty(boolean empty) {

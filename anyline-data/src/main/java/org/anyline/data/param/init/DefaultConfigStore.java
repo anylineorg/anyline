@@ -1161,10 +1161,19 @@ public class DefaultConfigStore implements ConfigStore {
 			navi.addParam(key, values); 
 		} 
 	}
-	@Override 
+	@Override
 	public ConfigChain getConfigChain(){
-		return chain; 
-	} 
+		return chain;
+	}
+
+	@Override
+	public boolean isEmptyCondition(){
+		if(null != chain){
+			return chain.isEmpty();
+		}
+		return true;
+	}
+
 	/** 
 	 * 添加排序 
 	 * @param order  order

@@ -170,6 +170,12 @@ public interface ConfigStore {
 	 */
 	ConfigStore setValue(Map<String,Object> values); 
 	ConfigChain getConfigChain();
+
+	/**
+	 * 是否空条件
+	 * @return boolean
+	 */
+	boolean isEmptyCondition();
 	Config getConfig(String key);
 	ConfigStore removeConfig(String var);
 	ConfigStore removeConfig(Config config);

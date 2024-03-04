@@ -27,69 +27,73 @@ import java.util.Map;
  
 public interface Config {
 	// 从request 取值方式
-	public static int FETCH_REQUEST_VALUE_TYPE_NONE 	= 0;	// 没有参数
-	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE 	= 1;	// 单值
-	public static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE = 2;	// 数组
-	public void setValue(Map<String,Object> values); 
-	public List<Object> getValues() ; 
-	public List<Object> getOrValues() ; 
-	public void addValue(Object value);
-	public void setValue(Object value);
+	static int FETCH_REQUEST_VALUE_TYPE_NONE 	= 0;	// 没有参数
+	static int FETCH_REQUEST_VALUE_TYPE_SINGLE 	= 1;	// 单值
+	static int FETCH_REQUEST_VALUE_TYPE_MULTIPLE = 2;	// 数组
+	void setValue(Map<String,Object> values); 
+	List<Object> getValues() ; 
+	List<Object> getOrValues() ; 
+	void addValue(Object value);
+	void setValue(Object value);
 
-	public void setOrValue(Object value);
-	public void addOrValue(Object value);
+	void setOrValue(Object value);
+	void addOrValue(Object value);
 	/** 
 	 *  
 	 * @param chain 容器 
 	 * @return Condition
 	 */ 
-	public Condition createAutoCondition(ConditionChain chain);
+	Condition createAutoCondition(ConditionChain chain);
 
-	public String getPrefix() ; 	// XML condition.id 或表名/表别名
+	String getPrefix() ; 	// XML condition.id 或表名/表别名
  
-	public void setPrefix(String prefix) ;
+	void setPrefix(String prefix) ;
 
-	public String getVariable() ;//XML condition中的key 或列名
+	String getVariable() ;//XML condition中的key 或列名
 
-	public void setVariable(String variable) ;
+	void setVariable(String variable) ;
 
-	public String getKey() ;//参数key
+	String getKey() ;//参数key
 
-	public void setKey(String key) ;
+	void setKey(String key) ;
 
 
-	public Compare getCompare() ; 
-	public void setCompare(Compare compare) ; 
+	Compare getCompare() ; 
+	void setCompare(Compare compare) ; 
 	
-	public Compare getOrCompare() ; 
-	public void setOrCompare(Compare compare) ; 
+	Compare getOrCompare() ; 
+	void setOrCompare(Compare compare) ;
+
+	/**
+	 * 是否空条件
+	 * @return boolean
+	 */
+	boolean isEmpty() ; 
  
-	public boolean isEmpty() ; 
- 
-	public void setEmpty(boolean empty) ; 
+	void setEmpty(boolean empty) ; 
 
 
-	public String getJoin() ; 
+	String getJoin() ; 
  
-	public void setJoin(String join) ; 
+	void setJoin(String join) ; 
  
-	public boolean isKeyEncrypt() ; 
+	boolean isKeyEncrypt() ; 
  
-	public boolean isValueEncrypt();
+	boolean isValueEncrypt();
 	
-	public Object clone();
-	public String toString();
-	public String cacheKey();
+	Object clone();
+	String toString();
+	String cacheKey();
 
-	public void setText(String text);
-	public String getText();
+	void setText(String text);
+	String getText();
 
-	public void setOverCondition(boolean over);
-	public void setOverValue(boolean over);
-	public boolean isOverCondition();
-	public boolean isOverValue();
-	public void setSwitch(EMPTY_VALUE_SWITCH swt);
-	public EMPTY_VALUE_SWITCH getSwitch();
+	void setOverCondition(boolean over);
+	void setOverValue(boolean over);
+	boolean isOverCondition();
+	boolean isOverValue();
+	void setSwitch(EMPTY_VALUE_SWITCH swt);
+	EMPTY_VALUE_SWITCH getSwitch();
 
 	/**
 	 * 是否需要跟前面的条件 隔离，前面所有条件加到()中
