@@ -20,7 +20,7 @@ package org.anyline.data.prepare.xml.init;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.Variable;
-import org.anyline.data.prepare.init.DefaultCondition;
+import org.anyline.data.prepare.init.AbstractCondition;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
@@ -39,7 +39,7 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public class DefaultXMLCondition extends DefaultCondition implements Condition {
+public class DefaultXMLCondition extends AbstractCondition implements Condition {
 	private String text;
 	 
 	 

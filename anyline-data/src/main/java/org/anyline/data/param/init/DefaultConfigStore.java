@@ -25,8 +25,8 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
-import org.anyline.data.prepare.init.DefaultGroup;
-import org.anyline.data.prepare.init.DefaultGroupStore;
+import org.anyline.data.prepare.init.AbstractGroup;
+import org.anyline.data.prepare.init.AbstractGroupStore;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
@@ -1237,7 +1237,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override 
 	public ConfigStore group(Group group){
 		if(null == groups){
-			groups = new DefaultGroupStore();
+			groups = new AbstractGroupStore();
 		} 
 		groups.group(group); 
 		return this; 
@@ -1245,7 +1245,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override 
 	public ConfigStore group(String column){
-		return group(new DefaultGroup(column));
+		return group(new AbstractGroup(column));
 	} 
 	public GroupStore getGroups() {
 		return groups; 

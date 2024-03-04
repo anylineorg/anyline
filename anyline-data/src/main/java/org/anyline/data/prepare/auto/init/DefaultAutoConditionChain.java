@@ -21,7 +21,7 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.init.DefaultConditionChain;
+import org.anyline.data.prepare.init.AbstractConditionChain;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
@@ -30,7 +30,7 @@ import org.anyline.util.BasicUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultAutoConditionChain extends DefaultConditionChain implements ConditionChain {
+public class DefaultAutoConditionChain extends AbstractConditionChain implements ConditionChain {
 	public DefaultAutoConditionChain(){}
 	public DefaultAutoConditionChain(ConfigChain chain){
 		if(null == chain){

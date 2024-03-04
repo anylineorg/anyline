@@ -35,7 +35,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public abstract class DefaultCondition implements Condition {
+public abstract class AbstractCondition implements Condition {
 	protected boolean isVariableSlave = false							;	// 是否用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 	protected EMPTY_VALUE_SWITCH swt = EMPTY_VALUE_SWITCH.IGNORE		;   // 遇到空值处理方式
 	protected boolean active = false									;	// 是否活动(是否拼接到SQL中)
@@ -55,7 +55,7 @@ public abstract class DefaultCondition implements Condition {
 	//protected boolean apart = false										;   // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality = true								;   // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	public Object clone() throws CloneNotSupportedException{
-		DefaultCondition clone = (DefaultCondition)super.clone();
+		AbstractCondition clone = (AbstractCondition)super.clone();
 		if(null != runValues){
 			List<RunValue> cRunValues = new ArrayList<>();
 			for(RunValue obj:runValues){

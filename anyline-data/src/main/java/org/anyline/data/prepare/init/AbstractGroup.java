@@ -20,12 +20,12 @@ package org.anyline.data.prepare.init;
 import org.anyline.data.prepare.Group;
  
  
-public class DefaultGroup implements Group{
+public class AbstractGroup implements Group{
 	private static final long serialVersionUID = 5820480420021701152L;
 	private String column;						// 排序列
 	 
-	public DefaultGroup(){}
-	public DefaultGroup(String column){
+	public AbstractGroup(){}
+	public AbstractGroup(String column){
 		setColumn(column); 
 	} 
 	public String getColumn() {
@@ -37,7 +37,7 @@ public class DefaultGroup implements Group{
 		} 
 	} 
 	public Object clone() throws CloneNotSupportedException{
-		DefaultGroup clone = (DefaultGroup)super.clone();
+		AbstractGroup clone = (AbstractGroup)super.clone();
 		return clone; 
 	} 
 } 

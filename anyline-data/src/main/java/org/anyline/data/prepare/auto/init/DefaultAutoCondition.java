@@ -20,7 +20,7 @@ package org.anyline.data.prepare.auto.init;
 import org.anyline.data.param.Config;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.auto.AutoCondition;
-import org.anyline.data.prepare.init.DefaultCondition;
+import org.anyline.data.prepare.init.AbstractCondition;
 import org.anyline.data.run.RunValue;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
@@ -40,7 +40,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public class DefaultAutoCondition extends DefaultCondition implements AutoCondition {
+public class DefaultAutoCondition extends AbstractCondition implements AutoCondition {
 	private String table;			// 表或表别名
 	private String column;			// 列
 	private Object values;			// 参数值

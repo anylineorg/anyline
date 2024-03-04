@@ -31,7 +31,7 @@ import java.util.List;
  * @author zh 
  * 
  */ 
-public abstract class DefaultConditionChain extends DefaultCondition implements ConditionChain {
+public abstract class AbstractConditionChain extends AbstractCondition implements ConditionChain {
 	protected List<Condition> conditions = new ArrayList<Condition>();
 	protected int joinSize; 
 	 
