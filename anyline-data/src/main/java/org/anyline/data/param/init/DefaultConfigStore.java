@@ -843,7 +843,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	/**
-	 * 根据占位符下标赋值
+	 * 根据占位符下标赋值,注意不需要提供下标,按顺序提供值即可
 	 * @param values values
 	 * @return this
 	 */
