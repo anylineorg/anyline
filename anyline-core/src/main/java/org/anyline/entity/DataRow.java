@@ -3509,7 +3509,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Object get(String key) {
-        if(keyAdapter.getKeyCase() == KEY_CASE.SRC){
+        if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ConfigTable.IS_KEY_IGNORE_CASE){
             return super.get(key);
         }
         Object result = null;
