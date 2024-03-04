@@ -17,7 +17,6 @@
 
 package org.anyline.metadata;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import org.anyline.entity.Order;
 import org.anyline.util.BeanUtil;
 
