@@ -69,6 +69,8 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
      */
     protected String engine                       ;
 
+    private String engineParameters               ;
+
     /**
      * 编码
      */
@@ -951,6 +953,15 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
 
     public Table setDataFree(Long dataFree) {
         this.dataFree = dataFree;
+        return this;
+    }
+
+    public String getEngineParameters() {
+        return engineParameters;
+    }
+
+    public Table setEngineParameters(String engineParameters) {
+        this.engineParameters = engineParameters;
         return this;
     }
 

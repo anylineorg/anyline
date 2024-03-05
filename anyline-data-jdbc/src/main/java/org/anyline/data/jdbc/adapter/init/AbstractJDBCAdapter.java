@@ -6712,6 +6712,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(BasicUtil.isNotEmpty(engine)){
 			builder.append("\nENGINE = ").append(engine);
 		}
+		String params = meta.getEngineParameters();
+		if(BasicUtil.isNotEmpty(params)){
+			builder.append(" ").append(params);
+		}
 		return builder;
 	}
 
