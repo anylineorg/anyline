@@ -1617,12 +1617,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			ProcedureRun pr = (ProcedureRun)run;
 			return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
 		}
-		String sql = run.getFinalQuery();
-		if(BasicUtil.isEmpty(sql)){
+		String cmd = run.getFinalQuery();
+		if(BasicUtil.isEmpty(cmd)){
 			return new DataSet().setTable(table);
 		}
 		List<Object> values = run.getValues();
-		return select(runtime, random, system, ACTION.DML.SELECT, table, configs, run, sql, values);
+		return select(runtime, random, system, ACTION.DML.SELECT, table, configs, run, cmd, values);
 	}
 
 	/**
@@ -1645,9 +1645,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		List<Object> values = run.getValues();
 		if(BasicUtil.isEmpty(sql)){
 			if(IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				throw new SQLQueryException("未指定SQL");
+				throw new SQLQueryException("未指定命令");
 			}else{
-				log.error("未指定SQL");
+				log.error("未指定命令");
 				return new ArrayList<>();
 			}
 		}
@@ -10502,9 +10502,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			if(IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				throw new SQLQueryException("未指定SQL");
+				throw new SQLQueryException("未指定命令");
 			}else{
-				log.error("未指定SQL");
+				log.error("未指定命令");
 				return new DataSet().setTable(table);
 			}
 		}

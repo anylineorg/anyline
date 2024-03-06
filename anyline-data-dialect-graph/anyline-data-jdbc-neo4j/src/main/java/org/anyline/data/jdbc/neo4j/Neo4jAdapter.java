@@ -20,7 +20,7 @@ package org.anyline.data.jdbc.neo4j;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.AbstractJDBCAdapter;
-import org.anyline.data.jdbc.neo4j.entity.Neo4jDataRow;
+import org.anyline.data.jdbc.neo4j.entity.Neo4jRow;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -851,7 +851,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
             primaryKeys.putAll(EntityAdapterProxy.primaryKeys(obj.getClass()));
         }else{
             primaryKeys = new LinkedHashMap<>();
-            primaryKeys.put(Neo4jDataRow.DEFAULT_PRIMARY_KEY, new Column(Neo4jDataRow.DEFAULT_PRIMARY_KEY));
+            primaryKeys.put(Neo4jRow.DEFAULT_PRIMARY_KEY, new Column(Neo4jRow.DEFAULT_PRIMARY_KEY));
         }
         // 不更新主键 除非显示指定
         for(String pk:primaryKeys.keySet()){
@@ -860,8 +860,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.containsKey(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
-            keys.remove(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        if(!columns.containsKey(Neo4jRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            keys.remove(Neo4jRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
 
@@ -950,8 +950,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
             }
         }
         //不更新默认主键  除非显示指定
-        if(!columns.containsKey(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
-            cols.remove(Neo4jDataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
+        if(!columns.containsKey(Neo4jRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+            cols.remove(Neo4jRow.DEFAULT_PRIMARY_KEY.toUpperCase());
         }
 
 

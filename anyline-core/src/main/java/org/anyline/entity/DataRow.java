@@ -1179,7 +1179,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return null;
     }
-
+    public DataRow setPrimaryValue(Object value){
+        String key = getPrimaryKey();
+        if (null != key) {
+            put(key, value);
+        }
+        return this;
+    }
     /**
      * 是否有主键
      * @return boolean
