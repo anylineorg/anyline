@@ -94,7 +94,7 @@ public class ConfigTable {
 	public static boolean IS_LOWER_KEY 									= false			;	// DataRow是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 							= true			;	// DataRow是否忽略大小写
 	public static boolean IS_THROW_SQL_QUERY_EXCEPTION 					= true			;	// SQL查询异常时是否抛出
-	public static boolean IS_THROW_SQL_UPDATE_EXCEPTION 				= true			;	// SQL执行异常时是否抛出
+	public static boolean IS_THROW_SQL_UPDATE_EXCEPTION 				= true			;	// 命令执行异常时是否抛出
 	public static boolean IS_UPDATE_NULL_COLUMN							= false			;	// DataRow是否更新nul值的列(针对DataRow)
 	public static boolean IS_UPDATE_EMPTY_COLUMN						= false			;	// DataRow是否更新空值的列
 	public static boolean IS_INSERT_NULL_COLUMN							= false			;	// DataRow是否插入nul值的列

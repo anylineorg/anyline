@@ -134,9 +134,9 @@ public class AnylineProperty {
      */
     protected boolean throwSqlQueryException 					= true			;	// sql查询异常时是否抛出
     /**
-     * sql执行异常时是否抛出
+     * 命令执行异常时是否抛出
      */
-    protected boolean throwSqlUpdateException 				    = true			;	// sql执行异常时是否抛出
+    protected boolean throwSqlUpdateException 				    = true			;	// 命令执行异常时是否抛出
     /**
      * http参数值是否自动trim
      */

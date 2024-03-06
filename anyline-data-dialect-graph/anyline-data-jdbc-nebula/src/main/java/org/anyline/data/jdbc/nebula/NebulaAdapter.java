@@ -364,7 +364,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
         long fr = System.currentTimeMillis();
         /*执行SQL*/
         if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-            log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+            log.info("{}[cmd:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
         }
         long millis = -1;
         try{
@@ -411,7 +411,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-                    log.error("{}[{}][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(), values));
+                    log.error("{}[{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(), values));
                 }
             }
         }finally {

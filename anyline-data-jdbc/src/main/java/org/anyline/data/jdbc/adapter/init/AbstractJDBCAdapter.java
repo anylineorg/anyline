@@ -607,7 +607,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		/*执行SQL*/
 		if (log.isInfoEnabled() && IS_LOG_SQL(configs)) {
 			if(batch > 1 && !IS_LOG_BATCH_SQL_PARAM(configs)){
-				log.info("{}[action:{}][table:{}][sql:\n{}\n]\n[param size:{}]", random, action, run.getTable(), sql, values.size());
+				log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), sql, values.size());
 			}else {
 				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
@@ -1170,7 +1170,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		final List<Parameter> inputs = procedure.getInputs();
 		final List<Parameter> outputs = procedure.getOutputs();
 		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
-			log.info("{}[action:procedure][sql:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), LogUtil.param(inputs), LogUtil.param(outputs));
+			log.info("{}[action:procedure][cmd:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), LogUtil.param(inputs), LogUtil.param(outputs));
 		}
 		final String rdm = random;
 		long millis = -1;
@@ -1285,7 +1285,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][sql:\n{}\n][input param:{}]\n[output param:{}]"
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][cmd:\n{}\n][input param:{}]\n[output param:{}]"
 							, random
 							, millis
 							, procedure.getName()
@@ -1311,7 +1311,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				throw ex;
 			}else{
 				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-					log.error("{}[{}][action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]"
+					log.error("{}[{}][action:procedure][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]"
 							, random
 							, LogUtil.format("存储过程查询异常:", 33)+e.toString()
 							, procedure.getName()
@@ -1653,7 +1653,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		long fr = System.currentTimeMillis();
 		if(log.isInfoEnabled() && IS_LOG_SQL(configs)){
-			log.info("{}[action:select][sql:\n{}\n]", random, run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
+			log.info("{}[action:select][cmd:\n{}\n]", random, run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 		boolean exe = true;
 		if(null != configs){
@@ -1834,7 +1834,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				if(IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 					e.printStackTrace();
 				}
-				log.error("{}[{}][action:select][sql:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
+				log.error("{}[{}][action:select][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
 			}
 		}
 		//}
@@ -1844,7 +1844,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
 			if(millis > SLOW_SQL_MILLIS){
 				slow = true;
-				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
 				if(null != dmListener){
 					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
 				}
@@ -2098,7 +2098,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		sql += ")}";
 
 		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
-			log.info("{}[action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, LogUtil.param(inputs), LogUtil.param(outputs));
+			log.info("{}[action:procedure][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, LogUtil.param(inputs), LogUtil.param(outputs));
 		}
 		long millis= -1;
 		try{
@@ -2155,7 +2155,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, sql, inputs, list, true, result, millis);
 					}
@@ -2179,7 +2179,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				throw ex;
 			}else{
 				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-					log.error("{}[{}][action:procedure][sql:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, LogUtil.param(inputs), LogUtil.param(outputs));
+					log.error("{}[{}][action:procedure][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, LogUtil.param(inputs), LogUtil.param(outputs));
 				}
 			}
 		}
@@ -2205,10 +2205,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 	@Override
 	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
-		replaceVariable(runtime, run);
-		run.appendCondition();
-		run.appendGroup();
-		run.checkValid();
+		super.fillExecuteContent(runtime, run);
 	}
 	@Override
 	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
@@ -2249,9 +2246,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		if(log.isInfoEnabled() && IS_LOG_SQL(configs)){
 			if(batch >1 && !IS_LOG_BATCH_SQL_PARAM(configs)) {
-				log.info("{}[action:{}][sql:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
+				log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
 			}else {
-				log.info("{}[action:{}][sql:\n{}\n]", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.info("{}[action:{}][cmd:\n{}\n]", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 		}
 		if(null != configs){
@@ -2285,7 +2282,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][sql:\n{}\n]\n[param:{}]", random, action, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, action, millis, sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
 					}
@@ -2303,7 +2300,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				e.printStackTrace();
 			}
 			if(IS_LOG_SQL_WHEN_ERROR(configs)){
-				log.error("{}[{}][action:{}]{}", random, LogUtil.format("SQL执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
 				throw e;
@@ -2658,7 +2655,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String sql = run.getFinalQuery(false);
 		long fr = System.currentTimeMillis();
 		if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-			log.info("{}[action:metadata][sql:\n{}\n]", random, sql);
+			log.info("{}[action:metadata][cmd:\n{}\n]", random, sql);
 		}
 		if(null == jdbc){
 			return new LinkedHashMap<>();
@@ -10917,105 +10914,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return key;
 	}
 
-	protected void replaceVariable(DataRuntime runtime, TextRun run){
-		StringBuilder builder = run.getBuilder();
-		RunPrepare prepare = run.getPrepare();
-		List<Variable> variables = run.getVariables();
-		String result = prepare.getText();
-		if(null != variables){
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				}
-				if(var.getType() == Variable.VAR_TYPE_REPLACE){
-					// CD = ::CD
-					List<Object> values = var.getValues();
-					String value = null;
-					if(BasicUtil.isNotEmpty(true,values)){
-						if(var.getCompare() == Compare.IN){
-							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
-						}else {
-							value = values.get(0).toString();
-						}
-					}
-					if(null != value){
-						result = result.replace(var.getFullKey(), value);
-					}else{
-						result = result.replace(var.getFullKey(), "NULL");
-					}
-				}
-			}
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				}
-				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
-					// CD = ':CD'
-					List<Object> values = var.getValues();
-					String value = null;
-					if(BasicUtil.isNotEmpty(true,values)){
-						if(var.getCompare() == Compare.IN){
-							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
-						}else {
-							value = values.get(0).toString();
-						}
-					}
-					if(null != value){
-						result = result.replace(var.getFullKey(), value);
-					}else{
-						result = result.replace(var.getFullKey(), "");
-					}
-				}
-			}
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				}
-				if(var.getType() == Variable.VAR_TYPE_KEY){
-					// CD = :CD
-					List<Object> varValues = var.getValues();
-					if(run.getBatch() >1){//批量执行时在下一步提供值
-						result = result.replace(var.getFullKey(), "?");
-					}else if(BasicUtil.isNotEmpty(true, varValues)){
-						if(var.getCompare() == Compare.IN){
-							// 多个值IN
-							String replaceDst = "";
-							for(Object tmp:varValues){
-								replaceDst += " ?";
-							}
-							addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
-							replaceDst = replaceDst.trim().replace(" ",",");
-							result = result.replace(var.getFullKey(), replaceDst);
-						}else{
-							// 单个值
-							result = result.replace(var.getFullKey(), "?");
-							addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
-						}
-					}else{
-						//没有提供参数值
-						result = result.replace(var.getFullKey(), "NULL");
-					}
-				}
-			}
-			// 添加其他变量值
-			for(Variable var:variables){
-				if(null == var){
-					continue;
-				}
-				// CD = ?
-				if(var.getType() == Variable.VAR_TYPE_INDEX){
-					List<Object> varValues = var.getValues();
-					Object value = null;
-					if(BasicUtil.isNotEmpty(true, varValues)){
-						value = varValues.get(0);
-					}
-					addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
-				}
-			}
-		}
-
-		builder.append(result);
-	}
 
 	/**
 	 * 拼接字符串

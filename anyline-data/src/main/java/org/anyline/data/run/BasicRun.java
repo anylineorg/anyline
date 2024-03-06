@@ -1152,7 +1152,7 @@ public abstract class BasicRun implements Run {
 	public String log(ACTION.DML action, boolean placeholder){
 		StringBuilder builder = new StringBuilder();
 		List<String> keys = null;
-		builder.append("[sql:\n");
+		builder.append("[cmd:\n");
 		if(action == ACTION.DML.SELECT){
 			builder.append(getFinalQuery(placeholder));
 		}else if(action == ACTION.DML.COUNT){

@@ -1087,7 +1087,71 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run){
-        return super.execute(runtime, random, configs, run);
+        long result = -1;
+        if(null == random){
+            random = random(runtime);
+        }
+        String cmd = run.getFinalExecute();
+        List<Object> values = run.getValues();
+        long fr = System.currentTimeMillis();
+        int batch = run.getBatch();
+        String action = "execute";
+        if(batch > 1){
+            action = "batch execute";
+        }
+        if(log.isInfoEnabled() && IS_LOG_SQL(configs)){
+            if(batch >1 && !IS_LOG_BATCH_SQL_PARAM(configs)) {
+                log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, cmd, values.size());
+            }else {
+                log.info("{}[action:{}][cmd:\n{}\n]", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+        }
+        if(null != configs){
+            configs.add(run);
+        }
+        boolean exe = true;
+        if(null != configs){
+            exe = configs.execute();
+        }
+        if(!exe){
+            return -1;
+        }
+        long millis = -1;
+        try{
+            SessionPool session = session(runtime);
+            session.execute(cmd);
+            millis = System.currentTimeMillis() - fr;
+            boolean slow = false;
+            long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
+            if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
+                if(millis > SLOW_SQL_MILLIS){
+                    slow = true;
+                    log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, action, millis, cmd, LogUtil.param(values));
+                    if(null != dmListener){
+                        dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, cmd, values, null, true, result, millis);
+                    }
+                }
+            }
+            if (!slow && log.isInfoEnabled() && IS_LOG_SQL_TIME(configs)) {
+                String qty = ""+result;
+                if(batch>1){
+                    qty = "约"+result;
+                }
+                log.info("{}[action:{}][执行耗时:{}ms][影响行数:{}]", random, action, millis, LogUtil.format(qty, 34));
+            }
+        }catch(Exception e){
+            if(IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+                e.printStackTrace();
+            }
+            if(IS_LOG_SQL_WHEN_ERROR(configs)){
+                log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+            }
+            if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
+
+            }
+
+        }
+        return result;
     }
 
     /* *****************************************************************************************************************

@@ -749,7 +749,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		/*if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-			log.info("{}[sql:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
+			log.info("{}[cmd:\n{}\n]\n[param:{}]", random, sql, LogUtil.param(values));
 		}*/
 		long millis = -1;
 		swt = InterceptorProxy.beforeUpdate(runtime, random, run, dest, data, configs, columns);
@@ -2436,7 +2436,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run.addCondition(conditions);
 			run.init(); //
 			//构造最终的执行SQL
-			fillQueryContent(runtime, run);
+			//fillQueryContent(runtime, run);
+			fillExecuteContent(runtime, run);
 		}
 		return run;
 	}
@@ -2446,13 +2447,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 	}
 	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
-		}
+		replaceVariable(runtime, run);
+		run.appendCondition();
+		run.appendGroup();
+		run.checkValid();
 	}
 	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TableRun run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillExecuteContent(DataRuntime runtime, TextRun run)", 37));
 		}
 	}
 
@@ -2493,6 +2495,105 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return -1;
 	}
 
+	protected void replaceVariable(DataRuntime runtime, TextRun run){
+		StringBuilder builder = run.getBuilder();
+		RunPrepare prepare = run.getPrepare();
+		List<Variable> variables = run.getVariables();
+		String result = prepare.getText();
+		if(null != variables){
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				if(var.getType() == Variable.VAR_TYPE_REPLACE){
+					// CD = ::CD
+					List<Object> values = var.getValues();
+					String value = null;
+					if(BasicUtil.isNotEmpty(true,values)){
+						if(var.getCompare() == Compare.IN){
+							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+						}else {
+							value = values.get(0).toString();
+						}
+					}
+					if(null != value){
+						result = result.replace(var.getFullKey(), value);
+					}else{
+						result = result.replace(var.getFullKey(), "NULL");
+					}
+				}
+			}
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
+					// CD = ':CD'
+					List<Object> values = var.getValues();
+					String value = null;
+					if(BasicUtil.isNotEmpty(true,values)){
+						if(var.getCompare() == Compare.IN){
+							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
+						}else {
+							value = values.get(0).toString();
+						}
+					}
+					if(null != value){
+						result = result.replace(var.getFullKey(), value);
+					}else{
+						result = result.replace(var.getFullKey(), "");
+					}
+				}
+			}
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				if(var.getType() == Variable.VAR_TYPE_KEY){
+					// CD = :CD
+					List<Object> varValues = var.getValues();
+					if(run.getBatch() >1){//批量执行时在下一步提供值
+						result = result.replace(var.getFullKey(), "?");
+					}else if(BasicUtil.isNotEmpty(true, varValues)){
+						if(var.getCompare() == Compare.IN){
+							// 多个值IN
+							String replaceDst = "";
+							for(Object tmp:varValues){
+								replaceDst += " ?";
+							}
+							addRunValue(runtime, run, Compare.IN, new Column(var.getKey()), varValues);
+							replaceDst = replaceDst.trim().replace(" ",",");
+							result = result.replace(var.getFullKey(), replaceDst);
+						}else{
+							// 单个值
+							result = result.replace(var.getFullKey(), "?");
+							addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), varValues.get(0));
+						}
+					}else{
+						//没有提供参数值
+						result = result.replace(var.getFullKey(), "NULL");
+					}
+				}
+			}
+			// 添加其他变量值
+			for(Variable var:variables){
+				if(null == var){
+					continue;
+				}
+				// CD = ?
+				if(var.getType() == Variable.VAR_TYPE_INDEX){
+					List<Object> varValues = var.getValues();
+					Object value = null;
+					if(BasicUtil.isNotEmpty(true, varValues)){
+						value = varValues.get(0);
+					}
+					addRunValue(runtime, run, Compare.EQUAL, new Column(var.getKey()), value);
+				}
+			}
+		}
+
+		builder.append(result);
+	}
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -14031,7 +14132,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	protected String random(DataRuntime runtime){
 		StringBuilder builder = new StringBuilder();
-		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
+		builder.append("[cmd:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
 				.append("][thread:")
 				.append(Thread.currentThread().getId()).append("][ds:").append(runtime.datasource()).append("]");
 		return builder.toString();

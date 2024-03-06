@@ -1795,7 +1795,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	private String random(DataRuntime runtime){
 		StringBuilder builder = new StringBuilder();
-		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
+		builder.append("[cmd:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
 				.append("][thread:")
 				.append(Thread.currentThread().getId()).append("][ds:").append(runtime.datasource()).append("]");
 		return builder.toString();
