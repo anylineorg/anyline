@@ -665,7 +665,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		if(null != dtm) {
 			dtm.commit(status);
 		}else{
-			log.warn("[提交事务][datasource:{}][result:false][message:管理管理器不存在]", datasource);
+			log.error("[提交事务][datasource:{}][result:false][message:管理管理器不存在]", datasource);
 		}
 		transactionStatus.remove(status);
 	}
@@ -685,7 +685,7 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		if(null != dtm) {
 			dtm.rollback(status);
 		}else{
-			log.warn("[回滚事务][datasource:{}][result:false][message:管理管理器不存在]", datasource);
+			log.error("[回滚事务][datasource:{}][result:false][message:管理管理器不存在]", datasource);
 		}
 		transactionStatus.remove(status);
 	}
