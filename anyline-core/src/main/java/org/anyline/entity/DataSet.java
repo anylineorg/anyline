@@ -4095,11 +4095,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public Table getTable() {
+        if(null == table){
+            if(!rows.isEmpty()){
+                return rows.get(0).getTable();
+            }
+        }
         return table;
     }
     public String getTableName() {
-        if(null != table){
-            return table.getName();
+        Table tab = getTable();
+        if(null != tab){
+            return tab.getName();
         }
         return null;
     }
