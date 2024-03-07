@@ -1142,7 +1142,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         }
         return pks.equals(tpks);
     }
-
+    public TableDiffer compare(Table table){
+        return TableDiffer.compare(this, table);
+    }
     /**
      * 分桶方式及数量
      */
