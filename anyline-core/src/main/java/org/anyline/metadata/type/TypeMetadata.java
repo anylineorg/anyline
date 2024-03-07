@@ -596,9 +596,9 @@ public interface TypeMetadata {
         if(null != typeMetadata && meta.getParseLvl() >=2){
             return typeMetadata;
         }
-        Integer length = null;
-        Integer precision = null;
-        Integer scale = null;
+        Integer length = meta.getLength();
+        Integer precision = meta.getPrecision();
+        Integer scale = meta.getScale();
 
         //数组类型
         if (typeName.contains("[]")) {
@@ -776,8 +776,9 @@ public interface TypeMetadata {
                 meta.setScale(scale);
             }
         }
-
-        meta.setLength(length);
+        if(null != length) {
+            meta.setLength(length);
+        }
         if(null != database && database != DatabaseType.NONE) {
             meta.setParseLvl(2);
         }
