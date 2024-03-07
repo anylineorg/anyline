@@ -662,7 +662,11 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		}else {
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
 		}
-		dtm.commit(status);
+		if(null != dtm) {
+			dtm.commit(status);
+		}else{
+			log.warn("[提交事务][datasource:{}][result:false][message:管理管理器不存在]", datasource);
+		}
 		transactionStatus.remove(status);
 	}
 
@@ -678,7 +682,11 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 		}else {
 			dtm = (DataSourceTransactionManager) SpringContextUtil.getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
 		}
-		dtm.rollback(status);
+		if(null != dtm) {
+			dtm.rollback(status);
+		}else{
+			log.warn("[回滚事务][datasource:{}][result:false][message:管理管理器不存在]", datasource);
+		}
 		transactionStatus.remove(status);
 	}
 

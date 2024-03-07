@@ -4366,9 +4366,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row){
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T init(DataRuntime runtime, int index, T table, Catalog catalog, Schema schema, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return null;
 	}
@@ -4382,9 +4382,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row){
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T detail(DataRuntime runtime, int index, T table, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
 		}
 		return null;
 	}
