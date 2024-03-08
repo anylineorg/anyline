@@ -196,7 +196,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 	public RunPrepare addCondition(String column, Object value) {
 		Compare compare = Compare.EQUAL;
-		if(null != value && value instanceof Collection){
+		if(value instanceof Collection){
 			compare = Compare.IN;
 		}
 		return addCondition(compare, column, value);

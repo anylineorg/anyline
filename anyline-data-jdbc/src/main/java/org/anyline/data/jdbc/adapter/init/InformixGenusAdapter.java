@@ -188,7 +188,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
         for(Column column:columns.values()){
             String key = column.getName();
             Object value = first.getStringNvl(key);
-            if(null != value && value instanceof String) {
+            if(value instanceof String) {
                 String str = (String)value;
                 if (str.toUpperCase().contains(".NEXTVAL")) {
                     //if (str.startsWith("${") && str.endsWith("}")) {
@@ -265,7 +265,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
         for(Column column:columns.values()){
             String key = column.getName();
             Object value = BeanUtil.getFieldValue(first, key);
-            if(null != value && value instanceof String) {
+            if(value instanceof String) {
                 String str = (String)value;
                 if (str.toUpperCase().contains(".NEXTVAL")) {
                     //if (str.startsWith("${") && str.endsWith("}")) {

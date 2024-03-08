@@ -299,7 +299,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 List<String> ks = BeanUtil.getMapKeys(mp);
                 for (String k : ks) {
                     Object value = mp.get(k);
-                    if (null != value && value instanceof Map) {
+                    if (value instanceof Map) {
                         value = parse(value);
                     }
                     row.put(k, value);
@@ -3143,7 +3143,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         List<String> keys = keys();
         for (String key : keys) {
             Object value = get(key);
-            if (null != value && value instanceof String) {
+            if (value instanceof String) {
                 put(KEY_CASE.SRC, key, ((String)value).trim());
             }
         }
@@ -3152,7 +3152,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow trim(String ... keys) {
         for (String key : keys) {
             Object value = get(key);
-            if (null != value && value instanceof String) {
+            if (value instanceof String) {
                 put(KEY_CASE.SRC, key, ((String)value).trim());
             }
         }
@@ -3166,7 +3166,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow compress(){
         for(String key:keySet()){
             Object value = get(key);
-            if (null != value && value instanceof String) {
+            if (value instanceof String) {
                 put(KEY_CASE.SRC, key, BasicUtil.compress((String)value));
             }
         }
@@ -3175,7 +3175,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow compress(String ... keys){
         for(String key:keys){
             Object value = get(key);
-            if (null != value && value instanceof String) {
+            if (value instanceof String) {
                 put(KEY_CASE.SRC, key, BasicUtil.compress((String)value));
             }
         }
@@ -3189,7 +3189,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow sbc2dbc(){
         for(String key:keySet()){
             Object value = get(key);
-            if (null != value && value instanceof String) {
+            if (value instanceof String) {
                 put(KEY_CASE.SRC, key, CharUtil.sbc2dbc((String)value));
             }
         }
@@ -3198,7 +3198,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow sbc2dbc(String ... keys){
         for(String key:keys){
             Object value = get(key);
-            if (null != value && value instanceof String) {
+            if (value instanceof String) {
                 put(KEY_CASE.SRC, key, CharUtil.sbc2dbc((String)value));
             }
         }
@@ -3211,7 +3211,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public DataRow replaceEmpty(String replace, String ... keys) {
-
         List<String> ks = null;
         if(null == keys || keys.length ==0){
             ks = keys();
@@ -3233,7 +3232,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataRow
      */
     public DataRow replaceNull(String replace, String ... keys) {
-
         List<String> ks = null;
         if(null == keys || keys.length ==0){
             ks = keys();
@@ -3900,7 +3898,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param format 如果是String 按format格式解析
      * @param def 默认值
      * @return DataRow
-     * @throws Exception
      */
     protected DataRow dateParse(String src, String tar, String format, Date def)  {
         if (null == tar || null == src || isEmpty(src) || null == format) {
@@ -3924,7 +3921,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param tar 结果列
      * @param def 默认值 如果默认值转换数字失败会抛出异常
      * @return DataRow
-     * @throws Exception
      */
     protected DataRow numberParse(String src, String tar, String def) {
         if (null == tar || null == src || isEmpty(src) ) {
@@ -3997,8 +3993,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             List<String> keys = keys();
             for(String key:keys){
                 Object value = get(key);
-                Class vc = value.getClass();
                 if(null != value){
+                    Class vc = value.getClass();
                     boolean exe = false;
                     for(Class c:classes){
                         if(vc.equals(c)){
@@ -4070,8 +4066,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             List<String> keys = keys();
             for(String key:keys){
                 Object value = get(key);
-                String vc = value.getClass().getSimpleName();
                 if(null != value){
+                    String vc = value.getClass().getSimpleName();
                     boolean exe = false;
                     if(vc.toUpperCase().contains("DATE")){
                         exe = true;
@@ -4157,8 +4153,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             List<String> keys = keys();
             for(String key:keys){
                 Object value = get(key);
-                Class vc = value.getClass();
                 if(null != value){
+                    Class vc = value.getClass();
                     boolean exe = false;
                     for(Class c:classes){
                         if(vc.equals(c)){
@@ -4189,8 +4185,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             List<String> keys = keys();
             for(String key:keys){
                 Object value = get(key);
-                String vc = value.getClass().getSimpleName().toUpperCase();
                 if(null != value){
+                    String vc = value.getClass().getSimpleName().toUpperCase();
                     boolean exe = false;
                     if(vc.startsWith("INT") || vc.contains("SHORT") || vc.contains("LONG") || vc.contains("FLOAT") || vc.contains("DOUBLE") || vc.contains("DECIMAL") || vc.contains("NUMERIC") || vc.contains("NUMBER")){
                         exe = true;

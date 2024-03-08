@@ -69,7 +69,6 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Catalog catalog				= null					;
 	protected Schema schema					= null					;
 	protected Table table					= null					;
-	protected List<String> keys				= new ArrayList<>();
 
 	@Override
 	public Table table() {
@@ -203,7 +202,6 @@ public class DefaultConfigStore implements ConfigStore {
 			this.schema = configs.schema();
 			this.table = configs.table();
 			this.datasource = configs.datasource();
-			this.keys = configs.keys();
 			this.execute = configs.execute();
 			this.clazz = configs.getClass();
 			this.integrality = configs.integrality();
@@ -218,13 +216,13 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public ConfigStore keys(String ... keys) {
-		if(null == this.keys){
-			this.keys = new ArrayList<>();
+		if(null == this.primaryKeys){
+			this.primaryKeys = new ArrayList<>();
 		}else {
-			this.keys.clear();
+			this.primaryKeys.clear();
 		}
 		for(String key:keys){
-			this.keys.add(key);
+			this.primaryKeys.add(key);
 		}
 		return this;
 	}
@@ -235,7 +233,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public List<String> keys() {
-		return keys;
+		return primaryKeys;
 	}
 
 	public DefaultConfigStore init(){
@@ -575,7 +573,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return boolean
 	 */
 	public boolean hasSelfPrimaryKeys() {
-		if (null != primaryKeys && primary!keys.isEmpty()) {
+		if (null != primaryKeys && !primaryKeys.isEmpty()) {
 			return true;
 		} else {
 			return false;

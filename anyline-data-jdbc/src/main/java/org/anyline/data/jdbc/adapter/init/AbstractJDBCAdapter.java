@@ -498,7 +498,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if (BasicUtil.checkEl(str)) {
 				value = str.substring(2, str.length()-1);
 				valuesBuilder.append(value);
-			}else if(null != value && value instanceof SQL_BUILD_IN_VALUE){
+			}else if(value instanceof SQL_BUILD_IN_VALUE){
 				//内置函数值
 				value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
 				valuesBuilder.append(value);

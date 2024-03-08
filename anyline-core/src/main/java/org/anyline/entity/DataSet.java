@@ -4334,7 +4334,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     public DataSet putVar(String key, Object value) {
         int regex = 0;
-        if(null != value && value instanceof String){
+        if(value instanceof String){
             String str = (String)value;
             int idx = str.indexOf("${");
             if(idx != -1) {
