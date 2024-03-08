@@ -2681,7 +2681,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter, I
 	 */
 	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
 		set = set.getRows("KEY_NAME","PRIMARY");
-		if(set.size() > 0){
+		if(!set.isEmpty()){
 			primary = (T)new PrimaryKey();
 			for(DataRow row:set){
 				primary.setName(row.getString("KEY_NAME"));

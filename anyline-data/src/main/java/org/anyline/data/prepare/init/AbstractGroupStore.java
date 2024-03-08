@@ -84,7 +84,7 @@ public class AbstractGroupStore implements GroupStore {
 	@Override 
 	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
-		if(null != groups && groups.size() > 0){
+		if(null != groups && !groups.isEmpty()){
 			builder.append(" GROUP BY "); 
 			for(int i=0; i<groups.size(); i++){
 				Group group = groups.get(i);

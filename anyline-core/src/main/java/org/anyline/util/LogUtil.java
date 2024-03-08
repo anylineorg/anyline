@@ -79,7 +79,7 @@ public class LogUtil {
      */
     public static String param(List params){
         StringBuilder builder = new StringBuilder();
-        if(null != params && params.size() > 0){
+        if(null != params && !params.isEmpty()){
             builder.append("\n");
             int idx = 0;
             for(Object param:params){
@@ -94,7 +94,7 @@ public class LogUtil {
     }
     public static String param(List keys, List values) {
         StringBuilder builder = new StringBuilder();
-        if (null != keys && null != values && keys.size() > 0) {
+        if (null != keys && null != values && !keys.isEmpty()) {
             //有key并且与value一一对应
             builder.append("\n");
             if(keys.size() == values.size()) {

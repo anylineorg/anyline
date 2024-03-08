@@ -103,7 +103,7 @@ public class DefaultOrderStore implements OrderStore{
 	} 
 	public String getRunText(String delimiter){
 		StringBuilder builder = new StringBuilder(); 
-		if(null != orders && orders.size() > 0){
+		if(null != orders && !orders.isEmpty()){
 			builder.append(" ORDER BY "); 
 			for(int i=0; i<orders.size(); i++){
 				Order order = orders.get(i);

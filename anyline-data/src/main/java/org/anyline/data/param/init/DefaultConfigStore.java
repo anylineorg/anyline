@@ -564,7 +564,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	public String getPrimaryKey() {
 		List<String> keys = getPrimaryKeys();
-		if (null != keys && keys.size() > 0) {
+		if (null != keys && !keys.isEmpty()) {
 			return keys.get(0);
 		}
 		return null;
@@ -575,7 +575,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return boolean
 	 */
 	public boolean hasSelfPrimaryKeys() {
-		if (null != primaryKeys && primaryKeys.size() > 0) {
+		if (null != primaryKeys && primary!keys.isEmpty()) {
 			return true;
 		} else {
 			return false;
@@ -1294,7 +1294,7 @@ public class DefaultConfigStore implements ConfigStore {
 		Config config = chain.getConfig(null,var);
 		if(null != config){
 			List<Object> values = config.getValues();
-			if(null != values && values.size() > 0){
+			if(null != values && !values.isEmpty()){
 				return values.get(0);
 			}
 		}
@@ -1323,7 +1323,7 @@ public class DefaultConfigStore implements ConfigStore {
 		Config config = chain.getConfig(null, var,compare);
 		if(null != config){
 			List<Object> values = config.getValues();
-			if(null != values && values.size() > 0){
+			if(null != values && !values.isEmpty()){
 				return values.get(0);
 			}
 		}

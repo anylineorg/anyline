@@ -2643,7 +2643,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 	 */
 	@Override
 	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-		if(set.size() > 0){
+		if(!set.isEmpty()){
 			set = set.getRows("TABLE_NAME", table.getName().toUpperCase());
 			primary = (T)new PrimaryKey();
 			for(DataRow row:set){
@@ -2788,7 +2788,7 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter, Ini
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
-		if(set.size() > 0){
+		if(!set.isEmpty()){
 			set = set.getRows("TABLE_NAME", table.getName().toUpperCase());
 			for(DataRow row:set){
 				String name = row.getString("INDEX_NAME");

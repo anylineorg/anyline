@@ -126,7 +126,7 @@ public class PostgresqlGeometryAdapter {
     }
     public static PGpath convert(LineString string){
         List<Point> points = string.points();
-        if(points.size() > 0) {
+        if(!points.isEmpty()) {
             int size = points.size();
             Point first = points.get(0);
             Point last = points.get(size - 1);

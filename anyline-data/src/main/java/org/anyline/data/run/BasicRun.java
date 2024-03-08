@@ -1173,7 +1173,7 @@ public abstract class BasicRun implements Run {
 		builder.append("\n]");
 		if(placeholder){
 			List<Object> values = getValues();
-			if(null!= values && values.size() > 0) {
+			if(null!= values && !values.isEmpty()) {
 				builder.append("\n[param:");
 				builder.append(LogUtil.param(keys, getValues()));
 				builder.append("];");

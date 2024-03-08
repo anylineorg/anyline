@@ -2598,7 +2598,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
         set = set.getRows("Key_name","PRIMARY");
-        if(set.size() > 0){
+        if(!set.isEmpty()){
             primary = (T)new PrimaryKey();
             for(DataRow row:set){
                 primary.setName(row.getString("Key_name"));
@@ -3873,7 +3873,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
         List<Run> runs = new ArrayList<>();
-        if (columns.size() > 0) {
+        if (!columns.isEmpty()) {
             Run run = new SimpleRun(runtime);
             StringBuilder builder = run.getBuilder();
             builder.append("ALTER ").append(keyword(meta)).append(" ");

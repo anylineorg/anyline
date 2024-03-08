@@ -3553,7 +3553,7 @@ public class BeanUtil {
 				copy(params, classValue);
 				T valueRow = query(datas,params);
 				String finalKey = concatValue(classValue,"-");//2010-数学
-				if(null != valueKeys && valueKeys.size() > 0){
+				if(null != valueKeys && !valueKeys.isEmpty()){
 					if(valueKeys.size() == 1){
 						if (null != valueRow) {
 							row.put(finalKey, getFieldValue(valueRow, valueKeys.get(0)));

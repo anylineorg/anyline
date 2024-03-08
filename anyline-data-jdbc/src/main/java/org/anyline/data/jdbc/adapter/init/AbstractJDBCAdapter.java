@@ -200,7 +200,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 		if(obj instanceof Collection){
 			Collection list = (Collection) obj;
-			if(list.size() > 0){
+			if(!list.isEmpty()){
 				run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 			}
 		}else {
@@ -1653,7 +1653,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		long fr = System.currentTimeMillis();
 		if(log.isInfoEnabled() && IS_LOG_SQL(configs)){
-			log.info("{}[action:select][cmd:\n{}\n]", random, run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
+			log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT, IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 		boolean exe = true;
 		if(null != configs){
@@ -1689,7 +1689,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
 					queryTimeout(ps, configs);
-					if (null != values && values.size() > 0) {
+					if (null != values && !values.isEmpty()) {
 						int idx = 0;
 						for (Object value : values) {
 							ps.setObject(++idx, value);
@@ -1726,7 +1726,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
-					if (null != values && values.size() > 0) {
+					if (null != values && !values.isEmpty()) {
 						int idx = 0;
 						for (Object value : values) {
 							ps.setObject(++idx, value);
@@ -1744,7 +1744,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				maps = new ArrayList<>();
 				//end stream handler
 			}else {
-				if (null != values && values.size() > 0) {
+				if (null != values && !values.isEmpty()) {
 					maps = jdbc.queryForList(sql, values.toArray());
 				} else {
 					maps = jdbc.queryForList(sql);
@@ -1821,7 +1821,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(null == jdbc){
 				return new HashMap<>();
 			}
-			if (null != values && values.size() > 0) {
+			if (null != values && !values.isEmpty()) {
 				map = jdbc.queryForMap(sql, values.toArray());
 			} else {
 				map = jdbc.queryForMap(sql);
@@ -1867,7 +1867,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	@Override
 	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
 		List<Run> runs = buildQuerySequence(runtime, next, names);
-		if (null != runs && runs.size() > 0) {
+		if (null != runs && !runs.isEmpty()) {
 			Run run = runs.get(0);
 			if(!run.isValid()){
 				if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
@@ -1876,7 +1876,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				return new DataRow();
 			}
 			DataSet set = select(runtime, random, true, (Table)null, null, run);
-			if (set.size() > 0) {
+			if (!set.isEmpty()) {
 				return set.getRow(0);
 			}
 		}
@@ -2248,7 +2248,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(batch >1 && !IS_LOG_BATCH_SQL_PARAM(configs)) {
 				log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
 			}else {
-				log.info("{}[action:{}][cmd:\n{}\n]", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 		}
 		if(null != configs){
@@ -2270,7 +2270,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(batch>1){
 				result = batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
-				if (null != values && values.size() > 0) {
+				if (null != values && !values.isEmpty()) {
 					result = jdbc.update(sql, values.toArray());
 				} else {
 					result = jdbc.update(sql);
@@ -4449,7 +4449,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			//检测主键
 			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
-				if (null != columns || columns.size() > 0) {
+				if (null != columns || !columns.isEmpty()) {
 					boolean exists = false;
 					for(Column column:columns.values()){
 						if(column.isPrimaryKey() != -1){
@@ -9950,7 +9950,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 						i++;
 					}
 				}else{
-					if(null != keys && keys.size() > 0) {
+					if(null != keys && !keys.isEmpty()) {
 						Object last = keys.get(0).get(id_key);
 						if (last instanceof Number) {
 							Long num = BasicUtil.parseLong(last.toString(), null);
@@ -9967,7 +9967,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					log.warn("{}[exe insert][生成主键:{}]", random, ids);
 				}
 			}else{
-				if(null != keys && keys.size() > 0) {
+				if(null != keys && !keys.isEmpty()) {
 					if(BasicUtil.isEmpty(true, getPrimaryValue(runtime, data))){
 						Object id = keys.get(0).get(id_key);
 						setPrimaryValue(data, id);
@@ -10566,7 +10566,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
 					queryTimeout(ps, configs);
-					if (null != values && values.size() > 0) {
+					if (null != values && !values.isEmpty()) {
 						int idx = 0;
 						for (Object value : values) {
 							ps.setObject(++idx, value);
@@ -10603,7 +10603,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					PreparedStatement ps = con.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 					ps.setFetchSize(handler.size());
 					ps.setFetchDirection(ResultSet.FETCH_FORWARD);
-					if (null != values && values.size() > 0) {
+					if (null != values && !values.isEmpty()) {
 						int idx = 0;
 						for (Object value : values) {
 							ps.setObject(++idx, value);

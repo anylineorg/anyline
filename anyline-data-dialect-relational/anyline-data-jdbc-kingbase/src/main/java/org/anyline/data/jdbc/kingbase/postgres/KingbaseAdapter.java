@@ -90,7 +90,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		try {
 			List<Map<String, Object>> maps = jdbc.queryForList("show database_mode");
 
-			if(maps.size() > 0){
+			if(!maps.isEmpty()){
 				return maps.get(0).get("database_mode")+"";
 			}
 		}catch (Exception e){

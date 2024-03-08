@@ -227,7 +227,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         store.setPageNavi(navi);
         DataSet set = querys(dest, store, obj, conditions);
-        if (null != set && set.size() > 0) {
+        if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;
         }
@@ -248,7 +248,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         store.setPageNavi(navi);
         DataSet set = querys(dest, store, obj, conditions);
-        if (null != set && set.size() > 0) {
+        if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;
         }
@@ -387,7 +387,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = selects(clazz, configs, entity, conditions);
-        if (null != list && list.size() > 0) {
+        if (null != list && !list.isEmpty()) {
             return list.get(0);
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
@@ -431,7 +431,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = selects(dest, clazz, configs, entity, conditions);
-        if (null != list && list.size() > 0) {
+        if (null != list && !list.isEmpty()) {
             return list.get(0);
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
@@ -456,7 +456,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         configs.setPageNavi(navi);
         EntitySet<T> list = selects(dest, clazz, configs, entity, conditions);
-        if (null != list && list.size() > 0) {
+        if (null != list && !list.isEmpty()) {
             return list.get(0);
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
@@ -551,7 +551,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         store.setPageNavi(navi);
         DataSet set = querys(table, store, obj, conditions);
-        if (null != set && set.size() > 0) {
+        if (null != set && !set.isEmpty()) {
             DataRow row = set.getRow(0);
             return row;
         }
@@ -1056,7 +1056,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override 
     public DataRow query(Procedure procedure, String... inputs) {
         DataSet set = querys(procedure, 0, 0, inputs);
-        if (set.size() > 0) {
+        if (!set.isEmpty()) {
             return set.getRow(0);
         }
         if (ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
@@ -1475,7 +1475,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 prepare = new DefaultTablePrepare(table);
             }
         }
-        if (null != prepare && null != pks && pks.size() > 0) {
+        if (null != prepare && null != pks && !pks.isEmpty()) {
             prepare.setPrimaryKey(pks);
         }
         return prepare;
@@ -1922,7 +1922,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
             Table table = null;
             List<Table> tables = tables(greedy, catalog, schema, name, null);
-            if (tables.size() > 0) {
+            if (!tables.isEmpty()) {
                 table = tables.get(0);
                 if(null != table && struct>0) {
                     struct(table, struct);
@@ -1934,7 +1934,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public Table table(Catalog catalog, Schema schema, String name, int struct) {
             Table table = null;
             LinkedHashMap<String, Table> tables = tables(catalog, schema, name, null);
-            if (tables.size() > 0) {
+            if (!tables.isEmpty()) {
                 table = tables.values().iterator().next();
                 if(null != table && struct > 0) {
                    struct(table, struct);
@@ -2000,7 +2000,7 @@ public class DefaultService<E> implements AnylineService<E> {
         public View view(boolean greedy, Catalog catalog, Schema schema, String name) {
             View view = null;
             LinkedHashMap<String, View> views = views(greedy, catalog, schema, name, null);
-            if (views.size() > 0) {
+            if (!views.isEmpty()) {
                 view = views.values().iterator().next();
                 view.setColumns(columns(view));
                 ddl(view);

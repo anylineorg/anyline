@@ -65,7 +65,7 @@ public class TextRun extends BasicRun implements Run {
 
 					//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
 					List<Variable> vars = this.getVariables(con.getId());
-					if(vars.size() > 0){
+					if(!vars.isEmpty()){
 						//用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 						con.setVariableSlave(true);
 						for(Variable var:vars){

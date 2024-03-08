@@ -1508,7 +1508,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
 		LinkedHashMap<String, Column> metadatas = columns(runtime, null,false, table, false);
-		if(metadatas.size() > 0) {
+		if(!metadatas.isEmpty()) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {
 					result.put(key, metadatas.get(key));
@@ -4186,7 +4186,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			try {
 				List<Run> runs =buildQueryTablesRun(runtime, greedy, catalog, schema, null, null);
-				if (null != runs && runs.size() > 0) {
+				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();

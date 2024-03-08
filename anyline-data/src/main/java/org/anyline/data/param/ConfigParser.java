@@ -963,7 +963,7 @@ public class ConfigParser {
 	private static String getRuntimeValueFormDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) {
 		String result = null;
 		List<Object> list = getRuntimeValuesFromDecryptMap(values, key,valueEncrypt);
-		if (null != list && list.size() > 0) {
+		if (null != list && !list.isEmpty()) {
 			Object tmp = list.get(0);
 			if (null != tmp) {
 				result = tmp.toString().trim();

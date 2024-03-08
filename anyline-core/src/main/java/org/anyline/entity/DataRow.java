@@ -1151,7 +1151,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public String getPrimaryKey() {
         List<String> keys = getPrimaryKeys();
-        if (null != keys && keys.size() > 0) {
+        if (null != keys && !keys.isEmpty()) {
             return keys.get(0);
         }
         return null;
@@ -3853,7 +3853,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public String toString(){
-        return toJSON();
+        String result = this.getClass().getSimpleName();
+        Object pv = getPrimaryValue();
+        if(null != pv){
+            result += "(" + pv + ")";
+        }
+        result += ":" + toJSON();
+        return result;
     }
 
     protected DataRow numberFormat(String src, String tar, String format, String def) {

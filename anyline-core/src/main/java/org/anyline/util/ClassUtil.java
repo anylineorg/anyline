@@ -320,7 +320,7 @@ public class ClassUtil {
 	}
 	public static Object parseAnnotationFieldValue(Class target, String annotation, String field){
 		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
-		if(values.size() > 0){
+		if(!values.isEmpty()){
 			return values.get(0);
 		}
 		return null;
@@ -345,7 +345,7 @@ public class ClassUtil {
 	}
 	public static Object parseAnnotationFieldValue(Field target, String annotation, String field){
 		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
-		if(values.size() > 0){
+		if(!values.isEmpty()){
 			return values.get(0);
 		}
 		return null;

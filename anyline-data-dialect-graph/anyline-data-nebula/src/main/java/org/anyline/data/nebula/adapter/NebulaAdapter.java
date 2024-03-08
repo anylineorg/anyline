@@ -1207,7 +1207,7 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
             if(batch >1 && !IS_LOG_BATCH_SQL_PARAM(configs)) {
                 log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, cmd, values.size());
             }else {
-                log.info("{}[action:{}][cmd:\n{}\n]", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE, IS_SQL_LOG_PLACEHOLDER(configs)));
             }
         }
         if(null != configs){

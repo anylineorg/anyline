@@ -355,7 +355,7 @@ public class MapUtil {
 					valueRow.put("_tmp_skip","1");
 				}
 				String finalKey = concatValue(classValue, "-");//2010-数学
-				if(null != valueKeys && valueKeys.size() > 0){
+				if(null != valueKeys && !valueKeys.isEmpty()){
 					if(valueKeys.size() == 1){
 						if (null != valueRow) {
 							row.put(finalKey, valueRow.get(valueKeys.get(0)));

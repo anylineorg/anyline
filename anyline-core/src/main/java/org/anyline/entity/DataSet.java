@@ -441,7 +441,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return boolean
      */
     public boolean hasPrimaryKeys() {
-        if (null != primaryKeys && primaryKeys.size() > 0) {
+        if (null != primaryKeys && !primaryKeys.isEmpty()) {
             return true;
         } else {
             return false;
@@ -634,7 +634,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataRow truncate(int begin, int end) {
         truncates(begin, end);
-        if (rows.size() > 0) {
+        if (!rows.isEmpty()) {
             return rows.get(0);
         } else {
             return null;
@@ -707,7 +707,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataRow cut(int begin, int end) {
         DataSet result = cuts(begin, end);
-        if (result.size() > 0) {
+        if (!result.isEmpty()) {
             return result.getRow(0);
         }
         return null;
@@ -842,7 +842,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataRow getRow(Compare compare, int begin, String... params) {
         DataSet set = getRows(compare, begin, 1, params);
-        if (set.size() > 0) {
+        if (!set.isEmpty()) {
             return set.getRow(0);
         }
         if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
@@ -862,7 +862,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     public DataRow getRow(Compare compare, int begin, DataRow params) {
         DataSet set = getRows(compare, begin, 1, params);
-        if (set.size() > 0) {
+        if (!set.isEmpty()) {
             return set.getRow(0);
         }
         if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
@@ -1365,7 +1365,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result = new DataRow();
         }
         if (size() > 0)  {
-            if(keys.isEmpty() && size() >0){
+            if(keys.isEmpty()){
                 keys = getRow(0).numberKeys();
             }
             for (String key : keys) {
@@ -1394,7 +1394,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result = new DataRow();
         }
         if (size() > 0) {
-            if(keys.isEmpty() && size() >0){
+            if(keys.isEmpty()){
                 keys = getRow(0).numberKeys();
             }
             for (String key : keys) {
@@ -1425,7 +1425,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result = new DataRow();
         }
         if (size() > 0) {
-            if(keys.isEmpty() && size() >0){
+            if(keys.isEmpty()){
                 keys = getRow(0).numberKeys();
             }
             for (String key : keys) {
@@ -3748,7 +3748,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public static DataSet intersection(boolean distinct, List<DataSet> sets, String... keys) {
         DataSet result = null;
-        if (null != sets && sets.size() > 0) {
+        if (null != sets && !sets.isEmpty()) {
             for (DataSet set : sets) {
                 if (null == result) {
                     result = set;
@@ -4403,7 +4403,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     valueRow.skip = true;
                 }
                 String finalKey = concatValue(classValue,"-");//2010-数学
-                if(null != valueKeys && valueKeys.size() > 0){
+                if(null != valueKeys && !valueKeys.isEmpty()){
                     if(valueKeys.size() == 1){
                         if (null != valueRow) {
                             row.put(finalKey, valueRow.get(valueKeys.get(0)));
