@@ -1454,6 +1454,8 @@ public class DefaultService<E> implements AnylineService<E> {
             String id = table.getId();
             pks = Column.names(table.primarys());
             if (null != src && src.replace("\n","").replace("\r","").trim().matches("^[a-zA-Z]+\\s+.+")) {
+                //SELECT * FROM SSO_USER
+                //MATCH (e:CRM_USER:HR_USER) RETURN e
                 if (ConfigTable.isSQLDebug()) {
                     log.debug("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
