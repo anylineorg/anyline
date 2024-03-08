@@ -295,7 +295,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter, Init
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
-		configs.IS_KEYHOLDER_IDENTITY(false);
+		configs.IS_KEY_HOLDER_IDENTITY(false);
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
 

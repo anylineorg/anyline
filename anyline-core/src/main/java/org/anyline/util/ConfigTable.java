@@ -103,7 +103,7 @@ public class ConfigTable {
 	public static boolean IS_UPDATE_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
 	public static boolean IS_INSERT_NULL_FIELD							= false			;	// Entity是否更新nul值的属性
 	public static boolean IS_INSERT_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
-	public static boolean IS_KEYHOLDER_IDENTITY							= true			;   // 是否返回自增ID(一般在批量操作时才需要在ConfigStore中定义)
+	public static boolean IS_KEY_HOLDER_IDENTITY							= true			;   // 是否返回自增ID(一般在批量操作时才需要在ConfigStore中定义)
 	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A","B","C"]
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符
@@ -138,7 +138,7 @@ public class ConfigTable {
 	public static int ENTITY_FIELD_UPDATE_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:更新属性关联表
 	public static int ENTITY_FIELD_DELETE_DEPENDENCY					= 0				;   // 实体类属性依赖层级 > 0:删除属性关联表
 	public static Compare ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE		= Compare.EQUAL ;	// 实体类属性依赖查询方式 EQUAL:逐行查询 IN:一次查询
-	public static int IGNORE_GRAPH_QUERY_RESULT_KEY 					= 0				;   // 是否忽略查询结果中顶层的key,可能返回多个结果集(0-不忽略 1-忽略 2-如果1个结果集则忽略 多个则保留)
+	public static int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY					= 0				;   // 是否忽略查询结果中顶层的key,可能返回多个结果集(0-不忽略 1-忽略 2-如果1个结果集则忽略 多个则保留)
 	public static int IGNORE_GRAPH_QUERY_RESULT_TABLE 					= 0				;   // 是否忽略查询结果中的表名,数据可能存在于多个表中(0-不忽略 CRM_USER.id 1-忽略 id 2-如果1个表则忽略 多个表则保留)
 	public static int MERGE_GRAPH_QUERY_RESULT_TABLE 					= 0				;	// 是否合并查询结果中的表,合并后会少一层表名被合并到key中(如果不忽略表名)(0-不合并 1-合并 2-如果1个表则合并 多个表则不合并)
 	// 0{"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
@@ -1020,7 +1020,15 @@ public class ConfigTable {
 	public String GENERATOR_TABLES() {
 		return GENERATOR_TABLES;
 	}
-
+	public int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(){
+		return IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
+	}
+	public int IGNORE_GRAPH_QUERY_RESULT_TABLE(){
+		return IGNORE_GRAPH_QUERY_RESULT_TABLE;
+	}
+	public int MERGE_GRAPH_QUERY_RESULT_TABLE(){
+		return MERGE_GRAPH_QUERY_RESULT_TABLE;
+	}
 
 
 	public static void closeAllSqlLog(){

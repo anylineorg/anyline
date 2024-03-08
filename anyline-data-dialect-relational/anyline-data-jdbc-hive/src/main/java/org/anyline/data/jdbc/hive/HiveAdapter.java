@@ -6442,7 +6442,7 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter, Ini
 	 *  ***************************************************************************************************************/
 
 	@Override
-	protected boolean IS_KEYHOLDER_IDENTITY(ConfigStore configs){
+	protected boolean IS_KEY_HOLDER_IDENTITY(ConfigStore configs){
 		return false;
 	}
 }

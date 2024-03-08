@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      http:
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, 
@@ -51,344 +51,367 @@ public class AnylineProperty {
      * 用来配置默认的 elasticsearch 数据源，如果还有其他数据源(包括JDBC)可以合并到datasource
      */
     protected DataSourceProperty elasticsearch;
-    //以下属性与ConfigTable一一对应
+    
     /**
      * debug状态会输出更多日志
      */
-    protected boolean debug 									= true			;	// debug状态会输出更多日志
+    protected boolean debug 									= true			;	
     /**
      * 执行sql时是否输出日志
      */
-    protected boolean logSql									= true			;	// 执行sql时是否输出日志
-    protected boolean logSlowSql                               = true          ;   // 执行慢sql时是否输出日志
+    protected boolean logSql								    = ConfigTable.IS_LOG_SQL			;
+    protected boolean logSlowSql                               = ConfigTable.IS_LOG_SLOW_SQL          ;   
     /**
      * 是否抛出convert异常提示
      */
-    protected boolean throwConvertException					    = false			;   // 是否抛出convert异常提示()
+    protected boolean throwConvertException					    = ConfigTable.IS_THROW_CONVERT_EXCEPTION			;   
     /**
      * 捕捉但未抛出的异常是否显示详细信息
      */
-    protected boolean printExceptionStackTrace					= false			;   // 捕捉但未抛出的异常是否显示详细信息
+    protected boolean printExceptionStackTrace					= ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE			;   
 
     /**
      * 慢sql, 如果配置了>0的毫秒数, 在sql执行超出时限后会输出日志, 并调用DMListener.slow
      */
-    protected long slowSqlMillis								= 0			    ; 	// 慢sql, 如果配置了>0的毫秒数, 在sql执行超出时限后会输出日志, 并调用dmlistener.slow
+    protected long slowSqlMillis								= ConfigTable.SLOW_SQL_MILLIS		    ; 	
     /**
      * 执行sql时是否输出参数日志
      */
-    protected boolean logSqlParam								= true			;	// 执行sql时是否输出参数日志
+    protected boolean logSqlParam								= ConfigTable.IS_LOG_SQL_PARAM			;
     /**
      * 执行sql异常时是否输出日志
      */
-    protected boolean logSqlWhenError						    = true			;	// 执行sql异常时是否输出日志
+    protected boolean logSqlWhenError						    = ConfigTable.IS_LOG_SQL_WHEN_ERROR			;
     /**
      * 执行sql异常时是否输出参数日志
      */
-    protected boolean logSqlParamWhenError					    = true			;	// 执行sql异常时是否输出参数日志
+    protected boolean logSqlParamWhenError					    = ConfigTable.IS_LOG_SQL_PARAM_WHEN_ERROR			;
     /**
      * 加载自定义sql时是否输出日志
      */
-    protected boolean sqlDebug	 								= false			;	// 加载自定义sql时是否输出日志
+    protected boolean sqlDebug	 								= ConfigTable.IS_SQL_DEBUG			;
 
-    protected boolean sqlLogPlaceholder                         = true          ;   // SQL日志是否显示占位符
+    protected boolean sqlLogPlaceholder                         = ConfigTable.IS_SQL_LOG_PLACEHOLDER          ;
     /**
      * 调用http接口时是否出输出日志
      */
-    protected boolean httpLog 									= true			;	// 调用http接口时是否出输出日志
+    protected boolean httpLog 									= ConfigTable.IS_HTTP_LOG			;
     /**
      * http参数是否需要解码 0:自动识别 1:确认编码 -1:确认未编码
      */
-    protected int httpParamEncode								= 0			    ;   // http参数是否需要解码 0:自动识别 1:确认编码 -1:确认未编码
+    protected int httpParamEncode								= ConfigTable.HTTP_PARAM_ENCODE			    ;
     /**
      * 如果有多数据源为每个数据源生成独立的service
      */
-    protected boolean multipleService                            = true         ;   // 如果有多数据源为每个数据源生成独立的service
+    protected boolean multipleService                            = ConfigTable.IS_MULTIPLE_SERVICE         ;
     /**
      * 是否开启默认的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
      */
-    protected boolean enableDefaultJdbcAdapter                   = false        ;   //是否开启默认的jdbc adapter(仅支持部分标准SQL)遇到没有实现adapter的数据库时可以开启
+    protected boolean enableCommonJdbcAdapter                   = ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER        ;
     /**
      * 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
      */
-    protected boolean autoConvertBytes 							 = true		    ;   // 否将数据库中与Java bytes[]对应的类型自动转换如Point > double[](返回DataRow时受此开关景程)
+    protected boolean autoConvertBytes 							 = ConfigTable.IS_AUTO_CONVERT_BYTES		    ;
 
     /**
      * 查询元数据时忽略大小写
      */
-    protected boolean metadataIgnoreCase                        = true          ;
+    protected boolean metadataIgnoreCase                        = ConfigTable.IS_METADATA_IGNORE_CASE          ;
     /**
      * DataRow是否自动转换成大写
      */
-    protected boolean upperKey 								    = true			;	// DataRow是否自动转换成大写
+    protected boolean upperKey 								    = ConfigTable.IS_UPPER_KEY			;
     /**
      * DataRow是否自动转换成小写
      */
-    protected boolean lowerKey 								    = false			;	// DataRow是否自动转换成小写
+    protected boolean lowerKey 								    = ConfigTable.IS_LOWER_KEY			;
     /**
      * DataRow是否忽略大小写
      */
-    protected boolean keyIgnoreCase 							= true			;	// DataRow是否忽略大小写
+    protected boolean keyIgnoreCase 							= ConfigTable.IS_KEY_IGNORE_CASE			;
     /**
      * sql查询异常时是否抛出
      */
-    protected boolean throwSqlQueryException 					= true			;	// sql查询异常时是否抛出
+    protected boolean throwSqlQueryException 					= ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION			;
     /**
      * 命令执行异常时是否抛出
      */
-    protected boolean throwSqlUpdateException 				    = true			;	// 命令执行异常时是否抛出
+    protected boolean throwSqlUpdateException 				    = ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION			;
     /**
      * http参数值是否自动trim
      */
-    protected boolean httpParamAutoTrim						    = true		    ;   // http参数值是否自动trim
+    protected boolean httpParamAutoTrim						    = ConfigTable.IS_HTTP_PARAM_AUTO_TRIM		    ;
     /**
      * AnylineController.entity(String ck)是否忽略http未提交的key
      */
-    protected boolean ignoreEmptyHttpKey						= false			;	// AnylineController.entity(String ck)是否忽略http未提交的key
+    protected boolean ignoreEmptyHttpKey						= ConfigTable.IS_IGNORE_EMPTY_HTTP_KEY			;
     /**
      * DataRow是否更新nul值的列
      */
-    protected boolean updateNullColumn							= false			;	// DataRow是否更新nul值的列
+    protected boolean updateNullColumn							= ConfigTable.IS_UPDATE_NULL_COLUMN			;
     /**
      * DataRow是否更新空值的列
      */
-    protected boolean updateEmptyColumn						    = false			;	// DataRow是否更新空值的列
+    protected boolean updateEmptyColumn						    = ConfigTable.IS_UPDATE_EMPTY_COLUMN			;
     /**
      * DataRow是否更新nul值的列
      */
-    protected boolean insertNullColumn							= false			;	// DataRow是否更新nul值的列
+    protected boolean insertNullColumn							= ConfigTable.IS_INSERT_NULL_COLUMN			;
     /**
      * DataRow是否更新空值的列
      */
-    protected boolean insertEmptyColumn						    = false			;	// DataRow是否更新空值的列
+    protected boolean insertEmptyColumn						    = ConfigTable.IS_INSERT_EMPTY_COLUMN			;
     /**
      * Entity是否更新nul值的属性
      */
-    protected boolean updateNullField							= false			;	// Entity是否更新nul值的属性
+    protected boolean updateNullField							= ConfigTable.IS_UPDATE_NULL_FIELD			;
     /**
      * Entity是否更新空值的属性
      */
-    protected boolean updateEmptyField						    = false			;	// Entity是否更新空值的属性
+    protected boolean updateEmptyField						    = ConfigTable.IS_UPDATE_EMPTY_FIELD			;
     /**
      * 是否把""替换成null
      */
-    protected boolean replaceEmptyNull                          = true          ;   // 是否把""替换成null
+    protected boolean replaceEmptyNull                          = ConfigTable.IS_REPLACE_EMPTY_NULL          ;
     /**
      * Entity是否更新nul值的属性
      */
-    protected boolean insertNullField							= false			;	// Entity是否更新nul值的属性
+    protected boolean insertNullField							= ConfigTable.IS_INSERT_NULL_FIELD			;
     /**
      * Entity是否更新空值的属性
      */
-    protected boolean insertEmptyField						    = false			;	// Entity是否更新空值的属性
+    protected boolean insertEmptyField						    = ConfigTable.IS_INSERT_EMPTY_FIELD			;
     /**
      * List/Array转换成String后的格式 concat:A, B, C json:["A", "B", "C"]
      */
-    protected String list2stringFormat                          = "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A", "B", "C"]
+    protected String list2stringFormat                          = ConfigTable.LIST2STRING_FORMAT		;
     /**
      * 是否禁用查询缓存
      */
-    protected boolean cacheDisabled                             = false         ;   // 是否禁用查询缓存
+    protected boolean cacheDisabled                             = false         ;   
     /**
      * 禁用默认的entity adapter
      */
-    protected boolean disabledDefaultEntityAdapter              = false         ;   // 禁用默认的entity adapter
+    protected boolean disabledDefaultEntityAdapter              = false         ;   
     /**
      * 是否开启 界定符
      */
-    protected boolean sqlDelimiterOpen 						    = false			;	// 是否开启 界定符
+    protected boolean sqlDelimiterOpen 						    = false			;	
     /**
      * 是否自动检测关键字
      */
-    protected boolean autoCheckKeyword                          = true;         ;   // 是否自动检测关键字
+    protected boolean autoCheckKeyword                          = true;         ;   
     /**
      * 是否开启 界定符的占位符
      */
-    protected boolean sqlDelimiterPlaceholderOpen 			    = false			;	// 是否开启 界定符的占位符
+    protected boolean sqlDelimiterPlaceholderOpen 			    = false			;	
     /**
      * 界定符的点位符
      */
-    protected String sqlDelimiterPlaceholder					= "`"		    ;   // 界定符的点位符
+    protected String sqlDelimiterPlaceholder					= "`"		    ;   
     protected boolean returnEmptyStringReplaceNull               = false         ;
     /**
      * service.query() dataset.getRow()返回null时, 是否替换成new DataRow(), new entity()
      */
-    protected boolean returnEmptyInstanceReplaceNull			= false			;	// service.query() dataset.getRow()返回null时, 是否替换成new DataRow(), new entity()
+    protected boolean returnEmptyInstanceReplaceNull			= false			;	
     /**
      * 更新数据库时，是把自动把数组/集合类型拆分
      */
-    protected boolean autoSplitArray						    = true			;	// 更新数据库时，是把自动把数组/集合类型拆分
+    protected boolean autoSplitArray						    = true			;	
 
     /**
      * insert update 时是否自动检测表结构(删除表中不存在的属性)
      */
-    protected boolean autoCheckMetadata						    = false		    ; 	// insert update 时是否自动检测表结构(删除表中不存在的属性)
+    protected boolean autoCheckMetadata						    = false		    ; 	
     /**
      * 查询返回空DataSet时，是否检测元数据信息
      */
-    protected boolean checkEmptySetMetadata                     = false         ;   // 查询返回空DataSet时，是否检测元数据信息
+    protected boolean checkEmptySetMetadata                     = false         ;   
     /**
      * DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
      */
-    protected boolean removeEmptyHttpKey                        = false         ;   // DataRow row = entity("ID:id") 如果参数(如request)中未提供id参数时, row中是否清空ID属性
+    protected boolean removeEmptyHttpKey                        = false         ;   
 
 
     /**
      * ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
      */
-    protected int afterAlterColumnExceptionAction				= 1000		    ;   // ddl修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+    protected int afterAlterColumnExceptionAction				= 1000		    ;   
 
     /**
      * 等待 查询SQL 语句完成的最大时间(s), 超过则抛出异常
      */
-    protected int sqlQueryTimeout                               = -1            ;   // 等待 查询SQL 语句完成的最大时间(s), 超过则抛出异常
+    protected int sqlQueryTimeout                               = -1            ;   
     /**
      * 等待 更新SQL 语句完成的最大时间(s), 超过则抛出异常
      */
-    protected int sqlUpdateTimeout                              = -1            ;   // 等待 更新SQL 语句完成的最大时间(s), 超过则抛出异常
+    protected int sqlUpdateTimeout                              = -1            ;   
     /**
      * ddl执行时是否自动删除定义中不存在的列
      */
-    protected boolean ddlAutoDropColumn						    = false		    ;   // ddl执行时是否自动删除定义中不存在的列
+    protected boolean ddlAutoDropColumn						    = false		    ;   
     /**
      * 查询列时，是否自动检测主键标识
      */
-    protected boolean metadataAutoCheckColumnPrimary			= false			;   // 查询列时，是否自动检测主键标识
+    protected boolean metadataAutoCheckColumnPrimary			= false			;   
     /**
      * 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
      */
-    protected String sqlStoreDir								= null			;	// 自定义SQL目录(包括MyBatis) 默认${classpath}/sql .表示项目根目录 ${classpath}表示classes目录
+    protected String sqlStoreDir								= null			;	
     /**
      * 是否开始解析mybatis定义的SQL
      */
-    protected boolean openParseMybatis							= true		    ; 	// 是否开始解析mybatis定义的SQL
+    protected boolean openParseMybatis							= true		    ; 	
     /**
      * 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
      */
-    protected String entityFieldColumnMap                       = "camel_"      ;   // 实体属性 与数据库表列名对照时 默认属性小驼峰转下划线 userName > USER_NAME
+    protected String entityFieldColumnMap                       = "camel_"      ;   
     /**
      * 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
      */
-    protected String entityClassTableMap						= "Camel_"  	;	// 实体类名 与数据库表名对照时 默认属性大驼峰转下划线 CrmUser > CRM_USER
+    protected String entityClassTableMap						= "Camel_"  	;	
     /**
      * 表名注解
      */
-    protected String entityTableAnnotation						= null		    ;   // 表名注解
+    protected String entityTableAnnotation						= null		    ;   
     /**
      * 列名注解
      */
-    protected String entityColumnAnnotation					    = null			;	// 列名注解
+    protected String entityColumnAnnotation					    = null			;	
     /**
      * 主键注解(逗号分隔, 不区分大小写, 支持正则匹配) tableId.value, id.name, id(如果不指定注解属性名则依次按name, value解析)
      */
-    protected String entityPrimaryKeyAnnotation				    = null		    ;   // 主键注解(逗号分隔, 不区分大小写, 支持正则匹配) tableId.value, id.name, id(如果不指定注解属性名则依次按name, value解析)
+    protected String entityPrimaryKeyAnnotation				    = null		    ;   
 
     /**
      * 实体类属性依赖层级 > 0:查询属性关联表
      */
-    protected int entityFieldSelectDependency = 0             ;   // 实体类属性依赖层级 > 0:查询属性关联表
+    protected int entityFieldSelectDependency = 0             ;   
 
-    protected String entityFieldSelectDependencyCompare         = "IN"         ;   //实体类属性依赖查询方式 EQUAL:逐行查询 IN:一次查询
+    protected String entityFieldSelectDependencyCompare         = "IN"         ;   
     /**
      * 实体类属性依赖层级 > 0:插入属性关联表
      */
-    protected int entityFieldInsertDependency = 0             ;   // 实体类属性依赖层级 > 0:插入属性关联表
+    protected int entityFieldInsertDependency = 0             ;   
 
     /**
      * 实体类属性依赖层级 > 0:更新属性关联表
      */
-    protected int entityFieldUpdateDependency = 0             ;   // 实体类属性依赖层级 > 0:更新属性关联表
+    protected int entityFieldUpdateDependency = 0             ;   
 
     /**
      * 实体类属性依赖层级 > 0:删除属性关联表
      */
-    protected int entityFieldDeleteDependency = 0             ;   // 实体类属性依赖层级 > 0:删除属性关联表
+    protected int entityFieldDeleteDependency = 0             ;   
+    
+    /**
+     *是否忽略查询结果中顶层的key,可能返回多个结果集
+     * 0-不忽略
+     * 1-忽略
+     * 2-如果1个结果集则忽略 多个则保留
+     */
+    protected int ignoreGraphQueryResultTopKey = ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
+    /**
+     * 是否忽略查询结果中的表名,数据可能存在于多个表中
+     * 0-不忽略 CRM_USER.id
+     * 1-忽略 id
+     * 2-如果1个表则忽略 多个表则保留
+     */
+    protected int ignoreGraphQueryResultTable = ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE;
+    /**
+     * 是否合并查询结果中的表,合并后会少一层表名被合并到key中(如果不忽略表名)
+     * 0-不合并 {"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
+     * 1-合并  {"HR_USER.name":"n22","HR_USER.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
+     * 2-如果1个表则合并 多个表则不合并
+     */
+    protected int mergeGraphQueryResultTable = ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;
+
     /**
      * http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
      */
-    protected String httpParamKeyCase							= "camel"		;	// http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
+    protected String httpParamKeyCase							= "camel"		;	
     /**
      * 表结构缓存key
      */
-    protected String tableMetadataCacheKey					    = ""			;	// 表结构缓存key
+    protected String tableMetadataCacheKey					    = ""			;	
     /**
      * 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
      */
-    protected int tableMetadataCacheSecond						= 3600*24		;	// 表结构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
+    protected int tableMetadataCacheSecond						= 3600*24		;	
     /**
      * MixUtil.mix默认seed
      */
-    protected String mixDefaultSeed                             = "al"          ;   // MixUtil.mix默认seed
+    protected String mixDefaultSeed                             = "al"          ;   
     protected String elAttributePrefix      					= "al"		    ;
 
     /**
      * 默认主键
      */
-    protected String defaultPrimaryKey							= "id"			;	// 默认主键
+    protected String defaultPrimaryKey							= "id"			;	
     /**
      * 是否需要提供主事务管理器, 多数据源时需要
      */
-    protected boolean openPrimaryTransactionManager             = false         ;   // 是否需要提供主事务管理器, 多数据源时需要
+    protected boolean openPrimaryTransactionManager             = false         ;   
     /**
      * 是否需要提供主管理器, 会根据数据源生成相应的事务管理器
      */
-    protected boolean openTransactionManager                    = true         ;   // 是否需要提供主管理器, 会根据数据源生成相应的事务管理器
+    protected boolean openTransactionManager                    = true         ;   
     /**
      * 主键生成器机器id
      */
-    public int primaryGeneratorWorkerId					        = 1				;	// 主键生成器机器id
+    public int primaryGeneratorWorkerId					        = 1				;	
     /**
      * 主键前缀(随机主键)
      */
-    public String primaryGeneratorPrefix					    = ""			;	// 主键前缀(随机主键)
+    public String primaryGeneratorPrefix					    = ""			;	
     /**
      * 主随机主键总长度
      */
-    public int primaryGeneratorRandomLength				        = 32			;	// 主随机主键总长度
+    public int primaryGeneratorRandomLength				        = 32			;	
     /**
      * 生成主键大写
      */
-    public boolean primaryGeneratorUpper					    = true			;	// 生成主键大写
+    public boolean primaryGeneratorUpper					    = true			;	
     /**
      * 生成主键小写
      */
-    public boolean primaryGeneratorLower					    = false			;	// 生成主键小写
+    public boolean primaryGeneratorLower					    = false			;	
     /**
      * 生成主键日期格式(默认yyyyMMddhhmmssSSS)
      */
-    public String primaryGeneratorTimeFormat					= null		    ;	// 生成主键日期格式(默认yyyyMMddhhmmssSSS)
+    public String primaryGeneratorTimeFormat					= null		    ;	
     /**
      * 生成主键time/timestamp后缀随机数长度
      */
-    public int primaryGeneratorTimeSuffixLength				    = 3			    ;   // 生成主键time/timestamp后缀随机数长度
+    public int primaryGeneratorTimeSuffixLength				    = 3			    ;   
     /**
      * 雪花算法开始日期
      */
-    public String snowflakeTwepoch                              = "2000-01-01"  ;   //雪花算法开始日期
+    public String snowflakeTwepoch                              = "2000-01-01"  ;   
     /**
      * 是否开启默认的主键生成器(UUID)
      */
-    public boolean primaryGeneratorUuidActive			        = false			;	// 是否开启默认的主键生成器(UUID)
+    public boolean primaryGeneratorUuidActive			        = false			;	
     /**
      * 是否开启默认的主键生成器(雪花)
      */
-    public boolean primaryGeneratorSnowflakeActive		        = false			;	// 是否开启默认的主键生成器(雪花)
+    public boolean primaryGeneratorSnowflakeActive		        = false			;	
     /**
      * 是否开启默认的主键生成器(随机)
      */
-    public boolean primaryGeneratorRandomActive			        = false			;	// 是否开启默认的主键生成器(随机)
+    public boolean primaryGeneratorRandomActive			        = false			;	
     /**
      * 是否开启默认的主键生成器(时间戳)
      */
-    public boolean primaryGeneratorTimestampActive			    = false			;	// 是否开启默认的主键生成器(时间戳)
+    public boolean primaryGeneratorTimestampActive			    = false			;	
     /**
      * 是否开启默认的主键生成器(年月日时分秒毫秒)
      */
-    public boolean primaryGeneratorTimeActive					= false			;	// 是否开启默认的主键生成器(年月日时分秒毫秒)
+    public boolean primaryGeneratorTimeActive					= false			;	
 
-    public PrimaryGenerator.GENERATOR generator                = null          ;   // 全局默认主键生成器
+    public PrimaryGenerator.GENERATOR generator                = null          ;   
 
-    public String generatorTables                               = "*"           ;   // 主键生成器适用的表
+    public String generatorTables                               = "*"           ;   
 
     public Map<String, PrimaryGenerator.GENERATOR> generators          = new HashMap();
 
@@ -1055,13 +1078,13 @@ public class AnylineProperty {
         return autoConvertBytes;
     }
 
-    public boolean isEnableDefaultJdbcAdapter() {
-        return enableDefaultJdbcAdapter;
+    public boolean isEnableCommonJdbcAdapter() {
+        return enableCommonJdbcAdapter;
     }
 
-    public void setEnableDefaultJdbcAdapter(boolean enableDefaultJdbcAdapter) {
-        this.enableDefaultJdbcAdapter = enableDefaultJdbcAdapter;
-        ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER = enableDefaultJdbcAdapter;
+    public void setEnableCommonJdbcAdapter(boolean enableCommonJdbcAdapter) {
+        this.enableCommonJdbcAdapter = enableCommonJdbcAdapter;
+        ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER = enableCommonJdbcAdapter;
     }
 
     public void setAutoConvertBytes(boolean autoConvertBytes) {
@@ -1181,6 +1204,33 @@ public class AnylineProperty {
         ConfigTable.GENERATOR_TABLES = generatorTables;
     }
 
+    public int getIgnoreGraphQueryResultTopKey() {
+        return ignoreGraphQueryResultTopKey;
+    }
+
+    public void setIgnoreGraphQueryResultTopKey(int ignoreGraphQueryResultTopKey) {
+        this.ignoreGraphQueryResultTopKey = ignoreGraphQueryResultTopKey;
+        ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = ignoreGraphQueryResultTopKey;
+    }
+
+    public int getIgnoreGraphQueryResultTable() {
+        return ignoreGraphQueryResultTable;
+    }
+
+    public void setIgnoreGraphQueryResultTable(int ignoreGraphQueryResultTable) {
+        this.ignoreGraphQueryResultTable = ignoreGraphQueryResultTable;
+        ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE = ignoreGraphQueryResultTable;
+    }
+
+    public int getMergeGraphQueryResultTable() {
+        return mergeGraphQueryResultTable;
+    }
+
+    public void setMergeGraphQueryResultTable(int mergeGraphQueryResultTable) {
+        this.mergeGraphQueryResultTable = mergeGraphQueryResultTable;
+        ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE = mergeGraphQueryResultTable;
+    }
+
     public DataSourceProperty getMongodb() {
         return mongodb;
     }
@@ -1213,5 +1263,7 @@ public class AnylineProperty {
     public void setDatasourceList(String datasourceList) {
         this.datasourceList = datasourceList;
     }
+
+
 
 }

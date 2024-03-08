@@ -631,7 +631,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				cnt = batch(jdbc, sql, batch, run.getVol(), values);
 			}else {
 				//是否支持返回自增值
-				if(IS_KEYHOLDER_IDENTITY(configs)){
+				if(IS_KEY_HOLDER_IDENTITY(configs)){
 					//需要返回自增
 					keyholder = new GeneratedKeyHolder();
 					cnt = jdbc.update(new PreparedStatementCreator() {
@@ -9915,7 +9915,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(null == keyholder){
 				return false;
 			}
-			if(!IS_KEYHOLDER_IDENTITY(configs)){
+			if(!IS_KEY_HOLDER_IDENTITY(configs)){
 				return false;
 			}
 			List<Map<String,Object>> keys = keyholder.getKeyList();

@@ -14429,11 +14429,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return ConfigTable.IS_REPLACE_EMPTY_NULL;
 	}
-	protected boolean IS_KEYHOLDER_IDENTITY(ConfigStore configs){
+	protected boolean IS_KEY_HOLDER_IDENTITY(ConfigStore configs){
 		if(null != configs){
-			return configs.IS_KEYHOLDER_IDENTITY();
+			return configs.IS_KEY_HOLDER_IDENTITY();
 		}
-		return ConfigTable.IS_KEYHOLDER_IDENTITY;
+		return ConfigTable.IS_KEY_HOLDER_IDENTITY;
 	}
 	protected int SQL_QUERY_TIMEOUT(ConfigStore configs){
 		if(null != configs){
@@ -14446,5 +14446,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return configs.SQL_UPDATE_TIMEOUT();
 		}
 		return ConfigTable.SQL_UPDATE_TIMEOUT;
+	}
+	protected int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(ConfigStore configs){
+		if(null != configs){
+			return configs.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY();
+		}
+		return ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
 	}
 }

@@ -430,7 +430,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
             if(null == configs){
                 configs = new DefaultConfigStore();
             }
-            configs.IS_KEYHOLDER_IDENTITY(false);
+            configs.IS_KEY_HOLDER_IDENTITY(false);
             cnt = super.insert(runtime, random, data, configs, run, pks);
         }else{
             //单行的可以返回序列号

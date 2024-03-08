@@ -1843,11 +1843,11 @@ public interface ConfigStore {
 	default ConfigStore IS_REPLACE_EMPTY_NULL(boolean value){
 		return config("IS_REPLACE_EMPTY_NULL", value);
 	}
-	default ConfigStore IS_KEYHOLDER_IDENTITY(boolean value){
-		return config("IS_KEYHOLDER_IDENTITY", value);
+	default ConfigStore IS_KEY_HOLDER_IDENTITY(boolean value){
+		return config("IS_KEY_HOLDER_IDENTITY", value);
 	}
-	default boolean IS_KEYHOLDER_IDENTITY(){
-		return getBoolean("IS_KEYHOLDER_IDENTITY", ConfigTable.IS_KEYHOLDER_IDENTITY);
+	default boolean IS_KEY_HOLDER_IDENTITY(){
+		return getBoolean("IS_KEY_HOLDER_IDENTITY", ConfigTable.IS_KEY_HOLDER_IDENTITY);
 	}
 	default int SQL_QUERY_TIMEOUT(){
 		return getInt("SQL_QUERY_TIMEOUT", ConfigTable.SQL_QUERY_TIMEOUT);
@@ -1860,6 +1860,15 @@ public interface ConfigStore {
 	}
 	default ConfigStore SQL_UPDATE_TIMEOUT(int s){
 		return config("SQL_UPDATE_TIMEOUT", s);
+	}
+	default int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(){
+		return getInt("IGNORE_GRAPH_QUERY_RESULT_TOP_KEY", ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY);
+	}
+	default int IGNORE_GRAPH_QUERY_RESULT_TABLE(){
+		return getInt("IGNORE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE);
+	}
+	default int MERGE_GRAPH_QUERY_RESULT_TABLE(){
+		return getInt("MERGE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE);
 	}
 	/**
 	 * 关闭所有SQL日志
