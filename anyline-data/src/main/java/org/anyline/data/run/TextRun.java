@@ -21,17 +21,13 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
-import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -156,12 +152,14 @@ public class TextRun extends BasicRun implements Run {
 		}
 	} 
 	private void parseText(){
+		//放在adapter中解析 避免 MATCH (v:CRM_USER:HR_USER) RETURN v解析出占位符
+		/*
 		String text = prepare.getText();
 		if(null == text){
 			return;
-		} 
+		}
 		try{
-			int varType = -1; 
+			int varType = -1;
 			Compare compare = Compare.EQUAL;
 
 			List<List<String>> keys = null;
@@ -176,7 +174,7 @@ public class TextRun extends BasicRun implements Run {
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
 			if(BasicUtil.isNotEmpty(true, keys)){
-				// AND CD = :CD 
+				// AND CD = :CD
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i);
 
@@ -186,22 +184,22 @@ public class TextRun extends BasicRun implements Run {
 					}
 					var.setSwitch(EMPTY_VALUE_SWITCH.NULL);
 					addVariable(var);
-				}// end for 
+				}// end for
 			}else{
-				// AND CD = ? 
+				// AND CD = ?
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
 				if(BasicUtil.isNotEmpty(true, idxKeys)){
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setSwitch(EMPTY_VALUE_SWITCH.NULL);
-						addVariable(var); 
-					} 
-				} 
-			} 
+						addVariable(var);
+					}
+				}
+			}
 		}catch(Exception e){
-			e.printStackTrace(); 
-		} 
+			e.printStackTrace();
+		}*/
 	}
 	public boolean checkValid(){
 		if(!valid){

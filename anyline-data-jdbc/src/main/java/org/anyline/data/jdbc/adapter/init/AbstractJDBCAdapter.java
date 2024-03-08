@@ -1410,11 +1410,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 	@Override
 	protected void fillQueryContent(DataRuntime runtime, TextRun run){
-		replaceVariable(runtime, run);
-		run.appendCondition();
-		run.appendGroup();
-		// appendOrderStore();
-		run.checkValid();
+		super.fillQueryContent(runtime, run);
 	}
 	@Override
 	protected void fillQueryContent(DataRuntime runtime, TableRun run){

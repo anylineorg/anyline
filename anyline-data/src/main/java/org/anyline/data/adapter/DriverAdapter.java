@@ -24,6 +24,7 @@ import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.run.RunValue;
+import org.anyline.data.run.TextRun;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
@@ -958,6 +959,13 @@ public interface DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions);
+
+	/**
+	 * 解析文本中的占位符
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run run
+	 */
+	void parseText(DataRuntime runtime, TextRun run);
 	/**
 	 * select[命令合成]<br/>
 	 * 创建 select sequence 最终可执行命令

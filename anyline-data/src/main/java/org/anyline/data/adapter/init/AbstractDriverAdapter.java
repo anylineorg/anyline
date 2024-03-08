@@ -24,6 +24,8 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.adapter.init.ConvertAdapter;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.prepare.SyntaxHelper;
+import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.util.SQLUtil;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.cache.PageLazyStore;
@@ -1927,6 +1929,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run.setRuntime(runtime);
 			//如果是text类型 将解析文本并抽取出变量
 			run.setPrepare(prepare);
+			if(run instanceof TextRun){
+				parseText(runtime, (TextRun)run);
+			}
 			run.setConfigStore(configs);
 			//先把configs中的占位值取出
 			if(null != configs) {
@@ -1945,6 +1950,59 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		convert(runtime, configs, run);
 		return run;
+	}
+	/**
+	 * 解析文本中的占位符
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param run run
+	 */
+	public void parseText(DataRuntime runtime, TextRun run){
+		String text = run.getPrepare().getText();
+		if(null == text){
+			return;
+		}
+		try{
+			int varType = -1;
+			Compare compare = Compare.EQUAL;
+
+			List<List<String>> keys = null;
+			int type = 0;
+			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
+			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
+			keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+			type = Variable.KEY_TYPE_SIGN_V2 ;
+			if(keys.size() == 0){
+				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+				type = Variable.KEY_TYPE_SIGN_V1 ;
+			}
+			if(BasicUtil.isNotEmpty(true, keys)){
+				// AND CD = :CD
+				for(int i=0; i<keys.size();i++){
+					List<String> keyItem = keys.get(i);
+
+					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+					if(null == var){
+						continue;
+					}
+					var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
+					run.addVariable(var);
+				}// end for
+			}else{
+				// AND CD = ?
+				List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
+				if(BasicUtil.isNotEmpty(true, idxKeys)){
+					for(int i=0; i<idxKeys.size(); i++){
+						Variable var = new DefaultVariable();
+						var.setType(Variable.VAR_TYPE_INDEX);
+						var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
+						run.addVariable(var);
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	private void likes(DataRuntime runtime,Table table, ConfigStore configs){
 		if(null == table || null == configs){
@@ -2012,9 +2070,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 	}
 	protected void fillQueryContent(DataRuntime runtime, TextRun run){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TextRun run)", 37));
-		}
+		replaceVariable(runtime, run);
+		run.appendCondition();
+		run.appendGroup();
+		// appendOrderStore();
+		run.checkValid();
 	}
 	protected void fillQueryContent(DataRuntime runtime, TableRun run){
 		if(log.isDebugEnabled()) {
@@ -2031,7 +2091,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public String mergeFinalQuery(DataRuntime runtime, Run run) {
-		return null;
+		return run.getBaseQuery();
 	}
 
 	/**
