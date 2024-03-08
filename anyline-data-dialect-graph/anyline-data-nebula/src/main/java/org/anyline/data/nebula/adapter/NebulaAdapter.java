@@ -1,12 +1,15 @@
 package org.anyline.data.nebula.adapter;
 
+import com.vesoft.nebula.Vertex;
 import com.vesoft.nebula.client.graph.SessionPool;
 import com.vesoft.nebula.client.graph.data.ResultSet;
+import com.vesoft.nebula.client.graph.data.ValueWrapper;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.ConnectionHandler;
 import org.anyline.data.handler.ResultSetHandler;
 import org.anyline.data.handler.StreamHandler;
+import org.anyline.data.nebula.entity.NebulaRow;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -920,9 +923,10 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
         //在DataRow中 如果检测到准确类型 JSON XML POINT 等 返回相应的类型,不返回byte[]（所以需要开启自动检测）
         //Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
         LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+        /*
         if(!system && IS_AUTO_CHECK_METADATA(configs) && null != table){
             columns = columns(runtime, random, false, table, false);
-        }
+        }*/
         try{
             final DataRuntime rt = runtime;
             final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
@@ -933,7 +937,92 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                 return set;
             }
             ResultSet rs = sesion.execute(cmd);
-            
+            /*
+             *是否忽略查询结果中顶层的key,可能返回多个结果集
+             * 0-不忽略
+             * 1-忽略
+             * 2-如果1个结果集则忽略 多个则保留
+             */
+            int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
+            /*
+             * 是否忽略查询结果中的表名,数据可能存在于多个表中
+             * 0-不忽略 CRM_USER.id
+             * 1-忽略 id
+             * 2-如果1个表则忽略 多个表则保留
+             */
+            int IGNORE_GRAPH_QUERY_RESULT_TABLE = ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE;
+            /*
+             * 是否合并查询结果中的表,合并后会少一层表名被合并到key中(如果不忽略表名)
+             * 0-不合并 {"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
+             * 1-合并  {"HR_USER.name":"n22","HR_USER.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
+             * 2-如果1个表则合并 多个表则不合并
+             */
+            int MERGE_GRAPH_QUERY_RESULT_TABLE = ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;
+            int size = rs.rowsSize();
+            List<String> cols = rs.getColumnNames();
+            if(IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 2){
+                if(columns.size() == 1){
+                    IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = 1;
+                }else{
+                    IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = 0;
+                }
+            }
+            for(int  i=0; i<size; i++) {
+                ResultSet.Record record = rs.rowValues(i);
+                DataRow top = new NebulaRow();
+                for (String col : cols) { //v
+                    ValueWrapper wrapper = record.get(col);
+                    com.vesoft.nebula.Value value = wrapper.getValue();
+                    DataRow row = null;
+                    if (IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 0) {
+                        row = new NebulaRow();
+                        top.put(col, row);
+                    } else {
+                        row = top;
+                    }
+
+                    if (wrapper.isVertex()) {//点
+                        Vertex vertex = value.getVVal();
+                        Object vid = vertex.vid.getFieldValue();
+                        if (vid instanceof byte[]) {
+                            vid = new String((byte[]) vid);
+                        }
+                        row.setPrimaryValue(vid);
+                        if (MERGE_GRAPH_QUERY_RESULT_TABLE == 2) {
+                            if (vertex.tags.size() > 1) {
+                                MERGE_GRAPH_QUERY_RESULT_TABLE = 1;
+                            } else {
+                                MERGE_GRAPH_QUERY_RESULT_TABLE = 0;
+                            }
+                        }
+                        for (com.vesoft.nebula.Tag tag : vertex.tags) {
+                            String tag_name = new String(tag.name);
+                            DataRow tag_row = null;
+                            if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1) {
+                                tag_row = row;
+                            } else {
+                                tag_row = new NebulaRow();
+                                row.put(tag_name, tag_row);
+                            }
+                            Map<byte[], com.vesoft.nebula.Value> props = tag.getProps();
+                            for (byte[] key : props.keySet()) {
+                                String k = new String(key);
+                                com.vesoft.nebula.Value v = props.get(key);
+                                Object fv = v.getFieldValue();
+                                if (fv instanceof byte[]) {
+                                    fv = new String((byte[]) fv);
+                                }
+                                if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1) {
+                                    k = tag_name + "." + k;
+                                }
+                                tag_row.put(k, fv);
+                            }
+                        }
+                    }
+                }
+                set.addRow(top);
+            }
+
             StreamHandler _handler = null;
             if(null != configs){
                 _handler = configs.stream();
