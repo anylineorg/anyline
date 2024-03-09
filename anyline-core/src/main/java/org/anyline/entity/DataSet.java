@@ -55,7 +55,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private String dataSource                       = null  ; // 数据源(表|视图|XML定义SQL)
     private Catalog catalog                         = null  ;
     private Schema schema                           = null  ; //
-    private Table table                             = null  ; //
+    private List<Table> tables                      = new ArrayList<>()  ; //
     private long createTime                         = 0     ; // 创建时间
     private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                     = false ; // 是否来自缓存
@@ -958,7 +958,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             to.dataSource = from.dataSource;
             to.datalink = from.datalink;
             to.schema = from.schema;
-            to.table = from.table;
+            to.tables = from.tables;
         }
         return to;
     }
@@ -4095,6 +4095,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public Table getTable() {
+        Table table = null;
+        if(null != tables && !tables.isEmpty()){
+            table = tables.get(0);
+        }
         if(null == table){
             if(!rows.isEmpty()){
                 return rows.get(0).getTable();
@@ -4110,13 +4114,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return null;
     }
     public String getTableFullName(){
+        Table table = getTable();
         if(null != table){
             return table.getFullName();
         }
         return null;
     }
+    public List<Table> getTables(){
+        return tables;
+    }
+    public DataSet setTables(List<Table> tables){
+        this.tables = tables;
+        return this;
+    }
     public DataSet setTable(Table table){
-        this.table = table;
+        tables = new ArrayList<>();
+        tables.add(table);
+        return this;
+    }
+    public DataSet addTable(Table table){
+        if(null == tables) {
+            tables = new ArrayList<>();
+        }
+        tables.add(table);
         return this;
     }
     public DataSet setTable(String table) {
@@ -4124,18 +4144,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (table.contains(".")) {
                 String[] tbs = table.split("\\.");
                 if (tbs.length == 2) {
-                    this.table = new Table(tbs[1]);
+                    setTable(new Table(tbs[1]));
                     this.schema = new Schema(tbs[0]);
                 } else if (tbs.length == 3) {
-                    this.table = new Table(tbs[2]);
+                    setTable(new Table(tbs[2]));
                     this.schema = new Schema(tbs[1]);
                     this.catalog = new Catalog(tbs[0]);
                 }
             } else {
-                this.table = new Table(table);
+                setTable(new Table(table));
             }
         }else{
-            this.table = null;
+            this.tables = new ArrayList<>();
         }
         return this;
     }
