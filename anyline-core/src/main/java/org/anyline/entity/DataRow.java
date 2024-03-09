@@ -84,7 +84,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
     protected Catalog catalog                         = null                  ; // catalog
     protected Schema schema                           = null                  ; // schema
-    protected Table table                             = null                  ; // table
+    protected List<Table> tables                      = new ArrayList<>()     ; // table
     protected DataRow attributes                      = null                  ; // 属性
     protected DataRow tags                            = null                  ; // 标签
     protected DataRow relations                       = null                  ; // 对外关系
@@ -2490,8 +2490,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Table getTable() {
-        if (null != table) {
-            return table;
+        if (null != tables && !tables.isEmpty()) {
+            return tables.get(0);
         } else {
             DataSet container = getContainer();
             if (null != container) {
@@ -2502,6 +2502,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
     public String getTableName(){
+        Table table = getTable();
         if(null != table){
             return table.getName();
         }
@@ -2536,9 +2537,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return dest;
     }
     public DataRow setTable(Table table){
-        this.table = table;
+        tables = new ArrayList<>();
+        tables.add(table);
         return this;
     }
+    public List<Table> getTables(){
+        return tables;
+    }
+    public DataRow setTables(List<Table> tables){
+        this.tables = tables;
+        return this;
+    }
+
+    public DataRow addTable(Table table){
+        if(null == tables) {
+            tables = new ArrayList<>();
+        }
+        tables.add(table);
+        return this;
+    }
+
     public DataRow setTable(String table) {
         setDest(table);
         return this;
@@ -2590,7 +2608,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         row.primaryKeys = this.primaryKeys;
         row.dataSource = this.dataSource;
         row.schema = this.schema;
-        row.table = this.table;
+        row.tables = this.tables;
         row.createTime = this.createTime;
         row.nanoTime = this.nanoTime;
         row.isNew = this.isNew;
