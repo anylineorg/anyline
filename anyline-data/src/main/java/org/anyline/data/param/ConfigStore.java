@@ -19,7 +19,6 @@ package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.StreamHandler;
-import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
@@ -1858,14 +1857,24 @@ public interface ConfigStore {
 	default int SQL_UPDATE_TIMEOUT(){
 		return getInt("SQL_UPDATE_TIMEOUT", ConfigTable.SQL_UPDATE_TIMEOUT);
 	}
+
 	default ConfigStore SQL_UPDATE_TIMEOUT(int s){
 		return config("SQL_UPDATE_TIMEOUT", s);
+	}
+	default ConfigStore IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(int s){
+		return config("IGNORE_GRAPH_QUERY_RESULT_TOP_KEY", s);
 	}
 	default int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(){
 		return getInt("IGNORE_GRAPH_QUERY_RESULT_TOP_KEY", ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY);
 	}
+	default ConfigStore IGNORE_GRAPH_QUERY_RESULT_TABLE(int s){
+		return config("IGNORE_GRAPH_QUERY_RESULT_TABLE", s);
+	}
 	default int IGNORE_GRAPH_QUERY_RESULT_TABLE(){
 		return getInt("IGNORE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE);
+	}
+	default ConfigStore MERGE_GRAPH_QUERY_RESULT_TABLE(int s){
+		return config("MERGE_GRAPH_QUERY_RESULT_TABLE", s);
 	}
 	default int MERGE_GRAPH_QUERY_RESULT_TABLE(){
 		return getInt("MERGE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE);

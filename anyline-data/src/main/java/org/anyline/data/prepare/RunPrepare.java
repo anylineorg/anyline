@@ -31,8 +31,8 @@ import java.util.List;
 
 public interface RunPrepare extends Cloneable {
 
-	static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			// 存储过程输入参数类型 
-	static final String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		// 存储过程输入参数值 
+	String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			// 存储过程输入参数类型 
+	String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		// 存储过程输入参数值 
 
 	// 以::标识的执行时直接替换
 	// 以:标识的执行时以?占位
@@ -42,7 +42,7 @@ public interface RunPrepare extends Cloneable {
 	// NM IN (:NM)
 	// LIMIT :LIMIT OFFSET :OFFSET
     // 占位符前面的标识, 中间可能有空格, 占位符以字母开头(避免CODE='A:1'但避免不了'A:A1'这时应该换成$#), 后面可能是 ' ) %,
-	static final String SQL_PARAM_VARIABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+[A-Za-z]\\w+)(\\s|'|\\)|%|\\, )?";
+	String SQL_VAR_PLACEHOLDER_REGEX_EXT = "(\\S+)\\s*\\(?(\\s*:+[A-Za-z]\\w+)(\\s|'|\\)|%|\\, )?";
 	// 与上一种方式　二选一不能同时支持
 	//新版本中不要用{key} 避免与json格式冲突
 	// 以${}标识的执行时直接替换
@@ -55,12 +55,12 @@ public interface RunPrepare extends Cloneable {
 	// NM LIKE '%#{NM}%'
 	// NM IN(${NM})
 	// NM IN(#{NM})
-	static final String SQL_PARAM_VARIABLE_REGEX_EL = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
+	String SQL_VAR_PLACEHOLDER_REGEX = "([^\\s\\$#]+)\\s*\\(?(\\s*[\\$|#]*{\\w+})(\\+|\\s|'|\\)|%)?";
 
 
 	
 	// 自定义SQL.id格式 文件名:id
-	static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
+	String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
 
 	String getId();
 	RunPrepare setId(String id);

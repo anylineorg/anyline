@@ -966,6 +966,15 @@ public interface DriverAdapter {
 	 * @param run run
 	 */
 	void parseText(DataRuntime runtime, TextRun run);
+
+	/**
+	 * 是否支持SQL变量占位符扩展格式 :VAR,图数据库不要支持会与表冲突
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return boolean
+	 */
+	default boolean supportSqlVarPlaceholderRegexExt(DataRuntime runtime){
+		return true;
+	}
 	/**
 	 * select[命令合成]<br/>
 	 * 创建 select sequence 最终可执行命令

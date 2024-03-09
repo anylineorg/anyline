@@ -11,10 +11,7 @@ import org.anyline.data.nebula.entity.NebulaRow;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.SyntaxHelper;
-import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
-import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
@@ -29,8 +26,6 @@ import org.anyline.proxy.CacheProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -786,53 +781,16 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      * @param run run
      */
     public void parseText(DataRuntime runtime, TextRun run){
-        String text = run.getPrepare().getText();
-        if(null == text){
-            return;
-        }
-        try{
-            int varType = -1;
-            Compare compare = Compare.EQUAL;
+        super.parseText(runtime, run);
+    }
 
-            List<List<String>> keys = null;
-            int type = 0;
-            // AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
-            //{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-            keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
-            type = Variable.KEY_TYPE_SIGN_V2 ;
-            if(keys.size() == 0){
-                //禁用这咱格式  避免解析到 MATCH (v:CRM_USER:HR_USER) RETURN v
-                // AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-                //keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
-                //type = Variable.KEY_TYPE_SIGN_V1 ;
-            }
-            if(BasicUtil.isNotEmpty(true, keys)){
-                // AND CD = :CD
-                for(int i=0; i<keys.size();i++){
-                    List<String> keyItem = keys.get(i);
-
-                    Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-                    if(null == var){
-                        continue;
-                    }
-                    var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
-                    run.addVariable(var);
-                }// end for
-            }else{
-                // AND CD = ?
-                List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
-                if(BasicUtil.isNotEmpty(true, idxKeys)){
-                    for(int i=0; i<idxKeys.size(); i++){
-                        Variable var = new DefaultVariable();
-                        var.setType(Variable.VAR_TYPE_INDEX);
-                        var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
-                        run.addVariable(var);
-                    }
-                }
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    /**
+     * 是否支持SQL变量占位符扩展格式 :VAR,图数据库不要支持会与表冲突
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return boolean
+     */
+    public boolean supportSqlVarPlaceholderRegexExt(DataRuntime runtime){
+        return false;
     }
     /**
      * 查询序列cur 或 next value
@@ -985,7 +943,6 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
             columns = columns(runtime, random, false, table, false);
         }*/
         try{
-            final DataRuntime rt = runtime;
             final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
             metadatas.putAll(columns);
             set.setMetadata(metadatas);
@@ -1000,21 +957,21 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
              * 1-忽略
              * 2-如果1个结果集则忽略 多个则保留
              */
-            int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
+            int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(configs);
             /*
              * 是否忽略查询结果中的表名,数据可能存在于多个表中
              * 0-不忽略 CRM_USER.id
              * 1-忽略 id
              * 2-如果1个表则忽略 多个表则保留
              */
-            int IGNORE_GRAPH_QUERY_RESULT_TABLE = ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE;
+            int IGNORE_GRAPH_QUERY_RESULT_TABLE = IGNORE_GRAPH_QUERY_RESULT_TABLE(configs);
             /*
              * 是否合并查询结果中的表,合并后会少一层表名被合并到key中(如果不忽略表名)
              * 0-不合并 {"HR_USER":{"name":"n22","id":22},"CRM_USER":{"name":"n22","id":22}}
              * 1-合并  {"HR_USER.name":"n22","HR_USER.id":22,"CRM_USER.name":"n22","CRM_USER.id":22}}
              * 2-如果1个表则合并 多个表则不合并
              */
-            int MERGE_GRAPH_QUERY_RESULT_TABLE = ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;
+            int MERGE_GRAPH_QUERY_RESULT_TABLE = MERGE_GRAPH_QUERY_RESULT_TABLE(configs);
             int size = rs.rowsSize();
             List<String> cols = rs.getColumnNames();
             if(IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 2){
@@ -1069,7 +1026,7 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                                 if (fv instanceof byte[]) {
                                     fv = new String((byte[]) fv);
                                 }
-                                if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1) {
+                                if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1 && IGNORE_GRAPH_QUERY_RESULT_TABLE != 1) {
                                     k = tag_name + "." + k;
                                 }
                                 tag_row.put(k, fv);

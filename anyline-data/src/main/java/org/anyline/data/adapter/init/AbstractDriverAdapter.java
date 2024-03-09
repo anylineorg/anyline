@@ -1969,11 +1969,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			int type = 0;
 			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
 			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
-			keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
 			type = Variable.KEY_TYPE_SIGN_V2 ;
-			if(keys.size() == 0){
+			if(keys.size() == 0 && supportSqlVarPlaceholderRegexExt(runtime)){
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-				keys = RegularUtil.fetchs(text, RunPrepare.SQL_PARAM_VARIABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
 			if(BasicUtil.isNotEmpty(true, keys)){
@@ -14512,5 +14512,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return configs.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY();
 		}
 		return ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
+	}
+	protected int IGNORE_GRAPH_QUERY_RESULT_TABLE(ConfigStore configs){
+		if(null != configs){
+			return configs.IGNORE_GRAPH_QUERY_RESULT_TABLE();
+		}
+		return ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE;
+	}
+	protected int MERGE_GRAPH_QUERY_RESULT_TABLE(ConfigStore configs){
+		if(null != configs){
+			return configs.MERGE_GRAPH_QUERY_RESULT_TABLE();
+		}
+		return ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;
 	}
 }
