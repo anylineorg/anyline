@@ -55,7 +55,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private String dataSource                       = null  ; // 数据源(表|视图|XML定义SQL)
     private Catalog catalog                         = null  ;
     private Schema schema                           = null  ; //
-    private List<Table> tables                      = new ArrayList<>()  ; //
+    private LinkedHashMap<String, Table> tables     = new LinkedHashMap<>()  ;
     private long createTime                         = 0     ; // 创建时间
     private long expires                            = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     private boolean isFromCache                     = false ; // 是否来自缓存
@@ -4120,23 +4120,37 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return null;
     }
-    public List<Table> getTables(){
+    public LinkedHashMap<String, Table> getTables(){
         return tables;
     }
     public DataSet setTables(List<Table> tables){
+        this.tables = new LinkedHashMap<>();
+        if(null != tables){
+            for(Table table:tables){
+                addTable(table);
+            }
+        }
+        return this;
+    }
+    public DataSet setTables(LinkedHashMap<String, Table> tables){
         this.tables = tables;
         return this;
     }
     public DataSet setTable(Table table){
-        tables = new ArrayList<>();
-        tables.add(table);
+        tables = new LinkedHashMap<>();
+        addTable(table);
         return this;
     }
     public DataSet addTable(Table table){
         if(null == tables) {
-            tables = new ArrayList<>();
+            tables = new LinkedHashMap<>();
         }
-        tables.add(table);
+        if(null != table){
+            String name = table.getName();
+            if(null != name){
+                tables.put(name.toUpperCase(), table);
+            }
+        }
         return this;
     }
     public DataSet setTable(String table) {
@@ -4155,7 +4169,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 setTable(new Table(table));
             }
         }else{
-            this.tables = new ArrayList<>();
+            this.tables = new LinkedHashMap<>();
         }
         return this;
     }

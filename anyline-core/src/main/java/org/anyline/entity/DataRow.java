@@ -84,7 +84,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected String dataSource                       = null                  ; // 数据源(表|视图|XML定义SQL)
     protected Catalog catalog                         = null                  ; // catalog
     protected Schema schema                           = null                  ; // schema
-    protected List<Table> tables                      = new ArrayList<>()     ; // table
+    protected LinkedHashMap<String, Table> tables     = new LinkedHashMap<>() ; // 数据来源表(图数据库可能来自多个表) //TODO 解析sql中多个表(未实现)
     protected DataRow attributes                      = null                  ; // 属性
     protected DataRow tags                            = null                  ; // 标签
     protected DataRow relations                       = null                  ; // 对外关系
@@ -2537,23 +2537,35 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return dest;
     }
     public DataRow setTable(Table table){
-        tables = new ArrayList<>();
-        tables.add(table);
+        tables = new LinkedHashMap<>();
+        addTable(table);
         return this;
     }
-    public List<Table> getTables(){
+    public LinkedHashMap<String, Table> getTables(){
         return tables;
     }
     public DataRow setTables(List<Table> tables){
-        this.tables = tables;
+        this.tables = new LinkedHashMap<>();
+        for(Table table:tables){
+            addTable(table);
+        }
         return this;
     }
 
+    public DataRow setTables(LinkedHashMap<String, Table> tables){
+        this.tables = tables;
+        return this;
+    }
     public DataRow addTable(Table table){
         if(null == tables) {
-            tables = new ArrayList<>();
+            tables = new LinkedHashMap<>();
         }
-        tables.add(table);
+        if(null != table){
+            String name = table.getName();
+            if(null != name){
+                tables.put(name.toUpperCase(), table);
+            }
+        }
         return this;
     }
 

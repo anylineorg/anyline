@@ -982,9 +982,9 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                 }
             }
             for(int  i=0; i<size; i++) {
-                ResultSet.Record record = rs.rowValues(i);
+                ResultSet.Record record = rs.rowValues(i); //一行数据
                 DataRow top = new NebulaRow();
-                for (String col : cols) { //v
+                for (String col : cols) { //return中的key
                     ValueWrapper wrapper = record.get(col);
                     com.vesoft.nebula.Value value = wrapper.getValue();
                     DataRow row = null;
@@ -1011,11 +1011,15 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                         }
                         for (com.vesoft.nebula.Tag tag : vertex.tags) {
                             String tag_name = new String(tag.name);
+                            Table src_table = new org.anyline.data.nebula.metadata.Tag(tag_name);
+                            top.addTable(src_table);
+                            row.addTable(src_table);
                             DataRow tag_row = null;
                             if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1) {
                                 tag_row = row;
                             } else {
                                 tag_row = new NebulaRow();
+                                tag_row.addTable(src_table);
                                 row.put(tag_name, tag_row);
                             }
                             Map<byte[], com.vesoft.nebula.Value> props = tag.getProps();
