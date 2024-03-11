@@ -22,7 +22,27 @@ import org.anyline.util.BeanUtil;
 import java.util.*;
 
 public class BaseMetadata<T extends BaseMetadata> {
+    public enum TYPE{
+        TABLE(1), //继承子表、父表、分区表、主表
+        VIEW(2),
+        COLUMN(4),
+        PRIMARY(8),
+        FOREIGN(16),
+        INDEX(32),
+        CONSTRAINT(64),
+        SCHEMA(128),
+        CATALOG(256),
 
+        FUNCTION(512),
+        PROCEDURE(1024),
+        TRIGGER(2048),
+        SEQUENCE(4096),
+        ;
+        public final int value;
+        TYPE(int value){
+            this.value = value;
+        }
+    }
     protected String datasource                   ; // 数据源
     protected Catalog catalog                     ; // 数据库 catalog与schema 不同有数据库实现方式不一样
     protected Schema schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
