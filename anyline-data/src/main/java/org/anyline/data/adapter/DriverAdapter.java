@@ -388,7 +388,17 @@ public interface DriverAdapter {
 		}
 		return writer;
 	}
-
+	String name(Type type);
+	default List<String> names(List<Type> types){
+		List<String> list = new ArrayList<>();
+		for(Type type:types){
+			String name = name(type);
+			if(null != name){
+				list.add(name);
+			}
+		}
+		return list;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -1876,7 +1886,6 @@ public interface DriverAdapter {
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
-
 	/**
 	 * table[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -1885,31 +1894,31 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  BaseMetadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> Table
 	 */
-	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, int struct);
-	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean struct){
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct);
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct){
 		int config = 0;
 		if(struct){
 			config = 255;
 		}
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, config);
 	}
-	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, int struct);
-	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct){
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct){
 		int config = 0;
 		if(struct){
 			config = 255;
 		}
 		return tables(runtime, random, catalog, schema, pattern, types, config);
 	}
-	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types){
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types){
 		return tables(runtime, random, catalog, schema, pattern, types, false);
 	}
 
@@ -1921,11 +1930,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  BaseMetadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
@@ -1934,11 +1943,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 	/**
 	 * table[结果集封装]<br/>
 	 *  根据查询结果集构造Table
@@ -1964,11 +1973,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception;
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 	/**
 	 * table[结果集封装]<br/>
 	 * 根据驱动内置方法补充
@@ -1978,11 +1987,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception;
+	<T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 
 
 	/**
@@ -2073,11 +2082,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  VIEW.TYPE.
 	 * @return List
 	 * @param <T> View
 	 */
-	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types);
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types);
 	/**
 	 * view[命令合成]<br/>
 	 * 查询视图
@@ -2086,10 +2095,10 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types VIEW.TYPE.
 	 * @return List
 	 */
-	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 
 	/**
 	 * view[结果集封装]<br/>
@@ -2115,11 +2124,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types VIEW.TYPE.
 	 * @return views
 	 * @throws Exception 异常
 	 */
-	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception;
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 
 	/**
 	 * view[调用入口]<br/>
@@ -2185,11 +2194,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  MasterTable.TYPE.
 	 * @return List
 	 * @param <T> MasterTable
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types);
+	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types);
 	/**
 	 * master table[命令合成]<br/>
 	 * 查询主表
@@ -2197,10 +2206,10 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param types MasterTable.TYPE.
 	 * @return String
 	 */
-	List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 
 	/**
 	 * master table[结果集封装]<br/>
@@ -2225,10 +2234,11 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
+	 * @param types MasterTable.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception;
+	<T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 
 	/**
 	 * master table[调用入口]<br/>
@@ -2302,10 +2312,10 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param types yPartitionTable.TYPE.
 	 * @return String
 	 */
-	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception;
+	List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
 	/**
 	 * partition table[命令合成]<br/>
 	 * 根据主表查询分区表

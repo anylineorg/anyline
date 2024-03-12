@@ -898,10 +898,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String, Table> tables(Catalog catalog, Schema schema, String name, String types)
-	 * LinkedHashMap<String, Table> tables(Schema schema, String name, String types)
-	 * LinkedHashMap<String, Table> tables(String name, String types)
-	 * LinkedHashMap<String, Table> tables(String types)
+	 * LinkedHashMap<String, Table> tables(Catalog catalog, Schema schema, String name, int types)
+	 * LinkedHashMap<String, Table> tables(Schema schema, String name, int types)
+	 * LinkedHashMap<String, Table> tables(String name, int types)
+	 * LinkedHashMap<String, Table> tables(int types)
 	 * LinkedHashMap<String, Table> tables()
 	 ******************************************************************************************************************/
 
@@ -911,11 +911,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+	 * @param types BaseMetadata.TYPE
 	 * @return List
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, int struct){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -923,7 +923,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, int struct){
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -947,10 +947,10 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String, View> views(Catalog catalog, Schema schema, String name, String types)
-	 * LinkedHashMap<String, View> views(Schema schema, String name, String types)
-	 * LinkedHashMap<String, View> views(String name, String types)
-	 * LinkedHashMap<String, View> views(String types)
+	 * LinkedHashMap<String, View> views(Catalog catalog, Schema schema, String name, int types)
+	 * LinkedHashMap<String, View> views(Schema schema, String name, int types)
+	 * LinkedHashMap<String, View> views(String name, int types)
+	 * LinkedHashMap<String, View> views(int types)
 	 * LinkedHashMap<String, View> views()
 	 ******************************************************************************************************************/
 
@@ -960,11 +960,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+	 * @param types BaseMetadata.TYPE
 	 * @return List
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
 		if(null == runtime){
 			runtime = runtime();
 		}
@@ -986,14 +986,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String, MasterTable> mtables(Catalog catalog, Schema schema, String name, String types)
-	 * LinkedHashMap<String, MasterTable> mtables(Schema schema, String name, String types)
-	 * LinkedHashMap<String, MasterTable> mtables(String name, String types)
-	 * LinkedHashMap<String, MasterTable> mtables(String types)
-	 * LinkedHashMap<String, MasterTable> mtables()
+	 * LinkedHashMap<String, MasterTable> masterTables(Catalog catalog, Schema schema, String name, int types)
+	 * LinkedHashMap<String, MasterTable> masterTables(Schema schema, String name, int types)
+	 * LinkedHashMap<String, MasterTable> masterTables(String name, int types)
+	 * LinkedHashMap<String, MasterTable> masterTables(int types)
+	 * LinkedHashMap<String, MasterTable> masterTables()
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		if(null == runtime){
 			runtime = runtime();
 		}

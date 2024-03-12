@@ -1,11 +1,6 @@
 package org.anyline.metadata;
 
-import javafx.scene.control.Tab;
-
-import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * 表或列之间的对比结果

@@ -22,7 +22,7 @@ import org.anyline.util.BeanUtil;
 import java.util.*;
 
 public class BaseMetadata<T extends BaseMetadata> {
-    public enum TYPE{
+    public enum TYPE implements Type{
         TABLE(1), //继承子表、父表、分区表、主表
         VIEW(2),
         COLUMN(4),
@@ -37,11 +37,49 @@ public class BaseMetadata<T extends BaseMetadata> {
         PROCEDURE(1024),
         TRIGGER(2048),
         SEQUENCE(4096),
+        SYNONYM(8192)
         ;
         public final int value;
         TYPE(int value){
             this.value = value;
         }
+        public int value(){
+            return value;
+        }
+    }
+
+    private static Map<Integer, Type> types = new HashMap<>();
+    static {
+        for(TYPE type: TYPE.values()){
+            types.put(type.value, type);
+        }
+    }
+    public static Map<Integer, Type> types(){
+        return types;
+    }
+    public static Type type(int type){
+        return types().get(type);
+    }
+    public static List<Type> types(int types){
+        List<Type> list = new ArrayList<>();
+        int count = 0;
+        while (types >= 1) {
+            int temp = types % 2;
+            types = (types - temp) / 2;
+            if (temp == 1) {
+                Type t = null;
+                if (count == 0){
+                    t = type(1);
+                }else{
+                    t = type((2 << (count - 1)));
+                }
+                if(null != t){
+                    list.add(t);
+                }
+            }
+            count++;
+        }
+        return list;
     }
     protected String datasource                   ; // 数据源
     protected Catalog catalog                     ; // 数据库 catalog与schema 不同有数据库实现方式不一样

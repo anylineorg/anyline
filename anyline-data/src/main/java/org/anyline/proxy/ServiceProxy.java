@@ -1173,36 +1173,36 @@ public class ServiceProxy {
      * 													METADATA
      ******************************************************************************************************************/
 
-    public static List<String> tables(Catalog catalog, Schema schema, String name, String types){
+    public static List<String> tables(Catalog catalog, Schema schema, String name, int types){
         return service.tables(catalog, schema, name, types);
     }
-    public static List<String> tables(Schema schema, String name, String types){
+    public static List<String> tables(Schema schema, String name, int types){
         return service.tables(schema, name, types);
     }
-    public static List<String> tables(String name, String types){
+    public static List<String> tables(String name, int types){
         return service.tables(name, types);
     }
-    public static List<String> tables(String types){
+    public static List<String> tables(int types){
         return service.tables(types);
     }
     public static List<String> tables(){
         return service.tables();
     }
 
-    public static List<String> mtables(Catalog catalog, Schema schema, String name, String types){
-        return service.mtables(catalog, schema, name, types);
+    public static List<String> masterTables(Catalog catalog, Schema schema, String name, int types){
+        return service.masterTables(catalog, schema, name, types);
     }
-    public static List<String> mtables(Schema schema, String name, String types){
-        return service.mtables(schema, name, types);
+    public static List<String> masterTables(Schema schema, String name, int types){
+        return service.masterTables(schema, name, types);
     }
-    public static List<String> mtables(String name, String types){
-        return service.mtables(name, types);
+    public static List<String> masterTables(String name, int types){
+        return service.masterTables(name, types);
     }
-    public static List<String> mtables(String types){
-        return service.mtables(types);
+    public static List<String> masterTables(int types){
+        return service.masterTables(types);
     }
-    public static List<String> mtables(){
-        return service.mtables();
+    public static List<String> masterTables(){
+        return service.masterTables();
     }
 
 

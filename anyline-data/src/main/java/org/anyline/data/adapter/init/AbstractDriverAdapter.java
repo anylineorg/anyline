@@ -4030,16 +4030,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
+	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
-	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
-	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
-	 * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
@@ -4058,13 +4058,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  BaseMetadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types, int struct){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4100,10 +4100,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			search.setCatalog(catalog);
 			search.setSchema(schema);
 
-			String[] tps = null;
-			if(null != types){
-				tps = types.toUpperCase().trim().split(",");
-			}
 			// 根据系统表查询
 			try{
 				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, origin, types);
@@ -4125,7 +4121,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			// 根据系统表查询失败后根据驱动内置接口补充
 			if(list.size() == 0) {
 				try {
-					list = tables(runtime, true, list, catalog, schema, origin, tps);
+					list = tables(runtime, true, list, catalog, schema, origin, types);
 					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
 					if(!greedy){
 						int size = list.size();
@@ -4245,7 +4241,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				schema = null;
 			}
 			try {
-				List<Run> runs =buildQueryTablesRun(runtime, greedy, catalog, schema, null, null);
+				List<Run> runs =buildQueryTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value);
 				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
@@ -4260,7 +4256,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			if(!sys){
 				try {
-					tables = tables(runtime, true, tables, catalog, schema, null, null);
+					tables = tables(runtime, true, tables, catalog, schema, null, Table.TYPE.NORMAL.value);
 					CacheProxy.name(this, tables);
 				}catch (Exception e){
 					e.printStackTrace();
@@ -4270,7 +4266,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, int struct){
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
 		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types);
 		for(T table:list){
@@ -4287,14 +4283,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  BaseMetadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception {
+	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4306,13 +4302,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception {
+	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4374,14 +4370,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -4398,15 +4394,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception {
+	public <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		if(null == tables){
 			tables = new ArrayList<>();
@@ -4619,12 +4615,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * [命令合成]
-	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view)
 	 * [命令合成]
@@ -4643,12 +4639,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  BaseMetadata.TYPE.
 	 * @return List
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
 		LinkedHashMap<String,T> views = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4672,12 +4668,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			search.setCatalog(catalog);
 			search.setSchema(schema);
 
-			String[] tps = null;
-			if(null != types){
-				tps = types.toUpperCase().trim().split(",");
-			}else{
-				tps = new String[]{"VIEW"};
-			}
 
 			DataRow view_map = CacheProxy.getViewMaps(runtime.datasource());
 			if(null != pattern){
@@ -4718,7 +4708,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == views || views.isEmpty()) {
 				// 根据驱动内置接口补充
 				try {
-					LinkedHashMap<String, T> tmps = views(runtime, true, null, catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> tmps = views(runtime, true, null, catalog, schema, pattern, types);
 					for (String key : tmps.keySet()) {
 						if (!views.containsKey(key.toUpperCase())) {
 							T item = tmps.get(key);
@@ -4771,13 +4761,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, String types) throws Exception {
+	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4815,14 +4805,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types types BaseMetadata.TYPE.
 	 * @return views
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		if(null == views){
 			views = new LinkedHashMap<>();
@@ -4940,13 +4930,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
@@ -4964,11 +4954,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+	 * @param types  BaseMetadata.TYPE.
 	 * @return List
 	 * @param <T> MasterTable
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, String types){
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
 		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4986,10 +4976,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(null == schema || BasicUtil.isEmpty(schema.getName())){
 					schema = tmp.getSchema();
 				}
-			}
-			String[] tps = null;
-			if(null != types){
-				tps = types.toUpperCase().trim().split(",");
 			}
 			DataRow table_map = CacheProxy.getTableMaps(runtime.datasource());
 			if(null != pattern){
@@ -5026,7 +5012,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == tables || tables.isEmpty() ) {
 				// 根据驱动内置接口补充
 				try {
-					LinkedHashMap<String, T> tmps = masterTables(runtime, true, null, catalog, schema, pattern, tps);
+					LinkedHashMap<String, T> tmps = masterTables(runtime, true, null, catalog, schema, pattern, types);
 					for (String key : tmps.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = tmps.get(key);
@@ -5069,9 +5055,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception {
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -5110,9 +5096,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types) throws Exception {
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, String ... types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -5232,7 +5218,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [调用入口]
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern)
 	 * [命令合成]
-	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)
+	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
 	 * [结果集封装]<br/>
@@ -5306,9 +5292,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types) throws Exception {
+	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, String types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -10084,7 +10070,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, Column meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			LinkedHashMap<String, Table> tables = tables(runtime, null, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			LinkedHashMap<String, Table> tables = tables(runtime, null, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), Table.TYPE.NORMAL.value);
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -10902,7 +10888,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, Tag meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), 1);
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -11230,7 +11216,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, PrimaryKey meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables( runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables( runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), Table.TYPE.NORMAL.value);
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -11529,7 +11515,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, ForeignKey meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), Table.TYPE.NORMAL.value);
 			if(tables.size() == 0){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -11825,7 +11811,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, Index meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), Table.TYPE.NORMAL.value);
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
@@ -12171,7 +12157,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, Constraint meta) throws Exception {
 		Table table = meta.getTable(true);
 		if(null == table){
-			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), "TABLE");
+			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), Table.TYPE.NORMAL.value);
 			if(tables.isEmpty()){
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));

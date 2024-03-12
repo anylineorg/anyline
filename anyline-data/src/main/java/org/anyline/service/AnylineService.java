@@ -1319,88 +1319,88 @@ public interface AnylineService<E>{
 	 * 													METADATA
 	 ******************************************************************************************************************/
 
-	List<String> tables(Catalog catalog, Schema schema, String name, String types);
-	default List<String> tables(String catalog, String schema, String name, String types){
+	List<String> tables(Catalog catalog, Schema schema, String name, int types);
+	default List<String> tables(String catalog, String schema, String name, int types){
 		Catalog _catalog = null;
 		if(BasicUtil.isNotEmpty(catalog)){
 			_catalog = new Catalog(catalog);
 		}
 		return tables(_catalog, new Schema(schema), name, types);
 	}
-	default List<String> tables(Schema schema, String name, String types){
+	default List<String> tables(Schema schema, String name, int types){
 		return tables(null, schema, name, types);
 	}
-	default List<String> tables(String schema, String name, String types){
+	default List<String> tables(String schema, String name, int types){
 		return tables(null, new Schema(schema), name, types);
 	}
-	default List<String> tables(String name, String types){
+	default List<String> tables(String name, int types){
 		return tables((Catalog) null, null, name, types);
 	}
-	default List<String> tables(String types){
+	default List<String> tables(int types){
 		return tables((Catalog) null, null, null, types);
 	}
 	default List<String> tables(){
-		return tables(null);
+		return tables(Table.TYPE.NORMAL.value);
 	}
 
 
-	List<String> views(boolean greedy, Catalog catalog, Schema schema, String name, String types);
-	default List<String> views(boolean greedy, Schema schema, String name, String types){
+	List<String> views(boolean greedy, Catalog catalog, Schema schema, String name, int types);
+	default List<String> views(boolean greedy, Schema schema, String name, int types){
 		return views(greedy, null, schema, name, types);
 	}
-	default List<String> views(boolean greedy, String name, String types){
+	default List<String> views(boolean greedy, String name, int types){
 		return views(greedy, null, null, name, types);
 	}
-	default List<String> views(boolean greedy, String types){
+	default List<String> views(boolean greedy, int types){
 		return views(greedy, null, null, null, types);
 	}
 	default List<String> views(boolean greedy){
-		return views(greedy, null);
+		return views(greedy, View.TYPE.NORMAL.value);
 	}
-	default List<String> views(Catalog catalog, Schema schema, String name, String types){
+	default List<String> views(Catalog catalog, Schema schema, String name, int types){
 		return views(false, catalog, schema, name, types);
 	}
-	default List<String> views(Schema schema, String name, String types){
+	default List<String> views(Schema schema, String name, int types){
 		return views(false, null, schema, name, types);
 	}
-	default List<String> views(String name, String types){
+	default List<String> views(String name, int types){
 		return views(false, null, null, name, types);
 	}
-	default List<String> views(String types){
+	default List<String> views(int types){
 		return views(false, null, null, null, types);
 	}
 	default List<String> views(){
-		return views(false, null);
+		return views(false, View.TYPE.NORMAL.value);
 	}
 
 
-	List<String> mtables(boolean greedy, Catalog catalog, Schema schema, String name, String types);
-	default List<String> mtables(boolean greedy, Schema schema, String name, String types){
-		return mtables(greedy, null, schema, name, types);
+	List<String> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types);
+	default List<String> masterTables(boolean greedy, Schema schema, String name, int types){
+		return masterTables(greedy, null, schema, name, types);
 	}
-	default List<String> mtables(boolean greedy, String name, String types){
-		return mtables(greedy, null, null, name, types);
+	default List<String> masterTables(boolean greedy, String name, int types){
+		return masterTables(greedy, null, null, name, types);
 	}
-	default List<String> mtables(boolean greedy, String types){
-		return mtables(greedy, null, null, null, types);
+	default List<String> masterTables(boolean greedy, int types){
+		return masterTables(greedy, null, null, null, types);
 	}
-	default List<String> mtables(boolean greedy){
-		return mtables(greedy, "STABLE");
+	default List<String> masterTables(boolean greedy){
+		return masterTables(greedy, MasterTable.TYPE.NORMAL.value);
 	}
-	default List<String> mtables(Catalog catalog, Schema schema, String name, String types){
-		return mtables(false, catalog, schema, name, types);
+	default List<String> masterTables(Catalog catalog, Schema schema, String name, int types){
+		return masterTables(false, catalog, schema, name, types);
 	}
-	default List<String> mtables(Schema schema, String name, String types){
-		return mtables(false, null, schema, name, types);
+	default List<String> masterTables(Schema schema, String name, int types){
+		return masterTables(false, null, schema, name, types);
 	}
-	default List<String> mtables(String name, String types){
-		return mtables(false, null, null, name, types);
+	default List<String> masterTables(String name, int types){
+		return masterTables(false, null, null, name, types);
 	}
-	default List<String> mtables(String types){
-		return mtables(false, null, null, null, types);
+	default List<String> masterTables(int types){
+		return masterTables(false, null, null, null, types);
 	}
-	default List<String> mtables(){
-		return mtables(false, "STABLE");
+	default List<String> masterTables(){
+		return masterTables(false, MasterTable.TYPE.NORMAL.value);
 	}
 
 
@@ -1580,44 +1580,41 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+		 * @param types BaseMetadata.TYPE
 		 * @return tables
 		 */
-		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, int struct);
-		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, boolean struct){
+		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct){
 			int config = 0;
 			if(struct){
 				config = 255;
 			}
 			return tables(greedy, catalog, schema, name, types, config);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, int struct){
 			return tables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, boolean struct){
 			return tables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String name, String types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, String name, int types, boolean struct){
 			return tables(greedy, null, null, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String name, String types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, String name, int types, int struct){
 			return tables(greedy, null, null, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, int types, int struct){
 			return tables(greedy, null, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, int types, boolean struct){
 			return tables(greedy, null, types, struct);
-		}
-		default <T extends Table> List<T> tables(boolean greedy, int struct){
-			return tables(greedy, null, struct);
 		}
 		default <T extends Table> List<T> tables(boolean greedy, boolean struct){
-			return tables(greedy, null, struct);
+			return tables(greedy, Table.TYPE.NORMAL.value, struct);
 		}
 
-		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, int struct);
-		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, boolean struct){
+		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct);
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct){
 			int config = 0;
 			if(struct){
 				config = 255;
@@ -1625,56 +1622,56 @@ public interface AnylineService<E>{
 			return tables(catalog, schema, name, types, config);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct){
 			return tables( null, schema, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct){
 			return tables( null, schema, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, int struct){
 			return tables( null, null, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String name, String types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct){
 			return tables( null, null, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct){
 			return tables( null, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct){
 			return tables( null, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(){
-			return tables( null, false);
+			return tables( Table.TYPE.NORMAL.value, false);
 		}
 
 
-		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types){
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types){
 			return tables(greedy, catalog, schema, name, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, String types){
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types){
 			return tables(greedy, null, schema, name, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String name, String types){
+		default <T extends Table> List<T> tables(boolean greedy, String name, int types){
 			return tables(greedy, null, null, name, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String types){
+		default <T extends Table> List<T> tables(boolean greedy, int types){
 			return tables(greedy, null, types, false);
 		}
 		default <T extends Table> List<T> tables(boolean greedy){
-			return tables(greedy, null, false);
+			return tables(greedy, Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types){
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types){
 			return tables(catalog, schema, name, types, false);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, String types){
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types){
 			return tables( null, schema, name, types, false);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String name, String types){
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types){
 			return tables( null, null, name, types, false);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String types){
+		default <T extends Table> LinkedHashMap<String, T> tables(int types){
 			return tables( null, types, false);
 		}
 
@@ -1770,32 +1767,32 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 
-		<T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, String types);
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, Schema schema, String name, String types){
+		<T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types);
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, Schema schema, String name, int types){
 			return views(greedy, null, schema, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, String types){
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, int types){
 			return views(greedy, null, null, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String types){
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, int types){
 			return views(greedy, null, types);
 		}
 		default <T extends View> LinkedHashMap<String, T> views(boolean greedy){
-			return views(greedy, null);
+			return views(greedy, View.TYPE.NORMAL.value);
 		}
 
-		<T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, String types);
-		default <T extends View> LinkedHashMap<String, T> views(Schema schema, String name, String types){
+		<T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types);
+		default <T extends View> LinkedHashMap<String, T> views(Schema schema, String name, int types){
 			return views(false, null, schema, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(String name, String types){
+		default <T extends View> LinkedHashMap<String, T> views(String name, int types){
 			return views(false, null, null, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(String types){
+		default <T extends View> LinkedHashMap<String, T> views(int types){
 			return views(false, null, types);
 		}
 		default <T extends View> LinkedHashMap<String, T> views(){
-			return views(false, null);
+			return views(false, View.TYPE.NORMAL.value);
 		}
 
 
@@ -1832,35 +1829,35 @@ public interface AnylineService<E>{
 		default boolean exists(MasterTable table){
 			return exists(false, table);
 		}
-		<T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Catalog catalog, Schema schema, String name, String types);
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Schema schema, String name, String types){
-			return mtables(greedy, null, schema, name, types);
+		<T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Schema schema, String name, int types){
+			return masterTables(greedy, null, schema, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String name, String types){
-			return mtables(greedy, null, null, name, types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, String name, int types){
+			return masterTables(greedy, null, null, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, String types){
-			return mtables(greedy, null, null, null, types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, int types){
+			return masterTables(greedy, null, null, null, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy){
-			return mtables(greedy, "STABLE");
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy){
+			return masterTables(greedy, MasterTable.TYPE.NORMAL.value);
 		}
 
 
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(Catalog catalog, Schema schema, String name, String types){
-			return mtables(false, catalog, schema, name, types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(Catalog catalog, Schema schema, String name, int types){
+			return masterTables(false, catalog, schema, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(Schema schema, String name, String types){
-			return mtables(false, schema, name, types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(Schema schema, String name, int types){
+			return masterTables(false, schema, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(String name, String types){
-			return mtables(false, name, types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(String name, int types){
+			return masterTables(false, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(String types){
-			return mtables(false, types);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(int types){
+			return masterTables(false, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> mtables(){
-			return mtables(false);
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(){
+			return masterTables(false);
 		}
 
 		MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct);

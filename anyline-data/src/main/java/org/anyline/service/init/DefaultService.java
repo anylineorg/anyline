@@ -1622,7 +1622,7 @@ public class DefaultService<E> implements AnylineService<E> {
         return metadata;
     }
     @Override 
-    public List<String> tables(Catalog catalog, Schema schema, String name, String types) {
+    public List<String> tables(Catalog catalog, Schema schema, String name, int types) {
         LinkedHashMap<String, Table> tables = metadata.tables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
         for (Table table : tables.values()) {
@@ -1634,7 +1634,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public List<String> views(boolean greedy, Catalog catalog, Schema schema, String name, String types) {
+    public List<String> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
         LinkedHashMap<String, View> views = metadata.views(greedy, catalog, schema, name, types);
         List<String> list = new ArrayList<>();
         for (View view : views.values()) {
@@ -1645,8 +1645,8 @@ public class DefaultService<E> implements AnylineService<E> {
 
     
     @Override 
-    public List<String> mtables(boolean greedy, Catalog catalog, Schema schema, String name, String types) {
-        LinkedHashMap<String, MasterTable> tables = metadata.mtables(greedy, catalog, schema, name, types);
+    public List<String> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+        LinkedHashMap<String, MasterTable> tables = metadata.masterTables(greedy, catalog, schema, name, types);
         List<String> list = new ArrayList<>();
         for (MasterTable table : tables.values()) {
             list.add(table.getName());
@@ -1832,10 +1832,10 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													table
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(Table table)
-         * LinkedHashMap<String, Table> tables(Catalog catalog, Schema schema, String name, String types)
-         * LinkedHashMap<String, Table> tables(Schema schema, String name, String types)
-         * LinkedHashMap<String, Table> tables(String name, String types)
-         * LinkedHashMap<String, Table> tables(String types)
+         * LinkedHashMap<String, Table> tables(Catalog catalog, Schema schema, String name, int types)
+         * LinkedHashMap<String, Table> tables(Schema schema, String name, int types)
+         * LinkedHashMap<String, Table> tables(String name, int types)
+         * LinkedHashMap<String, Table> tables(int types)
          * LinkedHashMap<String, Table> tables()
          * Table table(Catalog catalog, Schema schema, String name)
          * Table table(Schema schema, String name)
@@ -1851,24 +1851,18 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, String types, int struct) {
+        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
                 return ServiceProxy.service(ps[0]).metadata().tables(greedy, catalog, schema, ps[1], types, struct);
             }
-            if(null == types){
-                types = "TABLE";
-            }
             return dao.tables(greedy, catalog, schema, name, types, struct);
         }
         @Override
-        public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, String types, int struct) {
+        public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
                 return ServiceProxy.service(ps[0]).metadata().tables(catalog, schema, ps[1], types, struct);
-            }
-            if(null == types){
-                types = "TABLE";
             }
             return dao.tables(catalog, schema, name, types, struct);
         }
@@ -1923,7 +1917,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct) {
             Table table = null;
-            List<Table> tables = tables(greedy, catalog, schema, name, null);
+            List<Table> tables = tables(greedy, catalog, schema, name, Table.TYPE.NORMAL.value);
             if (!tables.isEmpty()) {
                 table = tables.get(0);
                 if(null != table && struct>0) {
@@ -1935,7 +1929,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Table table(Catalog catalog, Schema schema, String name, int struct) {
             Table table = null;
-            LinkedHashMap<String, Table> tables = tables(catalog, schema, name, null);
+            LinkedHashMap<String, Table> tables = tables(catalog, schema, name, Table.TYPE.NORMAL.value);
             if (!tables.isEmpty()) {
                 table = tables.values().iterator().next();
                 if(null != table && struct > 0) {
@@ -1959,10 +1953,10 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													view
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(View view)
-         * LinkedHashMap<String, View> views(Catalog catalog, Schema schema, String name, String types)
-         * LinkedHashMap<String, View> views(Schema schema, String name, String types)
-         * LinkedHashMap<String, View> views(String name, String types)
-         * LinkedHashMap<String, View> views(String types)
+         * LinkedHashMap<String, View> views(Catalog catalog, Schema schema, String name, int types)
+         * LinkedHashMap<String, View> views(Schema schema, String name, int types)
+         * LinkedHashMap<String, View> views(String name, int types)
+         * LinkedHashMap<String, View> views(int types)
          * LinkedHashMap<String, View> views()
          * View view(Catalog catalog, Schema schema, String name)
          * View view(Schema schema, String name)
@@ -1979,7 +1973,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, String types) {
+        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
                 return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1], types);
@@ -1989,7 +1983,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         @Override
-        public <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, String types) {
+        public <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
                 return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1], types);
@@ -2001,7 +1995,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public View view(boolean greedy, Catalog catalog, Schema schema, String name) {
             View view = null;
-            LinkedHashMap<String, View> views = views(greedy, catalog, schema, name, null);
+            LinkedHashMap<String, View> views = views(greedy, catalog, schema, name, View.TYPE.NORMAL.value);
             if (!views.isEmpty()) {
                 view = views.values().iterator().next();
                 view.setColumns(columns(view));
@@ -2025,11 +2019,11 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													master table
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(MasterTable table)
-         * LinkedHashMap<String, MasterTable> mtables(Catalog catalog, Schema schema, String name, String types)
-         * LinkedHashMap<String, MasterTable> mtables(Schema schema, String name, String types)
-         * LinkedHashMap<String, MasterTable> mtables(String name, String types)
-         * LinkedHashMap<String, MasterTable> mtables(String types)
-         * LinkedHashMap<String, MasterTable> mtables()
+         * LinkedHashMap<String, MasterTable> masterTables(Catalog catalog, Schema schema, String name, int types)
+         * LinkedHashMap<String, MasterTable> masterTables(Schema schema, String name, int types)
+         * LinkedHashMap<String, MasterTable> masterTables(String name, int types)
+         * LinkedHashMap<String, MasterTable> masterTables(int types)
+         * LinkedHashMap<String, MasterTable> masterTables()
          * MasterTable mtable(Catalog catalog, Schema schema, String name)
          * MasterTable mtable(Schema schema, String name)
          * MasterTable mtable(String name)
@@ -2050,17 +2044,17 @@ public class DefaultService<E> implements AnylineService<E> {
 
 
         @Override
-        public <T extends MasterTable> LinkedHashMap<String, T> mtables(boolean greedy, Catalog catalog, Schema schema, String name, String types) {
+        public <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]){
-                return ServiceProxy.service(ps[0]).metadata().mtables(greedy, catalog, schema, ps[1], types);
+                return ServiceProxy.service(ps[0]).metadata().masterTables(greedy, catalog, schema, ps[1], types);
             }
-            return dao.mtables(greedy, catalog, schema, name, types);
+            return dao.masterTables(greedy, catalog, schema, name, types);
         }
 
         @Override
         public MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
-            LinkedHashMap<String, MasterTable> tables = mtables(greedy, catalog, schema, name, "STABLE");
+            LinkedHashMap<String, MasterTable> tables = masterTables(greedy, catalog, schema, name, MasterTable.TYPE.NORMAL.value);
             if (tables.size() == 0) {
                 return null;
             }
@@ -2085,10 +2079,10 @@ public class DefaultService<E> implements AnylineService<E> {
          * 													partition  table
          * -----------------------------------------------------------------------------------------------------------------
          * boolean exists(PartitionTable table)
-         * LinkedHashMap<String, PartitionTable> ptables(Catalog catalog, Schema schema, String name, String types)
-         * LinkedHashMap<String, PartitionTable> ptables(Schema schema, String name, String types)
-         * LinkedHashMap<String, PartitionTable> ptables(String name, String types)
-         * LinkedHashMap<String, PartitionTable> ptables(String types)
+         * LinkedHashMap<String, PartitionTable> ptables(Catalog catalog, Schema schema, String name, int types)
+         * LinkedHashMap<String, PartitionTable> ptables(Schema schema, String name, int types)
+         * LinkedHashMap<String, PartitionTable> ptables(String name, int types)
+         * LinkedHashMap<String, PartitionTable> ptables(int types)
          * LinkedHashMap<String, PartitionTable> ptables()
          * LinkedHashMap<String, PartitionTable> ptables(MasterTable master)
          * PartitionTable ptable(Catalog catalog, Schema schema, String name)

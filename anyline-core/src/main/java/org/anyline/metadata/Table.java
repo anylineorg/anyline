@@ -26,6 +26,39 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
+    public enum TYPE implements Type{
+        NORMAL(1),
+        VIEW(2);
+        public final int value;
+        TYPE(int vaule){
+            this.value = vaule;
+        }
+        public int value(){
+            return value;
+        }
+    }
+    private static Map<Integer, Type> types = new HashMap<>();
+    static {
+        for(TYPE type: TYPE.values()){
+            types.put(type.value, type);
+        }
+    }
+    public static Map<Integer, Type> types(){
+        return types;
+    }
+    //struct 是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
+    enum STRUCT{
+        COLUMN(4),
+        PRIMARY(8),
+        FOREIGN(16),
+        INDEX(32),
+        CONSTRAINT(64),
+        DDL(32768);
+        public final int value;
+        STRUCT(int value){
+            this.value = value;
+        }
+    }
     protected String keyword = "TABLE"            ;
     /**
      * 继承自
@@ -44,7 +77,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     protected Partition partition ;
 
     /**
-     * 表类型 不同数据库有所区别 如"TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+     * 表类型 不同数据库有所区别
      */
     protected String type                         ;
     /**
