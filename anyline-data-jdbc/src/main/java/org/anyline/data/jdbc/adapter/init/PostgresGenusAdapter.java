@@ -2835,7 +2835,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
                 Column col = table.getColumn(columnName.toUpperCase());
                 Column column = null;
                 if(null != col){
-                    column = (Column) col.clone();
+                    column = col.clone();
                 }else{
                     column = new Column();
                     column.setName(columnName);
