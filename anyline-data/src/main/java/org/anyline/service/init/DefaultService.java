@@ -2956,8 +2956,8 @@ public class DefaultService<E> implements AnylineService<E> {
                     throw new AnylineException("表不存在:" + column.getTableName(true));
                 }
                 LinkedHashMap<String, Column> columns = table.getColumns();
-                Column original = columns.get(column.getName().toUpperCase());
-                if (null == original) {
+                Column origin = columns.get(column.getName().toUpperCase());
+                if (null == origin) {
                     result = add(columns, column);
                 } else {
                     result = alter(table, column);
@@ -3027,27 +3027,27 @@ public class DefaultService<E> implements AnylineService<E> {
             CacheProxy.clear();
             try {
                 LinkedHashMap<String, Column> columns = table.getColumns();
-                Column original = columns.get(column.getName().toUpperCase());
+                Column origin = columns.get(column.getName().toUpperCase());
 
                 Column update = column.getUpdate();
                 if (null == update) {
                     update = column.clone();
                 }
-                original.setUpdate(update, false, false);
-                String name = original.getName();
+                origin.setUpdate(update, false, false);
+                String name = origin.getName();
                 try {
-                    result = dao.alter(table, original);
+                    result = dao.alter(table, origin);
                 } finally {
-                    original.setName(name);
+                    origin.setName(name);
                 }
                 if (result) {
-                    columns.remove(original.getName());
+                    columns.remove(origin.getName());
 
-                    BeanUtil.copyFieldValueWithoutNull(original, update);
-                    original.setUpdate(update, false, false);
-                    BeanUtil.copyFieldValue(column, original);
+                    BeanUtil.copyFieldValueWithoutNull(origin, update);
+                    origin.setUpdate(update, false, false);
+                    BeanUtil.copyFieldValue(column, origin);
                     column.setUpdate(update, false, false);
-                    columns.put(original.getName(), original);
+                    columns.put(origin.getName(), origin);
                 }
                 column.setTable(table);
                 return result;
@@ -3171,21 +3171,21 @@ public class DefaultService<E> implements AnylineService<E> {
             CacheProxy.clear();
             try {
                 LinkedHashMap<String, Tag> tags = table.getTags();
-                Tag original = tags.get(tag.getName().toUpperCase());
+                Tag origin = tags.get(tag.getName().toUpperCase());
 
                 Tag update = tag.getUpdate();
                 if (null == update) {
                     update = tag.clone();
                 }
-                original.setUpdate(update, false, false);
-                result = dao.alter(table, original);
+                origin.setUpdate(update, false, false);
+                result = dao.alter(table, origin);
                 if (result) {
-                    tags.remove(original.getName());
+                    tags.remove(origin.getName());
 
-                    BeanUtil.copyFieldValueWithoutNull(original, update);
-                    original.setUpdate(update, false, false);
-                    BeanUtil.copyFieldValue(tag, original);
-                    tags.put(original.getName(), original);
+                    BeanUtil.copyFieldValueWithoutNull(origin, update);
+                    origin.setUpdate(update, false, false);
+                    BeanUtil.copyFieldValue(tag, origin);
+                    tags.put(origin.getName(), origin);
                 }
                 return result;
             }finally {

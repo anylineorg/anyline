@@ -103,7 +103,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         });
     }
     protected String keyword = "COLUMN"           ;
-    protected String originName                   ; // 原名 SELECT ID AS USER_ID FROM USER; originalName=ID, name=USER_ID
+    protected String originName                   ; // 原名 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
     protected String originType                   ; // 原始类型(未解析,交给具体的adapter解析)
     protected TypeMetadata typeMetadata           ;

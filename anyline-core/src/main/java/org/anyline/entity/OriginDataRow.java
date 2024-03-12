@@ -20,12 +20,12 @@ import org.anyline.adapter.KeyAdapter.KEY_CASE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OriginalDataRow extends DataRow {
+public class OriginDataRow extends DataRow {
     private static final long serialVersionUID = -2098827041540802316L;
-    private static final Logger log = LoggerFactory.getLogger(OriginalDataRow.class);
+    private static final Logger log = LoggerFactory.getLogger(OriginDataRow.class);
     protected KEY_CASE keyCase 				        = KEY_CASE.SRC      ; // 列名格式
 
-    public OriginalDataRow(){
+    public OriginDataRow(){
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
         if (null != pk) {
             primaryKeys.add(DEFAULT_PRIMARY_KEY);

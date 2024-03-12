@@ -1,8 +1,8 @@
 package org.anyline.data.elasticsearch.entity;
 
-import org.anyline.entity.OriginalDataRow;
+import org.anyline.entity.OriginDataRow;
 
-public class ElasticSearchDataRow extends OriginalDataRow {
+public class ElasticSearchDataRow extends OriginDataRow {
     public ElasticSearchDataRow() {
         primaryKeys.add("_id");
         parseKeycase(keyCase);
