@@ -24,8 +24,6 @@ import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
-import org.anyline.data.jdbc.kingbase.oracle.KingbaseReader;
-import org.anyline.data.jdbc.kingbase.oracle.KingbaseWriter;
 import org.anyline.data.jdbc.runtime.JDBCRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -89,7 +87,6 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 		JdbcTemplate jdbc = ((JDBCRuntime)runtime).jdbc();
 		try {
 			List<Map<String, Object>> maps = jdbc.queryForList("show database_mode");
-
 			if(!maps.isEmpty()){
 				return maps.get(0).get("database_mode")+"";
 			}
@@ -110,7 +107,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	@Override
 	public boolean match(DataRuntime runtime, boolean compensate) {
 		boolean chk = super.match(runtime, compensate);
-		if(chk) {
+		/*if(chk) {
 			String feature = feature(runtime);
 			if(null != feature && feature.toLowerCase().contains("oracle")){
 				return false;
@@ -119,7 +116,8 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 				return true;
 			}
 		}
-		return false;
+		return false;*/
+		return chk;
 	}
 
 
