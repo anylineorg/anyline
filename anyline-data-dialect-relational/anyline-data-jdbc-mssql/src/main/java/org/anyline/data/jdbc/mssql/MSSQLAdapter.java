@@ -120,6 +120,17 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		}
 		return false;
 	}
+
+
+	private static Map<Object, String> types = new HashMap<>();
+	static {
+		types.put(Table.TYPE.NORMAL, "USER_TABLE");
+		types.put(View.TYPE.NORMAL, "VIEW");
+	}
+	@Override
+	public String name(Type type){
+		return types.get(type);
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -1767,9 +1778,6 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 			builder.append(" AND O.TYPE_DESC IN(");
 			boolean first = true;
 			for(String tp:tps){
-				if("TABLE".equalsIgnoreCase(tp)){
-					tp = "USER_TABLE";
-				}
 				if(!first){
 					builder.append(",");
 				}

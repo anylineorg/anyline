@@ -1905,13 +1905,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         List<String> tps = names(Table.types(types));
         if(null != tps && !tps.isEmpty()){;
             builder.append(" AND M.OBJECT_TYPE IN(");
-            int idx = 0;
+            boolean first = true;
             for(String tmp:tps){
-                if(idx > 0){
+                if(!first){
                     builder.append(",");
                 }
                 builder.append("'").append(tmp).append("'");
-                idx ++;
+                first = false;
             }
             builder.append(")");
         }
