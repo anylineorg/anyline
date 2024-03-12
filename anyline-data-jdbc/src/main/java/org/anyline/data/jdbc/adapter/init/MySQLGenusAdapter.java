@@ -1703,7 +1703,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
             builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
         }
         List<String> tps = names(Table.types(types));
-        if(BasicUtil.isNotEmpty(tps)){;
+        if(null != tps && !tps.isEmpty()){;
             builder.append(" AND TABLE_TYPE IN(");
             int idx = 0;
             for(String tmp:tps){
