@@ -1903,7 +1903,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
             builder.append(" AND M.OBJECT_NAME LIKE '").append(pattern).append("'");
         }
         List<String> tps = names(Table.types(types));
-        if(BasicUtil.isNotEmpty(tps)){
+        if(null != tps && !tps.isEmpty()){;
             builder.append(" AND M.OBJECT_TYPE IN(");
             int idx = 0;
             for(String tmp:tps){

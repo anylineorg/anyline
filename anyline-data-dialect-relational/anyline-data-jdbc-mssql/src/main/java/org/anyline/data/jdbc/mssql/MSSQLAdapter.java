@@ -1763,7 +1763,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 			builder.append(" AND FT.TABLE_SCHEMA ='").append(schemaName).append("'");
 		}
 		List<String> tps = names(Table.types(types));
-		if(!tps.isEmpty()){
+		if(null != tps && !tps.isEmpty()){
 			builder.append(" AND O.TYPE_DESC IN(");
 			boolean first = true;
 			for(String tp:tps){
