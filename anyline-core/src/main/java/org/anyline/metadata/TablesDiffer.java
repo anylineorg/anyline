@@ -1,8 +1,6 @@
 package org.anyline.metadata;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
