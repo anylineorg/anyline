@@ -6687,17 +6687,28 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter, In
 		if(null == meta){
 			return;
 		}
-		try {
-			if (empty(meta.getCatalog())) {
-				meta.setCatalog(con.getCatalog());
+
+		String catalog = runtime.getCatalog();
+		String schema = runtime.getSchema();
+		if(null == catalog && null == schema) {
+			try {
+				if (empty(meta.getCatalog())) {
+					catalog = con.getCatalog();
+					meta.setCatalog(catalog);
+					runtime.setCatalog(catalog);
+				}
+				if (empty(meta.getSchema())) {
+					schema = con.getSchema();
+					meta.setSchema(schema);
+					runtime.setSchema(schema);
+				}
+			} catch (Exception e) {
 			}
-			if (empty(meta.getSchema())) {
-				//meta.setSchema("dbo");
-				meta.setSchema(con.getSchema());
-			}
-		}catch (Exception e){
+			meta.setCheckSchemaTime(new Date());
+		}else{
+			meta.setCatalog(catalog);
+			meta.setSchema(schema);
 		}
-		meta.setCheckSchemaTime(new Date());
 	}
     /**
      * 根据运行环境识别 catalog与schema
