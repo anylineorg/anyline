@@ -6253,12 +6253,12 @@ public class GaussDBAdapter extends PostgresGenusAdapter implements JDBCAdapter,
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
-        super.correctSchemaFromJDBC(meta, catalog, schema, override);
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, override);
     }
 	@Override
-	public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
-		super.correctSchemaFromJDBC(meta, catalog, schema);
+	public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+		super.correctSchemaFromJDBC(runtime, meta, catalog, schema);
 	}
 
 	/**

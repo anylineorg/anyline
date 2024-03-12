@@ -26,6 +26,8 @@ public class DefaultRuntime implements DataRuntime {
     protected String version;
     protected DriverAdapter adapter;
     protected String adapterKey;
+    protected String catalog;
+    protected String schema;
     protected RuntimeHolder holder;
 
     @Override
@@ -95,6 +97,25 @@ public class DefaultRuntime implements DataRuntime {
 
     }
 
+    @Override
+    public String getCatalog() {
+        return catalog;
+    }
+
+    @Override
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
+    @Override
+    public String getSchema() {
+        return schema;
+    }
+
+    @Override
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     public DriverAdapter getAdapter() {
         if(null == adapter){

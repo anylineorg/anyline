@@ -6530,13 +6530,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
         if(override || empty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
     }
     @Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
         if(empty(meta.getSchema())) {
             meta.setSchema(catalog);
         }

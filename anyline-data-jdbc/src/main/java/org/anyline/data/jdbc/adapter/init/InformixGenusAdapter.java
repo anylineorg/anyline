@@ -6283,12 +6283,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
      * @param <T> BaseMetadata
      */
     @Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
-        super.correctSchemaFromJDBC(meta, catalog, schema, override);
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, override);
     }
     @Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
-        super.correctSchemaFromJDBC(meta, catalog, schema);
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema);
     }
     /**
      * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>

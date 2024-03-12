@@ -60,6 +60,10 @@ public interface DataRuntime {
      */
     void setAdapterKey(String adapter);
     String getAdapterKey();
+    void setSchema(String schema);
+    String getSchema();
+    void setCatalog(String catalog);
+    String getCatalog();
 
     void setHolder(RuntimeHolder holder);
     RuntimeHolder getHolder();

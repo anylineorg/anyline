@@ -3501,7 +3501,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 				catalogName = string(keys, "TABLE_CAT", set);
 				schemaName = string(keys, "TABLE_SCHEM", set);
-				correctSchemaFromJDBC(table, catalogName, schemaName);
+				correctSchemaFromJDBC(runtime, table, catalogName, schemaName);
 				table.setName(tableName);
 				init(table, set, keys);
 				tables.put(tableName.toUpperCase(), table);
@@ -3569,7 +3569,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				catalogName = BasicUtil.evl(string(keys, "TABLE_CATALOG", set), string(keys, "TABLE_CAT", set));
 				schemaName = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
 				Table chk = new Table();
-				correctSchemaFromJDBC(chk, catalogName, schemaName);
+				correctSchemaFromJDBC(runtime, chk, catalogName, schemaName);
 				T table = table(tables, chk.getCatalog(), chk.getSchema(), tableName);
 				boolean contains = true;
 				if(null == table){
@@ -3580,7 +3580,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 						continue;
 					}
 				}
-				correctSchemaFromJDBC(table, catalogName, schemaName);
+				correctSchemaFromJDBC(runtime, table, catalogName, schemaName);
 				table.setSchema(schema);
 				table.setName(tableName);
 				init(table, set, keys);
@@ -3959,7 +3959,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 				catalogName = BasicUtil.evl(string(keys, "TABLE_CATALOG", set), string(keys, "TABLE_CAT", set));
 				schemaName = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
-				correctSchemaFromJDBC(view, catalogName, schemaName);
+				correctSchemaFromJDBC(runtime, view, catalogName, schemaName);
 				view.setName(viewName);
 				init(view, set, keys);
 				views.put(viewName.toUpperCase(), view);
@@ -5382,7 +5382,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
 					String catalog = BasicUtil.evl(string(keys, "TABLE_CATALOG", set), string(keys, "TABLE_CAT", set));
 					String schema = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
-					correctSchemaFromJDBC(index, catalog, schema);
+					correctSchemaFromJDBC(runtime, index, catalog, schema);
 					if(!equals(table.getCatalog(), index.getCatalog()) || !equals(table.getSchema(), index.getSchema())){
 						continue;
 					}
@@ -10024,7 +10024,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}catch (Exception e){
 			log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
 		}
-		correctSchemaFromJDBC(column, catalog, schema);
+		correctSchemaFromJDBC(runtime, column, catalog, schema);
 		try{
 			column.setClassName(rsm.getColumnClassName(index));
 		}catch (Exception e){
@@ -10153,7 +10153,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			}
 
-			correctSchemaFromJDBC(column, columnCatalog, columnSchema);
+			correctSchemaFromJDBC(runtime, column, columnCatalog, columnSchema);
 			if(!BasicUtil.equalsIgnoreCase(catalog, column.getCatalogName())){
 				continue;
 			}
@@ -10326,7 +10326,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			} catch (Exception e) {
 				log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
 			}
-			correctSchemaFromJDBC(column, catalog, schema);
+			correctSchemaFromJDBC(runtime, column, catalog, schema);
 			try {
 				column.setClassName(rsm.getColumnClassName(index));
 			} catch (Exception e) {
@@ -10722,18 +10722,25 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta || null != meta.getCheckSchemaTime()){
 			return;
 		}
-		Connection con = null;
-		try {
-			if (empty(meta.getCatalog()) || empty(meta.getSchema())) {
-				con = DataSourceUtils.getConnection(ds);
-				checkSchema(runtime, con, meta);
+		String catalog = runtime.getCatalog();
+		String schema = runtime.getSchema();
+		if(null == catalog && null == schema) {
+			Connection con = null;
+			try {
+				if (empty(meta.getCatalog()) || empty(meta.getSchema())) {
+					con = DataSourceUtils.getConnection(ds);
+					checkSchema(runtime, con, meta);
+				}
+			} catch (Exception e) {
+				log.warn("[check schema][fail:{}]", e.toString());
+			} finally {
+				if (null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
+					DataSourceUtils.releaseConnection(con, ds);
+				}
 			}
-		}catch (Exception e){
-			log.warn("[check schema][fail:{}]", e.toString());
-		}finally {
-			if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
-			}
+		}else{
+			meta.setCatalog(catalog);
+			meta.setSchema(schema);
 		}
 	}
 
@@ -10742,34 +10749,48 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta){
 			return;
 		}
-		String catalog = null;
-		String schema = null;
-		try {
-			//这一步不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
-			if (empty(meta.getCatalog())) {
-				catalog = con.getCatalog();
+		String catalog = runtime.getCatalog();
+		String schema = runtime.getSchema();
+		if(null == catalog && null == schema) {
+			try {
+				//这一步不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
+				if (empty(meta.getCatalog())) {
+					catalog = con.getCatalog();
+				}
+			} catch (Exception e) {
+				log.warn("[check catalog][result:fail][exception:{}]", e.toString());
 			}
-		}catch (Exception e){
-			log.warn("[check catalog][result:fail][exception:{}]", e.toString());
-		}
-		try {
-			if (empty(meta.getSchema())) {
-				schema = con.getSchema();
+			try {
+				if (empty(meta.getSchema())) {
+					schema = con.getSchema();
+				}
+			} catch (Exception e) {
+				log.warn("[check schema][result:fail][exception:{}]", e.toString());
 			}
-		}catch (Exception e){
-			log.warn("[check schema][result:fail][exception:{}]", e.toString());
+			correctSchemaFromJDBC(runtime, meta, catalog, schema);
+			meta.setCheckSchemaTime(new Date());
+		}else{
+			meta.setCatalog(catalog);
+			meta.setSchema(schema);
 		}
-		correctSchemaFromJDBC(meta, catalog, schema);
-		meta.setCheckSchemaTime(new Date());
 	}
 	@Override
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
 		if(null != meta){
-			JdbcTemplate jdbc = jdbc(runtime);
-			if(null == jdbc){
-				return;
+
+			String catalog = runtime.getCatalog();
+			String schema = runtime.getSchema();
+
+			if(null == catalog && null == schema) {
+				JdbcTemplate jdbc = jdbc(runtime);
+				if (null == jdbc) {
+					return;
+				}
+				checkSchema(runtime, jdbc.getDataSource(), meta);
+			}else{
+				meta.setCatalog(catalog);
+				meta.setSchema(schema);
 			}
-			checkSchema(runtime, jdbc.getDataSource(), meta);
 		}
 	}
 

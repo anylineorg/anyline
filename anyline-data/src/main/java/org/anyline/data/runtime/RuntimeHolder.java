@@ -139,13 +139,22 @@ public abstract class RuntimeHolder {
     }
 
     public static String parseAdapterKey(String url){
-        String adapter = null;
-        if(url.contains("adapter")){
-            adapter = RegularUtil.cut(url, "adapter=", "&");
-            if(BasicUtil.isEmpty(adapter)){
-                adapter = RegularUtil.cut(url, "adapter=", RegularUtil.TAG_END);
+        return parseParamValue(url, "adapter");
+    }
+    public static String parseCatalog(String url){
+        return parseParamValue(url, "catalog");
+    }
+    public static String parseSchema(String url){
+        return parseParamValue(url, "schema");
+    }
+    public static String parseParamValue(String url, String key){
+        String value = null;
+        if(url.contains(key)){
+            value = RegularUtil.cut(url, key+"=", "&");
+            if(BasicUtil.isEmpty(value)){
+                value = RegularUtil.cut(url, key+"=", RegularUtil.TAG_END);
             }
         }
-        return adapter;
+        return value;
     }
 }

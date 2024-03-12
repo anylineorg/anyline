@@ -346,6 +346,17 @@ public class JDBCDatasourceHolder extends DatasourceHolder {
 						adapter = RuntimeHolder.parseAdapterKey(url);
 					}
 					runtime.setAdapterKey(adapter);
+					String catalog = param.get("catalog")+"";
+					if(BasicUtil.isEmpty(catalog)){
+						catalog = RuntimeHolder.parseCatalog(url);
+					}
+					runtime.setCatalog(catalog);
+
+					String schema = param.get("schema")+"";
+					if(BasicUtil.isEmpty(schema)){
+						schema = RuntimeHolder.parseSchema(url);
+					}
+					runtime.setSchema(schema);
 				}
 			}
 		}

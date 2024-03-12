@@ -22,8 +22,9 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.data.runtime.init.DefaultRuntime;
 
-public class NebulaRuntime implements DataRuntime {
+public class NebulaRuntime extends DefaultRuntime implements DataRuntime {
 
     private String origin;
     /**

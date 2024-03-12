@@ -1428,36 +1428,44 @@ public interface DriverAdapter {
 	 * @param override 如果meta中有值，是否覆盖
 	 * @param <T> BaseMetadata
 	 */
-	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema, boolean override){
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
 		if(supportCatalog()) {
 			if (override || empty(meta.getCatalog())) {
 				meta.setCatalog(catalog);
+				runtime.setCatalog(catalog);;
 			}
 		}else{
 			meta.setCatalog((Catalog) null);
+			runtime.setCatalog(null);
 		}
 		if(supportSchema()) {
 			if (override || empty(meta.getSchema())) {
 				meta.setSchema(schema);
+				runtime.setSchema(schema);
 			}
 		}else{
 			meta.setSchema((Schema) null);
+			runtime.setSchema(null);
 		}
 	}
-	default <T extends BaseMetadata> void correctSchemaFromJDBC(T meta, String catalog, String schema){
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
 		if(supportCatalog()) {
 			if (empty(meta.getCatalog())) {
 				meta.setCatalog(catalog);
+				runtime.setCatalog(catalog);
 			}
 		}else{
 			meta.setCatalog((Catalog) null);
+			runtime.setCatalog(null);
 		}
 		if(supportSchema()){
 			if(empty(meta.getSchema())) {
 				meta.setSchema(schema);
+				runtime.setSchema(schema);
 			}
 		}else{
 			meta.setSchema((Schema) null);
+			runtime.setSchema(null);
 		}
 	}
 
