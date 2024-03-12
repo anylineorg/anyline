@@ -1,9 +1,11 @@
-package org.anyline.metadata;
+package org.anyline.metadata.differ;
+
+import org.anyline.metadata.Index;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IndexsDiffer {
+public class IndexsDiffer implements MetadataDiffer {
     private List<Index> adds = new ArrayList<>();
     private List<Index> drops = new ArrayList<>();
     private List<Index> updates = new ArrayList<>();

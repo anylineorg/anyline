@@ -1,11 +1,14 @@
-package org.anyline.metadata;
+package org.anyline.metadata.differ;
+
+import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
 
 import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
  */
-public class TableDiffer {
+public class TableDiffer implements MetadataDiffer {
     private ColumnsDiffer columnsDiffer;
     private IndexsDiffer indexsDiffer;
     public static TableDiffer compare(Table origin, Table dest){

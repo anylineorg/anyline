@@ -1,10 +1,12 @@
-package org.anyline.metadata;
+package org.anyline.metadata.differ;
+
+import org.anyline.metadata.Column;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ColumnsDiffer {
+public class ColumnsDiffer implements MetadataDiffer{
     private List<Column> adds = new ArrayList<>();
     private List<Column> drops = new ArrayList<>();
     private List<Column> updates = new ArrayList<>();

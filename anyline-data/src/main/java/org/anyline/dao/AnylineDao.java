@@ -26,6 +26,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -38,6 +39,26 @@ import java.util.Map;
 public interface AnylineDao<E>{
 	void setRuntime(DataRuntime runtime);
 	DataRuntime runtime();
+
+
+	/**
+	 * 根据差异生成SQL
+	 * @param differ differ
+	 * @return sqls
+	 */
+	List<String> ddls(DataRuntime runtime, MetadataDiffer differ);
+	default List<String> ddls(MetadataDiffer differ){
+		return ddls(runtime(), differ);
+	}
+	/**
+	 * 根据差异生成SQL
+	 * @param differs differs
+	 * @return sqls
+	 */
+	List<String> ddls(DataRuntime runtime, List<MetadataDiffer> differs);
+	default List<String> ddls(List<MetadataDiffer> differs){
+		return ddls(runtime(), differs);
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML

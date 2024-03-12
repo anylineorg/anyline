@@ -33,6 +33,7 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
 import org.anyline.metadata.*;
+import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
@@ -1406,6 +1407,25 @@ public class DefaultService<E> implements AnylineService<E> {
         return new DefaultConfigStore();
     }
 
+
+    /**
+     * 根据差异生成SQL
+     * @param differ differ
+     * @return sqls
+     */
+    @Override
+    public List<String> ddls(MetadataDiffer differ){
+        return dao.ddls(differ);
+    }
+    /**
+     * 根据差异生成SQL
+     * @param differs differs
+     * @return sqls
+     */
+    @Override
+    public List<String> ddls(List<MetadataDiffer> differs){
+        return dao.ddls(differs);
+    }
     /**
      * 解析SQL中指定的主键table(col1, col2)&lt;pk1, pk2&gt;
      *

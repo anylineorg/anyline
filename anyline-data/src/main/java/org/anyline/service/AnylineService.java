@@ -27,6 +27,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -1463,6 +1464,18 @@ public interface AnylineService<E>{
 	ConfigStore condition();
 
 
+	/**
+	 * 根据差异生成SQL
+	 * @param differ differ
+	 * @return sqls
+	 */
+	List<String> ddls(MetadataDiffer differ);
+	/**
+	 * 根据差异生成SQL
+	 * @param differs differs
+	 * @return sqls
+	 */
+	List<String> ddls(List<MetadataDiffer> differs);
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -1760,7 +1773,6 @@ public interface AnylineService<E>{
 		default List<String> ddl(String table){
 			return ddl(new Table(table));
 		}
-
 
 		/* *****************************************************************************************************************
 		 * 													view

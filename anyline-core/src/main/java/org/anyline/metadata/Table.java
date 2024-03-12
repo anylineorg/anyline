@@ -18,6 +18,7 @@
 package org.anyline.metadata;
 
 import org.anyline.exception.AnylineException;
+import org.anyline.metadata.differ.TableDiffer;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;

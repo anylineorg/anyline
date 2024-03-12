@@ -31,6 +31,7 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
+import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.persistence.ManyToMany;
 import org.anyline.metadata.persistence.OneToMany;
 import org.anyline.metadata.type.DatabaseType;
@@ -70,6 +71,32 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	public boolean fix(){
 		return true;
+	}
+
+
+	/**
+	 * 根据差异生成SQL
+	 * @param differ differ
+	 * @return sqls
+	 */
+	@Override
+	public List<String> ddls(DataRuntime runtime, MetadataDiffer differ){
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().ddls(runtime, null, differ);
+	}
+	/**
+	 * 根据差异生成SQL
+	 * @param differs differs
+	 * @return sqls
+	 */
+	@Override
+	public List<String> ddls(DataRuntime runtime, List<MetadataDiffer> differs){
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().ddls(runtime, null, differs);
 	}
 
 	/* *****************************************************************************************************************

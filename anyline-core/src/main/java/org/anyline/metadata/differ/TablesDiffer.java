@@ -1,4 +1,6 @@
-package org.anyline.metadata;
+package org.anyline.metadata.differ;
+
+import org.anyline.metadata.Table;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -7,7 +9,7 @@ import java.util.List;
 /**
  * 表或列之间的对比结果
  */
-public class TablesDiffer {
+public class TablesDiffer implements MetadataDiffer {
     private List<Table> adds = new ArrayList<>();
     private List<Table> drops = new ArrayList<>();
     private List<Table> updates = new ArrayList<>();

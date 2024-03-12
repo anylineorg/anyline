@@ -33,6 +33,8 @@ import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
+import org.anyline.metadata.differ.MetadataDiffer;
+import org.anyline.metadata.differ.TablesDiffer;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
@@ -396,6 +398,37 @@ public interface DriverAdapter {
 			if(null != name){
 				list.add(name);
 			}
+		}
+		return list;
+	}
+
+	/**
+	 * 根据差异生成SQL
+	 * @param differ differ
+	 * @return sqls
+	 */
+	default List<String> ddls(DataRuntime runtime, String random, MetadataDiffer differ){
+		List<String> list = new ArrayList<>();
+		if(differ instanceof TablesDiffer){
+			TablesDiffer tds = (TablesDiffer) differ;
+			List<Table> adds = tds.getAdds();
+			List<Table> drops = tds.getDrops();
+			List<Table> updates = tds.getUpdates();
+			for(Table add:adds){
+
+			}
+		}
+		return list;
+	}
+	/**
+	 * 根据差异生成SQL
+	 * @param differs differs
+	 * @return sqls
+	 */
+	default List<String> ddls(DataRuntime runtime, String random, List<MetadataDiffer> differs){
+		List<String> list = new ArrayList<>();
+		for(MetadataDiffer differ:differs){
+			list.addAll(ddls(runtime, random, differ));
 		}
 		return list;
 	}
