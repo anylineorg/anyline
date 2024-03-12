@@ -59,6 +59,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter implement
     public boolean supportSchema() {
         return super.supportSchema();
     }
+
+    private static Map<Object, String> types = new HashMap<>();
+    static {
+        types.put(Table.TYPE.NORMAL, "BASE TABLE");
+        types.put(View.TYPE.NORMAL, "VIEW");
+    }
+    @Override
+    public String name(Type type){
+        return types.get(type);
+    }
     /* *****************************************************************************************************************
      *
      * 													DML
