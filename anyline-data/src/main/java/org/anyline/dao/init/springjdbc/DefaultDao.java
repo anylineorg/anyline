@@ -80,7 +80,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return sqls
 	 */
 	@Override
-	public List<String> ddls(DataRuntime runtime, MetadataDiffer differ){
+	public List<Run> ddls(DataRuntime runtime, MetadataDiffer differ){
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -92,7 +92,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return sqls
 	 */
 	@Override
-	public List<String> ddls(DataRuntime runtime, List<MetadataDiffer> differs){
+	public List<Run> ddls(DataRuntime runtime, List<MetadataDiffer> differs){
 		if(null == runtime) {
 			runtime = runtime();
 		}

@@ -19,6 +19,7 @@ package org.anyline.dao;
 
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.DataRow;
@@ -46,8 +47,8 @@ public interface AnylineDao<E>{
 	 * @param differ differ
 	 * @return sqls
 	 */
-	List<String> ddls(DataRuntime runtime, MetadataDiffer differ);
-	default List<String> ddls(MetadataDiffer differ){
+	List<Run> ddls(DataRuntime runtime, MetadataDiffer differ);
+	default List<Run> ddls(MetadataDiffer differ){
 		return ddls(runtime(), differ);
 	}
 	/**
@@ -55,8 +56,8 @@ public interface AnylineDao<E>{
 	 * @param differs differs
 	 * @return sqls
 	 */
-	List<String> ddls(DataRuntime runtime, List<MetadataDiffer> differs);
-	default List<String> ddls(List<MetadataDiffer> differs){
+	List<Run> ddls(DataRuntime runtime, List<MetadataDiffer> differs);
+	default List<Run> ddls(List<MetadataDiffer> differs){
 		return ddls(runtime(), differs);
 	}
 	/* *****************************************************************************************************************

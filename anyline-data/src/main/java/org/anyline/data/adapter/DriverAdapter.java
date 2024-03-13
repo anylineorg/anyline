@@ -434,6 +434,32 @@ public interface DriverAdapter {
 					e.printStackTrace();
 				}
 			}
+		}else if(differ instanceof ViewsDiffer){
+			ViewsDiffer df = (ViewsDiffer) differ;
+			List<View> adds = df.getAdds();
+			List<View> drops = df.getDrops();
+			List<View> updates = df.getUpdates();
+			for(View add:adds){
+				try {
+					list.addAll(buildCreateRun(runtime, add));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(View update:updates){
+				try {
+					list.addAll(buildAlterRun(runtime, update));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(View drop:drops){
+				try {
+					list.addAll(buildDropRun(runtime, drop));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
 		}else if(differ instanceof TableDiffer){
 			TableDiffer df = (TableDiffer) differ;
 			ColumnsDiffer columnsDiffer = df.getColumnsDiffer();
@@ -486,6 +512,58 @@ public interface DriverAdapter {
 				}
 			}
 			for(Index drop:drops){
+				try {
+					list.addAll(buildDropRun(runtime, drop));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}else if(differ instanceof FunctionsDiffer){
+			FunctionsDiffer df = (FunctionsDiffer) differ;
+			List<Function> adds = df.getAdds();
+			List<Function> drops = df.getDrops();
+			List<Function> updates = df.getUpdates();
+			for(Function add:adds){
+				try {
+					list.addAll(buildCreateRun(runtime, add));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Function update:updates){
+				try {
+					list.addAll(buildAlterRun(runtime, update));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Function drop:drops){
+				try {
+					list.addAll(buildDropRun(runtime, drop));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}else if(differ instanceof ProceduresDiffer){
+			ProceduresDiffer df = (ProceduresDiffer) differ;
+			List<Procedure> adds = df.getAdds();
+			List<Procedure> drops = df.getDrops();
+			List<Procedure> updates = df.getUpdates();
+			for(Procedure add:adds){
+				try {
+					list.addAll(buildCreateRun(runtime, add));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Procedure update:updates){
+				try {
+					list.addAll(buildAlterRun(runtime, update));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Procedure drop:drops){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){

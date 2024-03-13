@@ -1,6 +1,7 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Column;
+import org.anyline.metadata.Index;
 import org.anyline.metadata.Table;
 
 import java.util.LinkedHashMap;
@@ -11,14 +12,18 @@ import java.util.LinkedHashMap;
 public class TableDiffer implements MetadataDiffer {
     private ColumnsDiffer columnsDiffer;
     private IndexsDiffer indexsDiffer;
+    private TriggersDiffer triggersDiffer;
+
     public static TableDiffer compare(Table origin, Table dest){
         TableDiffer differ = new TableDiffer();
         if(null == dest){
             dest = new Table();
         }
-        LinkedHashMap<String, Column> origins = origin.getColumns();
-        LinkedHashMap<String, Column> dests = dest.getColumns();
-        differ.setColumnsDiffer(ColumnsDiffer.compare(origins, dests));
+
+        differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns()));
+
+        differ.setIndexsDiffer(IndexsDiffer.compare(origin.getIndexs(), dest.getIndexs()));
+        
         return differ;
     }
 
@@ -36,5 +41,13 @@ public class TableDiffer implements MetadataDiffer {
 
     public void setIndexsDiffer(IndexsDiffer indexsDiffer) {
         this.indexsDiffer = indexsDiffer;
+    }
+
+    public TriggersDiffer getTriggersDiffer() {
+        return triggersDiffer;
+    }
+
+    public void setTriggersDiffer(TriggersDiffer triggersDiffer) {
+        this.triggersDiffer = triggersDiffer;
     }
 }
