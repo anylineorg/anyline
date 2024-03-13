@@ -26,7 +26,7 @@ import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.init.AbstractGroup;
-import org.anyline.data.prepare.init.AbstractGroupStore;
+import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.run.Run;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
@@ -52,6 +52,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected PageNavi navi											; // 分页参数
 	protected OrderStore orders										; // 排序依据
 	protected GroupStore groups;
+	protected String having;
 	protected List<String> queryColumns     = new ArrayList<>()		; // 查询的列
 	protected List<String> excludeColumns 	= new ArrayList<>()		; // 不查询的列
 	protected List<Object> values									; // 保存values后续parse用到
@@ -1244,7 +1245,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override 
 	public ConfigStore group(Group group){
 		if(null == groups){
-			groups = new AbstractGroupStore();
+			groups = new DefaultGroupStore();
 		} 
 		groups.group(group); 
 		return this; 
@@ -1260,8 +1261,20 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore setGroups(GroupStore groups) {
 		this.groups = groups;
 		return this; 
-	} 
-	@Override 
+	}
+
+	@Override
+	public ConfigStore having(String having) {
+		this.having = having;
+		return this;
+	}
+
+	@Override
+	public String getHaving() {
+		return having;
+	}
+
+	@Override
 	public PageNavi getPageNavi() {
 		return navi; 
 	}

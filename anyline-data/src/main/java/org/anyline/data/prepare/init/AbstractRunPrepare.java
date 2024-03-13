@@ -120,7 +120,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		} 
 		 
 		if(null == groups){
-			groups = new AbstractGroupStore();
+			groups = new DefaultGroupStore();
 		} 
 		group = group.trim().toUpperCase(); 
 		groups.group(group); 

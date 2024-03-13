@@ -44,7 +44,7 @@ import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
-import org.anyline.data.prepare.init.AbstractGroupStore;
+import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.prepare.xml.init.DefaultXMLConditionChain;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
@@ -63,7 +63,7 @@ public class XMLRun extends BasicRun implements Run {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultXMLConditionChain();
 		this.orderStore = new DefaultOrderStore();
-		this.groupStore = new AbstractGroupStore();
+		this.groupStore = new DefaultGroupStore();
 	} 
  
 	public Run setPrepare(RunPrepare prepare){

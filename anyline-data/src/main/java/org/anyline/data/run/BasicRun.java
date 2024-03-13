@@ -24,7 +24,7 @@ import org.anyline.data.param.ParseResult;
 import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
-import org.anyline.data.prepare.init.AbstractGroupStore;
+import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.util.SQLUtil;
 import org.anyline.entity.*;
@@ -201,12 +201,11 @@ public abstract class BasicRun implements Run {
 		} 
 		 
 		if(null == groupStore){
-			groupStore = new AbstractGroupStore();
+			groupStore = new DefaultGroupStore();
 		} 
  
 		group = group.trim().toUpperCase(); 
- 
-		 
+
 		/*添加新分组条件*/ 
 		if(!groupStore.getGroups().contains(group)){
 			groupStore.group(group); 
@@ -433,12 +432,16 @@ public abstract class BasicRun implements Run {
 			GroupStore groups = configs.getGroups();
 			if(null != groups){
 				if(groupStore == null){
-					groupStore = new AbstractGroupStore();
+					groupStore = new DefaultGroupStore();
 				}
 				List<Group> list = groups.getGroups();
 				for(Group group:list){
 					groupStore.group(group);
 				}
+			}
+			String having = configs.getHaving();
+			if(BasicUtil.isNotEmpty(having)){
+				this.having = having;
 			}
 		}
 	}
@@ -831,7 +834,7 @@ public abstract class BasicRun implements Run {
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						if(null == groupStore){
-							groupStore = new AbstractGroupStore();
+							groupStore = new DefaultGroupStore();
 						}
 						groupStore.group(item);
 					}

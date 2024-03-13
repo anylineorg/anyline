@@ -1512,7 +1512,16 @@ public interface ConfigStore {
 	 */
 	ConfigStore group(String column);
 	GroupStore getGroups() ; 
-	ConfigStore setGroups(GroupStore groups) ; 
+	ConfigStore setGroups(GroupStore groups) ;
+
+	/**
+	 * 添加分组 过滤条件
+	 * @param having 列名
+	 * @return ConfigStore
+	 */
+	ConfigStore having(String having);
+
+	String getHaving() ;
 	PageNavi getPageNavi();
 
 	/**
