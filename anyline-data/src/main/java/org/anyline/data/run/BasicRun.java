@@ -429,6 +429,18 @@ public abstract class BasicRun implements Run {
 	@Override
 	public void setConfigStore(ConfigStore configs) {
 		this.configs = configs;
+		if(null != configs){
+			GroupStore groups = configs.getGroups();
+			if(null != groups){
+				if(groupStore == null){
+					groupStore = new AbstractGroupStore();
+				}
+				List<Group> list = groups.getGroups();
+				for(Group group:list){
+					groupStore.group(group);
+				}
+			}
+		}
 	}
 
 	@Override
