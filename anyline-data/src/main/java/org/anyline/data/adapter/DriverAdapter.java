@@ -33,8 +33,7 @@ import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.adapter.TableMetadataAdapter;
-import org.anyline.metadata.differ.MetadataDiffer;
-import org.anyline.metadata.differ.TablesDiffer;
+import org.anyline.metadata.differ.*;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
@@ -404,18 +403,94 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据差异生成SQL
-	 * @param differ differ
+	 * @param differ differ 需要保证表中有列信息
 	 * @return sqls
 	 */
-	default List<String> ddls(DataRuntime runtime, String random, MetadataDiffer differ){
-		List<String> list = new ArrayList<>();
+	default List<Run> ddls(DataRuntime runtime, String random, MetadataDiffer differ){
+		List<Run> list = new ArrayList<>();
 		if(differ instanceof TablesDiffer){
-			TablesDiffer tds = (TablesDiffer) differ;
-			List<Table> adds = tds.getAdds();
-			List<Table> drops = tds.getDrops();
-			List<Table> updates = tds.getUpdates();
+			TablesDiffer df = (TablesDiffer) differ;
+			List<Table> adds = df.getAdds();
+			List<Table> drops = df.getDrops();
+			List<Table> updates = df.getUpdates();
 			for(Table add:adds){
-
+				try {
+					list.addAll(buildCreateRun(runtime, add));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Table update:updates){
+				try {
+					list.addAll(buildAlterRun(runtime, update));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Table drop:drops){
+				try {
+					list.addAll(buildDropRun(runtime, drop));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}else if(differ instanceof TableDiffer){
+			TableDiffer df = (TableDiffer) differ;
+			ColumnsDiffer columnsDiffer = df.getColumnsDiffer();
+			IndexsDiffer indexsDiffer = df.getIndexsDiffer();
+			list.addAll(ddls(runtime, random, columnsDiffer));
+			list.addAll(ddls(runtime, random, indexsDiffer));
+		}else if(differ instanceof ColumnsDiffer){
+			ColumnsDiffer df = (ColumnsDiffer) differ;
+			List<Column> adds = df.getAdds();
+			List<Column> drops = df.getDrops();
+			List<Column> updates = df.getUpdates();
+			for(Column add:adds){
+				try {
+					list.addAll(buildAddRun(runtime, add));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Column update:updates){
+				try {
+					list.addAll(buildAlterRun(runtime, update));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Column drop:drops){
+				try {
+					list.addAll(buildDropRun(runtime, drop));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}else if(differ instanceof IndexsDiffer){
+			IndexsDiffer df = (IndexsDiffer) differ;
+			List<Index> adds = df.getAdds();
+			List<Index> drops = df.getDrops();
+			List<Index> updates = df.getUpdates();
+			for(Index add:adds){
+				try {
+					list.addAll(buildAddRun(runtime, add));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Index update:updates){
+				try {
+					list.addAll(buildAlterRun(runtime, update));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			for(Index drop:drops){
+				try {
+					list.addAll(buildDropRun(runtime, drop));
+				}catch (Exception e){
+					e.printStackTrace();
+				}
 			}
 		}
 		return list;
@@ -425,8 +500,8 @@ public interface DriverAdapter {
 	 * @param differs differs
 	 * @return sqls
 	 */
-	default List<String> ddls(DataRuntime runtime, String random, List<MetadataDiffer> differs){
-		List<String> list = new ArrayList<>();
+	default List<Run> ddls(DataRuntime runtime, String random, List<MetadataDiffer> differs){
+		List<Run> list = new ArrayList<>();
 		for(MetadataDiffer differ:differs){
 			list.addAll(ddls(runtime, random, differ));
 		}
