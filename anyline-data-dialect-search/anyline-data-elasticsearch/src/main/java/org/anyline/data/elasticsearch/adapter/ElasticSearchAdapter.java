@@ -3331,7 +3331,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         LinkedHashMap<String,DataRow> properties = new LinkedHashMap<>();
         for(Column column:columns.values()){
             DataRow col = new DataRow(KeyAdapter.KEY_CASE.SRC);
-            String type = column.getFullType();
+            String type = column.getFullType(type());
             Boolean index = column.getIndex();
             Boolean store = column.getStore();
             String analyzer = column.getAnalyzer();

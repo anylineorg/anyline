@@ -620,7 +620,7 @@ public interface TypeMetadata {
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
-        if(null != typeMetadata && meta.getParseLvl() >=2){
+        if(null != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabase() == database){
             return typeMetadata;
         }
         Integer length = meta.getLength();

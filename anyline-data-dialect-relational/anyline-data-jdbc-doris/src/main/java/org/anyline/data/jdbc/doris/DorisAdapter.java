@@ -5134,7 +5134,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter, Init
 			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
 		}
 		if(null == def && defaultCurrentDateTime){
-			String type = meta.getFullType().toLowerCase();
+			String type = meta.getFullType(type()).toLowerCase();
 			if (type.contains("timestamp")) {
 				def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
 			}else{

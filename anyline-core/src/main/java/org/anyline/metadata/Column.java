@@ -462,10 +462,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return this;
     }
     public String getFullType(){
+        return getFullType(database);
+    }
+    public String getFullType(DatabaseType database){
         if(getmap && null != update){
-            return update.getFullType();
+            return update.getFullType(database);
         }
-        if(null != fullType){
+        if(null != fullType && this.database == database){
             return fullType;
         }
         String type = null;

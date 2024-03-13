@@ -10519,7 +10519,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		meta.ignorePrecision(ignorePrecision);
 		meta.ignoreScale(ignoreScale);
 		meta.parseType(2);
-		builder.append(meta.getFullType());
+		builder.append(meta.getFullType(type()));
 		return builder;
 	}
 
@@ -10632,7 +10632,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			defaultCurrentDateTime = meta.isDefaultCurrentDateTime();
 		}
 		if(null == def && defaultCurrentDateTime){
-			String type = meta.getFullType().toLowerCase();
+			String type = meta.getFullType(type()).toLowerCase();
 			if (type.contains("timestamp")) {
 				def = SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP;
 			}else{
