@@ -782,6 +782,7 @@ public interface TypeMetadata {
         if(null != database && database != DatabaseType.NONE) {
             meta.setParseLvl(2);
         }
+        meta.setDatabase(database);
         return typeMetadata;
     }
     static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name){
