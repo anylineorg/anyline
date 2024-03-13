@@ -377,6 +377,11 @@ public interface TypeMetadata {
 
     class Config {
         /**
+         * SQL 数据类型(用来比较数据类型是否相同) INTERVAL DAY　TO HOUR
+         * 不提供则根据NAME 生成
+         */
+        private String meta;
+        /**
          * SQL生成公式如INTERVAL DAY(｛p｝) TO HOUR
          * 不提供则根据NAME 生成
          */
@@ -407,6 +412,16 @@ public interface TypeMetadata {
          */
         private String[] scaleRefers;
         public Config(){}
+        public Config(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+            setMeta(meta);
+            setFormula(formula);
+            setLengthRefer(lengthRefer);
+            setScaleRefer(scaleRefer);
+            setPrecisionRefer(precisionRefer);
+            this.ignoreLength = ignoreLength;
+            this.ignorePrecision = ignorePrecision;
+            this.ignoreScale = ignoreScale;
+        }
         public Config(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
             setLengthRefer(lengthRefer);
             setScaleRefer(scaleRefer);
@@ -533,6 +548,14 @@ public interface TypeMetadata {
             this.formula = formula;
         }
 
+        public String getMeta() {
+            return meta;
+        }
+
+        public void setMeta(String meta) {
+            this.meta = meta;
+        }
+
         /**
          * 合并copy的属性(非空并且!=-1的属性)
          * @param copy 复本
@@ -540,10 +563,14 @@ public interface TypeMetadata {
          */
         public Config merge(Config copy){
             if(null != copy){
+                String meta = copy.getMeta();
                 String formula = copy.getFormula();
                 int ignoreLength = copy.ignoreLength();
                 int ignorePrecision = copy.ignorePrecision;
                 int ignoreScale = copy.ignoreScale();
+                if(BasicUtil.isNotEmpty(meta)){
+                    this.meta = meta;
+                }
                 if(BasicUtil.isNotEmpty(formula)){
                     this.formula = formula;
                 }
