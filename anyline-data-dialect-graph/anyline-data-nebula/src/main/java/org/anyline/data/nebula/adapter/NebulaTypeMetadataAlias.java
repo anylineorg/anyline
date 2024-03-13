@@ -5,8 +5,31 @@ import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.metadata.type.TypeMetadata;
 
 public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
+	BOOL                               ("BOOL"                             ,StandardTypeMetadata.BOOL                               ),
+	DATE                               ("DATE"                             ,StandardTypeMetadata.DATE                               ),
+	DATETIME                           ("DATETIME"                         ,StandardTypeMetadata.DATETIME                           ),
+	DOUBLE                             ("DOUBLE"                           ,StandardTypeMetadata.DOUBLE                             , 1, 1, 1),
+	DURATION                           ("DURATION"                         ,StandardTypeMetadata.DURATION                           ),
+	FIXED_STRING                       ("FIXED_STRING"                     ,StandardTypeMetadata.FIXED_STRING                       , "FIXED_STRING"                     , null                               , 0, 1, 1),
+	FLOAT                              ("FLOAT"                            ,StandardTypeMetadata.FLOAT                              , 1, 1, 1),
+	INT                                ("INT"                              ,StandardTypeMetadata.INT                                ),
+	INT16                              ("INT16"                            ,StandardTypeMetadata.INT16                              ),
+	INT32                              ("INT32"                            ,StandardTypeMetadata.INT32                              ),
+	INT64                              ("INT64"                            ,StandardTypeMetadata.INT64                              ),
+	INT8                               ("INT8"                             ,StandardTypeMetadata.INT8                               ),
+	LINESTRING                         ("LINESTRING"                       ,StandardTypeMetadata.LINESTRING                         ),
+	LIST                               ("LIST"                             ,StandardTypeMetadata.LIST                               ),
+	MAP                                ("MAP"                              ,StandardTypeMetadata.MAP                                ),
+	POINT                              ("POINT"                            ,StandardTypeMetadata.POINT                              ),
+	POLYGON                            ("POLYGON"                          ,StandardTypeMetadata.POLYGON                            ),
+	SET                                ("SET"                              ,StandardTypeMetadata.SET                                ),
+	STRING                             ("STRING"                           ,StandardTypeMetadata.STRING                             ),
+	TIME                               ("TIME"                             ,StandardTypeMetadata.TIME                               ),
+	TIMESTAMP                          ("TIMESTAMP"                        ,StandardTypeMetadata.TIMESTAMP                          ),
 	ACLITEM                            ("ACLITEM"                          ,StandardTypeMetadata.ILLEGAL                            ),
 	AGG_STATE                          ("AGG_STATE"                        ,StandardTypeMetadata.ILLEGAL                            ),
+	AGGREGATE_METRIC_DOUBLE            ("aggregate_metric_double"          ,StandardTypeMetadata.NONE                               ),
+	ALIAS                              ("alias"                            ,StandardTypeMetadata.NONE                               ),
 	ARRAY                              ("ARRAY"                            ,StandardTypeMetadata.LIST                               ),
 	BFILE                              ("BFILE"                            ,StandardTypeMetadata.ILLEGAL                            ),
 	BIGINT                             ("BIGINT"                           ,StandardTypeMetadata.INT64                              ),
@@ -19,7 +42,6 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	BIT_VARYING                        ("BIT VARYING"                      ,StandardTypeMetadata.ILLEGAL                            ),
 	BITMAP                             ("BITMAP"                           ,StandardTypeMetadata.ILLEGAL                            ),
 	BLOB                               ("BLOB"                             ,StandardTypeMetadata.ILLEGAL                            ),
-	BOOL                               ("BOOL"                             ,StandardTypeMetadata.BOOL                               ),
 	BOOLEAN                            ("BOOLEAN"                          ,StandardTypeMetadata.BOOL                               ),
 	BOX                                ("BOX"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	BPCHAR                             ("BPCHAR"                           ,StandardTypeMetadata.ILLEGAL                            ),
@@ -31,65 +53,55 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	CID                                ("CID"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	CIDR                               ("CIDR"                             ,StandardTypeMetadata.ILLEGAL                            ),
 	CIRCLE                             ("CIRCLE"                           ,StandardTypeMetadata.ILLEGAL                            ),
+	CLOB                               ("CLOB"                             ,StandardTypeMetadata.STRING                             ),
+	COMPLETION                         ("completion"                       ,StandardTypeMetadata.NONE                               ),
+	CURSOR                             ("CURSOR"                           ,StandardTypeMetadata.ILLEGAL                            ),
 	CLICKHOUSE_DATE32                  ("DATE32"                           ,StandardTypeMetadata.DATE                               ),
+	DATERANGE                          ("DATERANGE"                        ,StandardTypeMetadata.ILLEGAL                            ),
+	DATETIME2                          ("DATETIME2"                        ,StandardTypeMetadata.DATETIME                           ),
 	CLICKHOUSE_DATETIME64              ("DATETIME64"                       ,StandardTypeMetadata.DATETIME                           ),
+	DATETIMEOFFSET                     ("DATETIMEOFFSET"                   ,StandardTypeMetadata.ILLEGAL                            ),
+	DECFLOAT                           ("DECFLOAT"                         ,StandardTypeMetadata.FLOAT                              ),
+	DECIMAL                            ("DECIMAL"                          ,StandardTypeMetadata.DOUBLE                             ),
 	CLICKHOUSE_DECIMAL128              ("DECIMAL128"                       ,StandardTypeMetadata.DOUBLE                             ),
 	CLICKHOUSE_DECIMAL256              ("DECIMAL256"                       ,StandardTypeMetadata.DOUBLE                             ),
 	CLICKHOUSE_DECIMAL32               ("DECIMAL32"                        ,StandardTypeMetadata.DOUBLE                             ),
 	CLICKHOUSE_DECIMAL64               ("DECIMAL64"                        ,StandardTypeMetadata.DOUBLE                             ),
-	CLICKHOUSE_FLOAT32                 ("FLOAT32"                          ,StandardTypeMetadata.FLOAT                              ),
-	CLICKHOUSE_FLOAT64                 ("FLOAT64"                          ,StandardTypeMetadata.FLOAT                              ),
-	CLICKHOUSE_INT128                  ("INT128"                           ,StandardTypeMetadata.INT64                              ),
-	CLICKHOUSE_INT16                   ("INT16"                            ,StandardTypeMetadata.INT16                              ),
-	CLICKHOUSE_INT256                  ("INT256"                           ,StandardTypeMetadata.INT64                              ),
-	CLICKHOUSE_INT32                   ("INT32"                            ,StandardTypeMetadata.INT32                              ),
-	CLICKHOUSE_INT64                   ("INT64"                            ,StandardTypeMetadata.INT64                              ),
-	CLICKHOUSE_INT8                    ("INT8"                             ,StandardTypeMetadata.INT8                               ),
-	CLICKHOUSE_UINT128                 ("UINT128"                          ,StandardTypeMetadata.INT64                              ),
-	CLICKHOUSE_UINT16                  ("UINT16"                           ,StandardTypeMetadata.INT16                              ),
-	CLICKHOUSE_UINT256                 ("UINT256"                          ,StandardTypeMetadata.INT64                              ),
-	CLICKHOUSE_UINT32                  ("UINT32"                           ,StandardTypeMetadata.INT32                              ),
-	CLICKHOUSE_UINT64                  ("UINT64"                           ,StandardTypeMetadata.INT64                              ),
-	CLICKHOUSE_UINT8                   ("UINT8"                            ,StandardTypeMetadata.INT8                               ),
-	CLOB                               ("CLOB"                             ,StandardTypeMetadata.STRING                             ),
-	CURSOR                             ("CURSOR"                           ,StandardTypeMetadata.ILLEGAL                            ),
-	DATE                               ("DATE"                             ,StandardTypeMetadata.DATE                               ),
-	DATERANGE                          ("DATERANGE"                        ,StandardTypeMetadata.ILLEGAL                            ),
-	DATETIME                           ("DATETIME"                         ,StandardTypeMetadata.DATETIME                           ),
-	DATETIME2                          ("DATETIME2"                        ,StandardTypeMetadata.DATETIME                           ),
-	DATETIMEOFFSET                     ("DATETIMEOFFSET"                   ,StandardTypeMetadata.ILLEGAL                            ),
-	DECFLOAT                           ("DECFLOAT"                         ,StandardTypeMetadata.FLOAT                              ),
-	DECIMAL                            ("DECIMAL"                          ,StandardTypeMetadata.DOUBLE                             ),
-	DOUBLE                             ("DOUBLE"                           ,StandardTypeMetadata.DOUBLE                             , 1, 1, 1),
+	DENSE_VECTOR                       ("dense_vector"                     ,StandardTypeMetadata.NONE                               ),
 	DOUBLE_PRECISION                   ("DOUBLE PRECISION"                 ,StandardTypeMetadata.DOUBLE                             , 1, 1, 1),
 	DSINTERVAL                         ("DSINTERVAL"                       ,StandardTypeMetadata.ILLEGAL                            ),
-	DURATION                           ("DURATION"                         ,StandardTypeMetadata.DURATION                           ),
 	ENUM                               ("ENUM"                             ,StandardTypeMetadata.ILLEGAL                            ),
-	FIXED_STRING                       ("FIXED_STRING"                     ,StandardTypeMetadata.FIXED_STRING                       , 0, 1, 1),
-	FIXEDSTRING                        ("FixedString"                      ,StandardTypeMetadata.FIXED_STRING                       , 0, 1, 1),
-	FLOAT                              ("FLOAT"                            ,StandardTypeMetadata.FLOAT                              , 1, 1, 1),
+	FIXEDSTRING                        ("FixedString"                      ,StandardTypeMetadata.FIXED_STRING                       , "FIXED_STRING"                     , null                               , 0, 1, 1),
+	FLATTENED                          ("flattened"                        ,StandardTypeMetadata.NONE                               ),
+	CLICKHOUSE_FLOAT32                 ("FLOAT32"                          ,StandardTypeMetadata.FLOAT                              ),
 	FLOAT4                             ("FLOAT4"                           ,StandardTypeMetadata.FLOAT                              , 1, 1, 1),
+	CLICKHOUSE_FLOAT64                 ("FLOAT64"                          ,StandardTypeMetadata.FLOAT                              ),
 	FLOAT8                             ("FLOAT8"                           ,StandardTypeMetadata.FLOAT                              , 1, 1, 1),
+	GEO_POINT                          ("geo_point"                        ,StandardTypeMetadata.NONE                               ),
+	GEO_SHAPE                          ("geo_shape"                        ,StandardTypeMetadata.NONE                               ),
 	GEOGRAPHY                          ("GEOGRAPHY"                        ,StandardTypeMetadata.ILLEGAL                            ),
 	GEOGRAPHY_POINT                    ("GEOGRAPHY_POINT"                  ,StandardTypeMetadata.ILLEGAL                            ),
 	GEOMETRY                           ("GEOMETRY"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	GEOMETRYCOLLECTION                 ("GEOMETRYCOLLECTION"               ,StandardTypeMetadata.ILLEGAL                            ),
 	GTSVECTOR                          ("GTSVECTOR"                        ,StandardTypeMetadata.ILLEGAL                            ),
 	GUID                               ("GUID"                             ,StandardTypeMetadata.ILLEGAL                            ),
+	HALF_FLOAT                         ("half_float"                       ,StandardTypeMetadata.NONE                               ),
 	HIERARCHYID                        ("HIERARCHYID"                      ,StandardTypeMetadata.ILLEGAL                            ),
+	HISTOGRAM                          ("histogram"                        ,StandardTypeMetadata.NONE                               ),
 	HLL                                ("HLL"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	IMAGE                              ("IMAGE"                            ,StandardTypeMetadata.ILLEGAL                            ),
 	INET                               ("INET"                             ,StandardTypeMetadata.ILLEGAL                            ),
-	INT                                ("INT"                              ,StandardTypeMetadata.INT                                ),
 	INT128                             ("INT128"                           ,StandardTypeMetadata.INT64                              ),
-	INT16                              ("INT16"                            ,StandardTypeMetadata.INT16                              ),
+	CLICKHOUSE_INT128                  ("INT128"                           ,StandardTypeMetadata.INT64                              ),
+	CLICKHOUSE_INT16                   ("INT16"                            ,StandardTypeMetadata.INT16                              ),
 	INT2                               ("INT2"                             ,StandardTypeMetadata.INT                                ),
+	CLICKHOUSE_INT256                  ("INT256"                           ,StandardTypeMetadata.INT64                              ),
 	INT256                             ("INT256"                           ,StandardTypeMetadata.INT64                              ),
-	INT32                              ("INT32"                            ,StandardTypeMetadata.INT32                              ),
+	CLICKHOUSE_INT32                   ("INT32"                            ,StandardTypeMetadata.INT32                              ),
 	INT4                               ("INT4"                             ,StandardTypeMetadata.INT                                ),
 	INT4RANGE                          ("INT4RANGE"                        ,StandardTypeMetadata.ILLEGAL                            ),
-	INT64                              ("INT64"                            ,StandardTypeMetadata.INT64                              ),
-	INT8                               ("INT8"                             ,StandardTypeMetadata.INT8                               ),
+	CLICKHOUSE_INT64                   ("INT64"                            ,StandardTypeMetadata.INT64                              ),
+	CLICKHOUSE_INT8                    ("INT8"                             ,StandardTypeMetadata.INT8                               ),
 	INT8RANGE                          ("INT8RANGE"                        ,StandardTypeMetadata.ILLEGAL                            ),
 	INTEGER                            ("INTEGER"                          ,StandardTypeMetadata.INT                                ),
 	INTERVAL                           ("INTERVAL"                         ,StandardTypeMetadata.ILLEGAL                            ),
@@ -106,18 +118,19 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	INTERVAL_SECOND                    ("INTERVAL SECOND"                  ,StandardTypeMetadata.ILLEGAL                            ),
 	INTERVAL_YEAR                      ("INTERVAL YEAR"                    ,StandardTypeMetadata.ILLEGAL                            ),
 	INTERVAL_YEAR_MONTH                ("INTERVAL YEAR TO MONTH"           ,StandardTypeMetadata.ILLEGAL                            ),
+	IP                                 ("ip"                               ,StandardTypeMetadata.NONE                               ),
 	IPV4                               ("IPV4"                             ,StandardTypeMetadata.ILLEGAL                            ),
 	IPV6                               ("IPV6"                             ,StandardTypeMetadata.ILLEGAL                            ),
 	JAVA_OBJECT                        ("JAVA_OBJECT"                      ,StandardTypeMetadata.ILLEGAL                            ),
+	JOIN                               ("join"                             ,StandardTypeMetadata.NONE                               ),
 	JSON                               ("JSON"                             ,StandardTypeMetadata.STRING                             ),
 	JSONB                              ("JSONB"                            ,StandardTypeMetadata.STRING                             ),
 	JSONPATH                           ("JSONPATH"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	KEYWORD                            ("KEYWORD"                          ,StandardTypeMetadata.STRING                             ),
 	LARGEINT                           ("LARGEINT"                         ,StandardTypeMetadata.STRING                             ),
 	LINE                               ("LINE"                             ,StandardTypeMetadata.LINESTRING                         ),
-	LINESTRING                         ("LINESTRING"                       ,StandardTypeMetadata.LINESTRING                         ),
-	LIST                               ("LIST"                             ,StandardTypeMetadata.LIST                               ),
 	LONG_TEXT                          ("LONG"                             ,StandardTypeMetadata.INT64                              ),
+	LONG                               ("long"                             ,StandardTypeMetadata.NONE                               ),
 	LONGBLOB                           ("LONGBLOB"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	LONGTEXT                           ("LONGTEXT"                         ,StandardTypeMetadata.STRING                             ),
 	LOWCARDINALITY                     ("LowCardinality"                   ,StandardTypeMetadata.ILLEGAL                            ),
@@ -125,7 +138,6 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	LVARCHAR                           ("LVARCHAR"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	MACADDR                            ("MACADDR"                          ,StandardTypeMetadata.ILLEGAL                            ),
 	MACADDR8                           ("MACADDR8"                         ,StandardTypeMetadata.ILLEGAL                            ),
-	MAP                                ("MAP"                              ,StandardTypeMetadata.MAP                                ),
 	MEDIUMBLOB                         ("MEDIUMBLOB"                       ,StandardTypeMetadata.ILLEGAL                            ),
 	MEDIUMINT                          ("MEDIUMINT"                        ,StandardTypeMetadata.INT8                               ),
 	MEDIUMTEXT                         ("MEDIUMTEXT"                       ,StandardTypeMetadata.STRING                             ),
@@ -137,6 +149,7 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	NATURALN                           ("NATURALN"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	NCHAR                              ("NCHAR"                            ,StandardTypeMetadata.FIXED_STRING                       ),
 	NCLOB                              ("NCLOB"                            ,StandardTypeMetadata.STRING                             ),
+	NESTED                             ("nested"                           ,StandardTypeMetadata.NONE                               ),
 	NTEXT                              ("NTEXT"                            ,StandardTypeMetadata.STRING                             ),
 	NUMBER                             ("NUMBER"                           ,StandardTypeMetadata.DOUBLE                             ),
 	NUMERIC                            ("NUMERIC"                          ,StandardTypeMetadata.DOUBLE                             ),
@@ -147,11 +160,13 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	OID                                ("OID"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	ORA_DATE                           ("ORA_DATE"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	PATH                               ("PATH"                             ,StandardTypeMetadata.ILLEGAL                            ),
+	PERCOLATOR                         ("percolator"                       ,StandardTypeMetadata.NONE                               ),
 	PG_SNAPSHOT                        ("PG_SNAPSHOT"                      ,StandardTypeMetadata.ILLEGAL                            ),
-	POINT                              ("POINT"                            ,StandardTypeMetadata.POINT                              ),
-	POLYGON                            ("POLYGON"                          ,StandardTypeMetadata.POLYGON                            ),
 	POSITIVE                           ("POSITIVE"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	POSITIVEN                          ("POSITIVEN"                        ,StandardTypeMetadata.ILLEGAL                            ),
+	RANGE                              ("Range"                            ,StandardTypeMetadata.NONE                               ),
+	RANK_FEATURE                       ("rank_feature"                     ,StandardTypeMetadata.NONE                               ),
+	RANK_FEATURES                      ("rank_features"                    ,StandardTypeMetadata.NONE                               ),
 	RAW                                ("RAW"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	REAL                               ("REAL"                             ,StandardTypeMetadata.ILLEGAL                            ),
 	REFCURSOR                          ("REFCURSOR"                        ,StandardTypeMetadata.ILLEGAL                            ),
@@ -168,12 +183,14 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	RING                               ("RING"                             ,StandardTypeMetadata.ILLEGAL                            ),
 	ROW                                ("ROW"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	ROWID                              ("ROWID"                            ,StandardTypeMetadata.ILLEGAL                            ),
+	SCALED_FLOAT                       ("scaled_float"                     ,StandardTypeMetadata.NONE                               ),
+	SEARCH_AS_YOU_TYPE                 ("search_as_you_type"               ,StandardTypeMetadata.NONE                               ),
 	SECONDDATE                         ("SECONDDATE"                       ,StandardTypeMetadata.ILLEGAL                            ),
 	SERIAL                             ("SERIAL"                           ,StandardTypeMetadata.INT                                ),
 	SERIAL2                            ("SERIAL2"                          ,StandardTypeMetadata.INT                                ),
 	SERIAL4                            ("SERIAL4"                          ,StandardTypeMetadata.INT                                ),
 	SERIAL8                            ("SERIAL8"                          ,StandardTypeMetadata.INT64                              ),
-	SET                                ("SET"                              ,StandardTypeMetadata.SET                                ),
+	SHAPE                              ("shape"                            ,StandardTypeMetadata.NONE                               ),
 	SHORT                              ("SHORT"                            ,StandardTypeMetadata.INT16                              ),
 	SIGNTYPE                           ("SIGNTYPE"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	SIMPLE_DOUBLE                      ("SIMPLE_DOUBLE"                    ,StandardTypeMetadata.DOUBLE                             ),
@@ -186,23 +203,21 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	SMALLINT                           ("SMALLINT"                         ,StandardTypeMetadata.INT16                              ),
 	SMALLMONEY                         ("SMALLMONEY"                       ,StandardTypeMetadata.DOUBLE                             ),
 	SMALLSERIAL                        ("SMALLSERIAL"                      ,StandardTypeMetadata.INT16                              ),
+	SPARSE_VECTOR                      ("sparse_vector"                    ,StandardTypeMetadata.NONE                               ),
 	SQL_DATETIMEOFFSET                 ("SQL_DATETIMEOFFSET"               ,StandardTypeMetadata.ILLEGAL                            ),
 	SQL_VARIANT                        ("SQL_VARIANT"                      ,StandardTypeMetadata.ILLEGAL                            ),
 	ST_GEOMETRY                        ("ST_GEOMETRY"                      ,StandardTypeMetadata.ILLEGAL                            ),
 	ST_POINT                           ("ST_POINT"                         ,StandardTypeMetadata.POINT                              ),
-	STRING                             ("STRING"                           ,StandardTypeMetadata.STRING                             ),
 	STRUCT                             ("STRUCT"                           ,StandardTypeMetadata.ILLEGAL                            ),
 	STRUCTS                            ("STRUCTS"                          ,StandardTypeMetadata.ILLEGAL                            ),
 	SYS_REFCURSOR                      ("SYS_REFCURSOR"                    ,StandardTypeMetadata.ILLEGAL                            ),
 	SYSNAME                            ("SYSNAME"                          ,StandardTypeMetadata.ILLEGAL                            ),
 	TEXT                               ("TEXT"                             ,StandardTypeMetadata.STRING                             ),
 	TID                                ("TID"                              ,StandardTypeMetadata.ILLEGAL                            ),
-	TIME                               ("TIME"                             ,StandardTypeMetadata.TIME                               ),
 	TIME_TZ_UNCONSTRAINED              ("TIME TZ UNCONSTRAINED"            ,StandardTypeMetadata.TIME                               ),
-	TIME_UNCONSTRAINED                 ("TIME_UNCONSTRAINED"               ,StandardTypeMetadata.TIME                               ),
 	TIME_WITH_TIME_ZONE                ("TIME WITH TIME ZONE"              ,StandardTypeMetadata.TIME                               ),
 	TIME_WITHOUT_TIME_ZONE             ("TIME WITHOUT TIME ZONE"           ,StandardTypeMetadata.TIME                               ),
-	TIMESTAMP                          ("TIMESTAMP"                        ,StandardTypeMetadata.TIMESTAMP                          ),
+	TIME_UNCONSTRAINED                 ("TIME_UNCONSTRAINED"               ,StandardTypeMetadata.TIME                               ),
 	TIMESTAMP_WITH_LOCAL_ZONE          ("TIMESTAMP WITH LOCAL TIME ZONE"   ,StandardTypeMetadata.TIMESTAMP                          ),
 	TIMESTAMP_WITH_TIME_ZONE           ("TIMESTAMP WITH TIME ZONE"         ,StandardTypeMetadata.TIMESTAMP                          ),
 	TIMESTAMP_WITHOUT_TIME_ZONE        ("TIMESTAMP WITHOUT TIME ZONE"      ,StandardTypeMetadata.TIMESTAMP                          ),
@@ -211,13 +226,21 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	TINYBLOB                           ("TINYBLOB"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	TINYINT                            ("TINYINT"                          ,StandardTypeMetadata.INT8                               ),
 	TINYTEXT                           ("TINYTEXT"                         ,StandardTypeMetadata.STRING                             ),
+	TOKEN_COUNT                        ("token_count"                      ,StandardTypeMetadata.NONE                               ),
 	TSQUERY                            ("TSQUERY"                          ,StandardTypeMetadata.ILLEGAL                            ),
 	TSRANGE                            ("TSRANGE"                          ,StandardTypeMetadata.ILLEGAL                            ),
 	TSTZRANGE                          ("TSTZRANGE"                        ,StandardTypeMetadata.ILLEGAL                            ),
 	TSVECTOR                           ("TSVECTOR"                         ,StandardTypeMetadata.ILLEGAL                            ),
 	TUPLE                              ("TUPLE"                            ,StandardTypeMetadata.ILLEGAL                            ),
 	TXID_SNAPSHOT                      ("TXID_SNAPSHOT"                    ,StandardTypeMetadata.ILLEGAL                            ),
+	CLICKHOUSE_UINT128                 ("UINT128"                          ,StandardTypeMetadata.INT64                              ),
+	CLICKHOUSE_UINT16                  ("UINT16"                           ,StandardTypeMetadata.INT16                              ),
+	CLICKHOUSE_UINT256                 ("UINT256"                          ,StandardTypeMetadata.INT64                              ),
+	CLICKHOUSE_UINT32                  ("UINT32"                           ,StandardTypeMetadata.INT32                              ),
+	CLICKHOUSE_UINT64                  ("UINT64"                           ,StandardTypeMetadata.INT64                              ),
+	CLICKHOUSE_UINT8                   ("UINT8"                            ,StandardTypeMetadata.INT8                               ),
 	UNIQUEIDENTIFIER                   ("UNIQUEIDENTIFIER"                 ,StandardTypeMetadata.ILLEGAL                            ),
+	UNSIGNED_LONG                      ("unsigned_long"                    ,StandardTypeMetadata.NONE                               ),
 	UROWID                             ("UROWID"                           ,StandardTypeMetadata.ILLEGAL                            ),
 	UUID                               ("UUID"                             ,StandardTypeMetadata.ILLEGAL                            ),
 	VARBINARY                          ("VARBINARY"                        ,StandardTypeMetadata.ILLEGAL                            ),
@@ -225,13 +248,16 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	VARCHAR                            ("VARCHAR"                          ,StandardTypeMetadata.STRING                             ),
 	VARCHAR2                           ("VARCHAR2"                         ,StandardTypeMetadata.STRING                             ),
 	VARCHARBYTE                        ("VARCHARBYTE"                      ,StandardTypeMetadata.ILLEGAL                            ),
+	VERSION                            ("version"                          ,StandardTypeMetadata.NONE                               ),
 	XID                                ("XID"                              ,StandardTypeMetadata.ILLEGAL                            ),
 	XML                                ("XML"                              ,StandardTypeMetadata.STRING                             ),
 	YEAR                               ("YEAR"                             ,StandardTypeMetadata.INT                                ),
 	YMINTERVAL                         ("YMINTERVAL"                       ,StandardTypeMetadata.ILLEGAL                            );
 
-	private String compatible                ; // 输入名称(根据输入名称转换成标准类型)(名称与枚举名不一致的需要,如带空格的)
+	private String input                     ; // 输入名称(根据输入名称转换成标准类型)(名称与枚举名不一致的需要,如带空格的)
 	private final TypeMetadata standard      ; // 标准类型
+	private String meta                      ; // SQL数据类型名称
+	private String formula                   ; // SQL最终数据类型公式
 	private int ignoreLength            = -1 ; // 是否忽略长度
 	private int ignorePrecision         = -1 ; // 是否忽略有效位数
 	private int ignoreScale             = -1 ; // 是否忽略小数位数
@@ -240,9 +266,11 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	private String scaleRefer                ; // 读取元数据依据-小数位数
 	private TypeMetadata.Config config       ; // 集成元数据读写配置
 
-	NebulaTypeMetadataAlias(String compatible, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
-		this.compatible = compatible;
+	NebulaTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+		this.input = input;
 		this.standard = standard;
+		this.meta = meta;
+		this.formula = formula;
 		this.lengthRefer = lengthRefer;
 		this.precisionRefer = precisionRefer;
 		this.scaleRefer = scaleRefer;
@@ -251,16 +279,24 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 		this.ignoreScale = ignoreScale;
 	}
 
-	NebulaTypeMetadataAlias(String compatible, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
-		this(compatible, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
+	NebulaTypeMetadataAlias(String input, TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+		this(input, standard, null , null, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
+	}
+
+	NebulaTypeMetadataAlias(String input, TypeMetadata standard, String meta, String formula, int ignoreLength, int ignorePrecision, int ignoreScale){
+		this(input, standard, meta, formula, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
+	}
+
+	NebulaTypeMetadataAlias(String input, TypeMetadata standard, int ignoreLength, int ignorePrecision, int ignoreScale){
+		this(input, standard, null, null, null, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
 	NebulaTypeMetadataAlias(TypeMetadata standard, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
 		this(null, standard, lengthRefer, precisionRefer, scaleRefer, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
-	NebulaTypeMetadataAlias(String compatible, TypeMetadata standard){
-		this.compatible = compatible;
+	NebulaTypeMetadataAlias(String input, TypeMetadata standard){
+		this.input = input;
 		this.standard = standard;
 	}
 
@@ -269,11 +305,11 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	}
 
 	@Override
-	public String compatible(){
-		if(null == compatible){
-			compatible = name();
+	public String input(){
+		if(null == input){
+			input = name();
 		}
-		return compatible;
+		return input;
 	}
 
 	@Override
@@ -285,6 +321,12 @@ public enum NebulaTypeMetadataAlias implements TypeMetadataAlias {
 	public TypeMetadata.Config config() {
 		if(null == config){
 			config = new TypeMetadata.Config();
+			if(null != meta) {
+				config.setMeta(meta);
+			}
+			if(null != formula) {
+				config.setFormula(formula);
+			}
 			if(null != lengthRefer) {
 				config.setLengthRefer(lengthRefer).setPrecisionRefer(precisionRefer).setScaleRefer(scaleRefer);
 			}

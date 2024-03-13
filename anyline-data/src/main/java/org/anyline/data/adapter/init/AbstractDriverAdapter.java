@@ -193,10 +193,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(standard == StandardTypeMetadata.NONE){
 			return null;
 		}
-		alias(alias.compatible(), standard);										//根据别名
+		alias(alias.input(), standard);										//根据别名
 		alias(standard.getName(), standard);										//根据实现SQL数据类型名称
 		TypeMetadata.Config config = alias.config();
-		reg(alias.compatible(), config);
+		reg(alias.input(), config);
 		reg(alias.standard(), config);
 		return config;
 	}
