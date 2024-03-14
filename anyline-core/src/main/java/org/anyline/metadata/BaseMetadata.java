@@ -16,6 +16,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
@@ -81,6 +82,7 @@ public class BaseMetadata<T extends BaseMetadata> {
         }
         return list;
     }
+    protected DatabaseType database = DatabaseType.NONE;
     protected String datasource                   ; // 数据源
     protected Catalog catalog                     ; // 数据库 catalog与schema 不同有数据库实现方式不一样
     protected Schema schema                       ; // dbo mysql中相当于数据库名  查数据库列表 是用SHOW SCHEMAS 但JDBC con.getCatalog()返回数据库名 而con.getSchema()返回null
@@ -168,6 +170,14 @@ public class BaseMetadata<T extends BaseMetadata> {
         for(T column:list){
             columns.put(column.getName().toUpperCase(), column);
         }
+    }
+
+    public DatabaseType getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(DatabaseType database) {
+        this.database = database;
     }
     public String getDatasource() {
         return datasource;

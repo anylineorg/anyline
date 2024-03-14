@@ -1153,7 +1153,11 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         if(!schema_equals){
             return false;
         }
-        return BasicUtil.equals(this.name, table.getName());
+        boolean name_equals = BasicUtil.equals(this.name, table.getName());
+        if(!name_equals){
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -102,7 +102,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             }
         });
     }
-    protected DatabaseType database = DatabaseType.NONE;
     protected String keyword = "COLUMN"           ;
     protected String originName                   ; // 原名 SELECT ID AS USER_ID FROM USER; originName=ID, name=USER_ID
     protected String typeName                     ; // 类型名称 varchar完整类型调用getFullType > varchar(10)
@@ -449,13 +448,6 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         this.parseLvl = parseLvl;
     }
 
-    public DatabaseType getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(DatabaseType database) {
-        this.database = database;
-    }
 
     public Column setFullType(String fullType) {
         this.fullType = fullType;
