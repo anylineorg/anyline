@@ -3992,7 +3992,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
     /* ********************************************** 实现接口 *********************************************************** */
     public boolean add(DataRow e) {
-        return rows.add((DataRow) e);
+        if(null != e && null == e.getContainer()) {
+            e.setContainer(this);
+        }
+        return rows.add(e);
     }
 
     @SuppressWarnings({"rawtypes","unchecked"})
@@ -4097,7 +4100,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public Table getTable() {
         Table table = null;
         if(null != tables && !tables.isEmpty()){
-            table = tables.get(0);
+            table = tables.values().iterator().next();
         }
         if(null == table){
             if(!rows.isEmpty()){

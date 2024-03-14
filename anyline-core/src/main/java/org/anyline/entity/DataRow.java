@@ -2491,7 +2491,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Table getTable() {
         if (null != tables && !tables.isEmpty()) {
-            return tables.get(0);
+            return tables.values().iterator().next();
         } else {
             DataSet container = getContainer();
             if (null != container) {
