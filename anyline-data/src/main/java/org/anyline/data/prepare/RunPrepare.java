@@ -117,6 +117,7 @@ public interface RunPrepare extends Cloneable {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
 	RunPrepare group(String group);
+	RunPrepare having(String having);
  
 	void setPageNavi(PageNavi navi); 
 	PageNavi getPageNavi(); 
@@ -158,7 +159,8 @@ public interface RunPrepare extends Cloneable {
 	RunPrepare setConditionValue(String condition, String variable, Object value);
 	OrderStore getOrders();
 	GroupStore getGroups();
-	void setOrders(OrderStore ordres); 
+	String getHaving();
+	void setOrders(OrderStore orders);
 	int getVersion(); 
 	ConditionChain getConditionChain();
 	RunPrepare addCondition(Condition condition);

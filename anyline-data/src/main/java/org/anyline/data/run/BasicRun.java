@@ -229,6 +229,18 @@ public abstract class BasicRun implements Run {
 	public Run setPrepare(RunPrepare prepare) {
 		this.prepare = prepare;
 		this.table = prepare.getTable();
+		GroupStore groups = prepare.getGroups();
+		if(null != groups) {
+			setGroupStore(groups);
+		}
+		OrderStore orders = prepare.getOrders();
+		if(null != orders){
+			setOrderStore(orders);
+		}
+		String having = prepare.getHaving();
+		if(null != having){
+			this.having = having;
+		}
 		return this; 
 	}
 	@Override
@@ -462,6 +474,10 @@ public abstract class BasicRun implements Run {
 	public void setGroupStore(GroupStore groupStore) {
 		this.groupStore = groupStore; 
 	}
+	public void setHaving(String having){
+		this.having = having;
+	}
+
 	public String getDelimiterFr() {
 		return delimiterFr;
 	}

@@ -46,6 +46,7 @@ public interface Run {
 	 */
 	Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String variable, Object value);
 	void setGroupStore(GroupStore groups) ;
+	void setHaving(String having);
 	GroupStore getGroupStore() ; 
 	Run group(String group);
  

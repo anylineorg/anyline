@@ -41,6 +41,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected ConditionChain chain							; // 查询条件
 	protected OrderStore orders								; // 排序
 	protected GroupStore groups								; // 分组条件
+	protected String having									; // 分组过滤条件
 	protected PageNavi navi									; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
 	protected List<String> fetchKeys       = new ArrayList<>()	; // 最终需要封装的列
@@ -126,7 +127,11 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		groups.group(group); 
 		 
 		return this; 
-	} 
+	}
+	public RunPrepare having(String having){
+		this.having = having;
+		return this;
+	}
 	/** 
 	 * 添加运行时参数值 
 	 * @param runValue  runValue
@@ -216,11 +221,14 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	} 
 	public PageNavi getPageNavi(){
 		return navi; 
-	} 
+	}
 
 	public GroupStore getGroups(){
 		return groups;
-	} 
+	}
+	public String getHaving(){
+		return having;
+	}
 	public OrderStore getOrders() {
 		return orders; 
 	} 
