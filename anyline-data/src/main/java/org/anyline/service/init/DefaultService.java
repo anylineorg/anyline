@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -891,6 +892,9 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override
     public long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
+        if(!checkCondition(data, configs)){
+            return -1;
+        }
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
@@ -900,6 +904,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long update(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+        if(!checkCondition(data, configs)){
+            return -1;
+        }
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).update(batch, dest, data, configs, columns);
@@ -907,8 +914,45 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.update(batch, dest, data, configs, columns);
     }
 
+    /**
+     * update/delete 前检测是否有过滤条件
+     * @param data Entity | DataRow
+     * @param configs ConfigStore
+     * @return boolean 返回false表示没有过滤条件 应该中断执行
+     */
+    protected boolean checkCondition(Object data, ConfigStore configs, String ... conditions){
+        if(null != configs){
+            if(!configs.isEmptyCondition()){
+                return true;
+            }
+        }
+        if(null != conditions && conditions.length > 0){
+            return true;
+        }
+        if(null != data) {
+            if (data instanceof DataRow) {
+                DataRow row = (DataRow) data;
+                if (BasicUtil.isNotEmpty(row.getPrimaryValue())) {
+                    return true;
+                }
+            }else if(data instanceof Collection){
+                return true;
+            }else{
+                if(!EntityAdapterProxy.primaryValue(data).isEmpty()){
+                    return true;
+                }
+            }
+        }
+        log.warn("[没有update或delete过滤条件]");
+        return false;
+    }
 
-
+    protected boolean checkCondition(Object data){
+        return checkCondition(data, null);
+    }
+    protected boolean checkCondition(ConfigStore configs, String ... conditions){
+        return checkCondition(null, configs, conditions);
+    }
     /* *****************************************************************************************************************
      * 													SAVE
      ******************************************************************************************************************/
@@ -1118,6 +1162,9 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long delete(Table dest, DataRow row, String... columns) {
+        if(!checkCondition(row)){
+            return -1;
+        }
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).delete(ps[1], row, columns);
@@ -1130,6 +1177,9 @@ public class DefaultService<E> implements AnylineService<E> {
     public long delete(Object obj, String... columns) {
         if (null == obj) {
             return 0;
+        }
+        if(!checkCondition(obj)){
+            return -1;
         }
         Table dest = null;
         if (obj instanceof DataRow) {
@@ -1162,6 +1212,9 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         DataRow row = DataRow.parseArray(kvs);
         row.setPrimaryKey(row.keys());
+        if(!checkCondition(row)){
+            return -1;
+        }
         return dao.delete(table, row);
     }
 
@@ -1174,6 +1227,9 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         DataRow row = DataRow.parseArray(kvs);
         row.setPrimaryKey(row.keys());
+        if(!checkCondition(row)){
+            return -1;
+        }
         return dao.delete(table, row);
     }
 
@@ -1260,6 +1316,9 @@ public class DefaultService<E> implements AnylineService<E> {
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).delete(ps[1], configs, conditions);
         }
+        if(!checkCondition(configs, conditions)){
+            return -1;
+        }
         return dao.delete(table, configs, conditions);
     }
 
@@ -1269,6 +1328,9 @@ public class DefaultService<E> implements AnylineService<E> {
         String[] ps = DataSourceUtil.parseRuntime(table);
         if(null != ps[0]){
             return ServiceProxy.service(ps[0]).delete(ps[1], configs, conditions);
+        }
+        if(!checkCondition(configs, conditions)){
+            return -1;
         }
         return dao.delete(table, configs, conditions);
     }
