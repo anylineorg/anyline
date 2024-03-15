@@ -17,6 +17,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.JavaType;
@@ -456,12 +457,28 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     public String getFullType(){
         return getFullType(database);
     }
+
     public String getFullType(DatabaseType database){
+        return getFullType(database, null);
+    }
+    public String getFullType(DatabaseType database, TypeMetadata.Config config){
         if(getmap && null != update){
             return update.getFullType(database);
         }
         if(null != fullType && this.database == database){
             return fullType;
+        }
+        int ignoreLength = -1;
+        int ignorePrecision = -1;
+        int ignoreScale = -1;
+        if(null != config){
+            ignoreLength = config.ignoreLength();
+            ignorePrecision = config.ignorePrecision();
+            ignoreScale = config.ignoreScale();
+        }else{
+            ignoreLength = ignoreLength(database);
+            ignorePrecision = ignorePrecision(database);
+            ignoreScale = ignoreScale(database);
         }
         String result = null;
         String type = null;
@@ -476,7 +493,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         boolean appendPrecision = false;
         boolean appendScale = false;
 
-        if(ignoreLength() != 1){
+        if(ignoreLength != 1){
             if(null == length){
                 //null表示没有设置过,有可能用的precision,复制precision值
                 // -1也表示设置过了不要再用length覆盖
@@ -490,7 +507,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
                 }
             }
         }
-        if(ignorePrecision() != 1){
+        if(ignorePrecision != 1){
             if(null == precision){
                 //null表示没有设置过,有可能用的length,复制length
                 // -1也表示设置过了不要再用length覆盖
@@ -500,17 +517,34 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             }
             if(null != precision){
                 if(precision > 0){
-                    appendPrecision = true;
+                    if(ignorePrecision == 3){
+                        if(null != scale && scale > 0){
+                            appendPrecision = true;
+                        }else{
+                            appendPrecision = false;
+                        }
+                    }else{
+                        appendPrecision = true;
+                    }
                 }
             }
         }
-        if(ignoreScale() != 1){
+        if(ignoreScale != 1){
             if(null != scale){
                 if(scale > 0){
-                    appendScale = true;
+                    if(ignoreScale == 3){
+                        if(null != precision && precision > 0){
+                            appendScale = true;
+                        }else{
+                            appendScale = false;
+                        }
+                    }else{
+                        appendScale = true;
+                    }
                 }
             }
         }
+
         if(BasicUtil.isNotEmpty(formula)){
             formula = formula.replace("{L}", length+"");
             formula = formula.replace("{P}", precision+"");
@@ -1387,6 +1421,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     public void ignoreScale(int ignoreScale) {
         this.ignoreScale = ignoreScale;
     }
+    public int ignoreScale(DatabaseType database){
+        if(null != typeMetadata) {
+            return MetadataAdapterHolder.ignoreScale(database, typeMetadata);
+        }else{
+            return ignoreScale();
+        }
+    }
 
     /**
      * 是否需要指定精度 主要用来识别能取出精度，但DDL不需要精度的类型
@@ -1401,6 +1442,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return typeMetadata.ignoreLength();
         }
         return ignoreLength;
+    }
+    public int ignoreLength(DatabaseType database){
+        if(null != typeMetadata) {
+            return MetadataAdapterHolder.ignoreLength(database, typeMetadata);
+        }else{
+            return ignoreLength();
+        }
     }
 
     /**
@@ -1418,6 +1466,13 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         return ignorePrecision;
     }
 
+    public int ignorePrecision(DatabaseType database){
+        if(null != typeMetadata) {
+            return MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
+        }else{
+            return ignorePrecision();
+        }
+    }
     public String getDefine() {
         return define;
     }
