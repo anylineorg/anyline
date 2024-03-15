@@ -5170,9 +5170,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
            }
         }else{
             if(BasicUtil.isNotEmpty(after)){
-                builder.append(" AFTER ").append(after);
+                builder.append(" AFTER ");
+                delimiter(builder, after);
             }else if(BasicUtil.isNotEmpty(before)){
-                builder.append(" BEFORE ").append(before);
+                builder.append(" BEFORE ");
+                delimiter(builder, before);
             }
         }
         return builder;
