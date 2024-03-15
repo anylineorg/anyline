@@ -429,7 +429,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             setOriginType(typeName);
             parseType(1);
         }
-        fullType = null;
+        //fullType = null;
         return this;
     }
     public Column parseType(int lvl){
@@ -463,6 +463,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(null != fullType && this.database == database){
             return fullType;
         }
+        String result = null;
         String type = null;
         String formula = null;
         if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL){
@@ -514,7 +515,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             formula = formula.replace("{L}", length+"");
             formula = formula.replace("{P}", precision+"");
             formula = formula.replace("{S}", scale+"");
-            fullType = formula.replace("(null)","");
+            result = formula.replace("(null)","");
         }else{
             StringBuilder builder = new StringBuilder();
             builder.append(type);
@@ -555,10 +556,10 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             if(isArray()){
                 builder.append("[]");
             }
-            fullType = builder.toString();
+            result = builder.toString();
         }
 
-        return fullType;
+        return result;
     }
 
     /**
@@ -595,7 +596,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }else {
             this.length = length;
         }
-        fullType = null;
+        //fullType = null;
         return this;
     }
 
@@ -619,7 +620,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }else {
             this.precision = precision;
         }
-        fullType = null;
+        //fullType = null;
         return this;
     }
     public Column setPrecision(Integer precision, Integer scale) {
@@ -629,7 +630,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         }
         this.precision = precision;
         this.scale = scale;
-        fullType = null;
+        //fullType = null;
         return this;
     }
 
@@ -781,7 +782,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
             return this;
         }
         this.scale = scale;
-        fullType = null;
+        //fullType = null;
         return this;
     }
 
@@ -837,7 +838,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         if(autoIncrement == 1){
             nullable(false);
         }
-        fullType = null;
+        //fullType = null;
         return this;
     }
 
