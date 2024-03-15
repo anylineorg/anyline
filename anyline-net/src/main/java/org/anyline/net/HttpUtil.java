@@ -299,7 +299,7 @@ public class HttpUtil {
 	/**
 	 * 文件上传
 	 * @param url url
-	 * @param files File或byte[]或InputStream
+	 * @param files File或byte[]或InputStream如果是url可以调用URL.openStream()获取输入流
 	 * @param charset 编码
 	 * @param headers header
 	 * @param params 参数
