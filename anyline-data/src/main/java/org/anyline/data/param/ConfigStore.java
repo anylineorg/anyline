@@ -835,6 +835,47 @@ public interface ConfigStore {
 	}
 
 
+
+	default ConfigStore isNull(String id, String var, boolean overCondition){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, id, var, null, overCondition, false);
+	}
+	default ConfigStore isNull(String var, boolean overCondition){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, var, null, overCondition, false);
+	}
+	default ConfigStore isNull(String var, boolean overCondition, boolean overValue){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, var, null, overCondition, overValue);
+	}
+	default ConfigStore isNull(String var){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, var);
+	}
+
+
+	default ConfigStore notNull(String id, String var, boolean overCondition){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, id, var, null, overCondition, false);
+	}
+	default ConfigStore notNull(String var, boolean overCondition){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, false);
+	}
+	default ConfigStore notNull(String var, boolean overCondition, boolean overValue){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, overValue);
+	}
+	default ConfigStore notNull(String var){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var);
+	}
+
+	default ConfigStore isNotNull(String id, String var, boolean overCondition){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, id, var, null, overCondition, false);
+	}
+	default ConfigStore isNotNull(String var, boolean overCondition){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, false);
+	}
+	default ConfigStore isNotNull(String var, boolean overCondition, boolean overValue){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, overValue);
+	}
+	default ConfigStore isNotNull(String var){
+		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var);
+	}
+
 	default ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
 		return and(swt, Compare.NOT_IN, id, var, value, overCondition, overValue);
 	}

@@ -583,6 +583,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text){
 		Config conf = new DefaultConfig();
+		conf.setSwitch(swt);
 		conf.setText(text);
 		chain.addConfig(conf);
 		return this;
