@@ -93,8 +93,7 @@ public class TableRun extends BasicRun implements Run {
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		}
 		if(BasicUtil.isNotEmpty(having)){
-			String tmp = having.trim().toUpperCase();
-			if(tmp.startsWith("HAVING")){
+			if(having.trim().toUpperCase().startsWith("HAVING")){
 				builder.append(having);
 			}else {
 				builder.append(" HAVING ").append(having);
