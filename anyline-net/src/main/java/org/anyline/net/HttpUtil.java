@@ -299,10 +299,10 @@ public class HttpUtil {
 	/**
 	 * 文件上传
 	 * @param url url
-	 * @param files File或byte[]
-	 * @param charset
-	 * @param headers
-	 * @param params
+	 * @param files File或byte[]或InputStream
+	 * @param charset 编码
+	 * @param headers header
+	 * @param params 参数
 	 * @return HttpResponse
 	 */
 	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String, Object> params){

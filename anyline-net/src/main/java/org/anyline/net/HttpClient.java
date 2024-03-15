@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.util.*;
@@ -396,6 +397,9 @@ public class HttpClient {
 					byte[] bytes = (byte[]) val;
 					builder.addBinaryBody(key, bytes, ContentType.MULTIPART_FORM_DATA, key);
 					fileLog += "[" + key + ":bytes]";
+				}else if(val instanceof InputStream){
+					InputStream is = (InputStream)val;
+					builder.addBinaryBody(key, is, ContentType.MULTIPART_FORM_DATA, key);
 				}
 			}
 		}
