@@ -947,6 +947,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 	@Override
 	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+		//注意columns中可能含 +-号
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(1);
 		StringBuilder builder = run.getBuilder();
@@ -983,12 +984,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		// 不更新主键 除非显示指定
 		for(String pk:primaryKeys){
-			if(!columns.containsKey(pk.toUpperCase())) {
+			pk = pk.toUpperCase();
+			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk)) {
 				cols.remove(pk.toUpperCase());
 			}
 		}
 		//不更新默认主键  除非显示指定
-		if(!columns.containsKey(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase())) {
+		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
+		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)
+		) {
 			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
 		}
 
