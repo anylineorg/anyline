@@ -72,37 +72,6 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Table table					= null					;
 
 	@Override
-	public boolean isEmpty(){
-		if(null != handler){
-			return false;
-		}
-		if(null !=chain && !chain.isEmpty()){
-			return false;
-		}
-		if(null != navi){
-			return false;
-		}
-		if(null != orders && !orders.isEmpty()){
-			return false;
-		}
-		if(null != groups && !groups.isEmpty()){
-			return false;
-		}
-		if(null != having){
-			return false;
-		}
-		if(null != queryColumns && !queryColumns.isEmpty()){
-			return false;
-		}
-		if(null != excludeColumns && !excludeColumns.isEmpty()){
-			return false;
-		}
-		if(null != values && !values.isEmpty()){
-			return false;
-		}
-		return true;
-	}
-	@Override
 	public Table table() {
 		return table;
 	}
@@ -1205,6 +1174,37 @@ public class DefaultConfigStore implements ConfigStore {
 		return true;
 	}
 
+	@Override
+	public boolean isEmpty(){
+		if(null != handler){
+			return false;
+		}
+		if(null !=chain && !chain.isEmpty()){
+			return false;
+		}
+		if(null != navi){
+			return false;
+		}
+		if(null != orders && !orders.isEmpty()){
+			return false;
+		}
+		if(null != groups && !groups.isEmpty()){
+			return false;
+		}
+		if(null != having){
+			return false;
+		}
+		if(null != queryColumns && !queryColumns.isEmpty()){
+			return false;
+		}
+		if(null != excludeColumns && !excludeColumns.isEmpty()){
+			return false;
+		}
+		if(null != values && !values.isEmpty()){
+			return false;
+		}
+		return true;
+	}
 	/** 
 	 * 添加排序 
 	 * @param order  order
