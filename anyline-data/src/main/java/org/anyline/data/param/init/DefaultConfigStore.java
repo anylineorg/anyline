@@ -46,8 +46,8 @@ import java.util.*;
  */ 
 public class DefaultConfigStore implements ConfigStore {
 	private static final long serialVersionUID = -2098827041540802313L;
-	protected StreamHandler handler								    ; // 流式读取时handler
 	protected Class clazz										    ;
+	protected StreamHandler handler								    ; // 流式读取时handler
 	protected ConfigChain chain										; // 条件集合
 	protected PageNavi navi											; // 分页参数
 	protected OrderStore orders										; // 排序依据
@@ -71,6 +71,37 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Schema schema					= null					;
 	protected Table table					= null					;
 
+	@Override
+	public boolean isEmpty(){
+		if(null != handler){
+			return false;
+		}
+		if(null !=chain && !chain.isEmpty()){
+			return false;
+		}
+		if(null != navi){
+			return false;
+		}
+		if(null != orders && !orders.isEmpty()){
+			return false;
+		}
+		if(null != groups && !groups.isEmpty()){
+			return false;
+		}
+		if(null != having){
+			return false;
+		}
+		if(null != queryColumns && !queryColumns.isEmpty()){
+			return false;
+		}
+		if(null != excludeColumns && !excludeColumns.isEmpty()){
+			return false;
+		}
+		if(null != values && !values.isEmpty()){
+			return false;
+		}
+		return true;
+	}
 	@Override
 	public Table table() {
 		return table;

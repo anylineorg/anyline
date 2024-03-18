@@ -99,5 +99,11 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 			} 
 		} 
 		return builder.toString(); 
-	} 
+	}
+	public boolean isEmpty(){
+		if(null != groups){
+			return groups.isEmpty();
+		}
+		return true;
+	}
 } 

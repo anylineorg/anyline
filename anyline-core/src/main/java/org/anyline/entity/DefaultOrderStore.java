@@ -121,8 +121,14 @@ public class DefaultOrderStore implements OrderStore{
  
 	public void clear(){
 		orders.clear(); 
-	} 
+	}
 	public List<Order> getOrders(){
-		return this.orders; 
-	} 
+		return this.orders;
+	}
+	public boolean isEmpty(){
+		if(null != orders){
+			return orders.isEmpty();
+		}
+		return true;
+	}
 } 

@@ -20,17 +20,18 @@ package org.anyline.data.prepare;
 import java.util.List;
  
 public interface GroupStore{
-	public List<Group> getGroups(); 
-	public void group(Group group) ; 
+	List<Group> getGroups();
+	void group(Group group) ;
 	/** 
 	 * 排序多列以, 分隔
 	 * gropu("CD"); 
 	 * group("CD, NM");
 	 * @param str str
 	 */ 
-	public void group(String str) ; 
+	void group(String str) ;
  
-	public Group getGroup(String group); 
-	public String getRunText(String delimiter);
-	public void clear(); 
+	Group getGroup(String group);
+	String getRunText(String delimiter);
+	void clear();
+	boolean isEmpty();
 } 

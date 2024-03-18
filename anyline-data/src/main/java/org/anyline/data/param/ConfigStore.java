@@ -171,10 +171,16 @@ public interface ConfigStore {
 	ConfigChain getConfigChain();
 
 	/**
-	 * 是否空条件
+	 * 查询条件是否为空
 	 * @return boolean
 	 */
 	boolean isEmptyCondition();
+	/**
+	 * 查询条件及配置项等所有内容是否为空
+	 * @return boolean
+	 */
+	boolean isEmpty();
+
 	Config getConfig(String key);
 	ConfigStore removeConfig(String var);
 	ConfigStore removeConfig(Config config);
