@@ -5112,7 +5112,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				primary = (T)new PrimaryKey();
 				primary.setName(row.getString(config.getNameRefers()));
 				if(null == table){
-					table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getNameRefers()));
+					table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getTableRefer()));
 				}
 				primary.setTable(table);
 			}
