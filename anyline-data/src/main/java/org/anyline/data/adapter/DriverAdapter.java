@@ -2645,7 +2645,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>(方法1)<br/>
-	 * 查询全部表的列
+	 * 查询列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -2664,6 +2664,19 @@ public interface DriverAdapter {
 	}
 
 	/**
+	 * column[调用入口]<br/>(方法1)<br/>
+	 * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 表
+	 * @return List
+	 * @param <T> Column
+	 */
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables);
+	/**
 	 * column[调用入口]<br/>(方法3)<br/>
 	 * DatabaseMetaData
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -2675,7 +2688,6 @@ public interface DriverAdapter {
 	 */
 	<T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception;
 
-
 	/**
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询表上的列
@@ -2686,6 +2698,15 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception;
 
+	/**
+	 * column[命令合成]<br/>(方法1)<br/>
+	 * 查询多个表的列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param tables 表
+	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
+	 * @return sqls
+	 */
+	List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata) throws Exception;
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
@@ -2715,6 +2736,21 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	<T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception;
+
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 根据系统表查询SQL获取表结构
+	 * 根据查询结果集构造Column,并分配到各自的表中
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param tables 表
+	 * @param columns 上一步查询结果
+	 * @param set 系统表查询SQL结果集
+	 * @return columns
+	 * @throws Exception 异常
+	 */
+	<T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception;
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
@@ -4988,12 +5024,13 @@ public interface DriverAdapter {
 		if(null != def){
 			String chk = def.toString().toUpperCase().trim();
 			if("CURRENT_TIMESTAMP".equals(chk)
-					|| "CURRENT TIMESTAMP".equals(chk)
-					|| "SYSDATE".equals(chk)
-					|| "NOW()".equals(chk)
-					|| "NOW".equals(chk)
-					|| "GETDATE()".equals(chk)
-					|| chk.contains("DATETIME(")
+				|| "CURRENT TIMESTAMP".equals(chk)
+				|| "SYSDATE".equals(chk)
+				|| "NOW()".equals(chk)
+				|| "NOW".equals(chk)
+				|| "SYSTIMESTAMP".equals(chk)
+				|| "GETDATE()".equals(chk)
+				|| chk.contains("DATETIME(")
 				){
 				result = SQL_BUILD_IN_VALUE.CURRENT_DATETIME;
 			}

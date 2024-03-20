@@ -4512,7 +4512,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 	/**
 	 * column[调用入口]<br/>
-	 * 查询全部表的列
+	 * 查询列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
@@ -4558,6 +4558,18 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	/**
+	 * column[命令合成]<br/>(方法1)<br/>
+	 * 查询多个表的列
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param tables 表
+	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
+	 * @return sqls
+	 */
+	@Override
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata) throws Exception {
+		return super.buildQueryColumnsRun(runtime, tables, metadata);
+	}
+	/**
 	 * column[结果集封装]<br/>
 	 *  根据查询结果集构造Tag
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4600,6 +4612,61 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return columns;
 	}
 
+	/**
+	 * column[结果集封装]<br/>(方法1)<br/>
+	 * 根据系统表查询SQL获取表结构
+	 * 根据查询结果集构造Column,并分配到各自的表中
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param tables 表
+	 * @param columns 上一步查询结果
+	 * @param set 系统表查询SQL结果集
+	 * @return columns
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+		if(null == columns){
+			columns = new ArrayList<>();
+		}
+		Map<String,Table> tbls = new HashMap<>();
+		for(Table table:tables){
+			tbls.put(table.getName().toUpperCase(), table);
+		}
+		for(DataRow row:set){
+			T column = null;
+			column = init(runtime, index, column, null, row);
+			if(null == column(column, columns)){
+				columns.add(column);
+			}
+			detail(runtime, index, column, row);
+			String tableName = column.getTableName();
+			if(null != tableName){
+				Table table = tbls.get(tableName.toUpperCase());
+				if(null != table){
+					table.addColumn(column);
+				}
+			}
+		}
+		return columns;
+	}
+	/**
+	 * column[调用入口]<br/>(方法1)<br/>
+	 * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 表
+	 * @return List
+	 * @param <T> Column
+	 */
+	@Override
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables){
+		return super.columns(runtime, random, greedy, catalog, schema, tables);
+	}
 	/**
 	 * column[结果集封装]<br/>
 	 * 解析JDBC get columns结果

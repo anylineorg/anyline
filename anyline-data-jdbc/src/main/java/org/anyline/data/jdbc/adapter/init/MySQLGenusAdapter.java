@@ -2381,7 +2381,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
 
     /**
      * column[调用入口]<br/>
-     * 查询全部表的列
+     * 查询列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
      * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询

@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.List;
  
 public interface OrderStore extends Cloneable, Serializable{
- 
 	List<Order> getOrders(); 
 	void order(Order order, boolean override);
 	void order(Order order);

@@ -2052,7 +2052,7 @@ public interface AnylineService<E>{
 		}
 
 		/**
-		 * 查询全部表的列
+		 * 查询列
 		 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 		 * @param catalog catalog
 		 * @param schema schema
