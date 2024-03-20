@@ -53,7 +53,7 @@ public class DefaultSQLStore extends SQLStore {
 	}
 
 	private static String root; //sql目录 多个以, 分隔 .表示项目当前目录 ${classpath}表示classes目录
-	private static String[] cuts = "sql, classes".split(",");
+	private static String[] cuts = "sql,classes".split(",");
 	private static long lastLoadTime = 0;
 
 	static {
@@ -70,7 +70,7 @@ public class DefaultSQLStore extends SQLStore {
 			root = root.replace("${classpath}", ConfigTable.getClassPath());
 			root = root.replace("{classpath}", ConfigTable.getClassPath());
 		}
-		if(root.contains("{libpath}")){
+		if(root.contains("{A}")){
 			root = root.replace("${libpath}", ConfigTable.getLibPath());
 			root = root.replace("{libpath}", ConfigTable.getLibPath());
 		}
