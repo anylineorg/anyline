@@ -16,9 +16,8 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase.postgres;
+package org.anyline.data.jdbc.kingbase;
 
-import org.anyline.data.jdbc.kingbase.KingBaseTypeMetadataAlias;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;

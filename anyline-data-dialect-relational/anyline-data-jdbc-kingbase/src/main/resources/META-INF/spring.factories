@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.anyline.data.jdbc.kingbase.postgres.KingbaseAdapter
+org.anyline.data.jdbc.kingbase.KingbaseAdapter

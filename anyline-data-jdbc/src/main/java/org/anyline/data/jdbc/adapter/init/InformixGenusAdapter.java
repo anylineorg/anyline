@@ -2528,6 +2528,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter implement
      * column[结果集封装]<br/>(方法1)<br/>
      * 列详细属性
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
      * @param meta 上一步封装结果
      * @param row 系统表查询SQL结果集
      * @return Column

@@ -15,7 +15,7 @@
  */
 
 
-package org.anyline.data.jdbc.kingbase.postgres;
+package org.anyline.data.jdbc.kingbase;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.init.ConvertAdapter;

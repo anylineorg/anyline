@@ -286,7 +286,7 @@ public class DefaultConfigStore implements ConfigStore {
 			return null; 
 		} 
 		DefaultConfig conf = null;
-		if(config.indexOf("|") != -1){
+		if(config.contains("|")){
 			conf = new DefaultConfigChain(config);
 		}else{
 			conf = new DefaultConfig(config);
