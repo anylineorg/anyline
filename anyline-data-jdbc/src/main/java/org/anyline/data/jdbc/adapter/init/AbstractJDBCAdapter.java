@@ -5179,7 +5179,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				primary = (T)new PrimaryKey();
 				primary.setName(row.getString(config.getNameRefers()));
 				if(null == table){
-					table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getNameRefers()));
+					table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getTableRefer()));
 				}
 				primary.setTable(table);
 			}
@@ -10789,8 +10789,15 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta || null != meta.getCheckSchemaTime()){
 			return;
 		}
-		String catalog = runtime.getCatalog();
-		String schema = runtime.getSchema();
+		String catalog = meta.getCatalogName();
+		if(null== catalog){
+			catalog = runtime.getCatalog();
+		}
+		String schema = meta.getSchemaName();
+		if(null == schema){
+			schema = runtime.getSchema();
+		}
+
 		if(null == catalog && null == schema) {
 			Connection con = null;
 			try {
@@ -10816,11 +10823,18 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta){
 			return;
 		}
-		String catalog = runtime.getCatalog();
-		String schema = runtime.getSchema();
+		String catalog = meta.getCatalogName();
+		if(null== catalog){
+			catalog = runtime.getCatalog();
+		}
+		String schema = meta.getSchemaName();
+		if(null == schema){
+			schema = runtime.getSchema();
+		}
+
 		if(null == catalog && null == schema) {
 			try {
-				//这一步不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
+				//这一步 不要 检测是否支持catalog/schema, 因为这一步返回结果有可能是颠倒的 到correctSchemaFromJDBC中再检测
 				if (empty(meta.getCatalog())) {
 					catalog = con.getCatalog();
 				}
@@ -10844,9 +10858,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	@Override
 	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
 		if(null != meta){
-
-			String catalog = runtime.getCatalog();
-			String schema = runtime.getSchema();
+			String catalog = meta.getCatalogName();
+			if(null== catalog){
+				catalog = runtime.getCatalog();
+			}
+			String schema = meta.getSchemaName();
+			if(null == schema){
+				schema = runtime.getSchema();
+			}
 
 			if(null == catalog && null == schema) {
 				JdbcTemplate jdbc = jdbc(runtime);
