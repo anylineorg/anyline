@@ -10586,7 +10586,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null != configs){
 			configs.add(run);
 		}
-		long fr = System.currentTimeMillis();
 		if(null == random){
 			random = random(runtime);
 		}
@@ -10610,6 +10609,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			columns = columns(runtime, random, false, table, false);
 		}
 		try{
+			long fr = System.currentTimeMillis();
 			final DataRuntime rt = runtime;
 			final long[] mid = {System.currentTimeMillis()};
 			final boolean[] process = {false};
@@ -10694,6 +10694,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				});*/
 				//end stream handler
 			}else {
+				fr = System.currentTimeMillis();
 				if(null != values && values.size()>0){
 					jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
 						@Override
