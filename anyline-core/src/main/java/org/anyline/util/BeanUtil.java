@@ -2252,6 +2252,19 @@ public class BeanUtil {
 		}
 		return map;
 	}
+
+	public static byte[] stream2bytes(InputStream is) throws Exception {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();//创建输出流对象
+		byte[] b = new byte[1024];
+		int len;
+		while ((len = is.read(b)) != -1) {
+			bos.write(b, 0, len);
+		}
+		byte[] array = bos.toByteArray();
+		bos.close();
+		return array;
+	}
+
 	public static Map<String, String> createMap(String... params) {
 		Map<String, String> result = new HashMap<>();
 		if (null != params) {
