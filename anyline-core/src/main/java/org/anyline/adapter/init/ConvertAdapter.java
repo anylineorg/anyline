@@ -94,13 +94,10 @@ public class ConvertAdapter {
         if(null == value){
             value = def;
         }
-        if(null != value && ClassUtil.isInSub(value.getClass(), target)){
-            return value;
-        }
         Object result = value;
         if(null != result && null != target){
             Class clazz = result.getClass();
-            if(clazz == target){
+            if(ClassUtil.isInSub(clazz, target)){
                 return result;
             }
             //Map转换成Entity

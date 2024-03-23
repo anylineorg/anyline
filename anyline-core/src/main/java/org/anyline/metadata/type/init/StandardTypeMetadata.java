@@ -112,6 +112,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , TINYTEXT(CATEGORY.TEXT, "TINYTEXT", null, String.class,1, 1, 1, MySQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
+    , ACLITEM(CATEGORY.TEXT, "ACLITEM", null, String.class, 1, 1, 1, KingBase)
     /**
      * Informix(长度不超过 255 )
      */
@@ -253,6 +254,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INT4(CATEGORY.INT, "INT4", null, Integer.class,1, 1, 1, PostgreSQL)
     , INT8(CATEGORY.INT, "INT8", null, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , BIGINT(CATEGORY.INT, "BIGINT", null, Long.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
+    , OID(CATEGORY.INT, "OID", null, Long.class, 1, 1, 1, KingBase)
     , LARGEINT(CATEGORY.INT, "LARGEINT", null, Long.class,1, 1, 1, Doris)
     , MEDIUMINT(CATEGORY.INT, "MEDIUMINT", null, Integer.class,1, 1, 1, MySQL)
     , INTEGER(CATEGORY.INT, "INTEGER", null, Integer.class,1, 1, 1, MySQL, SQLite, HANA, ElasticSearch, Derby, KingBase)
@@ -687,7 +689,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *
      * ****************************************************************************************************************/
 
-    , ACLITEM(CATEGORY.NONE, "ACLITEM", null, null, 1, 1, 1, KingBase)
     , BINARY_INTEGER(CATEGORY.NONE, "BINARY_INTEGER", null, null, 1, 1, 1, KingBase)
     , BIT_VARYING(CATEGORY.NONE, "BIT VARYING", null, null, 1, 1, 1, KingBase)
     , BPCHAR(CATEGORY.NONE, "BPCHAR", null, null, 1, 1, 1, KingBase)
@@ -703,7 +704,6 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , MACADDR8(CATEGORY.NONE, "MACADDR8", null, null, 1, 1, 1, KingBase)
     , NATURALN(CATEGORY.NONE, "NATURALN", null, null, 1, 1, 1, KingBase)
     , NUMRANGE(CATEGORY.NONE, "NUMRANGE", null, null, 1, 1, 1, KingBase)
-    , OID(CATEGORY.NONE, "OID", null, null, 1, 1, 1, KingBase)
     , ORA_DATE(CATEGORY.NONE, "ORA_DATE", null, null, 1, 1, 1, KingBase)
     , POSITIVE(CATEGORY.NONE, "POSITIVE", null, null, 1, 1, 1, KingBase)
     , POSITIVEN(CATEGORY.NONE, "POSITIVEN", null, null, 1, 1, 1, KingBase)
