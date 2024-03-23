@@ -131,13 +131,21 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 是否是bases子类或实现了bases接口(满足其中一个)
+	 * clazz是否是bases子类或实现了bases接口(满足其中一个)
 	 * @param clazz  类
 	 * @param bases  父类或接口
 	 * @return boolean
 	 */
 	public static boolean isInSub(Class<?> clazz, Class<?> ... bases){
-		if(null == bases || bases.length == 0){
+		List<Class> list = new ArrayList<>();//避免[null]
+		if(null != bases){
+			for(Class<?> base : bases){
+				if(null != base){
+					list.add(base);
+				}
+			}
+		}
+		if(list.isEmpty()){
 			return true;
 		}
 		for(Class<?> base : bases){
@@ -149,21 +157,30 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 是否是bases子类或实现了basees接口(满足全部)
-	 * @param c  c
+	 * 是否是bases子类或实现了 bases 接口(满足全部)
+	 * @param clazz  clazz
 	 * @param bases  bases
 	 * @return boolean
 	 */
-	public static boolean isAllSub(Class<?> c, Class<?> ... bases){
-		if(null == bases || bases.length == 0){
-			return true;
-		}
-		for(Class<?> base : bases){
-			if(base.isAssignableFrom(c)){
-				return true;
+	public static boolean isAllSub(Class<?> clazz, Class<?> ... bases){
+		List<Class> list = new ArrayList<>();//避免[null]
+		if(null != bases){
+			for(Class<?> base : bases){
+				if(null != base){
+					list.add(base);
+				}
 			}
 		}
-		return false;
+		if(list.isEmpty()){
+			return true;
+		}
+
+		for(Class<?> base : bases){
+			if(!base.isAssignableFrom(clazz)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
