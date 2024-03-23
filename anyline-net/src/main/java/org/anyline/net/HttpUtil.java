@@ -489,29 +489,6 @@ public class HttpUtil {
 		}
 		return false;
 	}
-	public static boolean isUrl(String src){
-		if(null == src){
-			return false;
-		}
-		if(src.startsWith("http://") || src.startsWith("https://")){
-			return true;
-		}
-		if(src.startsWith("//")){
-			src = src.substring(2);
-			int index1 = src.indexOf("."); 	// 域名中的.
-			if(index1 == -1){
-				return false;
-			}
-			int index2 = src.indexOf("/");	// url中的path分隔
-			if(index1 < index2){			// 没有在/之前出现的 有可能是文件名中的.
-				return true;
-			}
-			if(index2 == -1){				// 没有域名
-				return true;
-			}
-		}
-		return false;
-	}
 
 	public static String read(InputStream is, String charset) {
 		if (is == null) {
