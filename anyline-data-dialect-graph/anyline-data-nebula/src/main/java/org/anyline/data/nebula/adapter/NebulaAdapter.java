@@ -993,13 +993,12 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                     ValueWrapper wrapper = record.get(col);
                     com.vesoft.nebula.Value value = wrapper.getValue();
                     DataRow row = null;
-                    if (IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 0) {
+                    if (IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 0) { //是否忽略查询结果中顶层的key
                         row = new NebulaRow();
                         top.put(col, row);
                     } else {
                         row = top;
                     }
-
                     if (wrapper.isVertex()) {//点
                         Vertex vertex = value.getVVal();
                         Object vid = vertex.vid.getFieldValue();
@@ -1041,6 +1040,10 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                                 tag_row.put(k, fv);
                             }
                         }
+                    }else if(wrapper.isEdge()){
+
+                    }else if(wrapper.isString()){
+                        row.put(col, wrapper.asString());
                     }
                 }
                 set.addRow(top);
@@ -2109,7 +2112,12 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SHOW TAGS");
+        runs.add(run);
+        return runs;
     }
 
     /**
