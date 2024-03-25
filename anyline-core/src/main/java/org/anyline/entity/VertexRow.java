@@ -1,4 +1,4 @@
 package org.anyline.entity;
 
-public class VertexRow extends DataRow{
+public class VertexRow extends GraphRow{
 }
