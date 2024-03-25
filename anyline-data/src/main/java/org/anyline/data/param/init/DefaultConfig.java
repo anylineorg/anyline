@@ -61,7 +61,7 @@ public class DefaultConfig implements Config {
 		this.parser = new ParseResult();
 	} 
 	public String toString(){
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("join", this.getJoin());
 		map.put("prefix", this.getPrefix());
 		map.put("var", this.getVariable());

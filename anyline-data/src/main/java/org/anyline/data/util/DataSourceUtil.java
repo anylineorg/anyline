@@ -73,7 +73,7 @@ public class DataSourceUtil {
                 result.setDatasource(datasource);
             }
         }
-        //pw_user<id,code>
+        //pw_user<id, code>
         if(src.endsWith(">")){
             int fr = src.lastIndexOf("<");
             if(fr != -1) {

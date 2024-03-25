@@ -97,7 +97,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	protected String delimiterFr = "";
 	protected String delimiterTo = "";
 	//拼写兼容 下划线空格兼容
-	protected static Map<String,String> spells = new HashMap<>();
+	protected static Map<String, String> spells = new HashMap<>();
 
 	//根据名称定位数据类型
 	protected LinkedHashMap<String, TypeMetadata> alias = new LinkedHashMap();
@@ -307,7 +307,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(null != data && data instanceof DataSet){
 			DataSet set = (DataSet)data;
-			Map<String,Object> tags = set.getTags();
+			Map<String, Object> tags = set.getTags();
 			if(null != tags && tags.size()>0){
 				LinkedHashMap<String, PartitionTable> ptables = partitionTables(runtime, random, false, new MasterTable(dest), tags, null);
 				if(ptables.size() != 1){
@@ -661,10 +661,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)
 	 * Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns)
-	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns)
-	 * LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
+	 * Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns)
+	 * LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns)
 	 * [命令执行]
 	 * long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)
 	 ******************************************************************************************************************/
@@ -734,7 +734,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(IS_AUTO_CHECK_METADATA(configs)){
-			dest.setColumns(columns(runtime, null,false, dest, false));
+			dest.setColumns(columns(runtime, null, false, dest, false));
 		}
 		if(!run.isValid()){
 			if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
@@ -744,7 +744,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//String sql = run.getFinalUpdate();
 		/*if(BasicUtil.isEmpty(sql)){
-			log.warn("[不具备更新条件][dest:{}]",dest);
+			log.warn("[不具备更新条件][dest:{}]", dest);
 			return -1;
 		}
 		List<Object> values = run.getValues();*/
@@ -836,7 +836,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		for(Column column:columns.values()){
 			list.add(column.getName());
 		}
-		LinkedHashMap<String,Column> cols = confirmUpdateColumns(runtime, dest, obj, configs, list);
+		LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, obj, configs, list);
 
 
 		if(null == configs){
@@ -852,7 +852,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		/*if(primaryKeys.isEmpty()){
-			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
+			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}*/
 		// 不更新主键 除非显示指定
 		for(String pk:primaryKeys){
@@ -948,7 +948,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return run;
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		//注意columns中可能含 +-号
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(1);
@@ -967,7 +967,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			primaryKeys.addAll(row.getPrimaryKeys());
 		}
 		if(primaryKeys.isEmpty()){
-			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
+			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}
 		if(configs.isEmptyCondition()) {
 			//没有其他条件时添加 主键作条件
@@ -1043,7 +1043,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return run;
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(1);
 		Object first = list.iterator().next();
@@ -1056,7 +1056,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(first instanceof Map && !(first instanceof DataRow)){
 			first = new DataRow((Map)first);
 		}
-		LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		List<String> primaryKeys = new ArrayList<>();
 
 		boolean replaceEmptyNull = false;
@@ -1086,7 +1086,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			primaryKeys = keys;
 		}
 		if(primaryKeys.size() == 0){
-			throw new SQLUpdateException("[更新异常][更新条件为空,update方法不支持更新整表操作]");
+			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}
 
 		// 不更新主键 除非显示指定
@@ -1182,8 +1182,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns){
-		LinkedHashMap<String,Column> cols = null;/*确定需要更新的列*/
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns){
+		LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
 		if(null == row){
 			return new LinkedHashMap<>();
 		}
@@ -1264,8 +1264,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		cols = checkMetadata(runtime, dest, configs, cols);
 		return cols;
 	}
-	public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
-		LinkedHashMap<String,Column> cols = null;/*确定需要更新的列*/
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+		LinkedHashMap<String, Column> cols = null;/*确定需要更新的列*/
 		if(null == obj){
 			return new LinkedHashMap<>();
 		}
@@ -1444,7 +1444,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(override){
 						return update(runtime, random, dest, data, configs, columns);
 					}else{
-						log.warn("[跳过更新][数据已存在:{}({})]",dest, BeanUtil.map2json(pvs));
+						log.warn("[跳过更新][数据已存在:{}({})]", dest, BeanUtil.map2json(pvs));
 					}
 				}else{
 					return insert(runtime, random, 0, dest, data, configs, columns);
@@ -1462,8 +1462,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return result;
 	}
-	protected Map<String,Object> checkPv(Object obj){
-		Map<String,Object> pvs = new HashMap<>();
+	protected Map<String, Object> checkPv(Object obj){
+		Map<String, Object> pvs = new HashMap<>();
 		if(null != obj && obj instanceof DataRow){
 			DataRow row = (DataRow) obj;
 			List<String> ks = row.getPrimaryKeys();
@@ -1515,7 +1515,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return columns;
 		}
 		LinkedHashMap<String, Column> result = new LinkedHashMap<>();
-		LinkedHashMap<String, Column> metadatas = columns(runtime, null,false, table, false);
+		LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
 		if(!metadatas.isEmpty()) {
 			for (String key:columns.keySet()) {
 				if (metadatas.containsKey(key)) {
@@ -1544,7 +1544,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi)
 	 * <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * [命令合成]
 	 * Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions)
 	 * List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names)
@@ -1555,10 +1555,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value)
 	 * [命令执行]
 	 * DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run)
-	 * List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
-	 * Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)
+	 * Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)
 	 * DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names)
-	 * List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list)
+	 * List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1845,8 +1845,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		List<Map<String,Object>> maps = null;
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+		List<Map<String, Object>> maps = null;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
 		Run run = null;
@@ -1907,7 +1907,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if (null != dmListener) {
 			dmListener.afterQuery(runtime, random, run, cmd_success, maps, System.currentTimeMillis() - fr);
 		}
-		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null,System.currentTimeMillis() - fr);
+		InterceptorProxy.afterQuery(runtime, random, run, cmd_success, maps, null, System.currentTimeMillis() - fr);
 		return maps;
 	}
 
@@ -2010,7 +2010,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			e.printStackTrace();
 		}
 	}
-	private void likes(DataRuntime runtime,Table table, ConfigStore configs){
+	private void likes(DataRuntime runtime, Table table, ConfigStore configs){
 		if(null == table || null == configs){
 			return;
 		}
@@ -2179,9 +2179,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -2194,9 +2194,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return map
 	 */
 	@Override
-	public Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Map<String,Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run)", 37));
 		}
 		return null;
 	}
@@ -2225,7 +2225,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
+	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
 		return list;
 	}
 
@@ -2575,7 +2575,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					// CD = ::CD
 					List<Object> values = var.getValues();
 					String value = null;
-					if(BasicUtil.isNotEmpty(true,values)){
+					if(BasicUtil.isNotEmpty(true, values)){
 						if(var.getCompare() == Compare.IN){
 							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
 						}else {
@@ -2597,7 +2597,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					// CD = ':CD'
 					List<Object> values = var.getValues();
 					String value = null;
-					if(BasicUtil.isNotEmpty(true,values)){
+					if(BasicUtil.isNotEmpty(true, values)){
 						if(var.getCompare() == Compare.IN){
 							value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
 						}else {

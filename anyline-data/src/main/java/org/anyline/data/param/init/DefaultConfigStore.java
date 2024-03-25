@@ -66,7 +66,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected KeyAdapter.KEY_CASE kc 		= null					; //
 	protected boolean execute				= true  				;
 	protected String datasource				= null					; // 查询或操作的数据源
-	protected String dest					= null					; // 查询或操作的目标(表,存储过程,sql等)
+	protected String dest					= null					; // 查询或操作的目标(表,存储过程, sql等)
 	protected Catalog catalog				= null					;
 	protected Schema schema					= null					;
 	protected Table table					= null					;
@@ -172,7 +172,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	/**
-	 * 设置查询或操作的目标(表,存储过程,sql等)
+	 * 设置查询或操作的目标(表, 存储过程, sql等)
 	 * @param dest 查询或操作的目标
 	 * @return ConfigStore
 	 */
@@ -186,7 +186,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	/**
-	 * 查询或操作的目标(表,存储过程,sql等)
+	 * 查询或操作的目标(表,存储过程, sql等)
 	 * @return String
 	 */
 	@Override
@@ -597,7 +597,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		int compareCode = compare.getCode();
 		if(null == prefix && null != var && var.contains(".")){
-			prefix = var.substring(0,var.indexOf("."));
+			prefix = var.substring(0, var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}
 		if(null == swt || EMPTY_VALUE_SWITCH.NONE == swt) {

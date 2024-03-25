@@ -2563,7 +2563,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param table 表
-     * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
+     * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0, false:查询系统表)
      * @return sqls
      */
     @Override
@@ -2748,7 +2748,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON,USER_CONS_COLUMNS COL\n");
+        builder.append("SELECT COL.* FROM USER_CONSTRAINTS CON, USER_CONS_COLUMNS COL\n");
         builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
         builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
         builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
@@ -2832,7 +2832,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
-        return super.foreigns(runtime, random, greedy,table);
+        return super.foreigns(runtime, random, greedy, table);
     }
     /**
      * foreign[命令合成]<br/>
@@ -2885,7 +2885,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
                 foreign.setReference(row.getString("REFERENCED_TABLE_NAME"));
                 foreigns.put(name.toUpperCase(), foreign);
             }
-            Table refTable = new Table(row.getString("REFERENCED_CATALOG_NAME"),row.getString("REFERENCED_SCHEMA_NAME"),row.getString("REFERENCED_TABLE_NAME"));
+            Table refTable = new Table(row.getString("REFERENCED_CATALOG_NAME"), row.getString("REFERENCED_SCHEMA_NAME"), row.getString("REFERENCED_TABLE_NAME"));
             Column reference = new Column(row.getString("REFERENCED_COLUMN_NAME"));
             reference.setTable(refTable);
             foreign.addColumn(new Column(row.getString("COLUMN_NAME")).setReference(reference).setPosition(row.getInt("ORDINAL_POSITION", 0)));
@@ -3041,7 +3041,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 
     /**
      * index[结构集封装]<br/>
-     * 根据查询结果集构造index基础属性(name,table,schema,catalog)
+     * 根据查询结果集构造index基础属性(name, table, schema, catalog)
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param index 第几条查询SQL 对照 buildQueryIndexsRun 返回顺序
      * @param meta 上一步封装结果

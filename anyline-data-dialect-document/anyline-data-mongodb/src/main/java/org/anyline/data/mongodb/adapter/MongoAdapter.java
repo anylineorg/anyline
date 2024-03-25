@@ -431,7 +431,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 e.printStackTrace();
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
-                SQLQueryException ex = new SQLQueryException("query异常:"+e,e);
+                SQLQueryException ex = new SQLQueryException("query异常:"+e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
@@ -472,7 +472,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
-        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTable(), run.getUpdate(),run.getFilter());
+        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTable(), run.getUpdate(), run.getFilter());
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         MongoCollection cons = database.getCollection(run.getTable());
@@ -546,7 +546,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
-        LinkedHashMap<String,Column> cols = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         List<String> primaryKeys = new ArrayList<>();
         if(null != columns && columns.size() >0 ){
             cols = columns;
@@ -642,7 +642,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
-            throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
+            throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 
         // 不更新主键 除非显示指定
@@ -764,7 +764,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
         }
         if(obj instanceof ConfigStore){
-            run = new TableRun(runtime,dest);
+            run = new TableRun(runtime, dest);
             RunPrepare prepare = new DefaultTablePrepare();
             prepare.setDest(dest);
             run.setPrepare(prepare);
