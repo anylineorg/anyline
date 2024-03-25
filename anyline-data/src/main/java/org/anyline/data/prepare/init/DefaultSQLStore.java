@@ -103,7 +103,7 @@ public class DefaultSQLStore extends SQLStore {
 			if(sub.startsWith(separator)){
 				sub = sub.substring(1);
 			}
-			sub = sub.replace("\\","/");
+			sub = sub.replace("\\","/"); //子目录以/分隔(不区分操作系统)
 			sub = sub.replace("//","/");
 			try {
 				File file = new File(System.getProperty("java.class.path"));
