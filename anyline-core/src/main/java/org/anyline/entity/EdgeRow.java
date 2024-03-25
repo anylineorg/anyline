@@ -1,4 +1,4 @@
 package org.anyline.entity;
 
-public interface EdgeRow {
+public class EdgeRow extends DataRow{
 }
