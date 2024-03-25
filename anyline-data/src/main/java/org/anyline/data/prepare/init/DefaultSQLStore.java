@@ -70,7 +70,7 @@ public class DefaultSQLStore extends SQLStore {
 			root = root.replace("${classpath}", ConfigTable.getClassPath());
 			root = root.replace("{classpath}", ConfigTable.getClassPath());
 		}
-		if(root.contains("{A}")){
+		if(root.contains("{libpath}")){
 			root = root.replace("${libpath}", ConfigTable.getLibPath());
 			root = root.replace("{libpath}", ConfigTable.getLibPath());
 		}
@@ -91,14 +91,16 @@ public class DefaultSQLStore extends SQLStore {
 		lastLoadTime = System.currentTimeMillis();
 	}
 	private static synchronized void parse(String path) {
-		//\D:\ \target\anyline-simple-data-jdbc-xml-8.6.5.jar!\BOOT-INF\classes!\sql
+		//windows \D:\ \target\anyline-simple-data-jdbc-xml-8.6.5.jar!\BOOT-INF\classes!\sql
+		//linux  /anyline-simple-data-jdbc-xml-8.7.1-SNAPSHOT.jar!/BOOT-INF/classes!/sql
 		if(path.contains("jar!")){
 			//jar内部
-			String sub = path.substring(path.indexOf("jar!")+4).replace("!/","") + FileUtil.getFileSeparator();
+			String separator = FileUtil.getFileSeparator();
+			String sub = path.substring(path.indexOf("jar!")+4).replace("!"+separator,separator) + separator;
 			sub = sub.toLowerCase();
  			//sub:  \BOOT-INF\classes!\sql\
 			sub = sub.replace("!","");
-			if(sub.startsWith("/") || sub.startsWith("\\")){
+			if(sub.startsWith(separator)){
 				sub = sub.substring(1);
 			}
 			sub = sub.replace("\\","/");
