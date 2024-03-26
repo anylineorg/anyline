@@ -75,8 +75,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected String category                         = null                  ; // 分类
     protected LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
     protected transient DataSet container             = null                  ; // 包含当前对象的容器
-    protected transient Map<String, DataSet> containers= new HashMap()         ; // 包含当前对象的容器s
-    protected transient Map<String, DataRow> parents   = new Hashtable()       ; // 上级
+    protected transient Map<String, DataSet> containers= new HashMap()        ; // 包含当前对象的容器s
+    protected transient Map<String, DataRow> parents   = new Hashtable()      ; // 上级
     protected List<String> primaryKeys                = new ArrayList()       ; // 主键
     protected List<String> updateColumns              = new ArrayList()       ; // 需要参与update insert操作
     protected List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
@@ -2548,6 +2548,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
     public LinkedHashMap<String, Table> getTables(){
+        return getTables(true);
+    }
+    public LinkedHashMap<String, Table> getTables(boolean checkContainer){
+        if (null != tables && !tables.isEmpty()) {
+            return tables;
+        } else if(checkContainer){
+            DataSet container = getContainer();
+            if (null != container) {
+                return container.getTables(false);
+            } else {
+                return tables;
+            }
+        }
         return tables;
     }
     public DataRow setTables(List<Table> tables){

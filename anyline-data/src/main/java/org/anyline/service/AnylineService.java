@@ -49,9 +49,19 @@ public interface AnylineService<E>{
 	String datasource();
 	DriverAdapter adapter();
 
+	/**
+	 * 验证相关数据源是否正常
+	 * @return boolean
+	 */
 	default boolean validate(){
 		return DatasourceHolder.validate(datasource());
 	}
+	/**
+	 * 验证相关数据源是否正常
+	 * 有可能会抛出异常
+	 * @return boolean
+	 * @throws Exception
+	 */
 	default boolean hit() throws Exception {
 		return DatasourceHolder.hit(datasource());
 	}
