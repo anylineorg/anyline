@@ -48,7 +48,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -1978,9 +1977,9 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             if((struct & 4) == 4) {
-                LinkedHashMap<String, Index> indexs = table.getIndexs();
+                LinkedHashMap<String, Index> indexs = table.getIndexes();
                 if(null == indexs || indexs.isEmpty()) {
-                    table.setIndexs(indexs(table));
+                    table.setIndexes(indexs(table));
                 }
             }
             if((struct & 16) == 16) {
@@ -2143,7 +2142,7 @@ public class DefaultService<E> implements AnylineService<E> {
             MasterTable table = tables.values().iterator().next();
             table.setColumns(columns(table));
             table.setTags(tags(table));
-            table.setIndexs(indexs(table));
+            table.setIndexes(indexs(table));
             return table;
         }
 
@@ -2272,7 +2271,7 @@ public class DefaultService<E> implements AnylineService<E> {
             PartitionTable table = tables.values().iterator().next();
             table.setColumns(columns(table));
             table.setTags(tags(table));
-            table.setIndexs(indexs(table));
+            table.setIndexes(indexs(table));
             return table;
         }
 

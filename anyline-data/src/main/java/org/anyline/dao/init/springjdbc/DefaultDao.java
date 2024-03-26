@@ -622,7 +622,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	/**
-	 * 保存(insert|upate)
+	 * 保存(insert|update)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源

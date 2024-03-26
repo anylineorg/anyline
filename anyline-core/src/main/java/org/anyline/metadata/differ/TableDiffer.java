@@ -1,10 +1,6 @@
 package org.anyline.metadata.differ;
 
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Index;
 import org.anyline.metadata.Table;
-
-import java.util.LinkedHashMap;
 
 /**
  * 表或列之间的对比结果
@@ -22,7 +18,7 @@ public class TableDiffer implements MetadataDiffer {
 
         differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns()));
 
-        differ.setIndexsDiffer(IndexsDiffer.compare(origin.getIndexs(), dest.getIndexs()));
+        differ.setIndexsDiffer(IndexsDiffer.compare(origin.getIndexes(), dest.getIndexes()));
         
         return differ;
     }

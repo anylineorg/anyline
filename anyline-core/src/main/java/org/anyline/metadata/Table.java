@@ -164,11 +164,11 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     protected PrimaryKey primaryKey;
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected LinkedHashMap<String, Tag> tags       = new LinkedHashMap<>();
-    protected LinkedHashMap<String, Index> indexs   = new LinkedHashMap<>();
+    protected LinkedHashMap<String, Index> indexes = new LinkedHashMap<>();
     protected LinkedHashMap<String, Constraint> constraints = new LinkedHashMap<>();
     protected boolean sort = false; //列是否排序
 
-    protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列
+    protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列(属性)
 
 
     public Table(){
@@ -414,7 +414,6 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         copy.columns = cols;
         return copy;
     }
-
 
     public Table addColumn(Column column){
         if(setmap && null != update){
@@ -796,19 +795,22 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return this;
     }
     public Index getIndex(String name){
-        if(null != indexs && null != name){
-            return indexs.get(name.toUpperCase());
+        if(null != indexes && null != name){
+            return indexes.get(name.toUpperCase());
         }
         return null;
     }
-    public <T extends Index> LinkedHashMap<String, T> getIndexs() {
+    public <T extends Index> LinkedHashMap<String, T> getIndexes() {
         if(getmap && null != update){
-            return update.getIndexs();
+            return update.getIndexes();
         }
-        if(null == indexs){
-            indexs = new LinkedHashMap<>();
+        if(null == indexes){
+            indexes = new LinkedHashMap<>();
         }
-        return (LinkedHashMap<String, T>) indexs;
+        return (LinkedHashMap<String, T>) indexes;
+    }
+    public <T extends Index> LinkedHashMap<String, T> getIndexs() {
+        return getIndexes();
     }
     public LinkedHashMap<String, Column> getPrimaryKeyColumns(){
         PrimaryKey pk = getPrimaryKey();
@@ -834,7 +836,7 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
             }
         }
         if(null == primaryKey){
-            for(Index index: indexs.values()){
+            for(Index index: indexes.values()){
                 if(index.isPrimary()){
                     primaryKey = new PrimaryKey();
                     primaryKey.setName(index.getName());
@@ -854,24 +856,24 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.changePrimary = changePrimary;
     }
 
-    public <T extends Index> Table setIndexs(LinkedHashMap<String, T> indexs) {
+    public <T extends Index> Table setIndexes(LinkedHashMap<String, T> indexes) {
         if(setmap && null != update){
-            update.setIndexs(indexs);
+            update.setIndexes(indexes);
             return this;
         }
 
-        this.indexs = (LinkedHashMap<String, Index>) indexs;
-        for(Index index:indexs.values()){
+        this.indexes = (LinkedHashMap<String, Index>) indexes;
+        for(Index index: indexes.values()){
             index.setTable(this);
         }
         return this;
     }
     public Table add(Index index){
-        if(null == indexs){
-            indexs = new LinkedHashMap<>();
+        if(null == indexes){
+            indexes = new LinkedHashMap<>();
         }
         index.setTable(this);
-        indexs.put(index.getName().toUpperCase(), index);
+        indexes.put(index.getName().toUpperCase(), index);
         return this;
     }
     public Table add(Constraint constraint){

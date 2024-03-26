@@ -4557,9 +4557,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				table.setPrimaryKey(pk);
-				LinkedHashMap<String, Index> indexs = table.getIndexs();
+				LinkedHashMap<String, Index> indexs = table.getIndexes();
 				if(null == indexs || indexs.isEmpty()) {
-					table.setIndexs(indexs(runtime, random, table, null));
+					table.setIndexes(indexs(runtime, random, table, null));
 				}
 				runs = buildCreateRun(runtime, table);
 				for(Run run:runs){
@@ -6554,7 +6554,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != table.getName()) {
 				try {
 					LinkedHashMap<String,T> maps = indexs(runtime, true, new LinkedHashMap<>(), table, false, false);
-					table.setIndexs(maps);
+					table.setIndexes(maps);
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -6609,7 +6609,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != table.getName()) {
 				try {
 					indexs = indexs(runtime, true, indexs, table, false, false);
-					table.setIndexs(indexs);
+					table.setIndexes(indexs);
 				} catch (Exception e) {
 					log.info("{}[{}][table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -8339,7 +8339,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexs中)
 		*/
 		LinkedHashMap<String, Index> oindexs = indexs(runtime, random, meta, null);		//原索引
-		LinkedHashMap<String, Index> indexs = update.getIndexs();		//新索引
+		LinkedHashMap<String, Index> indexs = update.getIndexes();		//新索引
 		for(Index index:indexs.values()){
 			if(index.isPrimary()){
 				continue;
@@ -12042,7 +12042,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(null != meta) {
-			LinkedHashMap<String, Index> indexs = meta.getIndexs();
+			LinkedHashMap<String, Index> indexs = meta.getIndexes();
 			if(null != indexs){
 				for(Index index:indexs.values()){
 					if(index.isPrimary()){

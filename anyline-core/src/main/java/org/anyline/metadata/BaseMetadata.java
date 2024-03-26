@@ -99,8 +99,8 @@ public class BaseMetadata<T extends BaseMetadata> {
 
     protected T origin;
     protected T update;
-    protected boolean setmap = false              ;  //执行了upate()操作后set操作是否映射到update上(除了table, catalog, schema, name, drop, action)
-    protected boolean getmap = false              ;  //执行了upate()操作后get操作是否映射到update上(除了table, catalog, schema, name, drop, action)
+    protected boolean setmap = false              ;  //执行了update()操作后set操作是否映射到update上(除了table, catalog, schema, name, drop, action)
+    protected boolean getmap = false              ;  //执行了update()操作后get操作是否映射到update上(除了table, catalog, schema, name, drop, action)
 
     protected boolean drop = false                ;
     protected ACTION.DDL action = null            ; //ddl命令 add drop alter
@@ -360,7 +360,7 @@ public class BaseMetadata<T extends BaseMetadata> {
 
     /**
      * 相关表
-     * @param update 是否检测upate
+     * @param update 是否检测update
      * @return table
      */
     public Table getTable(boolean update) {
