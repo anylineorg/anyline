@@ -4,12 +4,14 @@ import com.vesoft.nebula.Vertex;
 import com.vesoft.nebula.client.graph.SessionPool;
 import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
+import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.nebula.entity.NebulaRow;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
@@ -30,6 +32,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.util.*;
 
 @Repository("anyline.data.adapter.nebula")
@@ -942,14 +947,10 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
         //根据这一步中的JDBC结果集检测类型不准确,如:实际POINT 返回 GEOMETRY 如果要求准确 需要开启到自动检测
         //在DataRow中 如果检测到准确类型 JSON XML POINT 等 返回相应的类型,不返回byte[]（所以需要开启自动检测）
         //Entity中 JSON XML POINT 等根据属性类型返回相应的类型（所以不需要开启自动检测）
-        LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-        /*
-        if(!system && IS_AUTO_CHECK_METADATA(configs) && null != table){
-            columns = columns(runtime, random, false, table, false);
-        }*/
+
+
         try{
             final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
-            metadatas.putAll(columns);
             set.setMetadata(metadatas);
             SessionPool sesion = session(runtime);
             if(null == sesion){
@@ -980,7 +981,7 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
             int size = rs.rowsSize();
             List<String> cols = rs.getColumnNames();
             if(IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 2){
-                if(columns.size() == 1){
+                if(cols.size() == 1){
                     IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = 1;
                 }else{
                     IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = 0;
@@ -992,14 +993,15 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                 for (String col : cols) { //return中的key
                     ValueWrapper wrapper = record.get(col);
                     com.vesoft.nebula.Value value = wrapper.getValue();
-                    DataRow row = null;
-                    if (IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 0) { //是否忽略查询结果中顶层的key
-                        row = new NebulaRow();
-                        top.put(col, row);
-                    } else {
-                        row = top;
-                    }
+
                     if (wrapper.isVertex()) {//点
+                        DataRow row = null;
+                        if (IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 0) { //是否忽略查询结果中顶层的key
+                            row = new VertexRow();
+                            top.put(col, row);
+                        } else {
+                            row = top;
+                        }
                         Vertex vertex = value.getVVal();
                         Object vid = vertex.vid.getFieldValue();
                         if (vid instanceof byte[]) {
@@ -1043,7 +1045,19 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
                     }else if(wrapper.isEdge()){
 
                     }else if(wrapper.isString()){
-                        row.put(col, wrapper.asString());
+                        top.put(col, wrapper.asString());
+                    }else if(wrapper.isBoolean()){
+                        top.put(col, wrapper.asBoolean());
+                    }else if(wrapper.isDouble()){
+                        top.put(col, wrapper.asDouble());
+                    }else if(wrapper.isLong()){
+                        top.put(col, wrapper.asLong());
+                    }else if(wrapper.isDate()){
+                        top.put(col, wrapper.asDate());
+                    }else if(wrapper.isDateTime()){
+                        top.put(col, wrapper.asDateTime());
+                    }else if(wrapper.isList()){
+                        top.put(col, wrapper.asList());
                     }
                 }
                 set.addRow(top);
@@ -2151,7 +2165,14 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
-        return super.tables(runtime, index, create, catalog, schema, tables, set);
+        if(null == tables){
+            tables = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            String name = row.getName();
+            tables.put(name.toUpperCase(), (T)new Table(name));
+        }
+        return tables;
     }
 
     /**
@@ -2169,7 +2190,13 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception {
-        return super.tables(runtime, index, create, catalog, schema, tables, set);
+        if(null == tables){
+            tables = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            tables.add((T)new Table(row.getName()));
+        }
+        return tables;
     }
 
     /**
@@ -2729,7 +2756,100 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
-        return super.columns(runtime, random, greedy, table, primary);
+        if (!greedy) {
+            checkSchema(runtime, table);
+        }
+        Catalog catalog = table.getCatalog();
+        Schema schema = table.getSchema();
+
+        LinkedHashMap<String,T> columns = CacheProxy.columns(this, runtime.getKey(), table);
+        if(null != columns && !columns.isEmpty()){
+            return columns;
+        }
+        long fr = System.currentTimeMillis();
+        if(null == random) {
+            random = random(runtime);
+        }
+        try {
+
+            int qty_total = 0;
+            int qty_dialect = 0; //优先根据系统表查询
+            int qty_metadata = 0; //再根据metadata解析
+            int qty_jdbc = 0; //根据驱动内置接口补充
+
+            // 1.优先根据系统表查询
+            try {
+                List<Run> runs = buildQueryColumnsRun(runtime, table, false);
+                if (null != runs) {
+                    int idx = 0;
+                    for (Run run: runs) {
+                        DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+                        columns = columns(runtime, idx, true, table, columns, set);
+                        idx++;
+                    }
+                }
+                if(null != columns) {
+                    qty_dialect = columns.size();
+                    qty_total=columns.size();
+                }
+            } catch (Exception e) {
+                if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
+                    e.printStackTrace();
+                }
+                if(primary) {
+                    e.printStackTrace();
+                } if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+                    log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
+                }
+            }
+            //检测主键
+            if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
+                if (null != columns || !columns.isEmpty()) {
+                    boolean exists = false;
+                    for(Column column:columns.values()){
+                        if(column.isPrimaryKey() != -1){
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if(!exists){
+                        PrimaryKey pk = primary(runtime, random, false, table);
+                        if(null != pk){
+                            LinkedHashMap<String,Column> pks = pk.getColumns();
+                            if(null != pks){
+                                for(String k:pks.keySet()){
+                                    Column column = columns.get(k);
+                                    if(null != column){
+                                        column.primary(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+                e.printStackTrace();
+            }else{
+                log.error("｛｝[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
+            }
+        }
+        if(null != columns) {
+            CacheProxy.columns(this, runtime.getKey(), table, columns);
+        }else{
+            columns = new LinkedHashMap<>();
+        }
+        int index = 0;
+        for(Column column:columns.values()){
+            if(null == column.getPosition() || -1 == column.getPosition()) {
+                column.setPosition(index++);
+            }
+            if(null == column.getTable() && !greedy){
+                column.setTable(table);
+            }
+        }
+        return columns;
     }
 
     /**
@@ -2759,7 +2879,12 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-        return super.buildQueryColumnsRun(runtime, table, metadata);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("DESCRIBE TAG ").append(table.getName());
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -2776,11 +2901,39 @@ public class NebulaAdapter extends AbstractDriverAdapter implements DriverAdapte
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
-        return super.columns(runtime, index, create, table, columns, set);
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            //| Field  | Type     | Null  | Default | Comment |
+            String name = row.getString("Field");
+            Column column = new Column();
+            column.setName(name);
+            column.setType(row.getString("Type"));
+            column.setNullable(row.getBoolean("Null"));
+            column.setDefaultValue(row.get("Default"));
+            column.setComment(row.getString("Comment"));
+            columns.put(name.toUpperCase(), (T)column);
+        }
+        return columns;
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception {
-        return super.columns(runtime, index, create, table, columns, set);
+        if(null == columns){
+            columns = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            //| Field  | Type     | Null  | Default | Comment |
+            String name = row.getString("Field");
+            Column column = new Column();
+            column.setName(name);
+            column.setType(row.getString("Type"));
+            column.setNullable(row.getBoolean("Null"));
+            column.setDefaultValue(row.get("Default"));
+            column.setComment(row.getString("Comment"));
+            columns.add((T)column);
+        }
+        return columns;
     }
 
     /**
