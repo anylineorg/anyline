@@ -50,7 +50,7 @@ public interface AnylineService<E>{
 	DriverAdapter adapter();
 
 	/**
-	 * 验证相关数据源是否正常
+	 * 验证相关数据源是否正常,异常会被捕捉并返回false
 	 * @return boolean
 	 */
 	default boolean validate(){
@@ -60,7 +60,7 @@ public interface AnylineService<E>{
 	 * 验证相关数据源是否正常
 	 * 有可能会抛出异常
 	 * @return boolean
-	 * @throws Exception
+	 * @throws Exception 如果连接异常会抛出
 	 */
 	default boolean hit() throws Exception {
 		return DatasourceHolder.hit(datasource());
