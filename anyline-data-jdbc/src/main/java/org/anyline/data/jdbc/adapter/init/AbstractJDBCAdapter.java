@@ -4484,7 +4484,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.error("[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
+				log.error("{}[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
 			}
 		}
 		if(null != columns) {

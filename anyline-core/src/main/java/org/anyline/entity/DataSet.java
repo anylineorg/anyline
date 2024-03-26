@@ -38,8 +38,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
-
 public class DataSet implements Collection<DataRow>, Serializable {
     private static final long serialVersionUID = 6443551515441660101L;
     protected static final Logger log = LoggerFactory.getLogger(DataSet.class);

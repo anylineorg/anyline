@@ -47,7 +47,6 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
     public static Map<Integer, Type> types(){
         return types;
     }
-    //struct 是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
     enum STRUCT{
         COLUMN(4),
         PRIMARY(8),
