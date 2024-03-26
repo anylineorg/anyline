@@ -2490,15 +2490,21 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Table getTable() {
+        return getTable(true);
+    }
+
+    public Table getTable(boolean checkContainer) {
         if (null != tables && !tables.isEmpty()) {
             return tables.values().iterator().next();
-        } else {
+        } else if(checkContainer){
             DataSet container = getContainer();
             if (null != container) {
-                return container.getTable();
+                return container.getTable(false);
             } else {
                 return null;
             }
+        }else{
+            return null;
         }
     }
     public String getTableName(){

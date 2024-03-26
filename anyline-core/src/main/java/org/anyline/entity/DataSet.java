@@ -4097,17 +4097,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public Table getTable() {
+    public Table getTable(boolean checkItem) {
         Table table = null;
         if(null != tables && !tables.isEmpty()){
             table = tables.values().iterator().next();
         }
-        if(null == table){
+        if(null == table && checkItem){
             if(!rows.isEmpty()){
-                return rows.get(0).getTable();
+                return rows.get(0).getTable(false);
             }
         }
         return table;
+    }
+    public Table getTable() {
+        return getTable(true);
     }
     public String getTableName() {
         Table tab = getTable();
