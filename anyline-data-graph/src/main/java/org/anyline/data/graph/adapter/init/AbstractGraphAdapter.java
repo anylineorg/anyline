@@ -3067,7 +3067,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+		return super.vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 

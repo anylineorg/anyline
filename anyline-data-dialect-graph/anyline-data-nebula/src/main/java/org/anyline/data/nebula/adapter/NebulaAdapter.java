@@ -6,10 +6,8 @@ import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.graph.adapter.init.AbstractGraphAdapter;
 import org.anyline.data.handler.StreamHandler;
-import org.anyline.data.nebula.entity.NebulaRow;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -18,6 +16,8 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.entity.graph.GraphRow;
+import org.anyline.entity.graph.VertexRow;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
@@ -989,7 +989,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             }
             for(int  i=0; i<size; i++) {
                 ResultSet.Record record = rs.rowValues(i); //一行数据
-                DataRow top = new NebulaRow();
+                GraphRow top = new GraphRow();
                 for (String col : cols) { //return中的key
                     ValueWrapper wrapper = record.get(col);
                     com.vesoft.nebula.Value value = wrapper.getValue();
@@ -1024,7 +1024,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                             if (MERGE_GRAPH_QUERY_RESULT_TABLE == 1) {
                                 tag_row = row;
                             } else {
-                                tag_row = new NebulaRow();
+                                tag_row = new VertexRow();
                                 tag_row.addTable(src_table);
                                 row.put(tag_name, tag_row);
                             }
@@ -2091,7 +2091,16 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-        return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+        List<T> tables = new ArrayList<>();
+        List<VertexTable> vertexs = vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+        for(VertexTable table:vertexs){
+            tables.add((T)table);
+        }
+        List<EdgeTable> edges = edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+        for(EdgeTable table:edges){
+            tables.add((T)table);
+        }
+        return tables;
     }
 
     /**
@@ -2109,7 +2118,16 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
 
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-        return super.tables(runtime, random, catalog, schema, pattern, types, struct);
+        LinkedHashMap<String, T> tables = new LinkedHashMap<>();
+        LinkedHashMap<String, VertexTable> vertexs = vertexTables(runtime, random, catalog, schema, pattern, types, struct);
+        for(VertexTable table:vertexs.values()){
+            tables.put(table.getName().toUpperCase(), (T)table);
+        }
+        LinkedHashMap<String, EdgeTable> edges = edgeTables(runtime, random, catalog, schema, pattern, types, struct);
+        for(EdgeTable table:edges.values()){
+            tables.put(table.getName().toUpperCase(), (T)table);
+        }
+        return tables;
     }
 
     /**
@@ -2165,14 +2183,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
-        if(null == tables){
-            tables = new LinkedHashMap<>();
-        }
-        for(DataRow row:set){
-            String name = row.getName();
-            tables.put(name.toUpperCase(), (T)new Table(name));
-        }
-        return tables;
+        return super.tables(runtime, index, create, catalog, schema, tables, set);
     }
 
     /**
@@ -2351,7 +2362,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-        return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+        return super.vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
     }
 
 
@@ -2373,7 +2384,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SHOW TAGS");
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -2406,7 +2422,14 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
-        return super.vertexTables(runtime, index, create, catalog, schema, tables, set);
+        if(null == tables){
+            tables = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            String name = row.getName();
+            tables.put(name.toUpperCase(), (T)new VertexTable(name));
+        }
+        return tables;
     }
 
     /**
@@ -2424,7 +2447,14 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception {
-        return super.vertexTables(runtime, index, create, catalog, schema, tables, set);
+        if(null == tables){
+            tables = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            String name = row.getName();
+            tables.add((T)new VertexTable(name));
+        }
+        return tables;
     }
 
     /**
@@ -2595,7 +2625,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, pattern, types);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SHOW EDGES");
+        runs.add(run);
+        return runs;
     }
 
     /**
@@ -2628,7 +2663,14 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
-        return super.edgeTables(runtime, index, create, catalog, schema, tables, set);
+        if(null == tables){
+            tables = new LinkedHashMap<>();
+        }
+        for(DataRow row:set){
+            String name = row.getName();
+            tables.put(name.toUpperCase(), (T)new EdgeTable(name));
+        }
+        return tables;
     }
 
     /**
@@ -2646,7 +2688,14 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception {
-        return super.edgeTables(runtime, index, create, catalog, schema, tables, set);
+        if(null == tables){
+            tables = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            String name = row.getName();
+            tables.add((T)new EdgeTable(name));
+        }
+        return tables;
     }
 
     /**
