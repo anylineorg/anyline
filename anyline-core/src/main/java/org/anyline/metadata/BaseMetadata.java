@@ -92,6 +92,7 @@ public class BaseMetadata<T extends BaseMetadata> {
     protected boolean execute = true              ; // DDL是否立即执行, false:只创建SQL不执行可以通过ddls()返回生成的SQL
     protected String text;
     protected String id;
+    protected String user                         ; // 所属用户
     protected Long objectId;
 
     protected Table<?> table;
@@ -233,6 +234,14 @@ public class BaseMetadata<T extends BaseMetadata> {
     public T setSchema(Schema schema) {
         this.schema = schema;
         return (T)this;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public Date getCheckSchemaTime() {

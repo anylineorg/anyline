@@ -44,10 +44,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 参考 OracleAdapter
@@ -1262,7 +1259,12 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryDatabasesRun(runtime, greedy, name);
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("select a.name as user_name, b.name as database_name from sysobjects a inner join sysobjects b on a.id = b.pid where b.subtype$ is null");
+		return runs;
 	}
 
 	/**
@@ -1277,11 +1279,37 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception {
-		return super.databases(runtime, index, create, databases, set);
+		if(null == databases){
+			databases = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("database_name");
+			String user = row.getString("user_name");
+			if(null != name){
+				Database database = new Database();
+				database.setName(name);
+				database.setUser(user);
+				databases.put(name.toUpperCase(), database);
+			}
+		}
+		return databases;
 	}
 	@Override
 	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception {
-		return super.databases(runtime, index, create, databases, set);
+		if(null == databases){
+			databases = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("database_name");
+			String user = row.getString("user_name");
+			if(null != name){
+				Database database = new Database();
+				database.setName(name);
+				database.setUser(user);
+				databases.add(database);
+			}
+		}
+		return databases;
 	}
 
 	/**
@@ -1568,7 +1596,12 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception {
-		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
+		List<Run> runs = new ArrayList<>();
+		SimpleRun run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("select a.name as user_name, b.name as schema_name from sysobjects a inner join sysobjects b on a.id = b.pid where b.subtype$ is null");
+		return runs;
 	}
 
 	/**
@@ -1584,11 +1617,37 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter, Initia
 	 */
 	@Override
 	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set) throws Exception {
-		return super.schemas(runtime, index, create, schemas, set);
+		if(null == schemas){
+			schemas = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("schema_name");
+			String user = row.getString("user_name");
+			if(null != name){
+				Schema schema = new Schema();
+				schema.setName(name);
+				schema.setUser(user);
+				schemas.put(name.toUpperCase(), schema);
+			}
+		}
+		return schemas;
 	}
 	@Override
 	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception {
-		return super.schemas(runtime, index, create, schemas, set);
+		if(null == schemas){
+			schemas = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("schema_name");
+			String user = row.getString("user_name");
+			if(null != name){
+				Schema schema = new Schema();
+				schema.setName(name);
+				schema.setUser(user);
+				schemas.add(schema);
+			}
+		}
+		return schemas;
 	}
 
 	/**
