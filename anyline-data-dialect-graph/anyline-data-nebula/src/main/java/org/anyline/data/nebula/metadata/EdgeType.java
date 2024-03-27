@@ -1,8 +1,9 @@
 package org.anyline.data.nebula.metadata;
 
 import org.anyline.metadata.Table;
+import org.anyline.metadata.graph.EdgeTable;
 
-public class EdgeType extends Table {
+public class EdgeType extends EdgeTable {
     public EdgeType() {
 
     }

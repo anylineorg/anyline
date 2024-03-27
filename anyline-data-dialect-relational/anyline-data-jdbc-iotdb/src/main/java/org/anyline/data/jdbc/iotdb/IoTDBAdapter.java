@@ -24,7 +24,6 @@ import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.metadata.type.TypeMetadata;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;

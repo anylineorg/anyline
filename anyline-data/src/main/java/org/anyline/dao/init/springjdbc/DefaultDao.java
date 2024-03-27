@@ -30,8 +30,10 @@ import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.differ.MetadataDiffer;
+import org.anyline.metadata.graph.EdgeTable;
+import org.anyline.metadata.graph.GraphTable;
+import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.persistence.ManyToMany;
 import org.anyline.metadata.persistence.OneToMany;
 import org.anyline.metadata.type.DatabaseType;
@@ -959,6 +961,104 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													vertexTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * LinkedHashMap<String, VertexTable> vertexTables(Catalog catalog, Schema schema, String name, int types)
+	 * LinkedHashMap<String, VertexTable> vertexTables(Schema schema, String name, int types)
+	 * LinkedHashMap<String, VertexTable> vertexTables(String name, int types)
+	 * LinkedHashMap<String, VertexTable> vertexTables(int types)
+	 * LinkedHashMap<String, VertexTable> vertexTables()
+	 ******************************************************************************************************************/
+
+	/**
+	 * vertexTables
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
+	 * @param types BaseMetadata.TYPE
+	 * @return List
+	 */
+	@Override
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
+
+	@Override
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().vertexTables(runtime, random, catalog, schema, pattern, types, struct);
+	}
+
+	/* *****************************************************************************************************************
+	 * 													EdgeTable
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * LinkedHashMap<String, EdgeTable> edgeTables(Catalog catalog, Schema schema, String name, int types)
+	 * LinkedHashMap<String, EdgeTable> edgeTables(Schema schema, String name, int types)
+	 * LinkedHashMap<String, EdgeTable> edgeTables(String name, int types)
+	 * LinkedHashMap<String, EdgeTable> edgeTables(int types)
+	 * LinkedHashMap<String, EdgeTable> edgeTables()
+	 ******************************************************************************************************************/
+
+	/**
+	 * EdgeTables
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
+	 * @param types BaseMetadata.TYPE
+	 * @return List
+	 */
+	@Override
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+	}
+
+	@Override
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().edgeTables(runtime, random, catalog, schema, pattern, types, struct);
+	}
+
+	/**
+	 * 查询表的创建SQL
+	 * @param meta EdgeTable
+	 * @param init 是否还原初始状态(如自增ID)
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().ddl(runtime, random, meta, init);
+	}
+
+	/**
+	 * 查询表的创建SQL
+	 * @param meta vertexTable
+	 * @param init 是否还原初始状态(如自增ID)
+	 * @return list
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, VertexTable meta, boolean init){
+		if(null == runtime){
+			runtime = runtime();
+		}
+		return runtime.getAdapter().ddl(runtime, random, meta, init);
+	}
+
 	/**
 	 * 查询表的创建SQL
 	 * @param table table
@@ -1044,11 +1144,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String, PartitionTable> ptables(Catalog catalog, Schema schema, String master, String name)
-	 * LinkedHashMap<String, PartitionTable> ptables(Schema schema, String master, String name)
-	 * LinkedHashMap<String, PartitionTable> ptables(String master, String name)
-	 * LinkedHashMap<String, PartitionTable> ptables(String master)
-	 * LinkedHashMap<String, PartitionTable> ptables(MasterTable table)
+	 * LinkedHashMap<String, PartitionTable> partitionTables(Catalog catalog, Schema schema, String master, String name)
+	 * LinkedHashMap<String, PartitionTable> partitionTables(Schema schema, String master, String name)
+	 * LinkedHashMap<String, PartitionTable> partitionTables(String master, String name)
+	 * LinkedHashMap<String, PartitionTable> partitionTables(String master)
+	 * LinkedHashMap<String, PartitionTable> partitionTables(MasterTable table)
 	 ******************************************************************************************************************/
 
 
@@ -1095,6 +1195,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return runtime.getAdapter().columns(runtime, random, greedy, catalog, schema);
 
 	}
+
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------

@@ -18,6 +18,7 @@
 package org.anyline.data.nebula.loader;
 
 import com.vesoft.nebula.client.graph.SessionPool;
+import org.anyline.data.datasource.DatasourceHolder;
 import org.anyline.data.listener.DatasourceLoader;
 import org.anyline.data.nebula.datasource.NebulaDatasourceHolder;
 import org.anyline.data.nebula.runtime.NebulaRuntimeHolder;
@@ -43,7 +44,7 @@ public class NebulaDatasourceLoader implements DatasourceLoader {
         factory = (DefaultListableBeanFactory) context.getAutowireCapableBeanFactory();
         SpringContextUtil.init(context);
         NebulaRuntimeHolder.init(factory);
-        boolean loadDefault = true;
+        boolean loadDefault = !DatasourceHolder.contains("default");
         list.addAll(load(env, "spring.datasource", loadDefault));
         list.addAll(load(env, "anyline.datasource", loadDefault));
         //TODO 项目指定一个前缀
@@ -55,7 +56,7 @@ public class NebulaDatasourceLoader implements DatasourceLoader {
         //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
-            String def = NebulaDatasourceHolder.reg("nebula", head, env);
+            String def = NebulaDatasourceHolder.reg("default", head, env);
             if (null != def) {
                 list.add(def);
             }

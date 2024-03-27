@@ -2,4 +2,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.data.jdbc.runtime.JDBCRuntimeHolder, \
 org.anyline.data.jdbc.datasource.JDBCDatasourceHolder, \
 org.anyline.data.jdbc.loader.JDBCDatasourceLoader, \
-org.anyline.data.jdbc.adapter.init.CommonJDBCAdapter
+init.org.anyline.data.jdbc.adapter.CommonJDBCAdapter

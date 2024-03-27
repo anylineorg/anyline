@@ -50,7 +50,7 @@ public class CacheProxy {
     private static Map<String, Map<String, String>>  cache_names = new HashMap<>();
     private static Map<String, DataRow> cache_table_maps = new HashMap<>();
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
-    public static void name(DriverAdapter adapter, List<Table> tables){
+    public static <T extends Table> void name(DriverAdapter adapter, List<T> tables){
         if(null != tables) {
             for (Table table : tables) {
                 name(adapter, table.getCatalog(), table.getSchema(), table.getName(), table.getName());
