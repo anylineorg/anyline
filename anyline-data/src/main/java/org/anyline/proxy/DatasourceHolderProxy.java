@@ -84,6 +84,12 @@ public class DatasourceHolderProxy {
                 }
             }
         }
+        if(holders.isEmpty()){
+            log.warn("[没有可用的DatasourceHolder][有可能是容器中没有注入JDBCDatasourceHolder/ElasticSearchDatasourceHolder等]");
+        }
+        if(null == holder){
+            log.warn("[定位DatasourceHolder失败][class:{}]", clazz.getName());
+        }
         return holder;
     }
 
