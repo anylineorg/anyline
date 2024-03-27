@@ -213,59 +213,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-		StringBuilder builder = run.getBuilder();
-		int batch = run.getBatch();
-		if(null == builder){
-			builder = new StringBuilder();
-			run.setBuilder(builder);
-		}
-		LinkedHashMap<String, Column> pks = null;
-		checkName(runtime, null, dest);
-		PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-		if(null != generator){
-			pks = set.getRow(0).getPrimaryColumns();
-			columns.putAll(pks);
-		}
-		String head = insertHead(configs);
-		builder.append(head);
-		name(runtime, builder, dest);//.append(parseTable(dest));
-		builder.append("(");
-		delimiter(builder, Column.names(columns));
-		builder.append(") VALUES ");
-		if(batch > 1){
-			//批量执行
-			builder.append("(");
-			int size = columns.size();
-			run.setVol(size);
-			for(int i=0; i<size; i++){
-				if(i>0){
-					builder.append(",");
-				}
-				builder.append("?");
-			}
-			builder.append(")");
-		}
-		int dataSize = set.size();
-		for(int i=0; i<dataSize; i++){
-			DataRow row = set.getRow(i);
-			if(null == row){
-				continue;
-			}
-			if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-				if(null != generator){
-					generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
-				}
-				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
-			}
-			builder.append(insertValue(runtime, run, row, true, true, false, true, columns));
-			if(batch <=1) {
-				if (i < dataSize - 1) {
-					//多行数据之间的分隔符
-					builder.append(batchInsertSeparator());
-				}
-			}
-		}
-		builder.append(insertFoot(configs, columns));
+		super.fillInsertContent(runtime, run, dest, set, configs, columns);
 	}
 
 	/**

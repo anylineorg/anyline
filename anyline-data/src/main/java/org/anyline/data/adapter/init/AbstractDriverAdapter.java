@@ -14916,11 +14916,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public Object getPrimaryValue(DataRuntime runtime, Object obj){
 		if(null == obj){
 			return null;
-		}
-		if(obj instanceof DataRow){
-			return ((DataRow)obj).getPrimaryValue();
-		}else{
+		}if(obj instanceof DataRow){
+			return  ((DataRow)obj).getPrimaryValue();
+		} else if(EntityAdapterProxy.hasAdapter(obj.getClass())){
 			return EntityAdapterProxy.primaryValue(obj);
+		}else{
+			return BeanUtil.getFieldValue(obj, ConfigTable.DEFAULT_PRIMARY_KEY);
 		}
 	}
 /*

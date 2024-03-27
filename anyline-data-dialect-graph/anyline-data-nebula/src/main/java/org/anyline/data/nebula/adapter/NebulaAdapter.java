@@ -18,6 +18,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.entity.graph.EdgeRow;
 import org.anyline.entity.graph.GraphRow;
 import org.anyline.entity.graph.VertexRow;
 import org.anyline.exception.SQLQueryException;
@@ -188,7 +189,46 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        super.fillInsertContent(runtime, run, dest, set, configs, columns);
+        StringBuilder builder = run.getBuilder();
+        int batch = run.getBatch();
+        if(null == builder){
+            builder = new StringBuilder();
+            run.setBuilder(builder);
+        }
+        LinkedHashMap<String, Column> pks = null;
+        checkName(runtime, null, dest);
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+        if(null != generator){
+            pks = set.getRow(0).getPrimaryColumns();
+            columns.putAll(pks);
+        }
+        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
+        builder.append(insertHead(configs, dest, set.getRow(0)));
+        name(runtime, builder, dest);//.append(parseTable(dest));
+        builder.append("(");
+        delimiter(builder, Column.names(columns));
+        builder.append(") VALUES ");
+        int dataSize = set.size();
+        for(int i=0; i<dataSize; i++){
+            DataRow row = set.getRow(i);
+            if(null == row){
+                continue;
+            }
+            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
+                if(null != generator){
+                    generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), BeanUtil.getMapKeys(pks), null);
+                }
+                //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+            }
+            builder.append(insertValue(runtime, run, row, true, true, false, true, columns));
+            if(batch <=1) {
+                if (i < dataSize - 1) {
+                    //多行数据之间的分隔符
+                    builder.append(batchInsertSeparator());
+                }
+            }
+        }
+        builder.append(insertFoot(configs, columns));
     }
 
     /**
@@ -202,7 +242,130 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        super.fillInsertContent(runtime, run, dest, list, configs, columns);
+        StringBuilder builder = run.getBuilder();
+        int batch = run.getBatch();
+        if(null == builder){
+            builder = new StringBuilder();
+            run.setBuilder(builder);
+        }
+        checkName(runtime, null, dest);
+        if(list instanceof DataSet){
+            DataSet set = (DataSet) list;
+            this.fillInsertContent(runtime, run, dest, set, configs, columns);
+            return;
+        }
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+        Object entity = list.iterator().next();
+        List<String> pks = null;
+        if(null != generator) {
+            columns.putAll(EntityAdapterProxy.primaryKeys(entity.getClass()));
+        }
+        Object first = list.iterator().next();
+        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
+        builder.append(insertHead(configs, dest, first));
+        name(runtime, builder, dest);// .append(parseTable(dest));
+        builder.append("(");
+        delimiter(builder, Column.names(columns));
+        builder.append(") VALUES ");
+        int dataSize = list.size();
+        int idx = 0;
+        for(Object obj:list){
+            boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(columns));
+            if(!create && null != generator){
+                generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+            }
+            builder.append(insertValue(runtime, run, obj, true, true, false, true, columns));
+            if(idx<dataSize-1 && batch <= 1){
+                //多行数据之间的分隔符
+                builder.append(batchInsertSeparator());
+            }
+            idx ++;
+        }
+        builder.append(insertFoot(configs, columns));
+    }
+
+    /**
+     * 生成insert sql的value部分,每个Entity(每行数据)调用一次
+     * (1,2,3)
+     * (?,?,?)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param run           run
+     * @param obj           Entity或DataRow
+     * @param placeholder   是否使用占位符(批量操作时不要超出数量)
+     * @param scope         是否带(), 拼接在select后时不需要
+     * @param alias         是否添加别名
+     * @param columns          需要插入的列
+     * @param child          是否在子查询中，子查询中不要用序列
+     */
+    protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns){
+        //INSERT VERTEX t2 (name, age) VALUES "13":("n3", 12), "14":("n4", 8);
+        int batch = run.getBatch();
+        StringBuilder builder = new StringBuilder();
+        Object pv = getPrimaryValue(runtime, obj);
+        builder.append(" '").append(pv).append("':(");
+        int from = 1;
+        if(obj instanceof DataRow){
+            from = 1;
+        }
+        run.setFrom(from);
+        boolean first = true;
+        for(Column column:columns.values()){
+            boolean place = placeholder;
+            boolean src = false; //直接拼接 如${now()} ${序列}
+            String key = column.getName();
+            if (!first && batch<=1) {
+                builder.append(",");
+            }
+            first = false;
+            Object value = null;
+            if(obj instanceof DataRow){
+                value = BeanUtil.getFieldValue(obj, key);
+            }else if(obj instanceof Map){
+                value = ((Map)obj).get(key);
+            }else{
+                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
+            }
+            if(value != null){
+                if(value instanceof SQL_BUILD_IN_VALUE){
+                    place = false;
+                }else if(value instanceof String){
+                    String str = (String)value;
+                    //if(str.startsWith("${") && str.endsWith("}")){
+                    if(BasicUtil.checkEl(str)){
+                        src = true;
+                        place = false;
+                        value = str.substring(2, str.length()-1);
+                        if (child && str.toUpperCase().contains(".NEXTVAL")) {
+                            value = null;
+                        }
+                    }else if("NULL".equals(str)){
+                        value = null;
+                    }
+                }
+            }
+            if(src){
+                builder.append(value);
+            }else {
+                builder.append(write(runtime, null, value, false));
+            }
+
+        }
+        if(scope && batch<=1) {
+            builder.append(")");
+        }
+        return builder.toString();
+    }
+    public String getPrimayKey(Object obj){
+        String key = null;
+        if(obj instanceof Collection){
+            obj = ((Collection)obj).iterator().next();
+        }
+        if(obj instanceof DataRow){
+            key = ((DataRow)obj).getPrimaryKey();
+        }else{
+            key = EntityAdapterProxy.primaryKey(obj.getClass(), true);
+        }
+        return key;
     }
 
     /**
@@ -278,7 +441,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
         Run run = new TableRun(runtime, dest);
         // List<Object> values = new ArrayList<Object>();
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = run.getBuilder();
         if(BasicUtil.isEmpty(dest)){
             throw new org.anyline.exception.SQLException("未指定表");
         }
@@ -287,7 +450,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
 
         int from = 1;
-        StringBuilder valuesBuilder = new StringBuilder();
         DataRow row = null;
         if(obj instanceof Map){
             if(!(obj instanceof DataRow)) {
@@ -323,18 +485,19 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             replaceEmptyNull = IS_REPLACE_EMPTY_NULL(configs);
         }
         //INSERT VERTEX t2 (name, age) VALUES "11":("n4", 15);
-        String head = insertHead(configs);
-        builder.append(head);
-        builder.append(keyword(dest)).append(" ");
+        builder.append(insertHead(configs, dest, obj));
         name(runtime, builder, dest);
         builder.append("(");
-        valuesBuilder.append(") VALUES (");
+        delimiter(builder, Column.names(cols));
+        builder.append(")");
+        Object pv = getPrimaryValue(runtime, obj);
+        builder.append(" VALUES '").append(pv).append("':");
+        builder.append("(");
         List<String> insertColumns = new ArrayList<>();
         boolean first = true;
         for(Column column:cols.values()){
             if(!first){
                 builder.append(",");
-                valuesBuilder.append(",");
             }
             first = false;
             String key = column.getName();
@@ -349,26 +512,23 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(value instanceof String){
                 str = (String)value;
             }
-            delimiter(builder, key);
 
             //if (str.startsWith("${") && str.endsWith("}")) {
             if (BasicUtil.checkEl(str)) {
                 value = str.substring(2, str.length()-1);
-                valuesBuilder.append(value);
+                builder.append(value);
             }else if(value instanceof SQL_BUILD_IN_VALUE){
                 //内置函数值
                 value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
-                valuesBuilder.append(value);
+                builder.append(value);
             }else{
                 insertColumns.add(key);
                 //format(valuesBuilder, value);
-                valuesBuilder.append(write(runtime, null, value, false));
+                builder.append(write(runtime, null, value, false));
             }
         }
-        valuesBuilder.append(")");
-        builder.append(valuesBuilder);
+        builder.append(")");
         builder.append(insertFoot(configs, cols));
-        run.setBuilder(builder);
         run.setInsertColumns(insertColumns);
         return run;
     }
@@ -454,7 +614,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             return -1;
         }
         try {
-            session.execute(cmd);
+            ResultSet rs = session.execute(cmd);
+            if(rs.getErrorCode() != 0){
+                throw new SQLUpdateException(rs.getErrorMessage());
+            }
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
@@ -493,8 +656,15 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     }
 
 
-    public String insertHead(ConfigStore configs){
-        return "INSERT ";
+    public String insertHead(ConfigStore configs, Table table, Object value){
+        StringBuilder builder = new StringBuilder();
+        builder.append("INSERT ");
+        if(table instanceof VertexTable || value instanceof VertexRow){
+            builder.append("VERTEX ");
+        }else if(table instanceof EdgeTable || value instanceof EdgeRow){
+            builder.append("EDGE ");
+        }
+        return builder.toString();
     }
     public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
         return "";
@@ -668,7 +838,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         long millis = -1;
         try{
             SessionPool session = session(runtime);
-            session.execute(cmd);
+            ResultSet rs = session.execute(cmd);
+            if(rs.getErrorCode() != 0){
+                throw new SQLUpdateException(rs.getErrorMessage());
+            }
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
@@ -1467,7 +1640,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         long millis = -1;
         try{
             SessionPool session = session(runtime);
-            session.execute(cmd);
+            ResultSet rs = session.execute(cmd);
+            if(rs.getErrorCode() != 0){
+                throw new SQLUpdateException(rs.getErrorMessage());
+            }
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
