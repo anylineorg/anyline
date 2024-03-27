@@ -197,6 +197,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-data-graph</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-data-jdbc-antdb</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>

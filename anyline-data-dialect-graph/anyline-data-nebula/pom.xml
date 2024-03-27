@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-data</artifactId>
+            <artifactId>anyline-data-graph</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vesoft</groupId>

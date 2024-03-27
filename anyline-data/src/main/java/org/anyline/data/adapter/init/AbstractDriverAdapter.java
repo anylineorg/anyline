@@ -4682,22 +4682,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					schema = tmp.getSchema();
 				}
 			}
-			String origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
-			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE){
-				//先查出所有key并以大写缓存 用来实现忽略大小写
-				vertexTableMap(runtime, random, greedy, catalog, schema);
-				origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
-			}
-			if(null == origin){
-				origin = pattern;
-			}
-			search.setName(origin);
+			search.setName(pattern);
 			search.setCatalog(catalog);
 			search.setSchema(schema);
 
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryVertexTablesRun(runtime, greedy, catalog, schema, origin, types);
+				List<Run> runs = buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4709,14 +4700,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+					log.warn("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 				}
 			}
 
 			// 根据系统表查询失败后根据驱动内置接口补充
 			if(list.size() == 0) {
 				try {
-					list = vertexTables(runtime, true, list, catalog, schema, origin, types);
+					list = vertexTables(runtime, true, list, catalog, schema, pattern, types);
 					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
 					if(!greedy){
 						int size = list.size();
@@ -4731,7 +4722,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}else {
-						log.warn("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+						log.warn("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, pattern, e.toString());
 					}
 				}
 			}
@@ -4745,7 +4736,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			//表备注
 			if(!comment) {
 				try {
-					List<Run> runs = buildQueryVertexTablesCommentRun(runtime, catalog, schema, origin, types);
+					List<Run> runs = buildQueryVertexTablesCommentRun(runtime, catalog, schema, pattern, types);
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
@@ -4758,20 +4749,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-						log.info("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
+						log.info("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
 					}
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, origin, types, list.size(), System.currentTimeMillis() - fr);
+				log.info("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, list.size(), System.currentTimeMillis() - fr);
 			}
-			if(BasicUtil.isNotEmpty(origin)){
-				origin = origin.replace("%",".*");
+			if(BasicUtil.isNotEmpty(pattern)){
+				pattern = pattern.replace("%",".*");
 				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
 				for(T item:list){
 					String name = item.getName(greedy)+"";
-					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)){
+					if(RegularUtil.match(name.toUpperCase(), pattern.toUpperCase(), Regular.MATCH_MODE.MATCH)){
 						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
 							tmp.add(item);
 						}
