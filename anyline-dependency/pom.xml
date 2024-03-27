@@ -38,7 +38,7 @@
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
 		<jdbc-ojdbc.version>21.3.0.0</jdbc-ojdbc.version><!-- oracle -->
-		<jdbc-postgresql.version>42.4.1</jdbc-postgresql.version>
+		<jdbc-postgresql.version>42.4.4</jdbc-postgresql.version>
 		<jdbc-highgo.version>6.2.3</jdbc-highgo.version>
 		<jdbc-mariadb.version>2.4.4</jdbc-mariadb.version>
 		<jdbc-clickhouse.veriosn>0.4.6</jdbc-clickhouse.veriosn>
