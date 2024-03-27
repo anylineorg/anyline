@@ -1524,6 +1524,18 @@ public class DateUtil {
 		calendar.add(Calendar.MINUTE, value);
 		return calendar.getTime();
 	}
+	/**
+	 * 按秒加
+	 *
+	 * @param value  value
+	 * @return Date
+	 */
+	public static Date addSecond(int value) {
+		Calendar calendar = getCalendar();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.SECOND, value);
+		return calendar.getTime();
+	}
 
 	/**
 	 * 按分钟加, 指定日期
@@ -1536,6 +1548,19 @@ public class DateUtil {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
 		calendar.add(Calendar.MINUTE, value);
+		return calendar.getTime();
+	}
+	/**
+	 * 按秒加, 指定日期
+	 *
+	 * @param date  日期
+	 * @param value  value
+	 * @return Date
+	 */
+	public static Date addSecond(Date date, int value) {
+		Calendar calendar = getCalendar();
+		calendar.setTime(date);
+		calendar.add(Calendar.SECOND, value);
 		return calendar.getTime();
 	}
 	public static Date addMinute(String date, int value) {

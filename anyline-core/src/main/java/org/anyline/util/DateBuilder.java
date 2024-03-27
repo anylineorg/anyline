@@ -97,6 +97,10 @@ public class DateBuilder{
 		date = DateUtil.addMinute(date, qty);
 		return this;
 	}
+	public DateBuilder addSecond(int qty){
+		date = DateUtil.addSecond(date, qty);
+		return this;
+	}
 
 	/**
 	 * 是否在date之前
