@@ -8,6 +8,7 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.graph.adapter.init.AbstractGraphAdapter;
 import org.anyline.data.handler.StreamHandler;
+import org.anyline.data.nebula.metadata.EdgeType;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
@@ -16,6 +17,7 @@ import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.graph.GraphRow;
 import org.anyline.entity.graph.VertexRow;
 import org.anyline.exception.SQLQueryException;
@@ -28,13 +30,18 @@ import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.LogUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.*;
 
 @Repository("anyline.data.adapter.nebula")
@@ -244,7 +251,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public boolean supportInsertPlaceholder(){
-        return true;
+        return false;
     }
 
     /**
@@ -269,7 +276,101 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
-        return super.createInsertRun(runtime, dest, obj, configs, columns);
+        Run run = new TableRun(runtime, dest);
+        // List<Object> values = new ArrayList<Object>();
+        StringBuilder builder = new StringBuilder();
+        if(BasicUtil.isEmpty(dest)){
+            throw new org.anyline.exception.SQLException("未指定表");
+        }
+
+        checkName(runtime, null, dest);
+        PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
+
+        int from = 1;
+        StringBuilder valuesBuilder = new StringBuilder();
+        DataRow row = null;
+        if(obj instanceof Map){
+            if(!(obj instanceof DataRow)) {
+                obj = new DataRow((Map) obj);
+            }
+        }
+        if(obj instanceof DataRow){
+            row = (DataRow)obj;
+            if(row.hasPrimaryKeys() && null != generator){
+                generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+                //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
+            }
+        }else{
+            from = 2;
+            boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
+            LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
+            if(!create && null != generator){
+                generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
+                //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
+            }
+        }
+        run.setFrom(from);
+        /*确定需要插入的列*/
+        LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
+        if(null == cols || cols.size() == 0){
+            throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+ BeanUtil.object2json(obj)+"]");
+        }
+        boolean replaceEmptyNull = false;
+        if(obj instanceof DataRow){
+            row = (DataRow)obj;
+            replaceEmptyNull = row.isReplaceEmptyNull();
+        }else{
+            replaceEmptyNull = IS_REPLACE_EMPTY_NULL(configs);
+        }
+        //INSERT VERTEX t2 (name, age) VALUES "11":("n4", 15);
+        String head = insertHead(configs);
+        builder.append(head);
+        builder.append(keyword(dest)).append(" ");
+        name(runtime, builder, dest);
+        builder.append("(");
+        valuesBuilder.append(") VALUES (");
+        List<String> insertColumns = new ArrayList<>();
+        boolean first = true;
+        for(Column column:cols.values()){
+            if(!first){
+                builder.append(",");
+                valuesBuilder.append(",");
+            }
+            first = false;
+            String key = column.getName();
+            Object value = null;
+            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
+                value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
+            }else{
+                value = BeanUtil.getFieldValue(obj, key);
+            }
+
+            String str = null;
+            if(value instanceof String){
+                str = (String)value;
+            }
+            delimiter(builder, key);
+
+            //if (str.startsWith("${") && str.endsWith("}")) {
+            if (BasicUtil.checkEl(str)) {
+                value = str.substring(2, str.length()-1);
+                valuesBuilder.append(value);
+            }else if(value instanceof SQL_BUILD_IN_VALUE){
+                //内置函数值
+                value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
+                valuesBuilder.append(value);
+            }else{
+                insertColumns.add(key);
+                //format(valuesBuilder, value);
+                valuesBuilder.append(write(runtime, null, value, false));
+            }
+        }
+        valuesBuilder.append(")");
+        builder.append(valuesBuilder);
+        builder.append(insertFoot(configs, cols));
+        run.setBuilder(builder);
+        run.setInsertColumns(insertColumns);
+        return run;
     }
 
     /**
@@ -310,80 +411,94 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
         long cnt = 0;
-        Object value = run.getValue();
-        String tag = run.getTableName();
-        if(null == value){
-            if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
-                log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]", run.getTableName());
+        int batch = run.getBatch();
+        String action = "insert";
+        if(batch > 1){
+            action = "batch insert";
+        }
+        if(!run.isValid()){
+            if(log.isWarnEnabled() && IS_LOG_SQL(configs)){
+                log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
             }
             return -1;
         }
-      /*  NebulaRuntime rt = (NebulaRuntime) runtime;
-        SessionPool session = rt.getSession();
+        String cmd = run.getFinalInsert();
+        if(BasicUtil.isEmpty(cmd)){
+            log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
+            return -1;
+        }
+        if(null != configs){
+            configs.add(run);
+        }
+        List<Object> values = run.getValues();
         long fr = System.currentTimeMillis();
-        try {
-            if(value instanceof List){
-                List list = (List) value;
-                cons = database.getCollection(run.getTable(), list.get(0).getClass());
-                cnt = list.size();
-                cons.insertMany(list);
-            }else if(value instanceof DataSet){
-                DataSet set = (DataSet)value;
-                cons = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
-                cons.insertMany(set.getRows());
-                cnt = set.size();
-            }else if(value instanceof EntitySet){
-                List<Object> datas = ((EntitySet)value).getDatas();
-                cons = database.getCollection(run.getTable(), datas.get(0).getClass());
-                cons.insertMany(datas);
-                cnt = datas.size();
-            }else if(value instanceof Collection){
-                Collection items = (Collection) value;
-                List<Object> list = new ArrayList<>();
-                for(Object item:items){
-                    list.add(item);
-                    cnt ++;
-                }
-                cons = database.getCollection(run.getTable(), list.get(0).getClass());
-                cons.insertMany(list);
-            }else{
-                cons = database.getCollection(run.getTable(), value.getClass());
-                cons.insertOne(value);
-                cnt = 1;
+        /*执行命令*/
+        if (log.isInfoEnabled() && IS_LOG_SQL(configs)) {
+            if(batch > 1 && !IS_LOG_BATCH_SQL_PARAM(configs)){
+                log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), cmd, values.size());
+            }else {
+                log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
             }
+        }
+        long millis = -1;
 
-            long millis = System.currentTimeMillis() - fr;
+        boolean exe = true;
+        if(null != configs){
+            exe = configs.execute();
+        }
+        if(!exe){
+            return -1;
+        }
+        SessionPool session = session(runtime);
+        if(null == session){
+            return -1;
+        }
+        try {
+            session.execute(cmd);
+            millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
             if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}ms][collection:{}]", random, run.getTable(), millis, collection);
+                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener){
-                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
+                        dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
                     }
                 }
             }
-            if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[action:insert][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(cnt, 34));
+            if (!slow && log.isInfoEnabled() && IS_LOG_SQL_TIME(configs)) {
+                String qty = LogUtil.format(cnt, 34);
+                if(batch > 1){
+                    qty = LogUtil.format("约"+cnt, 34);
+                }
+                log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, qty);
             }
         }catch(Exception e){
-            if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+            if(IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                 e.printStackTrace();
             }
-            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
-                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e, e);
-                throw ex;
-            }else{
-                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-                    log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTable(), BeanUtil.object2json(data));
-                }
+            if(IS_LOG_SQL_WHEN_ERROR(configs)){
+                log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
             }
-        }*/
+            if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
+                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
+                ex.setCmd(cmd);
+                ex.setValues(values);
+                throw ex;
+            }
+
+        }
         return cnt;
     }
 
 
+    public String insertHead(ConfigStore configs){
+        return "INSERT ";
+    }
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+        return "";
+    }
 
     /* *****************************************************************************************************************
      * 													UPDATE
@@ -2427,7 +2542,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         for(DataRow row:set){
             String name = row.getName();
-            tables.put(name.toUpperCase(), (T)new VertexTable(name));
+            tables.put(name.toUpperCase(), (T)new org.anyline.data.nebula.metadata.Tag(name));
         }
         return tables;
     }
@@ -2452,7 +2567,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         for(DataRow row:set){
             String name = row.getName();
-            tables.add((T)new VertexTable(name));
+            tables.add((T)new org.anyline.data.nebula.metadata.Tag(name));
         }
         return tables;
     }
@@ -2668,7 +2783,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         for(DataRow row:set){
             String name = row.getName();
-            tables.put(name.toUpperCase(), (T)new EdgeTable(name));
+            tables.put(name.toUpperCase(), (T)new EdgeType(name));
         }
         return tables;
     }
@@ -2693,7 +2808,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         for(DataRow row:set){
             String name = row.getName();
-            tables.add((T)new EdgeTable(name));
+            tables.add((T)new EdgeType(name));
         }
         return tables;
     }
@@ -4663,6 +4778,11 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public String keyword(Table meta){
+        if(meta instanceof VertexTable){
+            return "TAG";
+        }else if(meta instanceof EdgeTable){
+            return "EDGE";
+        }
         return super.keyword(meta);
     }
 

@@ -9523,7 +9523,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	public String keyword(Table meta){
-		return  meta.getKeyword();
+		return meta.getKeyword();
 	}
 
 	/**

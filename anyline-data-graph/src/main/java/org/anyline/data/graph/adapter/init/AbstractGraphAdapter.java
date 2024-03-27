@@ -655,6 +655,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return cnt;
 	}
 
+	public String insertHead(ConfigStore configs){
+		return "INSERT INTO ";
+	}
+	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+		return "";
+	}
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -8688,12 +8694,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return null;
 	}
 
-	public String insertHead(ConfigStore configs){
-		return "INSERT INTO ";
-	}
-	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
-		return "";
-	}
 
 	/**
 	 * 生成insert sql的value部分,每个Entity(每行数据)调用一次
