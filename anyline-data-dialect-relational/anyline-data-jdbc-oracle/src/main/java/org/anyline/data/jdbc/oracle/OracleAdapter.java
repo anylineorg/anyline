@@ -1739,7 +1739,11 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+		List<Run> runs = super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+		for(Run run:runs){
+			run.getBuilder().append(" AND M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')");
+		}
+		return runs;
 	}
 
 	/**
@@ -1755,7 +1759,11 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
+		List<Run> runs = super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
+		for(Run run:runs){
+			run.getBuilder().append(" AND OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')");
+		}
+		return runs;
 	}
 
 	/**
@@ -2381,7 +2389,13 @@ public class OracleAdapter extends OracleGenusAdapter implements JDBCAdapter, In
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, table, metadata);
+		List<Run> runs = super.buildQueryColumnsRun(runtime, table, metadata);
+		if(!metadata){
+			for(Run run:runs){
+				run.getBuilder().append(" AND M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')");
+			}
+		}
+		return runs;
 	}
 
 	/**

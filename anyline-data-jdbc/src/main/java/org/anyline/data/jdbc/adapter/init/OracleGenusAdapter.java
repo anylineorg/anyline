@@ -1895,7 +1895,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, M.CREATED AS CREATE_TIME, M.LAST_DDL_TIME AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.COMMENTS\n");
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
-        builder.append("WHERE M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS') AND M.OBJECT_TYPE IN('TABLE','VIEW')");
+        builder.append("WHERE M.OBJECT_TYPE IN('TABLE','VIEW')");
         if(BasicUtil.isNotEmpty(schema)){
             builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
         }
@@ -1935,7 +1935,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')\n");
+        builder.append("SELECT * FROM ALL_TAB_COMMENTS WHERE 1=1 \n");
         if(BasicUtil.isNotEmpty(schema)){
             builder.append(" AND OWNER = '").append(schema.getName()).append("'");
         }
@@ -2587,14 +2587,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         }else{
             builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
             builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
-            builder.append("WHERE M.OWNER NOT IN('CTXSYS','EXFSYS','WMSYS','MDSYS','SYSTEM','OLAPSYS','SYSMAN','APEX_030200','SYS')\n");
+            builder.append("WHERE 1=1\n");
             if (BasicUtil.isNotEmpty(name)) {
                 builder.append("AND M.TABLE_NAME = '").append(name).append("'");
             }
             if(BasicUtil.isNotEmpty(schema)){
                 builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
             }
-            builder.append(" ORDER BY M.TABLE_NAME");
+            //builder.append(" ORDER BY M.TABLE_NAME");
         }
         return runs;
     }
