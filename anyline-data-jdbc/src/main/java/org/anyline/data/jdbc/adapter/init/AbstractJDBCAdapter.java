@@ -602,8 +602,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			return -1;
 		}
-		String sql = run.getFinalInsert();
-		if(BasicUtil.isEmpty(sql)){
+		String cmd = run.getFinalInsert();
+		if(BasicUtil.isEmpty(cmd)){
 			log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
 			return -1;
 		}
@@ -615,7 +615,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		/*执行SQL*/
 		if (log.isInfoEnabled() && IS_LOG_SQL(configs)) {
 			if(batch > 1 && !IS_LOG_BATCH_SQL_PARAM(configs)){
-				log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), sql, values.size());
+				log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), cmd, values.size());
 			}else {
 				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
@@ -636,7 +636,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		try {
 			if(batch > 1){
-				cnt = batch(jdbc, sql, batch, run.getVol(), values);
+				cnt = batch(jdbc, cmd, batch, run.getVol(), values);
 			}else {
 				//是否支持返回自增值
 				if(IS_KEY_HOLDER_IDENTITY(configs)){
@@ -648,9 +648,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 							PreparedStatement ps = null;
 							if (null != pks && pks.length > 0) {
 								//返回多个值
-								ps = con.prepareStatement(sql, pks);
+								ps = con.prepareStatement(cmd, pks);
 							} else {
-								ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+								ps = con.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS);
 							}
 							int idx = 0;
 							if (null != values) {
@@ -664,9 +664,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					}, keyholder);
 				}else{
 					if (null != values && !values.isEmpty()) {
-						cnt = jdbc.update(sql, values.toArray());
+						cnt = jdbc.update(cmd, values.toArray());
 					}else {
-						cnt = jdbc.update(sql);
+						cnt = jdbc.update(cmd);
 					}
 				}
 			}
@@ -678,7 +678,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					slow = true;
 					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.INSERT, IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
-						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
+						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
 					}
 				}
 			}
@@ -699,7 +699,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			if(IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
 				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
-				ex.setCmd(sql);
+				ex.setCmd(cmd);
 				ex.setValues(values);
 				throw ex;
 			}
