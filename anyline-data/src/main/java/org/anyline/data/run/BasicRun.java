@@ -70,6 +70,7 @@ public abstract class BasicRun implements Run {
 	protected List<String> queryColumns;	//查询列
 	protected List<String> excludeColumn;  //不查询列
 	protected int from = 1;
+	protected long rows = -1;
 	protected boolean supportBr = true;
 
 	protected DataRuntime runtime;
@@ -87,6 +88,17 @@ public abstract class BasicRun implements Run {
 	@Override
 	public Run setRuntime(DataRuntime runtime){
 		this.runtime = runtime;
+		return this;
+	}
+
+	@Override
+	public long getRows() {
+		return rows;
+	}
+
+	@Override
+	public Run setRows(long rows) {
+		this.rows = rows;
 		return this;
 	}
 

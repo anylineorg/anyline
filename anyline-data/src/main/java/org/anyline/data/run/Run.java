@@ -97,6 +97,19 @@ public interface Run {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	RunValue addValues(Compare compare, Column column, Object obj, boolean split);
+
+	/**
+	 * 设置行数
+	 * @param rows 行
+	 * @return this
+	 */
+	Run setRows(long rows);
+
+	/**
+	 * 获取行数
+	 * @return 未设置行数的返回-1
+	 */
+	long getRows();
 	Run addValue(RunValue value);
 	Run addOrders(OrderStore orderStore);
 	Run addOrder(Order order);
