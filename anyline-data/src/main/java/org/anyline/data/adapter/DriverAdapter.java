@@ -6374,4 +6374,13 @@ public interface DriverAdapter {
 	 * @return String
 	 */
 	String objectName(DataRuntime runtime, String name);
+
+	/**
+	 * 比较运算符在不同数据库的区别
+	 * @param compare Compare
+	 * @return sql
+	 */
+	default String cmd(Compare compare){
+		return compare.getCmd();
+	}
 }
