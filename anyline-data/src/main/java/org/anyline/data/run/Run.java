@@ -57,6 +57,12 @@ public interface Run {
 	 
 	void setConfigStore(ConfigStore configs);
 	ConfigStore getConfigs() ;
+
+	/**
+	 * 过滤条件是否为空
+	 * @return boolean
+	 */
+	boolean isEmptyCondition();
 	 
  
 	/** 
