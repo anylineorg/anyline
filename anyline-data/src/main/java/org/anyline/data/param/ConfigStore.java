@@ -191,6 +191,10 @@ public interface ConfigStore {
 	List<Object> getConfigValues(String var, Compare compare);
 	Object getConfigValue(String var, Compare compare);
 
+	/**
+	 * 如果数据库中存在相同数据(根据overrideBy)是否覆盖 true或false会检测数据库 null不检测
+	 * @return Boolean
+	 */
 	Boolean override();
 	List<String> overrideByColumns();
 	Constraint overrideByConstraint();
