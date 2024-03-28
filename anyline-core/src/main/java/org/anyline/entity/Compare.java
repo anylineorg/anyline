@@ -286,6 +286,17 @@ public enum Compare {
             return false;
         }
     },
+    EMPTY(91, "空",""," IS EMPTY ")			{
+        public boolean compare(Object value, Object target) {
+            if(BasicUtil.isEmpty(value, true)){
+                return true;
+            }
+            return false;
+        }
+        public boolean isMultipleValue(){
+            return false;
+        }
+    },
     NOT_EQUAL(110, "不等于","nin"," != ? ")		{
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
@@ -390,6 +401,17 @@ public enum Compare {
     NOT_NULL(190, "非空",""," IS NOT NULL ")			{
         public boolean compare(Object value, Object target) {
             if(null == value){
+                return false;
+            }
+            return true;
+        }
+        public boolean isMultipleValue(){
+            return false;
+        }
+    },
+    NOT_EMPTY(191, "非空",""," IS NOT EMPTY ")			{
+        public boolean compare(Object value, Object target) {
+            if(BasicUtil.isEmpty(value, true)){
                 return false;
             }
             return true;
