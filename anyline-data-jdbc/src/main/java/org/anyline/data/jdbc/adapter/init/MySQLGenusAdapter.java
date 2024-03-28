@@ -6528,18 +6528,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter implements I
 	 * @param meta BaseMetadata
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param override 如果meta中有值，是否覆盖
+     * @param overrideMeta 如果meta中有值，是否覆盖
+     * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
-        if(override || empty(meta.getSchema())) {
-            meta.setSchema(catalog);
-        }
-    }
-    @Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
-        if(empty(meta.getSchema())) {
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+        if(overrideMeta || empty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
     }

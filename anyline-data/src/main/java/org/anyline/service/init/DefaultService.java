@@ -127,7 +127,35 @@ public class DefaultService<E> implements AnylineService<E> {
         return EntityAdapterProxy.column2param(columns);
     }
 
-    
+
+    /**
+     * 按条件查询
+     *
+     * @param prepare    构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+     * @param configs    根据http等上下文构造查询条件
+     * @param obj        根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param conditions 固定查询条件
+     * @return DataSet
+     */
+    @Override
+    public List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+        List<Map<String, Object>> maps = null;
+        conditions = BasicUtil.compress(conditions);
+        try {
+            configs = append(configs, obj);
+            if(null != prepare.getRuntime()){
+                maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
+            }else {
+                maps = dao.maps(prepare, configs, conditions);
+            }
+        } catch (Exception e) {
+            maps = new ArrayList<Map<String, Object>>();
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+                throw e;
+            }
+        }
+        return maps;
+    }
     @Override 
     public List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
@@ -178,6 +206,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return maps;
     }
+
 
     @Override 
     public DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {

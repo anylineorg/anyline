@@ -685,7 +685,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().select(runtime, random, system, table, configs, run);
-
 	}
 
 	/**

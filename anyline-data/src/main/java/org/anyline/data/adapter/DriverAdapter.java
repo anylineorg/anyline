@@ -1614,13 +1614,16 @@ public interface DriverAdapter {
 	 * @param meta BaseMetadata
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param override 如果meta中有值，是否覆盖
+     * @param overrideMeta 如果meta中有值，是否覆盖
+     * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
 	 * @param <T> BaseMetadata
 	 */
-	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
 		if(supportCatalog()) {
-			if (override || empty(meta.getCatalog())) {
+			if (overrideMeta || empty(meta.getCatalog())) {
 				meta.setCatalog(catalog);
+			}
+			if (overrideRuntime || BasicUtil.isEmpty(runtime.getCatalog())) {
 				runtime.setCatalog(catalog);;
 			}
 		}else{
@@ -1628,28 +1631,10 @@ public interface DriverAdapter {
 			runtime.setCatalog(null);
 		}
 		if(supportSchema()) {
-			if (override || empty(meta.getSchema())) {
+			if (overrideMeta || empty(meta.getSchema())) {
 				meta.setSchema(schema);
-				runtime.setSchema(schema);
 			}
-		}else{
-			meta.setSchema((Schema) null);
-			runtime.setSchema(null);
-		}
-	}
-	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
-		if(supportCatalog()) {
-			if (empty(meta.getCatalog())) {
-				meta.setCatalog(catalog);
-				runtime.setCatalog(catalog);
-			}
-		}else{
-			meta.setCatalog((Catalog) null);
-			runtime.setCatalog(null);
-		}
-		if(supportSchema()){
-			if(empty(meta.getSchema())) {
-				meta.setSchema(schema);
+			if (overrideRuntime || BasicUtil.isEmpty(runtime.getSchema())) {
 				runtime.setSchema(schema);
 			}
 		}else{
@@ -1658,6 +1643,17 @@ public interface DriverAdapter {
 		}
 	}
 
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param <T> BaseMetadata
+	 */
+	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
+	}
 	/**
 	 * 在调用jdbc接口前处理业务中的catalog,schema,部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
 	 * @param catalog catalog

@@ -4394,7 +4394,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 			// 根据驱动内置接口补充
 			// 再根据metadata解析 SELECT * FROM T WHERE 1=0
-			if (null == columns || columns.size() == 0) {
+			if (null == columns || columns.isEmpty()) {
 				try {
 					List<Run> runs = buildQueryColumnsRun(runtime, table, true);
 					if (null != runs) {
@@ -10728,7 +10728,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(!process[0]){
 				mid[0] = System.currentTimeMillis();
 			}
-			if(metadatas.isEmpty() && IS_CHECK_EMPTY_SET_METADATA(configs)){
+			if(!system && metadatas.isEmpty() && IS_CHECK_EMPTY_SET_METADATA(configs)){
 				metadatas.putAll(metadata(runtime, new DefaultTextPrepare(sql), false));
 			}
 			boolean slow = false;
@@ -10852,7 +10852,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			} catch (Exception e) {
 				log.warn("[check schema][result:fail][exception:{}]", e.toString());
 			}
-			correctSchemaFromJDBC(runtime, meta, catalog, schema);
+			correctSchemaFromJDBC(runtime, meta, catalog, schema, true, true);
 			meta.setCheckSchemaTime(new Date());
 		}else{
 			meta.setCatalog(catalog);

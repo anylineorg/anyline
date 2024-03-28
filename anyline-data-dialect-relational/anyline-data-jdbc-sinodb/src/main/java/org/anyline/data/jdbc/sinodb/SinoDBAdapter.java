@@ -5988,12 +5988,13 @@ public class SinoDBAdapter extends InformixGenusAdapter implements JDBCAdapter, 
      * @param meta BaseMetadata
      * @param catalog catalog
      * @param schema schema
-     * @param override 如果meta中有值，是否覆盖
+     * @param overrideMeta 如果meta中有值，是否覆盖
+     * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
      * @param <T> BaseMetadata
      */
     @Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
-        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, override);
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
     @Override
     public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){

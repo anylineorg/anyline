@@ -1865,32 +1865,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-//		builder.append("SELECT T.TABLE_NAME, T.OWNER, TC.COMMENTS \n");
-//		builder.append("FROM SYS.ALL_ALL_TABLES T \n");
-//		builder.append("LEFT JOIN SYS.ALL_TAB_COMMENTS TC  ON  TC.OWNER  = T.OWNER  AND TC.TABLE_NAME  = T.TABLE_NAME \n");
-//		builder.append("WHERE T.IOT_NAME IS NULL  AND T.NESTED = 'NO'  AND T.SECONDARY = 'N' ");
-//		if(BasicUtil.isNotEmpty(schema)){
-//			builder.append("AND T.OWNER = '").append(schema.getName()).append("'");
-//		}
-//		if(BasicUtil.isNotEmpty(pattern)){
-//			builder.append(" AND T.TABLE_NAME LIKE '").append(pattern).append("'");
-//		}
-//
-//		runs.add(run);
-//		return runs;
-        // jack 2023年5月2日 19点55分 由于之前查询表名的方式会意外失效，特进行调整,兼容table和view
-        //增加types列用于后期扩展
-/*
-		builder.append(" SELECT * FROM (" );
-		builder.append(" SELECT A.TABLE_NAME, B.COMMENTS, 'TABLE' TABLE_TYPE FROM USER_TABLES A, USER_TAB_COMMENTS B WHERE A.TABLE_NAME = B.TABLE_NAME");
-		builder.append(" UNION ALL ");
-		builder.append(" SELECT A.VIEW_NAME, B.COMMENTS, 'VIEW'  TABLE_TYPE FROM USER_VIEWS  A, USER_TAB_COMMENTS B WHERE A.VIEW_NAME = B.TABLE_NAME");
-		builder.append(" ) T WHERE 1=1");
-
-		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
-		}
-*/
         //需要跨schema查询
         builder.append("SELECT M.OWNER AS TABLE_SCHEMA, M.OBJECT_NAME AS TABLE_NAME, M.OBJECT_TYPE AS TABLE_TYPE, M.CREATED AS CREATE_TIME, M.LAST_DDL_TIME AS UPDATE_TIME, M.TEMPORARY AS IS_TEMPORARY, F.COMMENTS\n");
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
@@ -2574,7 +2548,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
         String name = null;
         if(null != table){
             name = table.getName();
-            catalog = table.getCatalog();
             schema = table.getSchema();
         }
         Run run = new SimpleRun(runtime);
@@ -6747,16 +6720,26 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter implements 
 	 * @param meta BaseMetadata
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param override 如果meta中有值，是否覆盖
+     * @param overrideMeta 如果meta中有值，是否覆盖
+     * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean override){
-        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, override);
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param <T> BaseMetadata
+	 */
 	@Override
 	public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
-		super.correctSchemaFromJDBC(runtime, meta, catalog, schema);
+		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 
 	/**

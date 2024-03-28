@@ -791,6 +791,51 @@ public interface AnylineService<E>{
 	}
 
 	/**
+	 *
+	 * @param prepare 构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
+	 * @param configs 过滤条件及相关配置
+	 * @param obj 根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions  简单过滤条件
+	 * @return DataSet
+	 */
+	List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs){
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return maps(prepare, configs, obj, conditions);
+	}
+	default List<Map<String, Object>> maps(RunPrepare prepare, Object obj, String ... conditions){
+		return maps(prepare, (ConfigStore) null, obj, conditions);
+	}
+	default void maps(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		querys(prepare, configs, obj, conditions);
+	}
+	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return maps(prepare, configs, obj, conditions);
+	}
+
+	default List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions){
+		return maps(prepare, configs, null, conditions);
+	}
+	default List<Map<String, Object>> maps(RunPrepare prepare, String ... conditions){
+		return maps(prepare, (ConfigStore) null, null, conditions);
+	}
+	default void maps(RunPrepare prepare, StreamHandler handler, String ... conditions){
+		ConfigStore configs = new DefaultConfigStore();
+		configs.stream(handler);
+		maps(prepare, configs, null, conditions);
+	}
+	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, String ... conditions){
+		return maps(prepare, first, last, null, conditions);
+	}
+	/**
 	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
 	 * @param table 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
 	 * @return List
