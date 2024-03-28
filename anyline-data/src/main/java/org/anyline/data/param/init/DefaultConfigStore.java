@@ -45,7 +45,6 @@ import java.util.*;
  * 
  */ 
 public class DefaultConfigStore implements ConfigStore {
-	private static final long serialVersionUID = -2098827041540802313L;
 	protected Class clazz										    ;
 	protected StreamHandler handler								    ; // 流式读取时handler
 	protected ConfigChain chain										; // 条件集合
@@ -617,7 +616,7 @@ public class DefaultConfigStore implements ConfigStore {
 			if(BasicUtil.isNotEmpty(prefix)){
 				column = prefix + "." + var;
 			}
-			String txt = column + compare.getSQL();
+			String txt = column + compare.getCmd();
 			return and(swt, txt);
 		}
 
@@ -772,7 +771,7 @@ public class DefaultConfigStore implements ConfigStore {
 			if(BasicUtil.isNotEmpty(prefix)){
 				column = prefix + "." + var;
 			}
-			String txt = column + compare.getSQL();
+			String txt = column + compare.getCmd();
 			return ands(swt, txt);
 		}
 
@@ -1010,7 +1009,7 @@ public class DefaultConfigStore implements ConfigStore {
 						if(BasicUtil.isNotEmpty(prefix)){
 							column = prefix + "." + var;
 						}
-						String txt = column + compare.getSQL();
+						String txt = column + compare.getCmd();
 						conf.setText(txt);
 					}else {
 						conf.setCompare(compare);
@@ -1096,7 +1095,7 @@ public class DefaultConfigStore implements ConfigStore {
 					if(BasicUtil.isNotEmpty(prefix)){
 						column = prefix + "." + var;
 					}
-					String txt = column + compare.getSQL();
+					String txt = column + compare.getCmd();
 					conf.setText(txt);
 				}else {
 					conf.setCompare(compare);
