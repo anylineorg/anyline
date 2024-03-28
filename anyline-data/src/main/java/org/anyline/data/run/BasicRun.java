@@ -78,6 +78,13 @@ public abstract class BasicRun implements Run {
 	protected String delimiterTo;
 
 	protected String action;
+	protected boolean emptyCondition = true;
+
+	@Override
+	public boolean isEmptyCondition() {
+		return emptyCondition;
+	}
+
 	public DriverAdapter adapter() {
 		if(null != runtime) {
 			return runtime.getAdapter();
