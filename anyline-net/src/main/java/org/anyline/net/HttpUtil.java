@@ -724,20 +724,21 @@ public class HttpUtil {
 	/**
 	 * url参数编码
 	 * @param src 原文
+	 * @param enable 转换成是否可访问格式
 	 * @param cn 是否编译中文
 	 * @return String
 	 */
-	public static String encode(String src, boolean cn){
+	public static String encode(String src, boolean enable, boolean cn){
+		String result = src;
 		if(cn){
 			try {
-				return URLEncoder.encode(src, "UTF-8");
+				result = URLEncoder.encode(src, "UTF-8");
 			}catch (Exception e){
 				return src;
 			}
 		}else{
-			String result = src;
 			result = result
-					.replace(" ","")
+					.replace(" ","+")
 					.replace("\n","")
 					.replace("\r","")
 					.replace("\t","")
@@ -768,7 +769,13 @@ public class HttpUtil {
 					.replace("'","%27")
 					.replace(":","%3A")
 					.replace("\"","%22");
-			return result;
 		}
+		if(enable) {
+			result = result
+				.replace("%3A", ":")
+				.replace("%2F", "/");
+		}
+		result = result.replace("+", "%20"); //原来的 空格 被转成了 + 再把 + 转成 %20
+		return result;
 	}
 }

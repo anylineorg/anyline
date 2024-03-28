@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.util.*;
@@ -230,7 +229,6 @@ public class HttpClient {
 		if(null != finalUrl && finalUrl.startsWith("//")){
 			finalUrl = "http:"+url;
 		}
-
 		finalUrl = HttpUtil.mergeParam(finalUrl, task.getParams());
 		// DownloadProgress progress = task.getProgress();
 		File dst = task.getLocal();
