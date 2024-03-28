@@ -198,7 +198,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			run.setRows(list.size());
 		}else {
 			run = createInsertRun(runtime, dest, obj, configs, columns);
-			run.setRows(0);
+			run.setRows(1);
 		}
 		convert(runtime, configs, run);
 		return run;
@@ -8730,19 +8730,6 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		return builder.toString();
 	}
-	public String getPrimayKey(Object obj){
-		String key = null;
-		if(obj instanceof Collection){
-			obj = ((Collection)obj).iterator().next();
-		}
-		if(obj instanceof DataRow){
-			key = ((DataRow)obj).getPrimaryKey();
-		}else{
-			key = EntityAdapterProxy.primaryKey(obj.getClass(), true);
-		}
-		return key;
-	}
-
 
 	/**
 	 * 拼接字符串
