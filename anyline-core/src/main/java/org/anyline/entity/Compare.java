@@ -160,7 +160,7 @@ public enum Compare {
     },
     START_WITH(51, "like ?%",""," LIKE ")		{
         public int getCode(){return 51;}
-        public String getSQL(){return " LIKE ";}
+        public String getCmd(){return " LIKE ";}
         public String getName(){return "like ?%";}
         public boolean compare(Object value, Object target) {
             if(null == target || null == value){
@@ -288,7 +288,7 @@ public enum Compare {
     },
     EMPTY(91, "空",""," IS EMPTY ")			{
         public boolean compare(Object value, Object target) {
-            if(BasicUtil.isEmpty(value, true)){
+            if(BasicUtil.isEmpty(true, value)){
                 return true;
             }
             return false;
@@ -411,7 +411,7 @@ public enum Compare {
     },
     NOT_EMPTY(191, "非空",""," IS NOT EMPTY ")			{
         public boolean compare(Object value, Object target) {
-            if(BasicUtil.isEmpty(value, true)){
+            if(BasicUtil.isEmpty(true, value)){
                 return false;
             }
             return true;
@@ -449,12 +449,12 @@ public enum Compare {
 
     private final int code;
     private final String operator;
-    private final String sql;
+    private final String cmd;
     private final String name;
-    Compare(int code, String name, String operator, String sql){
+    Compare(int code, String name, String operator, String cmd){
         this.code = code;
         this.name = name;
-        this.sql = sql;
+        this.cmd = cmd;
         this.operator = operator;
     }
 
@@ -463,8 +463,8 @@ public enum Compare {
      * @return boolean
      */
     public abstract boolean isMultipleValue();
-    public String getSQL(){
-        return sql;
+    public String getCmd(){
+        return cmd;
     }
     public String getOperator(){
         return operator;
@@ -477,8 +477,8 @@ public enum Compare {
     }
 
     public enum EMPTY_VALUE_SWITCH {
-          IGNORE   //忽略当前条件  其他条件继续执行
-       , BREAK	   //中断执行 整个SQL不执行
+         IGNORE   //忽略当前条件  其他条件继续执行
+       , BREAK	   //中断执行 整个命令不执行
        , NULL	   //生成 WHERE ID IS NULL
        , SRC	   //原样处理 会生成 WHERE ID = NULL
        , NONE	   //根据条件判断 ++或+
