@@ -195,8 +195,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(!list.isEmpty()){
 				run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 			}
+			run.setRows(list.size());
 		}else {
 			run = createInsertRun(runtime, dest, obj, configs, columns);
+			run.setRows(0);
 		}
 		convert(runtime, configs, run);
 		return run;

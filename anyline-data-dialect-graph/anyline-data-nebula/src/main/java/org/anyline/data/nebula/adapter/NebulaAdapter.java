@@ -2,6 +2,7 @@ package org.anyline.data.nebula.adapter;
 
 import com.vesoft.nebula.Vertex;
 import com.vesoft.nebula.client.graph.SessionPool;
+import com.vesoft.nebula.client.graph.data.DateWrapper;
 import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
 import org.anyline.adapter.KeyAdapter;
@@ -40,9 +41,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.*;
 
 @Repository("anyline.data.adapter.nebula")
@@ -601,7 +600,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             }
         }
         long millis = -1;
-
         boolean exe = true;
         if(null != configs){
             exe = configs.execute();
@@ -615,9 +613,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         }
         try {
             ResultSet rs = session.execute(cmd);
-            if(rs.getErrorCode() != 0){
+            if(!rs.isSucceeded()){
                 throw new SQLUpdateException(rs.getErrorMessage());
             }
+            cnt = run.getRows();
             millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
@@ -839,7 +838,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         try{
             SessionPool session = session(runtime);
             ResultSet rs = session.execute(cmd);
-            if(rs.getErrorCode() != 0){
+            if(!rs.isSucceeded()){
                 throw new SQLUpdateException(rs.getErrorMessage());
             }
             millis = System.currentTimeMillis() - fr;
@@ -1341,11 +1340,17 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                     }else if(wrapper.isLong()){
                         top.put(col, wrapper.asLong());
                     }else if(wrapper.isDate()){
-                        top.put(col, wrapper.asDate());
+                        DateWrapper date = wrapper.asDate();
+                        LocalDate local = LocalDate.of(date.getYear(), date.getMonth(), date.getDay());
+                        top.put(col, local);
+                    }else if(wrapper.isTime()){
+                        top.put(col, wrapper.asTime().getLocalTime());
                     }else if(wrapper.isDateTime()){
-                        top.put(col, wrapper.asDateTime());
+                        top.put(col, wrapper.asDateTime().getLocalDateTime());
                     }else if(wrapper.isList()){
                         top.put(col, wrapper.asList());
+                    }else{
+                       top.put(col, wrapper);
                     }
                 }
                 set.addRow(top);
@@ -1641,7 +1646,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         try{
             SessionPool session = session(runtime);
             ResultSet rs = session.execute(cmd);
-            if(rs.getErrorCode() != 0){
+            if(!rs.isSucceeded()){
                 throw new SQLUpdateException(rs.getErrorMessage());
             }
             millis = System.currentTimeMillis() - fr;
