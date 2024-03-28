@@ -586,7 +586,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
-			row.put(row.getPrimaryKey(), value);
+			row.setPrimaryValue(value);
 		}else{
 			Column key = EntityAdapterProxy.primaryKey(obj.getClass());
 			Field field = EntityAdapterProxy.field(obj.getClass(), key);
@@ -1039,10 +1039,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run.setConfigStore(configs);
 			run.init();
 			run.appendCondition();
-
 		}
 		run.setUpdateColumns(updateColumns);
-
 		return run;
 	}
 	@Override
