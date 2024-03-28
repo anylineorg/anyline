@@ -17,6 +17,7 @@
 
 package org.anyline.data.prepare.auto.init;
 
+import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.Config;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.auto.AutoCondition;
@@ -127,8 +128,9 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	@SuppressWarnings({"rawtypes","unchecked" })
 	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare){
 		StringBuilder builder = new StringBuilder();
-		String delimiterFr = runtime.getAdapter().getDelimiterFr();
-		String delimiterTo = runtime.getAdapter().getDelimiterTo();
+		DriverAdapter adapter = runtime.getAdapter();
+		String delimiterFr = adapter.getDelimiterFr();
+		String delimiterTo = adapter.getDelimiterTo();
 		boolean empty = BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();
 		if(compareCode == -1){
@@ -156,7 +158,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		}
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
 		if(compareCode >=60 && compareCode <= 62){				// FIND_IN_SET(?, CODES)
-			val = runtime.getAdapter().createConditionFindInSet(runtime, builder, col_builder.toString(), compare, val);
+			val = adapter.createConditionFindInSet(runtime, builder, col_builder.toString(), compare, val);
 		}else{
 			builder.append(col_builder);
 			if(compareCode == 10){
@@ -171,7 +173,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 					}
 				}
 				if(null != static_value){
-					builder.append(" = ").append(static_value);
+					builder.append(adapter.cmd(Compare.EQUAL)).append(static_value);
 					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				}else if("NULL".equals(v)){
 					builder.append(" IS NULL");
@@ -184,10 +186,10 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 						builder.append(" IS NULL");
 						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 					}else{
-						builder.append(compare.getSQL());
+						builder.append(adapter.cmd(compare));
 					}
 				}else{
-					builder.append(compare.getSQL());
+					builder.append(adapter.cmd(compare));
 				}
 				/*if(null == v || "NULL".equals(v.toString())){
 					builder.append(" IS NULL");
@@ -198,11 +200,11 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 					builder.append(compare.getSQL());
 				}*/
 			}else if(compareCode == 20){ 							// > ?
-				builder.append(compare.getSQL());
+				builder.append(adapter.cmd(compare));
 			}else if(compareCode == 21){ 							// >= ?
-				builder.append(compare.getSQL());
+				builder.append(adapter.cmd(compare));
 			}else if(compareCode == 30){ 							// < ?
-				builder.append(compare.getSQL());
+				builder.append(adapter.cmd(compare));
 			}else if(compareCode == 110){ 							// <> ?
 				Object v = getValue(val);
 				if("NULL".equals(v.toString())){
@@ -216,20 +218,20 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 						builder.append(" IS NOT NULL");
 						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 					}else{
-						builder.append(compare.getSQL());
+						builder.append(adapter.cmd(compare));
 					}
 				}else{
-					builder.append(compare.getSQL());
+					builder.append(adapter.cmd(compare));
 				}
 			}else if(compareCode == 31){ 							// <= ?
-				builder.append(compare.getSQL());
+				builder.append(adapter.cmd(compare));
 			}else if(compareCode == 80){ 							// BETWEEN ? AND ?
-				builder.append(compare.getSQL());
+				builder.append(adapter.cmd(compare));
 			}else if(compareCode == 40 || compareCode == 140){		// IN(?, ?, ?)
-				runtime.getAdapter().createConditionIn(runtime, builder, compare, val);
+				adapter.createConditionIn(runtime, builder, compare, val);
 			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
 					|| (compareCode >= 150 && compareCode <= 152)){ // NOT LIKE ?
-				RunValue rv = runtime.getAdapter().createConditionLike(runtime, builder, compare, val) ;
+				RunValue rv = adapter.createConditionLike(runtime, builder, compare, val) ;
 				if(rv.isPlaceholder()){
 					val = rv.getValue();
 				}else{
