@@ -233,9 +233,15 @@ public class TextRun extends BasicRun implements Run {
 		String txt = builder.toString();
 
 		String condition = conditionChain.getRunText(null, runtime);
-		boolean where = endWithWhere(txt); 
+		if(!condition.isEmpty()){
+			emptyCondition = false;
+		}
+		boolean where = endWithWhere(txt);
+		if(where){
+			emptyCondition = false;
+		}
 		if(!where && BasicUtil.isNotEmpty(condition)){
-			builder.append(" WHERE 1=1"); 
+			builder.append(" WHERE 1=1");
 		}
 		builder.append(condition);
 
