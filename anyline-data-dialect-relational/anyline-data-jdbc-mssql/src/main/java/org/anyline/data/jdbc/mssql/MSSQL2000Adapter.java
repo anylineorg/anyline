@@ -275,8 +275,10 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter, Initi
         runs.add(run);
         StringBuilder builder = run.getBuilder();
 		builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
-				.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0\n")
-				.append("WHERE 1=1 ");
+				.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0 \n");
+        if(BasicUtil.isNotEmpty(pattern) || BasicUtil.isNotEmpty(schema)){
+            builder.append("WHERE");
+        }
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND M.NAME LIKE '").append(pattern).append("'");
 		}
