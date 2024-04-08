@@ -1,5 +1,5 @@
-版本更新中(分离java/spring/solon)     
-可编译版本请下载这个https://gitee.com/anyline/anyline_871  
+8.7.2后分离了3个环境(Java/Spring/Solon)比之前的版本多一个依赖  
+具体参考[【8.7.2更新】](http://doc.anyline.org/aa/2f_3951)  
 ***详细说明请参考:***  
 [http://doc.anyline.org/](http://doc.anyline.org/)  
 开发测试来环境请使用[【8.7.2-SNAPSHOT】](http://doc.anyline.org/aa/aa_3702)版本 语法测试请参考[【各数据库模拟环境】](http://run.anyline.org/)       
