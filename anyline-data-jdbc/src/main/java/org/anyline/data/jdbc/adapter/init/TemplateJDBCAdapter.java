@@ -1,0 +1,181 @@
+package org.anyline.data.jdbc.adapter.init;
+
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.runtime.DataRuntime;
+import org.anyline.entity.DataRow;
+import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Column;
+import org.anyline.metadata.Table;
+import org.anyline.metadata.type.TypeMetadata;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.LinkedHashMap;
+
+//
+public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
+
+/*    public DatabaseType type(){
+        return DatabaseType.NONE;
+    }
+
+    public TemplateJDBCAdapter(){
+        super();
+        delimiterFr = "`";
+        delimiterTo = "`";
+        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
+            reg(alias);
+        }
+        for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
+			reg(alias);
+			alias(alias.name(), alias.standard());
+        }
+        for(MySQLWriter writer: MySQLWriter.values()){
+            reg(writer.supports(), writer.writer());
+        }
+        for(MySQLReader reader: MySQLReader.values()){
+            reg(reader.supports(), reader.reader());
+        }
+    }
+    
+    private String delimiter;
+*/
+
+    /* *****************************************************************************************************************
+     *
+     * 													复制过程
+     * 1.添加TypeMetadataAlias
+     * 2.如果有类型转换需要添加writer reader
+     * 3.放工以上注释
+     * 4.复制TemplateAdapter到这里
+     *
+     *  ***************************************************************************************************************/
+
+    /* *****************************************************************************************************************
+     *
+     * 														JDBC
+     *
+     *  ***************************************************************************************************************/
+
+    @Override
+    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+        super.checkSchema(runtime, datasource, meta);
+    }
+
+    @Override
+    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+        super.checkSchema(runtime, con, meta);
+    }
+    /**
+     * 根据运行环境识别 catalog与schema
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta BaseMetadata
+     * @param <T> BaseMetadata
+     */
+	@Override
+    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+        super.checkSchema(runtime, meta);
+    }
+
+	/**
+	 * 识别根据jdbc返回的catalog与schema, 部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
+	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
+	 * @param meta BaseMetadata
+	 * @param catalog catalog
+	 * @param schema schema
+     * @param overrideMeta 如果meta中有值，是否覆盖
+     * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
+	 * @param <T> BaseMetadata
+	 */
+	@Override
+    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+        super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
+    }
+
+	/**
+	 * 在调用jdbc接口前处理业务中的catalog, schema, 部分数据库(如mysql)业务系统与dbc标准可能不一致根据实际情况处理<br/>
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @return String[]
+	 */
+	@Override
+	public String[] correctSchemaFromJDBC(String catalog, String schema){
+		return super.correctSchemaFromJDBC(catalog, schema);
+	}
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 元数据长度列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta TypeMetadata
+     * @return String
+     */
+    @Override
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataLengthRefer(runtime, meta);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 元数据数字有效位数列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta TypeMetadata
+     * @return String
+     */
+    @Override
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataPrecisionRefer(runtime, meta);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 元数据数字小数位数列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta TypeMetadata
+     * @return String
+     */
+    @Override
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataScaleRefer(runtime, meta);
+    }
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+        return super.insertFoot(configs, columns);
+    }
+
+    /**
+     * 内置函数 多种数据库兼容时需要
+     * @param value SQL_BUILD_IN_VALUE
+     * @return String
+     */
+    @Override
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
+        return super.value(runtime, column, value);
+    }
+
+    /**
+     * 拼接字符串
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param args args
+     * @return String
+     */
+    @Override
+    public String concat(DataRuntime runtime, String... args) {
+        return super.concat(runtime, args);
+    }
+
+    /**
+     * 伪表
+     * @return String
+     */
+    protected String dummy(){
+        return super.dummy();
+    }
+    /* *****************************************************************************************************************
+     *
+     * 														具体数据库
+     *
+     *  ***************************************************************************************************************/
+}

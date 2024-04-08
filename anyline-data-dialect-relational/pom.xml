@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.anyline</groupId>
+		<artifactId>anyline-dependency</artifactId>
+		<version>8.7.2-SNAPSHOT</version>
+		<relativePath>../anyline-dependency/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>anyline-data-dialect-relational</artifactId>
+	<name>anyline-data-dialect-relational</name>
+	<packaging>pom</packaging>
+
+    <modules>
+		<module>anyline-data-jdbc-clickhouse</module>
+		<module>anyline-data-jdbc-cloudera</module>
+		<module>anyline-data-jdbc-cockroachdb</module>
+		<module>anyline-data-jdbc-couchdb</module>
+		<module>anyline-data-jdbc-db2</module>
+		<module>anyline-data-jdbc-derby</module>
+		<module>anyline-data-jdbc-dm</module>
+		<module>anyline-data-jdbc-doris</module>						<!--Apache Doris-->
+		<module>anyline-data-jdbc-edb</module>
+		<module>anyline-data-jdbc-gbase</module>						<!--南大通用-->
+		<module>anyline-data-jdbc-h2</module>
+		<module>anyline-data-jdbc-gaussdb</module>
+		<module>anyline-data-jdbc-hana</module>
+		<module>anyline-data-jdbc-highgo</module>						<!--瀚高-->
+		<module>anyline-data-jdbc-hive</module>
+		<module>anyline-data-jdbc-hyper</module>
+		<module>anyline-data-jdbc-informix</module>
+		<module>anyline-data-jdbc-ignite-thin</module>					<!--Apache Ignite-->
+		<module>anyline-data-jdbc-iotdb</module>						<!--Apache IoTDB-->
+		<module>anyline-data-jdbc-kingbase</module>						<!--人大金仓(oracle)-->
+		<module>anyline-data-jdbc-mariadb</module>
+		<module>anyline-data-jdbc-maxdb</module>						<!--MaxDB/SAP DB-->
+		<module>anyline-data-jdbc-mssql</module>
+		<module>anyline-data-jdbc-mysql</module>
+		<module>anyline-data-jdbc-opengauss</module>					<!--高斯-->
+		<module>anyline-data-jdbc-oracle</module>
+		<module>anyline-data-jdbc-oscar</module>						<!--神舟通用-->
+		<module>anyline-data-jdbc-postgresql</module>
+		<module>anyline-data-jdbc-rethinkdb</module>
+		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
+		<module>anyline-data-jdbc-sqlite</module>
+		<module>anyline-data-jdbc-sybase</module>
+		<module>anyline-data-jdbc-tidb</module>
+		<module>anyline-data-jdbc-voltdb</module>
+		<module>anyline-data-jdbc-xugu</module>							<!--虚谷-->
+		<module>anyline-data-jdbc-yugabyte</module>
+    </modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

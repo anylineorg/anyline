@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.anyline.data.nebula.adapter.NebulaAdapter,\
+org.anyline.data.nebula.datasource.NebulaDataSourceHolder,\
+org.anyline.data.nebula.runtime.NebulaRuntimeHolder,\
+org.anyline.data.nebula.datasource.NebulaDataSourceLoader,\
+org.anyline.data.nebula.worker.DefaultNebulaWorker

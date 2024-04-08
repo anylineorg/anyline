@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.7.2-SNAPSHOT</version>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>anyline-data-jdbc-nebula</artifactId>
+    <packaging>jar</packaging>
+    <name>anyline-data-jdbc-nebula</name>
+    <url>http://www.anyline.org/nebula</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.nebula-contrib</groupId>
+            <artifactId>nebula-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-data-jdbc</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

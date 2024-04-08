@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<!-- 多长时间加载一次配置文件 (秒), 如果不设置则实时监听文件更新-->
+	<property key="RELOAD">120</property>
+	<!-- 存放在servlet context中的key(配置文件热重载时不覆盖当前key)(如el表达式中引用${al.RELOAD})-->
+	<property key="SERVLET_ATTRIBUTE_KEY">al</property>
+	<property key="DEBUG">true</property>
+	<!-- sql 存放根目录 -->
+	<property key="SQL_STORE_DIR">/WEB-INF/classes/sql</property>
+	<!-- 密钥 文件路径 -->
+	<property key="DES_KEY_FILE">/WEB-INF/classes/key.xml</property>
+	<!-- 国际化文本存放目录 -->
+	<property key="I18N_MESSAGE_DIR">/WEB-INF/classes/message</property>
+	<!-- 国际化消息SESSION存放KEY -->
+	<property key="I18N_MESSAGE_SESSION_KEY">I18N_MESSAGE_SESSION_KEY</property>
+	<!-- 国际化消息默认语言 -->
+	<property key="I18N_MESSAGE_DEFAULT_LANG">cn</property>
+	<!-- 默认主键 -->
+	<property key="DEFAULT_PRIMARY_KEY">ID</property>
+	<!-- 抛出SQL异常 -->
+	<property key="IS_THROW_SQL_EXCEPTION">true</property>
+
+	<!-- 是否显示执行的SQL -->
+	<property key="IS_LOG_SQL">true</property>
+	<property key="IS_LOG_SQL_PARAM">true</property>
+	<property key="IS_LOG_SQL_WHEN_ERROR">false</property>
+	<property key="IS_LOG_SQL_PARAM_WHEN_ERROR">false</property>
+	<!-- 强制返回值以大写存储 -->
+	<property key="IS_UPPER_KEY">true</property>
+	<!-- 强制返回值以大写存储 -->
+	<!-- 
+	<property key="IS_LOWER_KEY">true</property>
+	 -->
+	<!--DataRow取值时 KEY 不区分大小写-->
+	<property key="IS_KEY_IGNORE_CASE">true</property>
+	<!-- 登录验证码图片宽度 -->
+	<property key="VALIDATE_CODE_IMG_WIDTH">60</property>
+	<!-- 登录验证码图片宽度 -->
+	<property key="VALIDATE_CODE_IMG_HEIGHT">20</property>
+	<!-- 登录验证码图片 字符个数 -->
+	<property key="VALIDATE_CODE_IMG_CHAR_SIZE">4</property>
+	<!-- 登录验证码图片 复杂度 -->
+	<property key="VALIDATE_CODE_IMG_COMPLEXITY">10</property>
+	
+	<!-- 是否更新NULL列 -->
+	<property key="IS_UPDATE_NULL_COLUMN">false</property>
+	<!-- 是否更新空列 -->
+	<property key="IS_UPDATE_EMPTY_COLUMN">false</property>
+	<!-- true:参数值为空时不执行SQL false:参数为空时拼接IS NULL-->
+	<property key="CONDITION_VALUE_STRICT">true</property>
+
+	<!--批量插入一次最多行数-->
+	<property key="BATCH_INSERT_MAX_SIZE">500</property>
+	<!--批量插入执行间隔-->
+	<property key="BATCH_INSERT_SLEEP_MILLIS">1000</property>
+
+	<!-- 模板文件目录 -->
+	<property key="TEMPLET_FILE_PATH_WEB">/WEB-INF/web/home/template/default.jsp</property>
+	<property key="TEMPLET_FILE_PATH_WAP">/WEB-INF/def/wap/common/templet.jsp</property>
+	<!-- fail文件路径 -->
+	<property key="FAIL_FILE_PATH">/WEB-INF/def/web/common/error/fail.jsp</property>
+	<!-- error文件路径 -->
+	<property key="ERROR_FILE_PATH">/WEB-INF/def/web/common/error/error.jsp</property>
+	
+	<!-- 是否禁用缓存 -->
+	<property key="CACHE_DISABLED">false</property>
+
+	<property key="HTTP_FAIL_CODE">-1</property>
+	<property key="HTTP_SUCCESS_CODE">200</property>
+
+	<!--获取表结构的缓存KEY-->
+	<property key="TABLE_METADATA_CACHE_KEY">static_1800</property>
+	<!--
+		http参数格式camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写
+		在entity()中会用到如果数据库列表中有下划线会按以下格式转换
+
+		注意这里只支持下划线转驼峰
+		如果数据库中已经是驼峰, 不要配置这个参数
+	-->
+	<property key="HTTP_PARAM_KEY_CASE">camel</property>
+
+	<!--实体属性 与数据库表列名对照时 属性小驼峰转下划线-->
+	<property key="ENTITY_FIELD_COLUMN_MAP">camel_</property>
+	<!--忽略加密的值-->
+	<property key="DES_IGNORE">0, -1</property>
+	<!--http参数是否trim-->
+	<property key="IS_HTTP_PARAM_AUTO_TRIM">true</property>
+	<!---http 客户端请求时间KEY -->
+	<property key="HTTP_REQUEST_TIME_KET">_anyline_request_time</property>
+	<!---http 服务器端开始响应时间KEY-->
+	<property key="HTTP_RESPONSE_TIME_KEY">_anyline_response_time</property>
+
+	<!--简单的返回数据结构，true:分页参数会放到最外层-->
+	<property key="SIMPLE_RESPONSE_STRUCT">false</property>
+	<!--定界符 -->
+	<property key="IS_SQL_DELIMITER_OPEN">false</property>
+
+	<!--禁用默认的entity adapter 默认false(开启)-->
+	<property key="IS_DISABLED_DEFAULT_ENTITY_ADAPTER">false</property>
+	<!--
+		是否开启界定符占位
+		开启后, 编码时无论什么数据库都可以用这里指定的界定符, 在SQL执行之前会替换成相应数据库的界定符
+		如果最终执行的SQL中出现界定符(不包括?占位的参数值), 需要把占位符写两次 类似与sql insert values中出'要写成''
+	-->
+	<property key="IS_SQL_DELIMITER_PLACEHOLDER_OPEN">false</property>
+	<!--
+		界定符占位符(IS_SQL_DELIMITER_PLACEHOLDER_OPEN开启才才生效) 如果不设置默认`(mysql界定符),
+
+		可以设置成一对[], 尽量不要设置一对, 因为会设置成了一对后, 会自动开启正则匹配
+		只有类似SQL Server设置了只支持[], 不支持""时才需要设置成一对[]
+	-->
+	<property key="SQL_DELIMITER_PLACEHOLDER"></property>
+
+	<!--查询单行数据不存在时, 是否空实例-->
+	<property key="IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL">false</property>
+	<!--insert update 时是否自动检测表结构(删除表中不存在的属性)-->
+	<property key="IS_AUTO_CHECK_METADATA">false</property>
+	<!-- DDL执行时 是否自动删除定义中不存在的列 -->
+	<property key="IS_DDL_AUTO_DROP_COLUMN">false</property>
+</properties>
