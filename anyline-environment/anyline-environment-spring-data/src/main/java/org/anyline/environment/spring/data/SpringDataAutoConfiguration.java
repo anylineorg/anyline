@@ -146,8 +146,9 @@ public class SpringDataAutoConfiguration implements InitializingBean{
                 }
             }
         }
-
-        AnylineService service = worker.getBean("anyline.service.default", AnylineService.class);
-        ServiceProxy.init(service);
+        if(worker.containsSingleton("anyline.service.default")) {
+            AnylineService service = worker.getBean("anyline.service.default", AnylineService.class);
+            ServiceProxy.init(service);
+        }
     }
 }
