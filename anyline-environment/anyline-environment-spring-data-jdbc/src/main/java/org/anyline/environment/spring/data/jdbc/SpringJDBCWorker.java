@@ -1082,7 +1082,7 @@ public class SpringJDBCWorker implements DriverWorker {
             adapter.checkName(runtime, null, table);
             String[] tmp = adapter.correctSchemaFromJDBC(table.getCatalogName(), table.getSchemaName());
             ResultSet set = dbmd.getIndexInfo(tmp[0], tmp[1], table.getName(), unique, approximate);
-            Map<String, Integer> keys = org.anyline.data.jdbc.util.JDBCUtil.keys(set);
+            Map<String, Integer> keys = JDBCUtil.keys(set);
             LinkedHashMap<String, Column> columns = null;
             while (set.next()) {
                 String name = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "INDEX_NAME", set);

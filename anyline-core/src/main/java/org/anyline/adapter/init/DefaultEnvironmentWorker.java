@@ -286,16 +286,17 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                     continue;
                 }
                 String key = line.substring(0, idx);
-                String val = line.substring(idx+1);
+                String val = line.substring(idx+1).trim();
                 Integer lvl = lvl(key);
+                key = key.trim();
                 if(line.trim().endsWith(":")){
-                    heads.put(lvl, key);
+                    heads.put(lvl, key.trim());
                 }else{
-                    String head = heads.get(lvl - 1);
-                    if(null == head){
+                    String head = head(heads, lvl);
+                    if(head.isEmpty()){
                         head = key;
                     }else{
-                        head = head + "." + key;
+                        head = head+ "." + key;
                     }
                     map.put(head, val);
                 }
@@ -321,6 +322,16 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             ConfigTable.put(key.trim().toUpperCase(), map.get(key));
         }
         return map;
+    }
+    private static String head(Map<Integer, String> headers, int lvl){
+        StringBuilder head = new StringBuilder();
+        for(int i=0; i<lvl; i++){
+            if(i>0){
+                head.append(".");
+            }
+            head.append(headers.get(i));
+        }
+        return head.toString();
     }
     private static Integer lvl(String key){
         //按2个空格1级

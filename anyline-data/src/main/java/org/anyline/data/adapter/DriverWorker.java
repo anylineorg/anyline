@@ -9,7 +9,6 @@ import org.anyline.metadata.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +84,20 @@ public interface DriverWorker {
      * @return map
      */
     Map<String, Object> map(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception;
+
+    /**
+     * 执行insert
+     * @param adapter DriverAdapter
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param data 插入数量
+     * @param configs ConfigStore
+     * @param run Run
+     * @param generatedKey 执行insert后返回自增主键的key
+     * @param pks
+     * @return long
+     * @throws Exception Exception
+     */
     long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception;
 
     /**

@@ -644,7 +644,7 @@ public class JDBCUtil {
         ResultSetMetaData rsmd = set.getMetaData();
         Map<String, Integer> keys = new HashMap<>();
         if(null != rsmd){
-            for (int i = 1; i < rsmd.getColumnCount(); i++) {
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 String name = rsmd.getColumnLabel(i);
                 if(null == name){
                     name = rsmd.getColumnName(i);

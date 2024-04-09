@@ -17,6 +17,7 @@
 package org.anyline.environment.spring;
 
 import org.anyline.adapter.EnvironmentWorker;
+import org.anyline.adapter.init.DefaultEnvironmentWorker;
 import org.anyline.bean.BeanDefine;
 import org.anyline.bean.ValueReference;
 import org.anyline.proxy.ConvertProxy;
@@ -39,7 +40,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 @Component("anyline.environment.worker.spring")
-public class SpringEnvironmentWorker implements EnvironmentAware, EnvironmentWorker, ApplicationContextAware {
+public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements EnvironmentAware, EnvironmentWorker, ApplicationContextAware {
     private static Logger log = LoggerFactory.getLogger(SpringEnvironmentWorker.class);
     private Environment environment;
     private DefaultListableBeanFactory factory;

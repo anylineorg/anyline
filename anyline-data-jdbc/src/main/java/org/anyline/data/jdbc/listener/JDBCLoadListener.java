@@ -144,8 +144,9 @@ public class JDBCLoadListener implements LoadListener {
                 }
             }
         }
-
-        AnylineService service = ConfigTable.worker.getBean("anyline.service.default", AnylineService.class);
-        ServiceProxy.init(service);
+        if(ConfigTable.worker.containsSingleton("anyline.service.default")) {
+            AnylineService service = ConfigTable.worker.getBean("anyline.service.default", AnylineService.class);
+            ServiceProxy.init(service);
+        }
     }
 }

@@ -5,15 +5,15 @@ import java.util.*;
 public class DataSourceKeyMap {
     public static Map<String, HashSet<String>> maps = new HashMap<>();
     static {
-        reg("username","userName","user");
+        reg("username","userName","user","user-name");
         reg("url","jdbcUrl","uri","uris","host","hosts");
-        reg("driverClass","driverClassName");//,"driver" 表示一个对象
-        reg("IdleTimeout","idleTimeoutMs");
-        reg("maxLifetime","maxLifetimeMs");
-        reg("maxPoolSize","maximumPoolSize");
-        reg("validationTimeout","validationTimeoutMs");
-        reg("datasourceJndiName","jndiDataSource");
-        reg("transactionIsolationName","transactionIsolation");
+        reg("driverClass","driverClassName","driver-class","driver-class-name");//,"driver" 表示一个对象
+        reg("IdleTimeout","idleTimeoutMs","idle-timeout","idle-timeout-ms");
+        reg("maxLifetime","maxLifetimeMs","max-lifetime","max-lifetime-ms");
+        reg("maxPoolSize","maximumPoolSize","max-pool-size","maximum-pool-size");
+        reg("validationTimeout","validationTimeoutMs","validation-timeout","validation-timeout-ms");
+        reg("validationTimeout","validationTimeoutMs","validation-timeout","validation-timeout-ms");
+        reg("transactionIsolationName","transactionIsolation","transaction-isolation-name","transaction-isolation");
     }
     public static HashSet<String> alias(String key){
         return maps.get(key);
