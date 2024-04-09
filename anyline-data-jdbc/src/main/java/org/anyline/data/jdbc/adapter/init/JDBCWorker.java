@@ -589,11 +589,19 @@ public class JDBCWorker implements DriverWorker {
             if(!adapter.supportKeyHolder(runtime, configs)){
                 return false;
             }
-
-            List<Map<String,Object>> keys = new ArrayList<>();
-            JDBCUtil.keys(rs);
-            if(null == generatedKey && keys.size()>0){
-                Map<String,Object> key = keys.get(0);
+            Map<String, Integer> ks = JDBCUtil.keys(rs);
+            List<Map<String,Object>> pvs = new ArrayList<>();
+            while (rs.next()){
+                Map<String, Object> pv = new HashMap<>();
+                for(String k:ks.keySet()){
+                    Integer idx = ks.get(k);
+                    pv.put(k, rs.getObject(idx));
+                }
+                pvs.add(pv);
+            }
+            //如果没有generatedKey取结果集中第一列 列名
+            if(null == generatedKey && !pvs.isEmpty()){
+                Map<String,Object> key = pvs.get(0);
                 generatedKey = key.keySet().iterator().next();
             }
             if(data instanceof Collection){
@@ -613,17 +621,18 @@ public class JDBCWorker implements DriverWorker {
                 }
                 int i = 0;
                 int data_size = list.size();
-                if(list.size() == keys.size()) {
+                if(list.size() == pvs.size()) {
+                    //返回主键数量 插入数据 数量一致
                     for (Object item : list) {
-                        Map<String, Object> key = keys.get(i);
+                        Map<String, Object> key = pvs.get(i);
                         Object id = key.get(generatedKey);
                         ids.add(id);
                         EntityAdapter.setPrimaryValue(item, id);
                         i++;
                     }
                 }else{
-                    if(null != keys && !keys.isEmpty()) {
-                        Object last = keys.get(0).get(generatedKey);
+                    if(!pvs.isEmpty()) {
+                        Object last = pvs.get(0).get(generatedKey);
                         if (last instanceof Number) {
                             Long num = BasicUtil.parseLong(last.toString(), null);
                             if (null != num) {
@@ -639,9 +648,9 @@ public class JDBCWorker implements DriverWorker {
                     log.warn("{}[exe insert][生成主键:{}]", random, ids);
                 }
             }else{
-                if(null != keys && !keys.isEmpty()) {
+                if(!pvs.isEmpty()) {
                     if(BasicUtil.isEmpty(true, EntityAdapter.getPrimaryValue(data))){
-                        Object id = keys.get(0).get(generatedKey);
+                        Object id = pvs.get(0).get(generatedKey);
                         EntityAdapter.setPrimaryValue(data, id);
                         if (ConfigStore.IS_LOG_SQL(configs) && log.isWarnEnabled()) {
                             log.warn("{}[exe insert][生成主键:{}]", random, id);

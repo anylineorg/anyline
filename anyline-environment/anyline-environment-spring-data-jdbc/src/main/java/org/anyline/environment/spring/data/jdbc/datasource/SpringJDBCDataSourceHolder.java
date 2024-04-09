@@ -209,9 +209,6 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 *
 	 * ****************************************************************************************************************/
 
-	public String regTransactionManager(String key, DataSource datasource){
-		return regTransactionManager(key, datasource, false);
-	}
 	public String regTransactionManager(String key, DataSource datasource, boolean primary){
 
 		/*String tm_id = DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key;
@@ -228,23 +225,5 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		}
 		return key;
 	}
-
-	public String regTransactionManager(String key, String datasource){
-		return regTransactionManager(key, datasource, false);
-	}
-	public String regTransactionManager(String key, String ds, boolean primary){
-		return regTransactionManager(key, ConfigTable.worker.getBean(ds, DataSource.class), primary);
-		/*String tm_id = DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key;
-		if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
-			//事务管理器
-			BeanDefine define = new DefaultBeanDefine(DataSourceTransactionManager.class);
-			define.addValue("dataSource", new DefaultValueReference(ds));
-			define.setPrimary(primary);
-			ConfigTable.worker.regBean(tm_id, define);
-			log.info("[创建事务控制器][数据源:{}][primary:{}][bean:{}]", key, primary, tm_id);
-		}
-		return tm_id;*/
-	}
-
 
 }

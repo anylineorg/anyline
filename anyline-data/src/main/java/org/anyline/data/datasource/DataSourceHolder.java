@@ -565,7 +565,9 @@ public interface DataSourceHolder {
 	default String regTransactionManager(String key, String datasource){
 		return regTransactionManager(key, datasource, false);
 	}
-	String regTransactionManager(String key, String datasource, boolean primary);
+	default String regTransactionManager(String key, String datasource, boolean primary){
+		return regTransactionManager(key, ConfigTable.worker.getBean(datasource, DataSource.class), primary);
+	}
 	/**
 	 * 添加数据源，同时添加事务与service
 	 * @param key 数据源名称

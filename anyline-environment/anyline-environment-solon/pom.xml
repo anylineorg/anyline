@@ -16,5 +16,14 @@
     <name>anyline-environment-solon</name>
     <url>http://www.anyline.org/adapter/solon</url>
     <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon</artifactId>
+            <version>2.7.3</version>
+        </dependency>
     </dependencies>
 </project>

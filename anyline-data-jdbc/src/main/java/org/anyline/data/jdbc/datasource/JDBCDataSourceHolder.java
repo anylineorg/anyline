@@ -8,6 +8,8 @@ import org.anyline.data.datasource.init.AbstractDataSourceHolder;
 import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.jdbc.util.DataSourceUtil;
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.data.transaction.TransactionManage;
+import org.anyline.data.transaction.init.DefaultTransactionManage;
 import org.anyline.metadata.type.Convert;
 import org.anyline.metadata.type.ConvertException;
 import org.anyline.metadata.type.DatabaseType;
@@ -123,15 +125,13 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         return false;
     }
 
-    @Override
-    public String regTransactionManager(String key, DataSource datasource, boolean primary) {
-        return null;
+    public String regTransactionManager(String key, DataSource datasource, boolean primary){
+        if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
+            TransactionManage.reg(key, new DefaultTransactionManage(datasource));
+        }
+        return key;
     }
 
-    @Override
-    public String regTransactionManager(String key, String datasource, boolean primary) {
-        return null;
-    }
 
     @Override
     public String init(String key, String datasource, boolean override) throws Exception {

@@ -7,6 +7,11 @@ import java.util.HashSet;
 import java.util.Map;
 
 public interface EnvironmentWorker {
+    /**
+     * 从配置文件中获取值
+     * @param key key
+     * @return Object
+     */
     Object get(String key);
 
     /**
