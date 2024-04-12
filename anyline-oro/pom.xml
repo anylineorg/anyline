@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.7.2-SNAPSHOT</version>
+        <relativePath>../anyline-dependency/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>anyline-oro</artifactId>
+    <packaging>jar</packaging>
+    <description>
+        原来的jakarta.oro，2010年9月后不维护了(没bug可改了)
+        因为经常下载失败，所以复制过来了
+        最新存档地址：https://attic.apache.org/projects/jakarta-oro.html
+    </description>
+</project>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.7.2-SNAPSHOT</version>
+        <relativePath>../anyline-dependency/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>anyline-environment</artifactId>
+    <packaging>pom</packaging>
+    <name>anyline-environment</name>
+    <url>http://www.anyline.org/environment</url>
+    <modules>
+
+        <module>anyline-environment-solon-plugin</module>
+
+        <module>anyline-environment-spring</module>
+        <module>anyline-environment-spring-boot</module>
+        <module>anyline-environment-spring-data-jdbc</module>
+
+        <module>anyline-environment-vertx-data-jdbc</module>
+
+    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

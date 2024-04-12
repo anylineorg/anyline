@@ -1,0 +1,5 @@
+org.anyline.environment.spring.data.SpringDataAutoConfiguration
+org.anyline.environment.spring.data.jdbc.datasource.SpringJDBCDataSourceHolder
+org.anyline.environment.spring.data.jdbc.datasource.SpringJDBCDataSourceLoader
+org.anyline.environment.spring.data.jdbc.runtime.SpringJDBCRuntimeHolder
+org.anyline.environment.spring.data.jdbc.SpringJDBCWorker

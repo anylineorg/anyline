@@ -1,0 +1,18 @@
+8.7.2之后开始区分运行环境  
+sonlon：
+####
+```xml
+<dependency>
+    <groupId>org.anyline</groupId>
+    <artifactId>anyline-environment-solon-plugin</artifactId>
+</dependency>
+```
+spring
+```xml
+<dependency>
+    <groupId>org.anyline</groupId>
+    <artifactId>anyline-environment-spring-data-jdbc</artifactId>
+</dependency>
+```
+纯Java环境需要调用
+DefaultEnvironmentWorker.start()
