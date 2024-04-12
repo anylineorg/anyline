@@ -1,5 +1,6 @@
 package org.anyline.data.transaction.init;
 
+import org.anyline.data.transaction.TransactionDefine;
 import org.anyline.data.transaction.TransactionState;
 
 import javax.sql.DataSource;
@@ -7,6 +8,8 @@ import java.sql.Connection;
 import java.sql.Savepoint;
 
 public class DefaultTransactionState implements TransactionState {
+    private TransactionDefine.MODE mode = TransactionDefine.MODE.THREAD;
+    private String name;
     private DataSource datasource;
     private Connection connection;
     private Savepoint point;
@@ -91,5 +94,20 @@ public class DefaultTransactionState implements TransactionState {
     @Override
     public Connection getConnection() {
         return this.connection;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public TransactionDefine.MODE getMode() {
+        return mode;
+    }
+
+    public void setMode(TransactionDefine.MODE mode) {
+        this.mode = mode;
     }
 }

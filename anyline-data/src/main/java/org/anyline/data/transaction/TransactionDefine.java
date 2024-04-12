@@ -2,6 +2,11 @@ package org.anyline.data.transaction;
 
 
 public interface TransactionDefine {
+    enum MODE{
+        THREAD,         //线程内有效
+        APPLICATION,    //应用内有效
+        DISTRIBUTED     //分布式
+    }
     /**
      * 如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务
      */
@@ -170,6 +175,9 @@ public interface TransactionDefine {
      */
     default String getName() {
         return null;
+    }
+    default MODE getMode(){
+        return MODE.THREAD;
     }
 
 

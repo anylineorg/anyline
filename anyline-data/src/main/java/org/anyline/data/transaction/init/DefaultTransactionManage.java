@@ -1,6 +1,7 @@
 package org.anyline.data.transaction.init;
 
-import org.anyline.data.datasource.ConnectionHolder;
+import org.anyline.data.datasource.ApplicationConnectionHolder;
+import org.anyline.data.datasource.ThreadConnectionHolder;
 import org.anyline.data.transaction.TransactionDefine;
 import org.anyline.data.transaction.TransactionManage;
 import org.anyline.data.transaction.TransactionState;
@@ -26,16 +27,32 @@ public class DefaultTransactionManage implements TransactionManage {
 
     @Override
     public TransactionState start(TransactionDefine define)  throws Exception{
+        Connection con = null;
+        String name = define.getName();
+        TransactionDefine.MODE mode = define.getMode();
         //TODO 检测现有事务 与 point
-        Connection con = ConnectionHolder.get(datasource);
-        if(null == con) {
-            con = datasource.getConnection();
+        if(TransactionDefine.MODE.THREAD == mode) {
+            //线程内事务
+            con = ThreadConnectionHolder.get(datasource);
+            if(null == con) {
+                con = datasource.getConnection();
+                ThreadConnectionHolder.set(datasource, con);
+            }
+        }else if(TransactionDefine.MODE.APPLICATION == mode){
+            //应用内事务
+            con = ApplicationConnectionHolder.get(datasource, name);
+            if(null == con) {
+                con = datasource.getConnection();
+                ApplicationConnectionHolder.set(datasource, name, con);
+            }
         }
         TransactionState state = new DefaultTransactionState();
         state.setConnection(con);
         state.setDataSource(datasource);
+        state.setName(name);
+        state.setMode(mode);
+
         con.setAutoCommit(false);
-        ConnectionHolder.set(datasource, con);
         TransactionManage.records.put(state, this);
         return state;
     }
@@ -47,7 +64,13 @@ public class DefaultTransactionManage implements TransactionManage {
         con.commit();
         con.setAutoCommit(true);
         con.close();
-        ConnectionHolder.remove(ds);
+        String name = state.getName();
+        TransactionDefine.MODE mode = state.getMode();
+        if(TransactionDefine.MODE.THREAD == mode){
+            ThreadConnectionHolder.remove(ds);
+        }else if(TransactionDefine.MODE.APPLICATION == mode){
+            ApplicationConnectionHolder.remove(ds, name);
+        }
         TransactionManage.records.remove(state);
     }
 
@@ -63,7 +86,13 @@ public class DefaultTransactionManage implements TransactionManage {
         }
         con.setAutoCommit(true);
         con.close();
-        ConnectionHolder.remove(ds);
+        String name = state.getName();
+        TransactionDefine.MODE mode = state.getMode();
+        if(TransactionDefine.MODE.THREAD == mode){
+            ThreadConnectionHolder.remove(ds);
+        }else if(TransactionDefine.MODE.APPLICATION == mode){
+            ApplicationConnectionHolder.remove(ds, name);
+        }
         TransactionManage.records.remove(state);
     }
 }

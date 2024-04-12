@@ -5,7 +5,10 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConnectionHolder {
+public class ThreadConnectionHolder {
+    /**
+     * 线程内有效
+     */
     private static final ThreadLocal<Map<DataSource, Connection>> connections = new ThreadLocal<>();
     public static Connection get(DataSource ds){
         Map<DataSource, Connection> cons = connections.get();

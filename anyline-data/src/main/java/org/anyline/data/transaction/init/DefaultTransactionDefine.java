@@ -29,6 +29,7 @@ public class DefaultTransactionDefine implements TransactionDefine {
     private boolean readOnly = false;
 
     private String name;
+    private MODE mode = MODE.THREAD;
 
 
     /**
@@ -134,14 +135,19 @@ public class DefaultTransactionDefine implements TransactionDefine {
      * <p>This will be used as transaction name to be shown in a
      * transaction monitor, if applicable (for example, WebLogic's).
      */
-    public final void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public final String getName() {
+    public String getName() {
         return this.name;
     }
 
+    public MODE getMode() {
+        return mode;
+    }
 
-
+    public void setMode(MODE mode) {
+        this.mode = mode;
+    }
 }

@@ -21,4 +21,12 @@ public interface TransactionState {
     DataSource getDataSource();
     void setConnection(Connection connection);
     Connection getConnection();
+    default String getName() {
+        return null;
+    }
+    default void setName(String name){}
+    default TransactionDefine.MODE getMode(){
+        return TransactionDefine.MODE.THREAD;
+    }
+    void setMode(TransactionDefine.MODE mode);
 }
