@@ -30,12 +30,14 @@ public class DefaultTransactionManage implements TransactionManage {
         Connection con = null;
         String name = define.getName();
         TransactionDefine.MODE mode = define.getMode();
+        boolean isNew = false;
         //TODO 检测现有事务 与 point
         if(TransactionDefine.MODE.THREAD == mode) {
             //线程内事务
             con = ThreadConnectionHolder.get(datasource);
             if(null == con) {
                 con = datasource.getConnection();
+                isNew = true;
                 ThreadConnectionHolder.set(datasource, con);
             }
         }else if(TransactionDefine.MODE.APPLICATION == mode){
@@ -43,6 +45,7 @@ public class DefaultTransactionManage implements TransactionManage {
             con = ApplicationConnectionHolder.get(datasource, name);
             if(null == con) {
                 con = datasource.getConnection();
+                isNew = true;
                 ApplicationConnectionHolder.set(datasource, name, con);
             }
         }
@@ -51,8 +54,9 @@ public class DefaultTransactionManage implements TransactionManage {
         state.setDataSource(datasource);
         state.setName(name);
         state.setMode(mode);
-
-        con.setAutoCommit(false);
+        if(isNew) {
+            con.setAutoCommit(false);
+        }
         TransactionManage.records.put(state, this);
         return state;
     }

@@ -179,6 +179,8 @@ public interface TransactionDefine {
     default MODE getMode(){
         return MODE.THREAD;
     }
+    void setMode(MODE mode);
+    void setName(String name);
 
 
 }

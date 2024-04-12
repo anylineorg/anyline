@@ -19,7 +19,7 @@ public class ApplicationConnectionHolder {
     }
     public static void set(DataSource ds, String name, Connection con){
         Map<String, Connection> map = connections.get(ds);
-        if(null != map){
+        if(null == map){
             map = new HashMap<>();
             connections.put(ds, map);
         }

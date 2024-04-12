@@ -4,6 +4,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverWorker;
 import org.anyline.data.handler.ConnectionHandler;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.ResultSetHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -185,7 +186,15 @@ public class SpringJDBCWorker implements DriverWorker {
         if(null == jdbc){
             return set;
         }
-        final StreamHandler handler =configs.stream();
+
+        StreamHandler _handler = null;
+        if(null != configs){
+            DataHandler handler = configs.handler();
+            if(handler instanceof StreamHandler){
+                _handler = (StreamHandler) handler;
+            }
+        }
+        final StreamHandler handler = _handler;
 
         long[] count = new long[]{0};
         if(null != handler){
@@ -395,7 +404,10 @@ public class SpringJDBCWorker implements DriverWorker {
         }
         StreamHandler _handler = null;
         if(null != configs){
-            _handler = configs.stream();
+            DataHandler handler = configs.handler();
+            if(handler instanceof StreamHandler){
+                _handler = (StreamHandler) handler;
+            }
         }
         long[] count = new long[]{0};
         final boolean[] process = {false};
