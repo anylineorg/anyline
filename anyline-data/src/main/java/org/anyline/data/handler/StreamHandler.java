@@ -1,6 +1,6 @@
 package org.anyline.data.handler;
 
-public interface StreamHandler {
+public interface StreamHandler extends DataHandler {
     /**
      * 每次从ResultSet中读取的行数
      * @return int

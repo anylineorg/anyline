@@ -17,6 +17,7 @@
 package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
@@ -99,8 +100,18 @@ public interface ConfigStore {
 
 	boolean execute();
 	ConfigStore execute(boolean execute);
-	ConfigStore stream(StreamHandler hanlder);
+
+	/**
+	 * 设置流式查询的回调
+	 * @param handler StreamHandler
+	 * @return ConfigStore
+	 */
+	ConfigStore stream(StreamHandler handler);
 	StreamHandler stream();
+
+	ConfigStore handler(DataHandler handler);
+	DataHandler handler();
+
 
 	ConfigStore entityClass(Class clazz);
 	Class entityClass();

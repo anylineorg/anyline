@@ -1,5 +1,5 @@
 package org.anyline.handler;
 
-public interface DataHandler<E> {
+public interface AnyHandler<E> {
     void handle(E event);
 }

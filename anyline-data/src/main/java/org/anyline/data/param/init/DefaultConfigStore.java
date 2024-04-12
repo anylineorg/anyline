@@ -17,6 +17,7 @@
 package org.anyline.data.param.init;
 
 import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
@@ -44,7 +45,7 @@ import java.util.*;
  */ 
 public class DefaultConfigStore implements ConfigStore {
 	protected Class clazz										    ;
-	protected StreamHandler handler								    ; // 流式读取时handler
+	protected DataHandler handler								    ; // 流式读取时handler
 	protected ConfigChain chain										; // 条件集合
 	protected PageNavi navi											; // 分页参数
 	protected OrderStore orders										; // 排序依据
@@ -379,6 +380,17 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore stream(StreamHandler handler) {
+		this.handler = handler;
+		return this;
+	}
+
+	@Override
+	public DataHandler handler() {
+		return handler;
+	}
+
+	@Override
+	public ConfigStore handler(DataHandler handler) {
 		this.handler = handler;
 		return this;
 	}
