@@ -375,7 +375,10 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public StreamHandler stream() {
-		return handler;
+		if(handler instanceof StreamHandler) {
+			return (StreamHandler)handler;
+		}
+		return null;
 	}
 
 	@Override
