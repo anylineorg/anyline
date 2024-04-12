@@ -19,6 +19,7 @@ package org.anyline.service;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.datasource.DataSourceHolder;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
@@ -339,9 +340,9 @@ public interface AnylineService<E>{
 	default DataSet querys(String dest, Object obj, String ... conditions){
 		return querys(dest, (ConfigStore) null, obj, conditions);
 	}
-	default void querys(String dest, StreamHandler handler, Object obj, String ... conditions){
+	default void querys(String dest, DataHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(dest, configs, obj, conditions);
 	}
 	default DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions){
@@ -379,9 +380,9 @@ public interface AnylineService<E>{
 	default DataSet querys(String dest, String ... conditions){
 		return querys(dest, (Object) null, conditions);
 	}
-	default void querys(String dest, StreamHandler handler, String ... conditions){
+	default void querys(String dest, DataHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(dest, configs, conditions);
 	}
 	default DataSet querys(String dest, PageNavi navi, String ... conditions){
@@ -390,12 +391,12 @@ public interface AnylineService<E>{
 	default DataSet querys(String dest, long first, long last, String ... conditions){
 		return querys(dest, first, last, null, conditions);
 	}
-	default DataSet querys(String dest, StreamHandler handler, long first, long last, String ... conditions){
+	default DataSet querys(String dest, DataHandler handler, long first, long last, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		ConfigStore configs = new DefaultConfigStore();
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		configs.stream(handler);
+		configs.handler(handler);
 		return querys(dest, first, last, configs, conditions);
 	}
 
@@ -412,9 +413,9 @@ public interface AnylineService<E>{
 	default DataSet querys(Table dest, Object obj, String ... conditions){
 		return querys(dest, (ConfigStore) null, obj, conditions);
 	}
-	default void querys(Table dest, StreamHandler handler, Object obj, String ... conditions){
+	default void querys(Table dest, DataHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(dest, configs, obj, conditions);
 	}
 	default DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions){
@@ -452,9 +453,9 @@ public interface AnylineService<E>{
 	default DataSet querys(Table dest, String ... conditions){
 		return querys(dest, (Object) null, conditions);
 	}
-	default void querys(Table dest, StreamHandler handler, String ... conditions){
+	default void querys(Table dest, DataHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(dest, configs, conditions);
 	}
 	default DataSet querys(Table dest, PageNavi navi, String ... conditions){
@@ -463,12 +464,12 @@ public interface AnylineService<E>{
 	default DataSet querys(Table dest, long first, long last, String ... conditions){
 		return querys(dest, first, last, null, conditions);
 	}
-	default DataSet querys(Table dest, StreamHandler handler, long first, long last, String ... conditions){
+	default DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		ConfigStore configs = new DefaultConfigStore();
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
-		configs.stream(handler);
+		configs.handler(handler);
 		return querys(dest, first, last, configs, conditions);
 	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
@@ -550,7 +551,7 @@ public interface AnylineService<E>{
 	}
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
@@ -569,7 +570,7 @@ public interface AnylineService<E>{
 	}
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return selects(dest, clazz, configs, conditions);
 	}
 	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions){
@@ -587,7 +588,7 @@ public interface AnylineService<E>{
 	}
 	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
@@ -606,7 +607,7 @@ public interface AnylineService<E>{
 	}
 	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return selects(dest, clazz, configs, conditions);
 	}
 	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions){
@@ -654,7 +655,7 @@ public interface AnylineService<E>{
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return selects(clazz, configs, entity, conditions);
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions){
@@ -676,7 +677,7 @@ public interface AnylineService<E>{
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return selects(clazz, configs, conditions);
 	}
 	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
@@ -701,7 +702,7 @@ public interface AnylineService<E>{
 	}
 	default EntitySet<E> gets(EntityHandler<E> handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		return gets(configs, conditions);
 	}
 	default EntitySet<E> gets(long first, long last, String ... conditions){
@@ -721,9 +722,9 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default void maps(String dest, StreamHandler handler, Object obj, String ... conditions){
+	default void maps(String dest, DataHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		maps(dest, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(String dest, Object obj, String ... conditions){
@@ -738,9 +739,9 @@ public interface AnylineService<E>{
 	default List<Map<String, Object>> maps(String dest, String ... conditions){
 		return maps(dest, (ConfigStore) null, null, conditions);
 	}
-	default void maps(String dest, StreamHandler handler, String ... conditions){
+	default void maps(String dest, DataHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		maps(dest, configs, null, conditions);
 	}
 	default List<Map<String, Object>> maps(String dest, PageNavi navi, String ... conditions){
@@ -749,16 +750,16 @@ public interface AnylineService<E>{
 	default List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions){
 		return maps(dest, first, last, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, StreamHandler handler, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, DataHandler handler, long first, long last, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
-		configs.stream(handler);
+		configs.handler(handler);
 		return maps(dest, first, last, conditions, conditions);
 	}
 
 	List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default void maps(Table dest, StreamHandler handler, Object obj, String ... conditions){
+	default void maps(Table dest, DataHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		maps(dest, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions){
@@ -773,9 +774,9 @@ public interface AnylineService<E>{
 	default List<Map<String, Object>> maps(Table dest, String ... conditions){
 		return maps(dest, (ConfigStore) null, null, conditions);
 	}
-	default void maps(Table dest, StreamHandler handler, String ... conditions){
+	default void maps(Table dest, DataHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		maps(dest, configs, null, conditions);
 	}
 	default List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions){
@@ -784,9 +785,9 @@ public interface AnylineService<E>{
 	default List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions){
 		return maps(dest, first, last, null, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, StreamHandler handler, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, DataHandler handler, long first, long last, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore(first, last);
-		configs.stream(handler);
+		configs.handler(handler);
 		return maps(dest, first, last, configs, conditions);
 	}
 
@@ -813,7 +814,7 @@ public interface AnylineService<E>{
 	}
 	default void maps(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(prepare, configs, obj, conditions);
 	}
 	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
@@ -829,7 +830,7 @@ public interface AnylineService<E>{
 	}
 	default void maps(RunPrepare prepare, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		maps(prepare, configs, null, conditions);
 	}
 	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, String ... conditions){
@@ -976,7 +977,7 @@ public interface AnylineService<E>{
 	}
 	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(prepare, configs, obj, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
@@ -992,7 +993,7 @@ public interface AnylineService<E>{
 	}
 	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
 		ConfigStore configs = new DefaultConfigStore();
-		configs.stream(handler);
+		configs.handler(handler);
 		querys(prepare, configs, null, conditions);
 	}
 	default DataSet querys(RunPrepare prepare, long first, long last, String ... conditions){

@@ -102,13 +102,10 @@ public interface ConfigStore {
 	ConfigStore execute(boolean execute);
 
 	/**
-	 * 设置流式查询的回调
+	 * 设置流式(StreamHandlder)或异步(FinishHandler)的回调
 	 * @param handler StreamHandler
 	 * @return ConfigStore
 	 */
-	ConfigStore stream(StreamHandler handler);
-	StreamHandler stream();
-
 	ConfigStore handler(DataHandler handler);
 	DataHandler handler();
 

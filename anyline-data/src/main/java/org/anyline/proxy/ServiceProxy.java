@@ -20,6 +20,7 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
@@ -394,7 +395,7 @@ public class ServiceProxy {
     public static DataSet querys(String dest, Object obj, String ... conditions){
         return service.querys(dest, obj, conditions);
     }
-    public static void querys(String dest, StreamHandler handler, Object obj, String ... conditions){
+    public static void querys(String dest, DataHandler handler, Object obj, String ... conditions){
         service.querys(dest, handler, obj, conditions);
     }
     public static DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions){
@@ -426,7 +427,7 @@ public class ServiceProxy {
     public static DataSet querys(String dest, String ... conditions){
         return service.querys(dest, conditions);
     }
-    public static void querys(String dest, StreamHandler handler, String ... conditions){
+    public static void querys(String dest, DataHandler handler, String ... conditions){
         service.querys(dest, handler, conditions);
     }
     public static DataSet querys(String dest, PageNavi navi, String ... conditions){
@@ -454,7 +455,7 @@ public class ServiceProxy {
     public static DataSet querys(Table dest, Object obj, String ... conditions){
         return service.querys(dest, obj, conditions);
     }
-    public static void querys(Table dest, StreamHandler handler, Object obj, String ... conditions){
+    public static void querys(Table dest, DataHandler handler, Object obj, String ... conditions){
         service.querys(dest, handler, obj, conditions);
     }
     public static DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions){
@@ -483,7 +484,7 @@ public class ServiceProxy {
     public static DataSet querys(Table dest, String ... conditions){
         return service.querys(dest, conditions);
     }
-    public static void querys(Table dest, StreamHandler handler, String ... conditions){
+    public static void querys(Table dest, DataHandler handler, String ... conditions){
        service.querys(dest, handler, conditions);
     }
     public static DataSet querys(Table dest, PageNavi navi, String ... conditions){
@@ -492,7 +493,7 @@ public class ServiceProxy {
     public static DataSet querys(Table dest, long first, long last, String ... conditions){
         return service.querys(dest, first, last, conditions);
     }
-    public static DataSet querys(Table dest, StreamHandler handler, long first, long last, String ... conditions){
+    public static DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions){
         return service.querys(dest, handler, first, last, conditions);
     }
 
@@ -674,7 +675,7 @@ public class ServiceProxy {
     public static List<Map<String, Object>> maps(String dest, Object obj, String ... conditions){
         return service.maps(dest, obj, conditions);
     }
-    public static void maps(String dest, StreamHandler handler, Object obj, String ... conditions){
+    public static void maps(String dest, DataHandler handler, Object obj, String ... conditions){
         service.maps(dest, handler, obj, conditions);
     }
     public static List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions){
@@ -686,7 +687,7 @@ public class ServiceProxy {
     public static List<Map<String, Object>> maps(String dest, String ... conditions){
         return service.maps(dest, conditions);
     }
-    public static void maps(String dest, StreamHandler handler, String ... conditions){
+    public static void maps(String dest, DataHandler handler, String ... conditions){
         service.maps(dest, handler, conditions);
     }
     public static List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions){
@@ -696,7 +697,7 @@ public class ServiceProxy {
     public static List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String ... conditions){
         return service.maps(dest, configs, obj, conditions);
     }
-    public static void maps(Table dest, StreamHandler handler, Object obj, String ... conditions){
+    public static void maps(Table dest, DataHandler handler, Object obj, String ... conditions){
         service.maps(dest, handler, obj, conditions);
     }
     public static List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions){
@@ -711,7 +712,7 @@ public class ServiceProxy {
     public static List<Map<String, Object>> maps(Table dest, String ... conditions){
         return service.maps(dest, conditions);
     }
-    public static void maps(Table dest, StreamHandler handler, String ... conditions){
+    public static void maps(Table dest, DataHandler handler, String ... conditions){
         service.maps(dest, handler, conditions);
     }
     public static List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions){
@@ -720,7 +721,7 @@ public class ServiceProxy {
     public static List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions){
         return service.maps(dest, first, last, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, StreamHandler handler, long first, long last, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, DataHandler handler, long first, long last, String ... conditions){
         return service.maps(dest, handler, first, last, conditions);
     }
 

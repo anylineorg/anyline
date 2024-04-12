@@ -7,6 +7,7 @@ import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.nebula.adapter.NebulaAdapter;
 import org.anyline.data.nebula.runtime.NebulaRuntime;
@@ -203,7 +204,10 @@ public class DefaultNebulaWorker implements DriverWorker {
 
         StreamHandler _handler = null;
         if(null != configs){
-            _handler = configs.stream();
+            DataHandler handler = configs.handler();
+            if(handler instanceof StreamHandler){
+                _handler = (StreamHandler) handler;
+            }
         }
         return set;
     }

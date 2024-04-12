@@ -18,6 +18,7 @@ package org.anyline.data.graph.adapter.init;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
@@ -1361,10 +1362,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			return new ArrayList<>();
 		}
 		try{
-
 			StreamHandler _handler = null;
 			if(null != configs){
-				_handler = configs.stream();
+				DataHandler handler = configs.handler();
+				if(handler instanceof StreamHandler){
+					_handler = (StreamHandler) handler;
+				}
 			}
 			long[] count = new long[]{0};
 			final boolean[] process = {false};

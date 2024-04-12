@@ -199,7 +199,7 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore copyProperty(ConfigStore configs) {
 		if(null != configs){
 			this.table = configs.table();
-			this.handler = configs.stream();
+			this.handler = configs.handler();
 			this.catalog = configs.catalog();
 			this.schema = configs.schema();
 			this.table = configs.table();
@@ -371,19 +371,6 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore override(Boolean override, Constraint constraint){
 		this.override = override;
 		overrideByConstraint = constraint;
-		return this;
-	}
-	@Override
-	public StreamHandler stream() {
-		if(handler instanceof StreamHandler) {
-			return (StreamHandler)handler;
-		}
-		return null;
-	}
-
-	@Override
-	public ConfigStore stream(StreamHandler handler) {
-		this.handler = handler;
 		return this;
 	}
 

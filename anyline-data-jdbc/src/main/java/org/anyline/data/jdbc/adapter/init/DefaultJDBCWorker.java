@@ -4,8 +4,9 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverWorker;
-import org.anyline.data.datasource.ConnectionHolder;
+import org.anyline.data.datasource.ThreadConnectionHolder;
 import org.anyline.data.handler.ConnectionHandler;
+import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.ResultSetHandler;
 import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
@@ -53,7 +54,7 @@ public class DefaultJDBCWorker implements DriverWorker {
         Connection con = null;
         try{
             //当前线程中已经开启了事务的 用事务连接
-            con = ConnectionHolder.get(datasource);
+            con = ThreadConnectionHolder.get(datasource);
             if(null == con) {
                 con = datasource.getConnection();
             }
@@ -66,7 +67,7 @@ public class DefaultJDBCWorker implements DriverWorker {
     @Override
     public void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource) {
         try {
-            Connection con = ConnectionHolder.get(datasource);
+            Connection con = ThreadConnectionHolder.get(datasource);
             if(con == connection){
                 //有事务不要关闭，在事务管理器中关闭
                 return;
@@ -187,7 +188,15 @@ public class DefaultJDBCWorker implements DriverWorker {
         if(null == datasource){
             return set;
         }
-        final StreamHandler handler = configs.stream();
+
+        StreamHandler _handler = null;
+        if(null != configs){
+            DataHandler handler = configs.handler();
+            if(handler instanceof StreamHandler){
+                _handler = (StreamHandler) handler;
+            }
+        }
+        final StreamHandler handler = _handler;
         Connection con = getConnection(adapter, runtime, datasource);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -372,7 +381,10 @@ public class DefaultJDBCWorker implements DriverWorker {
         }
         StreamHandler _handler = null;
         if(null != configs){
-            _handler = configs.stream();
+            DataHandler handler = configs.handler();
+            if(handler instanceof StreamHandler){
+                _handler = (StreamHandler) handler;
+            }
         }
         Connection con = null;
         PreparedStatement ps = null;
