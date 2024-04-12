@@ -41,7 +41,7 @@ public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	public static EnvironmentWorker worker;
 	private static boolean IS_LOG = false;
-	private static Map<String, Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名, 最后加载时间>
+	private static final Map<String, Long> listener_files = new Hashtable<>(); // 监听文件更新<文件名, 最后加载时间>
 	protected static String root;		// 项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
@@ -57,10 +57,10 @@ public class ConfigTable {
 	public static String CONFIG_NAME = "anyline-config.xml";
 
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
-	public static Class DEFAULT_JDBC_ENTITY_CLASS						= DataRow.class;
-	public static Class DEFAULT_MONGO_ENTITY_CLASS						= DataRow.class;
-	public static Class DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS				= DataRow.class;
-	public static Class DEFAULT_NEO4J_ENTITY_CLASS						= DataRow.class;
+	public static Class DEFAULT_JDBC_ENTITY_CLASS						= DataRow.class ;
+	public static Class DEFAULT_MONGO_ENTITY_CLASS						= DataRow.class ;
+	public static Class DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS				= DataRow.class ;
+	public static Class DEFAULT_NEO4J_ENTITY_CLASS						= DataRow.class ;
 	public static boolean IS_DEBUG 										= true			;	// DEBUG状态会输出更多日志
 	public static int  DEBUG_LVL										= 0				;   //
 	public static boolean IS_LOG_SQL									= true			;	// 执行SQL时是否输出日志

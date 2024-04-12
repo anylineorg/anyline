@@ -72,36 +72,36 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * 在关系型数据库场景中 也相当于表名
      * 主要应用在在非关系型数据库场景中 如Neo4j中的Node名 MongonDB中的Document名
      */
-    protected String category                         = null                  ; // 分类
-    protected LinkedHashMap<String, Column> metadatas = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
-    protected transient DataSet container             = null                  ; // 包含当前对象的容器
-    protected transient Map<String, DataSet> containers= new HashMap()        ; // 包含当前对象的容器s
-    protected transient Map<String, DataRow> parents   = new Hashtable()      ; // 上级
-    protected List<String> primaryKeys                = new ArrayList()       ; // 主键
-    protected List<String> updateColumns              = new ArrayList()       ; // 需要参与update insert操作
-    protected List<String> ignoreUpdateColumns        = new ArrayList()       ; // 不参与update insert操作
-    protected String datalink                         = null                  ; // 超链接
-    protected String datasource                       = null                  ; // 数据源(表|视图|XML定义SQL)
-    protected Catalog catalog                         = null                  ; // catalog
-    protected Schema schema                           = null                  ; // schema
-    protected LinkedHashMap<String, Table> tables     = new LinkedHashMap<>() ; // 数据来源表(图数据库可能来自多个表) //TODO 解析sql中多个表(未实现)
-    protected DataRow attributes                      = null                  ; // 属性
-    protected DataRow tags                            = null                  ; // 标签
-    protected DataRow relations                       = null                  ; // 对外关系
-    protected long createTime                         = 0                     ; // 创建时间(毫秒)
-    protected long nanoTime                           = 0                     ; // 创建时间(纳秒)
-    protected long expires                            = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    protected Boolean isNew                           = false                 ; // 强制新建(否则根据主键值判断insert | update)
-    protected boolean isFromCache                     = false                 ; // 是否来自缓存
-    protected Map<String, String> keymap              = new HashMap<>()       ; // keymap
-    protected boolean isUpperKey                      = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
-    protected Map<String, String> converts            = new HashMap<>()       ; // key是否已转换<key, src><当前key, 原key>
-    public boolean skip                               =  false                ; // 遍历计算时标记
-    protected KeyAdapter keyAdapter                   = null                  ; // key格式转换
-    protected KEY_CASE keyCase 				          = DEFAULT_KEY_CASE      ; // 列名格式
+    protected String category                           = null                  ; // 分类
+    protected LinkedHashMap<String, Column> metadatas   = null                  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
+    protected transient DataSet container               = null                  ; // 包含当前对象的容器
+    protected transient Map<String, DataSet> containers = new HashMap<>()       ; // 包含当前对象的容器s
+    protected transient Map<String, DataRow> parents    = new Hashtable<>()     ; // 上级
+    protected List<String> primaryKeys                  = new ArrayList<>()     ; // 主键
+    protected List<String> updateColumns                = new ArrayList<>()     ; // 需要参与update insert操作
+    protected List<String> ignoreUpdateColumns          = new ArrayList<>()     ; // 不参与update insert操作
+    protected String datalink                           = null                  ; // 超链接
+    protected String datasource                         = null                  ; // 数据源(表|视图|XML定义SQL)
+    protected Catalog catalog                           = null                  ; // catalog
+    protected Schema schema                             = null                  ; // schema
+    protected LinkedHashMap<String, Table> tables       = new LinkedHashMap<>() ; // 数据来源表(图数据库可能来自多个表) //TODO 解析sql中多个表(未实现)
+    protected DataRow attributes                        = null                  ; // 属性
+    protected DataRow tags                              = null                  ; // 标签
+    protected DataRow relations                         = null                  ; // 对外关系
+    protected long createTime                           = 0                     ; // 创建时间(毫秒)
+    protected long nanoTime                             = 0                     ; // 创建时间(纳秒)
+    protected long expires                              = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    protected Boolean isNew                             = false                 ; // 强制新建(否则根据主键值判断insert | update)
+    protected boolean isFromCache                       = false                 ; // 是否来自缓存
+    protected Map<String, String> keymap                = new HashMap<>()       ; // keymap
+    protected boolean isUpperKey                        = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
+    protected Map<String, String> converts              = new HashMap<>()       ; // key是否已转换<key, src><当前key, 原key>
+    public boolean skip                                 =  false                ; // 遍历计算时标记
+    protected KeyAdapter keyAdapter                     = null                  ; // key格式转换
+    protected KEY_CASE keyCase 				            = DEFAULT_KEY_CASE      ; // 列名格式
 
     public DataRow() {
-        parseKeycase(null);
+        parseKeyCase(null);
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
         if (null != pk) {
             primaryKeys.add(DEFAULT_PRIMARY_KEY);
@@ -110,7 +110,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         nanoTime = System.currentTimeMillis();
     }
 
-    protected void parseKeycase(KEY_CASE keyCase) {
+    protected void parseKeyCase(KEY_CASE keyCase) {
         if(null == keyCase){
             keyCase = this.keyCase;
         }else{
@@ -134,7 +134,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow(KEY_CASE keyCase) {
         this();
-        parseKeycase(keyCase);
+        parseKeyCase(keyCase);
     }
 
     public DataRow(String table) {
@@ -236,7 +236,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow setKeyCase(KEY_CASE keyCase) {
-        parseKeycase(keyCase);
+        parseKeyCase(keyCase);
         return this;
     }
 
@@ -880,7 +880,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 put(KEY_CASE.SRC, key, value);
             }
         }
-        parseKeycase(KEY_CASE.LOWER);
+        parseKeyCase(KEY_CASE.LOWER);
         return this;
     }
 
@@ -908,7 +908,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 put(KEY_CASE.SRC, key, value);
             }
         }
-        parseKeycase(KEY_CASE.UPPER);
+        parseKeyCase(KEY_CASE.UPPER);
         return this;
     }
 
