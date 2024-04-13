@@ -21,6 +21,10 @@
             <artifactId>anyline-data-jdbc</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-environment-spring</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <scope>provided</scope>
