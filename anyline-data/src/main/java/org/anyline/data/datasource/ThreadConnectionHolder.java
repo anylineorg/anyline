@@ -31,4 +31,11 @@ public class ThreadConnectionHolder {
             cons.remove(ds);
         }
     }
+    public static boolean contains(DataSource ds, Connection connection){
+        Map<DataSource, Connection> cons = connections.get();
+        if(null != cons){
+            return connection == cons.get(ds);
+        }
+        return false;
+    }
 }

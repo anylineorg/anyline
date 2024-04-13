@@ -1,7 +1,11 @@
 package org.anyline.data.datasource;
 
+import org.anyline.data.transaction.TransactionState;
+
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +17,16 @@ public class ApplicationConnectionHolder {
     public static Connection get(DataSource ds, String name){
         Map<String, Connection> map = connections.get(ds);
         if(null != map){
-            return map.get(name);
+            Connection connection = map.get(name);
+            try {
+                if (connection.isClosed()) {
+                    map.remove(ds);
+                }else{
+                    return connection;
+                }
+            }catch (Exception e){
+
+            }
         }
         return null;
     }
@@ -30,5 +43,12 @@ public class ApplicationConnectionHolder {
         if(null != map){
             map.remove(name);
         }
+    }
+    public static boolean contains(DataSource ds, Connection connection){
+        Map<String, Connection> map = connections.get(ds);
+        if(null != map && map.containsValue(connection)){
+            return true;
+        }
+        return false;
     }
 }

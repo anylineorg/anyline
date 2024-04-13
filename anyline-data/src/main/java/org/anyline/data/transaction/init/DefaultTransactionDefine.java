@@ -40,6 +40,7 @@ public class DefaultTransactionDefine implements TransactionDefine {
      * @see #setName
      */
     public DefaultTransactionDefine() {
+        this.name = System.currentTimeMillis()+"";
     }
 
     /**

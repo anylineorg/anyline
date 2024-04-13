@@ -4,6 +4,7 @@ import org.anyline.adapter.EntityAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverWorker;
+import org.anyline.data.datasource.ApplicationConnectionHolder;
 import org.anyline.data.datasource.ThreadConnectionHolder;
 import org.anyline.data.handler.ConnectionHandler;
 import org.anyline.data.handler.DataHandler;
@@ -67,8 +68,8 @@ public class DefaultJDBCWorker implements DriverWorker {
     @Override
     public void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource) {
         try {
-            Connection con = ThreadConnectionHolder.get(datasource);
-            if(con == connection){
+            if(ThreadConnectionHolder.contains(datasource, connection)
+            || ApplicationConnectionHolder.contains(datasource, connection)){
                 //有事务不要关闭，在事务管理器中关闭
                 return;
             }

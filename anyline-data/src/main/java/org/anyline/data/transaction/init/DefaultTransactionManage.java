@@ -35,7 +35,7 @@ public class DefaultTransactionManage implements TransactionManage {
         if(TransactionDefine.MODE.THREAD == mode) {
             //线程内事务
             con = ThreadConnectionHolder.get(datasource);
-            if(null == con) {
+            if(null == con || con.isClosed()) {
                 con = datasource.getConnection();
                 isNew = true;
                 ThreadConnectionHolder.set(datasource, con);
@@ -48,6 +48,8 @@ public class DefaultTransactionManage implements TransactionManage {
                 isNew = true;
                 ApplicationConnectionHolder.set(datasource, name, con);
             }
+            //放到线程中 获取连接时统一从线程中获取
+            ThreadConnectionHolder.set(datasource, con);
         }
         TransactionState state = new DefaultTransactionState();
         state.setConnection(con);
