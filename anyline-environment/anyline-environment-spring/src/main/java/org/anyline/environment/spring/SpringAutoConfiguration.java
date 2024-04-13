@@ -20,6 +20,11 @@ import java.util.Map;
 public class SpringAutoConfiguration implements InitializingBean {
     @Autowired(required = false)
     private Map<String, LoadListener> listeners;
+
+    @Autowired
+    public void setWorker(SpringEnvironmentWorker worker){
+        ConfigTable.setWorker(worker);
+    }
     //用户自定义数据类型转换器
     @Autowired(required = false)
     public void setConverts(Map<String, Convert> converts) {
