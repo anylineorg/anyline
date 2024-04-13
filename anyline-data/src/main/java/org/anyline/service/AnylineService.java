@@ -22,6 +22,8 @@ import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
+import org.anyline.data.param.Config;
+import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -328,6 +330,20 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions);
+	default DataSet querys(DataSet set, ConfigStore configs){
+		if(null != configs){
+			ConfigChain chain = configs.getConfigChain();
+			if(null != chain){
+				List<Config> list = chain.getConfigs();
+				if(null != list){
+					for(Config config:list){
+						set = set.select.filter(config.getCompare(), config.getKey(), config.getValues());
+					}
+				}
+			}
+		}
+		return set;
+	}
 	default DataSet querys(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
 		DefaultPageNavi navi = new DefaultPageNavi();
 		if(null == configs){

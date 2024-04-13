@@ -1129,6 +1129,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
     public DataSet getRows(int begin, int qty, String... params) {
         return getRows(begin, qty, kvs(params));
     }
+    public DataSet getRows(PageNavi navi, String ... params){
+        return getRows((int)navi.getFirstRow(), (int)navi.getLastRow(), params);
+    }
     public DataSet getRows(Compare compare, int begin, int qty, String... params) {
         return getRows(compare, begin, qty, kvs(params));
     }
@@ -5009,11 +5012,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
          * @param value value
          * @return DataSet
          */
-        public DataSet equals(String key, String value) {
+        public DataSet equals(String key, Object value) {
             return equals(DataSet.this, key, value);
         }
 
-        private DataSet equals(DataSet src, String key, String value) {
+        private DataSet equals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
             String tmpValue;
             for (DataRow row : src) {
@@ -5032,7 +5035,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
                 if (null != tmpValue) {
                     boolean chk = false;
                     if (ignoreCase) {
-                        chk = tmpValue.equalsIgnoreCase(value);
+                        if(null == value){
+                            chk = false;
+                        }else {
+                            chk = tmpValue.equalsIgnoreCase(value.toString());
+                        }
                     } else {
                         chk = tmpValue.equals(value);
                     }
@@ -5052,11 +5059,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
          * @param value value
          * @return DataSet
          */
-        public DataSet notEquals(String key, String value) {
+        public DataSet notEquals(String key, Object value) {
             return notEquals(DataSet.this, key, value);
         }
 
-        private DataSet notEquals(DataSet src, String key, String value) {
+        private DataSet notEquals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
             String tmpValue;
             for (DataRow row : src) {
@@ -5075,7 +5082,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
                 if (null != tmpValue) {
                     boolean chk = false;
                     if (ignoreCase) {
-                        chk = !tmpValue.equalsIgnoreCase(value);
+                        if(null == value){
+                            chk = false;
+                        }else {
+                            chk = !tmpValue.equalsIgnoreCase(value.toString());
+                        }
                     } else {
                         chk = !tmpValue.equals(value);
                     }
@@ -5095,11 +5106,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
          * @param value value
          * @return DataSet
          */
-        public DataSet contains(String key, String value) {
+        public DataSet contains(String key, Object value) {
             return contains(DataSet.this, key, value);
         }
 
-        private DataSet contains(DataSet src, String key, String value) {
+        private DataSet contains(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
             String tmpValue;
             for (DataRow row : src) {
@@ -5121,9 +5132,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
                     }
                     if (ignoreCase) {
                         tmpValue = tmpValue.toLowerCase();
-                        value = value.toLowerCase();
+                        value = value.toString().toLowerCase();
                     }
-                    if (tmpValue.contains(value)) {
+                    if (tmpValue.contains(value.toString())) {
                         set.add(row);
                     }
                 }
@@ -5653,7 +5664,56 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
             }
             return set;
         }
-
+        public DataSet filter(Compare compare, String key, Object values){
+            DataSet set = DataSet.this;
+            if(compare == Compare.EQUAL){
+                set = equals(key, values);
+            }else if(compare == Compare.NOT_EQUAL){
+                set = notEquals(key, values);
+            }else if(compare == Compare.GREAT){
+                set = greater(key, values);
+            }else if(compare == Compare.GREAT_EQUAL){
+                set = greaterEqual(key, values);
+            }else if(compare == Compare.LESS){
+                set = less(key, values);
+            }else if(compare == Compare.LESS_EQUAL){
+                set = lessEqual(key, values);
+            }else if(compare == Compare.IN){
+                set = in(key, values);
+            }else if(compare == Compare.NOT_IN){
+                set = notIn(key, values);
+            }else if(compare == Compare.EMPTY){
+                set = empty(key);
+            }else if(compare == Compare.NOT_EMPTY){
+                set = notEmpty(key);
+            }else if(compare == Compare.NULL){
+                set = isNull(key);
+            }else if(compare == Compare.NOT_NULL){
+                set = notNull(key);
+            }else if(compare == Compare.LIKE){
+                set = like(key, string(values));
+            }else if(compare == Compare.NOT_LIKE){
+                set = notLike(key, string(values));
+            }else if(compare == Compare.START_WITH){
+                set = startWith(key, string(values));
+            }else if(compare == Compare.END_WITH){
+                set = endWith(key, string(values));
+            }
+            return set;
+        }
+    }
+    private String string(Object object){
+        String string = null;
+        if(object instanceof Collection){
+            Collection list = (Collection) object;
+            if(!list.isEmpty()){
+                Object first = list.iterator().next();
+                if(null != first){
+                    string = first.toString();
+                }
+            }
+        }
+        return string;
     }
 
     public class Format implements Serializable{
