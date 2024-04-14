@@ -16,7 +16,12 @@ import java.util.List;
 
 public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
-    private JDBCDataSourceHolder holder = JDBCDataSourceHolder.instance();
+    private final JDBCDataSourceHolder holder = JDBCDataSourceHolder.instance();
+
+    @Override
+    public DataSourceHolder holder() {
+        return holder;
+    }
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();
@@ -34,7 +39,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
             }
             if(null != datasource){
                 try {
-                    runtime =  holder.create("default", datasource, false);
+                    runtime =  holder().create("default", datasource, false);
                     loadDefault = false;
                 }catch (Exception e){
                     runtime = null;
@@ -73,6 +78,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         return list;
     }
 
+
     /**
      *
      * @param head 前缀
@@ -83,7 +89,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
-            String def =  holder.reg("default", head);
+            String def =  holder().create("default", head);
             if (null != def) {
                 list.add(def);
             }
@@ -102,7 +108,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
                 try {
                     //返回 datasource的bean id
                     // sso, anyline.datasource.sso, env
-                    String datasource =  holder.reg(prefix, head + "." + prefix);
+                    String datasource =  holder().create(prefix, head + "." + prefix);
                     if(null != datasource) {
                         list.add(datasource);
                     }

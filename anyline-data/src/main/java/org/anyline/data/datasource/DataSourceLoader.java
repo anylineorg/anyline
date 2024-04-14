@@ -8,4 +8,5 @@ import java.util.List;
 public interface DataSourceLoader {
     Logger log = LoggerFactory.getLogger(DataSourceLoader.class);
     List<String> load();
+    DataSourceHolder holder();
 }

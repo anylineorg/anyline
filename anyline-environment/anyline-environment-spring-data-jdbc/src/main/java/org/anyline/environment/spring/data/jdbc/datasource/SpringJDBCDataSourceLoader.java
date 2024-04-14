@@ -37,7 +37,12 @@ import java.util.List;
 
 @Component("anyline.environment.spring.data.datasource.loader.jdbc")
 public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements DataSourceLoader {
-    private SpringJDBCDataSourceHolder holder = SpringJDBCDataSourceHolder.instance();
+    private final SpringJDBCDataSourceHolder holder = SpringJDBCDataSourceHolder.instance();
+
+    @Override
+    public DataSourceHolder holder() {
+        return holder;
+    }
     @Override
     public List<String> load() {
         List<String> list = new ArrayList<>();
