@@ -1629,7 +1629,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 	@Override
 	public String mergeFinalExists(DataRuntime runtime, Run run){
-		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n) ConfigStore.IS_EXISTS";
+		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n) IS_EXISTS";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
 		return sql;
 	}
