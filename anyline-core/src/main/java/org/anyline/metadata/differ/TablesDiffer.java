@@ -35,7 +35,7 @@ public class TablesDiffer implements MetadataDiffer {
             Table dest = dests.get(key);
             if(null == dest){
                 //新表不存在
-                drops.put(key, origins.get(origin));
+                drops.put(key, origin);
             }else {
                 if(!origin.equals(dest, true, ignoreSchema)){
                     origin.setUpdate(dest, false, false);
