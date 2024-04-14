@@ -1171,16 +1171,21 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         return equals(table, true);
     }
     public boolean equals(Table table, boolean ignoreCase) {
+        return equals(table, ignoreCase,false);
+    }
+    public boolean equals(Table table, boolean ignoreCase, boolean ignoreSchema) {
         if(null == table){
             return false;
         }
-        boolean catalog_equals = BasicUtil.equals(this.catalog, table.getCatalog(), ignoreCase);
-        if(!catalog_equals){
-            return false;
-        }
-        boolean schema_equals = BasicUtil.equals(this.schema, table.getSchema(), ignoreCase) ;
-        if(!schema_equals){
-            return false;
+        if(!ignoreSchema) {
+            boolean catalog_equals = BasicUtil.equals(this.catalog, table.getCatalog(), ignoreCase);
+            if (!catalog_equals) {
+                return false;
+            }
+            boolean schema_equals = BasicUtil.equals(this.schema, table.getSchema(), ignoreCase);
+            if (!schema_equals) {
+                return false;
+            }
         }
         boolean name_equals = BasicUtil.equals(this.name, table.getName());
         if(!name_equals){

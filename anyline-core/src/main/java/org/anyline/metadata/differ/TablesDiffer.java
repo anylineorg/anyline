@@ -2,28 +2,29 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Table;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * 表或列之间的对比结果
  */
 public class TablesDiffer implements MetadataDiffer {
-    private List<Table> adds = new ArrayList<>();
-    private List<Table> drops = new ArrayList<>();
-    private List<Table> updates = new ArrayList<>();
+    private LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
+    private LinkedHashMap<String, Table> drops = new LinkedHashMap<>();
+    private LinkedHashMap<String, Table> updates = new LinkedHashMap<>();
 
     public boolean isEmpty(){
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
     public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests){
+        return compare(origins, dests, true);
+    }
+    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, boolean ignoreSchema){
         TablesDiffer differ = new TablesDiffer();
-        List<Table> adds = new ArrayList<>();
-        List<Table> drops = new ArrayList<>();
-        List<Table> updates = new ArrayList<>();
+        LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
+        LinkedHashMap<String, Table> drops = new LinkedHashMap<>();
+        LinkedHashMap<String, Table> updates = new LinkedHashMap<>();
 
-        if(null != origins){
+        if(null == origins){
             origins = new LinkedHashMap<>();
         }
         if(null == dests){
@@ -34,17 +35,17 @@ public class TablesDiffer implements MetadataDiffer {
             Table dest = dests.get(key);
             if(null == dest){
                 //新表不存在
-                drops.add(origins.get(origin));
+                drops.put(key, origins.get(origin));
             }else {
-                if(!origin.equals(dest)){
+                if(!origin.equals(dest, true, ignoreSchema)){
                     origin.setUpdate(dest, false, false);
-                    updates.add(origin);
+                    updates.put(key, origin);
                 }
             }
         }
         for(String key:dests.keySet()){
             if(!origins.containsKey(key)){
-                adds.add(dests.get(key));
+                adds.put(key, dests.get(key));
             }
         }
         differ.setAdds(adds);
@@ -53,27 +54,27 @@ public class TablesDiffer implements MetadataDiffer {
         return differ;
     }
 
-    public List<Table> getAdds() {
+    public LinkedHashMap<String, Table> getAdds() {
         return adds;
     }
 
-    public void setAdds(List<Table> adds) {
+    public void setAdds(LinkedHashMap<String, Table> adds) {
         this.adds = adds;
     }
 
-    public List<Table> getDrops() {
+    public LinkedHashMap<String, Table> getDrops() {
         return drops;
     }
 
-    public void setDrops(List<Table> drops) {
+    public void setDrops(LinkedHashMap<String, Table> drops) {
         this.drops = drops;
     }
 
-    public List<Table> getUpdates() {
+    public LinkedHashMap<String, Table> getUpdates() {
         return updates;
     }
 
-    public void setUpdates(List<Table> updates) {
+    public void setUpdates(LinkedHashMap<String, Table> updates) {
         this.updates = updates;
     }
 }
