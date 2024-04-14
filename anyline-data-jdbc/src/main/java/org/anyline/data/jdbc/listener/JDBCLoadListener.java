@@ -89,6 +89,14 @@ public class JDBCLoadListener implements LoadListener {
         if(ConfigTable.worker.containsBean("anyline.service.default")) {
             AnylineService service = ConfigTable.worker.getBean("anyline.service.default", AnylineService.class);
             ServiceProxy.init(service);
+            if(null != service){
+                Map<String, AnylineService> services = ConfigTable.worker.getBeans(AnylineService.class);
+                for(AnylineService item:services.values()){
+                    if(null == item.getDao()){
+                        item.setDao(service.getDao());
+                    }
+                }
+            }
         }
     }
 }
