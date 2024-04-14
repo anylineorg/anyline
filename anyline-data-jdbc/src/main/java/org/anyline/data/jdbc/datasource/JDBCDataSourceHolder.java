@@ -112,7 +112,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
 
     @Override
     public String create(String key, String prefix) {
-        return null;
+        return reg(key, prefix);
     }
 
     @Override
