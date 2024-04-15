@@ -337,7 +337,7 @@ public interface AnylineService<E>{
 				List<Config> list = chain.getConfigs();
 				if(null != list){
 					for(Config config:list){
-						set = set.select.filter(config.getCompare(), config.getKey(), config.getValues());
+						set = set.select.filter(config.getCompare(), config.getVariable(), config.getValues());
 					}
 				}
 			}
