@@ -24,6 +24,7 @@
         <module>anyline-environment-spring-data-jdbc</module>
 
         <module>anyline-environment-vertx-data-jdbc</module>
+        <module>anyline-environment-quarkus</module>
 
     </modules>
     <build>
