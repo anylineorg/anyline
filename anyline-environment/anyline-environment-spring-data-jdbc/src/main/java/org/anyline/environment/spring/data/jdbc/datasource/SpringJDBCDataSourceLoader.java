@@ -83,10 +83,6 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
             }
             //有不支持通过connection返回获取连接信息的驱动，所以从配置文件中获取
             if(null != runtime) {
-                Object def = ConfigTable.worker.getBean("anyline.service.default");
-                if(null == ConfigTable.worker.getBean("anyline.service") && null != def) {
-                    ConfigTable.worker.regBean("anyline.service", def);
-                }
                 String driver = ConfigTable.worker.string("spring.datasource.,anyline.datasource.", "driver,driver-class,driver-class-name");
                 String url = ConfigTable.worker.string( "spring.datasource.,anyline.datasource.", "url,jdbc-url");
                 runtime.setDriver(driver);
@@ -114,6 +110,10 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
         list.addAll(load("anyline.datasource", loadDefault));
         //TODO 项目指定一个前缀
 
+        Object def = ConfigTable.worker.getBean("anyline.service.default");
+        if(null == ConfigTable.worker.getBean("anyline.service") && null != def) {
+            ConfigTable.worker.regBean("anyline.service", def);
+        }
         return list;
     }
 

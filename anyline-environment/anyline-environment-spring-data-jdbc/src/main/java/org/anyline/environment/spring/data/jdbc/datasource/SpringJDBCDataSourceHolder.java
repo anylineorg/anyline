@@ -56,7 +56,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 			}
 		}
 		DataSourceHolder.register("com.alibaba.druid.pool.DruidDataSource", this);
-		DataSourceHolder.register(org.anyline.data.jdbc.util.DataSourceUtil.DataSource_TYPE_DEFAULT, this);
+		DataSourceHolder.register(org.anyline.data.jdbc.util.DataSourceUtil.POOL_TYPE_DEFAULT, this);
 		DataSourceHolder.register(Connection.class, this);
 		DataSourceHolder.register(DataSource.class, this);
 		DataSourceHolder.register(JdbcTemplate.class, this);
@@ -112,7 +112,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	public String init(String key, String datasource, boolean override) throws Exception {
+	public String runtime(String key, String datasource, boolean override) throws Exception {
 		if(null != datasource) {
 			DataSourceHolder.check(key, override);
 			regTransactionManager(key, datasource);
@@ -144,7 +144,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		}
 		return datasource;
 	}
-	public DataRuntime init(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
+	public DataRuntime runtime(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
 		DataRuntime runtime = null;
 		if(datasource instanceof DataSource) {
 			if(null != ConfigTable.worker) {
@@ -169,7 +169,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		for(String key:caches.keySet()){
 			DataSource datasource = caches.get(key);
 			try {
-				init(key, datasource, true);
+				runtime(key, datasource, true);
 			}catch (Exception e){
 				e.printStackTrace();
 			}

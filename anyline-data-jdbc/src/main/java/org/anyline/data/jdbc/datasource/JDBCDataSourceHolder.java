@@ -66,7 +66,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             }
         }
         DataSourceHolder.register("com.alibaba.druid.pool.DruidDataSource", this);
-        DataSourceHolder.register(DataSourceUtil.DataSource_TYPE_DEFAULT, this);
+        DataSourceHolder.register(DataSourceUtil.POOL_TYPE_DEFAULT, this);
         DataSourceHolder.register(Connection.class, this);
         DataSourceHolder.register(DataSource.class, this);
     }
@@ -80,7 +80,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                 type = value(prefix.substring(0, prefix.length()- key.length()-1), "type", String.class, null);
             }
             if (type == null) {
-                type = DataSourceUtil.DataSource_TYPE_DEFAULT;
+                type = DataSourceUtil.POOL_TYPE_DEFAULT;
             }
             String url = value(prefix, "url", String.class, null);
             if(BasicUtil.isEmpty(url)){
@@ -96,7 +96,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             if(null == datasource){//创建数据源失败
                 return null;
             }
-            init(key, datasource, false);
+            runtime(key, datasource, false);
             return datasource;
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,8 +106,14 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
 
 
     @Override
-    public String create(String key, DatabaseType type, String url, String user, String password) throws Exception {
-        return null;
+    public String create(String key, DatabaseType database, String url, String user, String password) throws Exception {
+        Map params = new HashMap();
+        params.put("driverClass", database.driver());
+        params.put("url", url);
+        params.put("user", user);
+        params.put("password", password);
+        String ds = inject(key, params, true);
+        return runtime(key, ds, false);
     }
 
     @Override
@@ -134,7 +140,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
 
 
     @Override
-    public String init(String key, String datasource, boolean override) throws Exception {
+    public String runtime(String key, String datasource, boolean override) throws Exception {
         if(null != datasource) {
             DataSourceHolder.check(key, override);
             regTransactionManager(key, datasource);
@@ -168,8 +174,22 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
     }
 
     @Override
-    public DataRuntime init(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
-        return null;
+    public DataRuntime runtime(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
+        DataRuntime runtime = null;
+        if(datasource instanceof DataSource) {
+            if(null != ConfigTable.worker) {
+                DataSourceHolder.check(key, override);
+                //创建事务管理器
+                regTransactionManager(key, (DataSource)datasource);
+                runtime = JDBCRuntimeHolder.instance().reg(key, (DataSource)datasource);
+            }else{
+                //spring还没加载完先缓存起来，最后统一注册
+                if(!caches.containsKey(key) || override){
+                    caches.put(key, (DataSource)datasource);
+                }
+            }
+        }
+        return runtime;
     }
 
     /**
@@ -214,7 +234,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                 type = value(prefix, "type", String.class, null);
             }
             if (type == null) {
-                type = DataSourceUtil.DataSource_TYPE_DEFAULT;
+                type = DataSourceUtil.POOL_TYPE_DEFAULT;
             }
             Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
             Object driver =  value(params, "driverClass");

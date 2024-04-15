@@ -30,7 +30,7 @@ public class DataSourceUtil {
 
     public static Logger log = LoggerFactory.getLogger(DataSourceUtil.class);
 
-    public static final String DataSource_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
+    public static final String POOL_TYPE_DEFAULT = "com.zaxxer.hikari.HikariDataSource";
 
     /**
      * 创建数据源
@@ -104,7 +104,7 @@ public class DataSourceUtil {
      * @throws Exception 异常 Exception
      */
     public static DataSource build(DatabaseType type, String url, String user, String password){
-        return build(DataSource_TYPE_DEFAULT, type.driver(), url, user, password);
+        return build(POOL_TYPE_DEFAULT, type.driver(), url, user, password);
     }
 
 }

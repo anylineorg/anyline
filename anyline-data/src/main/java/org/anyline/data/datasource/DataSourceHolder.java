@@ -40,7 +40,6 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.metadata.Database;
-import org.anyline.metadata.type.DataType;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
@@ -93,7 +92,7 @@ public interface DataSourceHolder {
 		DataSourceHolder holder = instance(clazz);
 		return holder;
 	}
-	static DataSourceHolder instance(DataType type){
+	static DataSourceHolder instance(DatabaseType type){
 		return instances.get(type);
 	}
 	static DataSourceHolder instance(Class clazz){
@@ -155,8 +154,8 @@ public interface DataSourceHolder {
 			holder = instance((DataRuntime) chk);
 		}else if(chk instanceof Class){
 			holder = instance((Class) chk);
-		}else if(chk instanceof DataType){
-			holder = instance((DataType) chk);
+		}else if(chk instanceof DatabaseType){
+			holder = instance((DatabaseType) chk);
 		}else if(chk instanceof String){
 			holder = instance((String)chk);
 		}
@@ -448,11 +447,11 @@ public interface DataSourceHolder {
 
 	default String create(String key, Map<String, Object> param, boolean override) throws Exception {
 		String datasource_id = inject(key, param, override);
-		return init(key, datasource_id, override);
+		return runtime(key, datasource_id, override);
 	}
 
 	default DataRuntime create(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
-		return init(key, datasource, database, type, adapter, override);
+		return runtime(key, datasource, database, type, adapter, override);
 	}
 	default DataRuntime create(String key, Object datasource) throws Exception {
 		return create(key, datasource, null, null, null,false);
@@ -464,7 +463,7 @@ public interface DataSourceHolder {
 		return create(key, datasource, null, type,null, override);
 	}
 	default DataRuntime create(String key, Object datasource, DatabaseType type) throws Exception {
-		DataRuntime runtime = init(key, datasource, false);
+		DataRuntime runtime = runtime(key, datasource, false);
 		if(null != runtime && null != type){
 			runtime.setAdapterKey(type.name());
 		}
@@ -576,10 +575,10 @@ public interface DataSourceHolder {
 	 * @return DataSource
 	 * @throws Exception 异常 Exception
 	 */
-	String init(String key, String datasource, boolean override) throws Exception;
-	DataRuntime init(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception;
-	default DataRuntime init(String key, Object datasource, boolean override) throws Exception{
-		return init(key, datasource, null, null, null, override);
+	String runtime(String key, String datasource, boolean override) throws Exception;
+	DataRuntime runtime(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception;
+	default DataRuntime runtime(String key, Object datasource, boolean override) throws Exception{
+		return runtime(key, datasource, null, null, null, override);
 	}
 	/**
 	 * 根据params创建数据源, 同时注入到spring上下文
