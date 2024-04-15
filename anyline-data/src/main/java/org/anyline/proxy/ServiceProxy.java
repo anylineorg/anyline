@@ -389,11 +389,11 @@ public class ServiceProxy {
      *
      * @return DataSet
      */
-    public static DataSet querys(DataSet set, ConfigStore configs){
-        return service.querys(set, configs);
-    }
     public static DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions){
         return service.querys(dest, configs, obj, conditions);
+    }
+    public static DataSet querys(DataSet set, ConfigStore configs){
+        return service.querys(set, configs);
     }
     public static DataSet querys(String dest, Object obj, String ... conditions){
         return service.querys(dest, obj, conditions);
