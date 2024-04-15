@@ -419,24 +419,24 @@ public interface DriverAdapter {
 		List<Run> list = new ArrayList<>();
 		if(differ instanceof TablesDiffer){
 			TablesDiffer df = (TablesDiffer) differ;
-			List<Table> adds = df.getAdds();
-			List<Table> drops = df.getDrops();
-			List<Table> updates = df.getUpdates();
-			for(Table add:adds){
+			LinkedHashMap<String, Table> adds = df.getAdds();
+			LinkedHashMap<String, Table> drops = df.getDrops();
+			LinkedHashMap<String, Table> updates = df.getUpdates();
+			for(Table add:adds.values()){
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Table update:updates){
+			for(Table update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Table drop:drops){
+			for(Table drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
