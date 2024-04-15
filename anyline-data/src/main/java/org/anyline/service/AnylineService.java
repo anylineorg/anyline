@@ -341,6 +341,10 @@ public interface AnylineService<E>{
 					}
 				}
 			}
+			PageNavi navi = configs.getPageNavi();
+			if(null != navi){
+				set = set.getRows(navi);
+			}
 		}
 		return set;
 	}
