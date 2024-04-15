@@ -37,7 +37,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class DataSet implements Collection<DataRow>, Serializable, AnyData {
+public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataSet> {
     private static final long serialVersionUID = 6443551515441660101L;
     protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
     private LinkedHashMap<String, Column>  metadatas= null  ; // 数据类型相关(需要开启ConfigTable.IS_AUTO_CHECK_METADATA)
@@ -3393,16 +3393,17 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData {
         return join(items, BeanUtil.array2list(keys));
     }
 
-    public DataSet toLowerKey() {
+    @Override
+    public DataSet toLowerKey(boolean recursion, String... keys) {
         for (DataRow row : rows) {
-            row.toLowerKey();
+            row.toLowerKey(recursion, keys);
         }
         return this;
     }
-
-    public DataSet toUpperKey() {
+    @Override
+    public DataSet toUpperKey(boolean recursion, String... keys) {
         for (DataRow row : rows) {
-            row.toUpperKey();
+            row.toUpperKey(recursion, keys);
         }
         return this;
     }

@@ -47,7 +47,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class DataRow extends LinkedHashMap<String, Object> implements Serializable, AnyData {
+public class DataRow extends LinkedHashMap<String, Object> implements Serializable, AnyData<DataRow> {
     private static final long serialVersionUID = -2098827041540802313L;
     private static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
@@ -858,12 +858,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param keys keys
      * @return DataRow
      */
+    @Override
     public DataRow toLowerKey(boolean recursion, String... keys) {
         if (null != keys && keys.length > 0) {
             for (String key : keys) {
                 Object value = get(key);
-                if(recursion && value instanceof DataRow){
-                    ((DataRow)value).toLowerKey(true, keys);
+                if(recursion) {
+                    if (value instanceof AnyData) {
+                        value = ((AnyData) value).toLowerKey(recursion, keys);
+                    } else if (value instanceof Collection) {
+                        Collection list = (Collection) value;
+                        for(Object item:list){
+                            if(item instanceof AnyData){
+                                ((AnyData)item).toLowerKey(recursion, keys);
+                            }
+                        }
+                    }
                 }
                 remove(keyAdapter.key(key));
                 key = key.toLowerCase();
@@ -872,8 +882,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } else {
             for (String key : keys()) {
                 Object value = get(key);
-                if(recursion && value instanceof DataRow){
-                    ((DataRow)value).toLowerKey(true, keys);
+                if(recursion) {
+                    if (value instanceof AnyData) {
+                        value = ((AnyData) value).toLowerKey(recursion, keys);
+                    } else if (value instanceof Collection) {
+                        Collection list = (Collection) value;
+                        for(Object item:list){
+                            if(item instanceof AnyData){
+                                ((AnyData)item).toLowerKey(recursion, keys);
+                            }
+                        }
+                    }
                 }
                 remove(keyAdapter.key(key));
                 key = key.toLowerCase();
@@ -883,21 +902,31 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         parseKeyCase(KEY_CASE.LOWER);
         return this;
     }
-
-    public DataRow toLowerKey(String... keys) {
-        return toLowerKey(true, keys);
-    }
     /**
      * key转换成大写
-     * @param keys keys
+     * @param recursion 是否递归
+     * @param keys 需要转换的key,如果不提供则转换全部
      * @return DataRow
      */
-    public DataRow toUpperKey(String... keys) {
+    @Override
+    public DataRow toUpperKey(boolean recursion, String... keys) {
         if (null != keys && keys.length > 0) {
             for (String key : keys) {
                 Object value = get(key);
                 remove(keyAdapter.key(key));
                 key = key.toUpperCase();
+                if(recursion) {
+                    if (value instanceof AnyData) {
+                        value = ((AnyData) value).toUpperKey(recursion, keys);
+                    } else if (value instanceof Collection) {
+                        Collection list = (Collection) value;
+                        for(Object item:list){
+                            if(item instanceof AnyData){
+                                ((AnyData)item).toUpperKey(recursion, keys);
+                            }
+                        }
+                    }
+                }
                 put(KEY_CASE.SRC, key, value);
             }
         } else {
@@ -905,6 +934,18 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 Object value = get(key);
                 remove(keyAdapter.key(key));
                 key = key.toUpperCase();
+                if(recursion) {
+                    if (value instanceof AnyData) {
+                        value = ((AnyData) value).toUpperKey(recursion, keys);
+                    } else if (value instanceof Collection) {
+                        Collection list = (Collection) value;
+                        for(Object item:list){
+                            if(item instanceof AnyData){
+                                ((AnyData)item).toUpperKey(recursion, keys);
+                            }
+                        }
+                    }
+                }
                 put(KEY_CASE.SRC, key, value);
             }
         }
