@@ -131,6 +131,8 @@ public interface TransactionDefine {
         return ISOLATION_DEFAULT;
     }
 
+    void setTimeout(int timeout);
+
     /**
      * Return the transaction timeout.
      * <p>Must return a number of seconds, or {@link #TIMEOUT_DEFAULT}.
@@ -145,6 +147,8 @@ public interface TransactionDefine {
     default int getTimeout() {
         return TIMEOUT_DEFAULT;
     }
+
+    void setReadOnly(boolean readOnly);
 
     /**
      * Return whether to optimize as a read-only transaction.
@@ -176,11 +180,11 @@ public interface TransactionDefine {
     default String getName() {
         return null;
     }
+    void setName(String name);
     default MODE getMode(){
         return MODE.THREAD;
     }
     void setMode(MODE mode);
-    void setName(String name);
 
 
 }

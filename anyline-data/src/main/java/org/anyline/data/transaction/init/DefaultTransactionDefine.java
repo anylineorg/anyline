@@ -96,7 +96,8 @@ public class DefaultTransactionDefine implements TransactionDefine {
      * an exception when given any other timeout than {@link #TIMEOUT_DEFAULT}.
      * @see #TIMEOUT_DEFAULT
      */
-    public final void setTimeout(int timeout) {
+    @Override
+    public void setTimeout(int timeout) {
         if (timeout < TIMEOUT_DEFAULT) {
             throw new IllegalArgumentException("Timeout must be a positive integer or TIMEOUT_DEFAULT");
         }
@@ -122,7 +123,8 @@ public class DefaultTransactionDefine implements TransactionDefine {
      * A transaction manager which cannot interpret the read-only hint will
      * <i>not</i> throw an exception when asked for a read-only transaction.
      */
-    public final void setReadOnly(boolean readOnly) {
+    @Override
+    public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
@@ -136,18 +138,19 @@ public class DefaultTransactionDefine implements TransactionDefine {
      * <p>This will be used as transaction name to be shown in a
      * transaction monitor, if applicable (for example, WebLogic's).
      */
+    @Override
     public void setName(String name) {
         this.name = name;
     }
-
+    @Override
     public String getName() {
         return this.name;
     }
-
+    @Override
     public MODE getMode() {
         return mode;
     }
-
+    @Override
     public void setMode(MODE mode) {
         this.mode = mode;
     }
