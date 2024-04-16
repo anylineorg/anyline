@@ -54,7 +54,8 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
 
     @Override
     public boolean destroyBean(String bean) {
-        return false;
+        context.removeWrap(bean);
+        return true;
     }
 
     @Override
