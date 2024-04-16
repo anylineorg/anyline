@@ -153,6 +153,10 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         Class component = null;
         for(String clazz:classes){
             try {
+                //log.warn("load class:{}", clazz);
+                if(clazz.contains(".web.") || clazz.contains(".net.")){
+                    continue;
+                }
                 Class<?> c = loader.loadClass(clazz);
                 if(null == component) {
                     component = loader.loadClass(Component.class.getName());
@@ -271,6 +275,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
     }
     public static LinkedHashMap<String, Object> parse(File file){
+        //log.info("[parse config file][path:{}]", file.getAbsolutePath());
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         String txt = FileUtil.read(file, "UTF-8").toString();
         String[] lines = txt.split("\n");
