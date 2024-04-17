@@ -26,7 +26,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
     public List<String> load() {
         List<String> list = new ArrayList<>();
         boolean loadDefault = true; //是否需要加载default
-        if(!DataSourceHolder.contains("default")){
+        if(!ConfigTable.worker.containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")){
             //如果还没有注册默认数据源
             // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
             DataSource datasource = null;

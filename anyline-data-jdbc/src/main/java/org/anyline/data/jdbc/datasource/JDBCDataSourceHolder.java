@@ -96,7 +96,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             if(null == datasource){//创建数据源失败
                 return null;
             }
-            runtime(key, datasource, false);
+            runtime(key, datasource, true);
             return datasource;
         } catch (Exception e) {
             e.printStackTrace();
