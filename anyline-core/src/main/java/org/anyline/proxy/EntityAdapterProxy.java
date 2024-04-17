@@ -17,6 +17,8 @@
 package org.anyline.proxy;
 
 import org.anyline.adapter.EntityAdapter;
+import org.anyline.annotation.Autowired;
+import org.anyline.annotation.Component;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
@@ -29,6 +31,7 @@ import org.anyline.util.ConfigTable;
 import java.lang.reflect.Field;
 import java.util.*;
 
+@Component("anyline.entity.adapter.proxy")
 public class EntityAdapterProxy {
 
     public static LinkedHashMap<String, Table> class2table                              = new LinkedHashMap<>();  // class.name > table.name
@@ -63,7 +66,7 @@ public class EntityAdapterProxy {
         }
         return list;
     }
-
+    @Autowired(required = false)
     public static void setAdapters(Map<String, EntityAdapter> adapters) {
         //是否禁用默认adapter
         String defaultKey = "anyline.entity.adapter.default";
