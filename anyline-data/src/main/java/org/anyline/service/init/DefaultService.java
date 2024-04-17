@@ -3292,7 +3292,7 @@ public class DefaultService<E> implements AnylineService<E> {
             try {
                 boolean result = dao.add(column);
                 if (result) {
-                    columns.put(column.getName(), column);
+                    columns.put(column.getName().toUpperCase(), column);
                 }
                 return result;
             }finally {
@@ -3331,7 +3331,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     origin.setUpdate(update, false, false);
                     BeanUtil.copyFieldValue(column, origin);
                     column.setUpdate(update, false, false);
-                    columns.put(origin.getName(), origin);
+                    columns.put(origin.getName().toUpperCase(), origin);
                 }
                 column.setTable(table);
                 return result;
