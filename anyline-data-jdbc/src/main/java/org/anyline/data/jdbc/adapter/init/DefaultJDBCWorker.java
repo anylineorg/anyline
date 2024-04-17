@@ -578,7 +578,7 @@ public class DefaultJDBCWorker implements DriverWorker {
                 }
             }
             JDBCUtil.updateTimeout(ps, configs);
-            ps.executeUpdate();
+            cnt = ps.executeUpdate();
             if(keyHolder) {
                 ResultSet rs = ps.getGeneratedKeys();
                 try {
