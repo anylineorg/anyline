@@ -17,6 +17,7 @@
 package org.anyline.environment.spring.data.jdbc.runtime;
 
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.jdbc.runtime.JDBCRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.data.util.DataSourceUtil;
@@ -113,5 +114,11 @@ public class SpringJDBCRuntime extends AbstractRuntime implements DataRuntime {
             }
         }
         return version;
+    }
+
+    @Override
+    public boolean destroy() throws Exception {
+        JDBCRuntimeHolder.instance().destroy(this.key);
+        return true;
     }
 }

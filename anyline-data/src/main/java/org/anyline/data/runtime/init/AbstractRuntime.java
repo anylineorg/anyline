@@ -153,7 +153,7 @@ public class AbstractRuntime implements DataRuntime {
 
     @Override
     public boolean destroy() throws Exception {
-        return false;
+        return true;
     }
 
 }

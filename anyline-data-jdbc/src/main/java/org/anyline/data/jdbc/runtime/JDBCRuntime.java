@@ -104,4 +104,11 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
         }
         return version;
     }
+
+    @Override
+    public boolean destroy() throws Exception {
+        JDBCRuntimeHolder.instance().destroy(this.key);
+        return true;
+    }
+
 }
