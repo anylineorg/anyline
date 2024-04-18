@@ -54,7 +54,7 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
             JdbcTemplate jdbc = null;
             DataSource datasource = null;
             try{
-                jdbc = ConfigTable.worker.getBean(JdbcTemplate.class);
+                jdbc = ConfigTable.environment().getBean(JdbcTemplate.class);
             }catch (Exception e){}
             DataRuntime runtime = null;
             if(null != jdbc){
@@ -67,7 +67,7 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
                 }
             }else{
                 try{
-                    datasource = ConfigTable.worker.getBean(DataSource.class);
+                    datasource = ConfigTable.environment().getBean(DataSource.class);
                 }catch (Exception e){
                     runtime = null;
                 }
@@ -83,19 +83,19 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
             }
             //有不支持通过connection返回获取连接信息的驱动，所以从配置文件中获取
             if(null != runtime) {
-                String driver = ConfigTable.worker.string("spring.datasource.,anyline.datasource.", "driver,driver-class,driver-class-name");
-                String url = ConfigTable.worker.string( "spring.datasource.,anyline.datasource.", "url,jdbc-url");
+                String driver = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "driver,driver-class,driver-class-name");
+                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,jdbc-url");
                 runtime.setDriver(driver);
                 runtime.setUrl(url);
                 if (BasicUtil.isNotEmpty(url)) {
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
                 }else{
-                    String adapterKey = ConfigTable.worker.string("spring.datasource.,anyline.datasource.", "adapter");
+                    String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
                     if(BasicUtil.isNotEmpty(adapterKey)){
                         runtime.setAdapterKey(adapterKey);
                     }
                 }
-                DataSourceTransactionManager dm = (DataSourceTransactionManager) ConfigTable.worker.getBean("transactionManager");
+                DataSourceTransactionManager dm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
                 if(null != dm){
                     TransactionManage manage = new SpringTransactionManage(dm);
                     TransactionManage.reg("default", manage);
@@ -110,9 +110,9 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
         list.addAll(load("anyline.datasource", loadDefault));
         //TODO 项目指定一个前缀
 
-        Object def = ConfigTable.worker.getBean("anyline.service.default");
-        if(null == ConfigTable.worker.getBean("anyline.service") && null != def) {
-            ConfigTable.worker.regBean("anyline.service", def);
+        Object def = ConfigTable.environment().getBean("anyline.service.default");
+        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
+            ConfigTable.environment().regBean("anyline.service", def);
         }
         return list;
     }

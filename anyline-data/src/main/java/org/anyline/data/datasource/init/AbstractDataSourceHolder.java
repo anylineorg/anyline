@@ -44,10 +44,10 @@ import java.util.Map;
 
 public abstract class AbstractDataSourceHolder implements DataSourceHolder {
     public <T> T value(String prefix, String key, Class<T> clazz, T def){
-        return ConfigTable.worker.value(prefix, key, DataSourceKeyMap.maps, clazz, def);
+        return ConfigTable.environment().value(prefix, key, DataSourceKeyMap.maps, clazz, def);
     }
     public Object value(String prefix, String key){
-        return ConfigTable.worker.value(prefix, key, DataSourceKeyMap.maps, Object.class, null);
+        return ConfigTable.environment().value(prefix, key, DataSourceKeyMap.maps, Object.class, null);
     }
 
     public <T> T value(Map map, String keys, Class<T> clazz, T def){

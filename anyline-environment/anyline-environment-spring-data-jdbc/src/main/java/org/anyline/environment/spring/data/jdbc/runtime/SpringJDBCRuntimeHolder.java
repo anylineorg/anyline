@@ -86,22 +86,22 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         String template_key = DataRuntime.ANYLINE_JDBC_TEMPLATE_BEAN_PREFIX +  key;
         BeanDefine define = new DefaultBeanDefine(JdbcTemplate.class);
         define.addValue("dataSource", new DefaultValueReference(datasource));
-        ConfigTable.worker.regBean(template_key, define);
+        ConfigTable.environment().regBean(template_key, define);
 
-        JdbcTemplate template = ConfigTable.worker.getBean(template_key, JdbcTemplate.class);
+        JdbcTemplate template = ConfigTable.environment().getBean(template_key, JdbcTemplate.class);
         return reg(key, template, null);
     }
 
     public DataRuntime reg(String key, DataSource datasource){
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
-        ConfigTable.worker.regBean(datasource_key, datasource);
+        ConfigTable.environment().regBean(datasource_key, datasource);
 
         String template_key = DataRuntime.ANYLINE_JDBC_TEMPLATE_BEAN_PREFIX +  key;
         BeanDefine define = new DefaultBeanDefine(JdbcTemplate.class);
         define.addValue("dataSource", datasource);
-        ConfigTable.worker.regBean(template_key, define);
+        ConfigTable.environment().regBean(template_key, define);
 
-        JdbcTemplate template = ConfigTable.worker.getBean(template_key, JdbcTemplate.class);
+        JdbcTemplate template = ConfigTable.environment().getBean(template_key, JdbcTemplate.class);
         return reg(key, template, null);
     }
 
@@ -126,24 +126,24 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         BeanDefine daoDefine = new DefaultBeanDefine(DefaultDao.class);
         daoDefine.addValue("runtime", runtime);
         daoDefine.setLazy(true);
-        ConfigTable.worker.regBean(dao_key, daoDefine);
+        ConfigTable.environment().regBean(dao_key, daoDefine);
 
         BeanDefine serviceDefine = new DefaultBeanDefine(DefaultService.class);
         serviceDefine.addValue("dao", new DefaultValueReference(dao_key));
         serviceDefine.setLazy(true);
-        ConfigTable.worker.regBean(service_key, serviceDefine);
+        ConfigTable.environment().regBean(service_key, serviceDefine);
         return runtime;
     }
     public boolean destroy(String key){
         try {
             runtimes.remove(key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_JDBC_TEMPLATE_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_JDBC_TEMPLATE_BEAN_PREFIX +  key);
 
             close(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key);
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销
             Map<String, DataRuntime> runtimes = RuntimeHolder.runtimes(key);
@@ -160,8 +160,8 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
 
     public static void close(String key){
         Object datasource = null;
-        if(ConfigTable.worker.containsBean(key)){
-            datasource = ConfigTable.worker.getSingletonBean(key);
+        if(ConfigTable.environment().containsBean(key)){
+            datasource = ConfigTable.environment().getSingletonBean(key);
             try {
                 closeConnection(datasource);
             }catch (Exception e){

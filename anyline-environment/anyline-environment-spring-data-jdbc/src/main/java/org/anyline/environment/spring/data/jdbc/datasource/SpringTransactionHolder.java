@@ -13,10 +13,10 @@ public class SpringTransactionHolder {/*
     public static TransactionStatus start(String datasource, TransactionDefinition definition){
         DataSourceTransactionManager dtm = null;
         if(BasicUtil.isEmpty(datasource) || "default".equals(datasource) ||!ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
-            dtm = (DataSourceTransactionManager) ConfigTable.worker.getBean("transactionManager");
+            dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
             datasource = "default";
         }else {
-            dtm = (DataSourceTransactionManager) ConfigTable.worker.getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
+            dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
         }
         // 获取事务
         TransactionStatus status = dtm.getTransaction(definition);
@@ -81,9 +81,9 @@ public class SpringTransactionHolder {/*
         String datasource = records.get(status);
         DataSourceTransactionManager dtm = null;
         if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
-            dtm = (DataSourceTransactionManager) ConfigTable.worker.getBean("transactionManager");
+            dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
         }else {
-            dtm = (DataSourceTransactionManager) ConfigTable.worker.getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
+            dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
         }
         if(null != dtm) {
             dtm.commit(status);
@@ -101,9 +101,9 @@ public class SpringTransactionHolder {/*
         String datasource = records.get(status);
         DataSourceTransactionManager dtm = null;
         if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
-            dtm = (DataSourceTransactionManager) ConfigTable.worker.getBean("transactionManager");
+            dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
         }else {
-            dtm = (DataSourceTransactionManager) ConfigTable.worker.getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
+            dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
         }
         if(null != dtm) {
             dtm.rollback(status);

@@ -71,7 +71,7 @@ public class ServiceProxy {
         }
         AnylineService service = null;
         try{
-            service = (AnylineService)ConfigTable.worker.getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + key);
+            service = (AnylineService)ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + key);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -97,7 +97,7 @@ public class ServiceProxy {
         DriverAdapter adapter = DriverAdapterHolder.getAdapter(type);
         if(null == adapter && type.url().contains("jdbc:") && ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER){
             try {
-                adapter = (DriverAdapter) ConfigTable.worker.getBean("anyline.data.jdbc.adapter.common");
+                adapter = (DriverAdapter) ConfigTable.environment().getBean("anyline.data.jdbc.adapter.common");
             }catch (Exception e){
                 e.printStackTrace();
             }

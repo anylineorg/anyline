@@ -248,7 +248,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             if(null != driver) {
                 params.put("driver", driver);
             }
-            Map<String, Object> sets = ConfigTable.worker.inject(datasource_id, prefix, params, DataSourceKeyMap.maps, poolClass);
+            Map<String, Object> sets = ConfigTable.environment().inject(datasource_id, prefix, params, DataSourceKeyMap.maps, poolClass);
             if(!params.containsKey(key)){
                 params.put(key, sets);
             }

@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class SolonAutoConfiguration {
     public static void init() {
-        Map<String, Convert> converts = ConfigTable.worker.getBeans(Convert.class);
-        Map<String, EntityAdapter> adapters = ConfigTable.worker.getBeans(EntityAdapter.class);
+        Map<String, Convert> converts = ConfigTable.environment().getBeans(Convert.class);
+        Map<String, EntityAdapter> adapters = ConfigTable.environment().getBeans(EntityAdapter.class);
         //内置转换器
         for (Convert convert : converts.values()) {
             Class origin = convert.getOrigin();

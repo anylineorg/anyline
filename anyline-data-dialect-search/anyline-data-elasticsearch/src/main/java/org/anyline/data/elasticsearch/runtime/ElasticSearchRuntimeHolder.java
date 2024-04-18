@@ -66,7 +66,7 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
     public DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         ElasticSearchRuntime runtime = new ElasticSearchRuntime();
         if(null == adapter){
-            adapter = ConfigTable.worker.getBean(ElasticSearchAdapter.class);
+            adapter = ConfigTable.environment().getBean(ElasticSearchAdapter.class);
         }
         if(datasource instanceof RestClient){
             String key = "temporary_es";
@@ -93,7 +93,7 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
 
     public static void reg(String key){
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
-        RestClient client = ConfigTable.worker.getBean(datasource_key, RestClient.class);
+        RestClient client = ConfigTable.environment().getBean(datasource_key, RestClient.class);
         reg(key, client, null);
     }
 
@@ -108,7 +108,7 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
     public static ElasticSearchRuntime reg(String datasource, RestClient client, DriverAdapter adapter){
         log.debug("[create jdbc runtime][key:{}]", datasource);
         if(null == adapter){
-            adapter = ConfigTable.worker.getBean(ElasticSearchAdapter.class);
+            adapter = ConfigTable.environment().getBean(ElasticSearchAdapter.class);
         }
         ElasticSearchRuntime runtime = new ElasticSearchRuntime(datasource, client, adapter);
         if(runtimes.containsKey(datasource)){
@@ -122,11 +122,11 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
 
         BeanDefine daoDefine = new DefaultBeanDefine(DefaultDao.class);
         daoDefine.addValue("runtime", runtime);
-        ConfigTable.worker.regBean(dao_key, daoDefine);
+        ConfigTable.environment().regBean(dao_key, daoDefine);
 
         BeanDefine serviceDefine = new DefaultBeanDefine(DefaultService.class);
         serviceDefine.addReferenceValue("dao", dao_key);
-        ConfigTable.worker.regBean(service_key, serviceDefine);
+        ConfigTable.environment().regBean(service_key, serviceDefine);
         return runtime;
 
     }
@@ -134,10 +134,10 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
     public boolean destroy(String key){
         try {
             runtimes.remove(key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key);
-            ConfigTable.worker.destroyBean(DataRuntime.ANYLINE_DATABASE_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key);
+            ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_DATABASE_BEAN_PREFIX +  key);
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销
             Map<String, DataRuntime> runtimes = runtimes(key);

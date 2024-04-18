@@ -565,7 +565,7 @@ public interface DataSourceHolder {
 		return regTransactionManager(key, datasource, false);
 	}
 	default String regTransactionManager(String key, String datasource, boolean primary){
-		return regTransactionManager(key, ConfigTable.worker.getBean(datasource, DataSource.class), primary);
+		return regTransactionManager(key, ConfigTable.environment().getBean(datasource, DataSource.class), primary);
 	}
 	/**
 	 * 添加数据源，同时添加事务与service
@@ -607,7 +607,7 @@ public interface DataSourceHolder {
 		return BeanUtil.value(map, keys, DataSourceKeyMap.maps, clazz, def);
 	}
 	default <T> T value(String prefix, String keys, Class<T> clazz, T def){
-		return ConfigTable.worker.value(prefix, keys, DataSourceKeyMap.maps, clazz, def);
+		return ConfigTable.environment().value(prefix, keys, DataSourceKeyMap.maps, clazz, def);
 	}
 
 

@@ -25,23 +25,23 @@ public class JDBCLoadListener implements LoadListener {
     @Override
     public void after() {
         //缓存
-        CacheProvider provider = ConfigTable.worker.getBean(CacheProvider.class);
+        CacheProvider provider = ConfigTable.environment().getBean(CacheProvider.class);
         CacheProxy.init(provider);
         //注入拦截器
-        InterceptorProxy.setQueryInterceptors(ConfigTable.worker.getBeans(QueryInterceptor.class));
-        InterceptorProxy.setCountInterceptors(ConfigTable.worker.getBeans(CountInterceptor.class));
-        InterceptorProxy.setUpdateInterceptors(ConfigTable.worker.getBeans(UpdateInterceptor.class));
-        InterceptorProxy.setInsertInterceptors(ConfigTable.worker.getBeans(InsertInterceptor.class));
-        InterceptorProxy.setDeleteInterceptors(ConfigTable.worker.getBeans(DeleteInterceptor.class));
-        InterceptorProxy.setExecuteInterceptors(ConfigTable.worker.getBeans(ExecuteInterceptor.class));
-        InterceptorProxy.setDDInterceptors(ConfigTable.worker.getBeans(DDInterceptor.class));
+        InterceptorProxy.setQueryInterceptors(ConfigTable.environment().getBeans(QueryInterceptor.class));
+        InterceptorProxy.setCountInterceptors(ConfigTable.environment().getBeans(CountInterceptor.class));
+        InterceptorProxy.setUpdateInterceptors(ConfigTable.environment().getBeans(UpdateInterceptor.class));
+        InterceptorProxy.setInsertInterceptors(ConfigTable.environment().getBeans(InsertInterceptor.class));
+        InterceptorProxy.setDeleteInterceptors(ConfigTable.environment().getBeans(DeleteInterceptor.class));
+        InterceptorProxy.setExecuteInterceptors(ConfigTable.environment().getBeans(ExecuteInterceptor.class));
+        InterceptorProxy.setDDInterceptors(ConfigTable.environment().getBeans(DDInterceptor.class));
 
-        DMListener dmListener = ConfigTable.worker.getBean(DMListener.class);
-        PrimaryGenerator primaryGenerator = ConfigTable.worker.getBean(PrimaryGenerator.class);
-        DDListener ddListener = ConfigTable.worker.getBean(DDListener.class);
-        Map<String, DriverAdapter> adapters = ConfigTable.worker.getBeans(DriverAdapter.class);
-        Map<String, DriverWorker> workers = ConfigTable.worker.getBeans(DriverWorker.class);
-        Map<String, DataSourceLoader> loaders =ConfigTable.worker.getBeans(DataSourceLoader.class);
+        DMListener dmListener = ConfigTable.environment().getBean(DMListener.class);
+        PrimaryGenerator primaryGenerator = ConfigTable.environment().getBean(PrimaryGenerator.class);
+        DDListener ddListener = ConfigTable.environment().getBean(DDListener.class);
+        Map<String, DriverAdapter> adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
+        Map<String, DriverWorker> workers = ConfigTable.environment().getBeans(DriverWorker.class);
+        Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
         if(null != adapters){
             DriverAdapterHolder.setAdapters(adapters);
             for(DriverAdapter adapter:adapters.values()){
@@ -67,10 +67,10 @@ public class JDBCLoadListener implements LoadListener {
             }
         }
         if(null == adapters || adapters.isEmpty()){
-            adapters = ConfigTable.worker.getBeans(DriverAdapter.class);
+            adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         }
         if(null == workers || workers.isEmpty()){
-            workers = ConfigTable.worker.getBeans(DriverWorker.class);
+            workers = ConfigTable.environment().getBeans(DriverWorker.class);
         }
         if(null != workers && null != adapters){
             for(DriverWorker worker:workers.values()){
@@ -86,11 +86,11 @@ public class JDBCLoadListener implements LoadListener {
                 }
             }
         }
-        if(ConfigTable.worker.containsBean("anyline.service.default")) {
-            AnylineService service = ConfigTable.worker.getBean("anyline.service.default", AnylineService.class);
+        if(ConfigTable.environment().containsBean("anyline.service.default")) {
+            AnylineService service = ConfigTable.environment().getBean("anyline.service.default", AnylineService.class);
             ServiceProxy.init(service);
             if(null != service){
-                Map<String, AnylineService> services = ConfigTable.worker.getBeans(AnylineService.class);
+                Map<String, AnylineService> services = ConfigTable.environment().getBeans(AnylineService.class);
                 for(AnylineService item:services.values()){
                     if(null == item.getDao()){
                         item.setDao(service.getDao());

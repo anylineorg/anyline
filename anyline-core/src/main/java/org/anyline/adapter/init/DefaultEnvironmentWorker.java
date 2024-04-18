@@ -242,13 +242,13 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                             Type vt = arguments[1];
                             Class kc = Class.forName(kt.getTypeName());
                             Class vc = Class.forName(vt.getTypeName());
-                            Map<String, Object> beans = ConfigTable.worker.getBeans(vc);
+                            Map<String, Object> beans = ConfigTable.environment().getBeans(vc);
                             method.invoke(object, beans);
                         }else if(ClassUtil.isInSub(pclass, Collection.class)){
                             //集合参数
                             Type ct = arguments[0];
                             Class cc = Class.forName(ct.getTypeName());
-                            Map<String, Object> beans = ConfigTable.worker.getBeans(cc);
+                            Map<String, Object> beans = ConfigTable.environment().getBeans(cc);
                             List<Object> values = new ArrayList<>();
                             for(Object bean:beans.values()){
                                 values.add(bean);

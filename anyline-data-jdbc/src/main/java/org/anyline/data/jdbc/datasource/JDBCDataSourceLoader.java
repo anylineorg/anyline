@@ -26,14 +26,14 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
     public List<String> load() {
         List<String> list = new ArrayList<>();
         boolean loadDefault = true; //是否需要加载default
-        if(!ConfigTable.worker.containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")){
+        if(!ConfigTable.environment().containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")){
             //如果还没有注册默认数据源
             // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
             DataSource datasource = null;
             DataRuntime runtime = null;
 
             try{
-                datasource = ConfigTable.worker.getBean(DataSource.class);
+                datasource = ConfigTable.environment().getBean(DataSource.class);
             }catch (Exception e){
                 runtime = null;
             }
@@ -49,14 +49,14 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
 
             //有不支持通过connection返回获取连接信息的驱动，所以从配置文件中获取
             if(null != runtime) {
-                String driver = ConfigTable.worker.string("spring.datasource.,anyline.datasource.", "driver,driver-class,driver-class-name");
-                String url = ConfigTable.worker.string( "spring.datasource.,anyline.datasource.", "url,jdbc-url");
+                String driver = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "driver,driver-class,driver-class-name");
+                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,jdbc-url");
                 runtime.setDriver(driver);
                 runtime.setUrl(url);
                 if (BasicUtil.isNotEmpty(url)) {
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
                 }else{
-                    String adapterKey = ConfigTable.worker.string("spring.datasource.,anyline.datasource.", "adapter");
+                    String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
                     if(BasicUtil.isNotEmpty(adapterKey)){
                         runtime.setAdapterKey(adapterKey);
                     }
@@ -71,9 +71,9 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         //TODO 项目指定一个前缀
 
 
-        Object def = ConfigTable.worker.getBean("anyline.service.default");
-        if(null == ConfigTable.worker.getBean("anyline.service") && null != def) {
-            ConfigTable.worker.regBean("anyline.service", def);
+        Object def = ConfigTable.environment().getBean("anyline.service.default");
+        if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
+            ConfigTable.environment().regBean("anyline.service", def);
         }
         return list;
     }
@@ -97,10 +97,10 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         //默认数据源
         //多数据源
         // 读取配置文件获取更多数据源 anyline.datasource.list
-        String prefixs = ConfigTable.worker.string(null, head + ".list");
+        String prefixs = ConfigTable.environment().string(null, head + ".list");
         if(null == prefixs){
             //anyline.datasource-list
-            prefixs = ConfigTable.worker.string(null,head + "-list");
+            prefixs = ConfigTable.environment().string(null,head + "-list");
         }
         if(null != prefixs){
             for (String prefix : prefixs.split(",")) {

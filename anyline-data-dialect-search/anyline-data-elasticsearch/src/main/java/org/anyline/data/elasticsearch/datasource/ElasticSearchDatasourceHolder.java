@@ -161,14 +161,14 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
 				prefix += ".";
 			}
-			String url = ConfigTable.worker.string(prefix, "url");
+			String url = ConfigTable.environment().string(prefix, "url");
 			if(BasicUtil.isEmpty(url)){
 				return null;
 			}
 
-			String type = ConfigTable.worker.string(prefix, "type");
+			String type = ConfigTable.environment().string(prefix, "type");
 			if(null == type){//未设置类型 先取默认数据源类型
-				type = ConfigTable.worker.string(prefix.substring(0, prefix.length()- key.length()-1), "type");
+				type = ConfigTable.environment().string(prefix.substring(0, prefix.length()- key.length()-1), "type");
 			}
 
 			if(null == type || !type.contains("ElasticSearchDataSource")){
@@ -221,14 +221,14 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 		check(key, override);
 		String url =  value(params, "url", String.class, null);
 		if(BasicUtil.isEmpty(url)){
-			url = ConfigTable.worker.string(prefix, "url");
+			url = ConfigTable.environment().string(prefix, "url");
 		}
 		if(BasicUtil.isEmpty(url)){
 			return null;
 		}
 		String type = value(params, "type", String.class, null);
 		if(BasicUtil.isEmpty(type)){
-			type = ConfigTable.worker.string(prefix, "type");
+			type = ConfigTable.environment().string(prefix, "type");
 		}
 		if(null == type || !type.contains("ElasticSearchDataSource")){
 			//只注册ElasticSearchDataSource类型
@@ -302,7 +302,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 						String password = value(prefix, "password", String.class, null);
 						return getHttpAsyncClientBuilder(httpSyncClientBuilder, user, password);
 					}).build();
-			ConfigTable.worker.regBean(datasource_id, client);
+			ConfigTable.environment().regBean(datasource_id, client);
 
 		} catch (Exception e) {
 			log.error("[注册数据源失败][type:ElasticSearch][key:{}][msg:{}]", key, e.toString());
@@ -324,7 +324,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	private String init(String key, String client, boolean override) throws Exception {
 		if(null != client) {
 			check(key, override);
-			Object bean = ConfigTable.worker.getBean(client);
+			Object bean = ConfigTable.environment().getBean(client);
 			if(bean instanceof RestClient) {
 				ElasticSearchRuntimeHolder.reg(key, (RestClient)bean, null);
 			}

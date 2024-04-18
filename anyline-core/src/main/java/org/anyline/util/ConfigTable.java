@@ -173,6 +173,13 @@ public class ConfigTable {
 		ConfigTable.worker = worker;
 	}
 
+	public static EnvironmentWorker environment() {
+		if(null == worker){
+			throw new RuntimeException("未注入EnvironmentWorker,基础Java环境调用DefaultEnvironmentWorker.start()," +
+				"其他环境添加依赖如:anyline-environment-spring-data-jdbc");
+		}
+		return worker;
+	}
 	private synchronized static void listener(){
 		if(listener_running){
 			return;

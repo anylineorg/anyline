@@ -231,7 +231,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 			BeanDefine define = new DefaultBeanDefine(DataSourceTransactionManager.class);
 			define.addValue("dataSource", datasource);
 			define.setPrimary(primary);
-			ConfigTable.worker.regBean(tm_id, define);
+			ConfigTable.environment().regBean(tm_id, define);
 			log.info("[创建事务控制器][数据源:{}][primary:{}][bean:{}]", key, primary, tm_id);
 		}*/
 		if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
