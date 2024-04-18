@@ -1,11 +1,7 @@
 package org.anyline.data.datasource;
 
-import org.anyline.data.transaction.TransactionState;
-
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 import java.sql.Connection;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +15,13 @@ public class ApplicationConnectionHolder {
         if(null != map){
             Connection connection = map.get(name);
             try {
-                if (connection.isClosed()) {
-                    map.remove(ds);
-                }else{
-                    return connection;
+                if(null != connection){
+                    if (connection.isClosed()) {
+                        map.remove(name);
+                        connection = null;
+                    }
                 }
+                return connection;
             }catch (Exception e){
                 e.printStackTrace();
             }
