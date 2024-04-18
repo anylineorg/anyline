@@ -374,7 +374,7 @@ public class ConfigTable {
 			}
 
 			if("jar".equals(getPackageType())){
-				log.info("[加载配置文件][type:jar][file:{}]", flag+"-config.xml");
+				log.debug("[加载配置文件][type:jar][file:{}]", flag+"-config.xml");
 				InputStream in;
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
 					// 遍历jar
@@ -421,7 +421,7 @@ public class ConfigTable {
 		}
 	}
 	protected synchronized static void loadConfigDir(File dir, String flag) {
-		log.info("[加载配置文件][dir:{}]", dir.getAbsolutePath());
+		log.debug("[加载配置文件][dir:{}]", dir.getAbsolutePath());
 		List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 		for(File f:files){
 			String name = f.getName();
@@ -435,7 +435,7 @@ public class ConfigTable {
 				loadConfig(f);
 			}
 		}
-		log.info("[加载配置文件完成]");
+		log.debug("[加载配置文件完成]");
 	}
 	public static LinkedHashMap<String, Object> parse(File file){
 		LinkedHashMap<String, Object> maps = parse(FileUtil.read(file).toString());
@@ -477,7 +477,7 @@ public class ConfigTable {
 				String value = propertyElement.getTextTrim();
 				configs.put(key.toUpperCase().trim(), value);
 				if (IS_DEBUG) {
-					log.info("[解析配置文件][{}={}]", key, value);
+					log.debug("[解析配置文件][{}={}]", key, value);
 				}
 			}
 			map2field();
@@ -498,10 +498,10 @@ public class ConfigTable {
 	protected static void loadConfig(File file){
 		try{
 			if(IS_DEBUG){
-				log.info("[加载配置文件] [file:{}]", file);
+				log.debug("[加载配置文件] [file:{}]", file);
 			}
 			if(null != file && !file.exists()){
-				log.info("[配置文件不存在] [file:{}]", file.getAbsolutePath());
+				log.debug("[配置文件不存在] [file:{}]", file.getAbsolutePath());
 				return;
 			}
 			if(file.isDirectory()){
@@ -574,7 +574,7 @@ public class ConfigTable {
 	public static void put(String key, String value){
 		configs.put(key, value);
 		if(IS_DEBUG){
-			log.info("[ConfigTable动态更新][{}={}]", key, value);
+			log.debug("[ConfigTable动态更新][{}={}]", key, value);
 		}
 	}
 	public static void put(String key, Object value){
@@ -595,7 +595,7 @@ public class ConfigTable {
 			}
 		}
 		if(IS_DEBUG){
-			log.info("[ConfigTable动态更新][{}={}]", key, value);
+			log.debug("[ConfigTable动态更新][{}={}]", key, value);
 		}
 	}
 	public static String getVersion(){
