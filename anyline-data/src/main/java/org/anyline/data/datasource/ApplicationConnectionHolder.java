@@ -25,7 +25,7 @@ public class ApplicationConnectionHolder {
                     return connection;
                 }
             }catch (Exception e){
-
+                e.printStackTrace();
             }
         }
         return null;
