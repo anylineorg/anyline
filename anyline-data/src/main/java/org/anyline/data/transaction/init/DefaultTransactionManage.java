@@ -47,6 +47,9 @@ public class DefaultTransactionManage implements TransactionManage {
                 con = datasource.getConnection();
                 isNew = true;
                 ApplicationConnectionHolder.set(datasource, name, con);
+                log.info("[开启跨线程事务][name:{}]", name);
+            }else{
+                log.info("[加入跨线程事务][name:{}]", name);
             }
             //放到线程中 获取连接时统一从线程中获取
             ThreadConnectionHolder.set(datasource, con);

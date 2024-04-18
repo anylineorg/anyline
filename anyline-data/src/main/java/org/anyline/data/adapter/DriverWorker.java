@@ -6,6 +6,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface DriverWorker {
+    Logger log = LoggerFactory.getLogger(DriverWorker.class);
     /**
      * 根据类型注入到DriverAdapter中
      * @return Class

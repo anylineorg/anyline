@@ -1,21 +1,37 @@
 package org.anyline.data.datasource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ThreadConnectionHolder {
+    protected static Logger log = LoggerFactory.getLogger(ThreadConnectionHolder.class);
     /**
      * 线程内有效
      */
     private static final ThreadLocal<Map<DataSource, Connection>> connections = new ThreadLocal<>();
     public static Connection get(DataSource ds){
+        Connection con = null;
         Map<DataSource, Connection> cons = connections.get();
         if(null != cons){
-            return cons.get(ds);
+            con = cons.get(ds);
         }
-        return null;
+        if(null != con){
+            try {
+                log.info("[获取线程内事务连接]");
+                if (con.isClosed()) {
+                    con = null;
+                    log.info("[线程内事务连接异常关闭]");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return con;
     }
     public static void set(DataSource ds, Connection con){
         Map<DataSource, Connection> cons = connections.get();
