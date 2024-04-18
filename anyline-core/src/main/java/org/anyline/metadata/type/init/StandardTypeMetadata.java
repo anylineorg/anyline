@@ -65,6 +65,14 @@ public enum StandardTypeMetadata implements TypeMetadata {
             if(null == value){
                 value = def;
             }
+            if(null != value){
+                String str = value.toString();
+                if(BasicUtil.checkEl(str)){
+                    //${A.USER_ID}
+                    value = str.substring(2, str.length() - 1);
+                    return value;
+                }
+            }
             if(value instanceof String){
             }else if(value instanceof Date){
                 value = DateUtil.format((Date)value);
