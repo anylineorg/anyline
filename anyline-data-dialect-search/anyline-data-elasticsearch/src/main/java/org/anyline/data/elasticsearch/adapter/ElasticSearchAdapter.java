@@ -5784,7 +5784,7 @@ PUT index_user/_bulk
             //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}
             String content = FileUtil.read(response.getEntity().getContent()).toString();
             result.setText(content);
-            log.warn("[status:{}]", status);
+            log.info("[status:{}]", status);
         }catch (Exception e){
             e.printStackTrace();
         }
