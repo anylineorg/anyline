@@ -71,6 +71,7 @@ public class DefaultTransactionManage implements TransactionManage {
         con.setAutoCommit(true);
         con.close();
         String name = state.getName();
+        log.info("[提交事务][name:{}]", name);
         TransactionDefine.MODE mode = state.getMode();
         if(TransactionDefine.MODE.THREAD == mode){
             ThreadConnectionHolder.remove(ds);
@@ -93,6 +94,7 @@ public class DefaultTransactionManage implements TransactionManage {
         con.setAutoCommit(true);
         con.close();
         String name = state.getName();
+        log.info("[回滚事务][name:{}]", name);
         TransactionDefine.MODE mode = state.getMode();
         if(TransactionDefine.MODE.THREAD == mode){
             ThreadConnectionHolder.remove(ds);
