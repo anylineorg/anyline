@@ -21,11 +21,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.entity.geometry.Point;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
-import org.anyline.entity.geometry.Point;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
@@ -4674,7 +4675,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     /**
-     * 排序
+     * 排序默认根据元数据类型，如果没有设置的一律按String执行
      * @param factor 1:正序 -1:倒序
      * @param keys 参与排序的列
      * @return this
@@ -4684,6 +4685,11 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             public int compare(DataRow r1, DataRow r2) {
                 int result = 0;
                 for (String key : keys) {
+                    TypeMetadata.CATEGORY_GROUP type = null;
+                    Column column = DataSet.this.getMetadata(key);
+                    if(null != column){
+                        type = column.getTypeMetadata().getCategoryGroup();
+                    }
                     Object v1 = r1.get(key);
                     Object v2 = r2.get(key);
                     if (null == v1) {
@@ -4696,15 +4702,15 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                             return factor;
                         }
                     }
-                    if (BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)) {
+                    if(type == TypeMetadata.CATEGORY_GROUP.NUMBER){
                         BigDecimal num1 = new BigDecimal(v1.toString());
                         BigDecimal num2 = new BigDecimal(v2.toString());
                         result = num1.compareTo(num2);
-                    } else if (v1 instanceof Date && v2 instanceof Date) {
+                    }else if(type == TypeMetadata.CATEGORY_GROUP.DATETIME){
                         Date date1 = (Date)v1;
                         Date date2 = (Date)v2;
                         result = date1.compareTo(date2);
-                    } else {
+                    }else{
                         result = v1.toString().compareTo(v2.toString());
                     }
                     if(result != 0) {
