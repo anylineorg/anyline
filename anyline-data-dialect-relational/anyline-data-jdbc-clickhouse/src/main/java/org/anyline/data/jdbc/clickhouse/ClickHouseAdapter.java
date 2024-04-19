@@ -30,6 +30,8 @@ import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.proxy.ConvertProxy;
+import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -44,6 +46,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	public ClickHouseAdapter(){
 		delimiterFr = "";
 		delimiterTo = "";
+		ClickhouseConvert.reg();
 		for(ClickHouseTypeMetadataAlias alias:ClickHouseTypeMetadataAlias.values()){
 			reg(alias);
 			alias(alias.name(), alias.standard());
@@ -2896,7 +2899,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3772,7 +3775,31 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.primary(runtime, builder, meta);
+		PrimaryKey primary = meta.getPrimaryKey();
+		LinkedHashMap<String, Column> pks = null;
+		if(null != primary){
+			pks = primary.getColumns();
+		}else{
+			pks = meta.primarys();
+		}
+		if(!pks.isEmpty()){//不支持单列主键时在列名上设置
+			builder.append(",PRIMARY KEY (");
+			boolean first = true;
+			Column.sort(primary.getPositions(), pks);
+			for(Column pk:pks.values()){
+				if(!first){
+					builder.append(",");
+				}
+				first = false;
+				delimiter(builder, pk.getName());
+				String order = pk.getOrder();
+				if(BasicUtil.isNotEmpty(order)){
+					builder.append(" ").append(order);
+				}
+			}
+			builder.append(")");
+		}
+		return builder;
 	}
 
 	/**
@@ -4759,7 +4786,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildDropAutoIncrement(runtime, meta);
+		//return super.buildDropAutoIncrement(runtime, meta);
+		return new ArrayList<>();
 	}
 
 	/**
@@ -4873,6 +4901,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 列定义:定义列的主键标识(注意不要跟表定义中的主键重复)
+	 * 不支持在列上标记
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 列
@@ -4880,7 +4909,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.primary(runtime, builder, meta);
+		//return super.primary(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
@@ -4893,7 +4923,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.increment(runtime, builder, meta);
+		//return super.increment(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
@@ -4919,7 +4950,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.position(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
