@@ -154,7 +154,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , BINARY(CATEGORY.BYTES, "BINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA, ElasticSearch)
    , VARBINARY(CATEGORY.BYTES, "VARBINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA)
 
-    , STRING(CATEGORY.TEXT, "STRING", null, String.class, 1, 1, 1, Doris, ClickHouse){
+    , STRING(CATEGORY.TEXT, "String", null, String.class, 1, 1, 1, Doris, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
     , FixedString(CATEGORY.TEXT, "FixedString", null, String.class, 0, 1, 1, ClickHouse){
