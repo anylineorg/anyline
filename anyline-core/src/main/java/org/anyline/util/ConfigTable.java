@@ -29,9 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -46,7 +49,7 @@ public class ConfigTable {
 	protected static String webRoot;
 	protected static String classpath;
 	protected static String libpath;
-	protected static Hashtable<String, Object> configs;
+	protected static Hashtable<String, Object> configs = new Hashtable<>()	;
 	protected static long lastLoadTime 					= 0					;	// 最后一次加载时间
 	protected static int reload 						= 0					;	// 重新加载间隔
 	protected static final String version 				= "8.7.1-SNAPSHOT"	;	// 版本号
@@ -54,9 +57,11 @@ public class ConfigTable {
 	protected static boolean isLoading 					= false				;	// 是否加载配置文件中
 	private static boolean listener_running 			= false				;	// 监听是否启动
 
+
 	public static String CONFIG_NAME = "anyline-config.xml";
 
 	// 对应配置文件key 如果集成了spring boot环境则与spring配置文件 anyline.*对应
+	public static String ENVIRONMENT_CONFIG_FILE_NAMES 					= "application.properties,application.yml";   // 配置文件
 	public static Class DEFAULT_JDBC_ENTITY_CLASS						= DataRow.class ;
 	public static Class DEFAULT_MONGO_ENTITY_CLASS						= DataRow.class ;
 	public static Class DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS				= DataRow.class ;
@@ -163,6 +168,12 @@ public class ConfigTable {
 	public static String GENERATOR_TABLES								= "*"			;   // 主键生成器适用的表
 	public final static GeneratorConfig GENERATOR 						= new GeneratorConfig();
 	static{
+		prepare();
+		try {
+			loadEnvironment();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		init();
 	}
 	public ConfigTable(){
@@ -262,7 +273,7 @@ public class ConfigTable {
 	 * 当前项目目录类型
 	 * @return String
 	 */
-	public static String getPackageType(){
+	public static String getProjectProtocol(){
 		return ConfigTable.class.getResource("/").getProtocol();
 		/*String type = "war";
 		if("jar".equals(type)){
@@ -299,7 +310,8 @@ public class ConfigTable {
 
 		return path;
 	}
-	public static void init(String flag) {
+	public static void prepare(){
+
 		if(isLoading){
 			return;
 		}
@@ -354,10 +366,172 @@ public class ConfigTable {
 			}
 		}
 		libpath = new File(new File(classpath).getParent(), "lib").getAbsolutePath();
+	}
+	public static void init(String flag) {
 		// 加载配置文件
 		loadConfig(flag);
 	}
 
+	/**
+	 * 加载项目配置文件
+	 */
+	public static void loadEnvironment() throws Exception {
+		String[] items = ENVIRONMENT_CONFIG_FILE_NAMES.split(",");
+		if("jar".equals(getProjectProtocol())){
+			log.debug("[load environment][type:jar]");
+			if (FileUtil.getPathType(AnylineConfig.class) == 0) {
+				// 遍历jar
+				JarFile jar = new JarFile(System.getProperty("java.class.path"));
+				Enumeration<JarEntry> entries = jar.entries();
+				while (entries.hasMoreElements()) {
+					JarEntry entry = entries.nextElement();
+					String name = entry.getName();
+					System.out.println(name);
+					if(check(name)){
+						InputStream in = jar.getInputStream(entry);
+						String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
+						parseEnvironment(txt, name);
+					}
+				}
+			}else{
+				for(String item:items){
+					InputStream in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+item);
+					String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
+					parseEnvironment(txt, item);
+				}
+			}
+			// 加载jar文件同目录的config
+			File dir = new File(FileUtil.merge(root, "config"));
+			for(String item:items){
+				String txt = FileUtil.read(new File(dir, item), StandardCharsets.UTF_8).toString();
+				parseEnvironment(txt, item);
+			}
+		}else{
+			// classpath根目录
+			File dir = new File(classpath);
+			for(String item:items){
+				String txt = FileUtil.read(new File(dir, item), StandardCharsets.UTF_8).toString();
+				parseEnvironment(txt, item);
+			}
+		}
+		map2field();
+	}
+	public static boolean check(String name){
+		String[] items = ENVIRONMENT_CONFIG_FILE_NAMES.split(",");
+		for(String item:items){
+			if(name.endsWith(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	public static void loadEnvironment(String path){
+		try {
+			log.debug("[load environment][path:{}]", path);
+			ClassLoader loader = ConfigTable.class.getClassLoader();
+			Enumeration<URL> urls = loader.getResources(path);
+			while (urls.hasMoreElements()){
+				parseEnvironment(urls.nextElement());
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	public static void parseEnvironment(URL url){
+		try {
+			log.debug("[parse environment][url:{}]", url);
+			LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+			String path = url.getPath();
+			InputStream in = url.openStream();
+			String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
+			if(path.contains(".yml")){
+				map = parseYml(txt);
+			}else if(path.contains("properties")){
+				map = parseProperty(txt);
+			}
+			for(String key:map.keySet()){
+				put(key.trim().toUpperCase(), map.get(key));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void parseEnvironment(String txt, String name){
+		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+		if(name.endsWith(".properties")){
+			map = parseProperty(txt);
+		}else if(name.endsWith(".yml")){
+			map = parseYml(txt);
+		}
+		for(String key:map.keySet()){
+			put(key.trim().toUpperCase(), map.get(key));
+		}
+	}
+	public static LinkedHashMap<String, Object> parseYml(String txt){
+		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+		Map<Integer, String> heads = new HashMap<>();
+		String[] lines = txt.split("\n");
+		for(String line:lines){
+			int idx = line.indexOf(":");
+			if(idx == -1){
+				continue;
+			}
+			if(line.trim().startsWith("#")){
+				continue;
+			}
+			String key = line.substring(0, idx);
+			String val = line.substring(idx+1).trim();
+			Integer lvl = lvl(key);
+			key = key.trim();
+			if(line.trim().endsWith(":")){
+				heads.put(lvl, key.trim());
+			}else{
+				String head = head(heads, lvl);
+				if(head.isEmpty()){
+					head = key;
+				}else{
+					head = head+ "." + key;
+				}
+				map.put(head, val);
+			}
+		}
+		return map;
+	}
+	public static LinkedHashMap<String, Object> parseProperty(String txt){
+		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+		String[] lines = txt.split("\n");
+		for(String line:lines){
+			line = line.trim();
+			if(line.startsWith("#")){
+				continue;
+			}
+			if(line.contains("=")){
+				int idx = line.indexOf("=");
+				String key = line.substring(0, idx);
+				String val = line.substring(idx+1);
+				map.put(key, val);
+			}
+		}
+		return map;
+	}
+	private static String head(Map<Integer, String> headers, int lvl){
+		StringBuilder head = new StringBuilder();
+		for(int i=0; i<lvl; i++){
+			if(i>0){
+				head.append(".");
+			}
+			head.append(headers.get(i));
+		}
+		return head.toString();
+	}
+	private static Integer lvl(String key){
+		//按2个空格1级
+		Integer lvl = 0;
+		int length = key.length() - key.trim().length();
+		lvl = length/2;
+		return lvl;
+	}
 	/**
 	 * 加载配置文件
 	 * 首先加载anyline-config.xml
@@ -373,7 +547,7 @@ public class ConfigTable {
 				configs.put("HOME_DIR", root);
 			}
 
-			if("jar".equals(getPackageType())){
+			if("jar".equals(getProjectProtocol())){
 				log.debug("[加载配置文件][type:jar][file:{}]", flag+"-config.xml");
 				InputStream in;
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {
@@ -394,8 +568,8 @@ public class ConfigTable {
 					}
 				}else{
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+flag+"-config.xml");
-					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
-					parse(txt);
+					String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
+					parseXML(txt);
 				}
 				// 加载jar文件同目录的config
 				File dir = new File(FileUtil.merge(root, "config"));
@@ -438,11 +612,11 @@ public class ConfigTable {
 		log.debug("[加载配置文件完成]");
 	}
 	public static LinkedHashMap<String, Object> parse(File file){
-		LinkedHashMap<String, Object> maps = parse(FileUtil.read(file).toString());
+		LinkedHashMap<String, Object> maps = parseXML(FileUtil.read(file).toString());
 		listener_files.put(file.getAbsolutePath(), System.currentTimeMillis());
 		return maps;
 	}
-	public static LinkedHashMap<String, Object> parse(String xml){
+	public static LinkedHashMap<String, Object> parseXML(String xml){
 		LinkedHashMap<String, Object> maps = new LinkedHashMap<>();
 		try {
 			if(BasicUtil.isEmpty(xml)){

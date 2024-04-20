@@ -77,7 +77,7 @@ public abstract class AnylineConfig {
 		try {
 
 			int configSize = 0;
-			if ("jar".equals(ConfigTable.getPackageType())) {
+			if ("jar".equals(ConfigTable.getProjectProtocol())) {
 				InputStream in = null;
 				log.info("[加载配置文件][type:jar][file:{}]", fileName);
 				if (FileUtil.getPathType(AnylineConfig.class) == 0) {

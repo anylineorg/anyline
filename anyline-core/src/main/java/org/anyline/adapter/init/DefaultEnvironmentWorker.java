@@ -35,6 +35,7 @@ import java.lang.reflect.*;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -43,16 +44,14 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     protected static Logger log = LoggerFactory.getLogger(DefaultEnvironmentWorker.class);
     private static DefaultEnvironmentWorker instance = null;
     private static final Map<String, Object> factory = new HashMap<>();
-    public static EnvironmentWorker start(){
+    public static EnvironmentWorker start(File config){
         if(null == instance){
             instance = new DefaultEnvironmentWorker();
         }
         ConfigTable.setWorker(instance);
-        parse(new File(ConfigTable.getClassPath(), "application.properties"));
-        parse(new File(ConfigTable.getClassPath(), "application.yml"));
-        parse(new File(ConfigTable.getClassPath(), "application.xml"));
-        parse(new File(ConfigTable.getClassPath(), "app.properties"));
-        parse(new File(ConfigTable.getClassPath(), "app.yml"));
+        if(null != config){
+            ConfigTable.parseEnvironment(FileUtil.read(config, StandardCharsets.UTF_8).toString(), config.getName());
+        }
         try {
             loadBean();
         }catch (Exception e){
@@ -65,9 +64,8 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
         return instance;
     }
-    public static void start(File config){
-        start();
-        parse(config);
+    public static EnvironmentWorker start(){
+        return start(null);
     }
     public static void loadBean() throws Exception{
         //加载当前jar中的配置文件
@@ -93,7 +91,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
 
         //2.项目中的配置文件
-        String type = ConfigTable.getPackageType();
+        String type = ConfigTable.getProjectProtocol();
         if ("jar".equals(type)) {
             // 遍历jar
             JarFile jFile = new JarFile(System.getProperty("java.class.path"));
@@ -274,79 +272,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             }
         }
     }
-    public static LinkedHashMap<String, Object> parse(File file){
-        //log.info("[parse config file][path:{}]", file.getAbsolutePath());
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        String txt = FileUtil.read(file, "UTF-8").toString();
-        String[] lines = txt.split("\n");
-        if(txt.trim().startsWith("<")){
-            //xml
-            map = ConfigTable.parse(file);
-        }else if(file.getName().endsWith("yml")){
-            Map<Integer, String> heads = new HashMap<>();
-            for(String line:lines){
-                int idx = line.indexOf(":");
-                if(idx == -1){
-                    continue;
-                }
-                if(line.trim().startsWith("#")){
-                    continue;
-                }
-                String key = line.substring(0, idx);
-                String val = line.substring(idx+1).trim();
-                Integer lvl = lvl(key);
-                key = key.trim();
-                if(line.trim().endsWith(":")){
-                    heads.put(lvl, key.trim());
-                }else{
-                    String head = head(heads, lvl);
-                    if(head.isEmpty()){
-                        head = key;
-                    }else{
-                        head = head+ "." + key;
-                    }
-                    map.put(head, val);
-                }
-            }
-        }else{
-            //properties
-            Map<Integer, String> heads = new HashMap<>();
-            for(String line:lines){
-                line = line.trim();
-                if(line.startsWith("#")){
-                    continue;
-                }
-                if(line.contains("=")){
-                    int idx = line.indexOf("=");
-                    String key = line.substring(0, idx);
-                    String val = line.substring(idx+1);
-                    map.put(key, val);
-                }
-            }
-        }
 
-        for(String key:map.keySet()){
-            ConfigTable.put(key.trim().toUpperCase(), map.get(key));
-        }
-        return map;
-    }
-    private static String head(Map<Integer, String> headers, int lvl){
-        StringBuilder head = new StringBuilder();
-        for(int i=0; i<lvl; i++){
-            if(i>0){
-                head.append(".");
-            }
-            head.append(headers.get(i));
-        }
-        return head.toString();
-    }
-    private static Integer lvl(String key){
-        //按2个空格1级
-        Integer lvl = 0;
-        int length = key.length() - key.trim().length();
-        lvl = length/2;
-        return lvl;
-    }
     public Object getBean(String name) {
         Object bean = factory.get(name);
         if(bean instanceof BeanDefine){
