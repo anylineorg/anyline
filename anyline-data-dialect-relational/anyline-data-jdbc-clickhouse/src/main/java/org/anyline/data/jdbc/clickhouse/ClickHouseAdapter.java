@@ -47,6 +47,13 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 		delimiterFr = "";
 		delimiterTo = "";
 		ClickhouseConvert.reg();
+
+		for(ClickhouseWriter writer: ClickhouseWriter.values()){
+			reg(writer.supports(), writer.writer());
+		}
+		for(ClickhouseReader reader: ClickhouseReader.values()){
+			reg(reader.supports(), reader.reader());
+		}
 		for(ClickHouseTypeMetadataAlias alias:ClickHouseTypeMetadataAlias.values()){
 			reg(alias);
 			alias(alias.name(), alias.standard());
@@ -4521,14 +4528,14 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
 	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
-	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
 	 * int ignorePrecision(DataRuntime runtime, Column column)
 	 * int ignoreScale(DataRuntime runtime, Column column)
 	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
 	 * int checkIgnoreScale(DataRuntime runtime, String datatype)
-	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
 	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column)
@@ -4799,8 +4806,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.define(runtime, builder, meta);
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+		return super.define(runtime, builder, meta, action);
 	}
 
 	/**
@@ -4869,8 +4876,23 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.nullable(runtime, builder, meta);
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+		if(action != ACTION.DDL.COLUMN_ADD) { //添加列时不支持 NULL , NOT NULL
+			if (meta.isPrimaryKey() == 1) {
+				builder.append(" NOT NULL");
+				return builder;
+			}
+			if (null == meta.getDefaultValue()) {
+				int nullable = meta.isNullable();
+				if (nullable != -1) {
+					if (nullable == 0) {
+						builder.append(" NOT");
+					}
+					builder.append(" NULL");
+				}
+			}
+		}
+		return builder;
 	}
 
 	/**
@@ -4942,7 +4964,7 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 
 	/**
 	 * column[命令合成-子流程]<br/>
-	 * 列定义:位置
+	 * 列定义:位置(不支持)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
 	 * @param meta 列

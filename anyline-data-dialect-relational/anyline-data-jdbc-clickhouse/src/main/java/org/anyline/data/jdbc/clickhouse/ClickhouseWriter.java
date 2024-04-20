@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.anyline.data.jdbc.gaussdb;
+package org.anyline.data.jdbc.clickhouse;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.DateUtil;
 
@@ -26,27 +27,26 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public enum GaussDBWriter {
-    DateWriter(new Object[]{java.sql.Date.class, LocalDate.class}, new DataWriter() {
+public enum ClickhouseWriter {
+
+    DateWriter(new Object[]{java.sql.Date.class, Timestamp.class, Date.class, LocalDate.class, LocalDateTime.class}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
-                value = " to_date( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD')";
+                TypeMetadata.CATEGORY category = null;
+                if(null != type){
+                    category = type.getCategory();
+                }
+                if(category == TypeMetadata.CATEGORY.DATE){
+                    value = " toDate('"+DateUtil.format(date)+"')";
+                }else if(category == TypeMetadata.CATEGORY.DATETIME){
+                    value = " toDateTime('"+DateUtil.format(date)+"')";
+                }
             }
             return value;
         }
-    }),
-    DateTimeWriter(new Object[]{Timestamp.class, Date.class, LocalDateTime.class}, new DataWriter() {
-        @Override
-        public Object write(Object value, boolean placeholder, TypeMetadata type) {
-            if(!placeholder && null != value) {
-                Date date = (Date) ConvertProxy.convert(value, Date.class, false);
-                value = " to_timestamp( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";
-            }
-            return value;
-        }
-    }),
+    })
     ;
     public Object[] supports(){
         return supports;
@@ -56,7 +56,7 @@ public enum GaussDBWriter {
     }
     private final Object[] supports;
     private final DataWriter writer;
-    GaussDBWriter(Object[] supports, DataWriter writer){
+    ClickhouseWriter(Object[] supports, DataWriter writer){
         this.supports = supports;
         this.writer = writer;
     }

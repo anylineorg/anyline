@@ -16,6 +16,8 @@
 
 package org.anyline.adapter;
 
+import org.anyline.metadata.type.TypeMetadata;
+
 public interface DataWriter {
     /**
      * 写入数据库前类型转换(非基础类型时需要)
@@ -23,7 +25,7 @@ public interface DataWriter {
      * @param placeholder 是否启动占位符
      * @return Object
      */
-    Object write(Object value, boolean placeholder);
+    Object write(Object value, boolean placeholder, TypeMetadata type);
 
     /**
      * 支持的类型符合这些类型的 在写入数据库之前 由当前writer转换

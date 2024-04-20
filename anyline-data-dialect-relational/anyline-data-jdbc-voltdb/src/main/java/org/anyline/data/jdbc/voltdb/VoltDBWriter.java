@@ -17,6 +17,7 @@
 package org.anyline.data.jdbc.voltdb;
 
 import org.anyline.adapter.DataWriter;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.DateUtil;
 
 import java.sql.Timestamp;
@@ -28,7 +29,7 @@ public enum VoltDBWriter {
 
     TimestampWriter(new Object[]{Date.class, Timestamp.class, LocalDateTime.class, LocalDate.class, "Timestamp"}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             Date date = DateUtil.parse(value);
             if(null != date) {
                 value = date.getTime() * 1000;

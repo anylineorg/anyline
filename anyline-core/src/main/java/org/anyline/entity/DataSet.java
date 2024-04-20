@@ -4707,8 +4707,8 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         BigDecimal num2 = new BigDecimal(v2.toString());
                         result = num1.compareTo(num2);
                     }else if(type == TypeMetadata.CATEGORY_GROUP.DATETIME){
-                        Date date1 = (Date)v1;
-                        Date date2 = (Date)v2;
+                        Date date1 = DateUtil.parse(v1);
+                        Date date2 = DateUtil.parse(v2);
                         result = date1.compareTo(date2);
                     }else{
                         result = v1.toString().compareTo(v2.toString());

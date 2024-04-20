@@ -17,6 +17,7 @@
 package org.anyline.data.jdbc.highgo;
 
 import org.anyline.adapter.DataWriter;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.DateUtil;
 
@@ -28,7 +29,7 @@ import java.util.Date;
 public enum HighgoWriter {
     DateWriter(new Object[]{java.sql.Date.class, LocalDate.class}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 value = " to_date( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD')";
@@ -38,7 +39,7 @@ public enum HighgoWriter {
     }),
     DateTimeWriter(new Object[]{Timestamp.class, Date.class, LocalDateTime.class}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 value = " to_timestamp( '"+ DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";

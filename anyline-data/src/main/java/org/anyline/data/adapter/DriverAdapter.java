@@ -381,8 +381,8 @@ public interface DriverAdapter {
 	}
 
 	/**
-	 * 根据写入的数据类型 定位DataWriter
-	 * @param type class ColumnType StringColumnType
+	 * 根据写入的数据类型 定位DataWriter,只根据输入类型，输出类型在writer中判断
+	 * @param type class(String.class) TypeMetadata,TypeMetadata.CATEGORY, StringColumnType("VARCHAR2")
 	 * @return DataWriter
 	 */
 	default DataWriter writer(Object type){
@@ -5036,10 +5036,11 @@ public interface DriverAdapter {
 	 * 定义列，依次拼接下面几个属性注意不同数据库可能顺序不一样
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param column 列
+	 * @param meta 列
+	 * @param action 区分 创建与修改过程有区别  如有些数据库修改时不支持NULL NOT NULL(如clickhouse)
 	 * @return StringBuilder
 	 */
-	StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column);
+	StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action);
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5120,7 +5121,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return StringBuilder
 	 */
-	StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column);
+	StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action);
 
 	/**
 	 * column[命令合成-子流程]<br/>

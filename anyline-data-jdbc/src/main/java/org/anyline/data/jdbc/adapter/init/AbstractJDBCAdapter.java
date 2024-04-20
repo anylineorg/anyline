@@ -5958,7 +5958,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					}
 					column.setAction(ACTION.DDL.COLUMN_ADD);
 					delimiter(builder, column.getName()).append(" ");
-					define(runtime, builder, column);
+					define(runtime, builder, column, ACTION.DDL.TABLE_CREATE);
 					idx ++;
 				}
 				if(!pks.isEmpty()) {
@@ -6793,14 +6793,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
 	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
-	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
 	 * int ignorePrecision(DataRuntime runtime, Column column)
 	 * int ignoreScale(DataRuntime runtime, Column column)
 	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
 	 * int checkIgnoreScale(DataRuntime runtime, String datatype)
-	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
 	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column)
@@ -6903,7 +6903,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		//builder.append(" ADD ").append(column.getKeyword()).append(" ");
 		addColumnGuide(runtime, builder, meta);
 		delimiter(builder, meta.getName()).append(" ");
-		define(runtime, builder, meta);
+		define(runtime, builder, meta, ACTION.DDL.COLUMN_ADD);
 		// }
 		runs.addAll(buildAppendCommentRun(runtime, meta));
 		return runs;
@@ -7177,8 +7177,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.define(runtime, builder, meta);
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+		return super.define(runtime, builder, meta, action);
 	}
 
 	/**
@@ -7266,8 +7266,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.nullable(runtime, builder, meta);
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+		return super.nullable(runtime, builder, meta, action);
 	}
 
 	/**
@@ -7469,7 +7469,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		// 添加标签
 		builder.append(" ADD TAG ");
 		delimiter(builder, meta.getName()).append(" ");
-		define(runtime, builder, meta);
+		define(runtime, builder, meta, ACTION.DDL.COLUMN_ADD);
 		// }
 		return runs;
 	}

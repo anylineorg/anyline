@@ -18,6 +18,7 @@ package org.anyline.data.jdbc.adapter.init.writer;
 
 import org.anyline.adapter.DataWriter;
 import org.anyline.data.jdbc.adapter.init.geometry.MySQLGeometryAdapter;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.entity.geometry.*;
 
@@ -25,7 +26,7 @@ public enum MySQLGenusWriter {
 
     PointWriter(new Object[]{Point.class, StandardTypeMetadata.POINT}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             Point point = null;
             if(value instanceof Point) {
                 point = (Point) value;
@@ -63,7 +64,7 @@ public enum MySQLGenusWriter {
 
     LineWriter(new Object[]{LineString.class, StandardTypeMetadata.LINESTRING}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(value instanceof LineString) {
                 LineString line = (LineString) value;
                 if (placeholder) {
@@ -78,7 +79,7 @@ public enum MySQLGenusWriter {
 
     PolygonWriter(new Object[]{Polygon.class, StandardTypeMetadata.POLYGON}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(value instanceof Polygon) {
                 Polygon polygon = (Polygon) value;
                 if (placeholder) {
@@ -93,7 +94,7 @@ public enum MySQLGenusWriter {
 
     MultiPointWriter(new Object[]{MultiPoint.class, StandardTypeMetadata.MULTIPOINT}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(value instanceof MultiPoint) {
                 MultiPoint multiPoint = (MultiPoint) value;
                 if (placeholder) {
@@ -108,7 +109,7 @@ public enum MySQLGenusWriter {
 
     MultiLineWriter(new Object[]{MultiLine.class, StandardTypeMetadata.MULTILINESTRING}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(value instanceof MultiLine) {
                 MultiLine multiLine = (MultiLine) value;
                 if (placeholder) {
@@ -123,7 +124,7 @@ public enum MySQLGenusWriter {
 
     MultiPolygonWriter(new Object[]{MultiPolygon.class, StandardTypeMetadata.MULTIPOLYGON}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(value instanceof MultiPolygon) {
                 MultiPolygon multiPolygon = (MultiPolygon) value;
                 if (placeholder) {
@@ -138,7 +139,7 @@ public enum MySQLGenusWriter {
 
     GeometryCollectionWriter(new Object[]{GeometryCollection.class, StandardTypeMetadata.GEOMETRYCOLLECTION}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(value instanceof GeometryCollection) {
                 GeometryCollection collection = (GeometryCollection) value;
                 if (placeholder) {

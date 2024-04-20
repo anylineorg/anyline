@@ -17,6 +17,7 @@
 package org.anyline.data.jdbc.oracle;
 
 import org.anyline.adapter.DataWriter;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.DateUtil;
 
@@ -31,7 +32,7 @@ public enum OracleWriter {
    , oracle.sql.TIMESTAMP.class, oracle.sql.TIMESTAMPTZ.class, oracle.sql.TIMESTAMPLTZ.class, oracle.sql.TIMEZONETAB.class
    , oracle.sql.DATE.class}, new DataWriter() {
         @Override
-        public Object write(Object value, boolean placeholder) {
+        public Object write(Object value, boolean placeholder, TypeMetadata type) {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 value = " to_date ( '"+DateUtil.format(date)+"', 'YYYY-MM-DD HH24:MI:SS')";

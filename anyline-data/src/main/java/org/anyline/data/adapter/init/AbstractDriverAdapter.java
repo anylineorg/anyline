@@ -11083,14 +11083,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Column column)
 	 * List<Run> buildAppendCommentRun(DataRuntime runtime, Column column)
 	 * List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column)
-	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder type(DataRuntime runtime, StringBuilder builder, Column column, String type, int ignorePrecision, boolean ignoreScale)
 	 * int ignorePrecision(DataRuntime runtime, Column column)
 	 * int ignoreScale(DataRuntime runtime, Column column)
 	 * Boolean checkIgnorePrecision(DataRuntime runtime, String datatype)
 	 * int checkIgnoreScale(DataRuntime runtime, String datatype)
-	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column column)
+	 * StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action)
 	 * StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column column)
 	 * StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column)
@@ -11575,7 +11575,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
 		String define = meta.getDefine();
 		if(BasicUtil.isNotEmpty(define)){
 			builder.append(" ").append(define);
@@ -11590,7 +11590,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		// 默认值
 		defaultValue(runtime, builder, meta);
 		// 非空
-		nullable(runtime, builder, meta);
+		nullable(runtime, builder, meta, action);
 		//主键
 		primary(runtime, builder, meta);
 		// 递增(注意有些数据库不需要是主键)
@@ -11732,7 +11732,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
 		if(meta.isPrimaryKey() == 1){
 			builder.append(" NOT NULL");
 			return builder;
@@ -14944,12 +14944,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		if(null != columnType){//根据列类型定位writer
 			writer = writer(columnType);
+			if(null == writer){
+				writer = writer(columnType.getCategory());
+			}
 		}
 		if(null == writer && null != value){//根据值类型定位writer
 			writer = writer(value.getClass());
 		}
 		if(null != writer){
-			result = writer.write(value, placeholder);
+			result = writer.write(value, placeholder, columnType);
 		}
 		if(null != result){
 			return result;
@@ -15161,7 +15164,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}else{
 				DataWriter writer = writer(value.getClass());
 				if(null != writer){
-					value = writer.write(value,true);
+					value = writer.write(value,true, metadata.getTypeMetadata());
 				}
 			}
 			run.setValue(value);
@@ -15214,8 +15217,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!parseJson){
 			if (null != columnType) {
 				DataWriter writer = writer(columnType);
+				if(null == writer){
+					writer = writer(columnType.getCategory());
+				}
 				if(null != writer){
-					value = writer.write(value, true);
+					value = writer.write(value, true, columnType);
 				}else {
 					Class transfer = columnType.transfer();
 					Class compatible = columnType.compatible();

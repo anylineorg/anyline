@@ -1837,6 +1837,9 @@ public class DateUtil {
 		if(null == date){
 			return null;
 		}
+		if(date instanceof java.sql.Date){
+			date = parse(date);
+		}
 		return  date.toInstant().atZone(zone).toLocalDateTime();
 	}
 	public static OffsetDateTime offsetDateTime(Date date){
@@ -1849,6 +1852,10 @@ public class DateUtil {
 		if(null == date){
 			return null;
 		}
+		if(date instanceof java.sql.Date){
+			//因为不支持toInstant
+			date = parse(date);
+		}
 		return  date.toInstant().atZone(zone).toLocalTime();
 	}
 	public static LocalTime localTime(Date date){
@@ -1857,6 +1864,9 @@ public class DateUtil {
 	public static LocalDate localDate(Date date, ZoneId zone){
 		if(null == date){
 			return null;
+		}
+		if(date instanceof java.sql.Date){
+			date = parse(date);
 		}
 		return  date.toInstant().atZone(zone).toLocalDate();
 	}
