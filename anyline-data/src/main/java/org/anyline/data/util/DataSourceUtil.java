@@ -134,7 +134,7 @@ public class DataSourceUtil {
     }
     public static String parseParamValue(String url, String key){
         String value = null;
-        if(url.contains(key)){
+        if(null != url && url.contains(key)){
             value = RegularUtil.cut(url, key+"=", "&");
             if(BasicUtil.isEmpty(value)){
                 value = RegularUtil.cut(url, key+"=", RegularUtil.TAG_END);
