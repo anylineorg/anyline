@@ -151,7 +151,7 @@ public class CacheUtil {
 	 */
 	public static String createCacheElementKey(boolean page, boolean order, String dest, ConfigStore store, String ... conditions){
 		conditions = BasicUtil.compress(conditions);
-		String result = dest+"|";
+		StringBuilder result = new StringBuilder(dest + "|");
 		if(null != store){
 			ConfigChain chain = store.getConfigChain();
 			if(null != chain){
@@ -160,19 +160,19 @@ public class CacheUtil {
 					for(Config config:configs){
 						List<Object> values = config.getValues();
 						if(null != values){
-							result += config.toString() + "|";
+							result.append(config).append("|");
 						}
 					}	
 				}
 			}
 			PageNavi navi = store.getPageNavi();
 			if(page && null != navi){
-				result += "page=" + navi.getCurPage()+"|first=" + navi.getFirstRow() + "|last="+navi.getLastRow()+"|";
+				result.append("page=").append(navi.getCurPage()).append("|first=").append(navi.getFirstRow()).append("|last=").append(navi.getLastRow()).append("|");
 			}
 			if(order){
 				OrderStore orders = store.getOrders();
 				if(null != orders){
-					result += orders.getRunText("").toUpperCase() +"|";
+					result.append(orders.getRunText("").toUpperCase()).append("|");
 				}
 			}
 		}
@@ -181,18 +181,18 @@ public class CacheUtil {
 				if(BasicUtil.isNotEmpty(condition)){
 					if(condition.trim().toUpperCase().startsWith("ORDER")){
 						if(order){
-							result += condition.toUpperCase() + "|";
+							result.append(condition.toUpperCase()).append("|");
 						}
 					}else{
-						result += condition+"|";
+						result.append(condition).append("|");
 					}
 				}
 			}
 		}
 		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
-			log.info("[create cache key][key:{}]", result);
+			log.info("[create cache key][key:{}]", result.toString());
 		}
-		return MD5Util.crypto(result);
+		return MD5Util.crypto(result.toString());
 	}
 
 	public static String createCacheElementKey(boolean page, boolean order, Table dest, ConfigStore store, String ... conditions){
