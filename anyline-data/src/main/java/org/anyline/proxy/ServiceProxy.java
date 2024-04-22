@@ -747,7 +747,7 @@ public class ServiceProxy {
      * @return DataSet
      */
     public static DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions){
-        return caches(cache, dest, configs, obj, conditions);
+        return service.caches(cache, dest, configs, obj, conditions);
     }
     public static DataSet caches(String cache, String dest, Object obj, String ... conditions){
         return service.caches(cache, dest, obj, conditions);
