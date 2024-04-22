@@ -95,7 +95,7 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
                         runtime.setAdapterKey(adapterKey);
                     }
                 }
-                DataSourceTransactionManager dm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
+                DataSourceTransactionManager dm = ConfigTable.environment().getBean(DataSourceTransactionManager.class);
                 if(null != dm){
                     TransactionManage manage = new SpringTransactionManage(dm);
                     TransactionManage.reg("default", manage);
