@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -363,6 +362,9 @@ public class ConfigTable {
 				classpath = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 			}else{
 				classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
+				if(!new File(classpath).exists()) {
+					classpath = root;
+				}
 			}
 		}
 		libpath = new File(new File(classpath).getParent(), "lib").getAbsolutePath();
