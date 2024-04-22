@@ -747,8 +747,6 @@ public class DefaultJDBCWorker implements DriverWorker {
                     }
                 }
                 result = ps.executeUpdate();
-            }catch (Exception e){
-                e.printStackTrace();
             }finally {
                 releaseConnection(adapter, runtime, con, datasource);
             }
@@ -841,8 +839,6 @@ public class DefaultJDBCWorker implements DriverWorker {
                     }
                 }
                 result = ps.executeUpdate();
-            }catch (Exception e){
-                e.printStackTrace();
             }finally {
                 releaseConnection(adapter, runtime, con, datasource);
             }
