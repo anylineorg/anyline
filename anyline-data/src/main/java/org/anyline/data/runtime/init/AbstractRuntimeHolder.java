@@ -19,8 +19,6 @@ package org.anyline.data.runtime.init;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -43,7 +41,7 @@ public abstract class AbstractRuntimeHolder implements RuntimeHolder {
     }
     public static String parseParamValue(String url, String key){
         String value = null;
-        if(url.contains(key)){
+        if(null != url && url.contains(key)){
             value = RegularUtil.cut(url, key+"=", "&");
             if(BasicUtil.isEmpty(value)){
                 value = RegularUtil.cut(url, key+"=", RegularUtil.TAG_END);
