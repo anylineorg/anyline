@@ -987,6 +987,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             to.datalink = from.datalink;
             to.schema = from.schema;
             to.tables = from.tables;
+            to.metadatas = from.metadatas;
         }
         return to;
     }
