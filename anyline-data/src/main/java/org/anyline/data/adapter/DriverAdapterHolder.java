@@ -17,6 +17,7 @@
 package org.anyline.data.adapter;
 
 import org.anyline.data.runtime.DataRuntime;
+import org.anyline.exception.NotFoundAdapterException;
 import org.anyline.metadata.type.DatabaseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +132,7 @@ public class DriverAdapterHolder {
 		}
 		if(null == adapter){
 			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
+			throw new NotFoundAdapterException("检测数据库适配器失败");
 		}else{
 			log.info("[检测数据库适配器][数据源:{}][特征:{}][适配结果:{}]", datasource, runtime.getFeature(), adapter);
 		}
