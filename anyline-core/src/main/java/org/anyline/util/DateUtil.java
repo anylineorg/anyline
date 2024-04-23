@@ -1860,6 +1860,10 @@ public class DateUtil {
 	public static LocalDateTime localDateTime(Date date){
 		return localDateTime(date, ZoneId.systemDefault());
 	}
+	public static ZonedDateTime zonedDateTime(Date date){
+		ZoneId zone = ZoneId.systemDefault();
+        return date.toInstant().atZone(zone);
+	}
 	public static LocalTime localTime(Date date, ZoneId zone){
 		if(null == date){
 			return null;
