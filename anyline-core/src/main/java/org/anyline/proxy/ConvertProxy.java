@@ -34,6 +34,7 @@ import java.math.BigInteger;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class ConvertProxy {
@@ -2572,6 +2573,12 @@ public class ConvertProxy {
                 return DateUtil.localDateTime(DateUtil.parse(value));
             }
         });
+        reg(new AbstractConvert(String.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
+            }
+        });
         reg(new AbstractConvert(Long.class, java.util.Date.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
@@ -2634,6 +2641,12 @@ public class ConvertProxy {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
                 return DateUtil.localDateTime(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(Long.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
             }
         });
         reg(new AbstractConvert(long.class, java.util.Date.class){
@@ -2700,6 +2713,12 @@ public class ConvertProxy {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
                 return DateUtil.localDateTime(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(long.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
             }
         });
         reg(new AbstractConvert(java.util.Date.class, String.class){
@@ -2777,6 +2796,12 @@ public class ConvertProxy {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
                 return DateUtil.localDateTime((java.util.Date)value);
+            }
+        });
+        reg(new AbstractConvert(java.util.Date.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime((java.util.Date)value);
             }
         });
         reg(new AbstractConvert(java.sql.Date.class, String.class){
@@ -2857,6 +2882,12 @@ public class ConvertProxy {
                 return DateUtil.localDateTime(DateUtil.parse(value));
             }
         });
+        reg(new AbstractConvert(java.sql.Date.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
+            }
+        });
         reg(new AbstractConvert(java.sql.Time.class, String.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
@@ -2935,6 +2966,12 @@ public class ConvertProxy {
                 return DateUtil.localDateTime(DateUtil.parse(value));
             }
         });
+        reg(new AbstractConvert(java.sql.Time.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
+            }
+        });
         reg(new AbstractConvert(java.sql.Timestamp.class, String.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
@@ -3011,6 +3048,12 @@ public class ConvertProxy {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
                 return DateUtil.localDateTime(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(java.sql.Timestamp.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
             }
         });
         reg(new AbstractConvert(java.time.Year.class, String.class){
@@ -3283,6 +3326,12 @@ public class ConvertProxy {
                 return DateUtil.localDateTime(DateUtil.parse(value));
             }
         });
+        reg(new AbstractConvert(java.time.LocalDate.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
+            }
+        });
         reg(new AbstractConvert(java.time.LocalTime.class, String.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
@@ -3357,6 +3406,12 @@ public class ConvertProxy {
                 return DateUtil.localDateTime(DateUtil.parse(value));
             }
         });
+        reg(new AbstractConvert(java.time.LocalTime.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
+            }
+        });
         reg(new AbstractConvert(java.time.LocalDateTime.class, String.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
@@ -3426,10 +3481,95 @@ public class ConvertProxy {
         reg(new AbstractConvert(java.time.LocalDateTime.class, java.time.LocalTime.class){
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                return DateUtil.localDateTime(DateUtil.parse(value));
+                return DateUtil.localTime(DateUtil.parse(value));
             }
         });
 
+        reg(new AbstractConvert(java.time.LocalDateTime.class, ZonedDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.zonedDateTime(DateUtil.parse(value));
+            }
+        });
+
+        reg(new AbstractConvert(ZonedDateTime.class, String.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.format(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, Long.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return Long.valueOf(DateUtil.parse(value).getTime());
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, long.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.parse(value).getTime();
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.util.Date.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.parse(value);
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.sql.Date.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.sqlDate(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.sql.Time.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.sqlTime(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.sql.Timestamp.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.sqlTimestamp(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.time.Year.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return Year.of(DateUtil.year(DateUtil.parse(value)));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.time.YearMonth.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.yearMonth(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.time.Month.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return Month.of(DateUtil.month(DateUtil.parse(value)));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.time.LocalDate.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.localDate(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.time.LocalTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.localTime(DateUtil.parse(value));
+            }
+        });
+        reg(new AbstractConvert(ZonedDateTime.class, java.time.LocalDateTime.class){
+            @Override
+            public Object exe(Object value, Object def) throws ConvertException {
+                return DateUtil.localDateTime(DateUtil.parse(value));
+            }
+        });
         /* *****************************************************************************************************************
          *                                               array
          * =================================================================================================================
