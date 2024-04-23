@@ -979,6 +979,9 @@ public class DateUtil {
 		Date date = Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
+	public static Date parse(ZonedDateTime value){
+		return parse(value.toLocalDateTime());
+	}
 	public static Date parse(LocalTime value){
 		Date date = Date.from(value.atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant());
 		return date;
@@ -1006,6 +1009,8 @@ public class DateUtil {
 				date = parse((LocalTime)value);
 			}else if(value instanceof LocalDateTime){
 				date = parse((LocalDateTime)value);
+			}else if(value instanceof ZonedDateTime){
+				date = parse((ZonedDateTime)value);
 			}else if(value instanceof String){
 				if(BasicUtil.isNumber(value)){
 					Long timestamp = BasicUtil.parseLong(value, 0L);
