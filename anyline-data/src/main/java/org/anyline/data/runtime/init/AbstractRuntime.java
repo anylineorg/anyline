@@ -4,6 +4,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
+import org.anyline.exception.NotFoundAdapter;
 
 public class AbstractRuntime implements DataRuntime {
     /**
@@ -122,6 +123,11 @@ public class AbstractRuntime implements DataRuntime {
         if(null == adapter){
             String datasource = key;
             adapter = DriverAdapterHolder.getAdapter(datasource, this);
+        }
+        // 后续的操作都依赖 DriverAdapter，所以是必须的。
+        // 如果这里无法匹配到 DriverAdapter就应该抛出异常。
+        if (adapter == null) {
+            throw new NotFoundAdapter();
         }
         return adapter;
     }
