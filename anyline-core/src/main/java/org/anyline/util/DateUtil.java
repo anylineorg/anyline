@@ -1045,14 +1045,14 @@ public class DateUtil {
 	/**
 	 * 转换成日期(使用默认格式)
 	 *
-	 * @param str 日期
+	 * @param value 日期
 	 * @return Date
 	 */
-	public static Date parse(String str) throws RuntimeException{
-		if (BasicUtil.isEmpty(str)) {
+	public static Date parse(String value) throws RuntimeException{
+		if (BasicUtil.isEmpty(value)) {
 			return null;
 		}
-		str = str.trim();
+		String str = value.trim();
 		if (str.length() <= 5
 				&& !RegularUtil.match(str, Regular.PATTERN.DATE_TIME.getCode(),
 				Regular.MATCH_MODE.MATCH)) {
@@ -1116,6 +1116,13 @@ public class DateUtil {
 			} catch (Exception excep) {
 				date = null;
 			}
+		}
+		try {
+			if (BasicUtil.isNumber(value)) {
+				date = parse(Long.valueOf(value));
+			}
+		}catch (Exception e){
+
 		}
 		return date;
 	}
