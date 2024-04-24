@@ -1,6 +1,6 @@
 8.7.2后分离了多个环境(Spring/Solon/Vertx)比之前的版本多一个依赖  
 ***具体参考***[【8.7.2更新】](http://doc.anyline.org/aa/2f_3951)  ***详细说明请参考:*** [【官网】](http://doc.anyline.org/)  
-开发测试环境请使用[【8.7.2-SNAPSHOT】](http://doc.anyline.org/aa/aa_3702)版本 语法测试请参考[【各数据库模拟环境】](http://run.anyline.org/)       
+开发测试环境请使用[【8.7.2-20240423】](http://doc.anyline.org/aa/aa_3702)版本 语法测试请参考[【各数据库模拟环境】](http://run.anyline.org/)       
 发版务必到[【中央库】](https://mvnrepository.com/artifact/org.anyline/anyline-core)找一个正式版本，不要把SNAPSHOT版本发到生产环境  
 关于多数据源，请先阅读   
 [【三种方式注册数据源】](http://doc.anyline.org/aa/a9_3451)
@@ -264,11 +264,13 @@ userService.querys(condition(true, "anyline根据约定自动生成的查询条�
 
 - **数据中台**    
   动态处理各种异构数据源、强大的结果集批量处理能力，不再需要对呆板的实体类各种遍历各种转换。  
-- 通常需要在运行时频繁的注册、切换、注销数据源  
+  通常需要在运行时频繁的注册、切换、注销数据源  
   [【示例】](https://gitee.com/anyline/anyline-simple)
--
+
 - **可视化数据源**  
   主要用来处理动态属性，以及适配前端的多维度多结构的数据转换   
+  可视化中最主要的工作就是生成图表了，如果是通过map可实体类那又免不了各种判断、遍历、计算如果是有限的几个固定的图表还可以处理，
+  如果是大量的动态图表呢(比如由前端用户提供统计方式与维度)  
   [【参考】](http://doc.anyline.org/a?id=p298pn6e9o1r5gv78vicac1e624c62387f7bb5cdeaeddf6f93f9eb865d5cc60b9b)
 
 - **物联网车联网数据处理**    
