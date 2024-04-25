@@ -5026,6 +5026,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         private DataSet equals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
+            if(null != value && value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = array.iterator().next();
+                }
+            }
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
@@ -5073,6 +5079,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         private DataSet notEquals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
+            if(null != value && value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = array.iterator().next();
+                }
+            }
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
@@ -5120,6 +5132,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         private DataSet contains(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
+            if(null != value && value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = array.iterator().next();
+                }
+            }
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
@@ -5466,6 +5484,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
+            if(value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = (T)array.iterator().next();
+                }
+            }
             if (BasicUtil.isNumber(value)) {
                 BigDecimal number = new BigDecimal(value.toString());
                 for (DataRow row : src) {
@@ -5484,7 +5508,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                             continue;
                         }
                         if (row.isNotEmpty(key) &&
-                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) < 0) {
+                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) < 0) {
                             set.add(row);
                         }
                     }
@@ -5514,6 +5538,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
+            if(value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = (T)array.iterator().next();
+                }
+            }
             if (BasicUtil.isNumber(value)) {
                 BigDecimal number = new BigDecimal(value.toString());
                 for (DataRow row : src) {
@@ -5532,7 +5562,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                             continue;
                         }
                         if (row.isNotEmpty(key) &&
-                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) <= 0) {
+                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) <= 0) {
                             set.add(row);
                         }
                     }
@@ -5562,6 +5592,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
+            if(value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = (T)array.iterator().next();
+                }
+            }
             if (BasicUtil.isNumber(value)) {
                 BigDecimal number = new BigDecimal(value.toString());
                 for (DataRow row : src) {
@@ -5580,7 +5616,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                             continue;
                         }
                         if (row.isNotEmpty(key) &&
-                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) > 0) {
+                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) > 0) {
                             set.add(row);
                         }
                     }
@@ -5610,6 +5646,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
+            if(value.getClass().isArray()){
+                Collection array = BeanUtil.array2collection(value);
+                if(!array.isEmpty()){
+                    value = (T)array.iterator().next();
+                }
+            }
             if (BasicUtil.isNumber(value)) {
                 BigDecimal number = new BigDecimal(value.toString());
                 for (DataRow row : src) {
@@ -5628,7 +5670,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                             continue;
                         }
                         if (row.isNotEmpty(key) &&
-                                DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) >= 0) {
+                            DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key, new Date())) >= 0) {
                             set.add(row);
                         }
                     }
