@@ -3061,8 +3061,12 @@ public class BeanUtil {
 		return rv;
 	}
 
-	public static <T> Collection array2collection(Object array){
-		Collection<T> list = new ArrayList<>();
+	public static Collection array2collection(Object array){
+		Collection list = new ArrayList<>();
+		int len = Array.getLength(array);
+		for(int i= 0; i<len; i++){
+			list.add(Array.get(array, i));
+		}
 		return list;
 	}
 	public static <T> List<T> array2list(T[] ... arrays){
