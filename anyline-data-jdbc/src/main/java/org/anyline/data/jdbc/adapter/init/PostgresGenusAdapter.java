@@ -1670,7 +1670,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR f.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(pattern)){
@@ -2160,7 +2160,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent AND N.oid = FM.relnamespace\n");//主表
         builder.append("WHERE FM.relname ='").append(master.getName()).append("'\n");
         String schema = master.getSchemaName();
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND M.table_schema = '").append(schema).append("'");
         }
         if(BasicUtil.isNotEmpty(name)){
@@ -2331,13 +2331,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
             builder.append("FROM INFORMATION_SCHEMA.COLUMNS M\n");
             builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
-            builder.append("LEFT JOIN PG_ATTRIBUTE AS FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
+            builder.append("LEFT JOIN PG_ATTRIBUTE FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
             builder.append("WHERE 1 = 1\n");
             if(BasicUtil.isNotEmpty(catalog)){
                 builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
             }
-            if(BasicUtil.isNotEmpty(schema)){
+            if(!empty(schema)){
                 builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
@@ -2375,14 +2375,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
         builder.append("FROM INFORMATION_SCHEMA.COLUMNS M\n");
         builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
-        builder.append("LEFT JOIN PG_ATTRIBUTE AS FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
+        builder.append("LEFT JOIN PG_ATTRIBUTE  FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
         builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
         builder.append("WHERE 1 = 1\n");
-        if(BasicUtil.isNotEmpty(catalog)){
-            builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
+        if(!empty(catalog)){
+            builder.append(" AND M.TABLE_CATALOG = '").append(catalog.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(schema)){
-            builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
+        if(!empty(schema)){
+            builder.append(" AND M.TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
         builder.append("\nORDER BY M.TABLE_NAME");
@@ -2543,7 +2543,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
         builder.append("WHERE ft.relname = '").append(table.getName()).append("'");
         Schema schema = table.getSchema();
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND ns.nspname = '").append(schema.getName()).append("'");
         }
         return runs;

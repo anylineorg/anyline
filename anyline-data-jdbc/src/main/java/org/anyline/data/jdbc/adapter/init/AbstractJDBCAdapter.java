@@ -3991,7 +3991,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			meta.setTable(table);
 		}else {
 			String tableName = row.getString(config.getTableRefers());
-			meta.setTable(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
+			table = new Table(BasicUtil.evl(tableName, meta.getTableName(true), tableName));
+			table.setCatalog(catalog);
+			table.setSchema(schema);
+			meta.setTable(table);
 		}
 		String name = row.getString(config.getNameRefers());
 		meta.setName(name);
@@ -4747,7 +4750,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND CONSTRAINT_CATALOG = '").append(catalog).append("'");
 		}
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND CONSTRAINT_SCHEMA = '").append(schema).append("'");
 		}
 		if(BasicUtil.isNotEmpty(tab)){
@@ -8587,7 +8590,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(BasicUtil.isNotEmpty(catalog)) {
 			name(runtime, builder, catalog).append(".");
 		}
-		if(BasicUtil.isNotEmpty(schema)) {
+		if(!empty(schema)) {
 			name(runtime, builder, schema).append(".");
 		}
 		delimiter(builder, meta.getName());

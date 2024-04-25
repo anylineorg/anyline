@@ -2434,7 +2434,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             builder.append("WHERE 1 = 1\n");
             if(BasicUtil.isNotEmpty(catalog)){
             }
-            if(BasicUtil.isNotEmpty(schema)){
+            if(!empty(schema)){
                 builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
@@ -2472,7 +2472,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append("WHERE 1 = 1\n");
         if(BasicUtil.isNotEmpty(catalog)){
         }
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "F.TABNAME", Table.names(tables));
@@ -2711,7 +2711,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append("WHERE  C.CONSTRTYPE = 'P'\n");
         builder.append("AND T.TABNAME = '").append(table.getName()).append("'\n");
         Schema schema = table.getSchema();
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND T.OWNER = '").append(schema.getName()).append("'");
         }
         return runs;

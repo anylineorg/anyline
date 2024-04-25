@@ -1856,7 +1856,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
         builder.append("WHERE 1=1");
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(pattern)){
@@ -1897,7 +1897,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM ALL_TAB_COMMENTS WHERE 1=1 \n");
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND OWNER = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(pattern)){
@@ -2542,7 +2542,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             if (BasicUtil.isNotEmpty(name)) {
                 builder.append("AND M.TABLE_NAME = '").append(name).append("'");
             }
-            if(BasicUtil.isNotEmpty(schema)){
+            if(!empty(schema)){
                 builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
             }
             //builder.append("\nORDER BY M.TABLE_NAME");
@@ -2577,7 +2577,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
         builder.append("WHERE 1=1\n");
 
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
@@ -2939,7 +2939,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("WHERE 1=1\n");
         String schema = table.getSchemaName();
         String tab = table.getName();
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append("AND M.INDEX_OWNER = '").append(schema).append("'\n");
         }
         if(BasicUtil.isNotEmpty(tab)){
@@ -3131,7 +3131,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             schema = table.getSchemaName();
             tab = table.getName();
         }
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND OWNER = '").append(schema).append("'");
         }
         if(BasicUtil.isNotEmpty(tab)){
@@ -3679,7 +3679,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM all_sequences WHERE 1=1\n");
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND SEQUENCE_OWNER = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(name)){

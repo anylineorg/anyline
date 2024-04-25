@@ -2443,7 +2443,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND FTT.TABLE_CATALOG = '").append(catalog).append("'");
 			}
-			if(BasicUtil.isNotEmpty(schema)){
+			if(!empty(schema)){
 				builder.append(" AND SCHEMA_NAME(FT.SCHEMA_ID) = '").append(schema).append("'");
 			}
 			if (null != name) {
@@ -2744,7 +2744,7 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		if(BasicUtil.isNotEmpty(catalog)){
 			builder.append("\nAND TABLE_CATALOG = '").append(catalog).append("'");
 		}
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append("\nAND TABLE_SCHEMA = '").append(schema).append("'");
 		}
 		builder.append("\nORDER BY ORDINAL_POSITION");

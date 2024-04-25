@@ -2388,7 +2388,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 			if (BasicUtil.isNotEmpty(name)) {
 				builder.append("AND M.TABLE_NAME = '").append(name).append("'");
 			}
-			if(BasicUtil.isNotEmpty(schema)){
+			if(!empty(schema)){
 				builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
 			}
 			//builder.append("\nORDER BY M.TABLE_NAME");
@@ -2832,7 +2832,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		String tab = table.getName();
 		boolean has_where = false;
 		StringBuilder condition = new StringBuilder();
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			has_where = true;
 			condition.append(" INDEX_OWNER = '").append(schema).append("'\n");
 		}

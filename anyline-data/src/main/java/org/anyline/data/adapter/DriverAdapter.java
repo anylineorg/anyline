@@ -159,6 +159,9 @@ public interface DriverAdapter {
 		}
 		return false;
 	}
+	default boolean empty(String meta){
+		return BasicUtil.isEmpty(meta);
+	}
 	default boolean equals(Catalog c1, Catalog c2){
 		if(!supportCatalog()){
 			//如果数据库不支持直接返回true

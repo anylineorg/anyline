@@ -4236,27 +4236,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
 				//查询全部表结构
 				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<Table>)list);
-				for(Table table:list){
-					Long tObjectId = table.getObjectId();
-					LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-					table.setColumns(cols);
-					for(Column column:columns){
-						if(table.equals(column.getTable())){
-							Catalog cCatalog = column.getCatalog();
-							Schema cSchema = column.getSchema();
-							Long cObjectId = column.getObjectId();
-							if(null != tObjectId && null != cObjectId && tObjectId == cObjectId){
-								cols.put(column.getName().toUpperCase(), column);
-							}else{
-								if(equals(cCatalog, column.getCatalog())
-										&& equals(schema, column.getSchema())){
-										cols.put(column.getName().toUpperCase(), column);
-								}
-							}
-						}
-					}
-					columns.removeAll(cols.values());
-				}
 			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -6681,9 +6660,34 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run: runs) {
 					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-					columns = columns(runtime, idx, true, tab, columns, set);
+					columns = columns(runtime, idx, true, (Table)null, columns, set);
 					idx++;
 				}
+			}
+
+			for(Table table:tables){
+				Long tObjectId = table.getObjectId();
+				LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+				table.setColumns(cols);
+				for(Column column:columns){
+					if(table.equals(column.getTable())){
+						Catalog cCatalog = column.getCatalog();
+						Schema cSchema = column.getSchema();
+						Long cObjectId = column.getObjectId();
+						if(null != tObjectId && null != cObjectId && tObjectId == cObjectId){
+							cols.put(column.getName().toUpperCase(), column);
+						}else{
+							if(equals(cCatalog, column.getCatalog())
+									&& equals(schema, column.getSchema())
+									&& BasicUtil.equals(table.getName(), column.getTableName(), true)
+							){
+								cols.put(column.getName().toUpperCase(), column);
+							}
+						}
+					}
+				}
+				table.setColumns(cols);
+				columns.removeAll(cols.values());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -14740,7 +14744,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(BasicUtil.isNotEmpty(catalog)) {
 			builder.append(catalog).append(".");
 		}
-		if(BasicUtil.isNotEmpty(schema)) {
+		if(!empty(schema)) {
 			builder.append(schema).append(".");
 		}
 		builder.append(name);
@@ -14762,7 +14766,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(BasicUtil.isNotEmpty(catalog)) {
 			delimiter(builder, catalog).append(".");
 		}
-		if(BasicUtil.isNotEmpty(schema)) {
+		if(!empty(schema)) {
 			delimiter(builder, schema).append(".");
 		}
 		delimiter(builder, name);

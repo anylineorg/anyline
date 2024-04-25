@@ -1664,7 +1664,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT SCHEMA_NAME, TABLE_NAME, COMMENTS, 'TABLE' AS TABLE_TYPE FROM public.tables WHERE 1=1");
 
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
@@ -1675,7 +1675,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 			builder.append("UNION ALL \n");
 			builder.append("SELECT SCHEMA_NAME, VIEW_NAME, COMMENTS, 'VIEW' AS TABLE_TYPE FROM public.views WHERE 1=1");
 
-			if(BasicUtil.isNotEmpty(schema)){
+			if(!empty(schema)){
 				builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
 			}
 			if(BasicUtil.isNotEmpty(pattern)){
@@ -1905,7 +1905,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM  public.views WHERE 1=1");
 
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){

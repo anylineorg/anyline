@@ -2392,7 +2392,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 			/*if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
 			}*/
-			if(BasicUtil.isNotEmpty(schema)){
+			if(!empty(schema)){
 				builder.append(" AND TABSCHEMA = '").append(schema).append("'");
 			}
 			if(null != name) {
@@ -2698,7 +2698,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 		builder.append("WHERE CONSTNAME= 'PRIMARY'\n");
 		builder.append("AND TABNAME = '").append(table.getName()).append("'\n");
 		Schema schema = table.getSchema();
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND TABSCHEMA = '").append(schema.getName()).append("'");
 		}
 		return runs;

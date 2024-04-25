@@ -1680,7 +1680,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 		/*if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog.getName()).append("'");
 		}*/
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(pattern)){
@@ -1951,7 +1951,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 		/*if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
 		}*/
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(pattern)){
@@ -2406,7 +2406,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 			/*if(BasicUtil.isNotEmpty(catalog)){
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
 			}*/
-            if(BasicUtil.isNotEmpty(schema)){
+            if(!empty(schema)){
                 builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
@@ -2443,7 +2443,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         /*if(BasicUtil.isNotEmpty(catalog)){
             builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
         }*/
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         List<String> names = Table.names(tables);
@@ -3186,7 +3186,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(pattern)){
@@ -3366,7 +3366,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
-        if(BasicUtil.isNotEmpty(schema)){
+        if(!empty(schema)){
             builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
         }
         if(BasicUtil.isNotEmpty(name)){

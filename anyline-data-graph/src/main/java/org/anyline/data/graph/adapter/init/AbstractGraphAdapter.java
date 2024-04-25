@@ -4497,7 +4497,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		if(BasicUtil.isNotEmpty(catalog)){
 			builder.append(" AND CONSTRAINT_CATALOG = '").append(catalog).append("'");
 		}
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND CONSTRAINT_SCHEMA = '").append(schema).append("'");
 		}
 		if(BasicUtil.isNotEmpty(tab)){
@@ -8338,7 +8338,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		if(BasicUtil.isNotEmpty(catalog)) {
 			name(runtime, builder, catalog).append(".");
 		}
-		if(BasicUtil.isNotEmpty(schema)) {
+		if(!empty(schema)) {
 			name(runtime, builder, schema).append(".");
 		}
 		delimiter(builder, meta.getName());

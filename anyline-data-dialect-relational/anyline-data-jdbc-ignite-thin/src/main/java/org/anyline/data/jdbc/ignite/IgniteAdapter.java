@@ -1674,7 +1674,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		StringBuilder builder = run.getBuilder();
 
 		builder.append("SELECT * FROM sys.TABLES WHERE 1=1 ");
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
@@ -1929,7 +1929,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		StringBuilder builder = run.getBuilder();
 
 		builder.append("SELECT * FROM sys.VIEWS WHERE 1=1 ");
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
@@ -2397,7 +2397,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			builder.append(" WHERE 1=0");
 		}else{
 			builder.append("SELECT * FROM SYS.TABLE_COLUMNS WHERE COLUMN_NAME != '_KEY' AND COLUMN_NAME != '_VAL' ");
-			if(BasicUtil.isNotEmpty(schema)){
+			if(!empty(schema)){
 				builder.append(" AND SCHEMA_NAME = '").append(schema.getName()).append("'");
 			}
 			if(BasicUtil.isNotEmpty(name)) {
@@ -3094,7 +3094,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		if(null != table){
 			String schema = table.getSchemaName();
 			String name = table.getName();
-			if(BasicUtil.isNotEmpty(schema)){
+			if(!empty(schema)){
 				builder.append(" AND TRIGGER_SCHEMA = '").append(schema).append("'");
 			}
 			if(BasicUtil.isNotEmpty(name)){
@@ -3233,7 +3233,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM sys.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
 		}
 		if(BasicUtil.isNotEmpty(pattern)){
@@ -3405,7 +3405,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("SELECT * FROM sys.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
-		if(BasicUtil.isNotEmpty(schema)){
+		if(!empty(schema)){
 			builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
 		}
 		if(BasicUtil.isNotEmpty(name)){
