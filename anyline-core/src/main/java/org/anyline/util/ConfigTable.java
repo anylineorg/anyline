@@ -688,7 +688,7 @@ public class ConfigTable {
 			}else {
 				parse(file);
 				// 如果未设置重新加载时间, 则实现监听文件更新
-				if(getInt("RELOAD", 0) == 0){
+				if(BasicUtil.parseInt(configs.get("RELOAD"), 0) == 0){
 					listener();
 				}
 			}
