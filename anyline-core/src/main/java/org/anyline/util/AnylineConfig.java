@@ -166,7 +166,7 @@ public abstract class AnylineConfig {
 						String newKey = keys[0];
 						for (int i = 1; i < keys.length; i++) {
 							String oldKey = keys[i];
-							if (kvs.containsKey(newKey)) {
+							if (BasicUtil.isNotEmpty(kvs.get(newKey))) {
 								break;
 							}
 							if (row.containsKey(oldKey)) {
@@ -174,7 +174,7 @@ public abstract class AnylineConfig {
 								kvs.put(newKey, val);
 								config.setValue(newKey, val);
 								config.afterParse(newKey, val);
-								log.info("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
+								log.info("[解析配置文件][版本兼容][last key:{}][old key:{}][value:{}]", newKey, oldKey, val);
 							}
 						}
 					}
