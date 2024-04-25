@@ -17,7 +17,6 @@
 
 package org.anyline.util.regular;
 
-import org.anyline.util.ConfigTable;
 import org.apache.oro.text.regex.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +46,6 @@ public class RegularUtil {
 	}
 	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode){
 		boolean result = false;
-		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.info("[match][src:{}][regx:{}][mode:{}]", src, regx, mode);
-		}
 		if(null == src || null == regx ){
 			return result;
 		}
@@ -59,9 +55,6 @@ public class RegularUtil {
 		}catch(Exception e){
 			log.warn("[match(src, regx, mode) error][src:{}][regx:{}][mode:{}]", src, regx, mode);
 			e.printStackTrace();
-		}
-		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.info("[match][src:{}][regx:{}][mode:{}][result:{}]", src, regx, mode, result);
 		}
 		return result;
 	}
