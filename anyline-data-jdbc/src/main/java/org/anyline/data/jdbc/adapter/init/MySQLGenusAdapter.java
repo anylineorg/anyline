@@ -1,6 +1,5 @@
 package org.anyline.data.jdbc.adapter.init;
 
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -8,15 +7,11 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.*;
 
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
@@ -2419,6 +2414,42 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
             builder.append("\nORDER BY TABLE_NAME, ORDINAL_POSITION");
         }
+        return runs;
+    }
+
+    /**
+     * column[命令合成]<br/>
+     * 查询表上的列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param tables 表
+     * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
+     * @return sqls
+     */
+    @Override
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Table table = null;
+        if(!tables.isEmpty()){
+            table = tables.get(0);
+        }
+        if(null != table){
+            checkName(runtime, null, table);
+            schema = table.getSchema();
+        }
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
+        /*if(BasicUtil.isNotEmpty(catalog)){
+            builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
+        }*/
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
+        }
+        List<String> names = Table.names(tables);
+        in(runtime, builder, "TABLE_NAME", names);
+        builder.append("\nORDER BY TABLE_NAME, ORDINAL_POSITION");
+
         return runs;
     }
 

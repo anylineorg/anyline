@@ -2446,6 +2446,41 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * column[命令合成]<br/>
+     * 查询表上的列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
+     * @return sqls
+     */
+    @Override
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Table table = null;
+        if(!tables.isEmpty()){
+            table = tables.get(0);
+        }
+        if(null != table){
+            catalog = table.getCatalog();
+            schema = table.getSchema();
+        }
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+
+        builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
+        builder.append("WHERE 1 = 1\n");
+        if(BasicUtil.isNotEmpty(catalog)){
+        }
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
+        }
+        in(runtime, builder, "F.TABNAME", Table.names(tables));
+        builder.append("\nORDER BY F.TABNAME");
+
+        return runs;
+    }
+    /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

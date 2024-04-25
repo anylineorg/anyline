@@ -2405,8 +2405,8 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, tables, metadata);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 	/**
 	 * column[结果集封装]<br/>

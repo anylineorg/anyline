@@ -18,6 +18,14 @@ public class TablesDiffer implements MetadataDiffer {
     public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests){
         return compare(origins, dests, true);
     }
+
+    /**
+     * 比较差异
+     * @param origins origins
+     * @param dests dests
+     * @param ignoreSchema 是否忽略 catalog schema
+     * @return TablesDiffer
+     */
     public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, boolean ignoreSchema){
         TablesDiffer differ = new TablesDiffer();
         LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
@@ -37,7 +45,9 @@ public class TablesDiffer implements MetadataDiffer {
                 //新表不存在
                 drops.put(key, origin);
             }else {
-                if(!origin.equals(dest, true, ignoreSchema)){
+                //更新部分
+                TableDiffer dif = origin.compare(dest);
+                if(!dif.isEmpty()){
                     origin.setUpdate(dest, false, false);
                     updates.put(key, origin);
                 }

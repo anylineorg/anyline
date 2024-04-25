@@ -410,6 +410,25 @@ public interface DriverAdapter {
 		return list;
 	}
 
+	default void in(DataRuntime runtime, StringBuilder builder, String column, List<String> list){
+		if(!list.isEmpty()) {
+			builder.append(" AND ").append(column);
+			if(list.size() == 1){
+				builder.append(" = '").append(objectName(runtime, list.get(0))).append("'");
+			}else{
+				boolean first = true;
+				builder.append(" IN(");
+				for(String item:list){
+					if(!first){
+						builder.append(", ");
+					}
+					builder.append("'").append(objectName(runtime, item)).append("'");
+					first = false;
+				}
+				builder.append(")");
+			}
+		}
+	}
 	/**
 	 * 根据差异生成SQL
 	 * @param differ differ 需要保证表中有列信息
@@ -3048,7 +3067,7 @@ public interface DriverAdapter {
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return sqls
 	 */
-	List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata) throws Exception;
+	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception;
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构

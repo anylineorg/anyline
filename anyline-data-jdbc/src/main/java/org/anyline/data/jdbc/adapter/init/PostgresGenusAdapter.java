@@ -2349,6 +2349,47 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * column[命令合成]<br/>
+     * 查询表上的列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表
+     * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
+     * @return sqls
+     */
+    @Override
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Table table = null;
+        if(!tables.isEmpty()){
+            table = tables.get(0);
+        }
+        if(null != table){
+            checkName(runtime, null, table);
+            catalog = table.getCatalog();
+            schema = table.getSchema();
+        }
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+
+        builder.append("SELECT M.*,pg_catalog.format_type ( FA.ATTTYPID, FA.ATTTYPMOD ) AS FULL_TYPE,FD.DESCRIPTION AS COLUMN_COMMENT \n");
+        builder.append("FROM INFORMATION_SCHEMA.COLUMNS M\n");
+        builder.append("LEFT JOIN PG_CLASS FC ON FC.RELNAME = M.TABLE_NAME\n");
+        builder.append("LEFT JOIN PG_ATTRIBUTE AS FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
+        builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
+        builder.append("WHERE 1 = 1\n");
+        if(BasicUtil.isNotEmpty(catalog)){
+            builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
+        }
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
+        }
+        in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
+        builder.append("\nORDER BY M.TABLE_NAME");
+
+        return runs;
+    }
+    /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

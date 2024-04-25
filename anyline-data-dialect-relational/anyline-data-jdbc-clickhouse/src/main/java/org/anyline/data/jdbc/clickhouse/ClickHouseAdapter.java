@@ -30,7 +30,6 @@ import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.proxy.ConvertProxy;
 import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
@@ -2325,8 +2324,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, tables, metadata);
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 
 	/**

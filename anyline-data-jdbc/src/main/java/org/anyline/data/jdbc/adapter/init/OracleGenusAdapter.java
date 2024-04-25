@@ -2551,6 +2551,40 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     /**
+     * column[命令合成]<br/>
+     * 查询表上的列
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param tables 表
+     * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0, false:查询系统表)
+     * @return sqls
+     */
+    @Override
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Table table = null;
+        if(!tables.isEmpty()){
+            table = tables.get(0);
+        }
+        if(null != table){
+            checkName(runtime, null, table);
+            schema = table.getSchema();
+        }
+
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT M.*, F.COMMENTS AS COLUMN_COMMENT FROM ALL_TAB_COLUMNS M \n");
+        builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
+        builder.append("WHERE 1=1\n");
+
+        if(BasicUtil.isNotEmpty(schema)){
+            builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
+        }
+        in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
+        return runs;
+    }
+
+    /**
      * column[结果集封装]<br/>
      *  根据查询结果集构造Tag
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

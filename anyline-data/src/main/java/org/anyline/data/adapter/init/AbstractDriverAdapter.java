@@ -4235,7 +4235,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
 				//查询全部表结构
-				List<Column> columns = columns(runtime, random, greedy, catalog, schema, pattern);
+				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<Table>)list);
 				for(Table table:list){
 					Long tObjectId = table.getObjectId();
 					LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
@@ -4317,7 +4317,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
 		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
-		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types);
+		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types, struct);
 		for(T table:list){
 			tables.put(table.getName().toUpperCase(), table);
 		}
@@ -6638,35 +6638,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Column
 	 */
 	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
-		List<T> columns = new ArrayList<>();
-		long fr = System.currentTimeMillis();
-		if(null == random) {
-			random = random(runtime);
-		}
-		Table tab = table;
-		if(null == tab){
-			tab = new Table();
-		}
-		tab.setCatalog(catalog);
-		tab.setSchema(schema);
-		if(BasicUtil.isEmpty(catalog) && BasicUtil.isEmpty(schema) && !greedy){
-			checkSchema(runtime, tab);
-		}
-		//根据系统表查询
-		try {
-			List<Run> runs = buildQueryColumnsRun(runtime, tab, false);
-			if (null != runs) {
-				int idx = 0;
-				for (Run run: runs) {
-					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-					columns = columns(runtime, idx, true, tab, columns, set);
-					idx++;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return columns;
+		List<Table> tables = new ArrayList<>();
+		tables.add(table);
+		return columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
 	/**
@@ -6683,10 +6657,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables)", 37));
+		List<T> columns = new ArrayList<>();
+		long fr = System.currentTimeMillis();
+		if(null == random) {
+			random = random(runtime);
 		}
-		return new ArrayList<>();
+		Table tab = null;
+		if(null != tables && !tables.isEmpty()){
+			tab = tables.get(0);
+		}
+
+		if(null!= tab) {
+			tab.setCatalog(catalog);
+			tab.setSchema(schema);
+			if (BasicUtil.isEmpty(catalog) && BasicUtil.isEmpty(schema) && !greedy) {
+				checkSchema(runtime, tab);
+			}
+		}
+		//根据系统表查询
+		try {
+			List<Run> runs = buildQueryColumnsRun(runtime, catalog, schema, tables, false);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run: runs) {
+					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+					columns = columns(runtime, idx, true, tab, columns, set);
+					idx++;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return columns;
 	}
 	/**
 	 * column[调用入口]<br/>
@@ -6731,9 +6733,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, List<Table> tables, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}

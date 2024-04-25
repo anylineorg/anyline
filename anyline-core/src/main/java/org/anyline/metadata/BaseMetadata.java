@@ -134,14 +134,31 @@ public class BaseMetadata<T extends BaseMetadata> {
         return identity;
     }
 
-    public static <T extends BaseMetadata> List<String> names(LinkedHashMap<String, T> columns){
-        return names(columns, false);
+    public static <T extends BaseMetadata> List<String> names(LinkedHashMap<String, T> metas){
+        return names(metas, false);
     }
-    public static <T extends BaseMetadata> List<String> names(LinkedHashMap<String, T> columns, boolean upper){
+    public static <T extends BaseMetadata> List<String> names(LinkedHashMap<String, T> metas, boolean upper){
         List<String> names = new ArrayList<>();
-        if(null != columns) {
-            for (T column : columns.values()) {
-                String name = column.getName();
+        if(null != metas) {
+            for (T meta : metas.values()) {
+                String name = meta.getName();
+                if (upper && null != name) {
+                    name = name.toUpperCase();
+                }
+                names.add(name);
+            }
+        }
+        return names;
+    }
+
+    public static <T extends BaseMetadata> List<String> names(List<T> metas){
+        return names(metas, false);
+    }
+    public static <T extends BaseMetadata> List<String> names(List<T> metas, boolean upper){
+        List<String> names = new ArrayList<>();
+        if(null != metas) {
+            for (T meta : metas) {
+                String name = meta.getName();
                 if (upper && null != name) {
                     name = name.toUpperCase();
                 }
