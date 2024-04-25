@@ -5118,7 +5118,7 @@ public interface DriverAdapter {
 	 * 定义列:非空
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder builder
-	 * @param column 列
+	 * @param meta 列
 	 * @return StringBuilder
 	 */
 	StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action);
