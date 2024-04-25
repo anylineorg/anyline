@@ -3684,7 +3684,7 @@ public class BeanUtil {
 	 * @param vol 每页多少行
 	 * @return List
 	 */
-	public <T> List<List<T>> page(Collection<T> origin, int vol){
+	public static <T> List<List<T>> page(Collection<T> origin, int vol){
 		List<List<T>> list = new ArrayList<>();
 		if(vol <= 0){
 			vol = 1;
@@ -3717,7 +3717,7 @@ public class BeanUtil {
 	 * @param page 拆成多少部分
 	 * @return list
 	 */
-	public <T> List<List<T>> split(Collection<T> origin, int page){
+	public static <T> List<List<T>> split(Collection<T> origin, int page){
 		List<List<T>> list = new ArrayList<>();
 		int size = origin.size();
 		if(page <=0 ){
