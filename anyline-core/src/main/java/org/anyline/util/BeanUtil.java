@@ -28,13 +28,12 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.anyline.adapter.EnvironmentWorker;
-import org.anyline.proxy.ConvertProxy;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.metadata.Column;
-import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.Convert;
+import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.proxy.ConvertProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.encrypt.DESUtil;
 import org.anyline.util.regular.Regular;
@@ -3678,6 +3677,73 @@ public class BeanUtil {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 分页
+	 * @param vol 每页多少行
+	 * @return List
+	 */
+	public <T> List<List<T>> page(Collection<T> origin, int vol){
+		List<List<T>> list = new ArrayList<>();
+		if(vol <= 0){
+			vol = 1;
+		}
+		int size = origin.size();
+		int page = (size-1) / vol + 1;
+		for(int i=0; i<page; i++){
+			int fr = i*vol;
+			int to = (i+1)*vol-1;
+			if(i == page-1){
+				to = size-1;
+			}
+			List<T> item = cuts(origin, fr, to);
+			list.add(item);
+		}
+		return list;
+	}
+
+	/**
+	 * 每页最少1行,最少分1页,最多分DataSet.size()页
+	 * 多余的从第1页开始追加
+	 * 5行分2页:共分成2页(3+2)
+	 * 5行分3页:共分成3页(2+2+1)
+	 * 10行分3页:共分成3页(4+3+3)
+	 * 10行分6页:共分成6页(2+2+2+2+1+1)
+	 * 5行分0页:共分成1页(5)
+	 * 2行分3页:共分成2页(1+1)
+	 *
+	 * DataSet拆分成size部分
+	 * @param page 拆成多少部分
+	 * @return list
+	 */
+	public <T> List<List<T>> split(Collection<T> origin, int page){
+		List<List<T>> list = new ArrayList<>();
+		int size = origin.size();
+		if(page <=0 ){
+			page = 1;
+		}
+		if(page > size){
+			page = size;
+		}
+		int vol = size / page;//每页多少行
+		int dif = size - vol*page;
+		int fr = 0;
+		int to = 0;
+		for(int i=0; i<page; i++){
+			to = fr + vol-1;
+			if(dif > 0){
+				to ++;
+				dif --;
+			}
+			if(to >= size){
+				to = size-1;
+			}
+			List<T> item = cuts(origin, fr, to);
+			list.add(item);
+			fr = to +1;
+		}
+		return list;
 	}
 
 	/**
