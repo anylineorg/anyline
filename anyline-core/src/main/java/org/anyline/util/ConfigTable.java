@@ -184,7 +184,10 @@ public class ConfigTable {
 	}
 
 	public static EnvironmentWorker environment() {
-		if(null == worker){
+		return environment(true);
+	}
+	public static EnvironmentWorker environment(boolean warn) {
+		if(null == worker && warn){
 			throw new RuntimeException("未注入EnvironmentWorker,基础Java环境调用DefaultEnvironmentWorker.start()," +
 				"其他环境添加依赖如:anyline-environment-spring-data-jdbc");
 		}
