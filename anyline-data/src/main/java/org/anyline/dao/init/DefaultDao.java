@@ -285,11 +285,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					Collection fvs = new ArrayList();
 					if (null == join.dependencyTable) {
 						//只通过中间表查主键 List<Long> departmentIds
-						if(fv.getClass().isArray()){
-							fvs = BeanUtil.array2collection(fv);
-						}else if(fv instanceof Collection){
-							fvs = (Collection) fv;
-						}
+						fvs = BeanUtil.list(fv);
 					} else {
 						//通过子表完整查询 List<Department> departments
 						Column joinpc = EntityAdapterProxy.primaryKey(clazz);

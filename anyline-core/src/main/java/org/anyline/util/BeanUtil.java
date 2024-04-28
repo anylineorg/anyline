@@ -2093,72 +2093,6 @@ public class BeanUtil {
 	}
 
 	/**
-	 * 数组转list
-	 * @param value 数组或集合
-	 * @return List
-	 * @param <T>
-	 */
-	public static <T> List<T> list(Object value){
-		List<T> list = new ArrayList<>();
-		if(null != value){
-			if(value instanceof Collection){
-				Collection<T> collection = (Collection<T>) value;
-				for(T item:collection){
-					list.add(item);
-				}
-			}else if(value.getClass().isArray()){
-				if(value instanceof int[]){
-					int[] array = (int[])value;
-					for(Integer item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof long[]){
-					long[] array = (long[])value;
-					for(Long item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof double[]){
-					double[] array = (double[])value;
-					for(Double item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof float[]){
-					float[] array = (float[])value;
-					for(Float item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof short[]){
-					short[] array = (short[])value;
-					for(Short item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof byte[]){
-					byte[] array = (byte[])value;
-					for(Byte item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof char[]){
-					char[] array = (char[])value;
-					for(Character item:array){
-						list.add((T)item);
-					}
-				}else if(value instanceof boolean[]){
-					boolean[] array = (boolean[])value;
-					for(Boolean item:array){
-						list.add((T)item);
-					}
-				}else{
-					Object[] array = (Object[]) value;
-					for(Object item:array){
-						list.add((T)item);
-					}
-				}
-			}
-		}
-		return list;
-	}
-
-	/**
 	 * 截取数组
 	 * @param array 原数组
 	 * @param fr 开始位置
@@ -3061,13 +2995,45 @@ public class BeanUtil {
 		return rv;
 	}
 
-	public static Collection array2collection(Object array){
-		Collection list = new ArrayList<>();
-		int len = Array.getLength(array);
-		for(int i= 0; i<len; i++){
-			list.add(Array.get(array, i));
+	public static List list(Object array){
+		List list = new ArrayList<>();
+		if(null != array) {
+			if(array.getClass().isArray()) {
+				int len = Array.getLength(array);
+				for (int i = 0; i < len; i++) {
+					list.add(Array.get(array, i));
+				}
+			}else if(array instanceof Collection){
+				Collection items = (Collection) array;
+				for (Object item:items){
+					list.add(item);
+				}
+			}else{
+				list.add(array);
+			}
+		}else{
+			list.add(array);
 		}
 		return list;
+	}
+	public static Object first(Object object){
+		Object value = null;
+		if(null != object) {
+			if (object instanceof Collection) {
+				Collection list = (Collection) object;
+				if (!list.isEmpty()) {
+					value = list.iterator().next();
+				}
+			} else if (object.getClass().isArray()) {
+				int len = Array.getLength(object);
+				if(len > 0){
+					value = Array.get(object, 0);
+				}
+			}else{
+				value = object;
+			}
+		}
+		return value;
 	}
 	public static <T> List<T> array2list(T[] ... arrays){
 		List<T> list = new ArrayList<T>();
@@ -3084,25 +3050,6 @@ public class BeanUtil {
 					}
 				}
 			}
-		}
-		return list;
-	}
-	public static List object2list(Object obj){
-		List list = null;
-		if(null == obj){
-			return new ArrayList();
-		}
-		if(obj instanceof List){
-			return (List)obj;
-		}
-		list = new ArrayList();
-		if(obj instanceof Object[]){
-			Object[] objs = (Object[]) obj;
-			for(Object item:objs){
-				list.add(item);
-			}
-		}else if(obj instanceof Collection){
-			list.addAll((Collection) obj);
 		}
 		return list;
 	}

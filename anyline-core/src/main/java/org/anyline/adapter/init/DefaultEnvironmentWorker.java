@@ -135,7 +135,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             if (name.contains("bean.imports")) {
                 try {
                     InputStream in = jar.getInputStream(entry);
-                    String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
+                    String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
                     loadBean(txt);
                 }catch (Exception e){
                     e.printStackTrace();

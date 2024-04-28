@@ -598,13 +598,13 @@ public class NumberUtil {
 		return new String(bts, charset);
 	}
 	public static String byte2string(byte[] bytes, int start, int len){
-		return byte2string(bytes, start, len, Charset.forName("UTF-8"));
+		return byte2string(bytes, start, len, StandardCharsets.UTF_8);
 	}
 	public static String byte2string(byte[] bytes){
-		return byte2string(bytes, 0, bytes.length, Charset.forName("UTF-8"));
+		return byte2string(bytes, 0, bytes.length, StandardCharsets.UTF_8);
 	}
 	public static String byte2string(byte[] bytes, int start){
-		return byte2string(bytes, start, bytes.length-start, Charset.forName("UTF-8"));
+		return byte2string(bytes, start, bytes.length-start, StandardCharsets.UTF_8);
 	}
 	public static String byte2string(byte[] bytes, Charset charset){
 		return byte2string(bytes, 0, bytes.length, charset);
@@ -753,7 +753,7 @@ public class NumberUtil {
 		return src.getBytes(Charset.forName(charset));
 	}
 	public static byte[] string2bytes(String src){
-		return src.getBytes(Charset.forName("UTF-8"));
+		return src.getBytes(StandardCharsets.UTF_8);
 	}
 
 	/**

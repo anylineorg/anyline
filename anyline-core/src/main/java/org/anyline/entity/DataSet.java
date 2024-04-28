@@ -5026,12 +5026,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         private DataSet equals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
-            if(null != value && value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = array.iterator().next();
-                }
-            }
+            value = BeanUtil.first(value);
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
@@ -5079,12 +5074,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         private DataSet notEquals(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
-            if(null != value && value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = array.iterator().next();
-                }
-            }
+            value = BeanUtil.first(value);
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
@@ -5132,12 +5122,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
 
         private DataSet contains(DataSet src, String key, Object value) {
             DataSet set = new DataSet();
-            if(null != value && value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = array.iterator().next();
-                }
-            }
+            value = BeanUtil.first(value);
             String tmpValue;
             for (DataRow row : src) {
                 tmpValue = row.getString(key);
@@ -5484,14 +5469,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
-            if(value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = (T)array.iterator().next();
-                }
+            Object first = BeanUtil.first(value);
+            if(null == first){
+                return set;
             }
-            if (BasicUtil.isNumber(value)) {
-                BigDecimal number = new BigDecimal(value.toString());
+            if (BasicUtil.isNumber(first)) {
+                BigDecimal number = new BigDecimal(first.toString());
                 for (DataRow row : src) {
                     if (null == row.get(key)) {
                         continue;
@@ -5500,9 +5483,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         set.add(row);
                     }
                 }
-            } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
+            } else if (BasicUtil.isDate(first) || BasicUtil.isDateTime(first)) {
                 try {
-                    Date date = DateUtil.parse(value.toString());
+                    Date date = DateUtil.parse(first);
                     for (DataRow row : src) {
                         if (null == row.get(key)) {
                             continue;
@@ -5520,7 +5503,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     if (null == row.get(key)) {
                         continue;
                     }
-                    if (row.getString(key).compareTo(value.toString()) < 0) {
+                    if (row.getString(key).compareTo(first.toString()) < 0) {
                         set.add(row);
                     }
                 }
@@ -5538,14 +5521,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
-            if(value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = (T)array.iterator().next();
-                }
+            Object first = BeanUtil.first(value);
+            if(null == first){
+                return set;
             }
-            if (BasicUtil.isNumber(value)) {
-                BigDecimal number = new BigDecimal(value.toString());
+            if (BasicUtil.isNumber(first)) {
+                BigDecimal number = new BigDecimal(first.toString());
                 for (DataRow row : src) {
                     if (null == row.get(key)) {
                         continue;
@@ -5554,9 +5535,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         set.add(row);
                     }
                 }
-            } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
+            } else if (BasicUtil.isDate(first) || BasicUtil.isDateTime(first)) {
                 try {
-                    Date date = DateUtil.parse(value.toString());
+                    Date date = DateUtil.parse(first.toString());
                     for (DataRow row : src) {
                         if (null == row.get(key)) {
                             continue;
@@ -5574,7 +5555,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     if (null == row.get(key)) {
                         continue;
                     }
-                    if (row.getString(key).compareTo(value.toString()) >= 0) {
+                    if (row.getString(key).compareTo(first.toString()) >= 0) {
                         set.add(row);
                     }
                 }
@@ -5592,14 +5573,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
-            if(value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = (T)array.iterator().next();
-                }
+            Object first = BeanUtil.first(value);
+            if(null == first){
+                return set;
             }
-            if (BasicUtil.isNumber(value)) {
-                BigDecimal number = new BigDecimal(value.toString());
+            if (BasicUtil.isNumber(first)) {
+                BigDecimal number = new BigDecimal(first.toString());
                 for (DataRow row : src) {
                     if (null == row.get(key)) {
                         continue;
@@ -5608,9 +5587,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         set.add(row);
                     }
                 }
-            } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
+            } else if (BasicUtil.isDate(first) || BasicUtil.isDateTime(first)) {
                 try {
-                    Date date = DateUtil.parse(value.toString());
+                    Date date = DateUtil.parse(first.toString());
                     for (DataRow row : src) {
                         if (null == row.get(key)) {
                             continue;
@@ -5628,7 +5607,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     if (null == row.get(key)) {
                         continue;
                     }
-                    if (row.getString(key).compareTo(value.toString()) > 0) {
+                    if (row.getString(key).compareTo(first.toString()) > 0) {
                         set.add(row);
                     }
                 }
@@ -5646,14 +5625,12 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             if (null == value) {
                 return set;
             }
-            if(value.getClass().isArray()){
-                Collection array = BeanUtil.array2collection(value);
-                if(!array.isEmpty()){
-                    value = (T)array.iterator().next();
-                }
+            Object first = BeanUtil.first(value);
+            if(null == first){
+                return set;
             }
-            if (BasicUtil.isNumber(value)) {
-                BigDecimal number = new BigDecimal(value.toString());
+            if (BasicUtil.isNumber(first)) {
+                BigDecimal number = new BigDecimal(first.toString());
                 for (DataRow row : src) {
                     if (null == row.get(key)) {
                         continue;
@@ -5662,9 +5639,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                         set.add(row);
                     }
                 }
-            } else if (BasicUtil.isDate(value) || BasicUtil.isDateTime(value)) {
+            } else if (BasicUtil.isDate(first) || BasicUtil.isDateTime(first)) {
                 try {
-                    Date date = DateUtil.parse(value.toString());
+                    Date date = DateUtil.parse(first);
                     for (DataRow row : src) {
                         if (null == row.get(key)) {
                             continue;
@@ -5682,7 +5659,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     if (null == row.get(key)) {
                         continue;
                     }
-                    if (row.getString(key).compareTo(value.toString()) >= 0) {
+                    if (row.getString(key).compareTo(first.toString()) >= 0) {
                         set.add(row);
                     }
                 }
@@ -5752,19 +5729,15 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             return set;
         }
     }
+
     private String string(Object object){
-        String string = null;
-        if(object instanceof Collection){
-            Collection list = (Collection) object;
-            if(!list.isEmpty()){
-                Object first = list.iterator().next();
-                if(null != first){
-                    string = first.toString();
-                }
-            }
+        Object first = BeanUtil.first(object);
+        if(null != first){
+            return first.toString();
         }
-        return string;
+        return null;
     }
+
 
     public class Format implements Serializable{
         /**

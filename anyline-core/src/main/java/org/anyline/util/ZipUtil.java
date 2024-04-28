@@ -135,7 +135,7 @@ public class ZipUtil {
 	}
 
 	public static void replace(File zip, String item, String content) throws Exception {
-		replace(zip, item, content, Charset.forName("UTF-8"));
+		replace(zip, item, content, StandardCharsets.UTF_8);
 	}
 	public static void replace(File zip, String item, String content, Charset charset) throws Exception {
 		replace(zip, item, new ByteArrayInputStream(content.getBytes(charset)), charset);
@@ -173,7 +173,7 @@ public class ZipUtil {
 		tempFile.delete();
 	}
 	public static void replace(File src, String item, InputStream in) throws Exception {
-		replace(src, item, in, Charset.forName("UTF-8"));
+		replace(src, item, in, StandardCharsets.UTF_8);
 	}
 	public static boolean zip(Map<String, File> files, File zip, String dir, String comment, boolean append) {
 		boolean result = true;

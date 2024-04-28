@@ -95,7 +95,7 @@ public abstract class AnylineConfig {
 					}
 				} else {
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/" + fileName);
-					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
+					String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
 					parse(txt);
 				}
 				// 加载同目录下config目录

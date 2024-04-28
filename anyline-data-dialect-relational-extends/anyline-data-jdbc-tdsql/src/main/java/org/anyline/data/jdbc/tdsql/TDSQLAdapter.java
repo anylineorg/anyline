@@ -17,10 +17,10 @@
 package org.anyline.data.jdbc.tdsql;
 
 import org.anyline.annotation.Component;
-import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
+import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
 import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.tdsql")
-public class TDSQLAdapter extends PostgresGenusAdapter {
+public class TDSQLAdapter extends MySQLGenusAdapter {
     
     public DatabaseType type(){
         return DatabaseType.TDSQL;

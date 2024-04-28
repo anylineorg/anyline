@@ -448,7 +448,7 @@ public class ConfigTable {
 			LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 			String path = url.getPath();
 			InputStream in = url.openStream();
-			String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
+			String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
 			if(path.contains(".yml")){
 				map = parseYml(txt);
 			}else if(path.contains("properties")){
