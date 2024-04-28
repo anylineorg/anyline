@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -25,22 +25,22 @@ import java.net.NetworkInterface;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
- 
+
 public class BasicUtil {
 
 	public static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789, .?'_-=+!@#$%^&*() ";
-	/** 
-	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象 
-	 *  
+	/**
+	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象
+	 *
 	 * @param obj  obj
 	 * @param recursion  recursion
-	 *            是否递归查检集合对象 
+	 *            是否递归查检集合对象
 	 * @return boolean
-	 */ 
+	 */
 	@SuppressWarnings("rawtypes")
 	public static boolean isEmpty(boolean recursion, Object obj) {
 		if (null == obj) {
-			return true; 
+			return true;
 		}
 		if (obj instanceof Collection && recursion) {
 			Collection collection = (Collection) obj;
@@ -49,9 +49,9 @@ public class BasicUtil {
 			}
 			for (Object item : collection) {
 				if (!isEmpty(recursion, item)) {
-					return false; 
-				} 
-			} 
+					return false;
+				}
+			}
 		}else if(obj.getClass().isArray()){
 			if(obj instanceof int[]){
 				if(((int[])obj).length > 0){
@@ -89,7 +89,7 @@ public class BasicUtil {
 			Map map = (Map) obj;
 			if(map.isEmpty()){
 				return true;
-			} 
+			}
 			if(recursion){
 				for(Object item:map.values()){
 					if (!isEmpty(recursion, item)) {
@@ -98,7 +98,7 @@ public class BasicUtil {
 				}
 			}else{
 				return false;
-			} 
+			}
 		} else {
 			String tmp = obj.toString();
 			if(null == tmp){
@@ -106,10 +106,10 @@ public class BasicUtil {
 			}
 			tmp = tmp.trim();
 			if (!tmp.equals("") && !tmp.equals("null")) {
-				return false; 
-			} 
-		} 
-		return true; 
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static boolean isEmpty(Object obj) {
@@ -215,34 +215,34 @@ public class BasicUtil {
 		return null;
 	}
 
- 
-	/** 
-	 * 反回第一个不为空(""|null|empty)的值 没有符合条件的 则返回NULL 
-	 * 与nvl区别 : ""不符合evl条件 但符合nvl条件  
+
+	/**
+	 * 反回第一个不为空(""|null|empty)的值 没有符合条件的 则返回NULL
+	 * 与nvl区别 : ""不符合evl条件 但符合nvl条件
 	 * @param recursion  recursion
 	 * @param values  values
 	 * @param <T> T
 	 * @return Object
-	 */ 
+	 */
 	public static <T> T evl(boolean recursion, T... values) {
 		if (null == values) {
-			return null; 
-		} 
+			return null;
+		}
 		for (T item : values) {
 			if (isNotEmpty(recursion, item)) {
-				return item; 
-			} 
-		} 
-		return null; 
-	} 
- 
+				return item;
+			}
+		}
+		return null;
+	}
+
 	public static <T> T evl(T... values) {
 		return evl(false, values);
-	} 
- 
-	/** 
-	 * 随机数 
-	 *  
+	}
+
+	/**
+	 * 随机数
+	 *
 	 * @param fr  fr
 	 * @param to  to
 	 * @return int
@@ -252,37 +252,37 @@ public class BasicUtil {
 	}
 	public static double getRandomNumber(double fr, double to) {
 		return NumberUtil.random(fr, to);
-	} 
- 
-	/** 
-	 * 生成随机字符串 
-	 *  
+	}
+
+	/**
+	 * 生成随机字符串
+	 *
 	 * @param length  length
 	 * @param buffer  buffer
 	 * @return String
-	 */ 
+	 */
 	public static String getRandomString(int length, StringBuffer buffer) {
-		StringBuffer sb = new StringBuffer(); 
-		Random r = new Random(); 
-		int range = buffer.length(); 
+		StringBuffer sb = new StringBuffer();
+		Random r = new Random();
+		int range = buffer.length();
 		for (int i = 0; i < length; i++) {
-			sb.append(buffer.charAt(r.nextInt(range))); 
-		} 
-		return sb.toString(); 
-	} 
- 
+			sb.append(buffer.charAt(r.nextInt(range)));
+		}
+		return sb.toString();
+	}
+
 	public static String getRandomString(int length) {
-		return getRandomString(length, new StringBuffer("012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")); 
-	} 
- 
+		return getRandomString(length, new StringBuffer("012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+	}
+
 	public static String getRandomLowerString(int length) {
 		return getRandomString(length, new StringBuffer("abcdefghijklmnopqrstuvwxyz"));
-	} 
- 
+	}
+
 	public static String getRandomUpperString(int length) {
 		return getRandomString(length, new StringBuffer("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-	} 
- 
+	}
+
 	public static String getRandomNumberString(int length) {
 		return getRandomString(length, new StringBuffer("123567890"));
 	}
@@ -311,44 +311,44 @@ public class BasicUtil {
 			result += str;
 		}
      return result;
-	} 
+	}
 	/**
 	 * 在src的第idx位置插入key
 	 * @param src src
 	 * @param idx idx
 	 * @param key key
 	 * @return String
-	 */ 
+	 */
 	public static String insert(String src, int idx, String key) {
 		if (null == src || null == key) {
-			return src; 
-		} 
+			return src;
+		}
 		src = src.substring(0, idx) + key + src.substring(idx);
-		return src; 
- 
-	} 
- 
-	/** 
-	 * 判断数字 
-	 *  
+		return src;
+
+	}
+
+	/**
+	 * 判断数字
+	 *
 	 * @param obj  obj
 	 * @return boolean
-	 */ 
+	 */
 	public static boolean isNumber(Object obj) {
-		boolean result = false; 
+		boolean result = false;
 		if (obj == null) {
-			return result; 
-		} 
-		if (obj instanceof Number) 
-			return true; 
-		String str = obj.toString(); 
+			return result;
+		}
+		if (obj instanceof Number)
+			return true;
+		String str = obj.toString();
 		try {
-			Double.parseDouble(str); 
-			result = true; 
+			Double.parseDouble(str);
+			result = true;
 		} catch (Exception e) {
-			result = false; 
-		} 
-		return result; 
+			result = false;
+		}
+		return result;
 	}
 	public static boolean isBoolean(Object obj){
 		boolean result = false;
@@ -389,7 +389,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Byte parseByte(Object value) throws Exception {
+	public static Byte parseByte(Object value) throws NumberFormatException {
 		return Byte.parseByte(value.toString());
 	}
 	public static Short parseShort(Object value, Short def) {
@@ -405,7 +405,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Short parseShort(Object value) throws Exception {
+	public static Short parseShort(Object value) throws NumberFormatException {
 		return (short) Double.parseDouble(value.toString());
 	}
 
@@ -422,7 +422,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Integer parseInt(Object value) throws Exception {
+	public static Integer parseInt(Object value) throws NumberFormatException {
 		return (int) Double.parseDouble(value.toString());
 	}
 
@@ -438,19 +438,19 @@ public class BasicUtil {
 		} catch (Exception e) {
 			return def;
 		}
-	} 
+	}
 	public static Double parseDouble(Object value, Double def) {
 		if (null == value) {
-			return def; 
+			return def;
 		}
 		if(value instanceof Double){
 			return (Double) value;
 		}
 		try {
-			return Double.parseDouble(value.toString()); 
+			return Double.parseDouble(value.toString());
 		} catch (Exception e) {
-			return def; 
-		} 
+			return def;
+		}
 	}
 
 	public static BigDecimal parseDecimal(Object value, double def) {
@@ -499,7 +499,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static Long parseLong(Object value) throws Exception {
+	public static Long parseLong(Object value) throws NumberFormatException {
 		if(value instanceof Long){
 			return (Long)value;
 		}
@@ -521,13 +521,13 @@ public class BasicUtil {
 		return Long.parseLong(value.toString());
 	}
 
-	/** 
-	 * 类型转换 
-	 *  
+	/**
+	 * 类型转换
+	 *
 	 * @param obj  obj
 	 * @param def  def
 	 * @return Boolean
-	 */ 
+	 */
 	public static Boolean parseBoolean(Object obj, Boolean def) {
 		if(obj instanceof Boolean){
 			return (Boolean) obj;
@@ -537,8 +537,8 @@ public class BasicUtil {
 		} catch (Exception e) {
 			return def;
 		}
-	} 
- 
+	}
+
 	public static Boolean parseBoolean(Object obj) throws Exception {
 		if(obj instanceof Boolean){
 			return (Boolean)obj;
@@ -561,107 +561,107 @@ public class BasicUtil {
 			return Boolean.parseBoolean(obj.toString());
 		}
 	}
- 
-	/** 
-	 * 拆分权限数 : 将任意一个数拆分成多个（2的n次方）的和 
-	 *  
+
+	/**
+	 * 拆分权限数 : 将任意一个数拆分成多个（2的n次方）的和
+	 *
 	 * @param num  num
 	 * @return List
-	 */ 
+	 */
 	public static List<String> parseLimit(int num) {
 		List<String> list = new ArrayList<>();
-		int count = 0; 
+		int count = 0;
 		while (num >= 1) {
-			int temp = num % 2; 
-			num = (num - temp) / 2; 
+			int temp = num % 2;
+			num = (num - temp) / 2;
 			if (temp == 1) {
 				if (count == 0){
-					list.add("1"); 
+					list.add("1");
 				}else{
 					list.add((2 << (count - 1)) + "");
-				} 
-			} 
-			count++; 
-		} 
-		return list; 
-	} 
- 
-	/** 
-	 * 字符串替换 
-	 *  
+				}
+			}
+			count++;
+		}
+		return list;
+	}
+
+	/**
+	 * 字符串替换
+	 *
 	 * @param src  src
 	 * @param pattern  pattern
 	 * @param replace  replace
 	 * @return String
-	 */ 
+	 */
 	public static String replace(String src, String pattern, String replace) {
-		if (src == null) 
-			return null; 
-		int s = 0; 
-		int e = 0; 
-		StringBuilder result = new StringBuilder(); 
+		if (src == null)
+			return null;
+		int s = 0;
+		int e = 0;
+		StringBuilder result = new StringBuilder();
 		while ((e = src.indexOf(pattern, s)) >= 0) {
 			result.append(src.substring(s, e));
-			result.append(replace); 
-			s = e + pattern.length(); 
-		} 
- 
-		result.append(src.substring(s)); 
-		return result.toString(); 
-	} 
- 
-	/** 
-	 * 删除空格 
-	 *  
+			result.append(replace);
+			s = e + pattern.length();
+		}
+
+		result.append(src.substring(s));
+		return result.toString();
+	}
+
+	/**
+	 * 删除空格
+	 *
 	 * @param str  str
 	 * @return String
-	 */ 
+	 */
 	public static String trim(Object str) {
-		String result = ""; 
+		String result = "";
 		if (str != null) {
-			if (!isNumber(str)) 
-				result = str.toString().trim(); 
-			else 
-				result = "" + str; 
+			if (!isNumber(str))
+				result = str.toString().trim();
+			else
+				result = "" + str;
 		} else {
-			result = ""; 
-		} 
-		if (result.equals("-1")) 
-			result = ""; 
-		return result; 
-	} 
- 
-	/** 
-	 * 删除空格 
-	 *  
+			result = "";
+		}
+		if (result.equals("-1"))
+			result = "";
+		return result;
+	}
+
+	/**
+	 * 删除空格
+	 *
 	 * @param str  str
 	 * @return String
-	 */ 
+	 */
 	public static String trim(String str) {
-		String result = ""; 
+		String result = "";
 		if (str != null) {
-			if (!isNumber(str)) 
-				result = str.toString().trim(); 
-			else 
-				result = "" + str; 
+			if (!isNumber(str))
+				result = str.toString().trim();
+			else
+				result = "" + str;
 		} else {
-			result = ""; 
-		} 
-		if (result.equals("-1")) 
-			result = ""; 
-		return result; 
-	} 
- 
-	/** 
+			result = "";
+		}
+		if (result.equals("-1"))
+			result = "";
+		return result;
+	}
+
+	/**
 	 * 压缩空白 将多个空白压缩成一个空格
 	 * @param str  str
 	 * @return String
-	 */ 
+	 */
 	public static String compress(String str) {
 		if (null != str) {
 			str = str.replaceAll("\\s{2,}", " ").trim();
-		} 
-		return str; 
+		}
+		return str;
 	}
 
 	public static String[] compress(String[] strs) {
@@ -690,36 +690,36 @@ public class BasicUtil {
 		return xml;
 	}
 
-	/** 
-	 * 填充字符(从左侧填充) 
-	 *  
-	 * @param src   原文 
-	 * @param chr  填充字符 
-	 * @param len  需要达到的长度 
+	/**
+	 * 填充字符(从左侧填充)
+	 *
+	 * @param src   原文
+	 * @param chr  填充字符
+	 * @param len  需要达到的长度
 	 * @return String
-	 */ 
+	 */
 	public static String fillLChar(String src, String chr, int len) {
 		if (null != src && null != chr && chr.length() > 0) {
 			while (src.length() < len) {
-				src = chr + src; 
-			} 
-		} 
-		return src; 
-	} 
- 
+				src = chr + src;
+			}
+		}
+		return src;
+	}
+
 	public static String fillRChar(String src, String chr, int len) {
 		if (null != src && null != chr && chr.length() > 0) {
 			while (src.length() < len) {
-				src = src + chr; 
-			} 
-		} 
-		return src; 
-	} 
- 
+				src = src + chr;
+			}
+		}
+		return src;
+	}
+
 	public static String fillChar(String src, String chr, int len) {
 		return fillLChar(src, chr, len);
-	} 
- 
+	}
+
 	public static String fillChar(String src, int len) {
 		return fillChar(src, "0", len);
 	}
@@ -740,22 +740,22 @@ public class BasicUtil {
 		return fillChar(src+"", len);
 	}
 
-	/** 
-	 * 提取HashMap的key 
-	 *  
+	/**
+	 * 提取HashMap的key
+	 *
 	 * @param map  map
 	 * @return List
-	 */ 
+	 */
 	public static List<String> getMapKeys(Map<?, ?> map) {
 		List<String> keys = new ArrayList<>();
-		Iterator<?> it = map.keySet().iterator(); 
+		Iterator<?> it = map.keySet().iterator();
 		while (it.hasNext()) {
 			Object value = it.next();
 			if(null != value){
 				keys.add(value.toString());
 			}
-		} 
-		return keys; 
+		}
+		return keys;
 	}
 
 	public static List<String> split(String str, String separator){
@@ -771,38 +771,38 @@ public class BasicUtil {
 		}
 		return list;
 	}
- 
- 
-	/** 
-	 * 子串出现次数 
-	 *  
+
+
+	/**
+	 * 子串出现次数
+	 *
 	 * @param src  src
 	 * @param chr  chr
 	 * @return int
-	 */ 
+	 */
 	public static int charCount(String src, String chr) {
-		int count = 0; 
-		int idx = -1; 
+		int count = 0;
+		int idx = -1;
 		if (null == src || null == chr || chr.trim().isEmpty()) {
-			return 0; 
-		} 
+			return 0;
+		}
 		while ((idx = src.indexOf(chr, idx + chr.length())) != -1) {
-			count++; 
-		} 
-		return count; 
-	} 
- 
+			count++;
+		}
+		return count;
+	}
+
 	public static Object fetch(Collection<?> items, String key, Object value) {
 		if (null == items) {
-			return null; 
-		} 
+			return null;
+		}
 		for (Object item : items) {
 			Object tmpValue = BeanUtil.getFieldValue(item, key);
 			if (null != tmpValue && tmpValue.equals(value)) {
-				return item; 
-			} 
-		} 
-		return null; 
+				return item;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -814,11 +814,11 @@ public class BasicUtil {
 	 */
 	public static String cut(String src, int fr, int to) {
 		if (null == src) {
-			return null; 
-		} 
-		int len = src.length(); 
+			return null;
+		}
+		int len = src.length();
 		if (to > len) {
-			to = len; 
+			to = len;
 		}
 		if(to < 0){
 			to = src.length() + to;
@@ -899,40 +899,40 @@ public class BasicUtil {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static List<InetAddress> localInetAddress(){
-		List<InetAddress> ips = new ArrayList<InetAddress>(); 
+		List<InetAddress> ips = new ArrayList<InetAddress>();
 		try{
-			Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces(); 
-			InetAddress ip = null; 
+			Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces();
+			InetAddress ip = null;
 			while (allNetInterfaces.hasMoreElements()){
-				NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement(); 
-				Enumeration addresses = netInterface.getInetAddresses(); 
+				NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
+				Enumeration addresses = netInterface.getInetAddresses();
 				while (addresses.hasMoreElements()){
-					ip = (InetAddress) addresses.nextElement(); 
+					ip = (InetAddress) addresses.nextElement();
 					if(ip != null && ip instanceof Inet4Address){
-						ips.add(ip); 
-					}  
-				} 
-			} 
+						ips.add(ip);
+					}
+				}
+			}
 		}catch(Exception e){
-			e.printStackTrace(); 
-		} 
-		return ips; 
-	} 
-	/** 
-	 * 获取本机IP地址 
+			e.printStackTrace();
+		}
+		return ips;
+	}
+	/**
+	 * 获取本机IP地址
 	 * @return List
-	 */ 
+	 */
 	public static List<String> localIps(){
 		List<String> ips = new ArrayList<>();
 		List<InetAddress> list = localInetAddress();
 		for(InetAddress ip:list){
-			ips.add(ip.getHostAddress()); 
-		} 
-		return ips; 
+			ips.add(ip.getHostAddress());
+		}
+		return ips;
 	}
 
-	/** 
-	 * 数组是否包含 
+	/**
+	 * 数组是否包含
 	 * @param objs  objs
 	 * @param obj  obj
 	 * @param ignoreCase  是否不区分大小写
@@ -1127,10 +1127,10 @@ public class BasicUtil {
    }
    public static String escape(String src) {
        return CodeUtil.escape(src);
-   }  
+   }
 
    public static String unescape(String src) {
-       return CodeUtil.unescape(src);  
+       return CodeUtil.unescape(src);
    }
 
 	/**

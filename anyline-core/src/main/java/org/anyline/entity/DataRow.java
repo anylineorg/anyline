@@ -2050,17 +2050,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return def;
     }
 
-    public Double getDouble(String ... keys) throws Exception {
+    public Double getDouble(String ... keys) throws NumberFormatException {
         Object value = get(keys);
         if(null != value) {
             return Double.parseDouble(value.toString());
         }
         return null;
     }
-    public Double getDouble(int index) throws Exception {
+    public Double getDouble(int index) throws NumberFormatException {
         return getDouble(key(index));
     }
-    public Double getDouble(String key) throws Exception {
+    public Double getDouble(String key) throws NumberFormatException {
         Object value = get(key);
         if(null != value) {
             return Double.parseDouble(value.toString());
