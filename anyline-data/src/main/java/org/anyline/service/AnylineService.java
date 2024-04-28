@@ -38,8 +38,12 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.TransactionProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.FileUtil;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1207,6 +1211,41 @@ public interface AnylineService<E>{
 	long execute(String dest, ConfigStore configs, String ... conditions);
 	default long execute(String dest, String ... conditions){
 		return execute(dest, null, conditions);
+	}
+
+	/**
+	 * 执行SQL文件
+	 * @param file 文件内容
+	 * @param charset 文件编码
+	 * @param brk 失败后是否中断
+	 * @return 成功数量,失败数量
+	 */
+	default int[] execute(File file, Charset charset, boolean brk){
+		String txt = FileUtil.read(file).toString();
+		return execute(txt, brk);
+	}
+
+	default int[] execute(File file, boolean brk){
+		return execute(file, StandardCharsets.UTF_8, brk);
+	}
+
+	default int[] execute(String txt, boolean brk){
+		int success = 0;
+		int fail = 0;
+		String sqls[] = txt.split(";");
+		for(String sql:sqls){
+			try{
+				execute(sql);
+				success ++;
+			}catch (Exception e){
+				fail ++;
+				e.printStackTrace();
+				if(brk){
+					break;
+				}
+			}
+		}
+		return new int[]{success, fail};
 	}
 
 	/**

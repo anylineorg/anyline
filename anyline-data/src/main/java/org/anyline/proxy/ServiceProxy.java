@@ -20,6 +20,7 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
+import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.handler.DataHandler;
 import org.anyline.data.handler.EntityHandler;
 import org.anyline.data.handler.StreamHandler;
@@ -43,8 +44,10 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.anyline.data.datasource.DataSourceHolder;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -1004,6 +1007,24 @@ public class ServiceProxy {
      * 													EXECUTE
      ******************************************************************************************************************/
 
+    /**
+     * 执行SQL文件
+     * @param file 文件内容
+     * @param charset 文件编码
+     * @param brk 失败后是否中断
+     * @return 成功数量,失败数量
+     */
+    public static int[] execute(File file, Charset charset, boolean brk){
+        return service.execute(file, charset, brk);
+    }
+
+    public static int[] execute(File file, boolean brk){
+        return execute(file, StandardCharsets.UTF_8, brk);
+    }
+
+    public static int[] execute(String txt, boolean brk){
+        return service.execute(txt, brk);
+    }
     /**
      * 执行
      * @param dest  查询或操作的目标(表、存储过程、SQL等)
