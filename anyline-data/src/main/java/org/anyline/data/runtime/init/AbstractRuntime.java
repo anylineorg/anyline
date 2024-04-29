@@ -121,8 +121,13 @@ public class AbstractRuntime implements DataRuntime {
 
     public DriverAdapter getAdapter() {
         if(null == adapter){
-            String datasource = key;
-            adapter = DriverAdapterHolder.getAdapter(datasource, this);
+            String lockKey = AbstractRuntime.class.getName() + "getAdapter" + key;
+            synchronized (lockKey) {
+                if(null == adapter){
+                    String datasource = key;
+                    adapter = DriverAdapterHolder.getAdapter(datasource, this);
+                }
+            }
         }
         // 后续的操作都依赖 DriverAdapter，所以是必须的。
         // 如果这里无法匹配到 DriverAdapter就应该抛出异常。
