@@ -34,7 +34,7 @@
 		<anyline.version>8.7.2-SNAPSHOT</anyline.version>
 
 		<solon.version>2.7.5</solon.version>
-		<spring.version>5.3.23</spring.version>
+		<spring.version>6.0.19</spring.version>
 		<vertx.version>4.5.7</vertx.version>
 		<jdbc-mssql.version>7.2.2.jre8</jdbc-mssql.version>
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
