@@ -2350,7 +2350,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * column[命令合成]<br/>
      * 查询表上的列
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param table 表
      * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
      * @return sqls
      */
