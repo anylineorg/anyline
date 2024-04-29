@@ -50,6 +50,7 @@
 		<module>anyline-data-jdbc-voltdb</module>
 		<module>anyline-data-jdbc-xugu</module>							<!--虚谷-->
 		<module>anyline-data-jdbc-yugabyte</module>
+        <module>anyline-data-jdbc-postgis</module>
     </modules>
 	<build>
 		<plugins>

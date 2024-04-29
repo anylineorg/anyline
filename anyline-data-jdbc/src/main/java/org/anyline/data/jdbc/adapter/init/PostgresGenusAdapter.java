@@ -1,13 +1,13 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.jdbc.adapter.init.alias.PostgresGenusTypeMetadataAlias;
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -17,8 +17,6 @@ import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.util.*;
 
 public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
@@ -1669,7 +1667,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
-        builder.append("WHERE (I.inhrelid IS NULL  OR f.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
+        builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
         if(!empty(schema)){
             builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
         }

@@ -41,6 +41,7 @@
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
 		<jdbc-ojdbc.version>21.3.0.0</jdbc-ojdbc.version><!-- oracle -->
 		<jdbc-postgresql.version>42.4.1</jdbc-postgresql.version>
+		<jdbc-postgis.version>1.3.3</jdbc-postgis.version>
 		<jdbc-highgo.version>6.2.3</jdbc-highgo.version>
 		<jdbc-mariadb.version>2.4.4</jdbc-mariadb.version>
 		<jdbc-clickhouse.veriosn>0.4.6</jdbc-clickhouse.veriosn>
@@ -800,6 +801,11 @@
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>${jdbc-postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgis</groupId>
+				<artifactId>postgis-jdbc</artifactId>
+				<version>${jdbc-postgis.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.elasticsearch.client</groupId>
