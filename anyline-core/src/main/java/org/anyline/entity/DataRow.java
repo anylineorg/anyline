@@ -1984,9 +1984,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * boolean类型true 解析成 1
      * @param keys key
      * @return int
-     * @throws Exception 异常 Exception
+     * @throws NumberFormatException 无效的数字格式
      */
-    public Integer getInt(String ... keys) throws Exception {
+    public Integer getInt(String ... keys) throws NumberFormatException {
         Object val = get(keys);
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
@@ -2004,10 +2004,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
         }
     }
-    public Integer getInt(int index) throws Exception {
+    public Integer getInt(int index) throws NumberFormatException {
         return getInt(key(index));
     }
-    public Integer getInt(String key) throws Exception {
+    public Integer getInt(String key) throws NumberFormatException {
         Object val = get(key);
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
@@ -2092,15 +2092,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getDouble(key, def.doubleValue());
     }
 
-    public Long getLong(String ... keys) throws Exception {
+    public Long getLong(String ... keys) throws NumberFormatException {
         Object value = get(keys);
         return BasicUtil.parseLong(value);
     }
 
-    public Long getLong(int index) throws Exception {
+    public Long getLong(int index) throws NumberFormatException {
         return getLong(key(index));
     }
-    public Long getLong(String key) throws Exception {
+    public Long getLong(String key) throws NumberFormatException {
         Object value = get(key);
         return BasicUtil.parseLong(value);
     }
@@ -2129,14 +2129,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return getLong(key, def.longValue());
     }
 
-    public Float getFloat(String ... keys) throws Exception {
+    public Float getFloat(String ... keys) throws NumberFormatException {
         Object value = get(keys);
         return Float.parseFloat(value.toString());
     }
-    public Float getFloat(int index) throws Exception {
+    public Float getFloat(int index) throws NumberFormatException {
         return getFloat(key(index));
     }
-    public Float getFloat(String key) throws Exception {
+    public Float getFloat(String key) throws NumberFormatException {
         Object value = get(key);
         return Float.parseFloat(value.toString());
     }
@@ -2172,25 +2172,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return BasicUtil.parseBoolean(getString(key), def);
     }
 
-    public Boolean getBoolean(String ... keys) throws Exception {
+    public Boolean getBoolean(String ... keys)  {
         return BasicUtil.parseBoolean(getString(keys));
     }
 
-    public Boolean getBoolean(int index) throws Exception {
+    public Boolean getBoolean(int index) {
         return getBoolean(key(index));
     }
-    public Boolean getBoolean(String key) throws Exception {
+    public Boolean getBoolean(String key) {
         return BasicUtil.parseBoolean(getString(key));
     }
 
-    public BigDecimal getDecimal(String ... keys) throws Exception {
+    public BigDecimal getDecimal(String ... keys) throws NumberFormatException {
         return new BigDecimal(getString(keys));
     }
 
-    public BigDecimal getDecimal(int index) throws Exception {
+    public BigDecimal getDecimal(int index) throws NumberFormatException {
         return getDecimal(key(index));
     }
-    public BigDecimal getDecimal(String key) throws Exception {
+    public BigDecimal getDecimal(String key) throws NumberFormatException {
         return new BigDecimal(getString(key));
     }
 
@@ -2223,12 +2223,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public String getDecimal(String key, String format) throws Exception {
+    public String getDecimal(String key, String format) {
         BigDecimal result = getDecimal(key);
         return NumberUtil.format(result, format);
     }
 
-    public String getDecimal(int index, String format) throws Exception {
+    public String getDecimal(int index, String format) {
         return getDecimal(key(index), format);
     }
 
