@@ -539,7 +539,7 @@ public class BasicUtil {
 		}
 	}
 
-	public static Boolean parseBoolean(Object obj) throws Exception {
+	public static Boolean parseBoolean(Object obj) {
 		if(obj instanceof Boolean){
 			return (Boolean)obj;
 		}
