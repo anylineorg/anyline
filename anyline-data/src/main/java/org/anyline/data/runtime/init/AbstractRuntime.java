@@ -121,7 +121,7 @@ public class AbstractRuntime implements DataRuntime {
 
     public DriverAdapter getAdapter() {
         if(null == adapter){
-            String lockKey = AbstractRuntime.class.getName() + "getAdapter" + key;
+            String lockKey = (AbstractRuntime.class.getName() + "getAdapter" + key).intern();
             synchronized (lockKey) {
                 if(null == adapter){
                     String datasource = key;
