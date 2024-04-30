@@ -892,7 +892,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
         if(null == clazz){
             clazz = compatible;
         }
-        value = ConvertProxy.convert(value, clazz, array, def);
+        value = ConvertProxy.convert(value, clazz, array, def, false);
         return value;
     }
 
