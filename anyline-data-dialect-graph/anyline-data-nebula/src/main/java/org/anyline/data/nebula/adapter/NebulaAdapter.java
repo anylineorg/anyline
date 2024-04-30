@@ -24,6 +24,7 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.GraphTable;
 import org.anyline.metadata.graph.VertexTable;
@@ -3160,6 +3161,11 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
         return super.ddl(runtime, index, view, ddls, set);
     }
+
+    @Override
+    public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
+        return null;
+    }
     /* *****************************************************************************************************************
      * 													master table
      * -----------------------------------------------------------------------------------------------------------------
@@ -4751,7 +4757,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     /**
      *
      * 根据 catalog, schema, name检测tables集合中是否存在
-     * @param tables tables
+     * @param metas metas
      * @param catalog catalog
      * @param schema schema
      * @param name name
@@ -4759,8 +4765,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> Table
      */
     @Override
-    public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-        return super.table(tables, catalog, schema, name);
+    public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+        return super.search(metas, catalog, schema, name);
     }
 
     /**

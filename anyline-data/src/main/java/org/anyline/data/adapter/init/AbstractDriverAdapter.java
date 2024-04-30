@@ -5864,6 +5864,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return views;
 	}
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> views, DataSet set) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> views, DataSet set)", 37));
+		}
+		if(null == views){
+			views = new ArrayList<>();
+		}
+		return views;
+	}
 
 	/**
 	 * view[结果集封装]<br/>
@@ -9052,31 +9062,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													common
 	 * ----------------------------------------------------------------------------------------------------------------
 	 */
-	/**
-	 *
-	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param name name
-	 * @return 如果存在则返回Table 不存在则返回null
-	 * @param <T> Table
-	 */
-	@Override
-	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-		if(null != tables){
-			for(T table:tables){
-				if(equals(catalog, table.getCatalog())
-						&& equals(schema, table.getSchema())
-						&& BasicUtil.equalsIgnoreCase(table.getName(),name)
-				){
-					return table;
-				}
-			}
-		}
-		return null;
-	}
-
 	/**
 	 *
 	 * 根据 catalog, name检测schemas集合中是否存在
@@ -15310,6 +15295,31 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			builder.append(master).append(column).append(" = ").append(data).append(column);
 		}
 		return builder.toString();
+	}
+
+	/**
+	 *
+	 * 根据 catalog, schema, name检测tables集合中是否存在
+	 * @param tables tables
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param name name
+	 * @return 如果存在则返回Table 不存在则返回null
+	 * @param <T> Table
+	 */
+	@Override
+	public <T extends BaseMetadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
+		if(null != list){
+			for(T meta:list){
+				if(equals(catalog, meta.getCatalog())
+						&& equals(schema, meta.getSchema())
+						&& BasicUtil.equalsIgnoreCase(meta.getName(),name)
+				){
+					return meta;
+				}
+			}
+		}
+		return BaseMetadata.search(list, catalog, schema, name);
 	}
 
 	public <T extends BaseMetadata> T search(List<T> list, String catalog, String schema, String name){

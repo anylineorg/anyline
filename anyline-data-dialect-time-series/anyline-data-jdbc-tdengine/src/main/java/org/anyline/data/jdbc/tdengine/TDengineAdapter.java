@@ -1825,7 +1825,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
-				T table = table(tables, catalog, schema, name);
+				T table = search(tables, catalog, schema, name);
 				if(null == table){
 					if(create) {
 						table = (T)new MasterTable(name);
@@ -1844,7 +1844,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 					continue;
 				}
 				boolean contains = true;
-				T table = table(tables, catalog, schema, name);
+				T table = search(tables, catalog, schema, name);
 				if(null == table){
 					if(create) {
 						table = (T)new MasterTable(name);
@@ -3858,8 +3858,8 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-		return super.table(tables, catalog, schema, name);
+	public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+		return super.search(metas, catalog, schema, name);
 	}
 
 	/**

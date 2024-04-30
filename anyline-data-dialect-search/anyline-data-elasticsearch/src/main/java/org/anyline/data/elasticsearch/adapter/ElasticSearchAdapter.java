@@ -10,6 +10,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
@@ -1903,6 +1904,11 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
         return super.ddl(runtime, index, view, ddls, set);
     }
+
+    @Override
+    public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
+        return null;
+    }
     /* *****************************************************************************************************************
      * 													master table
      * -----------------------------------------------------------------------------------------------------------------
@@ -3187,8 +3193,8 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param <T> Table
      */
     @Override
-    public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-        return super.table(tables, catalog, schema, name);
+    public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+        return super.search(metas, catalog, schema, name);
     }
 
     /**

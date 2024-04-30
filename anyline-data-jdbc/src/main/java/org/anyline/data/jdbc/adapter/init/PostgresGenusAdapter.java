@@ -1893,7 +1893,25 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-        return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        String catalogName = null;
+        String schemaName = null;
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.VIEWS WHERE 1=1 ");
+        if(BasicUtil.isNotEmpty(catalogName)){
+            builder.append(" AND TABLE_CATALOG = '").append(catalogName).append("'");
+        }
+
+        if(BasicUtil.isNotEmpty(schemaName)){
+            builder.append(" AND TABLE_SCHEMA = '").append(schemaName).append("'");
+        }
+
+        if(BasicUtil.isNotEmpty(pattern)){
+            builder.append(" AND TABLE_NAME = '").append(pattern).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -3524,8 +3542,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-        return super.table(tables, catalog, schema, name);
+    public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+        return super.search(metas, catalog, schema, name);
     }
 
     /**

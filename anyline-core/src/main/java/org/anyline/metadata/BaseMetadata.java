@@ -605,6 +605,17 @@ public class BaseMetadata<T extends BaseMetadata> {
         }
         return null;
     }
+    public static <T extends BaseMetadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
+        for(T item:list){
+            if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
+                    && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
+                    && BasicUtil.equalsIgnoreCase(item.getName(), name)
+            ){
+                return item;
+            }
+        }
+        return null;
+    }
     public static <T extends BaseMetadata> T search(List<T> list, String catalog, String name){
         for(T item:list){
             if(BasicUtil.equalsIgnoreCase(item.getName(), name)){

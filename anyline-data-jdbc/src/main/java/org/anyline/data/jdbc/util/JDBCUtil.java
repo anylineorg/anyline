@@ -577,7 +577,7 @@ public class JDBCUtil {
             String schemaName = BasicUtil.evl(string(keys, "TABLE_SCHEMA", set), string(keys, "TABLE_SCHEM", set));
             Table chk = new Table();
             adapter.correctSchemaFromJDBC(runtime, chk, catalogName, schemaName);
-            T table = adapter.table(tables, chk.getCatalog(), chk.getSchema(), tableName);
+            T table = adapter.search(tables, chk.getCatalog(), chk.getSchema(), tableName);
             boolean contains = true;
             if(null == table){
                 if(create){

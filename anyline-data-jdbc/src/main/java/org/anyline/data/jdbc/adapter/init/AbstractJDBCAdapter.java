@@ -34,10 +34,7 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
-import org.anyline.metadata.adapter.TableMetadataAdapter;
+import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
@@ -2941,7 +2938,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		for(DataRow row:set){
 			T table = null;
 			table = init(runtime, index, table, catalog, schema, row);
-			if(null == table(tables, table.getCatalog(), table.getSchema(), table.getName())){
+			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())){
 				tables.add(table);
 			}
 			detail(runtime, index, table, row);
@@ -3045,7 +3042,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 
 			boolean contains = true;
-			T table = table(tables, catalog, schema, name);
+			T table = search(tables, catalog, schema, name);
 			if (null == table) {
 				if (create) {
 					table = (T) new Table(catalog, schema, name);
@@ -3259,7 +3256,45 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set) throws Exception {
-		return super.views(runtime, index, create, catalog, schema, views, set);
+		if(null == views){
+			views = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			T view = null;
+			view = init(runtime, index, view, catalog, schema, row);
+			view = detail(runtime, index, view, row);
+			views.put(view.getName().toUpperCase(), view);
+		}
+		return views;
+	}
+
+	/**
+	 * view[结果集封装]<br/>
+	 *  根据查询结果集构造View
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set 查询结果集
+	 * @return views
+	 * @throws Exception 异常
+	 */
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> views, DataSet set) throws Exception {
+		if(null == views){
+			views = new ArrayList<>();
+		}
+		for(DataRow row:set){
+			T view = null;
+			view = init(runtime, index, view, catalog, schema, row);
+			if(null == search(views, view.getCatalog(), view.getSchema(), view.getName())){
+				views.add(view);
+			}
+			detail(runtime, index, view, row);
+		}
+		return views;
 	}
 
 	/**
@@ -3317,6 +3352,92 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	@Override
 	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
 		return super.ddl(runtime, index, view, ddls, set);
+	}
+
+
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装View基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index index
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return View
+	 * @param <T> View
+	 */
+	public <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		if(null == meta){
+			meta = (T)new View();
+		}
+		ViewMetadataAdapter config = viewMetadataAdapter(runtime);
+		String _catalog = row.getString(config.getCatalogRefers());
+		String _schema = row.getString(config.getSchemaRefers());
+		if(null == _catalog && null != catalog){
+			_catalog = catalog.getName();
+		}
+		if(null == _schema && null != schema){
+			_schema = schema.getName();
+		}
+		String name = row.getString(config.getNameRefers());
+
+		if(null == meta){
+			meta = (T)new View();
+		}
+		if(null != _catalog){
+			_catalog = _catalog.trim();
+		}
+		if(null != _schema){
+			_schema = _schema.trim();
+		}
+		meta.setMetadata(row);
+		meta.setCatalog(_catalog);
+		meta.setSchema(_schema);
+		meta.setName(name);
+		return meta;
+	}
+
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装View更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return View
+	 */
+	@Override
+	public <T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+		meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
+		meta.setEngine(row.getString("ENGINE"));
+		meta.setComment(row.getString("VIEW_COMMENT","TABLE_COMMENT","COMMENTS","COMMENT"));
+		meta.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
+		meta.setCollate(row.getString("TABLE_COLLATION"));
+		meta.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
+		meta.setDataFree(row.getLong("DATA_FREE", (Long)null));
+		meta.setIncrement(row.getLong("AUTO_INCREMENT", (Long)null));
+		meta.setIndexLength(row.getLong("INDEX_LENGTH", (Long)null));
+		meta.setCreateTime(row.getDate("CREATE_TIME", (Date)null));
+		meta.setUpdateTime(row.getDate("UPDATE_TIME", (Date)null));
+		meta.setType(row.getString("TABLE_TYPE"));
+		meta.setEngine(row.getString("ENGINE"));
+		meta.setDefinition(row.getString("VIEW_DEFINITION"));
+		return meta;
+	}
+
+	/**
+	 * view[结构集封装-依据]<br/>
+	 * 读取view元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ViewMetadataAdapter
+	 */
+	@Override
+	public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime){
+		ViewMetadataAdapter config = new ViewMetadataAdapter();
+		config.setNameRefer("VIEW_NAME,TABLE_NAME,NAME,TABNAME");
+		config.setCatalogRefer("VIEW_CATALOG,TABLE_CATALOG");
+		config.setSchemaRefer("VIEW_SCHEMA,TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+		return config;
 	}
 	/* *****************************************************************************************************************
 	 * 													master table
@@ -5465,8 +5586,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-		return super.table(tables, catalog, schema, name);
+	public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+		return super.search(metas, catalog, schema, name);
 	}
 
 	/**

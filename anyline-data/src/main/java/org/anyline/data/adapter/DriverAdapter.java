@@ -31,15 +31,12 @@ import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
-import org.anyline.metadata.adapter.TableMetadataAdapter;
+import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.differ.*;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
-import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -2673,6 +2670,7 @@ public interface DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set) throws Exception;
+	<T extends View> List<T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> views, DataSet set) throws Exception;
 
 	/**
 	 * view[结果集封装]<br/>
@@ -2741,6 +2739,13 @@ public interface DriverAdapter {
 	 */
 	<T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
+	/**
+	 * view[结构集封装-依据]<br/>
+	 * 读取view元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return TableMetadataAdapter
+	 */
+	ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
@@ -4142,15 +4147,14 @@ public interface DriverAdapter {
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name
 	 * @return 如果存在则返回Table 不存在则返回null
 	 * @param <T> Table
 	 */
-	<T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name);
-
+	<T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name);
 	/**
 	 * 执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

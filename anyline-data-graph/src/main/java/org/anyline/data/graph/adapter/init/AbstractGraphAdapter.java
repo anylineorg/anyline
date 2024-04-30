@@ -2857,7 +2857,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		for(DataRow row:set){
 			T table = null;
 			table = init(runtime, index, table, catalog, schema, row);
-			if(null == table(tables, table.getCatalog(), table.getSchema(), table.getName())){
+			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())){
 				tables.add(table);
 			}
 			detail(runtime, index, table, row);
@@ -5212,8 +5212,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> T table(List<T> tables, Catalog catalog, Schema schema, String name){
-		return super.table(tables, catalog, schema, name);
+	public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+		return super.search(metas, catalog, schema, name);
 	}
 
 	/**
