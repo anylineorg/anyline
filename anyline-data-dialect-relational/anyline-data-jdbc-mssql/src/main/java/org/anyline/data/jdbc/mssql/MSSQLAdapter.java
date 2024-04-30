@@ -1744,7 +1744,12 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		builder.append("FROM SYS.OBJECTS O \n");
 		builder.append("LEFT JOIN INFORMATION_SCHEMA.TABLES AS FT ON O.OBJECT_ID = OBJECT_ID(FT.TABLE_CATALOG + '.' + FT.TABLE_SCHEMA + '.' + FT.TABLE_NAME) \n");
 		builder.append("LEFT JOIN SYS.EXTENDED_PROPERTIES EP ON O.OBJECT_ID = EP.MAJOR_ID AND EP.CLASS = 1 AND EP.MINOR_ID = 0 AND EP.NAME = 'MS_Description' \n");
-		builder.append("WHERE O.TYPE = 'U'  OR O.TYPE='V' \n");
+		if((types & 2) == 2){
+			//包含视图
+			builder.append("WHERE (O.TYPE = 'U' OR O.TYPE='V') \n");
+		}else{
+			builder.append("WHERE O.TYPE = 'U' \n");
+		}
 		if(BasicUtil.isNotEmpty(pattern)){
 			builder.append(" AND O.NAME LIKE '").append(pattern).append("'");
 		}

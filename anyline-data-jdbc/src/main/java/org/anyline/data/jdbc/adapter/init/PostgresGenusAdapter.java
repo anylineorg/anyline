@@ -1674,6 +1674,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(BasicUtil.isNotEmpty(pattern)){
             builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
         }
+        if((types & 2) != 2){
+            //不包含视图
+            builder.append(" AND M.TABLE_TYPE != 'VIEW'");
+        }
         return runs;
     }
 

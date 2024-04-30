@@ -268,7 +268,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {List<Run> runs = new ArrayList<>();
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+        List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
@@ -283,6 +284,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
 		if(!empty(schema)){
 			builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema.getName()).append("'");
 		}
+        //SYS.TABLES 中没有视图不需要过滤视图
         return runs;
     }
     /**
