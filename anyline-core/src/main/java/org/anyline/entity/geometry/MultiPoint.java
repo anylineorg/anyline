@@ -40,7 +40,9 @@ public class MultiPoint extends Geometry{
         return this;
     }
     public MultiPoint add(double x, double y){
-        return add(new Point(x, y));
+        Point point = new Point(x, y);
+        point.srid(srid);
+        return add(point);
     }
     public MultiPoint add(int x, int y){
         return add(new Point(x, y));

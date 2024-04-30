@@ -19,57 +19,102 @@ package org.anyline.data.jdbc.postgis;
 import org.postgis.*;
 
 public class PostgisGeometryAdapter {
+
+    public static Object parsePGgeometry(PGgeometry input) {
+        Object result = input;
+        /*
+        1"POINT",
+        2"LINESTRING",
+        3"POLYGON",
+        4"MULTIPOINT",
+        5"MULTILINESTRING",
+        6"MULTIPOLYGON",
+        7"GEOMETRYCOLLECTION"
+        */
+        if(null != input){
+            Geometry geometry = input.getGeometry();
+            int type = input.getGeoType();
+            if(type == 1){
+                result = parsePoint((Point) geometry);
+            }else if(type == 2){
+                result = parseLineString((LineString) geometry);
+            }else if(type == 3){
+                result = parsePolygon((Polygon) geometry);
+            }else if(type == 4){
+                result = parseMultiPoint((MultiPoint)geometry);
+            }else if(type == 5){
+                result = parseMultiLineString((MultiLineString) geometry);
+            }else if(type == 6){
+                result = parseMultiPolygon((MultiPolygon) geometry);
+            }else if(type == 7){
+                result = parseGeometryCollection((GeometryCollection) geometry);
+            }
+        }
+        return result;
+    }
     /**
      * 点
-     * @param pg PG原生point
+     * @param input PG原生point
      * @return Point
      */
-    public static Object parsePolygon(Polygon pg){
-        return pg;
+    public static Object parsePolygon(Polygon input){
+        return input;
     }
 
-    public static Object parseMultiLineString(MultiLineString pg) {
-        return pg;
+    public static Object parseMultiLineString(MultiLineString input) {
+        return input;
     }
 
-    public static Object parsePoint(Point pg) {
-        return pg;
+    public static Object parsePoint(Point input) {
+        org.anyline.entity.geometry.Point result = new org.anyline.entity.geometry.Point();
+        result.tag("Point");
+        try {
+            result.srid(input.srid);
+            result.x(input.x);
+            result.y(input.y);
+        }catch (Exception e){
+            return input;
+        }
+        return result;
     }
 
-    public static Object parsePGgeometryLW(PGgeometryLW pg) {
-        return pg;
+    public static Object parsePGgeometryLW(PGgeometryLW input) {
+        return input;
     }
 
-    public static Object parsePGgeometry(PGgeometry pg) {
-        return pg;
+
+    public static Object parsePGbox3d(PGbox3d input) {
+        return input;
     }
 
-    public static Object parsePGbox3d(PGbox3d pg) {
-        return pg;
+    public static Object parsePGbox2d(PGbox2d input) {
+        return input;
     }
 
-    public static Object parsePGbox2d(PGbox2d pg) {
-        return pg;
+    public static Object parseMultiPolygon(MultiPolygon input) {
+        return input;
     }
 
-    public static Object parseMultiPolygon(MultiPolygon pg) {
-        return pg;
+    public static Object parseMultiPoint(MultiPoint input) {
+        org.anyline.entity.geometry.MultiPoint result = new org.anyline.entity.geometry.MultiPoint();
+        result.tag("MultiPoint");
+        try {
+            result.srid(input.srid);
+            Point[] points = input.getPoints();
+            for(Point point:points){
+                result.add(point.getX(), point.getY());
+            }
+        }catch (Exception e){
+            return input;
+        }
+        return result;
     }
 
-    public static Object parseMultiPoint(MultiPoint pg) {
-        return pg;
+    public static Object parseLineString(LineString input) {
+        return input;
     }
 
-    public static Object parseLineString(LineString pg) {
-        return pg;
-    }
-
-    public static Object parseGeometryCollection(GeometryCollection pg) {
-        return pg;
-    }
-
-    public static org.postgis.Point convert(org.anyline.entity.geometry.Point point){
-        org.postgis.Point pg = new org.postgis.Point(point.x(), point.y());
-        return pg;
+    public static Object parseGeometryCollection(GeometryCollection input) {
+        return input;
     }
 }
