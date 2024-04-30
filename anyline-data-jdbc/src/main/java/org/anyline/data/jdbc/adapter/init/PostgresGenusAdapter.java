@@ -3237,7 +3237,31 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-        return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT\n")
+                .append("	P.*,\n")
+                .append("	N.NSPNAME AS SCHEMA_NAME,\n")
+                .append("	TYP.TYPNAME AS RETTYPE,\n")
+                .append("	OBJ_DESCRIPTION ( P.OID ) AS COMMENT,\n")
+                .append("	PG_GET_USERBYID ( P.PROOWNER ) AS OWNER_NAME,\n")
+                .append("	TYP.TYPNAME AS TYPE_NAME,\n")
+                .append("	TYPNS.NSPNAME AS RETTYPESCHEMA\n")
+                .append("FROM\n")
+                .append("	PG_PROC P \n")
+                .append("	LEFT JOIN PG_TYPE TYP ON TYP.OID = P.PRORETTYPE\n")
+                .append("	LEFT JOIN PG_NAMESPACE TYPNS ON TYPNS.OID = TYP.TYPNAMESPACE\n")
+                .append("WHERE P.PROKIND <> 'a' \n");
+
+        if(!empty(schema)){
+            builder.append(" AND N.NSPNAME = '").append(schema.getName()).append("'");
+        }
+        if(BasicUtil.isNotEmpty(name)){
+            builder.append(" AND P.PRONAME = '").append(name).append("'");
+        }
+        return runs;
     }
 
     /**
@@ -3253,7 +3277,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception {
-        return super.functions(runtime, index, create, functions, set);
+        if(null == functions){
+            functions = new ArrayList<>();
+        }
+        for(DataRow row:set){
+            String name = row.getString("PRONAME");
+
+        }
+        return functions;
     }
     /**
      * function[结果集封装]<br/>
@@ -3398,15 +3429,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(null != schema){
             schemaName = schema.getName();
         }
-        builder.append("SELECT * FROM pg_sequences WHERE 1=1\n");
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.SEQUENCES WHERE 1=1\n");
         if(BasicUtil.isNotEmpty(catalogName)){
-            builder.append(" AND SEQUENCEOWNER = '").append(catalogName).append("'");
+            builder.append(" AND SEQUENCE_CATALOG = '").append(catalogName).append("'");
         }
         if(BasicUtil.isNotEmpty(schemaName)){
-            builder.append(" AND SCHEMANAME = '").append(schemaName).append("'");
+            builder.append(" AND SEQUENCE_SCHEMA = '").append(schemaName).append("'");
         }
         if(BasicUtil.isNotEmpty(name)){
-            builder.append(" AND SEQUENCENAME = '").append(name).append("'");
+            builder.append(" AND SEQUENCE_NAME = '").append(name).append("'");
         }
         return runs;
     }
@@ -3428,7 +3459,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             sequences = new ArrayList<>();
         }
         for(DataRow row:set){
-            String name = row.getString("SEQUENCENAME");
+            String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = new Sequence(name);
             sequences.add((T)init(sequence, row));
         }
@@ -3451,7 +3482,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             sequences = new LinkedHashMap<>();
         }
         for(DataRow row:set){
-            String name = row.getString("SEQUENCENAME");
+            String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = sequences.get(name.toUpperCase());
             sequences.put(name.toUpperCase(), (T)init(sequence, row));
         }
@@ -3461,16 +3492,16 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(null == sequence){
             sequence = new Sequence();
         }
-        sequence.setName(row.getString("SEQUENCENAME"));
-        sequence.setCatalog(row.getString("SEQUENCEOWNER"));
-        sequence.setSchema(row.getString("SCHEMANAME"));
+        sequence.setName(row.getString("SEQUENCE_NAME"));
+        sequence.setCatalog(row.getString("SEQUENCE_CATALOG"));
+        sequence.setSchema(row.getString("SEQUENCE_SCHEMA"));
         sequence.setLast(row.getLong("LAST_NUMBER", (Long)null));
         sequence.setMin(row.getLong("MIN_VALUE", (Long)null));
         sequence.setStart(row.getLong("START_VALUE", (Long)null));
-        sequence.setMax(row.getLong("MAX_VALUE", (Long)null));
-        sequence.setIncrement(row.getInt("INCREMENT_BY", 1));
+        sequence.setMax(row.getLong("MINIMUM_VALUE", (Long)null));
+        sequence.setIncrement(row.getInt("MAXIMUM_VALUE", 1));
         sequence.setCache(row.getInt("CACHE_SIZE", null));
-        sequence.setCycle(row.getBoolean("CYCLE", null));
+        sequence.setCycle(row.getBoolean("CYCLE_OPTION", null));
         return sequence;
     }
 

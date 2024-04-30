@@ -21,6 +21,7 @@ import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.adapter.DriverWorker;
+import org.anyline.metadata.adapter.*;
 import org.anyline.proxy.ConvertProxy;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.prepare.SyntaxHelper;
@@ -28,15 +29,10 @@ import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.util.SQLUtil;
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.TypeMetadataAlias;
-import org.anyline.metadata.adapter.ColumnMetadataAdapter;
-import org.anyline.metadata.adapter.IndexMetadataAdapter;
-import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
-import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
@@ -4483,7 +4479,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime)", 37));
 		}
-		return null;
+		return new TableMetadataAdapter();
 	}
 	/**
 	 * table[结果集封装]<br/>
@@ -8133,6 +8129,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return meta;
 	}
+
+	/**
+	 * catalog[结构集封装-依据]<br/>
+	 * 读取catalog元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ConstraintMetadataAdapter
+	 */
+	@Override
+	public ConstraintMetadataAdapter constraintMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 ConstraintMetadataAdapter constraintMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new ConstraintMetadataAdapter();
+	}
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -8231,6 +8241,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
 		}
 		return meta;
+	}
+
+	/**
+	 * trigger[结构集封装-依据]<br/>
+	 * 读取 trigger 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public TriggerMetadataAdapter triggerMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 TriggerMetadataAdapter triggerMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new TriggerMetadataAdapter();
 	}
 	/* *****************************************************************************************************************
 	 * 													procedure
@@ -8486,6 +8510,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return meta;
 	}
+
+	/**
+	 * procedure[结构集封装-依据]<br/>
+	 * 读取 procedure 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ProcedureMetadataAdapter
+	 */
+	@Override
+	public ProcedureMetadataAdapter procedureMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 ProcedureMetadataAdapter procedureMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new ProcedureMetadataAdapter();
+	}
 	/* *****************************************************************************************************************
 	 * 													function
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -8740,6 +8778,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
 		}
 		return meta;
+	}
+	/**
+	 * function[结构集封装-依据]<br/>
+	 * 读取 function 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return FunctionMetadataAdapter
+	 */
+	@Override
+	public FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new FunctionMetadataAdapter();
 	}
 	/* *****************************************************************************************************************
 	 * 													sequence

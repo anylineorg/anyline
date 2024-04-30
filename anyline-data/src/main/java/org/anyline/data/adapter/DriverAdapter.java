@@ -3649,6 +3649,14 @@ public interface DriverAdapter {
 	 */
 	<T extends Constraint> T detail(DataRuntime runtime, int index, T meta, DataRow row);
 
+	/**
+	 * catalog[结构集封装-依据]<br/>
+	 * 读取catalog元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	ConstraintMetadataAdapter constraintMetadataAdapter(DataRuntime runtime);
+
 	/* *****************************************************************************************************************
 	 * 													trigger
 	 ******************************************************************************************************************/
@@ -3707,6 +3715,14 @@ public interface DriverAdapter {
 	 * @return Trigger
 	 */
 	<T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row);
+
+	/**
+	 * trigger[结构集封装-依据]<br/>
+	 * 读取 trigger 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	TriggerMetadataAdapter triggerMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													procedure
@@ -3841,6 +3857,13 @@ public interface DriverAdapter {
 	 * @return Procedure
 	 */
 	<T extends Procedure> T detail(DataRuntime runtime, int index, T meta, DataRow row);
+	/**
+	 * procedure[结构集封装-依据]<br/>
+	 * 读取 procedure 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ProcedureMetadataAdapter
+	 */
+	ProcedureMetadataAdapter procedureMetadataAdapter(DataRuntime runtime);
 	/* *****************************************************************************************************************
 	 * 													function
 	 ******************************************************************************************************************/
@@ -3976,6 +3999,13 @@ public interface DriverAdapter {
 	 * @return Function
 	 */
 	<T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row);
+	/**
+	 * function[结构集封装-依据]<br/>
+	 * 读取 function 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return FunctionMetadataAdapter
+	 */
+	FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 * 													sequence
@@ -4112,6 +4142,13 @@ public interface DriverAdapter {
 	 * @return Sequence
 	 */
 	<T extends Sequence> T detail(DataRuntime runtime, int index, T meta, DataRow row);
+	/**
+	 * sequence[结构集封装-依据]<br/>
+	 * 读取 sequence 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return SequenceMetadataAdapter
+	 */
+	SequenceMetadataAdapter sequenceMetadataAdapter(DataRuntime runtime);
 
 	/* *****************************************************************************************************************
 	 *
