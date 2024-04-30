@@ -17,6 +17,7 @@
 package org.anyline.environment.spring.data.jdbc.datasource;
 
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.jdbc.datasource.JDBCDataSourceHolder;
 import org.anyline.data.runtime.DataRuntime;
@@ -152,6 +153,12 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 				//创建事务管理器
 				regTransactionManager(key, (DataSource)datasource);
 				runtime = SpringJDBCRuntimeHolder.instance().reg(key, (DataSource)datasource);
+				if(null == adapter && null != type){
+					adapter = DriverAdapterHolder.getAdapter(type);
+				}
+				if(null != adapter){
+					runtime.setAdapter(adapter);
+				}
 			}else{
 				//spring还没加载完先缓存起来，最后统一注册
 				if(!caches.containsKey(key) || override){

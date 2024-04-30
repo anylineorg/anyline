@@ -128,6 +128,9 @@ public class ServiceProxy {
         return service;
     }
 
+    public static AnylineService temporary(Object datasource, DatabaseType type) throws Exception {
+        return temporary(datasource, null, type, null);
+    }
     public static AnylineService temporary(Object datasource, String database, DatabaseType type) throws Exception {
         return temporary(datasource, database, type, null);
     }

@@ -2,6 +2,7 @@ package org.anyline.data.jdbc.datasource;
 
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
+import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceKeyMap;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
@@ -182,8 +183,14 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                 //创建事务管理器
                 regTransactionManager(key, (DataSource)datasource);
                 runtime = JDBCRuntimeHolder.instance().reg(key, (DataSource)datasource);
+                if(null == adapter && null != type){
+                    adapter = DriverAdapterHolder.getAdapter(type);
+                }
+                if(null != adapter){
+                    runtime.setAdapter(adapter);
+                }
             }else{
-                //spring还没加载完先缓存起来，最后统一注册
+                //上下文还没加载完先缓存起来，最后统一注册
                 if(!caches.containsKey(key) || override){
                     caches.put(key, (DataSource)datasource);
                 }
