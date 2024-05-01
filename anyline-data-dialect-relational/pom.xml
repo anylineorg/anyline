@@ -41,6 +41,7 @@
 		<module>anyline-data-jdbc-opengauss</module>					<!--高斯-->
 		<module>anyline-data-jdbc-oracle</module>
 		<module>anyline-data-jdbc-oscar</module>						<!--神舟通用-->
+		<module>anyline-data-jdbc-postgis</module>
 		<module>anyline-data-jdbc-postgresql</module>
 		<module>anyline-data-jdbc-rethinkdb</module>
 		<module>anyline-data-jdbc-sinodb</module>						<!--星瑞格-->
@@ -50,7 +51,6 @@
 		<module>anyline-data-jdbc-voltdb</module>
 		<module>anyline-data-jdbc-xugu</module>							<!--虚谷-->
 		<module>anyline-data-jdbc-yugabyte</module>
-        <module>anyline-data-jdbc-postgis</module>
     </modules>
 	<build>
 		<plugins>

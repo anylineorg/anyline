@@ -55,7 +55,6 @@
 		<module>anyline-data-dialect-time-series</module>
 		<module>anyline-data-dialect-vector</module>
 		<module>anyline-data-dialect-wide-column</module>
-        <module>anyline-environment/anyline-environment-vertx-data-jdbc</module>
     </modules>
 	<build>
 		<plugins>
