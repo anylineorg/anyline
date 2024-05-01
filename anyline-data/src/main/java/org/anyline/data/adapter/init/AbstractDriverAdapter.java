@@ -3056,8 +3056,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryVersionRun(DataRuntime runtime, boolean greedy, String name)
 	 * List<Run> buildQueryDatabaseRun(DataRuntime runtime)
 	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)
-	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)
+	 * LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)
+	 * List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)
 	 * Database database(DataRuntime runtime, boolean create, Database dataase, DataSet set)
 	 * Database database(DataRuntime runtime, boolean create, Database dataase)
 	 * String product(DataRuntime runtime, boolean create, Database product, DataSet set)
@@ -3204,7 +3204,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						databases = databases(runtime, idx++, true, databases, set);
+						databases = databases(runtime, idx++, true, databases, null, null, set);
 					}
 				}
 			}catch (Exception e){
@@ -3249,7 +3249,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						databases = databases(runtime, idx++, true, databases, set);
+						databases = databases(runtime, idx++, true, databases, null, null, set);
 					}
 				}
 			}catch (Exception e){
@@ -3345,16 +3345,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception {
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
 	}
 	@Override
-	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set) throws Exception {
+	public List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Database> databases(DataRuntime runtime, int index, boolean create, List<Database> databases, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -3559,7 +3559,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						catalogs = catalogs(runtime, idx++, true, catalogs, set);
+						catalogs = catalogs(runtime, idx++, true, catalogs, null, null, set);
 					}
 				}
 			}catch (Exception e){
@@ -3604,7 +3604,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						catalogs = catalogs(runtime, idx++, true, catalogs, set);
+						catalogs = catalogs(runtime, idx++, true, catalogs, null, null, set);
 					}
 				}
 			}catch (Exception e){
@@ -3671,14 +3671,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set) throws Exception {
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Catalog> catalogs, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
 	}
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set) throws Exception {
+	public List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Catalog> catalogs(DataRuntime runtime, int index, boolean create, List<Catalog> catalogs, DataSet set)", 37));
 		}
@@ -3764,8 +3764,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name)
 	 * [结果集封装]<br/>
-	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set)
-	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set)
+	 * LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set)
+	 * List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set)
 	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema, DataSet set)
 	 * Schema schema(DataRuntime runtime, int index, boolean create, Schema schema)
 	 ******************************************************************************************************************/
@@ -3848,7 +3848,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						schemas = schemas(runtime, idx++, true, schemas, set);
+						schemas = schemas(runtime, idx++, true, schemas, null, null, set);
 					}
 				}
 			}catch (Exception e){
@@ -3894,7 +3894,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						schemas = schemas(runtime, idx++, true, schemas, set);
+						schemas = schemas(runtime, idx++, true, schemas, null, null, set);
 					}
 				}
 			}catch (Exception e){
@@ -3961,16 +3961,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set) throws Exception {
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
 	}
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set) throws Exception {
+	public List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Schema> schemas(DataRuntime runtime, int index, boolean create, List<Schema> schemas, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -4081,11 +4081,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
-	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)
+	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends Table> List<T> tables(DataRuntime runtime, boolean create, List<T> tables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
+	 * <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, Table table, boolean init)
 	 * [命令合成]
@@ -4152,7 +4152,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						list = tables(runtime, idx++, true, catalog, schema, list, set);
+						list = tables(runtime, idx++, true, list, catalog, schema, set);
 					}
 				}
 			}catch (Exception e){
@@ -4200,7 +4200,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						int idx = 0;
 						for (Run run : runs) {
 							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-							list = comments(runtime, idx++, true, catalog, schema, list, set);
+							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							//merge(list, maps);
 						}
 					}
@@ -4270,7 +4270,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						tables = tables(runtime, idx++, true, catalog, schema, tables, set);
+						tables = tables(runtime, idx++, true, tables, catalog, schema, set);
 						CacheProxy.name(this, tables);
 						sys = true;
 					}
@@ -4351,9 +4351,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -4375,9 +4375,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception {
+	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == tables){
 			tables = new ArrayList<>();
@@ -4462,9 +4462,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return null;
 	}
@@ -4494,12 +4494,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
+	public <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Table> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return tables;
 	}
@@ -4517,12 +4517,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set) throws Exception {
+	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(null == tables){
 			tables = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现  <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return tables;
 	}
@@ -4645,11 +4645,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> vertexTables, DataSet set)
-	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> vertexTables, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> vertexTables, DataSet set)
+	 * <T extends VertexTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, VertexTable vertexTable, boolean init)
 	 * [命令合成]
@@ -4707,7 +4707,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						list = vertexTables(runtime, idx++, true, catalog, schema, list, set);
+						list = vertexTables(runtime, idx++, true, list, catalog, schema, set);
 					}
 				}
 			}catch (Exception e){
@@ -4755,7 +4755,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						int idx = 0;
 						for (Run run : runs) {
 							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-							list = comments(runtime, idx++, true, catalog, schema, list, set);
+							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							//merge(list, maps);
 						}
 					}
@@ -4846,7 +4846,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						vertexTables = vertexTables(runtime, idx++, true, catalog, schema, vertexTables, set);
+						vertexTables = vertexTables(runtime, idx++, true, vertexTables, catalog, schema, set);
 						CacheProxy.name(this, vertexTables);
 						sys = true;
 					}
@@ -4927,9 +4927,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> vertexTables, DataSet set) throws Exception {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> vertexTables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == vertexTables){
 			vertexTables = new LinkedHashMap<>();
@@ -4951,9 +4951,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> vertexTables, DataSet set) throws Exception {
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> vertexTables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, int index, boolean create, List<T> vertexTables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == vertexTables){
 			vertexTables = new ArrayList<>();
@@ -5038,9 +5038,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return null;
 	}
@@ -5162,11 +5162,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> edgeTables, DataSet set)
-	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> edgeTables, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
-	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> edgeTables, DataSet set)
+	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init)
 	 * [命令合成]
@@ -5233,7 +5233,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						list = edgeTables(runtime, idx++, true, catalog, schema, list, set);
+						list = edgeTables(runtime, idx++, true, list, catalog, schema, set);
 					}
 				}
 			}catch (Exception e){
@@ -5281,7 +5281,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						int idx = 0;
 						for (Run run : runs) {
 							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-							list = comments(runtime, idx++, true, catalog, schema, list, set);
+							list = comments(runtime, idx++, true, list, catalog, schema, set);
 							//merge(list, maps);
 						}
 					}
@@ -5372,7 +5372,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						edgeTables = edgeTables(runtime, idx++, true, catalog, schema, edgeTables, set);
+						edgeTables = edgeTables(runtime, idx++, true, edgeTables, catalog, schema, set);
 						CacheProxy.name(this, edgeTables);
 						sys = true;
 					}
@@ -5453,9 +5453,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> edgeTables, DataSet set) throws Exception {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> edgeTables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == edgeTables){
 			edgeTables = new LinkedHashMap<>();
@@ -5477,9 +5477,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> edgeTables, DataSet set) throws Exception {
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> edgeTables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, int index, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == edgeTables){
 			edgeTables = new ArrayList<>();
@@ -5564,9 +5564,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return null;
 	}
@@ -5686,7 +5686,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, View view)
@@ -5760,7 +5760,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						views = views(runtime, idx++, true, catalog, schema, views, set);
+						views = views(runtime, idx++, true, views, catalog, schema, set);
 					}
 				}
 			}catch (Exception e){
@@ -5851,9 +5851,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set) throws Exception {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> views, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == views){
 			views = new LinkedHashMap<>();
@@ -5861,9 +5861,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return views;
 	}
 	@Override
-	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> views, DataSet set) throws Exception {
+	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, List<T> views, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == views){
 			views = new ArrayList<>();
@@ -5995,9 +5995,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return View
 	 */
 	@Override
-	public <T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -6009,9 +6009,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
 	 * [命令合成]
@@ -6073,7 +6073,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int idx = 0;
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						tables = masterTables(runtime, idx++, true, catalog, schema, tables, set);
+						tables = masterTables(runtime, idx++, true, tables, catalog, schema, set);
 					}
 				}
 			}catch (Exception e){
@@ -6087,7 +6087,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == tables || tables.isEmpty() ) {
 				// 根据驱动内置接口补充
 				try {
-					LinkedHashMap<String, T> tmps = masterTables(runtime, true, null, catalog, schema, pattern, types);
+					LinkedHashMap<String, T> tmps = masterTables(runtime, random, true, catalog, schema, pattern, types);
 					for (String key : tmps.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = tmps.get(key);
@@ -6150,9 +6150,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -6171,9 +6171,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, String pattern, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -6281,9 +6281,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -6297,7 +6297,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String pattern)
 	 * List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags)
 	 * [结果集封装]<br/>
-	 * <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set)
+	 * <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, MasterTable master)
 	 * [调用入口]
 	 * List<String> ddl(DataRuntime runtime, String random, PartitionTable table)
@@ -6332,7 +6332,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					int total = runs.size();
 					for(Run run:runs) {
 						DataSet set = select(runtime, random, false, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						tables = partitionTables(runtime, total, idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
+						tables = partitionTables(runtime, total, idx++, true, master, tables, master.getCatalog(), master.getSchema(), set);
 					}
 				}
 			}catch (Exception e){
@@ -6439,9 +6439,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, Catalog catalog, Schema schema, LinkedHashMap<String, T> tables, DataSet set) throws Exception {
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable master, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, PartitionTable> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable table, Catalog catalog, Schema schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 LinkedHashMap<String, PartitionTable> partitionTables(DataRuntime runtime, int total, int index, boolean create, MasterTable table, Catalog catalog, Schema schema, LinkedHashMap<String, PartitionTable> tables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -6571,9 +6571,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return PartitionTable
 	 */
 	@Override
-	public <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends PartitionTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -6837,9 +6837,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -7338,9 +7338,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Tag
 	 */
 	@Override
-	public <T extends Tag> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Tag> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Tag> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -8123,9 +8123,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Constraint
 	 */
 	@Override
-	public <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Constraint> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -8236,9 +8236,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Trigger
 	 */
 	@Override
-	public <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Trigger> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -8504,7 +8504,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Procedure
 	 */
 	@Override
-	public <T extends Procedure> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Procedure> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set)", 37));
 		}
@@ -8533,8 +8533,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) ;
 	 * [结果集封装]<br/>
-	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception;
-	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception;
+	 * <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
+	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception;
 	 * <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions)
 	 * <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, boolean create, LinkedHashMap<String, T> functions)
 	 * [调用入口]
@@ -8608,9 +8608,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set) throws Exception {
+	public <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8626,9 +8626,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return LinkedHashMap
 	 * @throws Exception 异常
 	 */
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set) throws Exception {
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new LinkedHashMap<>();
 	}
@@ -8645,7 +8645,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public <T extends Function> List<T> functions(DataRuntime runtime, boolean create, List<T> functions) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> List<T> functions(DataRuntime runtime, int index, boolean create, List<T> functions, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8759,8 +8759,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public <T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		FunctionMetadataAdapter config = functionMetadataAdapter(runtime);
+		if(null == meta){
+			meta = (T)new Function();
+		}
+		if(null != config){
+			meta.setName(row.getString(config.getNameRefers()));
+			meta.setSchema(row.getString(config.getSchemaRefers()));
+			meta.setComment(row.getString(config.getCommentRefers()));
+			meta.setDefinition(row.getString(config.getDefineRefers()));
 		}
 		return meta;
 	}
@@ -8773,9 +8780,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Function
 	 */
 	@Override
-	public <T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Function> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Function> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
@@ -9103,12 +9110,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return Sequence
 	 */
 	@Override
-	public <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, DataRow row){
+	public <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, DataRow row)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Sequence> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
 		return meta;
 	}
+
+
+	/**
+	 * sequence[结构集封装-依据]<br/>
+	 * 读取 sequence 元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return SequenceMetadataAdapter
+	 */
+	@Override
+	public SequenceMetadataAdapter sequenceMetadataAdapter(DataRuntime runtime) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 SequenceMetadataAdapter sequenceMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new SequenceMetadataAdapter();
+	}
+
 	/* *****************************************************************************************************************
 	 * 													common
 	 * ----------------------------------------------------------------------------------------------------------------

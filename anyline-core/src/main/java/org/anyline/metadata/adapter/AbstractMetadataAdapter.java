@@ -20,6 +20,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
     private String[] tableRefer;
     private String[] columnRefer;
     private String[] typeRefer; //view table
+    private String[] commentRefer;
+    private String[] defineRefer;
 
     public String[] getNameRefers() {
         return nameRefer;
@@ -44,6 +46,51 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return (T)this;
     }
 
+    public String[] getCommentRefers() {
+        return commentRefer;
+    }
+
+    public String getCommentRefer(){
+        if(null != commentRefer && commentRefer.length > 0){
+            return commentRefer[0];
+        }
+        return null;
+    }
+    public T setCommentRefer(String[] commentRefer) {
+        this.commentRefer = commentRefer;
+        return (T)this;
+    }
+    public T setCommentRefer(String comment) {
+        if(BasicUtil.isNotEmpty(comment)) {
+            this.commentRefer = comment.split(",");
+        }else{
+            this.commentRefer = null;
+        }
+        return (T)this;
+    }
+
+    public String[] getDefineRefers() {
+        return defineRefer;
+    }
+
+    public String getDefineRefer(){
+        if(null != defineRefer && defineRefer.length > 0){
+            return defineRefer[0];
+        }
+        return null;
+    }
+    public T setDefineRefer(String[] defineRefer) {
+        this.defineRefer = defineRefer;
+        return (T)this;
+    }
+    public T setDefineRefer(String define) {
+        if(BasicUtil.isNotEmpty(define)) {
+            this.defineRefer = define.split(",");
+        }else{
+            this.defineRefer = null;
+        }
+        return (T)this;
+    }
     public String[] getCatalogRefers() {
         return catalogRefer;
     }

@@ -26,7 +26,9 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Database;
+import org.anyline.metadata.Schema;
 import org.anyline.metadata.type.DatabaseType;
 
 import java.util.LinkedHashMap;
@@ -92,7 +94,7 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
     }
 
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, DataSet set) throws Exception {
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
         return null;
     }
 
