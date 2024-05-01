@@ -2,10 +2,8 @@ package org.anyline.data.transaction;
 
 
 import org.anyline.data.transaction.init.DefaultTransactionDefine;
-import org.anyline.util.AnylineConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
 import java.util.Hashtable;
 import java.util.Map;
