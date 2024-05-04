@@ -34,6 +34,9 @@ public class OriginRow extends DataRow {
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
     }
+    public KEY_CASE keyCase(){
+        return this.keyCase;
+    }
     @Override
     public Object put(String key, Object value) {
         put(keyCase, key, value, false, true);

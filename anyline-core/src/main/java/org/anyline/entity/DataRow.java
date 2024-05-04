@@ -1573,8 +1573,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         put(null, key, value, pk, true);
         return this;
     }
+    public KEY_CASE keyCase(){
+        return this.keyCase;
+    }
     public DataRow put(String key){
-        DataRow row = new DataRow(this.keyCase);
+        DataRow row = new DataRow(keyCase());
         put(key, row);
         return row;
     }
@@ -3076,13 +3079,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String getKeyCase(String key) {
         return getKeyCase(KEY_CASE.CONFIG, key);
     }
-/*	protected String getKey(String key){
-		return getKeyCase(this.keyCase, key);
-	}
-	protected String getKey(KEY_CASE keyCase, String key){
-		return getKeyCase(keyCase, key);
-	}
-	 */
+
 
     /**
      * key大小写转换
@@ -3124,13 +3121,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String putKeyCase(String key) {
         return putKeyCase(KEY_CASE.CONFIG, key);
     }
-	/*protected String putKey(String key){
-		return putKeyCase(this.keyCase, key);
-	}
-	protected String putKey(KEY_CASE keyCase, String key){
-		return putKeyCase(keyCase, key);
-	}
-*/
+
 
     /**
      * 是否更新null列
