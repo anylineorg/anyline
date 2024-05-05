@@ -42,6 +42,12 @@ public class OriginRow extends DataRow {
         put(keyCase, key, value, false, true);
         return this;
     }
+
+    public DataRow put(String key){
+        DataRow row = new OriginRow();
+        put(key, row);
+        return row;
+    }
     public DataRow set(String key, Object value) {
         put(keyCase, key, value, false, true);
         return this;
