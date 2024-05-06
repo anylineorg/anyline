@@ -212,7 +212,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return config;
 	}
 	protected void alias(String key, TypeMetadata value){
-		if(null != key) {
+		if(null != key && null != value && TypeMetadata.NONE != value) {
 			this.alias.put(key, value);
 			this.alias.put(key.replace("_", " "), value);
 			this.alias.put(key.replace(" ", "_"), value);
@@ -6088,7 +6088,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == tables || tables.isEmpty() ) {
 				// 根据驱动内置接口补充
 				try {
-					LinkedHashMap<String, T> tmps = masterTables(runtime, random, true, catalog, schema, pattern, types);
+					LinkedHashMap<String, T> tmps = masterTables(runtime, true, tables, catalog, schema, pattern, types);
 					for (String key : tmps.keySet()) {
 						if (!tables.containsKey(key.toUpperCase())) {
 							T item = tmps.get(key);
@@ -14767,7 +14767,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public TypeMetadata typeMetadata(DataRuntime runtime, Column meta){
 		TypeMetadata typeMetadata = meta.getTypeMetadata();
-		if(null == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabase()) {
+		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || meta.getParseLvl() < 2 || type() != meta.getDatabase()) {
 			typeMetadata = TypeMetadata.parse(type(), meta, alias, spells);
 			meta.setDatabase(type());
 			meta.setParseLvl(2);
@@ -14776,7 +14776,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 	public TypeMetadata spell(String name){
 		TypeMetadata typeMetadata = alias.get(name.toUpperCase());
-		if(null == typeMetadata){//拼写兼容  下划线空格兼容
+		if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){//拼写兼容  下划线空格兼容
 			typeMetadata = alias.get(spells.get(name.toUpperCase()));
 		}
 		return typeMetadata;
@@ -14983,6 +14983,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		TypeMetadata columnType = null;
 		DataWriter writer = null;
 		boolean isArray = false;
+		//根据元数据类型
 		if(null != metadata){
 			isArray = metadata.isArray();
 			//根据列类型
@@ -14991,24 +14992,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				writer = writer(columnType);
 			}
 			if(null == writer){
+				//根据列类型名称
 				String typeName = metadata.getTypeName();
 				if (null != typeName) {
 					writer = writer(typeName);
 					if(null != columnType){
+						//类型名称 转 成标准类型
 						writer = writer(typeMetadata(runtime, metadata));
 					}
 				}
 			}
 		}
-		if(null == columnType){
+		if(null == columnType || TypeMetadata.NONE == columnType){
+			//根据值的Java class
 			columnType = typeMetadata(runtime, value.getClass().getSimpleName());
 		}
-		if(null != columnType){
+		if(null != columnType && TypeMetadata.NONE != columnType){
 			Class writeClass = columnType.compatible();
-			value = ConvertProxy.convert(value, writeClass, isArray);
+			if(null != writeClass) {
+				value = ConvertProxy.convert(value, writeClass, isArray);
+			}
 		}
 
-		if(null != columnType){//根据列类型定位writer
+		if(null != columnType && TypeMetadata.NONE != columnType){//根据列类型定位writer
 			writer = writer(columnType);
 			if(null == writer){
 				writer = writer(columnType.getCategory());
@@ -15023,7 +15029,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null != result){
 			return result;
 		}
-		if(null != columnType){
+		if(null != columnType && TypeMetadata.NONE != columnType){
 			result = columnType.write(value, null, false);
 		}
 		if(null != result){
@@ -15375,7 +15381,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name

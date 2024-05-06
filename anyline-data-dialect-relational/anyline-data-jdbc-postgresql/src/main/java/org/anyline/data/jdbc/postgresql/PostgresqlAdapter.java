@@ -3450,7 +3450,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name

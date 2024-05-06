@@ -282,6 +282,16 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
 
+	/**
+	 * 是否支持返回自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param configs configs中也可能禁用返回
+	 * @return boolean
+	 */
+	public boolean supportKeyHolder(DataRuntime runtime, ConfigStore configs){
+		return false;
+	}
+
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -3498,7 +3508,7 @@ public class HanaAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name

@@ -272,7 +272,8 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
-		long cnt = 0;
+		return super.insert(runtime, random, data, configs, run, pks);
+	/*	long cnt = 0;
 		
 		String sql = run.getFinalInsert();
 		List<Object> values = run.getValues();
@@ -283,7 +284,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 			cnt = worker.execute(this, runtime, random, configs, run);
 		}catch (Exception e){
 			e.printStackTrace();
-		}
+		}*/
 		/*if(null == values || values.isEmpty()) {
 			cnt = jdbc.update(sql);
 		}else{
@@ -309,9 +310,17 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 			return cnt;
 		}
 */
-		return cnt;
+		//return cnt;
 	}
-
+	/**
+	 * 是否支持返回自增主键值
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param configs configs中也可能禁用返回
+	 * @return boolean
+	 */
+	public boolean supportKeyHolder(DataRuntime runtime, ConfigStore configs){
+		return false;
+	}
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -1715,8 +1724,8 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 		runs.add(r);
 		builder = r.getBuilder();
 		builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE TYPE = 'NORMAL_TABLE' ");
-		if (BasicUtil.isNotEmpty(catalog)) {
-			builder.append(" AND DB_NAME = '" + catalog + "'");
+		if (!empty(catalog)) {
+			builder.append(" AND DB_NAME = '" + catalog.getName() + "'");
 		}
 		if (BasicUtil.isNotEmpty(pattern)) {
 			builder.append( " AND TABLE_NAME LIKE '" + pattern + "'");
@@ -2160,8 +2169,8 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 		runs.add(new SimpleRun(runtime, sql));
 
 		sql = "SELECT * FROM INFORMATION_SCHEMA.INS_STABLES WHERE 1=1 ";
-		if (BasicUtil.isNotEmpty(catalog)) {
-			sql += " AND DB_NAME = '" + catalog + "'";
+		if (!empty(catalog)) {
+			sql += " AND DB_NAME = '" + catalog.getName() + "'";
 		}
 		if (BasicUtil.isNotEmpty(pattern)) {
 			sql += " AND STABLE_NAME LIKE '" + pattern + "'";
@@ -3294,7 +3303,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3850,7 +3859,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name
@@ -4252,7 +4261,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 				builder.append(",");
 			}
 			//format(builder, tag.getValue());
-			builder.append(write(runtime,null, tag.getValue(), false));
+			builder.append(write(runtime,tag, tag.getValue(), false));
 			idx ++;
 		}
 		builder.append(")");

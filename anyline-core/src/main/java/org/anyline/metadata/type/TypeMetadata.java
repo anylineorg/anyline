@@ -94,6 +94,7 @@ public interface TypeMetadata {
     }
 
     TypeMetadata ILLEGAL = new TypeMetadata() {
+        private final String name = "ILLEGAL";
 
         @Override
         public CATEGORY getCategory() {
@@ -107,7 +108,7 @@ public interface TypeMetadata {
 
         @Override
         public String getName() {
-            return "ILLEGAL";
+            return name;
         }
 
         @Override
@@ -205,6 +206,7 @@ public interface TypeMetadata {
     };
     //不识别的类型 原样输出
     TypeMetadata NONE = new TypeMetadata() {
+        private final String name = "NONE";
 
         @Override
         public CATEGORY getCategory() {
@@ -212,7 +214,7 @@ public interface TypeMetadata {
         }
         @Override
         public String getName() {
-            return "NONE";
+            return name;
         }
 
         @Override
@@ -616,7 +618,7 @@ public interface TypeMetadata {
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
-        if(null != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabase() == database){
+        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabase() == database){
             return typeMetadata;
         }
         Integer length = meta.getLength();
@@ -678,7 +680,7 @@ public interface TypeMetadata {
         TIMESTAMP WITHOUT TIME ZONE
         */
 
-        if(null == typeMetadata){
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){
             try{
                 //varchar(10)
                 //TIMESTAMP (6) WITH TIME ZONE
@@ -718,8 +720,7 @@ public interface TypeMetadata {
                 e.printStackTrace();
             }
         }
-        if(null == typeMetadata){
-            if (null == typeMetadata) {
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){
                 try{
                     //decimal(10,2)
                     List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
@@ -734,9 +735,8 @@ public interface TypeMetadata {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-            }
         }
-        if(null == typeMetadata){
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){
             //geometry(Polygon)
             //geometry(Polygon, 4326)
             if (typeName.contains("(")) {
@@ -765,10 +765,10 @@ public interface TypeMetadata {
 		/*if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
 			this.className = null;
 		}*/
-        if(null == typeMetadata) {
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
             typeMetadata = parse(alias, spells, typeName);
         }
-        if(null != typeMetadata) {
+        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata) {
             meta.setTypeMetadata(typeMetadata);
             meta.setTypeName(typeMetadata.getName(), false);
         }else{

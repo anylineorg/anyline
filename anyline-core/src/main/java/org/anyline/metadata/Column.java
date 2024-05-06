@@ -1236,17 +1236,17 @@ public class Column extends BaseMetadata<Column> implements Serializable {
         ){
             return false;
         }
-        if(null == typeMetadata || 0 == typeMetadata.ignoreLength()) {
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreLength()) {
             if (!BasicUtil.equals(getLength(), column.getLength())) {
                 return false;
             }
         }
-        if(null == typeMetadata || 0 == typeMetadata.ignorePrecision()) {
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignorePrecision()) {
             if (!BasicUtil.equals(getPrecision(), column.getPrecision())) {
                 return false;
             }
         }
-        if(null == typeMetadata ||  0 == typeMetadata.ignoreScale()) {
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreScale()) {
             if (!BasicUtil.equals(getScale(), column.getScale())) {
                 return false;
             }

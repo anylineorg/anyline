@@ -636,10 +636,10 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         String result = "";
         if(greedy){
             if(BasicUtil.isNotEmpty(catalog)){
-                result = catalog+".";
+                result = catalog.getName()+".";
             }
             if(BasicUtil.isNotEmpty(schema)){
-                result = result + schema + ".";
+                result = result + schema.getName() + ".";
             }
             result = result + name;
         }else{

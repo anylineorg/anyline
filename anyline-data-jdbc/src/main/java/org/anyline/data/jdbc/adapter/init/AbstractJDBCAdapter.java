@@ -5597,7 +5597,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name
@@ -5810,7 +5810,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		checkTableExists(runtime, builder, false);
 		name(runtime, builder, meta);
 		//分区表
-		partitionOf(runtime, builder, meta);
+		if(BasicUtil.isNotEmpty(meta.getMasterName())) {
+			partitionOf(runtime, builder, meta);
+		}
 		partitionFor(runtime, builder, meta);
 		body(runtime, builder, meta);
 		//分区依据列(主表执行) PARTITION BY RANGE (code);

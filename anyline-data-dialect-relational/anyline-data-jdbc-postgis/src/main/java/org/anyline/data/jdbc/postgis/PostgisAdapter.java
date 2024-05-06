@@ -3466,7 +3466,7 @@ public class PostgisAdapter extends PostgresqlAdapter implements JDBCAdapter {
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name

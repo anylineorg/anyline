@@ -5204,7 +5204,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	/**
 	 *
 	 * 根据 catalog, schema, name检测tables集合中是否存在
-	 * @param tables tables
+	 * @param metas metas
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param name name
@@ -8335,7 +8335,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Catalog catalog = table.getCatalog();
 		Schema schema = table.getSchema();
 		builder.append("ALTER TRIGGER ");
-		if(BasicUtil.isNotEmpty(catalog)) {
+		if(!empty(catalog)) {
 			name(runtime, builder, catalog).append(".");
 		}
 		if(!empty(schema)) {
