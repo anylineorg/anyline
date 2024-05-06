@@ -32,6 +32,7 @@ import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
@@ -136,7 +137,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
 			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
 			type = Variable.KEY_TYPE_SIGN_V2 ;
-			if(keys.size() == 0){
+			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT){
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;

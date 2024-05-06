@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -81,6 +80,7 @@ public class ConfigTable {
 	public static boolean IS_LOG_SQL_WARN								= true			;	// 执行SQL WARN
 	public static boolean IS_LOG_SQL_PARAM_WHEN_ERROR					= true			;	// 执行SQL异常时是否输出参数日志
 	public static boolean IS_SQL_LOG_PLACEHOLDER						= true			;   // SQL日志 是否显示占位符
+	public static boolean IS_ENABLE_PLACEHOLDER_REGEX_EXT				= true			;	// 是否启用 ::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
 	public static boolean IS_SQL_DEBUG	 								= false			;	// 加载自定义SQL时是否输出日志
 	public static boolean IS_HTTP_LOG 									= true			;	// 调用HTTP接口时是否出输出日志
 	public static boolean IS_HTTP_PARAM_AUTO_TRIM						= true			;   // http参数值是否自动trim
