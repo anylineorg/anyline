@@ -1613,7 +1613,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 星期几(礼拜几)
+	 * 星期几(星期日=0 星期一=1)
 	 * @param date date
 	 * @return int
 	 */
