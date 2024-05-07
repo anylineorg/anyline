@@ -146,7 +146,7 @@ public class Column extends BaseMetadata<Column> implements Serializable {
     protected boolean array                       ; // 是否数组
     protected boolean isKey                       ; // doris中用到
 
-    protected Boolean index                       ; // 是否需要创建索引
+    protected Boolean index                       ; // 是否需要创建索引(ES里用的其他数据库应该通过new Index()创建索引)
     protected Boolean store                       ; // 是否需要存储
     protected String analyzer                     ; // 分词器
     protected String searchAnalyzer               ; // 查询分词器
