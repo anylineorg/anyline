@@ -265,7 +265,9 @@ public interface DataSourceHolder {
 	static DataRuntime reg(String key, Object datasource, DatabaseType type) throws Exception {
 		return reg(key, datasource, null, type, null,true);
 	}
-
+	static boolean destroy(String datasource) throws Exception{
+		return RuntimeHolder.destroy(datasource);
+	}
 	/**
 	 * 检测是否可注册(没有重复名称或呆以覆盖)
 	 * 如果已存在但可覆盖 需要把原来的注销掉

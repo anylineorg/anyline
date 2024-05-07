@@ -62,7 +62,7 @@ public interface RuntimeHolder {
         return map;
     }
 
-    public static DataRuntime runtime(){
+    static DataRuntime runtime(){
         return runtime(null);
     }
     /**
