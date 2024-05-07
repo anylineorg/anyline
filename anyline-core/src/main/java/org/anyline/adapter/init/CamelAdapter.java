@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.adapter.init;
 
 import org.anyline.adapter.KeyAdapter;

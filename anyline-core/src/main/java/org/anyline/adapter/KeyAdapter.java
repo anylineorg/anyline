@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.adapter;
 
 import org.anyline.adapter.init.LowerKeyAdapter;

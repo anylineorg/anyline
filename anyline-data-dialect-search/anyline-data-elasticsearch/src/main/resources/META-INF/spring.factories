@@ -1,3 +1,5 @@
+
+
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter, \
 org.anyline.data.elasticsearch.runtime.ElasticSearchRuntimeHolder, \

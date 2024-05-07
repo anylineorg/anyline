@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.data.prepare;
 
 public abstract class SQLStore{

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.metadata.type;
 
 import org.anyline.adapter.KeyAdapter.KEY_CASE;

@@ -1,2 +1,4 @@
+
+
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.adapter.init.DefaultEntityAdapter

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.data.jdbc.hive;
 
 import org.anyline.adapter.DataWriter;

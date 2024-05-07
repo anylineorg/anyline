@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.environment.boot.easemob;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

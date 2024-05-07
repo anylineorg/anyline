@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.entity;
 
 public enum Aggregation {

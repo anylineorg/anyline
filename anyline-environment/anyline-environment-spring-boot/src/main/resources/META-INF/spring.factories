@@ -1,3 +1,5 @@
+
+
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.environment.boot.AnylineProperty, \
 org.anyline.environment.boot.alipay.AliPayProperty, \

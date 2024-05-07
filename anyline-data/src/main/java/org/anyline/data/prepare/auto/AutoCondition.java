@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.data.prepare.auto;
 
 import org.anyline.data.prepare.Condition;

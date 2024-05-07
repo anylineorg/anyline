@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.data.adapter;
 
 import org.anyline.adapter.DataReader;

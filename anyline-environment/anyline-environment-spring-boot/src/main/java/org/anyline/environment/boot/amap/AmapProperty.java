@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.environment.boot.amap;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,3 +1,5 @@
+
+
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.anyline.data.nebula.adapter.NebulaAdapter,\
 org.anyline.data.nebula.datasource.NebulaDataSourceHolder,\

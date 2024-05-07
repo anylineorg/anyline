@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 package org.anyline.entity.generator.init;
 
 import org.anyline.entity.DataRow;

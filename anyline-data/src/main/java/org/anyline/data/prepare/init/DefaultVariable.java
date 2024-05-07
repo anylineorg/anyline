@@ -1,8 +1,3 @@
-
-
-/**
- * V2.0 
- */ 
 /*
  * Copyright 2006-2023 www.anyline.org
  *
@@ -18,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+
+/**
+ * V2.0 
+ */ 
+
 
 package org.anyline.data.prepare.init;
 
