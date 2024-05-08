@@ -97,7 +97,7 @@ public interface DataSourceHolder {
 			}
 		}
 		if(instances.isEmpty()){
-			log.warn("[没有可用的DataSourceHolder][有可能是容器中没有注入JDBCDataSourceHolder/ElasticSearchDataSourceHolder等]");
+			log.warn("[没有可用的DataSourceHolder][有可能是pom中没有依赖anyline-environment-*或纯Java环境没有启动DefaultEnvironmentWorker.start()]");
 		}
 		return holder;
 	}
