@@ -461,6 +461,9 @@ public class FileUtil {
 	}
 
 	public static File createTempFile(File file) throws Exception {
+		if(!file.exists()){
+			throw new Exception("文件不存在:"+file.getAbsolutePath());
+		}
 		File tempFile = File.createTempFile(file.getName(), null);
 		boolean renameOk = file.renameTo(tempFile);
 		if(!renameOk){
@@ -468,6 +471,9 @@ public class FileUtil {
 			renameOk = file.renameTo(tempFile);
 		}
 		if (!renameOk) {
+			copy(file, tempFile);
+		}
+		if (!tempFile.exists()) {
 			throw new Exception("重命名失败 "
 					+ file.getAbsolutePath() + " > "
 					+ tempFile.getAbsolutePath());
