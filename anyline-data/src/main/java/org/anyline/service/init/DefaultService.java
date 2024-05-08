@@ -3600,7 +3600,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean alter(Index index) throws Exception {
             CacheProxy.clear();
-            return false;
+            return dao.alter(index);
         }
 
         @Override
