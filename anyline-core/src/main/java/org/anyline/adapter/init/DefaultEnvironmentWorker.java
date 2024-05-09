@@ -36,7 +36,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -62,7 +61,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
 
         Map<String, LoadListener> listeners = instance.getBeans(LoadListener.class);
         for(LoadListener listener:listeners.values()){
-            listener.after();
+            listener.load();
         }
         return instance;
     }
