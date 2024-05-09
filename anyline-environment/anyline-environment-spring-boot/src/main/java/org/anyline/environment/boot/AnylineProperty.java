@@ -36,12 +36,12 @@ public class AnylineProperty {
      * anyline.datasource.crm.url=...<br/>
      * anyline.datasource.erp.url=...<br/>
      */
-    protected String dataSourceList;
+    protected String datasourceList;
     /**
      * 多数据源配置
      *  anyline.datasource.{数据源key}.url=...
      */
-    protected Map<String, DataSourceProperty> dataSource;
+    protected Map<String, DataSourceProperty> datasources;
     /**
      * 用来配置默认的 mongodb 数据源，如果还有其他数据源(包括JDBC)可以合并到dataSource
      */
@@ -1243,20 +1243,20 @@ public class AnylineProperty {
         this.elasticsearch = elasticsearch;
     }
 
-    public Map<String, DataSourceProperty> getDataSource() {
-        return dataSource;
+    public Map<String, DataSourceProperty> getDatasources() {
+        return datasources;
     }
 
-    public void setDataSource(Map<String, DataSourceProperty> dataSource) {
-        this.dataSource = dataSource;
+    public void setDataSources(Map<String, DataSourceProperty> datasources) {
+        this.datasources = datasources;
     }
 
-    public String getDataSourceList() {
-        return dataSourceList;
+    public String getDatasourceList() {
+        return datasourceList;
     }
 
-    public void setDataSourceList(String dataSourceList) {
-        this.dataSourceList = dataSourceList;
+    public void setDatasourceList(String datasourceList) {
+        this.datasourceList = datasourceList;
     }
 
 }
