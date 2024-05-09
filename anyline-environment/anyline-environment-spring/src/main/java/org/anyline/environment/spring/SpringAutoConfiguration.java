@@ -36,12 +36,18 @@ import java.util.Map;
 
 @Component("anyline.environment.configuration.spring")
 public class SpringAutoConfiguration implements InitializingBean {
-    @Autowired(required = false)
     private Map<String, LoadListener> listeners;
 
     @Autowired
     public void setWorker(SpringEnvironmentWorker worker){
         ConfigTable.setWorker(worker);
+        listenerLoad();
+
+    }
+    @Autowired(required = false)
+    public void setListeners(Map<String, LoadListener> listeners){
+        this.listeners = listeners;
+        listenerLoad();
     }
     //用户自定义数据类型转换器
     @Autowired(required = false)
@@ -80,9 +86,12 @@ public class SpringAutoConfiguration implements InitializingBean {
     }
     @Override
     public void afterPropertiesSet() throws Exception {
-        if(null != listeners) {
+        listenerLoad();
+    }
+    private void listenerLoad(){
+        if(null != listeners && null != ConfigTable.worker) {
             for (LoadListener listener : listeners.values()) {
-                listener.after();
+                listener.load();
             }
         }
     }
