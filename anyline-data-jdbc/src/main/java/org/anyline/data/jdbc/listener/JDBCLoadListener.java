@@ -41,7 +41,7 @@ import java.util.Map;
 @Component("anyline.environment.data.listener.jdbc")
 public class JDBCLoadListener implements LoadListener {
     @Override
-    public void after() {
+    public void load() {
         //缓存
         CacheProvider provider = ConfigTable.environment().getBean(CacheProvider.class);
         CacheProxy.init(provider);
@@ -54,12 +54,14 @@ public class JDBCLoadListener implements LoadListener {
         InterceptorProxy.setExecuteInterceptors(ConfigTable.environment().getBeans(ExecuteInterceptor.class));
         InterceptorProxy.setDDInterceptors(ConfigTable.environment().getBeans(DDInterceptor.class));
 
-        DMListener dmListener = ConfigTable.environment().getBean(DMListener.class);
         PrimaryGenerator primaryGenerator = ConfigTable.environment().getBean(PrimaryGenerator.class);
+        DMListener dmListener = ConfigTable.environment().getBean(DMListener.class);
         DDListener ddListener = ConfigTable.environment().getBean(DDListener.class);
         Map<String, DriverAdapter> adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         Map<String, DriverWorker> workers = ConfigTable.environment().getBeans(DriverWorker.class);
         Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
+
+        //数据库操作适配器
         if(null != adapters){
             DriverAdapterHolder.setAdapters(adapters);
             for(DriverAdapter adapter:adapters.values()){
@@ -106,8 +108,8 @@ public class JDBCLoadListener implements LoadListener {
         }
         if(ConfigTable.environment().containsBean("anyline.service.default")) {
             AnylineService service = ConfigTable.environment().getBean("anyline.service.default", AnylineService.class);
-            ServiceProxy.init(service);
             if(null != service){
+                ServiceProxy.init(service);
                 Map<String, AnylineService> services = ConfigTable.environment().getBeans(AnylineService.class);
                 for(AnylineService item:services.values()){
                     if(null == item.getDao()){
