@@ -19,7 +19,6 @@
 package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.jdbc.adapter.init.alias.OracleGenusTypeMetadataAlias;
-import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
@@ -30,17 +29,16 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
+import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.*;
 
 public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
@@ -3826,7 +3824,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     /**
      *
      * 根据 catalog, schema, name检测tables集合中是否存在
-     * @param tables tables
+     * @param metas metas
      * @param catalog catalog
      * @param schema schema
      * @param name name
