@@ -408,6 +408,9 @@ public class BasicUtil {
 		}
 	}
 	public static Short parseShort(Object value) throws NumberFormatException {
+		if (null == value) {
+			return null;
+		}
 		return (short) Double.parseDouble(value.toString());
 	}
 
@@ -425,6 +428,9 @@ public class BasicUtil {
 		}
 	}
 	public static Integer parseInt(Object value) throws NumberFormatException {
+		if (null == value) {
+			return null;
+		}
 		return (int) Double.parseDouble(value.toString());
 	}
 
@@ -502,6 +508,9 @@ public class BasicUtil {
 		}
 	}
 	public static Long parseLong(Object value) throws NumberFormatException {
+		if (value == null) {
+			return null;
+		}
 		if(value instanceof Long){
 			return (Long)value;
 		}
