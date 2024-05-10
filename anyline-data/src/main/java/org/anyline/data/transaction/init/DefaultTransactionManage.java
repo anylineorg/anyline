@@ -26,6 +26,7 @@ import org.anyline.data.transaction.TransactionState;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Savepoint;
 
 public class DefaultTransactionManage implements TransactionManage {
@@ -44,7 +45,7 @@ public class DefaultTransactionManage implements TransactionManage {
     }
 
     @Override
-    public TransactionState start(TransactionDefine define)  throws Exception{
+    public TransactionState start(TransactionDefine define)  throws SQLException {
         Connection con = null;
         String name = define.getName();
         TransactionDefine.MODE mode = define.getMode();
@@ -85,7 +86,7 @@ public class DefaultTransactionManage implements TransactionManage {
     }
 
     @Override
-    public void commit(TransactionState state) throws Exception{
+    public void commit(TransactionState state) throws SQLException {
         DataSource ds = state.getDataSource();
         Connection con = state.getConnection();
         con.commit();
@@ -103,7 +104,7 @@ public class DefaultTransactionManage implements TransactionManage {
     }
 
     @Override
-    public void rollback(TransactionState state) throws Exception{
+    public void rollback(TransactionState state) throws SQLException {
         DataSource ds = state.getDataSource();
         Connection con = state.getConnection();
         Savepoint point = state.getPoint();

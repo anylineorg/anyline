@@ -23,6 +23,7 @@ import org.anyline.data.transaction.init.DefaultTransactionDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -46,14 +47,14 @@ public interface TransactionManage {
      * @param define 事务定义相关参数
      * @return status 回溯或提交时需要
      */
-    TransactionState start(TransactionDefine define) throws Exception;
+    TransactionState start(TransactionDefine define) throws SQLException;
 
     /**
      * 启动事务
      * @return behavior 事务传播方式<br/>
      * 更多参数调用start(String datasource, TransactionDefine define)
      */
-    default TransactionState start(int behavior) throws Exception{
+    default TransactionState start(int behavior) throws SQLException {
         TransactionDefine define = new DefaultTransactionDefine(behavior);
         return start(define);
     }
@@ -66,15 +67,14 @@ public interface TransactionManage {
         return start(TransactionDefine.PROPAGATION_REQUIRED);
     }
 
-
     /**
      * 提交事务
      * @param state 启动事务时返回state
      */
-    void commit(TransactionState state) throws Exception;
+    void commit(TransactionState state) throws SQLException;
     /**
      * 回滚事务
      * @param state 启动事务时返回state
      */
-    void rollback(TransactionState state) throws Exception;
+    void rollback(TransactionState state) throws SQLException;
 }

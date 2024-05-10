@@ -23,6 +23,8 @@ import org.anyline.data.transaction.TransactionDefine;
 import org.anyline.data.transaction.TransactionManage;
 import org.anyline.data.transaction.TransactionState;
 
+import java.sql.SQLException;
+
 public class TransactionProxy {
     /**
      * 启动事务
@@ -44,10 +46,11 @@ public class TransactionProxy {
      * @return behavior 事务传播方式<br/>
      * 更多参数调用start(String datasource, TransactionDefine define)
      */
-    public static TransactionState start(String datasource, int behavior) throws Exception {
+    public static TransactionState start(String datasource, int behavior) throws SQLException {
         TransactionManage manage = TransactionManage.instance(datasource);
         if(null == manage){
-            throw new Exception("未创建相关数据源("+datasource+")事务管理器");
+            // 每个数据源都会注册默认的事务管理器，应该不会到这里
+            throw new NullPointerException("未创建相关数据源("+datasource+")事务管理器");
         }
         return manage.start(behavior);
     }
