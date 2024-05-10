@@ -21,6 +21,7 @@ package org.anyline.metadata;
 import org.anyline.exception.AnylineException;
 import org.anyline.metadata.differ.TableDiffer;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
@@ -250,6 +251,9 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.name = name;
     }
 
+    public static Table from(Class clazz){
+        return EntityAdapterProxy.table(clazz);
+    }
     public Table setKeyword(String keyword) {
         this.keyword = keyword;
         return this;
@@ -269,7 +273,6 @@ public class Table<E extends Table> extends BaseMetadata<E> implements Serializa
         this.distribution = distribution;
         return this;
     }
-
     /**
      * 设置分桶方式
      * @param type 分桶方式

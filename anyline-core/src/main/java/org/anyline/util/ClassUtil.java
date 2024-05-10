@@ -323,15 +323,15 @@ public class ClassUtil {
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> parseAnnotationFieldValues(Class target, String annotation, String field, int qty){
+	public static List<Object> getAnnotationFieldValues(Class target, String annotation, String field, int qty){
 		Annotation[] annotations = target.getAnnotations();
-		return parseAnnotationFieldValues(annotations, annotation, field, qty);
+		return getAnnotationFieldValues(annotations, annotation, field, qty);
 	}
-	public static List<Object> parseAnnotationFieldValues(Class target, String annotation, String field){
-		return parseAnnotationFieldValues(target, annotation, field, -1);
+	public static List<Object> getAnnotationFieldValues(Class target, String annotation, String field){
+		return getAnnotationFieldValues(target, annotation, field, -1);
 	}
-	public static Object parseAnnotationFieldValue(Class target, String annotation, String field){
-		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
+	public static Object getAnnotationFieldValue(Class target, String annotation, String field){
+		List<Object> values = getAnnotationFieldValues(target, annotation, field, 1);
 		if(!values.isEmpty()){
 			return values.get(0);
 		}
@@ -348,21 +348,21 @@ public class ClassUtil {
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> parseAnnotationFieldValues(Field target, String annotation, String field, int qty){
+	public static List<Object> getAnnotationFieldValues(Field target, String annotation, String field, int qty){
 		Annotation[] annotations = target.getAnnotations();
-		return parseAnnotationFieldValues(annotations, annotation, field, qty);
+		return getAnnotationFieldValues(annotations, annotation, field, qty);
 	}
-	public static List<Object> parseAnnotationFieldValues(Field target, String annotation, String field){
-		return parseAnnotationFieldValues(target, annotation, field, -1);
+	public static List<Object> getAnnotationFieldValues(Field target, String annotation, String field){
+		return getAnnotationFieldValues(target, annotation, field, -1);
 	}
-	public static Object parseAnnotationFieldValue(Field target, String annotation, String field){
-		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
+	public static Object getAnnotationFieldValue(Field target, String annotation, String field){
+		List<Object> values = getAnnotationFieldValues(target, annotation, field, 1);
 		if(!values.isEmpty()){
 			return values.get(0);
 		}
 		return null;
 	}
-	private static List<Object> parseAnnotationFieldValues(Annotation[] annotations, String annotation, String field, int qty){
+	private static List<Object> getAnnotationFieldValues(Annotation[] annotations, String annotation, String field, int qty){
 		List<Object> list = new ArrayList<>();
 		for(Annotation an : annotations){
 			String name = an.annotationType().getSimpleName();
@@ -678,7 +678,7 @@ public class ClassUtil {
 			if(tmps.length <2){
 				continue;
 			}
-			Object name = parseAnnotationFieldValue(clazz, tmps[0], tmps[1]);
+			Object name = getAnnotationFieldValue(clazz, tmps[0], tmps[1]);
 			if(BasicUtil.isNotEmpty(name)){
 				return name.toString();
 			}
@@ -697,16 +697,16 @@ public class ClassUtil {
 		for(String config:configs){
 			String[] tmps = config.split("\\.");
 			if(tmps.length >= 2){
-				Object value = parseAnnotationFieldValue(field, tmps[0], tmps[1]);
+				Object value = getAnnotationFieldValue(field, tmps[0], tmps[1]);
 				if(BasicUtil.isNotEmpty(value)){
 					return value.toString();
 				}
 			}else {
-				Object value = parseAnnotationFieldValue(field, config, "name");
+				Object value = getAnnotationFieldValue(field, config, "name");
 				if(BasicUtil.isNotEmpty(value)){
 					return value.toString();
 				}
-				value = parseAnnotationFieldValue(field, config, "value");
+				value = getAnnotationFieldValue(field, config, "value");
 				if(BasicUtil.isNotEmpty(value)){
 					return value.toString();
 				}
@@ -734,6 +734,8 @@ public class ClassUtil {
 				Class itemClass = (Class) args[0];
 				return itemClass;
 			}
+		}else if(gtype instanceof Class){
+			return (Class) gtype;
 		}
 		return null;
 	}
