@@ -81,7 +81,7 @@ public class ServiceProxy {
             e.printStackTrace();
         }
         if(null == service){
-            log.warn("请在上下文环境初始化完成后调用");
+            log.error("请在上下文环境初始化完成后调用");
         }
         return service;
     }
