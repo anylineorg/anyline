@@ -24,6 +24,8 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.persistence.ManyToMany;
+import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.*;
 
@@ -90,33 +92,44 @@ public interface EntityAdapter {
         if(null != table){
             return table;
         }
+        String name = null;
         // 2.注解 以及父类注解直到Object
         Class parent = clazz;
-        String name = null;
-        while (true){
-            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name","table.value","tableName.name","tableName.value");
-            if(BasicUtil.isEmpty(name)){
+        while (true) {
+            name = ClassUtil.parseAnnotationFieldValue(parent, "table.name", "table.value", "tableName.name", "tableName.value");
+            if (BasicUtil.isEmpty(name)) {
                 parent = parent.getSuperclass();
-                if(null == parent){
+                if (null == parent) {
                     break;
                 }
-            }else{
+            } else {
                 table = new Table(name);
                 EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
-                return table;
+                break;
             }
         }
-        // 3.类名转成表名
-        if("Camel_".equalsIgnoreCase(ConfigTable.ENTITY_CLASS_TABLE_MAP)){
-            name = BeanUtil.camel_(clazz.getSimpleName());
+        if(null == table) {
+            // 3.类名转成表名
+            if ("Camel_".equalsIgnoreCase(ConfigTable.ENTITY_CLASS_TABLE_MAP)) {
+                name = BeanUtil.camel_(clazz.getSimpleName());
+                table = new Table(name);
+                EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
+            }
+        }
+        if(null == table) {
+            // 4.类名
+            name = clazz.getSimpleName();
             table = new Table(name);
             EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
-            return table;
         }
-        // 4.类名
-        name = clazz.getSimpleName();
-        table = new Table(name);
-        EntityAdapterProxy.class2table.put(key.toUpperCase(), table);
+        //comment
+        String comment = ClassUtil.parseAnnotationFieldValue(clazz, "table.comment");
+        if(BasicUtil.isNotEmpty(comment)){
+            table.setComment(comment);
+        }
+        //列
+        LinkedHashMap<String, Column> columns = columns(clazz);
+        table.setColumns(columns);
         return table;
     }
 
@@ -192,7 +205,6 @@ public interface EntityAdapter {
      *
      * @return String
      */
-
     default Column column(Class clazz, Field field, String ... annotations) {
         String key = clazz.getName()+":"+field.getName().toUpperCase();
         // 1.缓存
@@ -239,12 +251,72 @@ public interface EntityAdapter {
                     column.setArray(true);
                 }
                 column.setType(type);
-            }
-            return column;
-        }
-        return null;
-    }
+            }else{
+                //逐个属性解析
+                //数据类型
+                //@Column(name = "id", type = MySqlTypeConstant.DATETIME, nullAbel=false comment = "是否为超级管理员", defaultValue = "0",length = 10)
+                //@TableField(jdbcType = JdbcType.CLOB)
+                //length precision scale
+                int length = -1;
+                String _length = ClassUtil.parseAnnotationFieldValue(field, "column.length", "TableField.length");
+                if(BasicUtil.isNotEmpty(_length)){
+                    length = BasicUtil.parseInt(_length, -1);
+                }
+                String dataType = ClassUtil.parseAnnotationFieldValue(field, "column.type", "column.jdbcType", "TableField.type","TableField.jdbcType");
+                if(BasicUtil.isNotEmpty(dataType)){
+                    column.setType(dataType);
+                }else {
+                    //根据java类型
+                    TypeMetadata tm = EntityAdapterProxy.type(ClassUtil.getComponentClass(field));
+                    if(null != tm){
+                        if(length == -1 && tm == StandardTypeMetadata.VARCHAR){
+                            length = 255;
+                        }
+                        column.setTypeMetadata(tm);
+                    }else{
+                        column.setType("varchar(255)");
+                    }
+                }
+                if(length != -1){
+                    column.setLength(length);
+                }
+                int precision = -1;
+                String _precision = ClassUtil.parseAnnotationFieldValue(field, "column.precision", "TableField.precision");
+                if(BasicUtil.isNotEmpty(_precision)){
+                    precision = BasicUtil.parseInt(_precision, -1);
+                }
+                if(precision != -1){
+                    column.setPrecision(precision);
+                }
+                int scale = -1;
+                String _scale = ClassUtil.parseAnnotationFieldValue(field, "column.scale", "TableField.scale");
+                if(BasicUtil.isNotEmpty(_scale)){
+                    scale = BasicUtil.parseInt(_scale, -1);
+                }
+                if(scale != -1){
+                    column.setScale(scale);
+                }
+                //默认值
+                Object def = ClassUtil.getAnnotationFieldValue(field, "column", "defaultValue");
+                if(BasicUtil.isNotEmpty(def)){
+                    column.setDefaultValue(def);
+                }
+                //非空
+                String nullable = ClassUtil.parseAnnotationFieldValue(field, "column.nullAbel", "TableField.nullAbel");
+                if(BasicUtil.isNotEmpty(nullable)){
+                    column.setNullable(BasicUtil.parseBoolean(nullable));
+                }
+                //唯一
 
+                //注释
+                String comment = ClassUtil.parseAnnotationFieldValue(field, "column.comment", "TableField.comment");
+                if(BasicUtil.isNotEmpty(comment)){
+                    column.setComment(comment);
+                }
+            }
+        }
+        return column;
+    }
     /**
      * 根据类与列名 获取相关的属性
      * @param clazz 类
@@ -306,7 +378,7 @@ public interface EntityAdapter {
         PrimaryGenerator generator = null;
         table = table.toUpperCase();
         if(null == GeneratorConfig.get(table)){
-            Object generatorName = ClassUtil.parseAnnotationFieldValue(field, "GeneratedValue","generator");
+            Object generatorName = ClassUtil.getAnnotationFieldValue(field, "GeneratedValue","generator");
             if(null != generatorName){
                 String name = generatorName.toString();
                 for(PrimaryGenerator.GENERATOR item:PrimaryGenerator.GENERATOR.values()){

@@ -24,13 +24,20 @@ import org.anyline.annotation.Component;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
+import org.anyline.entity.geometry.Point;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
+import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Component("anyline.entity.adapter.proxy")
@@ -45,6 +52,34 @@ public class EntityAdapterProxy {
     public static LinkedHashMap<String, LinkedHashMap<String, Column>> ddl_columns      = new LinkedHashMap<>();
 
     public static Map<Class, List<EntityAdapter>> adapters = new HashMap<>();
+
+    //Java类型与sql类型对应
+    public static Map<Class, TypeMetadata> types = new HashMap<>();
+    static {
+        types.put(int.class, StandardTypeMetadata.INT);
+        types.put(Integer.class, StandardTypeMetadata.INT);
+        types.put(long.class, StandardTypeMetadata.BIGINT);
+        types.put(Long.class, StandardTypeMetadata.BIGINT);
+        types.put(double.class, StandardTypeMetadata.DOUBLE);
+        types.put(Double.class, StandardTypeMetadata.DOUBLE);
+        types.put(float.class, StandardTypeMetadata.FLOAT);
+        types.put(Float.class, StandardTypeMetadata.FLOAT);
+        types.put(BigDecimal.class, StandardTypeMetadata.DECIMAL);
+        types.put(short.class, StandardTypeMetadata.INT);
+        types.put(Short.class, StandardTypeMetadata.INT);
+        types.put(String.class, StandardTypeMetadata.VARCHAR);
+        types.put(Date.class, StandardTypeMetadata.DATETIME);
+        types.put(LocalDate.class, StandardTypeMetadata.DATE);
+        types.put(LocalTime.class, StandardTypeMetadata.TIME);
+        types.put(LocalDateTime.class, StandardTypeMetadata.DATETIME);
+        types.put(byte[].class, StandardTypeMetadata.BLOB);
+        types.put(boolean.class, StandardTypeMetadata.BOOLEAN);
+        types.put(Boolean.class, StandardTypeMetadata.BOOLEAN);
+        types.put(Point.class, StandardTypeMetadata.POINT);
+    }
+    public static TypeMetadata type(Class clazz){
+        return types.get(clazz);
+    }
     /**
      * 清空缓存
      */
