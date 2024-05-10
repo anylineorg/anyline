@@ -46,7 +46,6 @@ import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.commons.codec.binary.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
