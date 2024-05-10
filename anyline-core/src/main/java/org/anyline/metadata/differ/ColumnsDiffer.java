@@ -35,7 +35,7 @@ public class ColumnsDiffer implements MetadataDiffer{
         List<Column> drops = new ArrayList<>();
         List<Column> updates = new ArrayList<>();
 
-        if(null != origins){
+        if(null == origins){
             origins = new LinkedHashMap<>();
         }
         if(null == dests){
@@ -46,7 +46,7 @@ public class ColumnsDiffer implements MetadataDiffer{
             Column dest = dests.get(key);
             if(null == dest){
                 //新表不存在
-                drops.add(origins.get(origin));
+                drops.add(origin);
             }else {
                 if(!origin.equals(dest)){
                     origin.setUpdate(dest, false, false);
