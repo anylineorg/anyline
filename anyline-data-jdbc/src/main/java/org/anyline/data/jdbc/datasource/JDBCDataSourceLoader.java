@@ -107,9 +107,12 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
-            String def =  holder().create("default", head);
-            if (null != def) {
-                list.add(def);
+            //上下文初始化前后会调用 两次第二次就不执行加载了
+            if(!ConfigTable.worker.containsBean("anyline.service.default")) {
+                String def = holder().create("default", head);
+                if (null != def) {
+                    list.add(def);
+                }
             }
         }
         //默认数据源
@@ -126,9 +129,12 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
                 try {
                     //返回 datasource的bean id
                     // sso, anyline.datasource.sso, env
-                    String datasource =  holder().create(prefix, head + "." + prefix);
-                    if(null != datasource) {
-                        list.add(datasource);
+                    //上下文初始化前后会调用 两次第二次就不执行加载了
+                    if(!ConfigTable.worker.containsBean("anyline.service."+prefix)){
+                        String datasource =  holder().create(prefix, head + "." + prefix);
+                        if(null != datasource) {
+                            list.add(datasource);
+                        }
                     }
                 }catch (Exception e){
                     log.error("[注入数据源失败][type:JDBC][key:{}][msg:{}]", prefix, e.toString());
