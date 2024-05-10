@@ -523,7 +523,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
 		/*确定需要插入的列*/
-		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
+		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
+		for(Object item:list){
+			cols.putAll(confirmInsertColumns(runtime, dest, item, configs, columns, true));
+			if(!ConfigTable.IS_CHECK_ALL_INSERT_COLUMN){
+				break;
+			}
+		}
 		if(null == cols || cols.size() == 0){
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
 		}

@@ -1078,41 +1078,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
 		TableRun run = new TableRun(runtime, dest);
 		run.setFrom(1);
-		Object first = null;
-		if(!list.isEmpty()) {
-			first = list.iterator().next();
-		}
-		if (null == first){
+		if (null == list || list.isEmpty()){
 			return run;
 		}
 		if(null == configs){
 			configs = new DefaultConfigStore();
 		}
-		if(first instanceof Map && !(first instanceof DataRow)){
-			first = new DataRow((Map)first);
-		}
+
 		LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
 		List<String> primaryKeys = new ArrayList<>();
 
 		boolean replaceEmptyNull = false;
-		if(first instanceof DataRow){
-			DataRow row = (DataRow)first;
-			primaryKeys = row.getPrimaryKeys();
-			cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
-			replaceEmptyNull = row.isReplaceEmptyNull();
-		}else{
-			List<String> ll = new ArrayList<>();
-			for(Column column:columns.values()){
-				ll.add(column.getName());
-			}
-			cols = confirmUpdateColumns(runtime, dest, first, configs, ll);
-			if(EntityAdapterProxy.hasAdapter(first.getClass())){
-				primaryKeys.addAll(EntityAdapterProxy.primaryKeys(first.getClass()).keySet());
+		for(Object item:list){
+			if(item instanceof DataRow){
+				DataRow row = (DataRow)item;
+				primaryKeys = row.getPrimaryKeys();
+				cols.putAll(confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns)));
+				replaceEmptyNull = row.isReplaceEmptyNull();
 			}else{
-				primaryKeys = new ArrayList<>();
-				primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+				List<String> ll = new ArrayList<>();
+				for(Column column:columns.values()){
+					ll.add(column.getName());
+				}
+				cols.putAll(confirmUpdateColumns(runtime, dest, item, configs, ll));
+				if(EntityAdapterProxy.hasAdapter(item.getClass())){
+					primaryKeys.addAll(EntityAdapterProxy.primaryKeys(item.getClass()).keySet());
+				}else{
+					primaryKeys = new ArrayList<>();
+					primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+				}
+				replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
 			}
-			replaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
+			if(!ConfigTable.IS_CHECK_ALL_UPDATE_COLUMN){
+				break;
+			}
 		}
 		cols = checkMetadata(runtime, dest, configs, cols);
 		StringBuilder builder = run.getBuilder();

@@ -106,6 +106,8 @@ public class ConfigTable {
 	public static boolean IS_UPDATE_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
 	public static boolean IS_INSERT_NULL_FIELD							= false			;	// Entity是否更新nul值的属性
 	public static boolean IS_INSERT_EMPTY_FIELD							= false			;	// Entity是否更新空值的属性
+	public static boolean IS_CHECK_ALL_INSERT_COLUMN					= false			;	// 插入集合时是否检测所有条目的列(默认只检测第一行)
+	public static boolean IS_CHECK_ALL_UPDATE_COLUMN					= false			;	// 更新集合时是否检测所有条目的列(默认只检测第一行)
 	public static String LIST2STRING_FORMAT								= "concat"		;	// List/Array转换成String后的格式 concat:A, B, C json:["A","B","C"]
 	public static boolean IS_REPLACE_EMPTY_NULL							= true			;   // 是否把""替换成null
 	public static boolean IS_SQL_DELIMITER_OPEN 						= false			;	// 是否开启 界定符
