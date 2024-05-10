@@ -63,7 +63,7 @@ public interface TransactionManage {
      * 启动事务
      * 更多参数调用start(TransactionDefine define)
      */
-    default TransactionState start() throws Exception{
+    default TransactionState start() throws SQLException {
         return start(TransactionDefine.PROPAGATION_REQUIRED);
     }
 

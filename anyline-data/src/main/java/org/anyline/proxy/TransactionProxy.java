@@ -24,6 +24,8 @@ import org.anyline.data.transaction.TransactionManage;
 import org.anyline.data.transaction.TransactionState;
 
 import java.sql.SQLException;
+import java.sql.SQLTransactionRollbackException;
+import java.sql.SQLTransientException;
 
 public class TransactionProxy {
     /**
@@ -32,10 +34,10 @@ public class TransactionProxy {
      * @param define 事务定义相关参数
      * @return status 回溯或提交时需要
      */
-    public static TransactionState start(String datasource, TransactionDefine define) throws Exception {
+    public static TransactionState start(String datasource, TransactionDefine define) throws SQLException {
         TransactionManage manage = TransactionManage.instance(datasource);
         if(null == manage){
-            throw new Exception("未创建相关数据源("+datasource+")事务管理器");
+            throw new NullPointerException("未创建相关数据源("+datasource+")事务管理器");
         }
         return manage.start(define);
     }
@@ -60,7 +62,7 @@ public class TransactionProxy {
      * 	 * @param datasource 数据源
      * 更多参数调用start(String datasource, TransactionDefine define)
      */
-    public static TransactionState start(String datasource)  throws Exception {
+    public static TransactionState start(String datasource)  throws SQLException {
         return start(datasource, TransactionDefine.PROPAGATION_REQUIRED);
     }
 
@@ -69,7 +71,7 @@ public class TransactionProxy {
      * @param define 事务定义相关参数
      * @return status 回溯或提交时需要
      */
-    public static TransactionState start(TransactionDefine define) throws Exception {
+    public static TransactionState start(TransactionDefine define) throws SQLException {
         return start(RuntimeHolder.runtime().datasource(), define);
     }
 
@@ -79,7 +81,7 @@ public class TransactionProxy {
      * 更多参数调用start(String datasource, TransactionDefine define)
      * @return status 回溯或提交时需要
      */
-    public static TransactionState start(int behavior) throws Exception {
+    public static TransactionState start(int behavior) throws SQLException {
         return start(RuntimeHolder.runtime().datasource(), behavior);
     }
 
@@ -87,7 +89,7 @@ public class TransactionProxy {
      * 启动事务(默认数据源)
      * @return status 回溯或提交时需要
      */
-    public static TransactionState start() throws Exception {
+    public static TransactionState start() throws SQLException {
         return start(RuntimeHolder.runtime().datasource());
     }
     /**
@@ -95,10 +97,10 @@ public class TransactionProxy {
      * @param state 启动事务时返回status
      * @throws Exception 发生异常时,不会释放连接
      */
-    public static void commit(TransactionState state) throws Exception {
+    public static void commit(TransactionState state) throws SQLException {
         TransactionManage manage = TransactionManage.instance(state);
         if(null == manage){
-            throw new Exception("事务管理器异常");
+            throw new SQLTransientException("事务提交失败，不存在事务信息");
         }
         manage.commit(state);
     }
@@ -107,10 +109,10 @@ public class TransactionProxy {
      * @param state 启动事务时返回status
      * @throws Exception 发生异常时,不会释放连接
      */
-    public static void rollback(TransactionState state) throws Exception {
+    public static void rollback(TransactionState state) throws SQLException {
         TransactionManage manage = TransactionManage.instance(state);
         if(null == manage){
-            throw new Exception("事务管理器异常");
+            throw new SQLTransactionRollbackException("事务回滚失败，不存在事务信息");
         }
         manage.rollback(state);
     }
