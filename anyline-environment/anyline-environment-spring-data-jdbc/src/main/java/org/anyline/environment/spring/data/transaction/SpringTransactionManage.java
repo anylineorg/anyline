@@ -29,6 +29,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 public class SpringTransactionManage extends DefaultTransactionManage implements TransactionManage {
     private final DataSourceTransactionManager manager;
@@ -40,7 +41,7 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
         this.manager = manager;
     }
     @Override
-    public TransactionState start(TransactionDefine define) throws Exception{
+    public TransactionState start(TransactionDefine define) throws SQLException {
         TransactionStatus status = manager.getTransaction(definition(define));
         TransactionState state = state(status);
         TransactionManage.records.put(state, this);
