@@ -80,9 +80,9 @@ public class ServiceProxy {
         }catch (Exception e){
             e.printStackTrace();
         }
-        /*if(null == service){
-            service = (AnylineService)context.getBean("anyline.service");
-        }*/
+        if(null == service){
+            log.warn("请在上下文环境初始化完成后调用");
+        }
         return service;
     }
     public static AnylineService service(DatabaseType type, DriverAdapter adapter){

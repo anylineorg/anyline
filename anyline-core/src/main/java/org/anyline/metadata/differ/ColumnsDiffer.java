@@ -45,7 +45,7 @@ public class ColumnsDiffer implements MetadataDiffer{
             Column origin = origins.get(key);
             Column dest = dests.get(key);
             if(null == dest){
-                //新表不存在
+                //新表不存在这一列
                 drops.add(origin);
             }else {
                 if(!origin.equals(dest)){
