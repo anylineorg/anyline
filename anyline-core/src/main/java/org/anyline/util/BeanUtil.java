@@ -2659,6 +2659,13 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel_(String str){
+		/*
+		user_GroupId > user_group_id
+		userGroupId > user_group_id
+		userID > user_id
+		ID > id
+		ABC > abc
+		*/
 		Pattern pattern = Pattern.compile("(?<=[a-z])([A-Z])");
 		Matcher matcher = pattern.matcher(str);
 		return matcher.replaceAll("_$1").toLowerCase();
