@@ -5752,8 +5752,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public boolean alter(DataRuntime runtime, Table table, Index meta) throws Exception {
-        throw new RuntimeException("不支持修改现有索引，请先删除旧索引，再添加新索引");
-        //return super.alter(runtime, table, meta);
+        Map<String, Index> origins = indexs(runtime, null, table, meta.getName());
+        if(!origins.isEmpty()){
+            drop(runtime, meta);
+        }
+        return add(runtime, meta);
     }
 
     /**
