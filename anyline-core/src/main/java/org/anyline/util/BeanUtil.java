@@ -2659,20 +2659,6 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel_(String str){
-/*		if(null == str || str.contains("_")){
-			return str;
-		}
-		Matcher matcher = Pattern.compile("[A-Z]").matcher(str);
-		StringBuffer sb = new StringBuffer();
-		while (matcher.find()) {
-			String g = matcher.group();
-			matcher.appendReplacement(sb, "_" + g.toLowerCase());
-		}
-		matcher.appendTail(sb);
-		if (sb.charAt(0) == '_') {
-			sb.delete(0, 1);
-		}
-		return sb.toString();*/
 		Pattern pattern = Pattern.compile("(?<=[a-z])([A-Z])");
 		Matcher matcher = pattern.matcher(str);
 		return matcher.replaceAll("_$1").toLowerCase();
