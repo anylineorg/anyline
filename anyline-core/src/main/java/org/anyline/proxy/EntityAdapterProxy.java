@@ -127,6 +127,12 @@ public class EntityAdapterProxy {
     public static void push(EntityAdapter adapter){
         push(Object.class, adapter);
     }
+
+    /**
+     * 实体类(属性) 与 表(列) 之间的转换关系
+     * @param type 适用的类 Object.class表示全部类
+     * @param adapter 适配器
+     */
     public static void push(Class type, EntityAdapter adapter){
         if(null != type){
             List<EntityAdapter> list = EntityAdapterProxy.adapters.get(type);
