@@ -1811,6 +1811,17 @@ public interface ConfigStore {
 	}
 
 	/**
+	 * insert update 时是否自动检测表结构(删除表中不存在的属性)
+	 * @return boolean
+	 */
+	default boolean IS_AUTO_CHECK_CONDITION_METADATA(){
+		return getBoolean("IS_AUTO_CHECK_CONDITION_METADATA", ConfigTable.IS_AUTO_CHECK_CONDITION_METADATA);
+	}
+	default ConfigStore IS_AUTO_CHECK_CONDITION_METADATA(boolean value){
+		return config("IS_AUTO_CHECK_CONDITION_METADATA", value);
+	}
+
+	/**
 	 * 查询返回空DataSet时，是否检测元数据信息
 	 * @return boolean
 	 */
@@ -2015,6 +2026,17 @@ public interface ConfigStore {
 		return ConfigTable.IS_AUTO_CHECK_METADATA;
 	}
 
+	/**
+	 * 时是否自动检测查询条件列的数据类型(数据类型转换)
+	 * @param configs ConfigStore
+	 * @return boolean
+	 */
+	static boolean IS_AUTO_CHECK_CONDITION_METADATA(ConfigStore configs){
+		if(null != configs){
+			return configs.IS_AUTO_CHECK_CONDITION_METADATA();
+		}
+		return ConfigTable.IS_AUTO_CHECK_CONDITION_METADATA;
+	}
 	/**
 	 * 查询返回空DataSet时，是否检测元数据信息
 	 * @param configs ConfigStore
