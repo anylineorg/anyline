@@ -124,7 +124,10 @@ public class EntityAdapterProxy {
             EntityAdapter.sort(list);
         }
     }
-    private static void push(Class type, EntityAdapter adapter){
+    public static void push(EntityAdapter adapter){
+        push(Object.class, adapter);
+    }
+    public static void push(Class type, EntityAdapter adapter){
         if(null != type){
             List<EntityAdapter> list = EntityAdapterProxy.adapters.get(type);
             if(null == list){

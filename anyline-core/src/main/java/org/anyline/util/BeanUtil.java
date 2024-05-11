@@ -2659,7 +2659,7 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel_(String str){
-		if(null == str || str.contains("_")){
+/*		if(null == str || str.contains("_")){
 			return str;
 		}
 		Matcher matcher = Pattern.compile("[A-Z]").matcher(str);
@@ -2672,11 +2672,14 @@ public class BeanUtil {
 		if (sb.charAt(0) == '_') {
 			sb.delete(0, 1);
 		}
-		return sb.toString();
+		return sb.toString();*/
+		Pattern pattern = Pattern.compile("(?<=[a-z])([A-Z])");
+		Matcher matcher = pattern.matcher(str);
+		return matcher.replaceAll("_$1").toLowerCase();
 	}
 
 	/**
-	 * 转驼峰
+	 * 转小驼峰
 	 * @param key src
 	 * @param hold 是否保留分隔符
 	 * @return String
@@ -2703,6 +2706,12 @@ public class BeanUtil {
 	public static String camel(String key){
 		return camel(key, false);
 	}
+	/**
+	 * 转大驼峰
+	 * @param key src
+	 * @param hold 是否保留分隔符
+	 * @return String
+	 */
 	public static String Camel(String key, boolean hold){
 		if(!key.contains("-") && !key.contains("_")){
 			return key;
