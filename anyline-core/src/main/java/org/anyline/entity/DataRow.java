@@ -68,6 +68,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     protected boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
     protected boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
     protected boolean replaceEmptyNull            = ConfigTable.IS_REPLACE_EMPTY_NULL;
+    protected Boolean ignoreCase                  = ConfigTable.IS_KEY_IGNORE_CASE;
 
     /*
      * 相当于Class Name 如User/Department
@@ -1530,7 +1531,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }else{
                 super.put(key, value);
             }
-            if (ConfigTable.IS_KEY_IGNORE_CASE) {
+            if (ignoreCase) {
                 String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 keymap.put(ignoreKey, key);
             }
@@ -3551,7 +3552,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         boolean result = false;
         if(null != key){
             key = keyAdapter.key(key);
-            if (ConfigTable.IS_KEY_IGNORE_CASE) {
+            if (ignoreCase) {
                 String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 String tmp = keymap.get(ignoreKey);
                 if(null != tmp){
@@ -3580,7 +3581,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if (null != key) {
                 if(keyAdapter.getKeyCase() != KEY_CASE.SRC) {
                     key = keyAdapter.key(key);
-                    if (ConfigTable.IS_KEY_IGNORE_CASE) {
+                    if (ignoreCase) {
                         String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                         String tmp = keymap.get(ignoreKey);
                         if (null != tmp) {
@@ -3597,13 +3598,13 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public Object get(String key) {
-        if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ConfigTable.IS_KEY_IGNORE_CASE){
+        if(keyAdapter.getKeyCase() == KEY_CASE.SRC && !ignoreCase){
             return super.get(key);
         }
         Object result = null;
         if (null != key) {
             key = keyAdapter.key(key);
-            if (ConfigTable.IS_KEY_IGNORE_CASE) {
+            if (ignoreCase) {
                 String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
                 String tmp = keymap.get(ignoreKey);
                 if(null != tmp){

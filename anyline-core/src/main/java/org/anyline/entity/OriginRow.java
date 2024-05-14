@@ -19,6 +19,7 @@
 package org.anyline.entity;
 
 import org.anyline.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,32 @@ public class OriginRow extends DataRow {
         DataRow row = new OriginRow();
         put(key, row);
         return row;
+    }
+    public DataRow put(boolean checkUpdate, KEY_CASE keyCase, String key, Object value) {
+        if (null != key) {
+            if(checkUpdate) {
+                Object oldValue = get(keyCase, key);
+                if (null == oldValue || !oldValue.equals(value)) {
+                    super.put(key, value);
+                }
+                if(null == value){
+                    if(isInsertNullColumn() || isUpdateNullColumn()){
+                        addUpdateColumns(key);
+                    }
+                }else if(BasicUtil.isEmpty(true, value)){
+                    if(isInsertEmptyColumn() || isUpdateEmptyColumn()){
+                        addUpdateColumns(key);
+                    }
+                }else {
+                    if (!BasicUtil.equals(oldValue, value)) {
+                        addUpdateColumns(key);
+                    }
+                }
+            }else{
+                super.put(key, value);
+            }
+        }
+        return this;
     }
     public DataRow set(String key, Object value) {
         put(keyCase, key, value, false, true);

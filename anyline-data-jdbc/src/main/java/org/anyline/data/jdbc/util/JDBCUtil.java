@@ -24,8 +24,10 @@ import org.anyline.data.handler.*;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,8 +318,15 @@ public class JDBCUtil {
         if(null != configs){
             kc = configs.keyCase();
         }
+        if(null == kc){
+            if(!ConfigTable.IS_UPPER_KEY && !ConfigTable.IS_LOWER_KEY){
+                kc = KeyAdapter.KEY_CASE.SRC;
+            }
+        }
         boolean upper = false;
-        if(KeyAdapter.KEY_CASE.PUT_UPPER == kc){
+        if(KeyAdapter.KEY_CASE.SRC == kc){
+            row = new OriginRow();
+        }else if(KeyAdapter.KEY_CASE.PUT_UPPER == kc){
             //put时大写,DataRow按SRC处理
             upper = true;
             row = new DataRow(KeyAdapter.KEY_CASE.SRC);
