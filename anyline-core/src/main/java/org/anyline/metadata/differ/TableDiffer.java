@@ -50,7 +50,7 @@ public class TableDiffer implements MetadataDiffer {
         LinkedHashMap<String, Column> originColumns = origin.getColumns();
         LinkedHashMap<String, Column> destColumns = dest.getColumns();
 
-        differ.setColumnsDiffer(ColumnsDiffer.compare(origin.getColumns(), dest.getColumns()));
+        differ.setColumnsDiffer(ColumnsDiffer.compare(originColumns, destColumns));
 
         differ.setIndexsDiffer(IndexsDiffer.compare(origin.getIndexes(), dest.getIndexes()));
         return differ;
