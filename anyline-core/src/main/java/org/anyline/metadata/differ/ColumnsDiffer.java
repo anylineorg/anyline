@@ -20,20 +20,18 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Column;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class ColumnsDiffer implements MetadataDiffer{
-    private List<Column> adds = new ArrayList<>();
-    private List<Column> drops = new ArrayList<>();
-    private List<Column> updates = new ArrayList<>();
+    private LinkedHashMap<String, Column> adds = new LinkedHashMap<>();
+    private LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
+    private LinkedHashMap<String, Column> updates = new LinkedHashMap<>();
 
     public static ColumnsDiffer compare(LinkedHashMap<String, Column> origins, LinkedHashMap<String, Column> dests){
         ColumnsDiffer differ = new ColumnsDiffer();
-        List<Column> adds = new ArrayList<>();
-        List<Column> drops = new ArrayList<>();
-        List<Column> updates = new ArrayList<>();
+        LinkedHashMap<String, Column> adds = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
+        LinkedHashMap<String, Column> updates = new LinkedHashMap<>();
 
         if(null == origins){
             origins = new LinkedHashMap<>();
@@ -46,18 +44,18 @@ public class ColumnsDiffer implements MetadataDiffer{
             Column dest = dests.get(key);
             if(null == dest){
                 //新表不存在这一列
-                drops.add(origin);
+                drops.put(key, origin);
             }else {
                 //不比较 catalog schema
                 if(!origin.equals(dest)){
                     origin.setUpdate(dest, false, false);
-                    updates.add(origin);
+                    updates.put(key, origin);
                 }
             }
         }
         for(String key:dests.keySet()){
             if(!origins.containsKey(key)){
-                adds.add(dests.get(key));
+                adds.put(key, dests.get(key));
             }
         }
         differ.setAdds(adds);
@@ -70,27 +68,27 @@ public class ColumnsDiffer implements MetadataDiffer{
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
 
-    public List<Column> getAdds() {
+    public LinkedHashMap<String, Column> getAdds() {
         return adds;
     }
 
-    public void setAdds(List<Column> adds) {
+    public void setAdds(LinkedHashMap<String, Column> adds) {
         this.adds = adds;
     }
 
-    public List<Column> getDrops() {
+    public LinkedHashMap<String, Column> getDrops() {
         return drops;
     }
 
-    public void setDrops(List<Column> drops) {
+    public void setDrops(LinkedHashMap<String, Column> drops) {
         this.drops = drops;
     }
 
-    public List<Column> getUpdates() {
+    public LinkedHashMap<String, Column> getUpdates() {
         return updates;
     }
 
-    public void setUpdates(List<Column> updates) {
+    public void setUpdates(LinkedHashMap<String, Column> updates) {
         this.updates = updates;
     }
 }
