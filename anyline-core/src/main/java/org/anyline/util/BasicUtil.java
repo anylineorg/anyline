@@ -409,7 +409,8 @@ public class BasicUtil {
 	}
 	public static Short parseShort(Object value) throws NumberFormatException {
 		if (null == value) {
-			return null;
+			//return null;
+			//应该抛出异常
 		}
 		return (short) Double.parseDouble(value.toString());
 	}
@@ -429,7 +430,8 @@ public class BasicUtil {
 	}
 	public static Integer parseInt(Object value) throws NumberFormatException {
 		if (null == value) {
-			return null;
+			//return null;
+			//应该抛出异常
 		}
 		return (int) Double.parseDouble(value.toString());
 	}
@@ -502,6 +504,9 @@ public class BasicUtil {
 	}
 	public static Long parseLong(Object value, Long def) {
 		try{
+			if(null == value){
+				return def;
+			}
 			return parseLong(value);
 		}catch (Exception e){
 			return def;
@@ -509,7 +514,8 @@ public class BasicUtil {
 	}
 	public static Long parseLong(Object value) throws NumberFormatException {
 		if (value == null) {
-			return null;
+			//return null;
+			//应该抛出异常
 		}
 		if(value instanceof Long){
 			return (Long)value;
