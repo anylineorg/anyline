@@ -27,10 +27,17 @@ import java.util.LinkedHashMap;
  * 表或列之间的对比结果
  */
 public class TableDiffer implements MetadataDiffer {
+    private Table origin;
+    private Table dest;
     private ColumnsDiffer columnsDiffer;
     private IndexsDiffer indexsDiffer;
     //部分数据库的触发器 关联不到表
     private TriggersDiffer triggersDiffer;
+    public TableDiffer(){}
+    public TableDiffer(Table origin, Table dest){
+        this.origin = origin;
+        this.dest = dest;
+    }
     public boolean isEmpty(){
         if(null != columnsDiffer && !columnsDiffer.isEmpty()){
             return false;
@@ -42,11 +49,11 @@ public class TableDiffer implements MetadataDiffer {
     }
 
     public static TableDiffer compare(Table origin, Table dest){
-        TableDiffer differ = new TableDiffer();
         if(null == dest){
             dest = new Table();
         }
 
+        TableDiffer differ = new TableDiffer(origin, dest);
         LinkedHashMap<String, Column> originColumns = origin.getColumns();
         LinkedHashMap<String, Column> destColumns = dest.getColumns();
 
@@ -78,5 +85,21 @@ public class TableDiffer implements MetadataDiffer {
 
     public void setTriggersDiffer(TriggersDiffer triggersDiffer) {
         this.triggersDiffer = triggersDiffer;
+    }
+
+    public Table getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Table origin) {
+        this.origin = origin;
+    }
+
+    public Table getDest() {
+        return dest;
+    }
+
+    public void setDest(Table dest) {
+        this.dest = dest;
     }
 }
