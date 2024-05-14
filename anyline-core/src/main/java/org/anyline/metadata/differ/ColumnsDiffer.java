@@ -48,6 +48,7 @@ public class ColumnsDiffer implements MetadataDiffer{
                 //新表不存在这一列
                 drops.add(origin);
             }else {
+                //不比较 catalog schema
                 if(!origin.equals(dest)){
                     origin.setUpdate(dest, false, false);
                     updates.add(origin);
