@@ -20,26 +20,24 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.View;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * 表或列之间的对比结果
  */
 public class ViewsDiffer implements MetadataDiffer {
-    private List<View> adds = new ArrayList<>();
-    private List<View> drops = new ArrayList<>();
-    private List<View> updates = new ArrayList<>();
+    private LinkedHashMap<String, View> adds = new LinkedHashMap<>();
+    private LinkedHashMap<String, View> drops = new LinkedHashMap<>();
+    private LinkedHashMap<String, View> updates = new LinkedHashMap<>();
 
     public boolean isEmpty(){
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
     public static ViewsDiffer compare(LinkedHashMap<String, View> origins, LinkedHashMap<String, View> dests){
         ViewsDiffer differ = new ViewsDiffer();
-        List<View> adds = new ArrayList<>();
-        List<View> drops = new ArrayList<>();
-        List<View> updates = new ArrayList<>();
+        LinkedHashMap<String, View> adds = new LinkedHashMap<>();
+        LinkedHashMap<String, View> drops = new LinkedHashMap<>();
+        LinkedHashMap<String, View> updates = new LinkedHashMap<>();
 
         if(null != origins){
             origins = new LinkedHashMap<>();
@@ -52,17 +50,17 @@ public class ViewsDiffer implements MetadataDiffer {
             View dest = dests.get(key);
             if(null == dest){
                 //新表不存在
-                drops.add(origins.get(origin));
+                drops.put(key, origins.get(origin));
             }else {
                 if(!origin.equals(dest)){
                     origin.setUpdate(dest, false, false);
-                    updates.add(origin);
+                    updates.put(key, origin);
                 }
             }
         }
         for(String key:dests.keySet()){
             if(!origins.containsKey(key)){
-                adds.add(dests.get(key));
+                adds.put(key, dests.get(key));
             }
         }
         differ.setAdds(adds);
@@ -71,27 +69,27 @@ public class ViewsDiffer implements MetadataDiffer {
         return differ;
     }
 
-    public List<View> getAdds() {
+    public LinkedHashMap<String, View> getAdds() {
         return adds;
     }
 
-    public void setAdds(List<View> adds) {
+    public void setAdds(LinkedHashMap<String, View> adds) {
         this.adds = adds;
     }
 
-    public List<View> getDrops() {
+    public LinkedHashMap<String, View> getDrops() {
         return drops;
     }
 
-    public void setDrops(List<View> drops) {
+    public void setDrops(LinkedHashMap<String, View> drops) {
         this.drops = drops;
     }
 
-    public List<View> getUpdates() {
+    public LinkedHashMap<String, View> getUpdates() {
         return updates;
     }
 
-    public void setUpdates(List<View> updates) {
+    public void setUpdates(LinkedHashMap<String, View> updates) {
         this.updates = updates;
     }
 }

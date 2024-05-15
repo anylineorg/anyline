@@ -85,8 +85,8 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
     /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta BaseMetadata
-     * @param <T> BaseMetadata
+     * @param meta Metadata
+     * @param <T> Metadata
      */
 	@Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
@@ -96,12 +96,12 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 	/**
 	 * 识别根据jdbc返回的catalog与schema, 部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta BaseMetadata
+	 * @param meta Metadata
 	 * @param catalog catalog
 	 * @param schema schema
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
-	 * @param <T> BaseMetadata
+	 * @param <T> Metadata
 	 */
 	@Override
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){

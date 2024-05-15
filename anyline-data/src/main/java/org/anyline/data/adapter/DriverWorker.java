@@ -170,7 +170,7 @@ public interface DriverWorker {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return tables
      * @throws Exception 异常
      */
@@ -187,7 +187,7 @@ public interface DriverWorker {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return tables
      * @throws Exception 异常
      */
@@ -203,7 +203,7 @@ public interface DriverWorker {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return tables
      * @throws Exception 异常
      */
@@ -220,7 +220,7 @@ public interface DriverWorker {
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return tables
      * @throws Exception 异常
      */

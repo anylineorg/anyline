@@ -29,6 +29,7 @@ import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.run.Run;
 import org.anyline.data.transaction.TransactionDefine;
 import org.anyline.data.transaction.TransactionState;
 import org.anyline.entity.*;
@@ -1621,13 +1622,13 @@ public interface AnylineService<E>{
 	 * @param differ differ
 	 * @return sqls
 	 */
-	List<String> ddls(MetadataDiffer differ);
+	List<Run> ddls(MetadataDiffer differ);
 	/**
 	 * 根据差异生成SQL
 	 * @param differs differs
 	 * @return sqls
 	 */
-	List<String> ddls(List<MetadataDiffer> differs);
+	List<Run> ddls(List<MetadataDiffer> differs);
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
@@ -1743,7 +1744,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types BaseMetadata.TYPE
+		 * @param types Metadata.TYPE
 		 * @return tables
 		 */
 		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
@@ -2162,7 +2163,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types BaseMetadata.TYPE
+		 * @param types Metadata.TYPE
 		 * @return vertexTables
 		 */
 		<T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
@@ -2357,7 +2358,7 @@ public interface AnylineService<E>{
 		 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 		 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
 		 * @param name 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
-		 * @param types BaseMetadata.TYPE
+		 * @param types Metadata.TYPE
 		 * @return edgeTables
 		 */
 		<T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);

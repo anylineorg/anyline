@@ -1607,7 +1607,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> Table
@@ -1643,7 +1643,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -1659,7 +1659,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -1713,7 +1713,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1731,7 +1731,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -1844,7 +1844,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return List
 	 * @param <T> View
 	 */
@@ -1861,7 +1861,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return List
 	 */
 	@Override
@@ -1896,7 +1896,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return views
 	 * @throws Exception 异常
 	 */
@@ -1971,7 +1971,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -3512,7 +3512,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * ddl [执行命令]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param meta BaseMetadata(表,列等)
+	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return boolean
@@ -6221,8 +6221,8 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     /**
      * 根据运行环境识别 catalog与schema
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @param meta BaseMetadata
-     * @param <T> BaseMetadata
+     * @param meta Metadata
+     * @param <T> Metadata
      */
 	@Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
@@ -6232,12 +6232,12 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta BaseMetadata
+	 * @param meta Metadata
 	 * @param catalog catalog
 	 * @param schema schema
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
-	 * @param <T> BaseMetadata
+	 * @param <T> Metadata
 	 */
 	@Override
     public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
@@ -6247,10 +6247,10 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	/**
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta BaseMetadata
+	 * @param meta Metadata
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param <T> BaseMetadata
+	 * @param <T> Metadata
 	 */
 	@Override
 	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){

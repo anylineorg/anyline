@@ -1554,7 +1554,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  BaseMetadata.TYPE.
+     * @param types  Metadata.TYPE.
      * @param struct 是否查询表结构
      * @return List
      * @param <T> Table
@@ -1615,7 +1615,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  BaseMetadata.TYPE.
+     * @param types  Metadata.TYPE.
      * @return String
      */
     @Override
@@ -1630,7 +1630,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return String
      */
     @Override
@@ -1693,7 +1693,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return tables
      * @throws Exception 异常
      */
@@ -1712,7 +1712,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return tables
      * @throws Exception 异常
      */
@@ -1825,7 +1825,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  BaseMetadata.TYPE.
+     * @param types  Metadata.TYPE.
      * @return List
      * @param <T> View
      */
@@ -1841,7 +1841,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return List
      */
     @Override
@@ -1875,7 +1875,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types types BaseMetadata.TYPE.
+     * @param types types Metadata.TYPE.
      * @return views
      * @throws Exception 异常
      */
@@ -1955,7 +1955,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param catalog catalog
      * @param schema schema
      * @param pattern 名称统配符或正则
-     * @param types  BaseMetadata.TYPE.
+     * @param types  Metadata.TYPE.
      * @return List
      * @param <T> MasterTable
      */
@@ -3277,7 +3277,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * ddl [执行命令]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
-     * @param meta BaseMetadata(表,列等)
+     * @param meta Metadata(表,列等)
      * @param action 执行命令
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @return boolean

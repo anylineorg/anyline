@@ -29,6 +29,7 @@ import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.entity.DataRow;
@@ -39,6 +40,7 @@ import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Procedure;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
+import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
@@ -1246,6 +1248,22 @@ public class ServiceProxy {
     }
     public static List<String> tags(Catalog catalog, Schema schema, String table){
         return service.tags(catalog, schema, table);
+    }
+    /**
+     * 根据差异生成SQL
+     * @param differ differ
+     * @return sqls
+     */
+    public static List<Run> ddls(MetadataDiffer differ){
+        return service.ddls(differ);
+    }
+    /**
+     * 根据差异生成SQL
+     * @param differs differs
+     * @return sqls
+     */
+    public static List<Run> ddls(List<MetadataDiffer> differs){
+        return service.ddls(differs);
     }
 
     public static AnylineService.DDLService ddl(){

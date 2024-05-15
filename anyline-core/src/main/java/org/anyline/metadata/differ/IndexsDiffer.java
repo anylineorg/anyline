@@ -19,22 +19,19 @@
 package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Index;
-import org.anyline.metadata.Index;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class IndexsDiffer implements MetadataDiffer {
-    private List<Index> adds = new ArrayList<>();
-    private List<Index> drops = new ArrayList<>();
-    private List<Index> updates = new ArrayList<>();
+    private LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
+    private LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
+    private LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
 
     public static IndexsDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests){
         IndexsDiffer differ = new IndexsDiffer();
-        List<Index> adds = new ArrayList<>();
-        List<Index> drops = new ArrayList<>();
-        List<Index> updates = new ArrayList<>();
+        LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
+        LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
+        LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
 
         if(null != origins){
             origins = new LinkedHashMap<>();
@@ -46,17 +43,17 @@ public class IndexsDiffer implements MetadataDiffer {
             Index origin = origins.get(key);
             Index dest = dests.get(key);
             if(null == dest){
-                drops.add(origins.get(origin));
+                drops.put(key, origins.get(origin));
             }else {
                 if(!origin.equals(dest)){
                     origin.setUpdate(dest, false, false);
-                    updates.add(origin);
+                    updates.put(key, origin);
                 }
             }
         }
         for(String key:dests.keySet()){
             if(!origins.containsKey(key)){
-                adds.add(dests.get(key));
+                adds.put(key, dests.get(key));
             }
         }
         differ.setAdds(adds);
@@ -69,27 +66,27 @@ public class IndexsDiffer implements MetadataDiffer {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
 
-    public List<Index> getAdds() {
+    public LinkedHashMap<String, Index> getAdds() {
         return adds;
     }
 
-    public void setAdds(List<Index> adds) {
+    public void setAdds(LinkedHashMap<String, Index> adds) {
         this.adds = adds;
     }
 
-    public List<Index> getDrops() {
+    public LinkedHashMap<String, Index> getDrops() {
         return drops;
     }
 
-    public void setDrops(List<Index> drops) {
+    public void setDrops(LinkedHashMap<String, Index> drops) {
         this.drops = drops;
     }
 
-    public List<Index> getUpdates() {
+    public LinkedHashMap<String, Index> getUpdates() {
         return updates;
     }
 
-    public void setUpdates(List<Index> updates) {
+    public void setUpdates(LinkedHashMap<String, Index> updates) {
         this.updates = updates;
     }
 }

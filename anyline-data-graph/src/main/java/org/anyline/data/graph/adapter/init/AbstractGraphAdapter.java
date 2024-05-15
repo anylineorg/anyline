@@ -2750,7 +2750,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> Table
@@ -2786,7 +2786,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2802,7 +2802,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -3011,7 +3011,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> VertexTable
@@ -3033,7 +3033,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -3049,7 +3049,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -3102,7 +3102,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return vertexTables
 	 * @throws Exception 异常
 	 */
@@ -3120,7 +3120,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return vertexTables
 	 * @throws Exception 异常
 	 * @param <T> VertexTable
@@ -3231,7 +3231,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> EdgeTable
@@ -3253,7 +3253,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -3269,7 +3269,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -3322,7 +3322,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return edgeTables
 	 * @throws Exception 异常
 	 */
@@ -3340,7 +3340,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return edgeTables
 	 * @throws Exception 异常
 	 * @param <T> EdgeTable
@@ -3447,7 +3447,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return List
 	 * @param <T> MasterTable
 	 */
@@ -5281,7 +5281,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * ddl [执行命令]
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param meta BaseMetadata(表,列等)
+	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return boolean

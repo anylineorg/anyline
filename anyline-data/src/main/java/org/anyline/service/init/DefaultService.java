@@ -32,6 +32,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
+import org.anyline.data.run.Run;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
@@ -1484,7 +1485,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return sqls
      */
     @Override
-    public List<String> ddls(MetadataDiffer differ){
+    public List<Run> ddls(MetadataDiffer differ){
         return dao.ddls(differ);
     }
     /**
@@ -1493,7 +1494,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return sqls
      */
     @Override
-    public List<String> ddls(List<MetadataDiffer> differs){
+    public List<Run> ddls(List<MetadataDiffer> differs){
         return dao.ddls(differs);
     }
     /**

@@ -48,7 +48,7 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.ACTION;
-import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
@@ -853,7 +853,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta) {
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
 
     }
 

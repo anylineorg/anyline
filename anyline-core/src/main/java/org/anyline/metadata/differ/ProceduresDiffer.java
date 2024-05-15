@@ -20,26 +20,24 @@ package org.anyline.metadata.differ;
 
 import org.anyline.metadata.Procedure;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * 表或列之间的对比结果
  */
 public class ProceduresDiffer implements MetadataDiffer {
-    private List<Procedure> adds = new ArrayList<>();
-    private List<Procedure> drops = new ArrayList<>();
-    private List<Procedure> updates = new ArrayList<>();
+    private LinkedHashMap<String, Procedure> adds = new LinkedHashMap<>();
+    private LinkedHashMap<String, Procedure> drops = new LinkedHashMap<>();
+    private LinkedHashMap<String, Procedure> updates = new LinkedHashMap<>();
 
     public boolean isEmpty(){
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
     public static ProceduresDiffer compare(LinkedHashMap<String, Procedure> origins, LinkedHashMap<String, Procedure> dests){
         ProceduresDiffer differ = new ProceduresDiffer();
-        List<Procedure> adds = new ArrayList<>();
-        List<Procedure> drops = new ArrayList<>();
-        List<Procedure> updates = new ArrayList<>();
+        LinkedHashMap<String, Procedure> adds = new LinkedHashMap<>();
+        LinkedHashMap<String, Procedure> drops = new LinkedHashMap<>();
+        LinkedHashMap<String, Procedure> updates = new LinkedHashMap<>();
 
         if(null != origins){
             origins = new LinkedHashMap<>();
@@ -52,17 +50,17 @@ public class ProceduresDiffer implements MetadataDiffer {
             Procedure dest = dests.get(key);
             if(null == dest){
                 //新表不存在
-                drops.add(origins.get(origin));
+                drops.put(key, origins.get(origin));
             }else {
                 if(!origin.equals(dest)){
                     origin.setUpdate(dest, false, false);
-                    updates.add(origin);
+                    updates.put(key, origin);
                 }
             }
         }
         for(String key:dests.keySet()){
             if(!origins.containsKey(key)){
-                adds.add(dests.get(key));
+                adds.put(key, dests.get(key));
             }
         }
         differ.setAdds(adds);
@@ -71,27 +69,27 @@ public class ProceduresDiffer implements MetadataDiffer {
         return differ;
     }
 
-    public List<Procedure> getAdds() {
+    public LinkedHashMap<String, Procedure> getAdds() {
         return adds;
     }
 
-    public void setAdds(List<Procedure> adds) {
+    public void setAdds(LinkedHashMap<String, Procedure> adds) {
         this.adds = adds;
     }
 
-    public List<Procedure> getDrops() {
+    public LinkedHashMap<String, Procedure> getDrops() {
         return drops;
     }
 
-    public void setDrops(List<Procedure> drops) {
+    public void setDrops(LinkedHashMap<String, Procedure> drops) {
         this.drops = drops;
     }
 
-    public List<Procedure> getUpdates() {
+    public LinkedHashMap<String, Procedure> getUpdates() {
         return updates;
     }
 
-    public void setUpdates(List<Procedure> updates) {
+    public void setUpdates(LinkedHashMap<String, Procedure> updates) {
         this.updates = updates;
     }
 }

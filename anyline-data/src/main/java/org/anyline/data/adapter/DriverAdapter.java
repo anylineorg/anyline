@@ -110,8 +110,8 @@ public interface DriverAdapter {
 
 	/**
 	 * 根据catalog+schema+name 比较,过程中需要检测是否支持catalog,schema不支持的不判断
-	 * @param m1 BaseMetadata
-	 * @param m2 BaseMetadata
+	 * @param m1 Metadata
+	 * @param m2 Metadata
 	 * @return boolean
 	 */
 	default boolean equals(Metadata m1, Metadata m2){
@@ -442,7 +442,9 @@ public interface DriverAdapter {
 			TablesDiffer df = (TablesDiffer) differ;
 			LinkedHashMap<String, Table> adds = df.getAdds();
 			LinkedHashMap<String, Table> drops = df.getDrops();
-			LinkedHashMap<String, Table> updates = df.getUpdates();
+			LinkedHashMap<String, Table> updates = df.getUpdates();//只统计哪些表需要修改
+			LinkedHashMap<String, TableDiffer> diffs = df.getDiffers();//标记具体需要修改的内容
+			//添加表
 			for(Table add:adds.values()){
 				try {
 					list.addAll(buildCreateRun(runtime, add));
@@ -450,13 +452,42 @@ public interface DriverAdapter {
 					e.printStackTrace();
 				}
 			}
-			for(Table update:updates.values()){
+			//修改表
+			for(TableDiffer dif:diffs.values()){
 				try {
+					Table dest = dif.getDest();
+					Table origin = dif.getOrigin();
+					Table update = origin.clone();
+					if(null != update){
+						update.setUpdate(dest, false, false);
+					}
+					ColumnsDiffer columns_dif = dif.getColumnsDiffer();
+					LinkedHashMap<String, Column> columns_adds = columns_dif.getAdds();
+					LinkedHashMap<String, Column> columns_updates = columns_dif.getUpdates();
+					LinkedHashMap<String, Column> columns_drops = columns_dif.getDrops();
+					LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+					for(String key:columns_adds.keySet()){
+						Column column = columns_adds.get(key);
+						column.setAction(ACTION.DDL.COLUMN_ADD);
+						columns.put(key, column);
+					}
+					for(String key:columns_updates.keySet()){
+						Column column = columns_updates.get(key);
+						column.setAction(ACTION.DDL.COLUMN_ALTER);
+						columns.put(key, column);
+					}
+					for(String key:columns_drops.keySet()){
+						Column column = columns_drops.get(key);
+						column.setAction(ACTION.DDL.COLUMN_DROP);
+						columns.put(key, column);
+					}
+					update.setColumns(columns);
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
+			//删除表
 			for(Table drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
@@ -466,24 +497,24 @@ public interface DriverAdapter {
 			}
 		}else if(differ instanceof ViewsDiffer){
 			ViewsDiffer df = (ViewsDiffer) differ;
-			List<View> adds = df.getAdds();
-			List<View> drops = df.getDrops();
-			List<View> updates = df.getUpdates();
-			for(View add:adds){
+			LinkedHashMap<String, View> adds = df.getAdds();
+			LinkedHashMap<String, View> drops = df.getDrops();
+			LinkedHashMap<String, View> updates = df.getUpdates();
+			for(View add:adds.values()){
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(View update:updates){
+			for(View update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(View drop:drops){
+			for(View drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
@@ -498,24 +529,24 @@ public interface DriverAdapter {
 			list.addAll(ddls(runtime, random, indexsDiffer));
 		}else if(differ instanceof ColumnsDiffer){
 			ColumnsDiffer df = (ColumnsDiffer) differ;
-			List<Column> adds = df.getAdds();
-			List<Column> drops = df.getDrops();
-			List<Column> updates = df.getUpdates();
-			for(Column add:adds){
+			LinkedHashMap<String, Column> adds = df.getAdds();
+			LinkedHashMap<String, Column> drops = df.getDrops();
+			LinkedHashMap<String, Column> updates = df.getUpdates();
+			for(Column add:adds.values()){
 				try {
 					list.addAll(buildAddRun(runtime, add));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Column update:updates){
+			for(Column update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Column drop:drops){
+			for(Column drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
@@ -524,24 +555,24 @@ public interface DriverAdapter {
 			}
 		}else if(differ instanceof IndexsDiffer){
 			IndexsDiffer df = (IndexsDiffer) differ;
-			List<Index> adds = df.getAdds();
-			List<Index> drops = df.getDrops();
-			List<Index> updates = df.getUpdates();
-			for(Index add:adds){
+			LinkedHashMap<String, Index> adds = df.getAdds();
+			LinkedHashMap<String, Index> drops = df.getDrops();
+			LinkedHashMap<String, Index> updates = df.getUpdates();
+			for(Index add:adds.values()){
 				try {
 					list.addAll(buildAddRun(runtime, add));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Index update:updates){
+			for(Index update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Index drop:drops){
+			for(Index drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
@@ -576,24 +607,24 @@ public interface DriverAdapter {
 			}
 		}else if(differ instanceof ProceduresDiffer){
 			ProceduresDiffer df = (ProceduresDiffer) differ;
-			List<Procedure> adds = df.getAdds();
-			List<Procedure> drops = df.getDrops();
-			List<Procedure> updates = df.getUpdates();
-			for(Procedure add:adds){
+			LinkedHashMap<String, Procedure> adds = df.getAdds();
+			LinkedHashMap<String, Procedure> drops = df.getDrops();
+			LinkedHashMap<String, Procedure> updates = df.getUpdates();
+			for(Procedure add:adds.values()){
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Procedure update:updates){
+			for(Procedure update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
 					e.printStackTrace();
 				}
 			}
-			for(Procedure drop:drops){
+			for(Procedure drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
@@ -1644,20 +1675,20 @@ public interface DriverAdapter {
 	/**
 	 * 根据运行环境识别 catalog与schema
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta BaseMetadata
-	 * @param <T> BaseMetadata
+	 * @param meta Metadata
+	 * @param <T> Metadata
 	 */
 	<T extends Metadata> void checkSchema(DataRuntime runtime, T meta);
 
 	/**
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta BaseMetadata
+	 * @param meta Metadata
 	 * @param catalog catalog
 	 * @param schema schema
      * @param overrideMeta 如果meta中有值，是否覆盖
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
-	 * @param <T> BaseMetadata
+	 * @param <T> Metadata
 	 */
 	default <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
 		if(supportCatalog()) {
@@ -1687,10 +1718,10 @@ public interface DriverAdapter {
 	/**
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
 	 * 注意一定不要处理从SQL中返回的，应该在SQL中处理好
-	 * @param meta BaseMetadata
+	 * @param meta Metadata
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param <T> BaseMetadata
+	 * @param <T> Metadata
 	 */
 	default <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
@@ -2127,7 +2158,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> Table
@@ -2163,7 +2194,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2176,7 +2207,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2206,7 +2237,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -2220,7 +2251,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return tables
 	 * @throws Exception 异常
 	 */
@@ -2313,7 +2344,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> VertexTable
@@ -2349,7 +2380,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2362,7 +2393,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2392,7 +2423,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return vertexTables
 	 * @throws Exception 异常
 	 */
@@ -2406,7 +2437,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return vertexTables
 	 * @throws Exception 异常
 	 */
@@ -2476,7 +2507,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> EdgeTable
@@ -2512,7 +2543,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types  BaseMetadata.TYPE.
+	 * @param types  Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2525,7 +2556,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return String
 	 * @throws Exception Exception
 	 */
@@ -2555,7 +2586,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return edgeTables
 	 * @throws Exception 异常
 	 */
@@ -2569,7 +2600,7 @@ public interface DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types BaseMetadata.TYPE.
+	 * @param types types Metadata.TYPE.
 	 * @return edgeTables
 	 * @throws Exception 异常
 	 */
@@ -4198,7 +4229,7 @@ public interface DriverAdapter {
 	 * 执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param meta BaseMetadata(表,列等)
+	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return boolean
