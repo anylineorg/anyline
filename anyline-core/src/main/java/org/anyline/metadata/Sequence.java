@@ -20,7 +20,7 @@ package org.anyline.metadata;
 
 import java.io.Serializable;
 
-public class Sequence extends BaseMetadata<Sequence> implements Serializable {
+public class Sequence extends Metadata<Sequence> implements Serializable {
     protected String keyword = "SEQUENCE";
     private String name;
     private Long min = 0L;

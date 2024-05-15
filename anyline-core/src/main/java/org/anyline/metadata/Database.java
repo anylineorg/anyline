@@ -18,11 +18,9 @@
 
 package org.anyline.metadata;
 
-import org.dom4j.datatype.DatatypeAttribute;
-
 import java.io.Serializable;
 
-public class Database extends BaseMetadata<Database> implements Serializable {
+public class Database extends Metadata<Database> implements Serializable {
     protected String keyword = "DATABASE"           ;
     protected String charset                      ; // 编码
     protected String collate                      ; // 排序编码

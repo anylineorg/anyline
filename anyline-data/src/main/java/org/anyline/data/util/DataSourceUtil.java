@@ -21,7 +21,7 @@ package org.anyline.data.util;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Table;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.util.BasicUtil;
@@ -31,7 +31,7 @@ import java.util.Collection;
 
 public class DataSourceUtil {
 
-    public static String[] parseRuntime(BaseMetadata meta){
+    public static String[] parseRuntime(Metadata meta){
         if(null != meta){
             return parseRuntime(meta.getName());
         }

@@ -3432,7 +3432,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
 		return super.search(metas, catalog, schema, name);
 	}
 
@@ -3505,7 +3505,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
 		return super.execute(runtime, random, meta, action, run);
 	}
 	/* *****************************************************************************************************************
@@ -3592,7 +3592,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String keyword(BaseMetadata meta)
+	public String keyword(Metadata meta)
 {
 		return super.keyword(meta);
 	}

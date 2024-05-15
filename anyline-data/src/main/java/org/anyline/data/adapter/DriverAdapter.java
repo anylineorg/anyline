@@ -114,7 +114,7 @@ public interface DriverAdapter {
 	 * @param m2 BaseMetadata
 	 * @return boolean
 	 */
-	default boolean equals(BaseMetadata m1, BaseMetadata m2){
+	default boolean equals(Metadata m1, Metadata m2){
 		String c1 = null;
 		String c2 = null;
 		String s1 = null;
@@ -149,7 +149,7 @@ public interface DriverAdapter {
 		}
 		return BasicUtil.equals(n1, n2, true);
 	}
-	default boolean empty(BaseMetadata meta){
+	default boolean empty(Metadata meta){
 		if(null == meta){
 			return true;
 		}
@@ -1647,7 +1647,7 @@ public interface DriverAdapter {
 	 * @param meta BaseMetadata
 	 * @param <T> BaseMetadata
 	 */
-	<T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta);
+	<T extends Metadata> void checkSchema(DataRuntime runtime, T meta);
 
 	/**
 	 * 识别根据jdbc返回的catalog与schema,部分数据库(如mysql)系统表与jdbc标准可能不一致根据实际情况处理<br/>
@@ -1659,7 +1659,7 @@ public interface DriverAdapter {
      * @param overrideRuntime 如果runtime中有值，是否覆盖，注意结果集中可能跨多个schema，所以一般不要覆盖runtime,从con获取的可以覆盖ResultSet中获取的不要覆盖
 	 * @param <T> BaseMetadata
 	 */
-	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+	default <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
 		if(supportCatalog()) {
 			if (overrideMeta || empty(meta.getCatalog())) {
 				meta.setCatalog(catalog);
@@ -1692,7 +1692,7 @@ public interface DriverAdapter {
 	 * @param schema schema
 	 * @param <T> BaseMetadata
 	 */
-	default <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+	default <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 	/**
@@ -2115,7 +2115,7 @@ public interface DriverAdapter {
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
-	<T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception;
+	<T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
@@ -4193,7 +4193,7 @@ public interface DriverAdapter {
 	 * @return 如果存在则返回Table 不存在则返回null
 	 * @param <T> Table
 	 */
-	<T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name);
+	<T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name);
 	/**
 	 * 执行命令
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -4203,8 +4203,8 @@ public interface DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return boolean
 	 */
-	boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run);
-	default boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, List<Run> runs){
+	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run);
+	default boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs){
 		boolean result = true;
 		int idx = 0;
 		for(Run run:runs){
@@ -4267,7 +4267,7 @@ public interface DriverAdapter {
 	 * @param meta 表
 	 * @return String
 	 */
-	default String keyword(BaseMetadata meta){
+	default String keyword(Metadata meta){
 		return meta.getKeyword();
 	}
 
@@ -6271,7 +6271,7 @@ public interface DriverAdapter {
 	 * 													common
 	 *
 	 ******************************************************************************************************************/
-	StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata meta);
+	StringBuilder name(DataRuntime runtime, StringBuilder builder, Metadata meta);
 	StringBuilder name(DataRuntime runtime, StringBuilder builder, Column meta);
 
 /*

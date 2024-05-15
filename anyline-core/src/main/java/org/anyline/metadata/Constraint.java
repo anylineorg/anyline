@@ -19,12 +19,11 @@
 package org.anyline.metadata;
 
 import org.anyline.entity.Order;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-public class Constraint<E extends Constraint> extends BaseMetadata<E> implements Serializable {
+public class Constraint<E extends Constraint> extends Metadata<E> implements Serializable {
     protected String keyword = "CONSTRAINT"           ;
     public enum TYPE{
         PRIMARY_KEY, UNIQUE, NOT_NULL, FOREIGN_KEY, CHECK, DEFAULT

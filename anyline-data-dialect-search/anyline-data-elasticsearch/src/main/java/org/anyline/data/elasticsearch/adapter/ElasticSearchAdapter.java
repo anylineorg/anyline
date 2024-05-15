@@ -1086,7 +1086,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta) {
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
 
     }
 
@@ -1598,7 +1598,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
                 }
             }
         }
-        if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)){
+        if(Metadata.check(struct, Metadata.TYPE.COLUMN)){
             for(Table table:tables.values()){
                 LinkedHashMap<String, Column> columns = columns(runtime, random, false, table, false);
                 table.setColumns(columns);
@@ -3211,7 +3211,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @param <T> Table
      */
     @Override
-    public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
         return super.search(metas, catalog, schema, name);
     }
 
@@ -3283,7 +3283,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
@@ -3420,7 +3420,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * @return String
      */
     @Override
-    public String keyword(BaseMetadata meta)
+    public String keyword(Metadata meta)
 {
         return meta.getKeyword();
     }

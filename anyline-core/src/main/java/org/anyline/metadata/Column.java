@@ -27,7 +27,7 @@ import org.anyline.util.BasicUtil;
 import java.io.Serializable;
 import java.util.*;
 
-public class Column extends BaseMetadata<Column> implements Serializable {
+public class Column extends Metadata<Column> implements Serializable {
 
     public static LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> typeCategoryConfigs = new LinkedHashMap<>();
 

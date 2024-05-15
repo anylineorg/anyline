@@ -20,17 +20,12 @@ package org.anyline.data.jdbc.adapter.init;
 
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Column;
-import org.anyline.metadata.Table;
 import org.anyline.metadata.type.TypeMetadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.LinkedHashMap;
 
 //
@@ -79,12 +74,12 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      *  ***************************************************************************************************************/
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
         super.checkSchema(runtime, datasource, meta);
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
         super.checkSchema(runtime, con, meta);
     }
     /**
@@ -94,7 +89,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @param <T> BaseMetadata
      */
 	@Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
         super.checkSchema(runtime, meta);
     }
 
@@ -109,7 +104,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 

@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Trigger extends BaseMetadata<Trigger> implements Serializable {
+public class Trigger extends Metadata<Trigger> implements Serializable {
     protected String keyword = "TRIGGER";
     public enum EVENT{
         INSERT, DELETE, UPDATE;

@@ -1956,7 +1956,7 @@ public class DefaultService<E> implements AnylineService<E> {
         private void struct(Table table, int struct){
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = table.getColumns();
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                     columns = columns(table);
                     table.setColumns(columns);
@@ -1964,7 +1964,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
 
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.PRIMARY)) {
+            if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = table.getPrimaryKey();
                 if(null == pk){
                     pk = primary(table);
@@ -1980,19 +1980,19 @@ public class DefaultService<E> implements AnylineService<E> {
                     table.setPrimaryKey(pk);
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.INDEX)) {
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 LinkedHashMap<String, Index> indexs = table.getIndexes();
                 if(null == indexs || indexs.isEmpty()) {
                     table.setIndexes(indexs(table));
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.CONSTRAINT)) {
+            if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
                 LinkedHashMap<String, Constraint> constraints = table.getConstraints();
                 if(null == constraints || constraints.isEmpty()) {
                     table.setConstraints(constraints(table));
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.DDL)) {
+            if(Metadata.check(struct, Metadata.TYPE.DDL)) {
                 if (null == table.ddl()) {
                     ddl(table);
                 }
@@ -2076,7 +2076,7 @@ public class DefaultService<E> implements AnylineService<E> {
         private void struct(VertexTable vertexTable, int struct){
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = vertexTable.getColumns();
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                     columns = columns(vertexTable);
                     vertexTable.setColumns(columns);
@@ -2084,7 +2084,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
 
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.PRIMARY)) {
+            if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = vertexTable.getPrimaryKey();
                 if(null == pk){
                     pk = primary(vertexTable);
@@ -2100,19 +2100,19 @@ public class DefaultService<E> implements AnylineService<E> {
                     vertexTable.setPrimaryKey(pk);
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.INDEX)) {
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 LinkedHashMap<String, Index> indexs = vertexTable.getIndexes();
                 if(null == indexs || indexs.isEmpty()) {
                     vertexTable.setIndexes(indexs(vertexTable));
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.CONSTRAINT)) {
+            if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
                 LinkedHashMap<String, Constraint> constraints = vertexTable.getConstraints();
                 if(null == constraints || constraints.isEmpty()) {
                     vertexTable.setConstraints(constraints(vertexTable));
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.DDL)) {
+            if(Metadata.check(struct, Metadata.TYPE.DDL)) {
                 if (null == vertexTable.ddl()) {
                     ddl(vertexTable);
                 }
@@ -2196,7 +2196,7 @@ public class DefaultService<E> implements AnylineService<E> {
         private void struct(EdgeTable edgeTable, int struct){
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = edgeTable.getColumns();
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
+            if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
                 if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
                     columns = columns(edgeTable);
                     edgeTable.setColumns(columns);
@@ -2204,7 +2204,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
 
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.PRIMARY)) {
+            if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = edgeTable.getPrimaryKey();
                 if(null == pk){
                     pk = primary(edgeTable);
@@ -2220,19 +2220,19 @@ public class DefaultService<E> implements AnylineService<E> {
                     edgeTable.setPrimaryKey(pk);
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.INDEX)) {
+            if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
                 LinkedHashMap<String, Index> indexs = edgeTable.getIndexes();
                 if(null == indexs || indexs.isEmpty()) {
                     edgeTable.setIndexes(indexs(edgeTable));
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.CONSTRAINT)) {
+            if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
                 LinkedHashMap<String, Constraint> constraints = edgeTable.getConstraints();
                 if(null == constraints || constraints.isEmpty()) {
                     edgeTable.setConstraints(constraints(edgeTable));
                 }
             }
-            if(BaseMetadata.check(struct, BaseMetadata.TYPE.DDL)) {
+            if(Metadata.check(struct, Metadata.TYPE.DDL)) {
                 if (null == edgeTable.ddl()) {
                     ddl(edgeTable);
                 }

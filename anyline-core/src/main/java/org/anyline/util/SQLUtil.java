@@ -19,7 +19,7 @@
 
 package org.anyline.util;
 
-import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Metadata;
 import org.anyline.util.regular.RegularUtil;
 
 import java.util.HashSet;
@@ -79,7 +79,7 @@ public class SQLUtil {
 		}
 		return delimiter(builder, src, delimiterFr, delimiterTo);
 	}
-	public static StringBuilder delimiter(StringBuilder builder, BaseMetadata src, String delimiterFr, String delimiterTo){
+	public static StringBuilder delimiter(StringBuilder builder, Metadata src, String delimiterFr, String delimiterTo){
 		String name =  null;
 		if(null != src){
 			name = src.getName();

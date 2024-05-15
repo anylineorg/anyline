@@ -19,22 +19,14 @@
 package org.anyline.data.jdbc.adapter;
 
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.param.ConfigStore;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.metadata.BaseMetadata;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Table;
+import org.anyline.metadata.Metadata;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.util.LinkedHashMap;
 
 public interface JDBCAdapter extends DriverAdapter {
 
-    <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta);
-    <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta);
+    <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta);
+    <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta);
 }

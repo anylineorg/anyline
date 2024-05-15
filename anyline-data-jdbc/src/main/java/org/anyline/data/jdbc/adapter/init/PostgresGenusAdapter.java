@@ -32,7 +32,6 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
 import org.anyline.util.regular.RegularUtil;
 
 import javax.sql.DataSource;
@@ -76,8 +75,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         types.put(Table.TYPE.NORMAL, "BASE TABLE");
         types.put(Table.TYPE.VIEW, "VIEW");
         types.put(View.TYPE.NORMAL, "VIEW");
-        types.put(BaseMetadata.TYPE.TABLE, "BASE TABLE");
-        types.put(BaseMetadata.TYPE.VIEW, "VIEW");
+        types.put(Metadata.TYPE.TABLE, "BASE TABLE");
+        types.put(Metadata.TYPE.VIEW, "VIEW");
     }
     @Override
     public String name(Type type){
@@ -3628,7 +3627,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
         return super.search(metas, catalog, schema, name);
     }
 
@@ -3706,7 +3705,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
@@ -3795,7 +3794,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String keyword(BaseMetadata meta)
+    public String keyword(Metadata meta)
 {
         return "TABLE";
     }
@@ -6441,12 +6440,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *  ***************************************************************************************************************/
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
         super.checkSchema(runtime, datasource,meta);
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
         super.checkSchema(runtime, con, meta);
     }
     /**
@@ -6456,7 +6455,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> BaseMetadata
      */
 	@Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
         super.checkSchema(runtime, meta);
     }
 
@@ -6471,7 +6470,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
@@ -6484,7 +6483,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-	public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 

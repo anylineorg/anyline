@@ -3464,7 +3464,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
 		return super.search(metas, catalog, schema, name);
 	}
 
@@ -3537,7 +3537,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
 		return super.execute(runtime, random, meta, action, run);
 	}
 	/* *****************************************************************************************************************
@@ -3624,7 +3624,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String keyword(BaseMetadata meta)
+	public String keyword(Metadata meta)
 {
 		return super.keyword(meta);
 	}
@@ -6229,12 +6229,12 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 *  ***************************************************************************************************************/
 
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
 		super.checkSchema(runtime, datasource,meta);
 	}
 
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
 		super.checkSchema(runtime, con, meta);
 	}
     /**
@@ -6244,7 +6244,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
      * @param <T> BaseMetadata
      */
 	@Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
         super.checkSchema(runtime, meta);
     }
 
@@ -6259,7 +6259,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-    public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
@@ -6272,7 +6272,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T> BaseMetadata
 	 */
 	@Override
-	public <T extends BaseMetadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 

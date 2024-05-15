@@ -21,7 +21,7 @@ import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
 
-public class Catalog extends BaseMetadata<Catalog> implements Serializable {
+public class Catalog extends Metadata<Catalog> implements Serializable {
     protected String keyword = "CATALOG"           ;
     public Catalog(){
 

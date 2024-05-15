@@ -28,7 +28,7 @@ import org.anyline.util.ConfigTable;
 import java.io.Serializable;
 import java.util.*;
 
-public class Table<E extends Table> extends BaseMetadata<E> implements Serializable {
+public class Table<E extends Table> extends Metadata<E> implements Serializable {
     public enum TYPE implements Type{
         //继承子表、父表、分区表、主表、点类型、边类型
         NORMAL(1),//包含继承子表

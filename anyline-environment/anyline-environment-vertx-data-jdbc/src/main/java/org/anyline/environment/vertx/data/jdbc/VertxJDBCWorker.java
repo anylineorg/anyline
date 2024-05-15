@@ -58,17 +58,17 @@ public class VertxJDBCWorker implements DriverWorker {
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, T meta) {
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, T meta) {
 
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
 
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
 
     }
 

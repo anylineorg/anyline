@@ -170,7 +170,7 @@ public enum DatabaseType implements Serializable {
         FusionInsight       	("FusionInsight"                    	, KEY_CASE.SRC	, 900	, null	, "org.apache.hive.jdbc.HiveDriver"	, "jdbc:hive2://{host}:{port}/{database}"),
         GaiaDB              	("百度GaiaDB-X"                       	, KEY_CASE.SRC	, 900	, null	, "com.mysql.cj.jdbc.Driver"	, "jdbc:mysql://{host}:{port:3306}/{database}"),
         Galaxybase          	("Galaxybase"                       	, KEY_CASE.SRC	, 616	, null	, ""	, ""),
-        GaussDB200         	("GaussDB 200"                      	, KEY_CASE.SRC	, 900	, null	, "com.huawei.gauss200.jdbc.Driver"	, "jdbc:gaussdb://{host}:{port:25308}/{database}"),
+        GaussDB200         	    ("GaussDB 200"                      	, KEY_CASE.SRC	, 900	, null	, "com.huawei.gauss200.jdbc.Driver"	, "jdbc:gaussdb://{host}:{port:25308}/{database}"),
         GaussDB100          	("GaussDB 100"                      	, KEY_CASE.SRC	, 900	, null	, "com.huawei.gauss.jdbc.ZenithDriver"	, "jdbc:zenith:@{host}:{port}"),
         GBase8A             	("南大通用8A"                           	, KEY_CASE.SRC	, 990	, null	, "com.gbase.jdbc.Driver"	, "jdbc:gbase://{host}:{port:5258}/{database}"),
         GBase8C             	("南大通用8C"                           	, KEY_CASE.SRC	, 990	, null	, "org.postgresql.Driver"	, "jdbc:postgresql://{host}:{port:15432}/{database}"),

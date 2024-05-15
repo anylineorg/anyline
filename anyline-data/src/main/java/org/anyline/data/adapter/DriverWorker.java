@@ -52,9 +52,9 @@ public interface DriverWorker {
     DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime);
     Connection getConnection(DriverAdapter adapter, DataRuntime runtime, DataSource datasource);
     void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource);
-    <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, T meta);
-    <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta);
-    <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta);
+    <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, T meta);
+    <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta);
+    <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta);
 
     /**
      * database[结果集封装]<br/>

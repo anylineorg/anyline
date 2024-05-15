@@ -22,7 +22,7 @@ import org.anyline.util.BasicUtil;
 
 import java.io.Serializable;
 
-public class Schema extends BaseMetadata<Schema> implements Serializable {
+public class Schema extends Metadata<Schema> implements Serializable {
     protected String keyword = "SCHEMA"           ;
     public Schema(){
 

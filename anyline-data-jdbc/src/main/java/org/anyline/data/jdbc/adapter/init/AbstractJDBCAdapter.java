@@ -90,8 +90,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		types.put(Table.TYPE.NORMAL, "BASE TABLE");
 		types.put(Table.TYPE.VIEW, "VIEW");
 		types.put(View.TYPE.NORMAL, "VIEW");
-		types.put(BaseMetadata.TYPE.TABLE, "BASE TABLE");
-		types.put(BaseMetadata.TYPE.VIEW, "VIEW");
+		types.put(Metadata.TYPE.TABLE, "BASE TABLE");
+		types.put(Metadata.TYPE.VIEW, "VIEW");
 	}
 	@Override
 	public String name(Type type){
@@ -2785,7 +2785,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
-	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
+	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
 		if(null == meta){
 			return null;
 		}
@@ -5613,7 +5613,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
 		return super.search(metas, catalog, schema, name);
 	}
 
@@ -5686,7 +5686,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return boolean
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
 		if(null == run){
 			return false;
 		}
@@ -5789,7 +5789,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return String
 	 */
 	@Override
-	public String keyword(BaseMetadata meta)
+	public String keyword(Metadata meta)
 {
 		return super.keyword(meta);
 	}
@@ -9307,17 +9307,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	}
 
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
 		worker.checkSchema(this, runtime, datasource, meta);
 	}
 
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
 		worker.checkSchema(this, runtime, con, meta);
 	}
 
 	@Override
-	public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
 		worker.checkSchema(this, runtime, meta);
 	}
 

@@ -26,7 +26,7 @@ import java.util.List;
  
  
  
-public class Procedure extends BaseMetadata<Procedure> implements Serializable {
+public class Procedure extends Metadata<Procedure> implements Serializable {
 	protected String keyword = "PROCEDURE"           ;
 	private String returnType;
 	private List<Parameter> parameters = new ArrayList<Parameter>();

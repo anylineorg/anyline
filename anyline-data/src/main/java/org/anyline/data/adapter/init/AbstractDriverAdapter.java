@@ -4056,7 +4056,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return T
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
-	public <T extends BaseMetadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
+	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
 		if(null == meta){
 			return null;
 		}
@@ -4231,7 +4231,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 				list = tmp;
 			}
-			if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
+			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
 				//查询全部表结构
 				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<Table>)list);
 			}
@@ -4786,7 +4786,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 				list = tmp;
 			}
-			if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
+			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
 				//查询全部表结构
 				List<Column> columns = columns(runtime, random, greedy, catalog, schema, pattern);
 				for(VertexTable vertexTable:list){
@@ -5312,7 +5312,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 				list = tmp;
 			}
-			if(BaseMetadata.check(struct, BaseMetadata.TYPE.COLUMN)) {
+			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
 				//查询全部表结构
 				List<Column> columns = columns(runtime, random, greedy, catalog, schema, pattern);
 				for(EdgeTable edgeTable:list){
@@ -9226,7 +9226,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return boolean
 	 */
-	public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run)", 37));
 		}
@@ -9642,7 +9642,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param meta 表
 	 * @return String
 	 */
-	public String keyword(BaseMetadata meta) {
+	public String keyword(Metadata meta) {
 		return meta.getKeyword();
 	}
 
@@ -14797,7 +14797,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		tmp.setTypeName(type, false);
 		return typeMetadata(runtime, tmp);
 	}
-	public String name(BaseMetadata meta){
+	public String name(Metadata meta){
 		StringBuilder builder = new StringBuilder();
 		String catalog = meta.getCatalogName();
 		String schema = meta.getSchemaName();
@@ -14819,7 +14819,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder name(DataRuntime runtime, StringBuilder builder, BaseMetadata meta){
+	public StringBuilder name(DataRuntime runtime, StringBuilder builder, Metadata meta){
 		checkName(runtime, null, meta);
 		String catalog = meta.getCatalogName();
 		String schema = meta.getSchemaName();
@@ -15390,7 +15390,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends BaseMetadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
+	public <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
 		if(null != list){
 			for(T meta:list){
 				if(equals(catalog, meta.getCatalog())
@@ -15401,19 +15401,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		return BaseMetadata.search(list, catalog, schema, name);
+		return Metadata.search(list, catalog, schema, name);
 	}
 
-	public <T extends BaseMetadata> T search(List<T> list, String catalog, String schema, String name){
-		return BaseMetadata.search(list, catalog, schema, name);
+	public <T extends Metadata> T search(List<T> list, String catalog, String schema, String name){
+		return Metadata.search(list, catalog, schema, name);
 	}
 
-	public <T extends BaseMetadata> T search(List<T> list, String catalog, String name){
-		return BaseMetadata.search(list, catalog, name);
+	public <T extends Metadata> T search(List<T> list, String catalog, String name){
+		return Metadata.search(list, catalog, name);
 	}
 
-	public <T extends BaseMetadata> T search(List<T> list, String name){
-		return BaseMetadata.search(list, name);
+	public <T extends Metadata> T search(List<T> list, String name){
+		return Metadata.search(list, name);
 	}
 
 }

@@ -90,7 +90,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DataRuntime runtime, T meta) {
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
 
     }
 
@@ -4783,7 +4783,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> Table
      */
     @Override
-    public <T extends BaseMetadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
         return super.search(metas, catalog, schema, name);
     }
 
@@ -4856,7 +4856,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, BaseMetadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
         if(null == run){
             return false;
         }
@@ -4959,7 +4959,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return String
      */
     @Override
-    public String keyword(BaseMetadata meta) {
+    public String keyword(Metadata meta) {
         if(meta instanceof VertexTable){
             return "TAG";
         }else if(meta instanceof EdgeTable){

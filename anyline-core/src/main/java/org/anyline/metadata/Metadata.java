@@ -25,7 +25,8 @@ import org.anyline.util.BeanUtil;
 
 import java.util.*;
 
-public class BaseMetadata<T extends BaseMetadata> {
+public class Metadata<T extends Metadata> {
+
     public enum TYPE implements Type{
         TABLE(1)            , // 继承子表、父表、分区表、主表、点类型、边类型
         VIEW(2)             , // 视图
@@ -136,10 +137,10 @@ public class BaseMetadata<T extends BaseMetadata> {
         return identity;
     }
 
-    public static <T extends BaseMetadata> List<String> names(LinkedHashMap<String, T> metas){
+    public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas){
         return names(metas, false);
     }
-    public static <T extends BaseMetadata> List<String> names(LinkedHashMap<String, T> metas, boolean upper){
+    public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas, boolean upper){
         List<String> names = new ArrayList<>();
         if(null != metas) {
             for (T meta : metas.values()) {
@@ -153,10 +154,10 @@ public class BaseMetadata<T extends BaseMetadata> {
         return names;
     }
 
-    public static <T extends BaseMetadata> List<String> names(List<T> metas){
+    public static <T extends Metadata> List<String> names(List<T> metas){
         return names(metas, false);
     }
-    public static <T extends BaseMetadata> List<String> names(List<T> metas, boolean upper){
+    public static <T extends Metadata> List<String> names(List<T> metas, boolean upper){
         List<String> names = new ArrayList<>();
         if(null != metas) {
             for (T meta : metas) {
@@ -176,7 +177,7 @@ public class BaseMetadata<T extends BaseMetadata> {
      * @param columns 列
      * @param <T> T
      */
-    public static <T extends BaseMetadata> void sort(LinkedHashMap<String, Integer> positions, LinkedHashMap<String, T> columns){
+    public static <T extends Metadata> void sort(LinkedHashMap<String, Integer> positions, LinkedHashMap<String, T> columns){
         if(null == positions || positions.isEmpty()){
             return;
         }
@@ -596,7 +597,7 @@ public class BaseMetadata<T extends BaseMetadata> {
         return copy;
     }
 
-    public static <T extends BaseMetadata> T search(List<T> list, String catalog, String schema, String name){
+    public static <T extends Metadata> T search(List<T> list, String catalog, String schema, String name){
         for(T item:list){
             if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
                     && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
@@ -607,7 +608,7 @@ public class BaseMetadata<T extends BaseMetadata> {
         }
         return null;
     }
-    public static <T extends BaseMetadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
+    public static <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
         for(T item:list){
             if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
                     && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
@@ -618,7 +619,7 @@ public class BaseMetadata<T extends BaseMetadata> {
         }
         return null;
     }
-    public static <T extends BaseMetadata> T search(List<T> list, String catalog, String name){
+    public static <T extends Metadata> T search(List<T> list, String catalog, String name){
         for(T item:list){
             if(BasicUtil.equalsIgnoreCase(item.getName(), name)){
                 if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)){
@@ -628,7 +629,7 @@ public class BaseMetadata<T extends BaseMetadata> {
         }
         return null;
     }
-    public static <T extends BaseMetadata> T search(List<T> list, String name){
+    public static <T extends Metadata> T search(List<T> list, String name){
         for(T item:list){
             if(BasicUtil.equalsIgnoreCase(item.getName(), name)){
                 return item;

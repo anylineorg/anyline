@@ -27,7 +27,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.metadata.ACTION;
 import org.anyline.metadata.ACTION.DDL;
 import org.anyline.metadata.ACTION.SWITCH;
-import org.anyline.metadata.BaseMetadata;
+import org.anyline.metadata.Metadata;
 import org.anyline.metadata.Procedure;
 import org.anyline.metadata.Table;
 
@@ -406,7 +406,7 @@ public class InterceptorProxy {
      *
      * ****************************************************************************************************************/
 
-    public static <T extends BaseMetadata<T>> SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, BaseMetadata<T> metadata){
+    public static <T extends Metadata<T>> SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata){
         SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -421,7 +421,7 @@ public class InterceptorProxy {
         return swt;
     }
 
-    public static <T extends BaseMetadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, BaseMetadata<T> metadata, List<Run> runs){
+    public static <T extends Metadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs){
         SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){
@@ -435,7 +435,7 @@ public class InterceptorProxy {
         }
         return swt;
     }
-    public static <T extends BaseMetadata<T>> SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, BaseMetadata<T> metadata, List<Run> runs, boolean result, long millis){
+    public static <T extends Metadata<T>> SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs, boolean result, long millis){
         SWITCH swt = SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors){

@@ -88,7 +88,7 @@ public class SpringJDBCWorker implements DriverWorker {
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource ds, T meta) {
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource ds, T meta) {
         if(null == meta || null != meta.getCheckSchemaTime()){
             return;
         }
@@ -121,7 +121,7 @@ public class SpringJDBCWorker implements DriverWorker {
         }
     }
 
-    public <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta){
         if(null != meta){
             String catalog = meta.getCatalogName();
             if(null== catalog){
@@ -146,7 +146,7 @@ public class SpringJDBCWorker implements DriverWorker {
     }
 
     @Override
-    public <T extends BaseMetadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
 
         if(null == meta){
             return;
