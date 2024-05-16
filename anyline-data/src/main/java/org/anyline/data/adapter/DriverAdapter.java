@@ -3104,9 +3104,11 @@ public interface DriverAdapter {
 	 * column[命令合成]<br/>(方法1)<br/>
 	 * 查询多个表的列
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
 	 * @param tables 表
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
-	 * @return sqls
+	 * @return runs
 	 */
 	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception;
 	/**

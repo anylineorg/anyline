@@ -25,6 +25,11 @@ import java.util.List;
 
 public interface DataSourceLoader {
     Logger log = LoggerFactory.getLogger(DataSourceLoader.class);
+
+    /**
+     * 加载配置文件中的数据源
+     * @return 数据源key
+     */
     List<String> load();
     DataSourceHolder holder();
 }

@@ -469,7 +469,7 @@ public class Metadata<T extends Metadata> {
 
     public T setDefinition(String definition) {
         if(setmap && null != update){
-            ((Trigger)update).definition = definition;
+            update.definition = definition;
             return (T)this;
         }
         this.definition = definition;
