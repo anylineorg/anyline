@@ -35,7 +35,6 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	private List<Object> result;	// 输出参数结果
 	private boolean hasReturn = false;
 	private PageNavi navi;
-	private String definition;
 
 	public Procedure(String name){
 		this();
@@ -43,17 +42,6 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	}
 	public Procedure(){}
 
-	public String getDefinition() {
-		if(getmap && null != update){
-			return update.definition;
-		}
-		return definition;
-	}
-
-	public Procedure setDefinition(String definition) {
-		this.definition = definition;
-		return this;
-	}
 	public Procedure addInput(Parameter... params) {
 		if(null != params){
 			for(Parameter parameter:params){

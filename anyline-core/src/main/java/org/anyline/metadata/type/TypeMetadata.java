@@ -649,12 +649,12 @@ public interface TypeMetadata {
         typeMetadata = parse(alias, spells, typeName);
 
         /*
-        decimal(10, 2)
-        varchar(10)
+        decimal({p}, {S})
+        varchar({l})
         INTERVAL YEAR(4) TO MONTH
         INTERVAL YEAR(4) TO MONTH(2)
         INTERVAL DAY({P}) TO HOUR({S})
-        TIMESTAMP (6) WITH TIME ZONE
+        TIMESTAMP ({p}) WITH TIME ZONE
         TIMESTAMP WITH LOCAL TIME ZONE
         geometry(Polygon, 4326)
         geometry(Polygon)
@@ -708,7 +708,7 @@ public interface TypeMetadata {
                             if(group == TypeMetadata.CATEGORY_GROUP.NUMBER){
                                 precision = num;
                             }else if(group == TypeMetadata.CATEGORY_GROUP.DATETIME){
-                                scale = num;
+                                precision = num;
                             }else if(group == CATEGORY_GROUP.INTERVAL){
                                 precision = num;
                             }else{

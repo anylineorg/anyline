@@ -109,7 +109,6 @@ public class Column extends Metadata<Column> implements Serializable {
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; //完整类型名称
     protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
-    protected String define                       ; //完整定义(不包含名称) 如果设置了define 生成SQL时 name define
     protected int ignoreLength               = -1 ;
     protected int ignorePrecision            = -1 ;
     protected int ignoreScale                = -1 ;
@@ -135,6 +134,7 @@ public class Column extends Metadata<Column> implements Serializable {
     protected Integer incrementSeed          =  1 ; // 自增起始值
     protected Integer incrementStep          =  1 ; // 自增增量
     protected int primary = -1                    ; // 是否主键
+    protected int unique  = -1                    ; // 是否唯一
     protected int generated = -1                  ; // 是否generated
     protected Object defaultValue                 ; // 默认值
     protected String defaultConstraint            ; // 默认约束名
@@ -920,6 +920,44 @@ public class Column extends Metadata<Column> implements Serializable {
         return this;
     }
 
+    public int isUnique() {
+        if(getmap && null != update){
+            return update.unique;
+        }
+        return unique;
+    }
+
+    public Column setUnique(int unique) {
+        if(setmap && null != update){
+            update.setUnique(unique);
+            return this;
+        }
+        this.unique = unique;
+        return this;
+    }
+
+    public Column unique(int unique) {
+        return setUnique(unique);
+    }
+    public Column setUnique(Boolean unique) {
+        return unique(unique);
+    }
+    public Column unique(Boolean unique) {
+        if(setmap && null != update){
+            update.unique(unique);
+            return this;
+        }
+        if(null != unique) {
+            if(unique){
+                this.unique = 1;
+            }else{
+                this.unique = 0;
+            }
+        }
+        return this;
+    }
+
+
     public int isPrimaryKey() {
         if(getmap && null != update){
             return update.primary;
@@ -1476,15 +1514,6 @@ public class Column extends Metadata<Column> implements Serializable {
             return ignorePrecision();
         }
     }
-    public String getDefine() {
-        return define;
-    }
-
-    public Column setDefine(String define) {
-        this.define = define;
-        return this;
-    }
-
     public String getFinalType() {
         return finalType;
     }

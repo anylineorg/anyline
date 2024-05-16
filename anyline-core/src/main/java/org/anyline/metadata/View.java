@@ -46,22 +46,6 @@ public class View extends Table<View> implements Serializable {
 
     protected String keyword = "VIEW"            ;
     protected boolean materialize = false        ; //是否物化
-    protected String definition;
-
-    public String getDefinition() {
-        if(getmap && null != update){
-            return update.definition;
-        }
-        return definition;
-    }
-
-    public View setDefinition(String definition) {
-        if(setmap && null != update){
-            update.definition = definition;
-        }
-        this.definition = definition;
-        return this;
-    }
 
     public View(){
         this(null);

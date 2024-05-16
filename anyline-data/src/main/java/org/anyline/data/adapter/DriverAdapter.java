@@ -5249,6 +5249,17 @@ public interface DriverAdapter {
 	 * @return StringBuilder
 	 */
 	StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column column);
+
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:唯一索引
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 列
+	 * @return StringBuilder
+	 */
+	StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta);
+
 	/**
 	 * column[命令合成-子流程]<br/>
 	 * 定义列:递增列

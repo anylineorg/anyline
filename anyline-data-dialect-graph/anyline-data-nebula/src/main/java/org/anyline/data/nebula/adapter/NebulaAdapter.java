@@ -6157,7 +6157,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     @Override
     public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
         // <prop_name> <data_type> [NULL | NOT NULL] [DEFAULT <default_value>] [COMMENT '<comment>']
-       String define = meta.getDefine();
+       String define = meta.getDefinition();
 		if(BasicUtil.isNotEmpty(define)){
 			builder.append(" ").append(define);
 			return builder;

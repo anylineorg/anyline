@@ -25,7 +25,6 @@ import java.util.List;
 public class Function extends Metadata<Function> implements Serializable {
     protected String keyword = "FUNCTION"           ;
     protected List<Parameter> parameters = new ArrayList<>();
-    protected String definition;
 
     public List<Parameter> getParameters() {
         if(getmap && null != update){
@@ -36,26 +35,10 @@ public class Function extends Metadata<Function> implements Serializable {
 
     public Function setParameters(List<Parameter> parameters) {
         if(setmap && null != update){
-            update.definition = definition;
+            update.parameters = parameters;
             return this;
         }
         this.parameters = parameters;
-        return this;
-    }
-
-    public String getDefinition() {
-        if(getmap && null != update){
-            return update.definition;
-        }
-        return definition;
-    }
-
-    public Function setDefinition(String definition) {
-        if(setmap && null != update){
-            update.definition = definition;
-            return this;
-        }
-        this.definition = definition;
         return this;
     }
 

@@ -104,7 +104,7 @@ public class Metadata<T extends Metadata> {
     protected Long objectId;
 
     protected Table<?> table;
-    protected String definition;
+    protected String definition                   ; //view等创建SQL, column中 完整定义(不包含名称) 如果设置了define 生成SQL时 name define
 
     protected T origin;
     protected T update;

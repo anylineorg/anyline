@@ -3765,9 +3765,12 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 			LinkedHashMap<String, Column> columns = table.getColumns();
 			if(null != columns){
 				for(Column column:columns.values()){
-					//mysql中要求自增必须在主键上
+					//mysql中要求自增必须在主键上或唯一键上
 					if(column.isAutoIncrement() == 1){
-						column.setPrimary(true);
+						if(column.isUnique() != 1) {
+							//如果不是唯一就默认成主键
+							column.setPrimary(true);
+						}
 					}
 				}
 			}
@@ -4893,6 +4896,19 @@ public class MySQLAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
 		return super.primary(runtime, builder, meta);
+	}
+
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:唯一索引
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 列
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta){
+		return super.unique(runtime, builder, meta);
 	}
 
 	/**

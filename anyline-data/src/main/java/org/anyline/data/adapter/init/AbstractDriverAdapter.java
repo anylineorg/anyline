@@ -1977,9 +1977,43 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 			run.addCondition(conditions);
+
 			if(run.checkValid()) {
 				//为变量赋值 run.condition赋值
 				run.init();
+				//检测不存在的列
+				if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)){
+					Table table = run.getTable();
+					if(null != table) {
+						LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
+						//检测不存在的列
+						OrderStore ods = run.getOrderStore();
+						if (null != ods) {
+							List<Order> orders = ods.getOrders();
+							if (null != orders) {
+								int size = orders.size();
+								for (int i = size - 1; i >= 0; i--) {
+									Order order = orders.get(i);
+									String colunn = order.getColumn();
+									if (!metadatas.containsKey(colunn.toUpperCase())) {
+										orders.remove(order);
+									}
+								}
+							}
+						}
+						if(null != prepare) {
+							LinkedHashMap<String, Column> columns = prepare.getColumns();
+							if(null != columns){
+								List<String> keys = BeanUtil.getMapKeys(columns);
+								for(String key:keys){
+									if(!metadatas.containsKey(key.toUpperCase())){
+										columns.remove(key);
+									}
+								}
+							}
+						}
+					}
+				}
 				//构造最终的查询SQL
 				fillQueryContent(runtime, run);
 			}
@@ -11645,7 +11679,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
-		String define = meta.getDefine();
+		String define = meta.getDefinition();
 		if(BasicUtil.isNotEmpty(define)){
 			builder.append(" ").append(define);
 			return builder;
@@ -11662,6 +11696,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		nullable(runtime, builder, meta, action);
 		//主键
 		primary(runtime, builder, meta);
+		//唯一索引
+		unique(runtime, builder, meta);
+
 		// 递增(注意有些数据库不需要是主键)
 		increment(runtime, builder, meta);
 		// 更新行事件
@@ -11912,6 +11949,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
+		}
+		return builder;
+	}
+	/**
+	 * column[命令合成-子流程]<br/>
+	 * 列定义:唯一索引
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param meta 列
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta)", 37));
 		}
 		return builder;
 	}
