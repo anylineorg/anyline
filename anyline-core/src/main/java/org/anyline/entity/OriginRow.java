@@ -56,7 +56,7 @@ public class OriginRow extends DataRow {
             if(checkUpdate) {
                 Object oldValue = get(keyCase, key);
                 if (null == oldValue || !oldValue.equals(value)) {
-                    super.put(key, value);
+                    mapPut(key, value);
                 }
                 if(null == value){
                     if(isInsertNullColumn() || isUpdateNullColumn()){
@@ -72,7 +72,7 @@ public class OriginRow extends DataRow {
                     }
                 }
             }else{
-                super.put(key, value);
+                mapPut(key, value);
             }
         }
         return this;
@@ -82,7 +82,7 @@ public class OriginRow extends DataRow {
         return this;
     }
     public Object get(String key) {
-        return super.get(key);
+        return mapGet(key);
     }
 
 }

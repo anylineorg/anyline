@@ -1484,6 +1484,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             put(key, map.get(key));
         }
     }
+    protected void mapPut(String key, Object value){
+        super.put(key, value);
+    }
+    protected Object mapGet(String key){
+        return super.get(key);
+    }
     public DataRow put(KEY_CASE keyCase, String key, Object value){
         return put(true, keyCase, key, value);
     }
@@ -1513,7 +1519,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
                 Object oldValue = get(keyCase, key);
                 if (null == oldValue || !oldValue.equals(value)) {
-                    super.put(key, value);
+                    mapPut(key, value);
                 }
                 if(null == value){
                     if(isInsertNullColumn() || isUpdateNullColumn()){
@@ -1529,7 +1535,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     }
                 }
             }else{
-                super.put(key, value);
+                mapPut(key, value);
             }
             if (ignoreCase) {
                 String ignoreKey = key.replace("_","").replace("-","").toUpperCase();
