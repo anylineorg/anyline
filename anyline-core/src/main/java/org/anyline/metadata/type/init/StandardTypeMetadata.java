@@ -433,7 +433,26 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                               write 需要根据数据库类型 由内置函数转换
      *
      * ****************************************************************************************************************/
-   , DATE(CATEGORY.DATE, "DATE", null, java.sql.Date.class, 1, 1, 1, MySQL, PostgreSQL, Informix, GBase8S, SinoDB, HANA, Derby, Doris){
+    , DATE(CATEGORY.DATE, "DATE", null, java.sql.Date.class, 1, 1, 1, MySQL, PostgreSQL, Informix, GBase8S, SinoDB, HANA, Derby, Doris, ElasticSearch){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){
+            if(null == value){
+                value = def;
+            }
+            Date date = DateUtil.parse(value);
+            if(null == date && null != def){
+                date = DateUtil.parse(def);
+            }
+            if (null != date) {
+                if(placeholder){
+                    value = new java.sql.Date(date.getTime());
+                }else{
+                    value = "'" + DateUtil.format(date, "yyyy-MM-dd") +"'";
+                }
+            }
+            return value;
+        }
+    }
+    , DATE_NANOS(CATEGORY.DATE, "date_nanos", null, java.sql.Date.class, 1, 1, 1, ElasticSearch){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;

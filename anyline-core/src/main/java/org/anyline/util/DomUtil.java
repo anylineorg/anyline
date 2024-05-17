@@ -22,6 +22,7 @@ package org.anyline.util;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
@@ -206,6 +207,28 @@ public class DomUtil {
             OutputFormat format = new OutputFormat("\t", true);
             writer = new XMLWriter(stringWriter, format);
             writer.write(document);
+            writer.flush();
+            result = stringWriter.getBuffer().toString();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return result;
+    }
+    public static String format(Node note){
+        String result = null;
+        XMLWriter writer = null;
+        try {
+            StringWriter stringWriter = new StringWriter();
+            OutputFormat format = new OutputFormat("\t", true);
+            writer = new XMLWriter(stringWriter, format);
+            writer.write(note);
             writer.flush();
             result = stringWriter.getBuffer().toString();
         }catch (Exception e){
