@@ -58,6 +58,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 
         for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
             reg(alias);
+            alias(alias.name(), alias.standard());
         }
     }
     @Override

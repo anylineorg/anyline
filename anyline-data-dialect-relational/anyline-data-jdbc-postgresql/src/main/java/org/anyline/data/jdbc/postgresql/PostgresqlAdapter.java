@@ -56,10 +56,6 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 		super();
 		delimiterFr = "\"";
 		delimiterTo = "\"";
-		for (PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
-			reg(alias);
-			alias(alias.name(), alias.standard());
-		}
 		for(PostgresqlWriter writer: PostgresqlWriter.values()){
 			reg(writer.supports(), writer.writer());
 		}

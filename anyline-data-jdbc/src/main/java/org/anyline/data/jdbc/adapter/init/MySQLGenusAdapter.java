@@ -52,6 +52,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
         for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
             reg(alias);
+            alias(alias.name(), alias.standard());
         }
     }
     @Override

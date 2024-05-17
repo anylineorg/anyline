@@ -2042,7 +2042,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
     public Integer getInt(String key, Integer def) {
         try {
-            Integer result =  getInt(key);
+            Integer result = getInt(key);
             if(null == result){
                 result = def;
             }

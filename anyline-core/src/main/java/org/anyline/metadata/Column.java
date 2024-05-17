@@ -109,9 +109,9 @@ public class Column extends Metadata<Column> implements Serializable {
     protected TypeMetadata typeMetadata           ;
     protected String fullType                     ; //完整类型名称
     protected String finalType                    ; //如果设置了finalType 生成SQL时 name finalType 其他属性
-    protected int ignoreLength               = -1 ;
-    protected int ignorePrecision            = -1 ;
-    protected int ignoreScale                = -1 ;
+    protected int ignoreLength               = -1 ; //是否忽略长度
+    protected int ignorePrecision            = -1 ; //是否忽略有效位数
+    protected int ignoreScale                = -1 ; //是否忽略小数位
     //数字类型:precision,scale 日期:length 时间戳:scale 其他:length
     protected Integer precisionLength             ; // 精确长度 根据数据类型返回precision或length
     protected Integer length                      ; // 长度(注意varchar,date,timestamp,number的区别)

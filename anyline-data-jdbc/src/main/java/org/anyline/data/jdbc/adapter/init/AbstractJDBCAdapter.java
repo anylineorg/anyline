@@ -3165,9 +3165,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+		TableMetadataAdapter tableMetadataAdapter = tableMetadataAdapter(runtime);
 		meta.setObjectId(row.getLong("OBJECT_ID", (Long)null));
 		meta.setEngine(row.getString("ENGINE"));
-		meta.setComment(row.getString("TABLE_COMMENT","COMMENTS","COMMENT"));
+		meta.setComment(row.getString(tableMetadataAdapter.getCommentRefers()));
 		meta.setDataRows(row.getLong("TABLE_ROWS", (Long)null));
 		meta.setCollate(row.getString("TABLE_COLLATION"));
 		meta.setDataLength(row.getLong("DATA_LENGTH", (Long)null));
@@ -3181,7 +3182,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		meta.setTemporary(row.getBoolean("IS_TEMPORARY", false));
 		return meta;
 	}
-
+	protected static TableMetadataAdapter defaultTableMetadataAdapter;
+	static {
+		defaultTableMetadataAdapter = new TableMetadataAdapter();
+		defaultTableMetadataAdapter.setNameRefer("TABLE_NAME,NAME,TABNAME");
+		defaultTableMetadataAdapter.setCatalogRefer("TABLE_CATALOG");
+		defaultTableMetadataAdapter.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
+		defaultTableMetadataAdapter.setCommentRefer("TABLE_COMMENT,COMMENTS,COMMENT");
+	}
 	/**
 	 * table[结构集封装-依据]<br/>
 	 * 读取table元数据结果集的依据
@@ -3190,11 +3198,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime){
-		TableMetadataAdapter config = new TableMetadataAdapter();
-		config.setNameRefer("TABLE_NAME,NAME,TABNAME");
-		config.setCatalogRefer("TABLE_CATALOG");
-		config.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME");
-		return config;
+		return defaultTableMetadataAdapter;
 	}
 
 	/* *****************************************************************************************************************
@@ -4094,6 +4098,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta){
 			meta = (T)new Column();
 		}
+		//属性在查询结果中对应的列(通用)
 		ColumnMetadataAdapter config = columnMetadataAdapter(runtime);
 		String catalog = row.getString(config.getCatalogRefers());
 		String schema = row.getString(config.getSchemaRefers());//"TABLE_SCHEMA","TABSCHEMA","SCHEMA_NAME","OWNER"
@@ -4146,13 +4151,17 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta){
 			return null;
 		}
+
+		//属性在查询结果中对应的列(通用)
+		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime);
+
 		if(null == meta.getPosition()) {
 			try {
-				meta.setPosition(row.getInt("ORDINAL_POSITION","COLNO","POSITION"));
+				meta.setPosition(row.getInt(adapter.getPositionRefers()));
 			}catch (Exception e){}
 		}
-		meta.setComment(BasicUtil.evl(row.getString("COLUMN_COMMENT","COMMENTS","REMARKS"), meta.getComment()));
-		String type = row.getString("FULL_TYPE","DATA_TYPE","TYPE_NAME","TYPENAME","DATA_TYPE_NAME");
+		meta.setComment(BasicUtil.evl(row.getString(adapter.getCommentRefers()), meta.getComment()));
+		String type = row.getString(adapter.getTypeRefers());
 		/*if(null != type){
 			type = type.replace("character varying","VARCHAR");
 		}*/
@@ -4165,9 +4174,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		meta.setOriginType(BasicUtil.evl(type, meta.getTypeName()));
 		TypeMetadata typeMetadata = typeMetadata(runtime, meta);
-		ColumnMetadataAdapter adapter = columnMetadataAdapter(runtime, typeMetadata);
+		//属性在查询结果中对应的列(区分数据类型)
+		adapter = columnMetadataAdapter(runtime, typeMetadata);
 		TypeMetadata.Config config = adapter.getTypeConfig();
-		String def = BasicUtil.evl(row.get("COLUMN_DEFAULT","DATA_DEFAULT","DEFAULT","DEFAULT_VALUE","DEFAULT_DEFINITION"), meta.getDefaultValue())+"";
+		String def = BasicUtil.evl(row.get(adapter.getDefaultRefers()), meta.getDefaultValue())+"";
 		def = def.trim();//oracle 会取出\t\n
 		if(BasicUtil.isNotEmpty(def)) {
 			while(def.startsWith("(") && def.endsWith(")")){
@@ -4265,7 +4275,21 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		return meta;
 	}
-
+	private static ColumnMetadataAdapter defaultColumnMetadataAdapter;
+	static {
+		defaultColumnMetadataAdapter = new ColumnMetadataAdapter();
+		defaultColumnMetadataAdapter.setNameRefer("COLUMN_NAME,COLNAME");
+		defaultColumnMetadataAdapter.setCatalogRefer("TABLE_CATALOG");
+		defaultColumnMetadataAdapter.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
+		defaultColumnMetadataAdapter.setTableRefer("TABLE_NAME,TABNAME");
+		defaultColumnMetadataAdapter.setNullableRefers("IS_NULLABLE,NULLABLE,NULLS");
+		defaultColumnMetadataAdapter.setCharsetRefers("CHARACTER_SET_NAME");
+		defaultColumnMetadataAdapter.setCollateRefers("COLLATION_NAME");
+		defaultColumnMetadataAdapter.setTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+		defaultColumnMetadataAdapter.setPositionRefer("ORDINAL_POSITION,COLNO,POSITION");
+		defaultColumnMetadataAdapter.setCommentRefer("COLUMN_COMMENT,COMMENTS,REMARKS");
+		defaultColumnMetadataAdapter.setDefaultRefer("COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
+	}
 	/**
 	 * column[结构集封装-依据]<br/>
 	 * 读取column元数据结果集的依据
@@ -4274,16 +4298,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
-		ColumnMetadataAdapter config = new ColumnMetadataAdapter();
-		config.setNameRefer("COLUMN_NAME,COLNAME");
-		config.setCatalogRefer("TABLE_CATALOG");
-		config.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
-		config.setTableRefer("TABLE_NAME,TABNAME");
-		config.setNullableRefers("IS_NULLABLE,NULLABLE,NULLS");
-		config.setCharsetRefers("CHARACTER_SET_NAME");
-		config.setCollateRefers("COLLATION_NAME");
-		config.setTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
-		return config;
+		return defaultColumnMetadataAdapter;
 	}
 
 	/**

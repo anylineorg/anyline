@@ -350,10 +350,22 @@ public enum XuGuTypeMetadataAlias implements TypeMetadataAlias {
 				config.setFormula(formula);
 			}
 			if(null != lengthRefer) {
-				config.setLengthRefer(lengthRefer).setPrecisionRefer(precisionRefer).setScaleRefer(scaleRefer);
+				config.setLengthRefer(lengthRefer);
+			}
+			if(null != precisionRefer) {
+				config.setPrecisionRefer(precisionRefer);
+			}
+			if(null != scaleRefer) {
+				config.setScaleRefer(scaleRefer);
 			}
 			if(-1 != ignoreLength) {
-				config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
+				config.setIgnoreLength(ignoreLength);
+			}
+			if(-1 != ignorePrecision) {
+				config.setIgnorePrecision(ignorePrecision);
+			}
+			if(-1 != ignoreScale) {
+				config.setIgnoreScale(ignoreScale);
 			}
 		}
 		return config;

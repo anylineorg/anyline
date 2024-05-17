@@ -40,6 +40,7 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
     private String[] typeRefer; //view table
     private String[] commentRefer;
     private String[] defineRefer;
+    private String[] defaultRefer;
 
     public String[] getNameRefers() {
         return nameRefer;
@@ -220,6 +221,29 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
             this.typeRefer = typeRefer.split(",");
         }else{
             this.typeRefer = null;
+        }
+        return (T)this;
+    }
+
+    public String[] getDefaultRefers() {
+        return defaultRefer;
+    }
+    public String getDefaultRefer(){
+        if(null != defaultRefer && defaultRefer.length > 0){
+            return defaultRefer[0];
+        }
+        return null;
+    }
+
+    public T setDefaultRefer(String[] defaultRefer) {
+        this.defaultRefer = defaultRefer;
+        return (T)this;
+    }
+    public T setDefaultRefer(String defaultRefer) {
+        if(BasicUtil.isNotEmpty(defaultRefer)) {
+            this.defaultRefer = defaultRefer.split(",");
+        }else{
+            this.defaultRefer = null;
         }
         return (T)this;
     }
