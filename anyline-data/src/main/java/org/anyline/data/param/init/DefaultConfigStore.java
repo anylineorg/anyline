@@ -40,11 +40,6 @@ import org.anyline.util.encrypt.DESUtil;
 
 import java.util.*;
 
-/**
- * 查询参数 
- * @author zh 
- * 
- */ 
 public class DefaultConfigStore implements ConfigStore {
 	protected Class clazz										    ;
 	protected DataHandler handler								    ; // 流式读取时handler
