@@ -20,7 +20,7 @@ package org.anyline.entity;
 
 import java.io.Serializable;
 
-public interface AnyData<T> extends Serializable {
+public interface AnyData<T> extends Serializable, Cloneable {
     /**
      * key转小写,转换后删除原来的key
      * @param recursion 是否递归执行(仅支持AnyData类型)

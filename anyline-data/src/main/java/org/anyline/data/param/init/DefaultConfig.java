@@ -51,7 +51,7 @@ public class DefaultConfig implements Config {
 		DefaultConfig config = new DefaultConfig();
 		config.parser = this.parser;
 		config.empty = this.empty;
-		List<Object> values = new ArrayList<Object>();
+		List<Object> values = new ArrayList<>();
 		for(Object value:this.values){
 			values.add(value);
 		}

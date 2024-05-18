@@ -26,7 +26,7 @@ import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import java.util.List;
 import java.util.Map;
  
-public interface Config {
+public interface Config extends Cloneable {
 	// 从request 取值方式
 	static int FETCH_REQUEST_VALUE_TYPE_NONE 	= 0;	// 没有参数
 	static int FETCH_REQUEST_VALUE_TYPE_SINGLE 	= 1;	// 单值

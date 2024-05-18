@@ -26,7 +26,7 @@ import java.util.List;
 
 public class DefaultOrderStore implements OrderStore{
 	private static final long serialVersionUID = -2129393152486629564L;
-	private List<Order> orders = new ArrayList<Order>(); 
+	private List<Order> orders = new ArrayList<>();
  
 	public DefaultOrderStore() {
 	}
@@ -131,5 +131,15 @@ public class DefaultOrderStore implements OrderStore{
 			return orders.isEmpty();
 		}
 		return true;
+	}
+	public Object clone(){
+		DefaultOrderStore copy = new DefaultOrderStore();
+		if(null != this.orders){
+			List<Order> orders = new ArrayList<>();
+			for(Order order:this.orders){
+				orders.add((Order) order.clone());
+			}
+		}
+		return copy;
 	}
 } 

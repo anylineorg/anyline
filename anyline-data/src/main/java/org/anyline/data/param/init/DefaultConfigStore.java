@@ -1373,25 +1373,6 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return null;
 	}
-	public ConfigStore fetch(String ... keys){
-		DefaultConfigStore result = new DefaultConfigStore();
-		result.setOrders(this.getOrders());
-		result.setGroups(this.getGroups());
-		result.setPageNavi(this.getPageNavi());
-		ConfigChain chain = new DefaultConfigChain();
-		List<Config> configs = getConfigChain().getConfigs();
-		for(Config config:configs){
-			if(null == config){
-				continue;
-			}
-			if(BasicUtil.contains(keys, config.getPrefix())){
-				chain.addConfig((Config)config.clone());
-			}
-		}
-		result.chain = chain;
-		return result;
-	}
-
 	/**
 	 * 开启记录总数懒加载 
 	 * @param ms 缓存有效期(毫秒)
@@ -1514,11 +1495,6 @@ public class DefaultConfigStore implements ConfigStore {
 		return true;
 	}
 
-	public ConfigStore clone(){
-		ConfigStore store = new DefaultConfigStore();
-		return store;
-	}
-
 	public ConfigStore condition(String join, Compare compare, String key, Object ... values){
 		if("or".equalsIgnoreCase(join)){
 			or(compare, key, values);
@@ -1627,5 +1603,37 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public long getLastPackageTime() {
 		return this.lastPackageTime;
+	}
+
+	public ConfigStore fetch(String ... keys){
+		DefaultConfigStore result = new DefaultConfigStore();
+		result.setOrders(this.getOrders());
+		result.setGroups(this.getGroups());
+		result.setPageNavi(this.getPageNavi());
+		ConfigChain chain = new DefaultConfigChain();
+		List<Config> configs = getConfigChain().getConfigs();
+		for(Config config:configs){
+			if(null == config){
+				continue;
+			}
+			if(BasicUtil.contains(keys, config.getPrefix())){
+				chain.addConfig((Config)config.clone());
+			}
+		}
+		result.chain = chain;
+		return result;
+	}
+
+	@Override
+	public Object clone(){
+		DefaultConfigStore copy = new DefaultConfigStore();
+		BeanUtil.copyFieldValue(copy, this);
+		if(null != this.orders) {
+			copy.setOrders((OrderStore) orders.clone());
+		}
+		copy.setGroups(this.getGroups());
+		copy.setPageNavi(this.getPageNavi());
+		copy.chain = (ConfigChain)this.chain.clone();
+		return copy;
 	}
 }

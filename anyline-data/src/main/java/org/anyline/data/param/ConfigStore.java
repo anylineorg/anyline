@@ -41,7 +41,7 @@ import java.util.*;
  * @author zh 
  * 
  */
-public interface ConfigStore {
+public interface ConfigStore extends Cloneable{
 
 	/**
 	 * 设置查询或操作的数据源

@@ -30,7 +30,7 @@ import java.beans.Transient;
 import java.io.Serializable;
 import java.util.*;
 
-public class DefaultPageNavi implements PageNavi, Serializable {
+public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	protected static final long serialVersionUID = 3593100423479113410L;
 	protected static final Logger log = LoggerFactory.getLogger(DefaultPageNavi.class);
  

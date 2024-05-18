@@ -242,4 +242,15 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		}
 		return true;
 	}
+	public Object clone(){
+		DefaultConfigChain copy = new DefaultConfigChain();
+		List<Config> configs = this.getConfigs();
+		for(Config config:configs){
+			if(null == config){
+				continue;
+			}
+			copy.addConfig((Config)config.clone());
+		}
+		return copy;
+	}
 }
