@@ -45,15 +45,20 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	private String text;
 	 
 	 
-	public Object clone() throws CloneNotSupportedException{
-		DefaultXMLCondition clone = (DefaultXMLCondition)super.clone();
+	public DefaultXMLCondition clone() {
+		DefaultXMLCondition clone = null;
+		try{
+			clone = (DefaultXMLCondition)super.clone();
+		}catch (Exception e){
+			clone = new DefaultXMLCondition();
+		}
 		if(null != variables){
-			List<Variable> cVariables = new ArrayList<Variable>();
+			List<Variable> cVariables = new ArrayList<>();
 			for(Variable var:variables){
 				if(null == var){
 					continue;
 				} 
-				cVariables.add((Variable)var.clone());
+				cVariables.add(var.clone());
 			}
 			clone.setSwitch(swt);
 			clone.variables = cVariables; 

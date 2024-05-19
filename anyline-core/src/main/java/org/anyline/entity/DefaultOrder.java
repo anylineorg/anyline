@@ -74,14 +74,16 @@ public class DefaultOrder implements Order{
 	public void setType(TYPE type) {
 		this.type = type; 
 	} 
-	public Object clone(){
+	public DefaultOrder clone() {
+		DefaultOrder clone = null;
 		try {
-			DefaultOrder clone = (DefaultOrder) super.clone();
-			return clone;
+			clone = (DefaultOrder) super.clone();
 		}catch (Exception e){
-			e.printStackTrace();
+			clone = new DefaultOrder();
+			clone.type = this.type;
+			clone.column = this.column;
 		}
-		return null;
+		return clone;
 	}
 	@Override
 	public void setType(String type) {

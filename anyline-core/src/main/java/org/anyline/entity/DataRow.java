@@ -2690,17 +2690,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * 复制数据
      * @return Object
      */
-    public Object clone() {
-        DataRow row = (DataRow) super.clone();
-        row.container = this.container;
-        row.primaryKeys = this.primaryKeys;
-        row.datasource = this.datasource;
-        row.schema = this.schema;
-        row.tables = this.tables;
-        row.createTime = this.createTime;
-        row.nanoTime = this.nanoTime;
-        row.isNew = this.isNew;
-        return row;
+    public DataRow clone() {
+        DataRow clone = null;
+        try{
+            clone = (DataRow) super.clone();
+        }catch (Exception e){
+            clone = new DataRow();
+        }
+        clone.container = this.container;
+        clone.primaryKeys = this.primaryKeys;
+        clone.datasource = this.datasource;
+        clone.schema = this.schema;
+        clone.tables = this.tables;
+        clone.createTime = this.createTime;
+        clone.nanoTime = this.nanoTime;
+        clone.isNew = this.isNew;
+        return clone;
     }
 
     public Boolean getIsNew() {

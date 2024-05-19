@@ -33,7 +33,7 @@ import java.util.List;
  * 
  */ 
 public abstract class AbstractConditionChain extends AbstractCondition implements ConditionChain {
-	protected List<Condition> conditions = new ArrayList<Condition>();
+	protected List<Condition> conditions = new ArrayList<>();
 	protected int joinSize; 
 	 
 	public void init(){
@@ -112,5 +112,21 @@ public abstract class AbstractConditionChain extends AbstractCondition implement
 			}
 		}
 		return true;
-	} 
+	}
+	public AbstractConditionChain clone() {
+		AbstractConditionChain clone = null;
+		try {
+			clone = (AbstractConditionChain) super.clone();
+		}catch (Exception e){
+		}
+		if(null != this.conditions){
+			List<Condition> conditions = new ArrayList<>();
+			for (Condition condition:this.conditions){
+				conditions.add(condition.clone());
+			}
+			clone.conditions = conditions;
+		}
+		return clone;
+	}
+
 } 

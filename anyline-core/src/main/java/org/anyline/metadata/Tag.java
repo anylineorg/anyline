@@ -93,10 +93,10 @@ public class Tag extends Column implements Serializable {
         }
         return builder.toString();
     }
-    public Tag clone(){
-        Tag copy = new Tag();
-        BeanUtil.copyFieldValue(copy, this);
-        return copy;
+    public Tag clone() {
+        Tag clone = new Tag();
+        BeanUtil.copyFieldValue(clone, this);
+        return clone;
     }
     public String getKeyword() {
         return this.keyword;

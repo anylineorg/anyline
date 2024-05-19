@@ -1620,15 +1620,19 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public Object clone(){
-		DefaultConfigStore copy = new DefaultConfigStore();
-		BeanUtil.copyFieldValue(copy, this);
-		if(null != this.orders) {
-			copy.setOrders((OrderStore) orders.clone());
+	public ConfigStore clone() {
+		DefaultConfigStore clone = null;
+		try{
+			clone = (DefaultConfigStore)super.clone();
+		}catch (Exception e){
+			clone = new DefaultConfigStore();
 		}
-		copy.setGroups(this.getGroups());
-		copy.setPageNavi(this.getPageNavi());
-		copy.chain = (ConfigChain)this.chain.clone();
-		return copy;
+		if(null != this.orders) {
+			clone.setOrders(orders.clone());
+		}
+		clone.setGroups(this.getGroups());
+		clone.setPageNavi(this.getPageNavi());
+		clone.chain = (ConfigChain)this.chain.clone();
+		return clone;
 	}
 }

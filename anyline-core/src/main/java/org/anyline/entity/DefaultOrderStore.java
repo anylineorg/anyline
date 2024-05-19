@@ -132,14 +132,20 @@ public class DefaultOrderStore implements OrderStore{
 		}
 		return true;
 	}
-	public Object clone(){
-		DefaultOrderStore copy = new DefaultOrderStore();
+	public DefaultOrderStore clone() {
+		DefaultOrderStore clone = null;
+		try{
+			clone = (DefaultOrderStore)super.clone();
+		}catch (Exception e){
+			clone = new DefaultOrderStore();
+		}
 		if(null != this.orders){
 			List<Order> orders = new ArrayList<>();
 			for(Order order:this.orders){
-				orders.add((Order) order.clone());
+				orders.add(order.clone());
 			}
+			clone.orders = orders;
 		}
-		return copy;
+		return clone;
 	}
 } 

@@ -115,7 +115,6 @@ public interface Condition extends Cloneable{
 	 * 
 	 * ***********************************************************************************************************/ 
 	String getId();
-	Object clone()throws CloneNotSupportedException; 
 	void setValue(String key, Object value);
 	void setTest(String test);
 	String getTest();
@@ -148,4 +147,5 @@ public interface Condition extends Cloneable{
 	 */
 	boolean integrality();
 	void integrality(boolean integrality);
+	Condition clone();
 } 

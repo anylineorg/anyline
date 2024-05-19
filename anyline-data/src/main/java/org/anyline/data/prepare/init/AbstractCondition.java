@@ -55,22 +55,7 @@ public abstract class AbstractCondition implements Condition {
 	protected boolean setValue = false									;   // 是否赋值过
 	//protected boolean apart = false										;   // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality = true								;   // 是否作为一个整体，不可分割，与其他条件合并时以()包围
-	public Object clone() throws CloneNotSupportedException{
-		AbstractCondition clone = (AbstractCondition)super.clone();
-		if(null != runValues){
-			List<RunValue> cRunValues = new ArrayList<>();
-			for(RunValue obj:runValues){
-				RunValue tmp = obj;
-				cRunValues.add(tmp); 
-			} 
-			clone.runValues = cRunValues; 
-		} 
-		if(null != container){
-			clone.container = (ConditionChain)container.clone(); 
-		} 
-		return clone; 
-	} 
-	 
+
 	public void init(){
 	} 
 	public void initRunValue(){
@@ -245,6 +230,25 @@ public abstract class AbstractCondition implements Condition {
 	@Override
 	public void integrality(boolean integrality) {
 		this.integrality = integrality;
+	}
+	public AbstractCondition clone() {
+		AbstractCondition clone = null;
+		try {
+			clone = (AbstractCondition) super.clone();
+		}catch (Exception e){
+		}
+		if(null != runValues){
+			List<RunValue> cRunValues = new ArrayList<>();
+			for(RunValue obj:runValues){
+				RunValue tmp = obj;
+				cRunValues.add(tmp);
+			}
+			clone.runValues = cRunValues;
+		}
+		if(null != container){
+			clone.container = container.clone();
+		}
+		return clone;
 	}
 
 }

@@ -963,8 +963,13 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         return result;
     }
 
-    public Object clone() {
-        DataSet set = new DataSet();
+    public DataSet clone() {
+        DataSet set = null;
+        try{
+            set = (DataSet)super.clone();
+        }catch (Exception e){
+            set = new DataSet();
+        }
         List<DataRow> rows = new ArrayList<DataRow>();
         for (DataRow row : this.rows) {
             rows.add((DataRow) row.clone());

@@ -47,16 +47,21 @@ public class DefaultConfig implements Config {
 	//protected boolean apart          = false ; // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality    = true	 ; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	@Override
-	public Object clone(){
-		DefaultConfig config = new DefaultConfig();
-		config.parser = this.parser;
-		config.empty = this.empty;
+	public Config clone() {
+		DefaultConfig clone = null;
+		try{
+			clone = (DefaultConfig)super.clone();
+		}catch (Exception e){
+			clone = new DefaultConfig();
+		}
+		clone.parser = this.parser;
+		clone.empty = this.empty;
 		List<Object> values = new ArrayList<>();
 		for(Object value:this.values){
 			values.add(value);
 		}
-		config.values = values;
-		return config;
+		clone.values = values;
+		return clone;
 	} 
 	public DefaultConfig(){
 		this.parser = new ParseResult();

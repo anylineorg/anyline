@@ -37,8 +37,14 @@ public class AbstractGroup implements Group{
 			this.column = column.trim(); 
 		} 
 	} 
-	public Object clone() throws CloneNotSupportedException{
-		AbstractGroup clone = (AbstractGroup)super.clone();
+	public AbstractGroup clone() {
+		AbstractGroup clone = null;
+		try {
+			clone = (AbstractGroup) super.clone();
+		}catch (Exception e){
+			clone = new AbstractGroup();
+			clone.column = this.column;
+		}
 		return clone; 
 	} 
 } 

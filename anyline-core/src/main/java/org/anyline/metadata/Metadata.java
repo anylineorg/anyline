@@ -584,17 +584,20 @@ public class Metadata<T extends Metadata> {
         return update;
     }
 
-    public T clone(){
-        T copy = null;
+    public T clone() {
+        T clone = null;
         try {
-            copy = (T)getClass().newInstance();
-            BeanUtil.copyFieldValue(copy, this);
-            copy.update = null;
-            copy.setmap = false;
-            copy.getmap = false;
+            clone = (T)super.clone();
         } catch (Exception e) {
+            try {
+                clone = (T)getClass().newInstance();
+                BeanUtil.copyFieldValue(clone, this);
+                clone.update = null;
+                clone.setmap = false;
+                clone.getmap = false;
+            }catch (Exception ex){}
         }
-        return copy;
+        return clone;
     }
 
     public static <T extends Metadata> T search(List<T> list, String catalog, String schema, String name){

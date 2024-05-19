@@ -27,15 +27,16 @@ public interface ConditionChain extends Condition {
 	 * @param condition  condition
 	 * @return ConditionChain
 	 */ 
-	public ConditionChain addCondition(Condition condition); 
+	ConditionChain addCondition(Condition condition);
  
 	/** 
 	 * 已拼接的条件数量 
 	 *  
 	 * @return int
 	 */ 
-	public int getJoinSize(); 
+	int getJoinSize();
  
-	public List<Condition> getConditions();
+	List<Condition> getConditions();
+	ConditionChain clone();
 
 } 

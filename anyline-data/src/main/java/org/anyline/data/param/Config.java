@@ -79,9 +79,6 @@ public interface Config extends Cloneable {
 	boolean isKeyEncrypt() ; 
  
 	boolean isValueEncrypt();
-	
-	Object clone();
-	String toString();
 	String cacheKey();
 
 	void setText(String text);
@@ -106,4 +103,7 @@ public interface Config extends Cloneable {
 	 */
 	boolean integrality();
 	void integrality(boolean integrality);
+
+	Config clone();
+	String toString();
 }

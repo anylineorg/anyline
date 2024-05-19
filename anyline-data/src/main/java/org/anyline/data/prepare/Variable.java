@@ -57,7 +57,7 @@ public interface Variable extends Cloneable, Serializable{
 	void setValue(boolean chkNull, Object value) ;
 	int getType() ; 
 	void setType(int type) ;
-	Object clone() throws CloneNotSupportedException;
+	Variable clone();
 	Compare.EMPTY_VALUE_SWITCH getSwitch() ;
 
 	void setSwitch(Compare.EMPTY_VALUE_SWITCH swt) ;

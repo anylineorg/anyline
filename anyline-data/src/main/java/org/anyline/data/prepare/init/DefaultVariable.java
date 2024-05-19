@@ -58,8 +58,13 @@ public class DefaultVariable implements Variable {
 	private boolean setValue;		//是否赋值过
 	private Compare.EMPTY_VALUE_SWITCH swt;
 	 
-	public Object clone() throws CloneNotSupportedException{
-		DefaultVariable clone = (DefaultVariable) super.clone();
+	public DefaultVariable clone() {
+		DefaultVariable clone = null;
+		try{
+			clone =(DefaultVariable) super.clone();
+		}catch (Exception e){
+			clone = new DefaultVariable();
+		}
 		if(null != values){
 			List<Object> cValues = new ArrayList<Object>(); 
 			for(Object value:values){

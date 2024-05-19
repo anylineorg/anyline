@@ -71,16 +71,21 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		} 
 		return this; 
 	} 
-	public Object clone() throws CloneNotSupportedException{
-		DefaultXMLPrepare clone = (DefaultXMLPrepare)super.clone();
-		clone.chain = (ConditionChain)chain.clone();
+	public DefaultXMLPrepare clone() {
+		DefaultXMLPrepare clone = null;
+		try{
+			clone = (DefaultXMLPrepare)super.clone();
+		}catch (Exception e){
+			clone = new DefaultXMLPrepare();
+		}
+		clone.chain = chain.clone();
 		if(null != variables){
-			List<Variable> cVariables = new ArrayList<Variable>();
+			List<Variable> cVariables = new ArrayList<>();
 			for(Variable var:variables){
 				if(null == var){
 					continue;
 				} 
-				cVariables.add((Variable)var.clone());
+				cVariables.add(var.clone());
 			} 
 			clone.variables = cVariables; 
 		} 

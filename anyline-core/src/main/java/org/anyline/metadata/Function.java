@@ -46,7 +46,7 @@ public class Function extends Metadata<Function> implements Serializable {
         return this.keyword;
     }
 
-    public Function clone(){
+    public Function clone() {
         Function copy = super.clone();
         List<Parameter> pms = new ArrayList<>();
         for(Parameter parameter:parameters){

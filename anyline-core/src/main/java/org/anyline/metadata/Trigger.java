@@ -113,9 +113,9 @@ public class Trigger extends Metadata<Trigger> implements Serializable {
     public String getKeyword() {
         return keyword;
     }
-    public Trigger clone(){
-        Trigger copy = super.clone();
-        copy.events.addAll(this.events);
-        return copy;
+    public Trigger clone() {
+        Trigger clone = super.clone();
+        clone.events.addAll(this.events);
+        return clone;
     }
 }

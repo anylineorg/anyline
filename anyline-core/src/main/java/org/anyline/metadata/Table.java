@@ -438,15 +438,15 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return null;
     }
-    public E clone(){
-        E copy = super.clone();
+    public E clone() {
+        E clone = super.clone();
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);
         }
-        copy.columns = cols;
-        return copy;
+        clone.columns = cols;
+        return clone;
     }
 
     public Table addColumn(Column column){

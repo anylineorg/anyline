@@ -179,7 +179,7 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     public String getKeyword() {
         return this.keyword;
     }
-    public E clone(){
+    public E clone() {
         E copy = super.clone();
 
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();

@@ -187,7 +187,7 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 		return this;
 	}
 
-	public Procedure clone(){
+	public Procedure clone() {
 		Procedure copy = super.clone();
 
 		List<Parameter> parameters = new ArrayList<>();
