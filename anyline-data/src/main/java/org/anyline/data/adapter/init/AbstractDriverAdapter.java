@@ -11917,6 +11917,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				String value = value(runtime, meta, (SQL_BUILD_IN_VALUE)def);
 				if(null != value){
 					builder.append(value);
+				}else{
+					throw new RuntimeException("当前adapter没有解析"+def+",可以用${原生SQL}代替,如column.setDefaultValue(\"${now()}\");");
 				}
 			}else if(str.startsWith("${") && str.endsWith("}")){
 				builder.append(str.substring(2, str.length()-1));
