@@ -46,23 +46,6 @@ public class DefaultConfig implements Config {
 	protected boolean overValue		 = true  ; // 相同查询条件第二次赋值是否覆盖上一次的值，如果不覆盖则生成集合值
 	//protected boolean apart          = false ; // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality    = true	 ; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
-	@Override
-	public Config clone() {
-		DefaultConfig clone = null;
-		try{
-			clone = (DefaultConfig)super.clone();
-		}catch (Exception e){
-			clone = new DefaultConfig();
-		}
-		clone.parser = this.parser;
-		clone.empty = this.empty;
-		List<Object> values = new ArrayList<>();
-		for(Object value:this.values){
-			values.add(value);
-		}
-		clone.values = values;
-		return clone;
-	} 
 	public DefaultConfig(){
 		this.parser = new ParseResult();
 	} 
@@ -345,5 +328,24 @@ public class DefaultConfig implements Config {
 	@Override
 	public void integrality(boolean integrality) {
 		this.integrality = integrality;
+	}
+	@Override
+	public Config clone() {
+		DefaultConfig clone = null;
+		try{
+			clone = (DefaultConfig)super.clone();
+		}catch (Exception e){
+			clone = new DefaultConfig();
+		}
+		clone.parser = this.parser;
+		clone.empty = this.empty;
+		if(null != this.values) {
+			List<Object> values = new ArrayList<>();
+			for (Object value : this.values) {
+				values.add(value);
+			}
+			clone.values = values;
+		}
+		return clone;
 	}
 }
