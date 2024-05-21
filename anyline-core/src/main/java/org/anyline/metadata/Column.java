@@ -551,51 +551,60 @@ public class Column extends Metadata<Column> implements Serializable {
         }
 
         if(BasicUtil.isNotEmpty(formula)){
-            formula = formula.replace("{L}", length+"");
-            formula = formula.replace("{P}", precision+"");
-            formula = formula.replace("{S}", scale+"");
-            result = formula.replace("(null)","");
-        }else{
+            result = formula;
+            result = result.replace("{L}", length+"");
+            result = result.replace("{P}", precision+"");
+            result = result.replace("{S}", scale+"");
+            result = result.replace("(null)","");
+        }else if(null != type){
             StringBuilder builder = new StringBuilder();
-            builder.append(type);
-            if(appendLength || appendPrecision || appendScale){
-                builder.append("(");
-            }
-            if(appendLength){
-                if(length == -2){
-                    builder.append("max");
-                }else {
-                    builder.append(length);
-                }
+            if(type.contains("{")) {
+                result = type;
+                result = result.replace("{L}", length + "");
+                result = result.replace("{P}", precision + "");
+                result = result.replace("{S}", scale + "");
+                result = result.replace("(null)", "");
             }else {
-                if (appendPrecision) {
-                    builder.append(precision);
+                builder.append(type);
+                if (appendLength || appendPrecision || appendScale) {
+                    builder.append("(");
                 }
-                if(appendScale){//可能单独出现
-                    if(appendPrecision){
-                        builder.append(",");
+                if (appendLength) {
+                    if (length == -2) {
+                        builder.append("max");
+                    } else {
+                        builder.append(length);
                     }
-                    builder.append(scale);
+                } else {
+                    if (appendPrecision) {
+                        builder.append(precision);
+                    }
+                    if (appendScale) {//可能单独出现
+                        if (appendPrecision) {
+                            builder.append(",");
+                        }
+                        builder.append(scale);
+                    }
                 }
-            }
-            if(appendLength || appendPrecision || appendScale){
-                builder.append(")");
-            }
+                if (appendLength || appendPrecision || appendScale) {
+                    builder.append(")");
+                }
 
-            String child = getChildTypeName();
-            Integer srid = getSrid();
-            if(null != child){
-                builder.append("(");
-                builder.append(child);
-                if(null != srid){
-                    builder.append(",").append(srid);
+                String child = getChildTypeName();
+                Integer srid = getSrid();
+                if (null != child) {
+                    builder.append("(");
+                    builder.append(child);
+                    if (null != srid) {
+                        builder.append(",").append(srid);
+                    }
+                    builder.append(")");
                 }
-                builder.append(")");
+                if (isArray()) {
+                    builder.append("[]");
+                }
+                result = builder.toString();
             }
-            if(isArray()){
-                builder.append("[]");
-            }
-            result = builder.toString();
         }
 
         return result;
