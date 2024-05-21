@@ -2508,7 +2508,15 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
-		return super.detail(runtime, index, meta, catalog, schema, row);
+		meta = super.detail(runtime, index, meta, catalog, schema, row);
+		if(null != meta){
+			Integer scale = meta.getScale();
+			if(null != scale && scale > 255){
+				scale = scale%256;
+				meta.setScale(scale);
+			}
+		}
+		return meta;
 	}
 
 	/**
