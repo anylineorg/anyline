@@ -4158,7 +4158,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(null == meta.getPosition()) {
 			try {
 				meta.setPosition(row.getInt(adapter.getPositionRefers()));
-			}catch (Exception e){}
+			}catch (Exception ignored){}
 		}
 		meta.setComment(BasicUtil.evl(row.getString(adapter.getCommentRefers()), meta.getComment()));
 		String type = row.getString(adapter.getTypeRefers());
@@ -4226,7 +4226,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(-1 == meta.isNullable()) {
 			try {
 				meta.nullable(row.getBoolean(adapter.getNullableRefers()));//"IS_NULLABLE","NULLABLE","NULLS"
-			}catch (Exception e){}
+			}catch (Exception ignored){}
 		}
 		//oracle中decimal(18,9) data_length == 22 DATA_PRECISION=18
 		try {
@@ -4242,7 +4242,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				len = -1;
 			}
 			meta.setLength(len);
-		}catch (Exception e){}
+		}catch (Exception ignored){}
 		try{
 			Integer precision = row.getInt(null, config.getPrecisionRefers());
 			/*if(null == precision){
@@ -4262,7 +4262,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				scale = row.getInt("NUMERIC_SCALE", "SCALE", "DATA_SCALE");
 			}*/
 			meta.setScale(scale);
-		}catch (Exception e){}
+		}catch (Exception ignored){}
 
 		if(null == meta.getCharset()) {
 			meta.setCharset(row.getString(adapter.getCharsetRefers()));//"CHARACTER_SET_NAME"

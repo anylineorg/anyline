@@ -111,9 +111,13 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , MEDIUMTEXT(CATEGORY.TEXT, "MEDIUMTEXT", null, String.class,1, 1, 1, MySQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
-   , TEXT(CATEGORY.TEXT, "TEXT", null, String.class,1, 1, 1, MySQL, PostgreSQL, SQLite, Informix, GBase8S, SinoDB, IoTDB, KingBase){
+    , TEXT(CATEGORY.TEXT, "TEXT", null, String.class,1, 1, 1, MySQL, PostgreSQL, SQLite, Informix, GBase8S, SinoDB, IoTDB, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
+    , MATCH_ONLY_TEXT(CATEGORY.TEXT, "match_only_text", null, String.class,1, 1, 1, ElasticSearch){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    }
+
    , NTEXT(CATEGORY.TEXT, "NTEXT", null, String.class,1, 1, 1, MSSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
     }
@@ -262,6 +266,8 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INT4(CATEGORY.INT, "INT4", null, Integer.class,1, 1, 1, PostgreSQL)
     , INT8(CATEGORY.INT, "INT8", null, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , BIGINT(CATEGORY.INT, "BIGINT", null, Long.class,1, 1, 1, MySQL, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris)
+    , LONG(CATEGORY.INT, "LONG", null, Long.class, 1, 1, 1, ElasticSearch)
+    , UNSIGNED_LONG(CATEGORY.INT, "UNSIGNED_LONG", null, Long.class, 1, 1, 1, ElasticSearch)
     , OID(CATEGORY.INT, "OID", null, Long.class, 1, 1, 1, KingBase)
     , LARGEINT(CATEGORY.INT, "LARGEINT", null, Long.class,1, 1, 1, Doris)
     , MEDIUMINT(CATEGORY.INT, "MEDIUMINT", null, Integer.class,1, 1, 1, MySQL)
@@ -342,7 +348,13 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , SMALLFLOAT(CATEGORY.FLOAT, "SMALLFLOAT", null, Float.class, 1, 0, 1, Informix, GBase8S, SinoDB){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-   , FLOAT4(CATEGORY.FLOAT, "FLOAT4", null, Float.class, 1, 2, 1, PostgreSQL){
+    , FLOAT4(CATEGORY.FLOAT, "FLOAT4", null, Float.class, 1, 2, 1, PostgreSQL){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    , SCALED_FLOAT(CATEGORY.FLOAT, "SCALED_FLOAT", null, Float.class, 1, 2, 1, ElasticSearch){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    }
+    , HALF_FLOAT(CATEGORY.FLOAT, "HALF_FLOAT", null, Float.class, 1, 2, 1, ElasticSearch){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
     , FLOAT8(CATEGORY.FLOAT, "FLOAT8", null, Double.class, 1, 2, 1, PostgreSQL){
@@ -492,7 +504,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-   , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
+    , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
+        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+    }
+    , DATETIME_WITH_TIME_ZONE(CATEGORY.DATETIME, "DATETIME WITH TIME ZONE", "DATETIME({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, DM){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
     }
     /**
@@ -532,12 +547,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
+    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
     }
-    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
+    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
@@ -552,22 +567,22 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
+    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP,  "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
+    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", "TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE","TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
@@ -762,8 +777,8 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , TSTZRANGE(CATEGORY.NONE, "TSTZRANGE", null, null, 1, 1, 1, KingBase)
     , VARCHARBYTE(CATEGORY.NONE, "VARCHARBYTE", null, null, 1, 1, 1, KingBase)
     , XID(CATEGORY.NONE, "XID", null, null, 1, 1, 1, KingBase)
-    , YMINTERVAL(CATEGORY.NONE, "YMINTERVAL", null, null, 1, 1, 1, KingBase)
-
+    , YMINTERVAL(CATEGORY.NONE, "YMINTERVAL", null, null, 1, 1, 1, ElasticSearch)
+    , RANGE(CATEGORY.NONE, "RANGE", null, null, 1, 1, 1, KingBase)
     , CURSOR(CATEGORY.NONE, "CURSOR", null, null, 1, 1, 1, XuGu)
     , ENUM(CATEGORY.NONE, "ENUM", null, String.class, 1, 1, 1, MySQL)
     , INTERVAL(CATEGORY.NONE, "INTERVAL", null, null, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
@@ -803,8 +818,26 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , LowCardinality(CATEGORY.NONE, "LowCardinality", null, null, 1, 1, 1, ClickHouse)
     , SimpleAggregateFunction(CATEGORY.NONE, "SimpleAggregateFunction", null, null, 1, 1, 1, ClickHouse)
     , TUPLE(CATEGORY.NONE, "TUPLE", null, null, 1, 1, 1, ClickHouse)
+    , IP(CATEGORY.NONE, "ip", null, null, 1, 1, 1, ElasticSearch)
     , IPV4(CATEGORY.NONE, "IPV4", null, null, 1, 1, 1, ClickHouse)
     , IPV6(CATEGORY.NONE, "IPV6", null, null, 1, 1, 1, ClickHouse)
+    , ALIAS(CATEGORY.NONE, "alias", null, null, 1, 1, 1, ElasticSearch)
+    , COMPLETION(CATEGORY.NONE, "completion", null, null, 1, 1, 1, ElasticSearch)
+    , DENSE_VECTOR(CATEGORY.NONE, "dense_vector", null, null, 1, 1, 1, ElasticSearch)
+    , FLATTENED(CATEGORY.NONE, "flattened", null, null, 1, 1, 1, ElasticSearch)
+    , JOIN(CATEGORY.NONE, "join", null, null, 1, 1, 1, ElasticSearch)
+    , GEO_POINT(CATEGORY.NONE, "geo_point", null, null, 1, 1, 1, ElasticSearch)
+    , GEO_SHAPE(CATEGORY.NONE, "geo_shape", null, null, 1, 1, 1, ElasticSearch)
+    , HISTOGRAM(CATEGORY.NONE, "histogram", null, null, 1, 1, 1, ElasticSearch)
+    , PERCOLATOR(CATEGORY.NONE, "percolator", null, null, 1, 1, 1, ElasticSearch)
+    , NESTED(CATEGORY.NONE, "nested", null, null, 1, 1, 1, ElasticSearch)
+    , RANK_FEATURES(CATEGORY.NONE, "rank_features", null, null, 1, 1, 1, ElasticSearch)
+    , RANK_FEATURE(CATEGORY.NONE, "rank_feature", null, null, 1, 1, 1, ElasticSearch)
+    , SHAPE(CATEGORY.NONE, "shape", null, null, 1, 1, 1, ElasticSearch)
+    , SPARSE_VECTOR(CATEGORY.NONE, "sparse_vector", null, null, 1, 1, 1, ElasticSearch)
+    , TOKEN_COUNT(CATEGORY.NONE, "token_count", null, null, 1, 1, 1, ElasticSearch)
+    , VERSION(CATEGORY.NONE, "version", null, null, 1, 1, 1, ElasticSearch)
+    , AGGREGATE_METRIC_DOUBLE(CATEGORY.NONE, "aggregate_metric_double", null, null, 1, 1, 1, ElasticSearch)
 
     ;
 
