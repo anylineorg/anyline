@@ -2560,7 +2560,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         if(null == meta.getPosition()) {
             try {
                 meta.setPosition(row.getInt("COLNO"));
-            }catch (Exception e){}
+            }catch (Exception ignored){}
         }
         String type = null;
         Integer coltype = row.getInt("COLTYPE", null);

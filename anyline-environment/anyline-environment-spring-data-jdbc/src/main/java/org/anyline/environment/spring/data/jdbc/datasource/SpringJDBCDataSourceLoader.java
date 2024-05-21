@@ -57,7 +57,7 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
             DataSource datasource = null;
             try{
                 jdbc = ConfigTable.environment().getBean(JdbcTemplate.class);
-            }catch (Exception e){}
+            }catch (Exception ignored){}
             DataRuntime runtime = null;
             if(null != jdbc){
                 try {

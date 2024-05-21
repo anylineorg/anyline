@@ -842,7 +842,7 @@ public class ConfigTable {
 						}
 					}
 					file = new File(anylineJarPath);
-				}catch (Exception e){}
+				}catch (Exception ignored){}
 				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(file.lastModified()));
 			}catch(Exception e){
 

@@ -455,7 +455,7 @@ public class ClassUtil {
 		Method method = null;
 		try{
 			method = clazz.getMethod(name, parameterTypes);
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 		if(null == method){
 			try{
 				method = clazz.getDeclaredMethod(name, parameterTypes);
@@ -480,7 +480,7 @@ public class ClassUtil {
 		Field field = null;
 		try{
 			field = clazz.getField(name);
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 		if(null == field){
 			try{
 				field = clazz.getDeclaredField(name);

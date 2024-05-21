@@ -983,12 +983,12 @@ public class FileUtil {
 				if(null != bos) {
 					bos.close();
 				}
-			}catch(Exception e){}
+			}catch(Exception ignored){}
 			try{
 				if(null != bis) {
 					bis.close();
 				}
-			}catch(Exception e){}
+			}catch(Exception ignored){}
 		}
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.info("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");

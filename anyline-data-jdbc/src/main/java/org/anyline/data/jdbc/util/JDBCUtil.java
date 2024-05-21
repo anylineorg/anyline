@@ -685,43 +685,43 @@ public class JDBCUtil {
     public static void init(Table table, ResultSet set, Map<String,Integer> keys){
         try {
             table.setType(BasicUtil.evl(JDBCUtil.string(keys, "TABLE_TYPE", set), table.getType()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             table.setComment(BasicUtil.evl(JDBCUtil.string(keys, "REMARKS", set), table.getComment()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             table.setTypeCat(BasicUtil.evl(JDBCUtil.string(keys, "TYPE_CAT", set), table.getTypeCat()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             table.setTypeName(BasicUtil.evl(JDBCUtil.string(keys, "TYPE_NAME", set), table.getTypeName()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             table.setSelfReferencingColumn(BasicUtil.evl(JDBCUtil.string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             table.setRefGeneration(BasicUtil.evl(JDBCUtil.string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
     }
 
     public static void init(View view, ResultSet set, Map<String, Integer> keys){
         try {
             view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         try {
             view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
-        }catch (Exception e){}
+        }catch (Exception ignored){}
     }
     public static void queryTimeout(Statement statement, ConfigStore configs){
         int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);

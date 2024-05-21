@@ -2490,7 +2490,7 @@ public class DB2Adapter extends InformixGenusAdapter implements JDBCAdapter {
 		if(null == meta.getPosition()) {
 			try {
 				meta.setPosition(row.getInt("COLNO"));
-			}catch (Exception e){}
+			}catch (Exception ignored){}
 		}
 		String type = row.getString("TYPENAME");
 		meta.setType(type);
