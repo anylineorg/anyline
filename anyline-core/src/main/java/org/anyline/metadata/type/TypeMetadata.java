@@ -708,7 +708,7 @@ public interface TypeMetadata {
                             if(group == TypeMetadata.CATEGORY_GROUP.NUMBER){
                                 precision = num;
                             }else if(group == TypeMetadata.CATEGORY_GROUP.DATETIME){
-                                precision = num;
+                                scale = num;
                             }else if(group == CATEGORY_GROUP.INTERVAL){
                                 precision = num;
                             }else{
@@ -782,7 +782,7 @@ public interface TypeMetadata {
         meta.setArray(array);
         int ignoreLength = MetadataAdapterHolder.ignoreLength(database, typeMetadata);
         int ignorePrecision = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
-        int ignoreScale = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
+        int ignoreScale = MetadataAdapterHolder.ignoreScale(database, typeMetadata);
 
         if(null != precision && precision > 0){
             //指定了长度或有效位数
@@ -833,6 +833,11 @@ public interface TypeMetadata {
                     type = StandardTypeMetadata.valueOf(spells.get(name));
                 }catch (Exception ignored){}
             }
+        }
+        if(null == type){
+            try {
+                type = StandardTypeMetadata.valueOf(name.replace(" ", "_"));
+            }catch (Exception ignored){}
         }
         return type;
     }
