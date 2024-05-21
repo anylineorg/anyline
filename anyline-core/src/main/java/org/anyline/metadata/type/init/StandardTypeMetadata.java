@@ -483,7 +483,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-   , DATETIME(CATEGORY.DATETIME, "DATETIME", null, LocalDateTime.class, 1, 1, 1, MySQL, Informix, GBase8S, SinoDB, Doris){
+   , DATETIME(CATEGORY.DATETIME, "DATETIME", "DATETIME({S})", null, LocalDateTime.class, 1, 1, 2, MySQL, Informix, GBase8S, SinoDB, Doris){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             if(null == value){
                 value = def;
@@ -547,12 +547,12 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
+    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
     }
-    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 1, DM, KingBase){
+    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return TIME.write(value, def, placeholder);
         }
@@ -562,27 +562,27 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP", null, java.sql.Timestamp.class, 1, 1, 1, MySQL, PostgreSQL, ORACLE, HANA, Derby){
+   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP({S})", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP,  "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
+    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP,  "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL, KingBase){
+    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", "TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", "TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE","TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
+    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE","TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL){
         public Object write(Object value, Object def, boolean array, boolean placeholder){
             return DATETIME.write(value, def, placeholder);
         }
