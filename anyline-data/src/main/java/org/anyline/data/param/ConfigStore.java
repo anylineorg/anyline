@@ -20,7 +20,6 @@ package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
-import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
@@ -1685,7 +1684,7 @@ public interface ConfigStore extends Cloneable{
 		}
 		return BasicUtil.parseLong(value, def);
 	}
-
+	ConfigStore clone();
 	/**
 	 * 是否显示SQL
 	 * @return boolean
