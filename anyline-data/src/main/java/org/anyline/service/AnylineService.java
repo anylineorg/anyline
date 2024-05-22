@@ -1237,14 +1237,16 @@ public interface AnylineService<E>{
 		int fail = 0;
 		String sqls[] = txt.split(";");
 		for(String sql:sqls){
-			try{
-				execute(sql);
-				success ++;
-			}catch (Exception e){
-				fail ++;
-				e.printStackTrace();
-				if(brk){
-					break;
+			if(BasicUtil.isNotEmpty(sql)) {
+				try{
+					execute(sql);
+					success++;
+				}catch (Exception e){
+					fail ++;
+					e.printStackTrace();
+					if(brk){
+						break;
+					}
 				}
 			}
 		}
