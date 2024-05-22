@@ -207,7 +207,10 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 	public List<Object> getValues() {
 		List<Object> values = new ArrayList<Object>();
 		for(Config config:configs){
-			values.addAll(config.getValues());
+			List<Object> vs = config.getValues();
+			if(null != vs) {
+				values.addAll(vs);
+			}
 		}
 		return values;
 	} 

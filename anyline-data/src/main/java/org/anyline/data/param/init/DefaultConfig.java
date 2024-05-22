@@ -339,13 +339,13 @@ public class DefaultConfig implements Config {
 		}
 		clone.parser = this.parser;
 		clone.empty = this.empty;
+		List<Object> values = new ArrayList<>();
 		if(null != this.values) {
-			List<Object> values = new ArrayList<>();
 			for (Object value : this.values) {
 				values.add(value);
 			}
-			clone.values = values;
 		}
+		clone.values = values;
 		return clone;
 	}
 }
