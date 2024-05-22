@@ -3847,7 +3847,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.primary(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
@@ -3912,7 +3912,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
-		return super.charset(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
@@ -5130,7 +5130,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.charset(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
@@ -5193,7 +5193,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.primary(runtime, builder, meta);
+		return builder;
 	}
 
 	/**
@@ -5245,7 +5245,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
-		return super.position(runtime, builder, meta);
+		return builder;
 	}
 
 	/**

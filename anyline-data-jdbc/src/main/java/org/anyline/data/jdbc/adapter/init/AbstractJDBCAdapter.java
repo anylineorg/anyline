@@ -115,6 +115,22 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.match(feature, keywords, compensate);
 	}
 
+	private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+	public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+		ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
+		adapter.setNameRefer("COLUMN_NAME,COLNAME");
+		adapter.setCatalogRefer("TABLE_CATALOG");
+		adapter.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
+		adapter.setTableRefer("TABLE_NAME,TABNAME");
+		adapter.setNullableRefer("IS_NULLABLE,NULLABLE,NULLS");
+		adapter.setCharsetRefer("CHARACTER_SET_NAME");
+		adapter.setCollateRefer("COLLATION_NAME");
+		adapter.setDataTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
+		adapter.setPositionRefer("ORDINAL_POSITION,COLNO,POSITION");
+		adapter.setCommentRefer("COLUMN_COMMENT,COMMENTS,REMARKS");
+		adapter.setDefaultRefer("COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
+		return adapter;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -4161,7 +4177,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}catch (Exception ignored){}
 		}
 		meta.setComment(BasicUtil.evl(row.getString(adapter.getCommentRefers()), meta.getComment()));
-		String type = row.getString(adapter.getTypeRefers());
+		String type = row.getString(adapter.getDataTypeRefers());
 		/*if(null != type){
 			type = type.replace("character varying","VARCHAR");
 		}*/
@@ -4274,21 +4290,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			typeMetadata(runtime, meta);
 		}
 		return meta;
-	}
-	private static ColumnMetadataAdapter defaultColumnMetadataAdapter;
-	static {
-		defaultColumnMetadataAdapter = new ColumnMetadataAdapter();
-		defaultColumnMetadataAdapter.setNameRefer("COLUMN_NAME,COLNAME");
-		defaultColumnMetadataAdapter.setCatalogRefer("TABLE_CATALOG");
-		defaultColumnMetadataAdapter.setSchemaRefer("TABLE_SCHEMA,TABSCHEMA,SCHEMA_NAME,OWNER");
-		defaultColumnMetadataAdapter.setTableRefer("TABLE_NAME,TABNAME");
-		defaultColumnMetadataAdapter.setNullableRefers("IS_NULLABLE,NULLABLE,NULLS");
-		defaultColumnMetadataAdapter.setCharsetRefers("CHARACTER_SET_NAME");
-		defaultColumnMetadataAdapter.setCollateRefers("COLLATION_NAME");
-		defaultColumnMetadataAdapter.setTypeRefer("FULL_TYPE,DATA_TYPE,TYPE_NAME,TYPENAME,DATA_TYPE_NAME,UDT_NAME,DATA_TYPE,TYPENAME,DATA_TYPE_NAME");
-		defaultColumnMetadataAdapter.setPositionRefer("ORDINAL_POSITION,COLNO,POSITION");
-		defaultColumnMetadataAdapter.setCommentRefer("COLUMN_COMMENT,COMMENTS,REMARKS");
-		defaultColumnMetadataAdapter.setDefaultRefer("COLUMN_DEFAULT,DATA_DEFAULT,DEFAULT,DEFAULT_VALUE,DEFAULT_DEFINITION");
 	}
 	/**
 	 * column[结构集封装-依据]<br/>

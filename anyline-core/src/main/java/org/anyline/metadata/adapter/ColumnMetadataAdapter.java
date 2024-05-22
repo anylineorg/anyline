@@ -28,20 +28,20 @@ public class ColumnMetadataAdapter extends AbstractMetadataAdapter<ColumnMetadat
     /**
      * 数据类型
      */
-    protected String[] typeRefers;
+    protected String[] dataTypeRefer;
     /**
      * 列顺序
      */
-    protected String[] positionRefers;
+    protected String[] positionRefer;
 
-    protected String[] nullableRefers;
-    protected String[] charsetRefers;
-    protected String[] collateRefers;
+    protected String[] nullableRefer;
+    protected String[] charsetRefer;
+    protected String[] collateRefer;
 
     protected TypeMetadata.Config typeConfig = null;
 
-    public String[] getTypeRefers() {
-        return typeRefers;
+    public String[] getDataTypeRefers() {
+        return dataTypeRefer;
     }
 
     public TypeMetadata.Config getTypeConfig() {
@@ -52,84 +52,84 @@ public class ColumnMetadataAdapter extends AbstractMetadataAdapter<ColumnMetadat
         this.typeConfig = typeConfig;
     }
 
-    public ColumnMetadataAdapter setTypeRefers(String[] typeRefer) {
-        this.typeRefers = typeRefer;
+    public ColumnMetadataAdapter setDataTypeRefer(String[] typeRefer) {
+        this.dataTypeRefer = typeRefer;
         return this;
     }
-    public ColumnMetadataAdapter setTypeRefer(String type) {
+    public ColumnMetadataAdapter setDataTypeRefer(String type) {
         if(BasicUtil.isNotEmpty(type)) {
-            this.typeRefers = type.split(",");
+            this.dataTypeRefer = type.split(",");
         } else {
 
-            this.typeRefers = null;
+            this.dataTypeRefer = null;
         }
         return this;
     }
     public String[] getPositionRefers() {
-        return positionRefers;
+        return positionRefer;
     }
 
     public ColumnMetadataAdapter setPositionRefer(String[] positionRefer) {
-        this.positionRefers = positionRefer;
+        this.positionRefer = positionRefer;
         return this;
     }
     public ColumnMetadataAdapter setPositionRefer(String positionRefer) {
         if(BasicUtil.isNotEmpty(positionRefer)) {
-            this.positionRefers = positionRefer.split(",");
+            this.positionRefer = positionRefer.split(",");
         } else {
 
-            this.positionRefers = null;
+            this.positionRefer = null;
         }
         return this;
     }
 
     public String[] getNullableRefers() {
-        return nullableRefers;
+        return nullableRefer;
     }
-    public ColumnMetadataAdapter setNullableRefers(String[] nullableRefers) {
-        this.nullableRefers = nullableRefers;
+    public ColumnMetadataAdapter setNullableRefer(String[] nullableRefer) {
+        this.nullableRefer = nullableRefer;
         return this;
     }
-    public ColumnMetadataAdapter setNullableRefers(String nullableRefers) {
-        if(BasicUtil.isNotEmpty(nullableRefers)) {
-            this.nullableRefers = nullableRefers.split(",");
+    public ColumnMetadataAdapter setNullableRefer(String nullableRefer) {
+        if(BasicUtil.isNotEmpty(nullableRefer)) {
+            this.nullableRefer = nullableRefer.split(",");
         } else {
 
-            this.nullableRefers = null;
+            this.nullableRefer = null;
         }
         return this;
     }
 
     public String[] getCharsetRefers() {
-        return charsetRefers;
+        return charsetRefer;
     }
-    public ColumnMetadataAdapter setCharsetRefers(String[] charsetRefers) {
-        this.charsetRefers = charsetRefers;
+    public ColumnMetadataAdapter setCharsetRefer(String[] charsetRefer) {
+        this.charsetRefer = charsetRefer;
         return this;
     }
-    public ColumnMetadataAdapter setCharsetRefers(String charsetRefers) {
-        if(BasicUtil.isNotEmpty(charsetRefers)) {
-            this.charsetRefers = charsetRefers.split(",");
+    public ColumnMetadataAdapter setCharsetRefer(String charsetRefer) {
+        if(BasicUtil.isNotEmpty(charsetRefer)) {
+            this.charsetRefer = charsetRefer.split(",");
         } else {
 
-            this.charsetRefers = null;
+            this.charsetRefer = null;
         }
         return this;
     }
 
     public String[] getCollateRefers() {
-        return collateRefers;
+        return collateRefer;
     }
-    public ColumnMetadataAdapter setCollateRefers(String[] collateRefers) {
-        this.collateRefers = collateRefers;
+    public ColumnMetadataAdapter setCollateRefer(String[] collateRefers) {
+        this.collateRefer = collateRefers;
         return this;
     }
-    public ColumnMetadataAdapter setCollateRefers(String collateRefers) {
+    public ColumnMetadataAdapter setCollateRefer(String collateRefers) {
         if(BasicUtil.isNotEmpty(collateRefers)) {
-            this.collateRefers = collateRefers.split(",");
+            this.collateRefer = collateRefers.split(",");
         } else {
 
-            this.collateRefers = null;
+            this.collateRefer = null;
         }
         return this;
     }

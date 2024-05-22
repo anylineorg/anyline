@@ -25,6 +25,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.FunctionMetadataAdapter;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
@@ -82,6 +83,23 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public String name(Type type){
         return types.get(type);
+    }
+
+    private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+    public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+        ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
+        adapter.setNameRefer("COLUMN_NAME");
+        adapter.setCatalogRefer("TABLE_CATALOG");
+        adapter.setSchemaRefer("TABLE_SCHEMA");
+        adapter.setTableRefer("TABLE_NAME");
+        adapter.setNullableRefer("IS_NULLABLE");
+        //adapter.setCharsetRefer("");
+        //adapter.setCollateRefer("");
+        adapter.setDataTypeRefer("DATA_TYPE,FULL_TYPE");
+        adapter.setPositionRefer("ORDINAL_POSITION");
+        adapter.setCommentRefer("COLUMN_COMMENT");//SQL组装
+        adapter.setDefaultRefer("COLUMN_DEFAULT");
+        return adapter;
     }
     /* *****************************************************************************************************************
      *
@@ -2463,6 +2481,92 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
         return super.columns(runtime, create, columns, table, pattern);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 根据系统表查询SQL获取表结构
+     * 根据查询结果集构造Column,并分配到各自的表中
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条SQL 对照 buildQueryColumnsRun返回顺序
+     * @param create 上一步没有查到的,这一步是否需要新创建
+     * @param tables 表
+     * @param columns 上一步查询结果
+     * @param set 系统表查询SQL结果集
+     * @return columns
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+        return super.columns(runtime, index, create, tables, columns, set);
+    }
+
+    /**
+     * column[调用入口]<br/>(方法1)<br/>
+     * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+     * @param catalog catalog
+     * @param schema schema
+     * @param tables 表
+     * @return List
+     * @param <T> Column
+     */
+    @Override
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables){
+        return super.columns(runtime, random, greedy, catalog, schema, tables);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 列基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row 系统表查询SQL结果集
+     * @param <T> Column
+     */
+    @Override
+    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+        return super.init(runtime, index, meta, table, row);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 列详细属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 系统表查询SQL结果集
+     * @return Column
+     * @param <T> Column
+     */
+    @Override
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+        return super.detail(runtime, index, meta, catalog, schema, row);
+    }
+
+    /**
+     * column[结构集封装-依据]<br/>
+     * 读取column元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return ColumnMetadataAdapter
+     */
+    @Override
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+        return defaultColumnMetadataAdapter;
+    }
+
+    /**
+     * column[结构集封装-依据]<br/>
+     * 读取column元数据结果集的依据(需要区分数据类型)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
+     * @return ColumnMetadataAdapter
+     */
+    @Override
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataAdapter(runtime, meta);
     }
 
     /* *****************************************************************************************************************

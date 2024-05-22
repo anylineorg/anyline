@@ -25,6 +25,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -76,6 +77,23 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public String name(Type type){
         return types.get(type);
+    }
+
+    private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+    public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+        ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
+        adapter.setNameRefer("COLUMN_NAME");
+        adapter.setCatalogRefer("");//忽略
+        adapter.setSchemaRefer("TABLE_SCHEMA");
+        adapter.setTableRefer("TABLE_NAME");
+        adapter.setNullableRefer("IS_NULLABLE");
+        adapter.setCharsetRefer("CHARACTER_SET_NAME");
+        adapter.setCollateRefer("COLLATION_NAME");
+        adapter.setDataTypeRefer("COLUMN_TYPE");
+        adapter.setPositionRefer("ORDINAL_POSITION");
+        adapter.setCommentRefer("COLUMN_COMMENT");
+        adapter.setDefaultRefer("COLUMN_DEFAULT");
+        return adapter;
     }
     /* *****************************************************************************************************************
      *
@@ -2508,6 +2526,57 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, String pattern) throws Exception {
         return super.columns(runtime, create, columns, table, pattern);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 列基础属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row 系统表查询SQL结果集
+     * @param <T> Column
+     */
+    @Override
+    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+        return super.init(runtime, index, meta, table, row);
+    }
+
+    /**
+     * column[结果集封装]<br/>(方法1)<br/>
+     * 列详细属性
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 上一步封装结果
+     * @param row 系统表查询SQL结果集
+     * @return Column
+     * @param <T> Column
+     */
+    @Override
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+        return super.detail(runtime, index, meta, catalog, schema, row);
+    }
+
+    /**
+     * column[结构集封装-依据]<br/>
+     * 读取column元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return ColumnMetadataAdapter
+     */
+    @Override
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+        return defaultColumnMetadataAdapter;
+    }
+
+    /**
+     * column[结构集封装-依据]<br/>
+     * 读取column元数据结果集的依据(需要区分数据类型)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param meta 具体数据类型,length/precisoin/scale三个属性需要根据数据类型覆盖通用配置
+     * @return ColumnMetadataAdapter
+     */
+    @Override
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+        return super.columnMetadataAdapter(runtime, meta);
     }
 
     /* *****************************************************************************************************************
