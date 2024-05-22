@@ -18,9 +18,12 @@
 
 package org.anyline.data.param;
 
-import org.anyline.entity.Compare;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.entity.Compare;
+import org.anyline.metadata.Column;
+import org.anyline.util.SQLUtil;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
  
@@ -38,4 +41,26 @@ public interface ConfigChain extends Config{
 	void setValue(Map<String,Object> values);
 	List<Config> getConfigs();
 	ConditionChain createAutoConditionChain();
+
+	/**
+	 * 过滤不存在的列
+	 * @param metadatas 可用范围
+	 */
+	default void filter(LinkedHashMap<String, Column> metadatas){
+		List<Config> configs = getConfigs();
+		if(null != configs){
+			int size = configs.size();
+			for(int i=size-1; i>=0; i--){
+				Config config = configs.get(i);
+				if(config instanceof ConfigChain){
+					((ConfigChain)config).filter(metadatas);
+				}else {
+					String key = config.getKey();
+					if (null != key && SQLUtil.isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())) {
+						configs.remove(key);
+					}
+				}
+			}
+		}
+	}
 }

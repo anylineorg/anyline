@@ -22,30 +22,22 @@ import org.anyline.adapter.DataReader;
 import org.anyline.adapter.DataWriter;
 import org.anyline.adapter.EntityAdapter;
 import org.anyline.adapter.KeyAdapter;
-import org.anyline.data.adapter.DriverWorker;
-import org.anyline.metadata.adapter.*;
-import org.anyline.proxy.ConvertProxy;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.prepare.SyntaxHelper;
-import org.anyline.data.prepare.init.DefaultVariable;
-import org.anyline.metadata.graph.EdgeTable;
-import org.anyline.metadata.graph.VertexTable;
-import org.anyline.util.SQLUtil;
+import org.anyline.data.adapter.DriverWorker;
 import org.anyline.data.cache.PageLazyStore;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
 import org.anyline.data.metadata.TypeMetadataAlias;
-import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.Variable;
+import org.anyline.data.prepare.*;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
+import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
@@ -56,9 +48,14 @@ import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
-import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.adapter.*;
+import org.anyline.metadata.graph.EdgeTable;
+import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
+import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.metadata.type.init.StandardTypeMetadata;
 import org.anyline.proxy.CacheProxy;
+import org.anyline.proxy.ConvertProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.*;
@@ -1987,30 +1984,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(null != table) {
 						LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
 						//检测不存在的列
-						OrderStore ods = run.getOrderStore();
-						if (null != ods) {
-							List<Order> orders = ods.getOrders();
-							if (null != orders) {
-								int size = orders.size();
-								for (int i = size - 1; i >= 0; i--) {
-									Order order = orders.get(i);
-									String column = order.getColumn();
-									if (isSingleColumn(column) && !metadatas.containsKey(column.toUpperCase())) {
-										orders.remove(order);
-									}
-								}
-							}
+						OrderStore orders = run.getOrderStore();
+						if (null != orders) {
+							orders.filter(metadatas);
 						}
 						if(null != prepare) {
-							LinkedHashMap<String, Column> columns = prepare.getColumns();
-							if(null != columns){
-								List<String> keys = BeanUtil.getMapKeys(columns);
-								for(String key:keys){
-									if(isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())){
-										columns.remove(key);
-									}
-								}
-							}
+							prepare.filter(metadatas);
+						}
+						ConditionChain chain = run.getConditionChain();
+						if(null != chain){
+							chain.filter(metadatas);
+						}
+						if(null != configs){
+							configs.filter(metadatas);
 						}
 					}
 				}
@@ -2020,15 +2006,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		convert(runtime, configs, run);
 		return run;
-	}
-	public static boolean isSingleColumn(String column){
-		if(null != column){
-			column = column.trim();
-			if(!RegularUtil.match(column, "^[a-zA-Z0-9_]+$")){
-				return false;
-			}
-		}
-		return true;
 	}
 	/**
 	 * 解析文本中的占位符

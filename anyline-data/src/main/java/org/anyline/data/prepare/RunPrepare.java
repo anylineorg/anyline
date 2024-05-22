@@ -24,6 +24,8 @@ import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
 import org.anyline.metadata.Table;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -224,4 +226,21 @@ public interface RunPrepare extends Cloneable {
 
 	ConfigStore condition();
 	RunPrepare condition(ConfigStore configs);
+
+	/**
+	 * 过滤不存在的列
+	 * @param metadatas 可用范围
+	 */
+	default void filter(LinkedHashMap<String, Column> metadatas){
+		LinkedHashMap<String, Column> columns = getColumns();
+		if(null != columns){
+			List<String> keys = BeanUtil.getMapKeys(columns);
+			for(String key:keys){
+				if(SQLUtil.isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())){
+					columns.remove(key);
+				}
+			}
+		}
+	}
+
 } 

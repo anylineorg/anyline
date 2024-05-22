@@ -20,6 +20,7 @@ package org.anyline.data.param;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
+import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
@@ -825,6 +826,17 @@ public interface ConfigStore extends Cloneable{
 	}
 	default ConfigStore between(String var, Object min, Object max){
 		return and(Compare.BETWEEN, var, Arrays.asList(min,max));
+	}
+	/**
+	 * 过滤不存在的列
+	 * @param metadatas 可用范围
+	 */
+	default void filter(LinkedHashMap<String, Column> metadatas){
+		ConfigChain chain = getConfigChain();
+		if(null != chain){
+			chain.filter(metadatas);
+		}
+
 	}
 
 	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){

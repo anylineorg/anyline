@@ -230,4 +230,13 @@ public class SQLUtil {
 		}
 		return null;
 	}
+	public static boolean isSingleColumn(String column){
+		if(null != column){
+			column = column.trim();
+			if(!RegularUtil.match(column, "^[a-zA-Z0-9_]+$")){
+				return false;
+			}
+		}
+		return true;
+	}
 } 

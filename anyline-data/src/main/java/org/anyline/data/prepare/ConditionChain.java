@@ -17,8 +17,12 @@
 
 
 package org.anyline.data.prepare;
- 
-import java.util.List; 
+
+import org.anyline.metadata.Column;
+import org.anyline.util.SQLUtil;
+
+import java.util.LinkedHashMap;
+import java.util.List;
  
 public interface ConditionChain extends Condition {
 	/** 
@@ -39,4 +43,21 @@ public interface ConditionChain extends Condition {
 	List<Condition> getConditions();
 	ConditionChain clone();
 
+	/**
+	 * 过滤不存在的列
+	 * @param metadatas 可用范围
+	 */
+	default void filter(LinkedHashMap<String, Column> metadatas){
+		List<Condition> cons = getConditions();
+		if(null != cons){
+			int size = cons.size();
+			for(int i=size-1; i>=0; i--){
+				Condition con = cons.get(i);
+				String id = con.getId();
+				if(null != id && SQLUtil.isSingleColumn(id) && !metadatas.containsKey(id.toUpperCase())){
+					cons.remove(con);
+				}
+			}
+		}
+	}
 } 

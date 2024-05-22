@@ -17,8 +17,12 @@
 
 
 package org.anyline.entity;
- 
+
+import org.anyline.metadata.Column;
+import org.anyline.util.SQLUtil;
+
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.List;
  
 public interface OrderStore extends Cloneable, Serializable{
@@ -31,9 +35,28 @@ public interface OrderStore extends Cloneable, Serializable{
 	void order(String col, String type);
 	void order(String str, boolean override) ;
 	void order(String str) ;
-	public Order getOrder(String order); 
-	public String getRunText(String delimiter);
+	Order getOrder(String order);
+	String getRunText(String delimiter);
 	void clear();
 	boolean isEmpty();
 	OrderStore clone();
+
+	/**
+	 * 过滤不存在的列
+	 * @param metadatas 可用范围
+	 */
+	default void filter(LinkedHashMap<String, Column> metadatas){
+		List<Order> orders = getOrders();
+		if (null != orders) {
+			int size = orders.size();
+			for (int i = size - 1; i >= 0; i--) {
+				Order order = orders.get(i);
+				String column = order.getColumn();
+				if (SQLUtil.isSingleColumn(column) && !metadatas.containsKey(column.toUpperCase())) {
+					orders.remove(order);
+				}
+			}
+		}
+	}
+
 } 
