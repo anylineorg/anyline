@@ -1994,8 +1994,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								int size = orders.size();
 								for (int i = size - 1; i >= 0; i--) {
 									Order order = orders.get(i);
-									String colunn = order.getColumn();
-									if (!metadatas.containsKey(colunn.toUpperCase())) {
+									String column = order.getColumn();
+									if (isSingleColumn(column) && !metadatas.containsKey(column.toUpperCase())) {
 										orders.remove(order);
 									}
 								}
@@ -2006,7 +2006,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							if(null != columns){
 								List<String> keys = BeanUtil.getMapKeys(columns);
 								for(String key:keys){
-									if(!metadatas.containsKey(key.toUpperCase())){
+									if(isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())){
 										columns.remove(key);
 									}
 								}
@@ -2020,6 +2020,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		convert(runtime, configs, run);
 		return run;
+	}
+	public static boolean isSingleColumn(String column){
+		if(null != column){
+			column = column.trim();
+			if(!RegularUtil.match(column, "^[a-zA-Z0-9_]+$")){
+				return false;
+			}
+		}
+		return true;
 	}
 	/**
 	 * 解析文本中的占位符
