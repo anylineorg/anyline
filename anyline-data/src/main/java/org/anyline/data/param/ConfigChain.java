@@ -55,7 +55,7 @@ public interface ConfigChain extends Config{
 				if(config instanceof ConfigChain){
 					((ConfigChain)config).filter(metadatas);
 				}else {
-					String key = config.getKey();
+					String key = config.getVariable();
 					if (null != key && SQLUtil.isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())) {
 						configs.remove(key);
 					}

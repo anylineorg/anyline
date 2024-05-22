@@ -53,9 +53,13 @@ public interface ConditionChain extends Condition {
 			int size = cons.size();
 			for(int i=size-1; i>=0; i--){
 				Condition con = cons.get(i);
-				String id = con.getId();
-				if(null != id && SQLUtil.isSingleColumn(id) && !metadatas.containsKey(id.toUpperCase())){
-					cons.remove(con);
+				if(con instanceof ConditionChain){
+					((ConditionChain)con).filter(metadatas);
+				}else {
+					String id = con.getId();
+					if (null != id && SQLUtil.isSingleColumn(id) && !metadatas.containsKey(id.toUpperCase())) {
+						cons.remove(con);
+					}
 				}
 			}
 		}
