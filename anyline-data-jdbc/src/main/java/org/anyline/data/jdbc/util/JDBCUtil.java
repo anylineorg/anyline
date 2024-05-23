@@ -360,7 +360,9 @@ public class JDBCUtil {
                 try {
                     Column column = metadatas.get(name.toUpperCase());
                     //Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-                    Object value = adapter.read(runtime, column, rs.getObject(name), null);
+                    Object origin = rs.getObject(name);
+                    row.putOrigin(name, origin);
+                    Object value = adapter.read(runtime, column, origin, null);
                     if (upper) {
                         name = name.toUpperCase();
                     }
