@@ -20,7 +20,7 @@ package org.anyline.data.prepare;
  
 import java.util.List;
  
-public interface GroupStore{
+public interface GroupStore extends Cloneable{
 	List<Group> getGroups();
 	void group(Group group) ;
 	/** 

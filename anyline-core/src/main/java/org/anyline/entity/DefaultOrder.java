@@ -76,13 +76,13 @@ public class DefaultOrder implements Order{
 	} 
 	public DefaultOrder clone() {
 		DefaultOrder clone = null;
-		try {
+		try{
 			clone = (DefaultOrder) super.clone();
-		}catch (Exception e){
+		}catch (Exception ignored){
 			clone = new DefaultOrder();
-			clone.type = this.type;
-			clone.column = this.column;
 		}
+		clone.type = this.type;
+		clone.column = this.column;
 		return clone;
 	}
 	@Override

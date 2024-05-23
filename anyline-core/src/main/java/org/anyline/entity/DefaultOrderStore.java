@@ -136,8 +136,8 @@ public class DefaultOrderStore implements OrderStore{
 		DefaultOrderStore clone = null;
 		try{
 			clone = (DefaultOrderStore)super.clone();
-		}catch (Exception e){
-			clone = new DefaultOrderStore();
+		}catch (Exception ignored){
+			clone = new DefaultOrderStore();;
 		}
 		if(null != this.orders){
 			List<Order> orders = new ArrayList<>();

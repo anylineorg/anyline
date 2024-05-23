@@ -181,7 +181,6 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     }
     public E clone() {
         E copy = super.clone();
-
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         for(Column column:this.columns.values()){
             Column col = column.clone();

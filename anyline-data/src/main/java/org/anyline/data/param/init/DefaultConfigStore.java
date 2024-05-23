@@ -1621,7 +1621,12 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore clone() {
-		DefaultConfigStore clone = new DefaultConfigStore();
+		DefaultConfigStore clone = null;
+		try{
+			clone = (DefaultConfigStore)super.clone();
+		}catch (Exception ignored){
+			clone = new DefaultConfigStore();
+		}
 		if(null != this.orders) {
 			clone.setOrders(orders.clone());
 		}

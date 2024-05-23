@@ -71,7 +71,12 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		return this; 
 	} 
 	public DefaultXMLPrepare clone() {
-		DefaultXMLPrepare clone = new DefaultXMLPrepare();
+		DefaultXMLPrepare clone = null;
+		try{
+			clone = (DefaultXMLPrepare)super.clone();
+		}catch (Exception e){
+			clone =new DefaultXMLPrepare();
+		}
 		clone.chain = chain.clone();
 		if(null != variables){
 			List<Variable> cVariables = new ArrayList<>();

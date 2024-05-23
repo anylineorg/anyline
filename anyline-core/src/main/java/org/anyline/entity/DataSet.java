@@ -940,7 +940,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 */
             }
         }
-        result.cloneProperty(this);
+        result.copyProperty(this);
         return result;
     }
     public DataSet distinct(List<String> keys) {
@@ -959,26 +959,31 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 }
             }
         }
-        result.cloneProperty(this);
+        result.copyProperty(this);
         return result;
     }
 
     public DataSet clone() {
-        DataSet set = new DataSet();
-        List<DataRow> rows = new ArrayList<DataRow>();
+        DataSet clone = null;
+        try{
+            clone = (DataSet) super.clone();
+        }catch (Exception ignored){
+            clone = new DataSet();
+        }
+        List<DataRow> rows = new ArrayList<>();
         for (DataRow row : this.rows) {
             rows.add(row.clone());
         }
-        set.setRows(rows);
-        set.cloneProperty(this);
-        return set;
+        clone.setRows(rows);
+        clone.copyProperty(this);
+        return clone;
     }
 
-    private DataSet cloneProperty(DataSet from) {
-        return cloneProperty(from, this);
+    private DataSet copyProperty(DataSet from) {
+        return copyProperty(from, this);
     }
 
-    public static DataSet cloneProperty(DataSet from, DataSet to) {
+    public static DataSet copyProperty(DataSet from, DataSet to) {
         if (null != from && null != to) {
             to.exception = from.exception;
             to.message = from.message;
@@ -1271,7 +1276,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             }
         }//end for rows
 
-        set.cloneProperty(this);
+        set.copyProperty(this);
         return set;
     }
 
@@ -1344,7 +1349,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 set.add(getRow(i));
             }
         }
-        set.cloneProperty(this);
+        set.copyProperty(this);
         return set;
     }
 
@@ -4848,7 +4853,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 }
             }
         }
-        set.cloneProperty(this);
+        set.copyProperty(this);
         return set;
     }
 
@@ -4933,7 +4938,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 set.add(row);
             }
         }
-        set.cloneProperty(this);
+        set.copyProperty(this);
         return set;
     }
 
@@ -5059,7 +5064,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5107,7 +5112,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5152,7 +5157,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5197,7 +5202,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5236,7 +5241,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5273,7 +5278,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5310,7 +5315,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5329,7 +5334,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     set.add(row);
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5355,7 +5360,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5510,7 +5515,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5562,7 +5567,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5614,7 +5619,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 
@@ -5666,7 +5671,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                     }
                 }
             }
-            set.cloneProperty(src);
+            set.copyProperty(src);
             return set;
         }
 

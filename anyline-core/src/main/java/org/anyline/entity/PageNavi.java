@@ -20,7 +20,7 @@ package org.anyline.entity;
 
 import java.io.Serializable;
 
-public interface PageNavi extends Serializable{
+public interface PageNavi extends Serializable, Cloneable{
 	/**
 	 * 查询结果行数
 	 * @param size 查询结果行数

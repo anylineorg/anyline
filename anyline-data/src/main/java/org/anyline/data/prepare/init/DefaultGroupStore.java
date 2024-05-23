@@ -108,12 +108,17 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 		return true;
 	}
 	public GroupStore clone(){
-		DefaultGroupStore store = new DefaultGroupStore();
+		DefaultGroupStore clone = null;
+		try{
+			clone = (DefaultGroupStore)super.clone();
+		}catch (Exception e){
+			clone = new DefaultGroupStore();
+		}
 		if(null != groups){
 			for(Group group:groups){
-				store.group(group.clone());
+				clone.group(group.clone());
 			}
 		}
-		return store;
+		return clone;
 	}
 } 
