@@ -871,4 +871,14 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	public String ajax(){
 		return html("ajax","post");
 	}
+
+	public PageNavi clone(){
+		PageNavi clone = null;
+		try{
+			clone = (PageNavi)super.clone();
+		}catch (Exception e){
+			clone = new DefaultPageNavi();
+		}
+		return clone;
+	}
 }

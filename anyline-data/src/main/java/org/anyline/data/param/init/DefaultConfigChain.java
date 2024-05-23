@@ -257,7 +257,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 			if(null == config){
 				continue;
 			}
-			clone.addConfig(config.clone());
+			clone.configs.add(config.clone());
 		}
 		return clone;
 	}

@@ -1621,18 +1621,19 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore clone() {
-		DefaultConfigStore clone = null;
-		try{
-			clone = (DefaultConfigStore)super.clone();
-		}catch (Exception e){
-			clone = new DefaultConfigStore();
-		}
+		DefaultConfigStore clone = new DefaultConfigStore();
 		if(null != this.orders) {
 			clone.setOrders(orders.clone());
 		}
-		clone.setGroups(this.getGroups());
-		clone.setPageNavi(this.getPageNavi());
-		clone.chain = (ConfigChain)this.chain.clone();
+		GroupStore groups = this.getGroups();
+		if(null != groups) {
+			clone.setGroups(groups.clone());
+		}
+		PageNavi navi = this.getPageNavi();
+		if(null != navi) {
+			clone.setPageNavi(navi.clone());
+		}
+		clone.chain =this.chain.clone();
 		return clone;
 	}
 }

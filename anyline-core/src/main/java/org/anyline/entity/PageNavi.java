@@ -221,4 +221,6 @@ public interface PageNavi extends Serializable{
 	 */
 	PageNavi total(boolean required);
 	Boolean requiredTotal();
+
+	PageNavi clone();
 }

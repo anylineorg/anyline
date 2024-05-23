@@ -42,6 +42,7 @@ public interface ConfigChain extends Config{
 	List<Config> getConfigs();
 	ConditionChain createAutoConditionChain();
 
+	ConfigChain clone();
 	/**
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围

@@ -331,12 +331,7 @@ public class DefaultConfig implements Config {
 	}
 	@Override
 	public Config clone() {
-		DefaultConfig clone = null;
-		try{
-			clone = (DefaultConfig)super.clone();
-		}catch (Exception e){
-			clone = new DefaultConfig();
-		}
+		DefaultConfig clone = new DefaultConfig();
 		clone.parser = this.parser;
 		clone.empty = this.empty;
 		List<Object> values = new ArrayList<>();

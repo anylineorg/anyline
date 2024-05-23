@@ -964,15 +964,10 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public DataSet clone() {
-        DataSet set = null;
-        try{
-            set = (DataSet)super.clone();
-        }catch (Exception e){
-            set = new DataSet();
-        }
+        DataSet set = new DataSet();
         List<DataRow> rows = new ArrayList<DataRow>();
         for (DataRow row : this.rows) {
-            rows.add((DataRow) row.clone());
+            rows.add(row.clone());
         }
         set.setRows(rows);
         set.cloneProperty(this);

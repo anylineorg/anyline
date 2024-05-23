@@ -35,4 +35,5 @@ public interface GroupStore{
 	String getRunText(String delimiter);
 	void clear();
 	boolean isEmpty();
+	GroupStore clone();
 } 

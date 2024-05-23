@@ -18,15 +18,14 @@
 
 package org.anyline.data.prepare.xml.init;
 
-import org.anyline.data.prepare.Condition;
-import org.anyline.data.prepare.ConditionChain;
-import org.anyline.data.prepare.RunPrepare;
-import org.anyline.data.prepare.Variable;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ParseResult;
+import org.anyline.data.prepare.Condition;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.SyntaxHelper;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
-import org.anyline.data.prepare.SyntaxHelper;
 import org.anyline.data.prepare.xml.XMLPrepare;
 import org.anyline.entity.Compare;
 import org.anyline.metadata.Catalog;
@@ -72,12 +71,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		return this; 
 	} 
 	public DefaultXMLPrepare clone() {
-		DefaultXMLPrepare clone = null;
-		try{
-			clone = (DefaultXMLPrepare)super.clone();
-		}catch (Exception e){
-			clone = new DefaultXMLPrepare();
-		}
+		DefaultXMLPrepare clone = new DefaultXMLPrepare();
 		clone.chain = chain.clone();
 		if(null != variables){
 			List<Variable> cVariables = new ArrayList<>();

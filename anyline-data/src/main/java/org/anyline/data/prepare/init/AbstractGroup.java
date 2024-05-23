@@ -38,13 +38,8 @@ public class AbstractGroup implements Group{
 		} 
 	} 
 	public AbstractGroup clone() {
-		AbstractGroup clone = null;
-		try {
-			clone = (AbstractGroup) super.clone();
-		}catch (Exception e){
-			clone = new AbstractGroup();
-			clone.column = this.column;
-		}
+		AbstractGroup clone = new AbstractGroup();
+		clone.column = this.column;
 		return clone; 
 	} 
 } 
