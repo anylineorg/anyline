@@ -6680,10 +6680,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             return "now()";
         }
         if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE){
-            return "now()";
+            return "curdate()";
         }
         if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
-            return "now()";
+            return "curtime()";
         }
         if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP){
             return "now()";

@@ -249,6 +249,7 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 		DefaultConfigChain clone = null;
 		try{
 			clone = (DefaultConfigChain) super.clone();
+			clone.configs = new ArrayList<>();
 		}catch (Exception e) {
 			clone = new DefaultConfigChain();
 		}
