@@ -384,59 +384,59 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , REAL(CATEGORY.FLOAT, "REAL", DOUBLE, Double.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT8(CATEGORY.INT, "Int8", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_INT8(CATEGORY.INT, "Int8", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return SHORT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT16(CATEGORY.INT, "Int16", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_INT16(CATEGORY.INT, "Int16", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return TINYINT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT32(CATEGORY.INT, "Int32", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_INT32(CATEGORY.INT, "Int32", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return SMALLINT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT64(CATEGORY.INT, "Int64", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_INT64(CATEGORY.INT, "Int64", INTEGER, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return BIGINT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT128(CATEGORY.INT, "Int128", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_INT128(CATEGORY.INT, "Int128", INTEGER, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT256(CATEGORY.INT, "Int256", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_INT256(CATEGORY.INT, "Int256", INTEGER, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
 
-    ,CLICKHOUSE_UINT8(CATEGORY.INT, "UInt8", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_UINT8(CATEGORY.INT, "UInt8", INTEGER, Short.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT16(CATEGORY.INT, "UInt16", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_UINT16(CATEGORY.INT, "UInt16", INTEGER, Short.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT32(CATEGORY.INT, "UInt32", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_UINT32(CATEGORY.INT, "UInt32", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT64(CATEGORY.INT, "UInt64", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_UINT64(CATEGORY.INT, "UInt64", INTEGER, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT128(CATEGORY.INT, "UInt128", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_UINT128(CATEGORY.INT, "UInt128", INTEGER, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT256(CATEGORY.INT, "UInt256", INTEGER, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_UINT256(CATEGORY.INT, "UInt256", INTEGER, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "Float32", FLOAT, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "Float32", FLOAT, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "Float64", DOUBLE, Double.class, 1, 1, 1, ClickHouse){
+    ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "Float64", DOUBLE, Long.class, 1, 1, 1, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL32(CATEGORY.FLOAT, "Decimal32", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+    ,CLICKHOUSE_DECIMAL32(CATEGORY.FLOAT, "Decimal32", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL64(CATEGORY.FLOAT, "Decimal64", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+    ,CLICKHOUSE_DECIMAL64(CATEGORY.FLOAT, "Decimal64", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL128(CATEGORY.FLOAT, "Decimal128", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+    ,CLICKHOUSE_DECIMAL128(CATEGORY.FLOAT, "Decimal128", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL256(CATEGORY.FLOAT, "Decimal256", DECIMAL, Double.class, 1, 0, 2, ClickHouse){
+    ,CLICKHOUSE_DECIMAL256(CATEGORY.FLOAT, "Decimal256", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
         public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************

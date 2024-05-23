@@ -269,7 +269,7 @@ public class SpringJDBCWorker implements DriverWorker {
                             mid[0] = System.currentTimeMillis();
                             process[0] = true;
                         }
-                        DataRow row = org.anyline.data.jdbc.util.JDBCUtil.row(adapter, system, rt, metadatas, configs, rs);
+                        DataRow row = JDBCUtil.row(adapter, system, rt, metadatas, configs, rs);
                         set.add(row);
                     }
                 });
@@ -346,7 +346,7 @@ public class SpringJDBCWorker implements DriverWorker {
                     }
 
                 }
-                org.anyline.data.jdbc.util.JDBCUtil.queryTimeout(cs, null);
+                JDBCUtil.queryTimeout(cs, null);
                 return cs;
             }
         }, new CallableStatementCallback<Object>(){
