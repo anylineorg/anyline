@@ -69,6 +69,22 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Schema schema					= null					;
 	protected Table table					= null					;
 
+	public String json(){
+		StringBuilder builder = new StringBuilder();
+		DataRow row = new OriginRow();
+		DataRow columns = row.put("columns");
+		columns.put("query", queryColumns);
+		columns.put("exclude", excludeColumns);
+		builder.append("{");
+		builder.append(columns.toJSON());
+		builder.append("}");
+		DataRow conditions = row.put("conditions");
+		if(null != conditions){
+			builder.append("\"conditions\":").append(conditions.toJSON());
+		}
+		builder.append("}");
+		return builder.toString();
+	}
 	@Override
 	public Table table() {
 		return table;

@@ -41,7 +41,7 @@ import java.util.*;
  * 
  */
 public interface ConfigStore extends Cloneable{
-
+	String json();
 	/**
 	 * 设置查询或操作的数据源
 	 * @param datasource 查询或操作的数据源
