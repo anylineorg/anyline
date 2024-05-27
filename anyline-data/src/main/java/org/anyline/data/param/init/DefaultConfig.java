@@ -50,7 +50,10 @@ public class DefaultConfig implements Config {
 	protected boolean integrality    = true	 ; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	public DefaultConfig(){
 		this.parser = new ParseResult();
-	} 
+	}
+	public DefaultConfig(ParseResult parser){
+		this.parser = parser;
+	}
 	public String toString(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("join", this.getJoin());
@@ -91,7 +94,7 @@ public class DefaultConfig implements Config {
 		}
 		row.put("over_condition", overCondition);
 		row.put("over_value", overValue);
-		//row.put("parser", parser.map(empty));
+		row.put("parser", parser.map(empty));
 		return row;
 	}
 	public String json(){

@@ -16,17 +16,231 @@
 
 package org.anyline.data.param;
 
+import org.anyline.adapter.KeyAdapter;
+import org.anyline.data.param.init.DefaultConfig;
+import org.anyline.data.param.init.DefaultConfigChain;
 import org.anyline.data.param.init.DefaultConfigStore;
+import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+
+import java.util.List;
 
 public class ConfigBuilder {
     public static ConfigStore build(String json){
-        ConfigStore configs = new DefaultConfigStore();
-        DataRow row = DataRow.parseJson(json);
+        DataRow row = DataRow.parseJson(KeyAdapter.KEY_CASE.UPPER, json);
+        ConfigStore configs = parse(row);
         return configs;
+    }
+    public static ConfigStore parse(DataRow row){
+        DefaultConfigStore configs = new DefaultConfigStore();
+        DataRow conditions = row.getRow("conditions");
+        if(null != conditions){
+            ConfigChain chain = parseConfigChain(conditions);
+            configs.setChain(chain);
+        }
+        DataRow columns = row.getRow("columns");
+        if(null != columns){
+            List<String> query = (List<String>)columns.getList("query");
+            configs.columns(query);
+            List<String> excludes = (List<String>)columns.getList("exclude");
+            configs.excludes(excludes);
+        }
+        return configs;
+    }
+    public static Config parseConfig(DataRow row){
+        Config config = null;
+        DataSet items = row.getSet("items");
+        if(null != items && !items.isEmpty()){
+            config = parseConfigChain(row);
+        }else {
+            ParseResult parser = new ParseResult();
+            parser.setVar(row.getString("var"));
+            config = new DefaultConfig(parser);
+            config.setJoin(row.getString("join"));
+            config.setText(row.getString("text"));
+            config.setKey(row.getString("key"));
+            config.setValue(row.get("values"));
+            config.setCompare(compare(row.getInt("compare", Compare.EQUAL.getCode())));
+        }
+        return config;
+    }
+    public static ConfigChain parseConfigChain(DataRow row){
+        ConfigChain chain = null;
+        chain = new DefaultConfigChain();
+        chain.setJoin(row.getString("join"));
+        chain.setText(row.getString("text"));
+        DataSet items = row.getSet("items");
+        if(null != items){
+            for(DataRow item:items){
+                Config config = parseConfig(item);
+                if(null != config){
+                    chain.addConfig(config);
+                }
+            }
+        }
+        return chain;
+    }
+    public static Compare compare(int code){
+        for(Compare compare:Compare.values()){
+            if(compare.getCode() == code){
+                return compare;
+            }
+        }
+        return Compare.EQUAL;
     }
 }
 /*
+{
+    "columns": {
+        "query": [
+
+        ],
+        "exclude": [
+
+        ]
+    },
+    "conditions": {
+        "join": "AND",
+        "items": [
+            {
+                "join": "AND",
+                "items": [
+                    {
+                        "join": "AND",
+                        "text": null,
+                        "key": null,
+                        "var": "ID",
+                        "compare": 10,
+                        "values": [
+                            1
+                        ],
+                        "over_condition": false,
+                        "over_value": true,
+                        "parser": {
+                            "prefix": null,
+                            "var": "ID",
+                            "class": null,
+                            "method": null,
+                            "key": null,
+                            "default": [
+
+                            ],
+                            "compare": 10,
+                            "join": "AND"
+                        }
+                    },
+                    {
+                        "join": "AND",
+                        "text": null,
+                        "key": null,
+                        "var": "NAME",
+                        "compare": 50,
+                        "values": [
+                            "ZH"
+                        ],
+                        "over_condition": false,
+                        "over_value": true,
+                        "parser": {
+                            "prefix": null,
+                            "var": "NAME",
+                            "class": null,
+                            "method": null,
+                            "key": null,
+                            "default": [
+
+                            ],
+                            "compare": 50,
+                            "join": "AND"
+                        }
+                    },
+                    {
+                        "join": "AND",
+                        "text": null,
+                        "key": null,
+                        "var": "TYPE_CODE",
+                        "compare": 40,
+                        "values": [
+                            "1",
+                            "2",
+                            "3"
+                        ],
+                        "over_condition": false,
+                        "over_value": true,
+                        "parser": {
+                            "prefix": null,
+                            "var": "TYPE_CODE",
+                            "class": null,
+                            "method": null,
+                            "key": null,
+                            "default": [
+
+                            ],
+                            "compare": 40,
+                            "join": "AND"
+                        }
+                    }
+                ]
+            },
+            {
+                "join": "OR",
+                "items": [
+                    {
+                        "join": "AND",
+                        "items": [
+                            {
+                                "join": "AND",
+                                "text": null,
+                                "key": null,
+                                "var": "A",
+                                "compare": 10,
+                                "values": [
+                                    1
+                                ],
+                                "over_condition": false,
+                                "over_value": true,
+                                "parser": {
+                                    "prefix": null,
+                                    "var": "A",
+                                    "class": null,
+                                    "method": null,
+                                    "key": null,
+                                    "default": [
+
+                                    ],
+                                    "compare": 10,
+                                    "join": "AND"
+                                }
+                            },
+                            {
+                                "join": "OR",
+                                "text": null,
+                                "key": null,
+                                "var": "B",
+                                "compare": 10,
+                                "values": null,
+                                "over_condition": false,
+                                "over_value": true,
+                                "parser": {
+                                    "prefix": null,
+                                    "var": "B",
+                                    "class": null,
+                                    "method": null,
+                                    "key": null,
+                                    "default": [
+
+                                    ],
+                                    "compare": 10,
+                                    "join": "OR"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
 {
         tables:[{
             table:'hr_department'    //数据源-关联表名
@@ -40,7 +254,7 @@ public class ConfigBuilder {
                 relattion_column:'department_id'   //比较列名
             }] //end-relattions
         }] //end-tables
-         
+
         ,conditions:[{                             //过滤条件
             join:'and'
             table:'hr_employee'
@@ -69,9 +283,4 @@ public class ConfigBuilder {
             column:'type_id'
         }]
 }
-
-
-
-
-
 * */
