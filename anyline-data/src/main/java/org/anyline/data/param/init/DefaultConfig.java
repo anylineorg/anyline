@@ -68,23 +68,24 @@ public class DefaultConfig implements Config {
 			join = join.trim();
 		}
 		row.put("join", join);
-		if(BasicUtil.isEmpty(text) || empty) {
+		if(empty || BasicUtil.isNotEmpty(text)) {
 			row.put("text", text);
 		}
 		String key = getKey();
-		if(BasicUtil.isEmpty(key) || empty) {
+		if(empty || BasicUtil.isNotEmpty(key)) {
 			row.put("key", key);
 		}
 		String var = getVariable();
-		if(BasicUtil.isEmpty(var) || empty) {
-			row.put("var", getVariable());
+		if(empty || BasicUtil.isNotEmpty(var)) {
+			row.put("var", var);
 		}
+		row.put("compare", getCompareCode());
 		if("or".equalsIgnoreCase(join)) {
-			if(BasicUtil.isNotEmpty(orValues) || empty) {
+			if(empty || BasicUtil.isNotEmpty(orValues)) {
 				row.put("values", orValues);
 			}
 		}else{
-			if(BasicUtil.isNotEmpty(values) || empty) {
+			if(empty || BasicUtil.isNotEmpty(values)) {
 				row.put("values", values);
 			}
 		}
@@ -243,12 +244,19 @@ public class DefaultConfig implements Config {
  
 	public void setKey(String key) {
 		parser.setKey(key); 
-	} 
- 
+	}
+
 	public Compare getCompare() {
-		return parser.getCompare(); 
-	} 
- 
+		return parser.getCompare();
+	}
+	public int getCompareCode() {
+		Compare compare = parser.getCompare();
+		if(null != compare){
+			return compare.getCode();
+		}
+		return Compare.EQUAL.getCode();
+	}
+
 	public void setCompare(Compare compare) {
 		parser.setCompare(compare); 
 	} 

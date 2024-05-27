@@ -73,10 +73,10 @@ public class DefaultConfigStore implements ConfigStore {
 		DataRow columns = new OriginRow();
 		columns.put("query", queryColumns);
 		columns.put("exclude", excludeColumns);
-		if(!excludeColumns.isEmpty() || !queryColumns.isEmpty() || empty) {
+		if(empty || !excludeColumns.isEmpty() || !queryColumns.isEmpty()) {
 			row.put("columns", columns);
 		}
-		columns.put("conditions", chain.map());
+		row.put("conditions", chain.map(empty));
 		return row;
 	}
 	@Override

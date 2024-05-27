@@ -61,22 +61,22 @@ public class ParseResult {
 	}
 	public DataRow map(boolean empty){
 		DataRow row = new OriginRow();
-		if(BasicUtil.isNotEmpty(prefix) || empty) {
+		if(empty || BasicUtil.isNotEmpty(prefix)) {
 			row.put("prefix", prefix);
 		}
-		if(BasicUtil.isNotEmpty(var) || empty) {
+		if(empty || BasicUtil.isNotEmpty(var)) {
 			row.put("var", var);
 		}
-		if(BasicUtil.isNotEmpty(clazz) || empty) {
+		if(empty || BasicUtil.isNotEmpty(clazz)) {
 			row.put("class", clazz);
 		}
-		if(BasicUtil.isNotEmpty(method) || empty) {
+		if(empty || BasicUtil.isNotEmpty(method)) {
 			row.put("method", method);
 		}
-		if(BasicUtil.isNotEmpty(key) || empty) {
+		if(empty || BasicUtil.isNotEmpty(key)) {
 			row.put("key", key);
 		}
-		if(BasicUtil.isNotEmpty(defs) || empty) {
+		if(empty || BasicUtil.isNotEmpty(true, defs)) {
 			row.put("default", defs);
 		}
 		row.put("compare", compare.getCode());
