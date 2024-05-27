@@ -56,11 +56,23 @@ public class ConfigBuilder {
         }else {
             ParseResult parser = new ParseResult();
             parser.setVar(row.getString("var"));
+            DataRow parse = row.getRow("parser");
+            if(null != parse){
+                parser.setPrefix(parse.getString("prefix"));
+                parser.setVar(parse.getString("var"));
+                parser.setClazz(parse.getString("class"));
+                parser.setMethod(parse.getString("method"));
+                parser.setKey(parse.getString("key"));
+                parser.setJoin(parse.getString("join"));
+                parser.setCompare(compare(parse.getInt("compare", Compare.EQUAL.getCode())));
+            }
             config = new DefaultConfig(parser);
             config.setJoin(row.getString("join"));
             config.setText(row.getString("text"));
             config.setKey(row.getString("key"));
             config.setValue(row.get("values"));
+            config.setOverCondition(row.getBoolean("over_condition", false));
+            config.setOverValue(row.getBoolean("over_value", true));
             config.setCompare(compare(row.getInt("compare", Compare.EQUAL.getCode())));
         }
         return config;
@@ -93,12 +105,8 @@ public class ConfigBuilder {
 /*
 {
     "columns": {
-        "query": [
-
-        ],
-        "exclude": [
-
-        ]
+        "query": [],
+        "exclude": []
     },
     "conditions": {
         "join": "AND",
@@ -112,9 +120,7 @@ public class ConfigBuilder {
                         "key": null,
                         "var": "ID",
                         "compare": 10,
-                        "values": [
-                            1
-                        ],
+                        "values": [ 1],
                         "over_condition": false,
                         "over_value": true,
                         "parser": {
