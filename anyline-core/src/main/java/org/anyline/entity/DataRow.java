@@ -2375,6 +2375,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public String toJSON() {
         return BeanUtil.map2json(this);
     }
+    public String json(){
+        return toJSON();
+    }
 
     public String toJson() {
         return toJSON();

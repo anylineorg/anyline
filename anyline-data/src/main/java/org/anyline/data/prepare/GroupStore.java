@@ -36,4 +36,6 @@ public interface GroupStore extends Cloneable{
 	void clear();
 	boolean isEmpty();
 	GroupStore clone();
+
+
 } 

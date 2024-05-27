@@ -24,6 +24,9 @@ import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.entity.Compare;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.OriginRow;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
-	private List<Config> configs = new ArrayList<Config>();
+	private List<Config> configs = new ArrayList<>();
 	 
 	public DefaultConfigChain(){}
 	public String toString(){
@@ -44,11 +47,34 @@ public class DefaultConfigChain extends DefaultConfig implements ConfigChain {
 				if(null == str){
 					str = conf.toString();
 				}else{
-					str += "," + conf.toString();
+					str += "," + conf;
 				}
 			}
 		}
 		return "["+str+"]";
+	}
+
+	public DataRow map(){
+		return map(true);
+	}
+	public DataRow map(boolean empty){
+		DataRow row = new OriginRow();
+		String join = getJoin();
+		if(null != join){
+			join = join.trim();
+		}
+		row.put("join", join);
+		if((null != configs && !configs.isEmpty()) || empty) {
+			DataSet set = new DataSet();
+			for (Config config : configs) {
+				set.add(config.map(empty));
+			}
+			row.put("items", set);
+		}
+		return row;
+	}
+	public String json(){
+		return map().json();
 	}
 	public String cacheKey(){
 		String str = null;

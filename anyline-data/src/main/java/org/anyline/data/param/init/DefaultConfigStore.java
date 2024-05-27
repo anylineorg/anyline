@@ -20,7 +20,6 @@ package org.anyline.data.param.init;
 
 import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.handler.DataHandler;
-import org.anyline.data.handler.StreamHandler;
 import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigChain;
 import org.anyline.data.param.ConfigStore;
@@ -69,21 +68,16 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Schema schema					= null					;
 	protected Table table					= null					;
 
-	public String json(){
-		StringBuilder builder = new StringBuilder();
+	public DataRow map(boolean empty){
 		DataRow row = new OriginRow();
-		DataRow columns = row.put("columns");
+		DataRow columns = new OriginRow();
 		columns.put("query", queryColumns);
 		columns.put("exclude", excludeColumns);
-		builder.append("{");
-		builder.append(columns.toJSON());
-		builder.append("}");
-		DataRow conditions = row.put("conditions");
-		if(null != conditions){
-			builder.append("\"conditions\":").append(conditions.toJSON());
+		if(!excludeColumns.isEmpty() || !queryColumns.isEmpty() || empty) {
+			row.put("columns", columns);
 		}
-		builder.append("}");
-		return builder.toString();
+		columns.put("conditions", chain.map());
+		return row;
 	}
 	@Override
 	public Table table() {

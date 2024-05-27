@@ -18,10 +18,11 @@
 
 package org.anyline.data.param;
 
-import org.anyline.entity.Compare;
 import org.anyline.data.prepare.Condition;
 import org.anyline.data.prepare.ConditionChain;
+import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.entity.DataRow;
 
 import java.util.List;
 import java.util.Map;
@@ -106,4 +107,20 @@ public interface Config extends Cloneable {
 
 	Config clone();
 	String toString();
+
+	/**
+	 * 属性转map
+	 * @param empty 是否保留空值属性
+	 * @return DataRow
+	 */
+	DataRow map(boolean empty);
+	default DataRow map(){
+		return map(false);
+	}
+	default String json(boolean empty){
+		return map(empty).json();
+	}
+	default String json(){
+		return json(false);
+	}
 }

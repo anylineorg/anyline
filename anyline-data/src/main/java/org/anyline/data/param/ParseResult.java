@@ -21,6 +21,9 @@ package org.anyline.data.param;
 import org.anyline.data.prepare.Condition;
 import org.anyline.entity.Compare;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
+import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +50,45 @@ public class ParseResult {
 	 
 	private boolean setEncrypt = false		; // 是否已指定加密方式
  
-	private List<ParseResult> defs = new ArrayList<ParseResult>();	// 默认值 
+	private List<ParseResult> defs = new ArrayList<>();	// 默认值
 	private ParseResult or = null;	// or 只有value或defs有值时 ors才生效
 	private Compare compare = Compare.EQUAL			; // 比较方式
 	private String join = Condition.CONDITION_JOIN_TYPE_AND			; // 连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; // request取值方式
-	 
+
+	public DataRow map(){
+		return map(false);
+	}
+	public DataRow map(boolean empty){
+		DataRow row = new OriginRow();
+		if(BasicUtil.isNotEmpty(prefix) || empty) {
+			row.put("prefix", prefix);
+		}
+		if(BasicUtil.isNotEmpty(var) || empty) {
+			row.put("var", var);
+		}
+		if(BasicUtil.isNotEmpty(clazz) || empty) {
+			row.put("class", clazz);
+		}
+		if(BasicUtil.isNotEmpty(method) || empty) {
+			row.put("method", method);
+		}
+		if(BasicUtil.isNotEmpty(key) || empty) {
+			row.put("key", key);
+		}
+		if(BasicUtil.isNotEmpty(defs) || empty) {
+			row.put("default", defs);
+		}
+		row.put("compare", compare.getCode());
+		row.put("join", join.trim());
+		return row;
+	}
+	public String json(){
+		return json(false);
+	}
+	public String json(boolean empty){
+		return map(empty).json();
+	}
 	public List<ParseResult> getDefs(){
 		return defs; 
 	} 

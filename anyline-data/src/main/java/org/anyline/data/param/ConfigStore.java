@@ -23,11 +23,8 @@ import org.anyline.data.handler.DataHandler;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
-import org.anyline.entity.Compare;
+import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -41,7 +38,22 @@ import java.util.*;
  * 
  */
 public interface ConfigStore extends Cloneable{
-	String json();
+
+	/**
+	 * 属性转map
+	 * @param empty 是否保留空值属性
+	 * @return DataRow
+	 */
+	DataRow map(boolean empty);
+	default DataRow map(){
+		return map(false);
+	}
+	default String json(boolean empty){
+		return map(empty).json();
+	}
+	default String json(){
+		return json(false);
+	}
 	/**
 	 * 设置查询或操作的数据源
 	 * @param datasource 查询或操作的数据源

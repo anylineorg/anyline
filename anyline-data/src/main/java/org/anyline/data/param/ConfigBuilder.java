@@ -25,14 +25,6 @@ public class ConfigBuilder {
         DataRow row = DataRow.parseJson(json);
         return configs;
     }
-
-    public static void main(String[] args) {
-        DefaultConfigStore configs = new DefaultConfigStore();
-        configs.and("ID", 100);
-        configs.and("CODE", 200);
-
-        System.out.println();
-    }
 }
 /*
 {

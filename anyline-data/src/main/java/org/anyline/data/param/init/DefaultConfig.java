@@ -27,6 +27,8 @@ import org.anyline.data.prepare.ConditionChain;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.data.prepare.auto.init.DefaultAutoConditionChain;
 import org.anyline.entity.Compare;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.OriginRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.util.BeanUtil;
@@ -59,13 +61,48 @@ public class DefaultConfig implements Config {
 		map.put("values", values);
 		return BeanUtil.map2json(map);
 	}
+	public DataRow map(boolean empty){
+		DataRow row = new OriginRow();
+		String join = getJoin();
+		if(null != join){
+			join = join.trim();
+		}
+		row.put("join", join);
+		if(BasicUtil.isEmpty(text) || empty) {
+			row.put("text", text);
+		}
+		String key = getKey();
+		if(BasicUtil.isEmpty(key) || empty) {
+			row.put("key", key);
+		}
+		String var = getVariable();
+		if(BasicUtil.isEmpty(var) || empty) {
+			row.put("var", getVariable());
+		}
+		if("or".equalsIgnoreCase(join)) {
+			if(BasicUtil.isNotEmpty(orValues) || empty) {
+				row.put("values", orValues);
+			}
+		}else{
+			if(BasicUtil.isNotEmpty(values) || empty) {
+				row.put("values", values);
+			}
+		}
+		row.put("over_condition", overCondition);
+		row.put("over_value", overValue);
+		row.put("parser", parser.map(empty));
+		return row;
+	}
+	public String json(){
+		return map().json();
+	}
 	public String cacheKey(){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("prefix", this.getPrefix());
 		map.put("compare", this.getCompare().getCode());
 		map.put("values", values);
 		return BeanUtil.map2json(map);
-	} 
+	}
  
 	/** 
 	 * 解析配置 
