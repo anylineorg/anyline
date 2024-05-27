@@ -91,7 +91,7 @@ public class DefaultConfig implements Config {
 		}
 		row.put("over_condition", overCondition);
 		row.put("over_value", overValue);
-		row.put("parser", parser.map(empty));
+		//row.put("parser", parser.map(empty));
 		return row;
 	}
 	public String json(){

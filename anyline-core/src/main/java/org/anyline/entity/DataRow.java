@@ -3206,6 +3206,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public boolean isReplaceEmptyNull(){
         return replaceEmptyNull;
     }
+    public DataRow setReplaceEmptyNull(boolean val){
+        replaceEmptyNull = val;
+        return this;
+    }
 
     public void setInsertEmptyColumn(boolean insertEmptyColumn) {
         this.insertEmptyColumn = insertEmptyColumn;
