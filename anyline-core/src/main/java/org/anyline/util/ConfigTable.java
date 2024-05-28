@@ -73,6 +73,7 @@ public class ConfigTable {
 	public static boolean IS_LOG_SQL_TIME								= true			;	// 执行SQL时是否输出耗时日志
 	public static boolean IS_LOG_ADAPTER_MATCH							= false			;	// 是否输出adapter匹配过程日志
 
+	public static boolean IS_LOG_CONVERT_EXCEPTION						= false			;   // 是否记录convert异常提示()
 	public static boolean IS_THROW_CONVERT_EXCEPTION					= false			;   // 是否抛出convert异常提示()
 	public static boolean IS_PRINT_EXCEPTION_STACK_TRACE				= false			;   // 捕捉但未抛出的异常是否显示详细信息
 	public static long SLOW_SQL_MILLIS									= 0				; 	// 慢SQL, 如果配置了>0的毫秒数, 在SQL执行超出时限后会输出日志, 并调用DMListener.slow

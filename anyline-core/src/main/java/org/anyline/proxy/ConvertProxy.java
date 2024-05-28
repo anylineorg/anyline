@@ -179,7 +179,7 @@ public class ConvertProxy {
                         success = true;
                     }catch (ConvertException e){
                         //TODO 根据异常信息 决定下一行
-                        if(warn) {
+                        if(ConfigTable.IS_LOG_CONVERT_EXCEPTION){
                             e.printStackTrace();
                         }
                     }
@@ -193,7 +193,7 @@ public class ConvertProxy {
                     result = target.cast(value);
                     success = true;
                 }catch (Exception e){
-                    if(warn) {
+                    if(ConfigTable.IS_LOG_CONVERT_EXCEPTION){
                         e.printStackTrace();
                     }
                 }
@@ -201,7 +201,7 @@ public class ConvertProxy {
             if(!success && warn){
                 log.warn("[{}][origin:{}][target:{}][value:{}]", LogUtil.format("convert定位失败", 31), ClassUtil.type(clazz), ClassUtil.type(target), value);
                 if(ConfigTable.IS_THROW_CONVERT_EXCEPTION){
-                    throw new RuntimeException();
+                    throw new RuntimeException("类型转换异常");
                 }
             }
         }
