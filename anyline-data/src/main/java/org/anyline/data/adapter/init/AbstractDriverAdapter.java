@@ -15226,9 +15226,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			LinkedHashMap<String, Column> columns = table.getColumns();
 
 			if (ConfigTable.IS_AUTO_CHECK_METADATA) {
-				if (null == columns || columns.isEmpty()) {
+				//if (null == columns || columns.isEmpty()) {
+				//有可能是通过class解析解析的columns以数据库为准
 					columns = columns(runtime, null, false, table, false);
-				}
+				//}
 			}
 			List<RunValue> values = run.getRunValues();
 			if (null != values) {

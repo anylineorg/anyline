@@ -3838,6 +3838,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				column.setTable(table);
 			}
 		}
+		//table有可能根据class解析设置过columns以这里为准
+		table.setColumns(columns);
 		return columns;
 	}
 
