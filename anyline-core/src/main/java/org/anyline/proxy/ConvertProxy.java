@@ -193,6 +193,9 @@ public class ConvertProxy {
                     result = target.cast(value);
                     success = true;
                 }catch (Exception e){
+                    if(warn) {
+                        e.printStackTrace();
+                    }
                 }
             }
             if(!success && warn){
