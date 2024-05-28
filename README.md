@@ -8,7 +8,9 @@
 [【多数据源事务控制】](http://doc.anyline.org/ss/23_1189)  
 低代码平台、数据中台等场景需要生成SQL/操作元数据参考  
 [【JDBCAdapter】](http://doc.anyline.org/ss/01_1193)
-[【SQL及日志】](http://doc.anyline.org/aa/70_3793)
+[【返回SQL方言、导出SQL】](http://doc.anyline.org/aa/70_3793)
+[【表结构差异对比及生成DDL】](http://doc.anyline.org/aa/a2_3936)
+[【ConfigStore与JSON互换】](http://doc.anyline.org/aa/73_13975)
 [【service.metadata】](http://doc.anyline.org/ss/22_1174)
 [【SQL.metadata】](http://doc.anyline.org/aa/c1_3847)
 
@@ -21,9 +23,9 @@
 有问题请不要自行百度，因为百度收录的内容有可能过期或版本不一致, 有问题请联系
 
 
-|   [<img src="http://cdn.anyline.org/img/user/alq.png" width="150">](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)   |   <img src="http://cdn.anyline.org/img/user/alvg.png" width="150">    | <img src="http://cdn.anyline.org/img/user/alv.png" width="150"> |
-|:-------:|:--------:|:---------------------------------------------------------------:|
-|   QQ群(86020680)   |   微信群    |                           过期或满员联系管理员                            |
+|   [<img src="http://cdn.anyline.org/img/user/alq.png" width="150">](http://shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad)   | [<img src="http://cdn.anyline.org/img/user/alvg.png" width="150">](http://www.anyline.org/ss/9f_17) | [<img src="http://cdn.anyline.org/img/user/alv.png" width="150">](http://www.anyline.org/ss/9f_17) |
+|:-------:|:--------------------------------------------------------------------:|:-------------------------------------------------------------------:|
+|   QQ群(86020680)   |                                 微信群                                  |                             过期或满员联系管理员                              |
 
 ## 简介
 AnyLine的核心是一个面向运行时的D-ORM(动态对象关系映射)  
