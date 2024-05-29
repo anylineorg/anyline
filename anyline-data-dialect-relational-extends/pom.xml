@@ -22,9 +22,9 @@
 		<module>anyline-data-jdbc-gaiadb</module>			<!--百度-->
 		<module>anyline-data-jdbc-goldendb</module>			<!--中兴-->
 		<module>anyline-data-jdbc-greatdb</module>			<!--万里数据库-->
-		<module>anyline-data-jdbc-kundb</module>				<!--星环-->
+		<module>anyline-data-jdbc-kundb</module>			<!--星环-->
 		<module>anyline-data-jdbc-lightdb</module>			<!--恒生电子-->
-		<module>anyline-data-jdbc-mogdb</module>				<!--云和恩墨-->
+		<module>anyline-data-jdbc-mogdb</module>			<!--云和恩墨-->
 		<module>anyline-data-jdbc-mudb</module>				<!--沐融信息科技-->
 		<module>anyline-data-jdbc-oceanbase</module>
 		<module>anyline-data-jdbc-polardb</module>

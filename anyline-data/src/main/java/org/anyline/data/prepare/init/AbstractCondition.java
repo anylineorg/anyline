@@ -204,12 +204,12 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
-	public EMPTY_VALUE_SWITCH getSwitch() {
+	public EMPTY_VALUE_SWITCH getSwt() {
 		return swt;
 	}
 
 	@Override
-	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+	public void setSwt(EMPTY_VALUE_SWITCH swt) {
 		this.swt = swt;
 	}
 

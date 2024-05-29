@@ -2737,17 +2737,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public List<String> getUpdateColumns() {
+        //不要过滤主键，在上层方法根据情况过滤
         return updateColumns;
     }
     public LinkedHashMap<String, Column> getUpdateColumns(boolean metadata) {
         LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
-        if(null != updateColumns){
-            for(String column:updateColumns){
+        List<String> cols = getUpdateColumns();
+        if(null != cols) {
+            for (String column : cols) {
                 Column col = null;
-                if(null != metadatas){
+                if (null != metadatas) {
                     col = metadatas.get(column.toUpperCase());
                 }
-                if(null == col){
+                if (null == col) {
                     col = new Column(column);
                 }
                 columns.put(column.toUpperCase(), col);

@@ -81,6 +81,7 @@ public class ParseResult {
 		}
 		row.put("compare", compare.getCode());
 		row.put("join", join.trim());
+		row.put("swt", swt);
 		return row;
 	}
 	public String json(){
@@ -168,9 +169,9 @@ public class ParseResult {
 	public void setPrefix(String prefix) {
 		if(null != prefix){
 			if(prefix.startsWith("++")){
-				setSwitch(EMPTY_VALUE_SWITCH.BREAK);
+				setSwt(EMPTY_VALUE_SWITCH.BREAK);
 			}else if(prefix.startsWith("+")){
-				setSwitch(EMPTY_VALUE_SWITCH.NULL);
+				setSwt(EMPTY_VALUE_SWITCH.NULL);
 			}
 			prefix = prefix.replace("+","");
 		}
@@ -195,11 +196,11 @@ public class ParseResult {
 		this.args = args;
 	}
 
-	public EMPTY_VALUE_SWITCH getSwitch() {
+	public EMPTY_VALUE_SWITCH getSwt() {
 		return swt;
 	}
 
-	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+	public void setSwt(EMPTY_VALUE_SWITCH swt) {
 		this.swt = swt;
 	}
 	public boolean isRequired(){

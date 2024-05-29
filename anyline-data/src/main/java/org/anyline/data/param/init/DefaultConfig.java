@@ -197,7 +197,7 @@ public class DefaultConfig implements Config {
 	 */ 
 	public Condition createAutoCondition(ConditionChain chain){
 		Condition condition = null;
-		EMPTY_VALUE_SWITCH swt = parser.getSwitch();
+		EMPTY_VALUE_SWITCH swt = parser.getSwt();
 		if(!isEmpty() || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){ //非空 或 IS NULL 或 = ''
 			if(this instanceof ConfigChain){
 				condition = new DefaultAutoConditionChain((ConfigChain)this);
@@ -217,7 +217,7 @@ public class DefaultConfig implements Config {
 			} 
 		}
 		if(null != condition){
-			condition.setSwitch(getSwitch());
+			condition.setSwt(getSwt());
 			//condition.apart(apart);
 			condition.integrality(integrality);
 		}
@@ -267,7 +267,7 @@ public class DefaultConfig implements Config {
 	public boolean isEmpty() {
 		EMPTY_VALUE_SWITCH sw = null;
 		if(null != parser){
-			sw = parser.getSwitch();
+			sw = parser.getSwt();
 		}
 		if(sw == EMPTY_VALUE_SWITCH.NULL || sw == EMPTY_VALUE_SWITCH.SRC){
 			return false;
@@ -347,13 +347,13 @@ public class DefaultConfig implements Config {
 	}
 
 	@Override
-	public EMPTY_VALUE_SWITCH getSwitch() {
-		return parser.getSwitch();
+	public EMPTY_VALUE_SWITCH getSwt() {
+		return parser.getSwt();
 	}
 
 	@Override
-	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
-		this.parser.setSwitch(swt);
+	public void setSwt(EMPTY_VALUE_SWITCH swt) {
+		this.parser.setSwt(swt);
 	}
 
 /*

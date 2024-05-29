@@ -99,9 +99,9 @@ public interface Condition extends Cloneable{
 	int getVariableType();
 	void setVariableType(int variableType);
 
-	EMPTY_VALUE_SWITCH getSwitch() ;
+	EMPTY_VALUE_SWITCH getSwt() ;
 
-	void setSwitch(EMPTY_VALUE_SWITCH swt) ;
+	void setSwt(EMPTY_VALUE_SWITCH swt) ;
 	/* ************************************************************************************************************ 
 	 *  
 	 * 													 自动生成 

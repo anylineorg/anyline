@@ -89,8 +89,8 @@ public interface Config extends Cloneable {
 	void setOverValue(boolean over);
 	boolean isOverCondition();
 	boolean isOverValue();
-	void setSwitch(EMPTY_VALUE_SWITCH swt);
-	EMPTY_VALUE_SWITCH getSwitch();
+	void setSwt(EMPTY_VALUE_SWITCH swt);
+	EMPTY_VALUE_SWITCH getSwt();
 
 	/**
 	 * 是否需要跟前面的条件 隔离，前面所有条件加到()中

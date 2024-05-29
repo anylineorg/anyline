@@ -737,7 +737,7 @@ public abstract class BasicRun implements Run {
 	}
 
 	@Override
-	public void setSwitch(EMPTY_VALUE_SWITCH swt) {
+	public void setSwt(EMPTY_VALUE_SWITCH swt) {
 		this.swt = swt;
 	}
 	@Override
@@ -902,7 +902,7 @@ public abstract class BasicRun implements Run {
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
-						addCondition(parser.getSwitch(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
+						addCondition(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
 						continue;
 					}
 				}

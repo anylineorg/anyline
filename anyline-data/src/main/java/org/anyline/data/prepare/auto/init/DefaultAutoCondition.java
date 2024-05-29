@@ -59,12 +59,12 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
-		setSwitch(config.getSwitch());
+		setSwt(config.getSwt());
 		setRunText(config.getText());
 		if(BasicUtil.isNotEmpty(text)){
 			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		}
-		if(BasicUtil.isNotEmpty(text) || BasicUtil.isNotEmpty(true, values) || config.getSwitch() == EMPTY_VALUE_SWITCH.NULL || config.getSwitch() == EMPTY_VALUE_SWITCH.SRC){
+		if(BasicUtil.isNotEmpty(text) || BasicUtil.isNotEmpty(true, values) || config.getSwt() == EMPTY_VALUE_SWITCH.NULL || config.getSwt() == EMPTY_VALUE_SWITCH.SRC){
 			setActive(true); 
 		} 
 	} 
@@ -76,7 +76,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @param compare  比较方式 
 	 */ 
 	public DefaultAutoCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object values){
-		setSwitch(swt);
+		setSwt(swt);
 		setTable(prefix);
 		setColumn(var);
 		setValues(values);

@@ -23,6 +23,7 @@ import org.anyline.data.param.init.DefaultConfigStore;
 import org.anyline.entity.Compare;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.util.BasicUtil;
 
 import java.util.List;
 
@@ -65,6 +66,12 @@ public class ConfigBuilder {
                 parser.setKey(parse.getString("key"));
                 parser.setJoin(parse.getString("join"));
                 parser.setCompare(compare(parse.getInt("compare", Compare.EQUAL.getCode())));
+                String swt = parse.getString("swt");
+                if(BasicUtil.isNotEmpty(swt)){
+                    try {
+                        parser.setSwt(Compare.EMPTY_VALUE_SWITCH.valueOf(swt));
+                    }catch (Exception ignored){}
+                }
             }
             config = new DefaultConfig(parser);
             config.setJoin(row.getString("join"));

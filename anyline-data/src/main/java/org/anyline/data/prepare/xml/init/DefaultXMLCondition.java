@@ -60,7 +60,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 				} 
 				cVariables.add(var.clone());
 			}
-			clone.setSwitch(swt);
+			clone.setSwt(swt);
 			clone.variables = cVariables; 
 		} 
 		return clone; 
@@ -104,7 +104,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 			} 
 			if(variable.equalsIgnoreCase(v.getKey())){
 				v.setValue(values);
-				Compare.EMPTY_VALUE_SWITCH swt = v.getSwitch();
+				Compare.EMPTY_VALUE_SWITCH swt = v.getSwt();
 				if(BasicUtil.isNotEmpty(true,values) || swt == Compare.EMPTY_VALUE_SWITCH.NULL || swt == Compare.EMPTY_VALUE_SWITCH.SRC){
 					setActive(true); 
 				} 

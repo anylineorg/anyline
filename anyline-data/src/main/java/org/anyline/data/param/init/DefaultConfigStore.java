@@ -47,10 +47,10 @@ public class DefaultConfigStore implements ConfigStore {
 	protected OrderStore orders										; // 排序依据
 	protected GroupStore groups;
 	protected String having;
-	protected List<String> queryColumns     = new ArrayList<>()		; // 查询的列
-	protected List<String> excludeColumns 	= new ArrayList<>()		; // 不查询的列
+	protected List<String> columns 			= new ArrayList<>()		; // 查询或插入或更新的列
+	protected List<String> excludes 		= new ArrayList<>()		; // 不查询或插入或更新的列
 	protected List<Object> values									; // 保存values后续parse用到
-	protected boolean cascade				= false					; // 是否开启级联操作
+	protected boolean cascade				= false					; // 是否开启级联操作(Graph库中用到)
 	protected boolean supportKeyHolder		= true					; // 是否支持返回自增主键值
 	protected List<String> keyHolders		= new ArrayList<>()		; // 自增主键值key
 
@@ -71,9 +71,9 @@ public class DefaultConfigStore implements ConfigStore {
 	public DataRow map(boolean empty){
 		DataRow row = new OriginRow();
 		DataRow columns = new OriginRow();
-		columns.put("query", queryColumns);
-		columns.put("exclude", excludeColumns);
-		if(empty || !excludeColumns.isEmpty() || !queryColumns.isEmpty()) {
+		columns.put("query", this.columns);
+		columns.put("exclude", excludes);
+		if(empty || !excludes.isEmpty() || !this.columns.isEmpty()) {
 			row.put("columns", columns);
 		}
 		row.put("conditions", chain.map(empty));
@@ -592,7 +592,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text){
 		Config conf = new DefaultConfig();
-		conf.setSwitch(swt);
+		conf.setSwt(swt);
 		conf.setText(text);
 		chain.addConfig(conf);
 		return this;
@@ -678,7 +678,7 @@ public class DefaultConfigStore implements ConfigStore {
 				conf.setCompare(compare);
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
-				conf.setSwitch(swt);
+				conf.setSwt(swt);
 				conf.setValue(value);
 				chain.addConfig(conf);
 			}else{
@@ -833,7 +833,7 @@ public class DefaultConfigStore implements ConfigStore {
 				conf.setCompare(compare);
 				conf.setPrefix(prefix);
 				conf.setVariable(var);
-				conf.setSwitch(swt);
+				conf.setSwt(swt);
 				conf.setValue(value);
 				newStore.and(conf);
 			}else{
@@ -1208,10 +1208,10 @@ public class DefaultConfigStore implements ConfigStore {
 		if(null != having){
 			return false;
 		}
-		if(null != queryColumns && !queryColumns.isEmpty()){
+		if(null != columns && !columns.isEmpty()){
 			return false;
 		}
-		if(null != excludeColumns && !excludeColumns.isEmpty()){
+		if(null != excludes && !excludes.isEmpty()){
 			return false;
 		}
 		if(null != values && !values.isEmpty()){
@@ -1423,36 +1423,36 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore columns(String ... columns){
 		if(null != columns){
 			for(String column:columns){
-				this.queryColumns.add(column);
+				this.columns.add(column);
 			}
 		}
 		return this;
 	}
 	public ConfigStore columns(List<String> columns){
 		if(null != columns){
-			this.queryColumns.addAll(columns);
+			this.columns.addAll(columns);
 		}
 		return this;
 	}
 	public List<String> columns(){
-		return queryColumns;
+		return columns;
 	}
 	public ConfigStore excludes(String ... columns){
 		if(null != columns){
 			for(String column:columns){
-				this.excludeColumns.add(column);
+				this.excludes.add(column);
 			}
 		}
 		return this;
 	}
 	public ConfigStore excludes(List<String> columns){
 		if(null != columns){
-			this.excludeColumns.addAll(columns);
+			this.excludes.addAll(columns);
 		}
 		return this;
 	}
 	public List<String> excludes(){
-		return excludeColumns;
+		return excludes;
 	}
 
 	/**
@@ -1500,7 +1500,7 @@ public class DefaultConfigStore implements ConfigStore {
 	public boolean isValid() {
 		if(null != chain){
 			for(Config config:chain.getConfigs()){
-				if(config.getSwitch() == EMPTY_VALUE_SWITCH.BREAK && config.isEmpty()){
+				if(config.getSwt() == EMPTY_VALUE_SWITCH.BREAK && config.isEmpty()){
 					return false;
 				}
 			}

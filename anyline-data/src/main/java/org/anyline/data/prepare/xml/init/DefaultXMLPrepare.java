@@ -156,7 +156,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 					if(null == var){
 						continue;
 					}
-					var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
+					var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
 					addVariable(var); 
 				}// end for 
 			}else{
@@ -166,7 +166,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
+						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
 						addVariable(var); 
 					} 
 				} 

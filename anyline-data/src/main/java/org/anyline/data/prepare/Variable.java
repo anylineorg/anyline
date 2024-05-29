@@ -58,8 +58,8 @@ public interface Variable extends Cloneable, Serializable{
 	int getType() ; 
 	void setType(int type) ;
 	Variable clone();
-	Compare.EMPTY_VALUE_SWITCH getSwitch() ;
+	Compare.EMPTY_VALUE_SWITCH getSwt() ;
 
-	void setSwitch(Compare.EMPTY_VALUE_SWITCH swt) ;
+	void setSwt(Compare.EMPTY_VALUE_SWITCH swt) ;
 	 
 } 

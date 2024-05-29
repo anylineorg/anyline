@@ -61,7 +61,7 @@ public class XMLRun extends BasicRun implements Run {
 		super.init(); 
 		if(null != configs){
 			for(Config conf: configs.getConfigChain().getConfigs()){
-				setConditionValue(conf.getSwitch(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
+				setConditionValue(conf.getSwt(), conf.getCompare(), conf.getPrefix(), conf.getVariable(), conf.getValues());
 			} 
 			 
 			OrderStore orderStore = configs.getOrders();
@@ -86,16 +86,16 @@ public class XMLRun extends BasicRun implements Run {
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE){
 					 value = BeanUtil.list(value);
 				} 
-				setConditionValue(parser.getSwitch(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
+				setConditionValue(parser.getSwt(), parser.getCompare(), parser.getPrefix(), parser.getVar(), value);
 			} 
 		} 
 		// 检查必须条件required strictRequired 
 		for(Condition con:conditionChain.getConditions()){
 			if(!con.isActive()){//没有根据value激活
-				if(con.getSwitch() == EMPTY_VALUE_SWITCH.BREAK){
+				if(con.getSwt() == EMPTY_VALUE_SWITCH.BREAK){
 					log.warn("[valid:false][不具备执行条件][con:{}]", con.getId());
 					this.valid = false; 
-				}else if(con.getSwitch() == EMPTY_VALUE_SWITCH.IGNORE){
+				}else if(con.getSwt() == EMPTY_VALUE_SWITCH.IGNORE){
 					log.warn("[valid:false][忽略当前条件][con:{}]", con.getId());
 				}else{
 					con.setActive(true);
@@ -127,7 +127,7 @@ public class XMLRun extends BasicRun implements Run {
 		} 
 		if(null != variables){
 			for(Variable var:variables){
-				if(var.getSwitch() == EMPTY_VALUE_SWITCH.BREAK){
+				if(var.getSwt() == EMPTY_VALUE_SWITCH.BREAK){
 					if(BasicUtil.isEmpty(true, var.getValues())){
 						log.warn("[valid:false][不具备执行条件][var:{}]", var.getKey());
 						this.valid = false; 

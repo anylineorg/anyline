@@ -189,12 +189,12 @@ public class DefaultVariable implements Variable {
 	}
 
 	@Override
-	public Compare.EMPTY_VALUE_SWITCH getSwitch() {
+	public Compare.EMPTY_VALUE_SWITCH getSwt() {
 		return swt;
 	}
 
 	@Override
-	public void setSwitch(Compare.EMPTY_VALUE_SWITCH swt) {
+	public void setSwt(Compare.EMPTY_VALUE_SWITCH swt) {
 		this.swt = swt;
 	}
 

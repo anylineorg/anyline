@@ -111,7 +111,7 @@ public class DefaultAutoPrepare extends AbstractRunPrepare implements AutoPrepar
 		if(condition.contains(":")){
 			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
-			addCondition(parser.getSwitch(), parser.getCompare(), parser.getVar(), value);
+			addCondition(parser.getSwt(), parser.getCompare(), parser.getVar(), value);
 		}else{
 			Condition con = new DefaultAutoCondition(condition);
 			chain.addCondition(con);

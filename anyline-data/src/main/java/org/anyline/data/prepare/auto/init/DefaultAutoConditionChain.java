@@ -68,8 +68,8 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			if(condition.getVariableType() == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE 
 					|| !BasicUtil.isEmpty(true, values)
 					|| condition.isActive()
-					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.NULL
-					|| condition.getSwitch() == Compare.EMPTY_VALUE_SWITCH.SRC
+					|| condition.getSwt() == Compare.EMPTY_VALUE_SWITCH.NULL
+					|| condition.getSwt() == Compare.EMPTY_VALUE_SWITCH.SRC
 			){
 				// condition instanceof ConditionChain
 				//是否需要跟前面的条件 隔离，前面所有条件加到()中

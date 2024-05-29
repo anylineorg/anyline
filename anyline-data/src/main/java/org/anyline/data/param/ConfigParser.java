@@ -161,7 +161,7 @@ public class ConfigParser {
 			var = var.substring(var.indexOf(".")+1,var.length());
 			result.setPrefix(prefix);//其他不指定
 		}
-		result.setSwitch(swt);
+		result.setSwt(swt);
 		result.setVar(var);
 		result.setKey(key);
 		return result;

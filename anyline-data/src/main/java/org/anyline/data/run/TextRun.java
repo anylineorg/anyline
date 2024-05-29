@@ -70,7 +70,7 @@ public class TextRun extends BasicRun implements Run {
 						}
 					} else{
 						//查询条件和SQL体变量赋值
-						setConditionValue(con.getSwitch(), con.getCompare(), con.getId(), null, con.getValues());
+						setConditionValue(con.getSwt(), con.getCompare(), con.getId(), null, con.getValues());
 					}
 				}
 			} 
@@ -102,7 +102,7 @@ public class TextRun extends BasicRun implements Run {
 							if (!isConVarSetValue || overValue) {
 								isUse = true;
 								con.setVariableSlave(true);
-								setConditionValue(conf.getSwitch(), conf.getCompare(), varKey, varKey, values);
+								setConditionValue(conf.getSwt(), conf.getCompare(), varKey, varKey, values);
 							}
 						}
 					}
@@ -183,7 +183,7 @@ public class TextRun extends BasicRun implements Run {
 					if(null == var){
 						continue;
 					}
-					var.setSwitch(EMPTY_VALUE_SWITCH.NULL);
+					var.setSwt(EMPTY_VALUE_SWITCH.NULL);
 					addVariable(var);
 				}// end for
 			}else{
@@ -193,7 +193,7 @@ public class TextRun extends BasicRun implements Run {
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setSwitch(EMPTY_VALUE_SWITCH.NULL);
+						var.setSwt(EMPTY_VALUE_SWITCH.NULL);
 						addVariable(var);
 					}
 				}

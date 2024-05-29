@@ -1220,11 +1220,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		boolean each = true;//是否需要从row中查找列
 		List<String> conditions = new ArrayList<>()							; // 更新条件
+		if(null == columns || columns.isEmpty()){
+			if(null != configs) {
+				columns = configs.columns();
+			}
+		}
 		LinkedHashMap<String, Column> masters = row.getUpdateColumns(true)		; // 必须更新列
 		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; // 必须不更新列
 		List<String> factKeys = new ArrayList<>()							; // 根据是否空值
 		BeanUtil.removeAll(ignores, columns);
-
+		if(null != configs){
+			BeanUtil.removeAll(configs.excludes(), columns);
+		}
 		if(null != columns && columns.size()>0){
 			each = false;
 			cols = new LinkedHashMap<>();
@@ -2042,7 +2049,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(null == var){
 						continue;
 					}
-					var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
+					var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
 					run.addVariable(var);
 				}// end for
 			}else{
@@ -2052,7 +2059,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					for(int i=0; i<idxKeys.size(); i++){
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
-						var.setSwitch(Compare.EMPTY_VALUE_SWITCH.NULL);
+						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
 						run.addVariable(var);
 					}
 				}

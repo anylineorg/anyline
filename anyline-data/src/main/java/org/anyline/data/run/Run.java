@@ -189,7 +189,7 @@ public interface Run {
 
 	EMPTY_VALUE_SWITCH getStrict();
 
-	void setSwitch(EMPTY_VALUE_SWITCH swt);
+	void setSwt(EMPTY_VALUE_SWITCH swt);
 	boolean isValid();
 	boolean checkValid();
 	void setValid(boolean valid);
