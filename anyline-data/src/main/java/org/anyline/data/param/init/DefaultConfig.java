@@ -44,8 +44,8 @@ public class DefaultConfig implements Config {
 	protected List<Object> orValues			 ; // OR VALUE
 	protected boolean empty					 ; // 是否值为空
 	protected ParseResult parser			 ; //
-	protected boolean overCondition  = false ; // 覆盖相同KEY的查询条件
-	protected boolean overValue		 = true  ; // 相同查询条件第二次赋值是否覆盖上一次的值，如果不覆盖则生成集合值
+	protected boolean overCondition  = false ; // 覆盖相同var的查询条件
+	protected boolean overValue		 = true  ; // 相同查询条件第二次赋值是否覆盖上一次的值，如果不覆盖则追加到集合中
 	//protected boolean apart          = false ; // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality    = true	 ; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	public DefaultConfig(){
