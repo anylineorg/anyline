@@ -20,9 +20,7 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.data.param.init.DefaultConfig;
 import org.anyline.data.param.init.DefaultConfigChain;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.entity.Compare;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
+import org.anyline.entity.*;
 import org.anyline.util.BasicUtil;
 
 import java.util.List;
@@ -47,7 +45,17 @@ public class ConfigBuilder {
             List<String> excludes = (List<String>)columns.getList("exclude");
             configs.excludes(excludes);
         }
+        DataRow navi = row.getRow("navi");
+        if(null != navi){
+            configs.setPageNavi(parseNavi(navi));
+        }
         return configs;
+    }
+    public static PageNavi parseNavi(DataRow row){
+        PageNavi navi = new DefaultPageNavi();
+        navi.setCurPage(row.getInt("page", 1));
+        navi.setPageRows(row.getInt("vol", PageNaviConfig.DEFAULT_VAR_PAGE_DEFAULT_VOL));
+        return navi;
     }
     public static Config parseConfig(DataRow row){
         Config config = null;

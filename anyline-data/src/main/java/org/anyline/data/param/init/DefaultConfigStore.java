@@ -77,6 +77,9 @@ public class DefaultConfigStore implements ConfigStore {
 			row.put("columns", columns);
 		}
 		row.put("conditions", chain.map(empty));
+		if(null != navi) {
+			row.put("navi", navi.map(empty));
+		}
 		return row;
 	}
 	@Override

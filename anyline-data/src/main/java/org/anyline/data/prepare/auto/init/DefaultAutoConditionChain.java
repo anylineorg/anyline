@@ -49,7 +49,8 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 	@Override
 	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder){
 		runValues = new ArrayList<>();
-		int size = conditions.size(); 
+		int size = conditions.size();
+		int active = 0; //有效条件
 		if(size == 0){
 			return ""; 
 		}
@@ -64,6 +65,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			if(BasicUtil.isEmpty(txt)){
 				continue;
 			}
+			active ++;
 			List<RunValue> values = condition.getRunValues();
 			if(condition.getVariableType() == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE 
 					|| !BasicUtil.isEmpty(true, values)
@@ -101,7 +103,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			StringBuilder builder = new StringBuilder();
 			//没有上一级 或者上一级中的已经添加了其他条件
 			if(!hasContainer() || getContainerJoinSize() > 0){
-				builder.append("\n").append(join);
+				builder.append("\n").append(join).append(" ");
 			}else{
 				builder.append("\n\t");
 			}
@@ -123,16 +125,16 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 				builder.append(")");
 			}*/
 
-			if(integrality && size >1) {
+			if(integrality && active >1) {
 				builder.append("(");
 			}
 			builder.append(sub);
-			if(integrality && size >1) {
+			if(integrality && active >1) {
 				builder.append(")");
 			}
 
 			builder.append("\n\t");
-			return builder.toString();
+			return builder.toString().replaceAll("(\n\\s*\n+)", "\n");
 		}else{
 			return "";
 		} 

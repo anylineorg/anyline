@@ -84,8 +84,12 @@ public class DefaultConfig implements Config {
 		}
 		row.put("compare", getCompareCode());
 		if("or".equalsIgnoreCase(join)) {
-			if(empty || BasicUtil.isNotEmpty(orValues)) {
-				row.put("values", orValues);
+			if(empty || BasicUtil.isNotEmpty(orValues) || BasicUtil.isNotEmpty(values)) {
+				if(BasicUtil.isEmpty(orValues)){
+					row.put("values", values);
+				}else {
+					row.put("values", orValues);
+				}
 			}
 		}else{
 			if(empty || BasicUtil.isNotEmpty(values)) {

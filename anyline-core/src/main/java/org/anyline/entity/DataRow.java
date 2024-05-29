@@ -108,7 +108,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         parseKeyCase(null);
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
         if (null != pk) {
-            primaryKeys.add(DEFAULT_PRIMARY_KEY);
+            primaryKeys.add(pk);
         }
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();

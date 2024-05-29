@@ -223,4 +223,20 @@ public interface PageNavi extends Serializable, Cloneable{
 	Boolean requiredTotal();
 
 	PageNavi clone();
+
+	/**
+	 * 属性转map
+	 * @param empty 是否保留空值属性
+	 * @return DataRow
+	 */
+	DataRow map(boolean empty);
+	default DataRow map(){
+		return map(false);
+	}
+	default String json(boolean empty){
+		return map(empty).json();
+	}
+	default String json(){
+		return json(false);
+	}
 }
