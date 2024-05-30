@@ -15114,7 +15114,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public Object read(DataRuntime runtime, Column metadata, Object value, Class clazz){
-		//Object result = ConvertAdapter.convert(value, clazz);
 		Object result = value;
 		if(null == value){
 			return null;

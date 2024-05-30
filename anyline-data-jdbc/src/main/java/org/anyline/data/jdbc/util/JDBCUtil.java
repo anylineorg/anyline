@@ -338,31 +338,36 @@ public class JDBCUtil {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int qty = rsmd.getColumnCount();
-            if (!system && (null == metadatas || metadatas.isEmpty())) {
-                for (int i = 1; i <= qty; i++) {
-                    String name = rsmd.getColumnLabel(i);
-                    if(null == name){
-                        name = rsmd.getColumnName(i);
+            if(null != metadatas){
+                //解析元数据，获取列名 如果是stream读取则跳过
+                if (!system && metadatas.isEmpty()) {
+                    for (int i = 1; i <= qty; i++) {
+                        String name = rsmd.getColumnLabel(i);
+                        if(null == name){
+                            name = rsmd.getColumnName(i);
+                        }
+                        if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")){
+                            continue;
+                        }
+                        Column column = metadatas.get(name) ;
+                        column = column(adapter, runtime, column, rsmd, i);
+                        metadatas.put(name.toUpperCase(), column);
                     }
-                    if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
-                        continue;
-                    }
-                    Column column = metadatas.get(name) ;
-                    column = column(adapter, runtime, (Column) column, rsmd, i);
-                    metadatas.put(name.toUpperCase(), column);
                 }
             }
             for (int i = 1; i <= qty; i++) {
                 String name = rsmd.getColumnLabel(i);
-                if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
+                if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")){
                     continue;
                 }
                 try {
-                    Column column = metadatas.get(name.toUpperCase());
-                    //Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
                     Object origin = rs.getObject(name);
                     row.putOrigin(name, origin);
-                    Object value = adapter.read(runtime, column, origin, null);
+                    Object value = origin;
+                    if(null != metadatas) {
+                        Column column = metadatas.get(name.toUpperCase());
+                        value = adapter.read(runtime, column, origin, null);
+                    }
                     if (upper) {
                         name = name.toUpperCase();
                     }
@@ -391,29 +396,34 @@ public class JDBCUtil {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int qty = rsmd.getColumnCount();
-            if (!system && (null == metadatas || metadatas.isEmpty())) {
-                for (int i = 1; i <= qty; i++) {
-                    String name = rsmd.getColumnLabel(i);
-                    if(null == name){
-                        name = rsmd.getColumnName(i);
+            if(null != metadatas) {
+                //解析元数据，获取列名 如果是stream读取则跳过
+                if (!system && metadatas.isEmpty()) {
+                    for (int i = 1; i <= qty; i++) {
+                        String name = rsmd.getColumnLabel(i);
+                        if (null == name) {
+                            name = rsmd.getColumnName(i);
+                        }
+                        if (null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
+                            continue;
+                        }
+                        Column column = metadatas.get(name);
+                        column = column(adapter, runtime, (Column) column, rsmd, i);
+                        metadatas.put(name.toUpperCase(), column);
                     }
-                    if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
-                        continue;
-                    }
-                    Column column = metadatas.get(name) ;
-                    column = column(adapter, runtime, (Column) column, rsmd, i);
-                    metadatas.put(name.toUpperCase(), column);
                 }
             }
             for (int i = 1; i <= qty; i++) {
                 String name = rsmd.getColumnLabel(i);
-                if(null == name || name.toUpperCase().equals("PAGE_ROW_NUMBER_")){
+                if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")){
                     continue;
                 }
                 try {
-                    Column column = metadatas.get(name.toUpperCase());
-                    //Object v = BeanUtil.value(column.getTypeName(), rs.getObject(name));
-                    Object value = adapter.read(runtime, column, rs.getObject(name), null);
+                    Object value = rs.getObject(name);
+                    if(null != metadatas) {
+                        Column column = metadatas.get(name.toUpperCase());
+                        value = adapter.read(runtime, column, value, null);
+                    }
                     map.put(name, value);
                 }catch (Exception e){
                     if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
