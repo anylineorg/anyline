@@ -38,7 +38,7 @@ public enum DMWriter {
             }
             return value;
         }
-    }), 
+    }),
     DateTimeWriter(new Object[]{Timestamp.class, java.util.Date.class, LocalDateTime.class}, new DataWriter() {
         @Override
         public Object write(Object value, boolean placeholder, TypeMetadata type) {
@@ -48,7 +48,7 @@ public enum DMWriter {
             }
             return value;
         }
-    }), 
+    })
     ;
     public Object[] supports(){
         return supports;
