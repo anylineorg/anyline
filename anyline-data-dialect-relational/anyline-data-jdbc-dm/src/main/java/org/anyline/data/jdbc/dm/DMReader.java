@@ -18,15 +18,44 @@
 
 package org.anyline.data.jdbc.dm;
 
+import dm.jdbc.driver.DmdbBlob;
+import dm.jdbc.driver.DmdbClob;
 import dm.jdbc.driver.DmdbNClob;
 import org.anyline.adapter.DataReader;
 
 public enum DMReader {
-    PointReader(new Object[]{DmdbNClob.class}, new DataReader() {
+    /**
+     * text类型
+     */
+    DmdbNClobReader(new Object[]{DmdbNClob.class}, new DataReader() {
         @Override
         public Object read(Object value) {
             if(value instanceof DmdbNClob) {
                 value = ((DmdbNClob)value).data;
+            }
+            return value;
+        }
+    }),
+    /**
+     * blob类型
+     */
+    DmdbBlobReader(new Object[]{DmdbBlob.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof DmdbBlob) {
+                value = ((DmdbBlob)value).data;
+            }
+            return value;
+        }
+    }),
+    /**
+     * clob类型
+     */
+    DmdbClobReader(new Object[]{DmdbClob.class}, new DataReader() {
+        @Override
+        public Object read(Object value) {
+            if(value instanceof DmdbClob) {
+                value = ((DmdbClob)value).data;
             }
             return value;
         }
