@@ -187,8 +187,7 @@ public class SQLUtil {
 					String replace = delimiterFr + key + delimiterTo;
 					src = src.replace(full, replace);
 				}
-			}catch (Exception e){
-				e.printStackTrace();
+			}catch (Exception ignored){
 			}
 		}
 

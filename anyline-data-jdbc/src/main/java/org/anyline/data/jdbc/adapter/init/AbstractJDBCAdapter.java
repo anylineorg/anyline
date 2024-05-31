@@ -3845,7 +3845,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					}
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
-						e.printStackTrace();
+						log.error("columns exception:", e);
 					}else {
 						if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
 							log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.toString());
@@ -3901,7 +3901,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
+				log.error("columns exception:", e);
 			}else{
 				log.error("{}[columns][result:fail][table:{}][msg:{}]", random, table, e.toString());
 			}
@@ -4371,7 +4371,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			} catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
+					log.error("tags exception:", e);
 				}
 				if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
 					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
@@ -4385,7 +4385,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					tags = tags(runtime, false, tags, table, null);
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
+						log.error("tags exception:", e);
 					}
 				}
 
@@ -4395,9 +4395,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
-			}else{
-
+				log.error("tags exception:", e);
 			}
 		}
 		CacheProxy.tags(this, runtime.getKey(), table, tags);
@@ -4823,7 +4821,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					constraints = constraints(runtime, idx, true, table, constraints, set);
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
+						log.error("constraints exception:", e);
 					}
 				}
 				idx ++;

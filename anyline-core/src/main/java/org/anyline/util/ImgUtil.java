@@ -342,7 +342,7 @@ public class ImgUtil {
                 } 
             } 
         } catch (Exception e) {
-            e.printStackTrace(); 
+            log.error("cut img exception:", e);
         } 
     } 
  
@@ -359,7 +359,7 @@ public class ImgUtil {
             BufferedImage img = ImageIO.read(src); 
             ImageIO.write(img, format, new File(dest));
         } catch (Exception e) {
-            e.printStackTrace(); 
+            log.error("convert exception:", e);
         } 
     } 
  
@@ -376,7 +376,7 @@ public class ImgUtil {
             img = op.filter(img, null);
             ImageIO.write(img, "JPEG", tar);
         } catch (IOException e) {
-            e.printStackTrace(); 
+            log.error("gray exception:", e);
         } 
     } 
     /** 
@@ -392,12 +392,11 @@ public class ImgUtil {
             data = new byte[in.available()]; 
             in.read(data); 
         } catch (IOException e) {
-            e.printStackTrace(); 
+            log.error("base642file exception:", e);
         }finally{
         	try{
         		in.close(); 
-        	}catch(Exception e){
-        		e.printStackTrace(); 
+        	}catch(Exception ignored){
         	} 
         }
 
@@ -432,15 +431,18 @@ public class ImgUtil {
 	        data = baos.toByteArray(); 
 	        baos.flush(); 
     	}catch(Exception e){
-    		e.printStackTrace(); 
+            log.error("base642file exception:", e);
     	}finally{
     		try{
-		        conn.disconnect(); 
-		        is.close(); 
-		        bis.close(); 
-		        baos.close(); 
-    		}catch(Exception e){
-    			e.printStackTrace(); 
+                assert conn != null;
+                conn.disconnect();
+                assert is != null;
+                is.close();
+                assert bis != null;
+                bis.close();
+                assert baos != null;
+                baos.close();
+    		}catch(Exception ignored){
     		} 
     	}
 
@@ -479,7 +481,7 @@ public class ImgUtil {
     		out.close(); 
     		return true; 
     	} catch (Exception e) {
-    		e.printStackTrace(); 
+            log.error("base642img exception:", e);
     		return false; 
     	} finally{
     		if(null != out){

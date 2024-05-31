@@ -391,7 +391,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
+                log.error("insert exception:", e);
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
                 SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);

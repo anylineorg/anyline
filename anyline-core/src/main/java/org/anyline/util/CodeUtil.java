@@ -209,8 +209,7 @@ public class CodeUtil {
 				param = java.net.URLEncoder.encode(param, encode);
 				result = url + param; 
 			} 
-		} catch (Exception e) {
-			e.printStackTrace(); 
+		} catch (Exception ignored) {
 		} 
 		return result; 
 	} 
@@ -231,8 +230,7 @@ public class CodeUtil {
 		try {
 			result = result.replace(" ","%20");
 			result = new URI(result).toASCIIString(); 
-		} catch (Exception e) {
-			e.printStackTrace(); 
+		} catch (Exception ignored) {
 		} 
 		return result; 
 	} 

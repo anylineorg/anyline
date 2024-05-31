@@ -47,8 +47,7 @@ public class RSAUtil {
 		KeyPairGenerator keys = null;
 		try {
 			keys = KeyPairGenerator.getInstance(RSA_ALGORITHM);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+		} catch (NoSuchAlgorithmException ignored) {
 		}
 
 		// 初始化KeyPairGenerator对象, 密钥长度
@@ -292,8 +291,8 @@ public class RSAUtil {
 			if (inputStream != null) {
 				try {
 					inputStream.close(); 
-				} catch (Exception e) {
-					e.printStackTrace(); 
+				} catch (Exception ignored) {
+
 				} 
 			} 
 		} 
@@ -315,8 +314,7 @@ public class RSAUtil {
 			if (inputStream != null) {
 				try {
 					inputStream.close(); 
-				} catch (Exception e) {
-					e.printStackTrace(); 
+				} catch (Exception ignored) {
 				} 
 			} 
 		} 

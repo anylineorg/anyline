@@ -308,7 +308,7 @@ public class BeanUtil {
 						}
 
 					}catch (Exception e){
-						e.printStackTrace();
+						log.error("set field value exception:", e);
 					}
 				}
 

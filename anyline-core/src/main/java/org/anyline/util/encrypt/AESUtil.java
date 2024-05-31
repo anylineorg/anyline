@@ -30,6 +30,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.Key;
 import java.security.SecureRandom;
@@ -90,10 +91,9 @@ public class AESUtil {
 			}
 			// 执行操作
 			byte[] result = cipherInstance.doFinal(Base64Util.decode(content));
-			return new String(result, "utf-8");
+			return new String(result, StandardCharsets.UTF_8);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			log.error(ex.getMessage()); 
+			log.error("decrypt exception:", ex);
 		} 
 		return null; 
 	}
@@ -124,8 +124,7 @@ public class AESUtil {
 			SecretKey secretKey = kg.generateKey(); 
 			return new SecretKeySpec(secretKey.getEncoded(), KEY);// 转换为AES专用密钥
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			log.error(ex.getMessage()); 
+			log.error("create secret exception:", ex);
 		} 
 		return null; 
 	} 

@@ -153,8 +153,7 @@ public class FileUtil {
             	}
             }
          }catch(Exception ex){
-        	log.error(ex.getMessage());
-        	ex.printStackTrace();
+			 log.error("read stream exception:", ex);
          } finally  {
                 try{
                 	if(null != in) {
@@ -164,7 +163,7 @@ public class FileUtil {
                 		input.close();
                 	}
                 }catch(Exception e){
-                	e.printStackTrace();
+					log.error("close stream exception:", e);
                 }
         }
 
@@ -198,7 +197,7 @@ public class FileUtil {
 				buffer.append(new String(by, 0, size));
 			}
 		}catch(Exception ex){
-			ex.printStackTrace();
+			log.error("read stream exception:", ex);
 		} finally  {
 			try{
 				if(null != in) {
@@ -211,7 +210,7 @@ public class FileUtil {
 					reader.close();
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error("close stream exception:", e);
 			}
 		}
 
@@ -232,7 +231,7 @@ public class FileUtil {
 			bos.close();
 			buffer = bos.toByteArray();
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("file2byte exception:", e);
 		}
 		return buffer;
 	}
@@ -248,21 +247,21 @@ public class FileUtil {
 			bos = new BufferedOutputStream(fos);
 			bos.write(buf);
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("byte2file exception:", e);
 		}
 		finally{
 			if (bos != null){
 				try{
 					bos.close();
 				}catch (IOException e){
-					e.printStackTrace();
+					log.error("byte2file exception:", e);
 				}
 			}
 			if (fos != null){
 				try{
 					fos.close();
 				}catch (IOException e){
-					e.printStackTrace();
+					log.error("byte2file exception:", e);
 				}
 			}
 		}
@@ -285,7 +284,7 @@ public class FileUtil {
 					buffer = read(new FileInputStream(file), encode);
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error("read file exception:", e);
 			}
 		}
 		return buffer;
@@ -311,7 +310,7 @@ public class FileUtil {
 			try{
 				buffer = read(new FileInputStream(file));
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error("read file exception:", e);
 			}
 		}
 		return buffer;
@@ -344,13 +343,14 @@ public class FileUtil {
 			}
 			osw.flush();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("write file exception:", e);
 		}finally{
 			try{
-				osw.close();
+                assert osw != null;
+                osw.close();
 				fos.close();
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error("close stream exception:", e);
 			}
 		}
 	}
@@ -387,7 +387,7 @@ public class FileUtil {
 			OutputStream os = new FileOutputStream(file);
 			return write(is, os, true);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("write file exception:", e);
 			return false;
 		}
 	}
@@ -404,18 +404,18 @@ public class FileUtil {
 				os.flush();
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("write stream exception:", e);
 			return false;
 		}finally {
 			if(close){
 				try {
 					os.close();
-				}catch (Exception ex){
+				}catch (Exception ignored){
 
 				}
 				try {
 					is.close();
-				}catch (Exception ex){
+				}catch (Exception gignored){
 
 				}
 			}
@@ -455,7 +455,7 @@ public class FileUtil {
 			}
 			file.createNewFile();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("create file exception:", e);
 		}
 		return true;
 	}

@@ -451,8 +451,7 @@ public class IDCardUtil {
 		result = idcard.substring(6, 14);
 		try {
 			result = DateUtil.format(result, "yyyy-MM-dd");
-		}catch (Exception e){
-			e.printStackTrace();
+		}catch (Exception ignored){
 		}
 		return result; 
 	} 

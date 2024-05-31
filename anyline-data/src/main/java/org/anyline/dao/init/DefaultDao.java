@@ -491,7 +491,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
+					log.error("check dependency exception:", e);
 				}else{
 					log.error("[check Many2ManyDependency query][result:fail][msg:{}]", e.toString());
 				}
@@ -521,7 +521,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
+					log.error("check dependenty exception:", e);
 				}else{
 					log.error("[check Many2ManyDependency delete][result:fail][msg:{}]", e.toString());
 				}
@@ -551,7 +551,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
+					log.error("check dependency exception:", e);
 				}else{
 					log.error("[check One2ManyDependency delete][result:fail][msg:{}]", e.toString());
 				}
@@ -561,7 +561,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected <T> void checkOne2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//OneToMany
-		if(set.size()==0 || dependency <= 0){
+		if(set.isEmpty() || dependency <= 0){
 			return;
 		}
 		dependency --;
@@ -611,7 +611,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-					e.printStackTrace();
+					log.error("check dependency exception:", e);
 				}else{
 					log.error("[check One2ManyDependency query][result:fail][msg:{}]", e.toString());
 				}

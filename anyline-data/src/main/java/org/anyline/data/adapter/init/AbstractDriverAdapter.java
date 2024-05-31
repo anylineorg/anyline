@@ -2065,7 +2065,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("parse text exception:", e);
 		}
 	}
 	private void likes(DataRuntime runtime, Table table, ConfigStore configs){

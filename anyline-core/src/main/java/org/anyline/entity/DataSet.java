@@ -139,7 +139,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
             try {
                 return parseJson(keyCase, BeanUtil.JSON_MAPPER.readTree(json));
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("parse json exception:", e);
             }
         }
         return null;

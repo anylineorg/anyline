@@ -47,7 +47,7 @@ public class SHA1Util {
 			} 
 			result = hexString.toString(); 
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace(); 
+			log.error("sign exception:", e);
 		} 
 		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
 			log.debug("[SHA1 SIGN][src:{}][sign:{}]", src, result);

@@ -72,7 +72,7 @@ public class DESUtil {
 				instance = new DESUtil(key);
 				instances.put(key, instance); 
 			}catch(Exception e){
-				e.printStackTrace(); 
+				log.error("create instance exception:", e);
 			} 
 		} 
 		return instance; 
@@ -281,7 +281,7 @@ public class DESUtil {
 				defaultDesKey.setPrefixParamValue("p298pn6e9o1r5gv");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("create des exception:", e);
 		}
 	}
 

@@ -440,7 +440,7 @@ public class ZipUtil {
 			} 
 			zf.close(); 
 		} catch (Exception e) {
-			e.printStackTrace(); 
+			log.error("unzip exception:", e);
 		} 
 		if (ConfigTable.IS_DEBUG) {
 			log.debug("[解压完成][共耗时:{}][dir:{}][size:{}]", DateUtil.conversion(System.currentTimeMillis() - fr), dir.getAbsolutePath(), size);
@@ -479,13 +479,12 @@ public class ZipUtil {
 						.getBytes("GB2312"), StandardCharsets.ISO_8859_1));
 			} 
 		} catch (Exception e) {
-			e.printStackTrace(); 
+			log.error("check zip exception:", e);
 		} finally {
 			if(null != zipFile) {
 				try {
 					zipFile.close();
-				}catch(Exception e){
-					e.printStackTrace();
+				}catch(Exception ignored){
 				}
 			}
 		}

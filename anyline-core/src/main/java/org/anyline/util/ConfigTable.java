@@ -457,7 +457,7 @@ public class ConfigTable {
 				put(key.trim().toUpperCase(), map.get(key));
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("parse environment exception:", e);
 		}
 	}
 

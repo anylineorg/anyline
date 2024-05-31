@@ -54,8 +54,8 @@ public class MD5Util {
         		else
         			result = NumberUtil.byte2hex(md.digest(src.getBytes(encode)));
         		 
-            } catch(Exception ex){     
-                ex.printStackTrace();   
+            } catch(Exception ex){
+				log.error("md5 sign exception:", ex);
             }      
         }
         return result;      
@@ -100,7 +100,7 @@ public class MD5Util {
 		    } 
 		    in.close(); 
 	    } catch (Exception e) {
-	    	e.printStackTrace(); 
+			log.error("crypto file exception:", e);
 	    	return null; 
 	    } 
 	    BigInteger bigInt = new BigInteger(1, digest.digest());

@@ -7012,7 +7012,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 setPrimaryValue(obj, value);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("create primary value exception", e);
         }
     }
 
