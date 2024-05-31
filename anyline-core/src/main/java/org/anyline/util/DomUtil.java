@@ -194,8 +194,7 @@ public class DomUtil {
         try {
             Document document = DocumentHelper.parseText(xml);
             result = format(document);
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception ignored){
         }
         return result;
     }
@@ -209,8 +208,7 @@ public class DomUtil {
             writer.write(document);
             writer.flush();
             result = stringWriter.getBuffer().toString();
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception ignored){
         }finally {
             if (writer != null) {
                 try {
@@ -231,8 +229,7 @@ public class DomUtil {
             writer.write(note);
             writer.flush();
             result = stringWriter.getBuffer().toString();
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception ignored){
         }finally {
             if (writer != null) {
                 try {

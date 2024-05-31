@@ -150,8 +150,7 @@ public class CodeUtil {
 		String result = ""; 
 		try {
 			result = java.net.URLDecoder.decode(url, encode);
-		} catch (Exception e) {
-			e.printStackTrace(); 
+		} catch (Exception ignored) {
 		} 
 		return result; 
 	} 
@@ -176,8 +175,7 @@ public class CodeUtil {
 		String result = ""; 
 		try {
 			result = java.net.URLEncoder.encode(url, encode);
-		} catch (Exception e) {
-			e.printStackTrace(); 
+		} catch (Exception ignored) {
 		} 
 		return result; 
 	}

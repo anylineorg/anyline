@@ -197,8 +197,7 @@ public class IDCardUtil {
 			Date birthdate = null; 
 			try {
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
-			} catch (ParseException e) {
-				e.printStackTrace(); 
+			} catch (ParseException ignored) {
 			} 
 			if (birthdate == null || new Date().before(birthdate)) {
 				return false; 
@@ -275,8 +274,7 @@ public class IDCardUtil {
 			Date birthdate = null; 
 			try {
 				birthdate = new SimpleDateFormat("yyMMdd").parse(birthday); 
-			} catch (ParseException e) {
-				e.printStackTrace(); 
+			} catch (ParseException ignored) {
 			} 
 			Calendar cday = Calendar.getInstance(); 
 			cday.setTime(birthdate); 

@@ -41,14 +41,14 @@ public class RuntimeUtil {
             	ps.waitFor();   
             } 
             BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream()));   
-            StringBuffer sb = new StringBuffer();   
+            StringBuilder builder = new StringBuilder();
             String line;   
             while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");   
+                builder.append(line).append("\n");
             }   
-            result = sb.toString(); 
+            result = builder.toString();
         } catch (Exception e) {
-        	e.printStackTrace(); 
+            log.error("run exception:", e);
         } 
          
         log.info("[runtime][cmd:"+cmd+"][result:"+result+"]");

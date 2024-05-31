@@ -298,7 +298,7 @@ public class JDBCUtil {
             }
             adapter.typeMetadata(runtime, column);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("create column exception:", e);
         }
         return column;
     }
@@ -374,7 +374,7 @@ public class JDBCUtil {
                     row.put(false, name, value);
                 }catch (Exception e){
                     if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                        e.printStackTrace();
+                        log.error("结果集封装 异常:", e);
                     }else{
                         log.error("[结果集封装][result:fail][msg:{}]", e.toString());
                     }
@@ -383,7 +383,7 @@ public class JDBCUtil {
             row.setMetadata(metadatas);
         }catch (Exception e){
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
+                log.error("结果集封装 异常:", e);
             }else{
                 log.error("[结果集封装][result:fail][msg:{}]", e.toString());
             }
@@ -427,7 +427,7 @@ public class JDBCUtil {
                     map.put(name, value);
                 }catch (Exception e){
                     if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                        e.printStackTrace();
+                        log.error("结果储封装 异常:", e);
                     }else{
                         log.error("[结果集封装][result:fail][msg:{}]", e.toString());
                     }
@@ -435,7 +435,7 @@ public class JDBCUtil {
             }
         }catch (Exception e){
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
+                log.error("结果储封装 异常:", e);
             }else{
                 log.error("[结果集封装][result:fail][msg:{}]", e.toString());
             }

@@ -176,7 +176,7 @@ public class ConfigTable {
 		try {
 			loadEnvironment();
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("load environment exception:", e);
 		}
 		init();
 	}
@@ -219,8 +219,7 @@ public class ConfigTable {
 					}
 					try {
 						Thread.sleep(5000);
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Exception ignored) {
 					}
 				}
 			}
@@ -324,7 +323,7 @@ public class ConfigTable {
 		try{
 			path = ConfigTable.class.getResource("/").getPath();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("prepare exception:", e);
 		}
 		log.debug("path={}", path);
 		path = path(path);
@@ -439,7 +438,7 @@ public class ConfigTable {
 				parseEnvironment(urls.nextElement());
 			}
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("load environment 异常:", e);
 		}
 	}
 	public static void parseEnvironment(URL url){
@@ -587,8 +586,7 @@ public class ConfigTable {
 				loadConfigDir(dir, flag);
 			}
 		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-			e.printStackTrace();
+			log.error("log config exception:", e);
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");

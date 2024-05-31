@@ -212,7 +212,7 @@ public class BeanUtil {
 					JavaType type = JSON_MAPPER.getTypeFactory().constructParametricType(List.class, component);
 					result = JSON_MAPPER.readValue(v.toString(), type);
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("convert exception:", e);
 				}
 			}else{
 			}
@@ -337,7 +337,7 @@ public class BeanUtil {
 			}
 		}catch(Exception e){
 			if(alert) {
-				e.printStackTrace();
+				log.error("set field value exception:", e);
 				log.error("[set field value][result:fail][field:{}({})] < [value:{}({})][column:{}][msg:{}]", field, tarTypeKey, result, srcTypeKey, columnType, e.toString());
 			}
 			return false;
@@ -860,7 +860,7 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("map2object exception:", e);
 		}
 		return obj;
 	}

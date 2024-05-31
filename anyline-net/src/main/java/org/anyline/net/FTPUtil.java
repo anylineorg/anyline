@@ -88,7 +88,7 @@ public class FTPUtil {
             client.setSoTimeout(connectTimeoutSecond * 1000); // commons-net-1.4.1.jar 连接后才能设置   
             client.setDataTimeout(dataTimeoutSecond * 1000);   
         } catch (SocketException e) {
-        	e.printStackTrace(); 
+            log.error("set timeout exception:", e);
         }   
     }   
  
@@ -99,7 +99,7 @@ public class FTPUtil {
 	        client.setFileType(FTPClient.BINARY_FILE_TYPE); 
 	        size = client.listFiles().length; 
 	    } catch (IOException e) {
-	        e.printStackTrace();   
+            log.error("check file size exception:", e);
 	    } 
 		return size; 
 	} 
@@ -123,7 +123,7 @@ public class FTPUtil {
 	        client.retrieveFile(remote, is);
 	        success = true;   
 	    } catch (IOException e) {
-	        e.printStackTrace();   
+            log.error("download file exception:", e);
 	    } 
 	    log.debug("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
 	    return success;   
@@ -158,7 +158,7 @@ public class FTPUtil {
 	        // ftp.setFileType(FTP.ASCII_FILE_TYPE);   
 	        client.enterLocalPassiveMode();  
     	}catch(Exception e){
-    		e.printStackTrace(); 
+            log.error("connect exception:", e);
     	} 
            
     }   
@@ -275,11 +275,11 @@ public class FTPUtil {
              client.storeFile(remote, in);
              result = true; 
          }catch(Exception e){
-         	e.printStackTrace(); 
+             log.error("upload file exception:", e);
          } finally {
              try {
                  in.close();   
-             } catch (IOException ex) {
+             } catch (IOException ignored) {
              }   
          }  
         log.debug("[ftp upload file][耗时:{}][length:{}][remote:{}][local:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), FileUtil.length(local.length()), remote, local.getAbsolutePath());
@@ -313,7 +313,7 @@ public class FTPUtil {
                 try {
 					client.makeDirectory(remotePath); 
 				} catch (IOException e) {
-					e.printStackTrace(); 
+                    log.error("upload dir exception:", e);
 				}  
                 cd(remotePath); // 切换成返回true, 失败（不存在）返回false
             }   
@@ -344,7 +344,7 @@ public class FTPUtil {
 	        downloadDir(localDir); 
 	        success = true;   
 	    } catch (IOException e) {
-	        e.printStackTrace();   
+            log.error("download dir exception:", e);
 	    } 
 	    return success;   
 	} 
@@ -356,7 +356,7 @@ public class FTPUtil {
 			this.dir = RegularUtil.cut(path, "\"","\"");
 			log.debug("[ftp change directory][directory:{}]", this.dir);
 		} catch (IOException e) {
-			e.printStackTrace(); 
+            log.error("change dir exception:", e);
 		} 
 		return result; 
 	} 
@@ -373,7 +373,7 @@ public class FTPUtil {
 	        	} 
 	        } 
         }catch(Exception e){
-    		e.printStackTrace(); 
+            log.error("download dir exception:", e);
     	} 
 	} 
     public List<String> files(String dir) throws IOException {
@@ -396,7 +396,7 @@ public class FTPUtil {
         if (client.isConnected()) {
             try {
                 client.sendSiteCommand(args);   
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }   
         }   
     }   
@@ -420,7 +420,7 @@ public class FTPUtil {
    
         try {
             return client.changeToParentDirectory();   
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }   
    
         return false;   

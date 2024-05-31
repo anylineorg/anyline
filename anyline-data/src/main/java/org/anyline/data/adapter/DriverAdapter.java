@@ -449,7 +449,7 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			//修改表
@@ -484,7 +484,7 @@ public interface DriverAdapter {
 					update.setColumns(columns);
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			//删除表
@@ -492,7 +492,7 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 		}else if(differ instanceof ViewsDiffer){
@@ -504,21 +504,21 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(View update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(View drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 		}else if(differ instanceof TableDiffer){
@@ -536,21 +536,21 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildAddRun(runtime, add));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Column update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Column drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 		}else if(differ instanceof IndexsDiffer){
@@ -562,21 +562,21 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildAddRun(runtime, add));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Index update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Index drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 		}else if(differ instanceof FunctionsDiffer){
@@ -588,21 +588,21 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Function update:updates){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Function drop:drops){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 		}else if(differ instanceof ProceduresDiffer){
@@ -614,21 +614,21 @@ public interface DriverAdapter {
 				try {
 					list.addAll(buildCreateRun(runtime, add));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Procedure update:updates.values()){
 				try {
 					list.addAll(buildAlterRun(runtime, update));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 			for(Procedure drop:drops.values()){
 				try {
 					list.addAll(buildDropRun(runtime, drop));
 				}catch (Exception e){
-					e.printStackTrace();
+					log.error("build ddl exception:", e);
 				}
 			}
 		}

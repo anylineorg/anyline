@@ -490,12 +490,12 @@ public class HttpUtil {
 			}
 			return new String(bab.toByteArray(), charset);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("read stream exception:", e);
 		} finally {
 			try {
 				is.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("close stream exception:", e);
 			}
 		}
 		return null;
@@ -650,7 +650,7 @@ public class HttpUtil {
 		return client;
 	}
 
-	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
+	public static CloseableHttpClient createSSLClient(File keyFile, String protocol, String password){
 		CloseableHttpClient httpclient = null;
 		try{
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
@@ -669,7 +669,7 @@ public class HttpUtil {
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("close ssl exception:", e);
 		}
 		return httpclient;
 	}

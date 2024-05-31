@@ -137,7 +137,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
                 destroy(item);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("注销数据源 异常:", e);
             return false;
         }
         return true;
@@ -151,7 +151,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
             try {
                 closeConnection(datasource);
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("close connection exception:", e);
             }
         }
         //临时数据源
@@ -159,7 +159,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
             try {
                 closeConnection(temporary.get(key));
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("close connection exception:", e);
             }
         }
     }

@@ -123,8 +123,7 @@ public class TextUtil {
             int b0 = (int) (buffer[0] & 0x0FF) - 161; // 编码从A1开始, 因此减去0xA1=161
             int b1 = (int) (buffer[1] & 0x0FF) - 161; 
             return (short) (b0 * 94 + b1);// 第一个字符和最后一个字符没有汉字, 因此每个区只收16*6-2=94个汉字
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException ignored) {
         }
         return -1;
     }

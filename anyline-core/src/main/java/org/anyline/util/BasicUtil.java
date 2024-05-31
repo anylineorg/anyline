@@ -295,7 +295,7 @@ public class BasicUtil {
 	 * @return String
 	 */
 	public static String getRandomCnString(int length){
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < length; i++) {
 			String str = null;
 			int hPos, lPos; // 定义高低位
@@ -307,12 +307,11 @@ public class BasicUtil {
 			b[1] = (Integer.valueOf(lPos).byteValue());
 			try {
 				str = new String(b, "GBk"); // 转成中文
-			} catch (Exception ex) {
-				ex.printStackTrace();
+			} catch (Exception ignored) {
 			}
-			result += str;
+			result.append(str);
 		}
-     return result;
+     return result.toString();
 	}
 	/**
 	 * 在src的第idx位置插入key

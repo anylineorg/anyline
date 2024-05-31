@@ -18,10 +18,15 @@
 
 package org.anyline.net;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class VCFUtil {
+    private static Logger log = LoggerFactory.getLogger(VCFUtil.class);
     /**
      * 生成通讯录格式
      * @param mobile 手机号
@@ -90,7 +95,7 @@ public class VCFUtil {
                         sbother.append(encode[i]);
                         String ss = sbother.toString();
                         byte[] buf = null;
-                        buf = ss.getBytes("utf-8");
+                        buf = ss.getBytes(StandardCharsets.UTF_8);
                         // UTF-8: buf.length == 3
                         // GBK: buf.length == 2
                         if (buf.length == 3) {
@@ -109,14 +114,13 @@ public class VCFUtil {
                                 } else {
                                     c16_7 = s16.charAt(7);
                                 }
-                                sb.append("=" + c16_6 + c16_7);
+                                sb.append("=").append(c16_6).append(c16_7);
                             }
                         }
                     }
                 }
                 str = sb.toString();
-            }catch(Exception e){
-                e.printStackTrace();
+            }catch(Exception ignored){
             }
         }
         return str;
@@ -137,7 +141,7 @@ public class VCFUtil {
                     }
                 }
                 str = sb.toString();
-                byte[] bytes = str.getBytes("US-ASCII");
+                byte[] bytes = str.getBytes(StandardCharsets.US_ASCII);
                 for (int i = 0; i < bytes.length; i++) {
                     byte b = bytes[i];
                     if (b != 95) {
@@ -159,16 +163,16 @@ public class VCFUtil {
                                 }
                                 buffer.write((char) ((u << 4) + l));
                             } catch (ArrayIndexOutOfBoundsException e) {
-                                e.printStackTrace();
+                                log.error("decode exception:", e);
                             }
                         } else {
                             buffer.write(b);
                         }
                     }
-                    str = new String(buffer.toByteArray(), "UTF-8");
+                    str = new String(buffer.toByteArray(), StandardCharsets.UTF_8);
                 }
             }catch(Exception e){
-                e.printStackTrace();
+                log.error("decode exception:", e);
             }
         }
         return str;

@@ -45,7 +45,7 @@ import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
  
 public class SFTPUtil {
-	private final Logger log = LoggerFactory.getLogger(SFTPUtil.class); 
+	private static Logger log = LoggerFactory.getLogger(SFTPUtil.class);
     private static Map<String, SFTPUtil> instances = new HashMap<String, SFTPUtil>();
 	private String host; 
 	private int port=22; 
@@ -87,7 +87,7 @@ public class SFTPUtil {
     		try {
 				util = new SFTPUtil(host, account, password, port);
 			} catch (Exception e) {
-				e.printStackTrace(); 
+				log.error("create instance exception:", e);
 			} 
     	} 
     	return util; 

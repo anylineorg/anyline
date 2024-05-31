@@ -18,6 +18,9 @@
 
 package org.anyline.util;
  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -31,7 +34,7 @@ import java.util.Map.Entry;
  
 public class FileTypeUtil {
 	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>(); 
- 
+    private static Logger log = LoggerFactory.getLogger(FileTypeUtil.class);
 	protected FileTypeUtil() {
 	} 
  
@@ -93,9 +96,7 @@ public class FileTypeUtil {
 				ImageReader reader = iter.next(); 
 				iis.close(); 
 				return reader.getFormatName(); 
-			} catch (IOException e) {
-				return null; 
-			} catch (Exception e) {
+			} catch (Exception ignored) {
 				return null; 
 			} 
 		} 
@@ -103,50 +104,48 @@ public class FileTypeUtil {
 	} 
  
 	/** 
-	 * Discription:[getFileByFile, 获取文件类型, 包括图片, 若格式不是已配置的, 则返回null] 
+	 * getFileByFile, 获取文件类型, 包括图片, 若格式不是已配置的, 则返回null
 	 * @param file  file
 	 * @return fileType 
 	 */ 
-	public final static String getFileByFile(File file) {
+	public final static String getFileType(File file) {
 		String filetype = null; 
 		byte[] b = new byte[50]; 
 		try {
 			InputStream is = new FileInputStream(file); 
 			is.read(b); 
-			filetype = getFileTypeByStream(b); 
+			filetype = getFileType(b);
 			is.close(); 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace(); 
-		} catch (IOException e) {
-			e.printStackTrace(); 
+		} catch (Exception e) {
+			log.error("check file type exception:", e);
 		} 
 		return filetype; 
 	} 
  
 	/** 
-	 * Discription:[getFileTypeByStream] 
+	 * getFileTypeByStream
 	 * @param b  b
 	 * @return fileType 
 	 */ 
-	public final static String getFileTypeByStream(byte[] b) {
-		String filetypeHex = String.valueOf(getFileHexString(b)); 
+	public static String getFileType(byte[] b) {
+		String filetypeHex = String.valueOf(getFileHexString(b));
 		Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
 		while (entryiterator.hasNext()) {
 			Entry<String, String> entry = entryiterator.next();
-			String fileTypeHexValue = entry.getValue(); 
+			String fileTypeHexValue = entry.getValue();
 			if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {
-				return entry.getKey(); 
-			} 
-		} 
+				return entry.getKey();
+			}
+		}
 		return null; 
 	} 
  
 	/** 
-	 * Discription:[isImage, 判断文件是否为图片] 
+	 * isImage, 判断文件是否为图片
 	 * @param file  file
 	 * @return true 是 | false 否 
 	 */ 
-	public static final boolean isImage(File file) {
+	public static boolean isImage(File file) {
 		boolean flag = false; 
 		try {
 			BufferedImage bufreader = ImageIO.read(file); 
@@ -157,9 +156,7 @@ public class FileTypeUtil {
 			} else {
 				flag = true; 
 			} 
-		} catch (IOException e) {
-			flag = false; 
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 			flag = false; 
 		} 
 		return flag; 

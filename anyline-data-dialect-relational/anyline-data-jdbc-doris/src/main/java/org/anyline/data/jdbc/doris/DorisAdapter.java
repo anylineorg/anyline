@@ -5855,6 +5855,15 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception {
+		if(null != meta) {
+			LinkedHashMap<String, Column> columns = meta.getColumns();
+			if(null != columns){
+				for(Column column:columns.values()){
+					column.setOrder(null);
+				}
+			}
+		}
+		meta.setOrders(new LinkedHashMap<>());
 		return super.buildAddRun(runtime, meta);
 	}
 

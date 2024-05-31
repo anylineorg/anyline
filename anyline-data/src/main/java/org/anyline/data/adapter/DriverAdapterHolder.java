@@ -130,7 +130,7 @@ public class DriverAdapterHolder {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("检测适配器 异常:", e);
 		}
 		if(null == adapter){
 			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());

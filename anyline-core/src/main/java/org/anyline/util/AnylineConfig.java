@@ -115,7 +115,7 @@ public abstract class AnylineConfig {
 			log.info("[解析配置文件][文件:{}][数量:{}/{}][请参考:http://doc.anyline.org或源码中resources/{}]", fileName, configSize, instances.size(), fileName);
 
 		} catch (Exception e) {
-			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]", fileName, e);
+			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]", fileName, e.getMessage());
 		}
 	}
 
@@ -141,7 +141,7 @@ public abstract class AnylineConfig {
 						kvs.put(nm, value);
 						config.afterParse(nm, value);
 					} catch (Exception e) {
-						e.printStackTrace();
+						log.error("解析配置文件异常:", e);
 					}
 				}
 			}
@@ -171,7 +171,7 @@ public abstract class AnylineConfig {
 			config.INSTANCE_KEY = instance;
 			instances.put(instance, config);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("解析配置文件异常:", e);
 		}
 		return config;
 	}
@@ -235,7 +235,7 @@ public abstract class AnylineConfig {
 				instances.put(configKey, config);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("parse dom exception:", e);
 		}
 		return instances;
 	}
@@ -247,7 +247,7 @@ public abstract class AnylineConfig {
 				instances = parse(T, document, instances, compatibles);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("parse dom exception:", e);
 		}
 		return instances;
 	}
@@ -289,8 +289,7 @@ public abstract class AnylineConfig {
 					}
 					try {
 						Thread.sleep(5000);
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Exception ignored) {
 					}
 				}
 			}
@@ -329,7 +328,7 @@ public abstract class AnylineConfig {
 			Document document = reader.read(is);
 			instances = parse(T, document, instances, compatibles);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("parser stream exception:", e);
 		}
 		return instances;
 	}
@@ -372,7 +371,7 @@ public abstract class AnylineConfig {
 					field.setAccessible(false);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("set field value exception:", e);
 			}
 		}
 	}

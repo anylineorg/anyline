@@ -101,7 +101,7 @@ public class ConfigParser {
 				defaultDesKey.setPrefixParamValue("p298pn6e9o1r5gv");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("create des exception:", e);
 		}
 	}
 
@@ -428,7 +428,7 @@ public class ConfigParser {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("get values exception:", e);
 		}
 		if(BasicUtil.isEmpty(true, list)){
 			List<Object> defs = getDefValues(values, parser);
@@ -834,7 +834,7 @@ public class ConfigParser {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("decrypt exception:", e);
 			result = null;
 		}
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
@@ -857,7 +857,7 @@ public class ConfigParser {
 		try {
 			param = encryptRequestParam(param);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("encrypt exception:", e);
 		}
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
@@ -893,7 +893,7 @@ public class ConfigParser {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("encrypt exception:", e);
 		}
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
@@ -910,7 +910,7 @@ public class ConfigParser {
 			String url = RegularUtil.fetchUrl(tag);
 			tag = tag.replace(url, encryptUrl(url));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("encrypt exception:", e);
 		}
 
 		return tag;
@@ -1198,7 +1198,7 @@ public class ConfigParser {
 							+ src.substring(idx + DES_VERSION_LENGTH); // 没有版本号的密文
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("parse des version exception:", e);
 			}
 		}
 		return result;

@@ -66,10 +66,8 @@ public class I18NUtil {
 						map.put(key, value);
 					} 
 				} 
-			} catch (DocumentException e) {
-				e.printStackTrace(); 
-			}catch(Exception e){
-				e.printStackTrace();
+			} catch(Exception e){
+				log.error("parse dom exception:", e);
 			} 
 		} 
 	} 

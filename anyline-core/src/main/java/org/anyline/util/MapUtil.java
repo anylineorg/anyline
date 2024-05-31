@@ -169,7 +169,7 @@ public class MapUtil {
 						value = value.replace(k, v.toString());
 					}
 				}catch(Exception e){
-					e.printStackTrace();
+					log.error("parse final value exception:", e);
 				}
 			} else {
 				value = obj.get(key) + "";

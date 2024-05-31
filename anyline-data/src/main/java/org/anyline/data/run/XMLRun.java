@@ -276,7 +276,7 @@ public class XMLRun extends BasicRun implements Run {
 				try{
 					variables.add((Variable)var.clone());
 				}catch(Exception e){
-					e.printStackTrace(); 
+					log.error("copay param exception:", e);
 				} 
 			} 
 		} 
@@ -295,7 +295,7 @@ public class XMLRun extends BasicRun implements Run {
 					try{
 						this.conditionChain.addCondition((Condition)condition.clone()); 
 					}catch(Exception e){
-						e.printStackTrace(); 
+						log.error("copy param exception:", e);
 					} 
 				} 
 			} 
@@ -363,7 +363,7 @@ public class XMLRun extends BasicRun implements Run {
 							} 
 						} 
 					} catch (OgnlException e) {
-						e.printStackTrace(); 
+						log.error("ognl exception:", e);
 					} 
 				}else{
 					// 无test条件 

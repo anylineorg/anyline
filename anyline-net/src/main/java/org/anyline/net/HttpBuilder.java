@@ -69,7 +69,7 @@ public class HttpBuilder {
             mananger.setDefaultMaxPerRoute(20);
             this.client = HttpClients.custom().setConnectionManager(mananger).build();
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("build http client exception:", e);
         }
         client.setClient(this.client);
         if(null != headers && !headers.isEmpty()){
@@ -178,7 +178,7 @@ public class HttpBuilder {
         try {
             this.entity = new StringEntity(entity, charset);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("create string entity exception:", e);
         }
         return this;
     }
@@ -186,7 +186,7 @@ public class HttpBuilder {
         try {
             entity = new StringEntity(BeanUtil.map2json(map), charset);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("create string entity exception:", e);
         }
         return this;
     }

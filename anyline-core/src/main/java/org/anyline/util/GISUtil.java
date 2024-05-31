@@ -68,7 +68,7 @@ public class GISUtil {
             s = decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             return s;
         }catch(Exception e){
-            e.printStackTrace();
+            log.error("distance exception:", e);
             return null;
         }
     }
@@ -91,7 +91,7 @@ public class GISUtil {
                     BasicUtil.parseDouble(lat2, null)
             );
         }catch(Exception e){
-            e.printStackTrace();
+            log.error("distance exception:", e);
         }
         return distance;
     }
@@ -114,7 +114,7 @@ public class GISUtil {
                     BasicUtil.parseDouble(loc2.getLat(), null)
             );
         }catch(Exception e){
-            e.printStackTrace();
+            log.error("distance exception:", e);
         }
         return distance;
     }

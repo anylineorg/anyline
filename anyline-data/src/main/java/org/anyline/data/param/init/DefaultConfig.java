@@ -131,14 +131,14 @@ public class DefaultConfig implements Config {
 			empty = BasicUtil.isEmpty(true, this.values); 
 			setOrValue(values);
 		}catch(Exception e){
-			e.printStackTrace(); 
+			log.error("set file value exception:", e);
 		} 
 	} 
 	public void setOrValue(Map<String,Object> values){
 		try{
 			this.orValues = ConfigParser.getValues(values, parser.getOr());
 		}catch(Exception e){
-			e.printStackTrace(); 
+			log.error("set or value exception:", e);
 		} 
 	}
 

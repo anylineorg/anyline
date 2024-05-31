@@ -327,7 +327,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
+						log.error("check dependency exception:", e);
 					}else{
 						log.error("[check Many2ManyDependency Save][result:fail][msg:{}]", e.toString());
 					}
@@ -407,7 +407,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 				}catch (Exception e){
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-						e.printStackTrace();
+						log.error("check dependency exception:", e);
 					}else{
 						log.error("[check One2ManyDependency Save][result:fail][msg:{}]", e.toString());
 					}

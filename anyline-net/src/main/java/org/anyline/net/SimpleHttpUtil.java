@@ -17,7 +17,10 @@
 
 
 package org.anyline.net;
- 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +30,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class SimpleHttpUtil {
+	private static Logger log = LoggerFactory.getLogger(SimpleHttpUtil.class);
 	public static String post(String url, String param) {
 		return request(url, "POST", param);
 	} 
@@ -64,7 +68,7 @@ public class SimpleHttpUtil {
 			} 
 			return buffer.toString(); 
 		} catch (Exception e) {
-			e.printStackTrace(); 
+			log.error("request exception:", e);
 		} finally {
 			try {
 				// 释放资源
@@ -74,7 +78,7 @@ public class SimpleHttpUtil {
 				if(null != conn) conn.disconnect();
 				is = null;
 			} catch (Exception e) {
-				e.printStackTrace(); 
+				log.error("request exception:", e);
 			} 
 		} 
 		return null; 

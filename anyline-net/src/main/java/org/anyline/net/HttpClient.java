@@ -88,7 +88,7 @@ public class HttpClient {
 			try {
 				entity = new UrlEncodedFormEntity(pairs, charset);
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				log.error("post exception:", e);
 			}
 		}
 
@@ -105,7 +105,7 @@ public class HttpClient {
 			try {
 				entity = new UrlEncodedFormEntity(pairs, charset);
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				log.error("put exception:", e);
 			}
 		}
 
@@ -187,7 +187,7 @@ public class HttpClient {
 			}
 		} catch (Exception e) {
 			result = new HttpResponse();
-			e.printStackTrace();
+			log.error("http exception:", e);
 		} finally {
 			if(!"stream".equals(returnType)) {
 				try {
@@ -199,7 +199,7 @@ public class HttpClient {
 						client.close();
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("http exception:", e);
 				}
 			}
 		}
@@ -319,26 +319,26 @@ public class HttpClient {
 			// progress.error(url, "", 0, e.toString());
 			task.error(-1, e.toString());
 			log.warn("[http download][下载异常][url:{}]", url);
-			e.printStackTrace();
+			log.error("download exception:", e);
 		}finally{
 			if(null != raf){
 				try{
 					raf.close();
 				}catch(Exception e){
-					e.printStackTrace();
+					log.error("download exception:", e);
 				}
 			}
 			if(null != is){
 				try{
 					is.close();
 				}catch(Exception e){
-					e.printStackTrace();
+					log.error("close stream exception:", e);
 				}
 			}
 			try {
 				client.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("close client exception:", e);
 			}
 		}
 		if(result){
@@ -413,14 +413,14 @@ public class HttpClient {
 			response = client.execute(method);
 			code = response.getStatusLine().getStatusCode();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("check connection status exception:", e);
 		}finally {
 			try {
 				response.close();
 				method.releaseConnection();
 				client.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("close connection exception:", e);
 			}
 		}
 		return code;
@@ -453,7 +453,7 @@ public class HttpClient {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("parse result exception:", e);
 		}
 		return result;
 	}
@@ -482,7 +482,7 @@ public class HttpClient {
 		client = builder.build();
 		return client;
 	}
-	public CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
+	public CloseableHttpClient createSSLClient(File keyFile, String protocol, String password){
 		CloseableHttpClient httpclient = null;
 		try{
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
@@ -501,12 +501,12 @@ public class HttpClient {
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error("create ssl exception:", e);
 		}
 		return httpclient;
 	}
-	public CloseableHttpClient ceateSSLClient(File keyFile, String password){
-		return ceateSSLClient(keyFile, protocol, password);
+	public CloseableHttpClient createSSLClient(File keyFile, String password){
+		return createSSLClient(keyFile, protocol, password);
 	}
 
 	public String getProtocol() {

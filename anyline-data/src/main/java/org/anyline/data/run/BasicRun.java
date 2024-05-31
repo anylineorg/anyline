@@ -942,7 +942,7 @@ public abstract class BasicRun implements Run {
 						break;
 					}
 				}catch(Exception e){
-					e.printStackTrace();
+					log.error("check where exception:", e);
 				}
 			}
 			return result;

@@ -116,7 +116,7 @@ public class ImgUtil {
             } 
             ImageIO.write(tag, "JPEG", tar);// 输出到文件流
         } catch (IOException e) {
-            e.printStackTrace(); 
+            log.error("scale image exception:", e);
         } 
     } 
     /** 
@@ -162,7 +162,7 @@ public class ImgUtil {
            // ImageIO.write((BufferedImage) itemp, "JPEG", tar);
             ImageIO.write((BufferedImage)itemp, format, tar);
         } catch (IOException e) {
-            e.printStackTrace(); 
+            log.error("scale image exception:", e);
         } 
         log.info("[压缩图片][耗时:{}][source:{}][target:{}]", (System.currentTimeMillis()-fr), src, tar);
     } 
@@ -205,13 +205,13 @@ public class ImgUtil {
 	    	} 
 	        ImageIO.write(bi, format, tar);
 	    } catch (Exception e) {
-	        e.printStackTrace(); 
+            log.error("cur file exception:", e);
 	    }finally{
 	    	try {
 				iis.close(); 
 				reader.dispose(); 
 			} catch (IOException e) {
-				e.printStackTrace(); 
+                log.error("close file exception:", e);
 			} 
 	    } 
 	} 
@@ -269,7 +269,7 @@ public class ImgUtil {
                 } 
             } 
         } catch (Exception e) {
-            e.printStackTrace(); 
+            log.error("cut file exception:", e);
         } 
     } 
     public static float getSizeScale(File file){
@@ -280,7 +280,7 @@ public class ImgUtil {
 			 float h = bi.getWidth(); // 源图高度 
 			 scale = w/h; 
 		} catch (IOException e) {
-			e.printStackTrace(); 
+            log.error("read file exception:", e);
 		} 
          return scale; 
     } 

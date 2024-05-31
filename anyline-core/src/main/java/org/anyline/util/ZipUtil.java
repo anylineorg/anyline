@@ -60,7 +60,7 @@ public class ZipUtil {
 			log.debug("[删除压缩文件条目][zip:{}][item:{}]", zip.getAbsolutePath(), path.toUri());
 			Files.delete(path);
 		}catch (Exception e){
-			e.printStackTrace();
+			log.error("remove zip item exception:", e);
 			return false;
 		}
 		return true;
@@ -84,7 +84,7 @@ public class ZipUtil {
 			try {
 				_zip.close();
 			}catch (Exception e){
-				e.printStackTrace();
+				log.error("read zip exception:", e);
 			}
 		}
 	}
@@ -216,7 +216,7 @@ public class ZipUtil {
 			}
 			zipout.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("zip exception:", e);
 		}
 		if (ConfigTable.IS_DEBUG) {
 			log.debug("[压缩完成][time:{}][size:{}]", (System.currentTimeMillis() - fr), files.size());
@@ -374,7 +374,7 @@ public class ZipUtil {
 			} 
 			return true; 
 		} catch (Exception e) {
-			e.printStackTrace(); 
+			log.error("zip exception:", e);
 			return false; 
 		} 
 	}

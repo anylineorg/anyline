@@ -59,8 +59,7 @@ public class ClassUtil {
 			}else{
 				return false;
 			}
-		} catch (Exception e) {
-			// e.printStackTrace();
+		} catch (Exception ignored) {
 			return false;
 		}
 	}
@@ -106,12 +105,11 @@ public class ClassUtil {
 					if (isInSub(c, bases)) {
 						list.add(name);
 					}
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 
 				}
 			}
-		}catch(Exception e){
-			e.printStackTrace();
+		}catch(Exception ignored){
 		}
 		return list;
 	}

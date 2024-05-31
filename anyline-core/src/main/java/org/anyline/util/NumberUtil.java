@@ -49,8 +49,7 @@ public class NumberUtil {
 		BigDecimal num = null;
 		try{
 			num = new BigDecimal(src);
-		}catch(Exception e){
-			e.printStackTrace();
+		}catch(Exception ignored){
 			return "";
 		}
 		return format(num, pattern);

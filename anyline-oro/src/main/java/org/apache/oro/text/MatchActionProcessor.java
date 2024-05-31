@@ -126,14 +126,12 @@ import org.apache.oro.text.regex.*;
  *        }
  *     });
  *   } catch(MalformedPatternException e) {
- *     e.printStackTrace();
  *     System.exit(1);
  *   }
  *
  *   try {
  *      processor.processMatches(System.in, System.out);
  *   } catch(IOException e) {
- *     e.printStackTrace();
  *     System.exit(1);
  *   }
  *  }

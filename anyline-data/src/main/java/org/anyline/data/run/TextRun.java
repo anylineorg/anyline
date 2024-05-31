@@ -199,7 +199,6 @@ public class TextRun extends BasicRun implements Run {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
 		}*/
 	}
 	public boolean checkValid(){

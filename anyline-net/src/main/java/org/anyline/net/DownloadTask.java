@@ -215,8 +215,7 @@ public class DownloadTask {
 			if(null != listener){
 				listener.error(this); 
 			} 
-		}catch(Exception e){
-			e.printStackTrace(); 
+		}catch(Exception ignored){
 		} 
 	} 
 	public void finish(){
@@ -232,7 +231,7 @@ public class DownloadTask {
 				listener.finish(this); 
 			} 
 		}catch(Exception e){
-			e.printStackTrace(); 
+			log.error("finish exception:", e);
 		} 
 	} 
 	private void log(){
