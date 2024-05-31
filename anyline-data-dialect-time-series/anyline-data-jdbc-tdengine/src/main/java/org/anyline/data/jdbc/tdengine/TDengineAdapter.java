@@ -285,7 +285,7 @@ public class TDengineAdapter extends AbstractJDBCAdapter implements JDBCAdapter 
 		try {
 			cnt = worker.execute(this, runtime, random, configs, run);
 		}catch (Exception e){
-			e.printStackTrace();
+                log.error("insert 异常:", e);
 		}*/
 		/*if(null == values || values.isEmpty()) {
 			cnt = jdbc.update(sql);

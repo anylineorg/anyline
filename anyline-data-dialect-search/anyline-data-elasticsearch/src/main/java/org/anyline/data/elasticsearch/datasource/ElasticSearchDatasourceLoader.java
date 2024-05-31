@@ -40,7 +40,7 @@ public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader impl
                 ElasticSearchDataSourceHolder.reg("elasticsearch", client);
                 loadDefault = false;
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("注册数据源异常", e);
             }
         }
         list.addAll(load("spring.datasource", loadDefault));

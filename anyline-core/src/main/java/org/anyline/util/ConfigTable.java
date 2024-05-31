@@ -392,7 +392,6 @@ public class ConfigTable {
 				while (entries.hasMoreElements()) {
 					JarEntry entry = entries.nextElement();
 					String name = entry.getName();
-					System.out.println(name);
 					if(check(name)){
 						InputStream in = jar.getInputStream(entry);
 						String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
@@ -425,7 +424,7 @@ public class ConfigTable {
 	public static boolean check(String name){
 		String[] items = ENVIRONMENT_CONFIG_FILE_NAMES.split(",");
 		for(String item:items){
-			if(name.endsWith(name)){
+			if(name.endsWith(item)){
 				return true;
 			}
 		}

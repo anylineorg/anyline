@@ -147,7 +147,6 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
                 destroy(item);
             }
         }catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         return true;

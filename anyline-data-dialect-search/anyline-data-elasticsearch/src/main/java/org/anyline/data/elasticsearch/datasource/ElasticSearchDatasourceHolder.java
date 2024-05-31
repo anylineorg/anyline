@@ -165,7 +165,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			init(key, ds, false);
 			return ds;
 		} catch (Exception e) {
-			e.printStackTrace();
+                log.error("注册数据源 异常:", e);
 		}
 		return null;
 	}
@@ -440,7 +440,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 					list.add(key);
 				}
 			}catch (Exception e){
-				e.printStackTrace();
+                log.error("复制数据源 异常:", e);
 			}
 		}
 		return list;

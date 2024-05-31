@@ -3394,7 +3394,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 trigger.setTime(Trigger.TIME.valueOf(tmps[1]));
                 trigger.addEvent(Trigger.EVENT.valueOf(tmps[2]));
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("封装trigger 异常:", e);
             }
             trigger.setDefinition(row.getString("TRIGGER_BODY"));
 

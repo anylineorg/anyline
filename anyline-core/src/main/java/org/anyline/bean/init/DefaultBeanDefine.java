@@ -19,10 +19,13 @@
 package org.anyline.bean.init;
 
 import org.anyline.bean.BeanDefine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 
 public class DefaultBeanDefine implements BeanDefine {
+    private static Logger log = LoggerFactory.getLogger(DefaultBeanDefine.class);
     public DefaultBeanDefine(){}
     public DefaultBeanDefine(Class type){
         this.type = type;
@@ -61,7 +64,7 @@ public class DefaultBeanDefine implements BeanDefine {
             try {
                 type = Class.forName(typeName);
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("类型异常", e);
             }
         }
         return type;

@@ -78,7 +78,7 @@ public class DefaultJDBCWorker implements DriverWorker {
                 con = datasource.getConnection();
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("连接 异常:", e);
         }
         return con;
     }
@@ -93,7 +93,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("释放连接 异常:", e);
         }
     }
 
@@ -697,7 +697,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             }
         }catch (Exception e){
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
+                log.error("identity 异常:", e);
             }
             if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
                 log.warn("{}[exe insert][返回主键失败]", random);
@@ -888,7 +888,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             ResultSet rs = ps.executeQuery();/*
             columns = adapter.columns(adapter, runtime, true, null, null, rs);*/
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("metadata 异常:", e);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
         }
@@ -1127,7 +1127,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             columns = JDBCUtil.metadata(adapter, runtime, true, columns, metadata, table, pattern);
         } catch (Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
+                log.error("metadata 异常:", e);
             }
         }finally {
             releaseConnection(adapter, runtime, con, ds);

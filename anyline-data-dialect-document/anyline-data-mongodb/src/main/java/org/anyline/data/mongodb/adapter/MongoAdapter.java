@@ -207,7 +207,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
+                log.error("insert 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
                 SQLUpdateException ex = new SQLUpdateException("insert异常:"+e, e);
@@ -426,7 +426,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-                e.printStackTrace();
+                log.error("select 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
                 SQLQueryException ex = new SQLQueryException("query异常:"+e, e);

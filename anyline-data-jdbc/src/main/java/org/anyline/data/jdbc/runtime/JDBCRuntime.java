@@ -22,12 +22,15 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.data.util.DataSourceUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 
 public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
+    private static Logger log = LoggerFactory.getLogger(JDBCRuntime.class);
     protected DataSource processor;
 
     public JDBCRuntime(String key, DataSource datasource, DriverAdapter adapter){
@@ -66,12 +69,12 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                             version = meta.getDatabaseProductVersion();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("获取数据源特征 异常:", e);
                     } finally {
                         try {
                             con.close();
                         }catch (Exception e){
-                            e.printStackTrace();
+                            log.error("释放连接 异常:", e);
                         }
                     }
                 }
@@ -94,12 +97,12 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                     DatabaseMetaData meta = con.getMetaData();
                     version = meta.getDatabaseProductVersion();
                 }catch (Exception e){
-                    e.printStackTrace();
+                    log.error("获取数据源版本 异常:", e);
                 }finally {
                     try {
                         con.close();
                     }catch (Exception e){
-                        e.printStackTrace();
+                        log.error("释放连接 异常:", e);
                     }
                 }
             }

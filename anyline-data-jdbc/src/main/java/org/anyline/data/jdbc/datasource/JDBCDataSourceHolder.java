@@ -65,7 +65,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                     try {
                         return Class.forName(value.toString()).newInstance();
                     }catch (Exception e){
-                        e.printStackTrace();
+                        log.error("类型转换 异常:", e);
                     }
                 }
                 return null;
@@ -118,7 +118,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             runtime(key, datasource, true);
             return datasource;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("注册JDBC数据源 异常:", e);
         }
         return null;
     }
@@ -280,7 +280,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             log.info("[注入数据源][type:JDBC][key:{}][bean:{}]", key, datasource_id);
         } catch (Exception e) {
             log.error("[注入数据源失败][type:JDBC][key:{}][msg:{}]", key, e.toString());
-            e.printStackTrace();
+            log.error("注入数据源 异常:", e);
             return null;
         }
         return datasource_id;

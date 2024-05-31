@@ -641,7 +641,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}catch(Exception e){
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				e.printStackTrace();
+				log.error("insert 异常:", e);
 			}
 			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
 				log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
@@ -862,7 +862,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 		}catch(Exception e) {
 			if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				e.printStackTrace();
+				log.error("update 异常:", e);
 			}
 			if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
 				SQLUpdateException ex = new SQLUpdateException("update异常:" + e.toString(), e);
@@ -1049,7 +1049,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
+				log.error("query 异常:", e);
 			}
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
@@ -1407,7 +1407,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			maps = process(runtime, maps);
 		}catch(Exception e){
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				e.printStackTrace();
+				log.error("maps 异常:", e);
 			}
 			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
 				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));

@@ -17,14 +17,14 @@
 
 
 package org.anyline.util;
- 
-import java.io.ByteArrayInputStream; 
-import java.io.ByteArrayOutputStream; 
-import java.io.IOException; 
-import java.io.ObjectInputStream; 
-import java.io.ObjectOutputStream; 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
  
 public class ObjectUtil {
+	private static Logger log = LoggerFactory.getLogger(ObjectUtil.class);
 	public static byte[] serialize(Object obj) {
 		ObjectOutputStream obi = null; 
 		ByteArrayOutputStream bai = null; 
@@ -35,7 +35,7 @@ public class ObjectUtil {
 			byte[] byt = bai.toByteArray(); 
 			return byt; 
 		} catch (IOException e) {
-			e.printStackTrace(); 
+			log.error("serialize 异常:", e);
 		} 
 		return null; 
 	} 
@@ -49,8 +49,7 @@ public class ObjectUtil {
 			Object obj = oii.readObject(); 
 			return obj; 
 		} catch (Exception e) {
- 
-			e.printStackTrace(); 
+			log.error("unserizlize 异常:", e);
 		} 
 		return null; 
 	} 

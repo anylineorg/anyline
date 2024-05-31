@@ -624,7 +624,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             }
         }catch(Exception e){
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
+                log.error("insert 异常:", e);
             }
             if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
                 log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
@@ -938,7 +938,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
 
         }catch(Exception e) {
             if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                e.printStackTrace();
+                log.error("update 异常:", e);
             }
             if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
                 SQLUpdateException ex = new SQLUpdateException("update异常:" + e.toString(), e);

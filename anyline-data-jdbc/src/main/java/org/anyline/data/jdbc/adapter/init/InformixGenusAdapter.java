@@ -6405,7 +6405,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
                 setPrimaryValue(obj, value);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("生成主键值 异常:", e);
         }
         return true;
     }

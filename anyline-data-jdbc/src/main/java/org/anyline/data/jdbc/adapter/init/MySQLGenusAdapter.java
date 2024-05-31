@@ -3197,7 +3197,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                     trigger.addEvent(Trigger.EVENT.valueOf(event));
                 }
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("封装trigger 异常:", e);
             }
             trigger.setDefinition(row.getString("ACTION_STATEMENT"));
 

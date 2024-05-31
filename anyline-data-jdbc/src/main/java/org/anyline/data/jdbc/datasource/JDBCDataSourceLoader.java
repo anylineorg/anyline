@@ -61,7 +61,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
                     loadDefault = false;
                 }catch (Exception e){
                     runtime = null;
-                    e.printStackTrace();
+                    log.error("加载JDBC数据源 异常:", e);
                 }
             }
 

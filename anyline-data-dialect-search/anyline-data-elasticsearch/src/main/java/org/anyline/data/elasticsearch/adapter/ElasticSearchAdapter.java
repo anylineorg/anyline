@@ -5810,7 +5810,7 @@ PUT index_user/_bulk
             result.setText(content);
             log.info("[status:{}]", status);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("执行异常:", e);
         }
         return result;
     }

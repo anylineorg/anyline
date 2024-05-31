@@ -155,7 +155,7 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
                 destroy(item);
             }
         }catch (Exception e){
-            e.printStackTrace();
+                log.error("注销数据源 异常:", e);
         }
     }
 
