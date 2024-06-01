@@ -83,16 +83,16 @@ public class TableBuilder {
         return this;
     }
     public RunPrepare build(){
-        DefaultTablePrepare sql = new DefaultTablePrepare();
-        sql.setDest(datasource);
-        sql.setTable(table);
+        DefaultTablePrepare prepare = new DefaultTablePrepare();
+        prepare.setDest(datasource);
+        prepare.setTable(table);
         for(Join join:joins){
-            sql.join(join);
+            prepare.join(join);
         }
         for(Column col: columns.values()) {
-            sql.addColumn(col);
+            prepare.addColumn(col);
         }
-        return sql;
+        return prepare;
     }
 
     public TableBuilder join(Join join){
