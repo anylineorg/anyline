@@ -137,9 +137,16 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 */
 	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare, boolean placeholder){
 		StringBuilder builder = new StringBuilder();
-		DriverAdapter adapter = runtime.getAdapter();
-		String delimiterFr = adapter.getDelimiterFr();
-		String delimiterTo = adapter.getDelimiterTo();
+		String delimiterFr = "";
+		String delimiterTo = "";
+		DriverAdapter adapter = null;
+		if (null != runtime){
+			adapter = runtime.getAdapter();;
+		}
+		if(null != adapter) {
+			delimiterFr = adapter.getDelimiterFr();
+			delimiterTo = adapter.getDelimiterTo();
+		}
 		boolean empty = BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();
 		if(compareCode == -1){
