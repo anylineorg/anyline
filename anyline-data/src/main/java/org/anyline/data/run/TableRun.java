@@ -91,6 +91,15 @@ public class TableRun extends AbstractRun implements Run {
 		 
 	}
 	public void appendGroup(StringBuilder builder){
+		if(null != configs) {
+			if (null == groupStore) {
+				groupStore = configs.getGroups();
+			}
+			if (BasicUtil.isEmpty(having)) {
+				having = configs.getHaving();
+			}
+		}
+
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		}
