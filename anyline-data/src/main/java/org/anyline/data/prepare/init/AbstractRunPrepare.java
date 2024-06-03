@@ -26,7 +26,6 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.init.DefaultAutoCondition;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.entity.Join;
 import org.anyline.metadata.Column;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -38,16 +37,16 @@ import java.util.*;
 public abstract class AbstractRunPrepare implements RunPrepare{
 
 	protected static final Logger log     = LoggerFactory.getLogger(AbstractRunPrepare.class);
-	protected String id 									;
-	protected ConditionChain chain							; // 查询条件
-	protected OrderStore orders								; // 排序
-	protected GroupStore groups								; // 分组条件
-	protected String having									; // 分组过滤条件
-	protected PageNavi navi									; // 分页
+	protected String id 										;
+	protected ConditionChain chain								; // 查询条件
+	protected OrderStore orders									; // 排序
+	protected GroupStore groups									; // 分组条件
+	protected String having										; // 分组过滤条件
+	protected PageNavi navi										; // 分页
 	protected List<String> primaryKeys     = new ArrayList<>()	; // 主键
 	protected List<String> fetchKeys       = new ArrayList<>()	; // 最终需要封装的列
 	protected boolean valid 		       = true				;
-	protected String alias									;
+	protected String alias										;
 	protected int batch = 0;
 	protected boolean multiple		       = false				;
 	protected boolean strict		       = false				; // 严格格式 不能追加条件
@@ -138,13 +137,12 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * 添加运行时参数值 
 	 * @param runValue  runValue
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-	 */ 
-	@SuppressWarnings({"unchecked","rawtypes" })
+	 */
 	protected RunPrepare addRunValue(Object runValue){
 		if(null == runValues){
-			runValues = new Vector<Object>(); 
+			runValues = new Vector<>();
 		} 
-		if(runValue != null && runValue instanceof Collection){
+		if(runValue instanceof Collection){
 			Collection collection = (Collection)runValue; 
 			runValues.addAll(collection); 
 		}else{
@@ -241,7 +239,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 				orders.order(order); 
 			} 
 		}else{
-			orders = this.orders; 
+			this.orders.clear();
 		} 
 	} 
 	 
@@ -571,6 +569,6 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public List<RunPrepare> getUnions() {
-		return Collections.emptyList();
+		return  unions;
 	}
 }

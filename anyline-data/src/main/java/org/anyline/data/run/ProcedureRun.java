@@ -24,7 +24,7 @@ import org.anyline.metadata.Procedure;
 
 import java.sql.Types;
 
-public class ProcedureRun extends BasicRun implements Run{
+public class ProcedureRun extends AbstractRun implements Run{
     private Procedure  procedure = null;
     public ProcedureRun(Procedure procedure){
         this.procedure = procedure;
@@ -61,4 +61,5 @@ public class ProcedureRun extends BasicRun implements Run{
     public void setProcedure(Procedure procedure) {
         this.procedure = procedure;
     }
+
 }

@@ -19,6 +19,9 @@
 package org.anyline.data.prepare.auto.init;
  
 import org.anyline.data.prepare.auto.TextPrepare;
+import org.anyline.data.run.Run;
+import org.anyline.data.run.TextRun;
+import org.anyline.data.runtime.DataRuntime;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
 	private String text; 
@@ -29,6 +32,13 @@ public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepar
 	} 
 	public String getText(){
 		return this.text; 
-	} 
-	 
-} 
+	}
+
+	@Override
+	public Run build(DataRuntime runtime) {
+		TextRun run = new TextRun();
+		run.setPrepare(this);
+		run.setRuntime(runtime);
+		return run;
+	}
+}

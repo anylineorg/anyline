@@ -40,7 +40,7 @@ import org.anyline.util.DefaultOgnlMemberAccess;
 
 import java.util.*;
 
-public class XMLRun extends BasicRun implements Run {
+public class XMLRun extends AbstractRun implements Run {
 	private List<String> conditions; 
 	private List<String> staticConditions; 
 	public XMLRun(){
@@ -319,8 +319,7 @@ public class XMLRun extends BasicRun implements Run {
 					this.groupStore.group(group); 
 				} 
 			} 
-		} 
-				 
+		}
 	} 
 	private void appendGroup(){
 		if(null != groupStore){
@@ -428,7 +427,9 @@ public class XMLRun extends BasicRun implements Run {
 			} 
 		} 
 		return null; 
-	} 
+	}
+
+
 	private List<Variable> getVariables(String key){
 		List<Variable> vars = new ArrayList<Variable>();
 		if(null != variables){

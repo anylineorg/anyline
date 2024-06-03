@@ -19,8 +19,13 @@ package org.anyline.data.prepare.auto.init;
 
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.prepare.auto.TablePrepare;
+import org.anyline.data.run.Run;
+import org.anyline.data.run.TableRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Join;
 import org.anyline.metadata.Table;
+
+import java.util.List;
 
 public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrepare {
 
@@ -95,4 +100,18 @@ public class DefaultTablePrepare extends DefaultAutoPrepare implements TablePrep
 	public RunPrepare full(Table table, String condition){
 		return join(Join.TYPE.FULL, table, condition);
 	}
-} 
+
+	@Override
+	public Run build(DataRuntime runtime) {
+		TableRun run = new TableRun(runtime, this.getTable());
+		run.setPrepare(this);
+		run.setConfigStore(this.condition());
+		List<RunPrepare> unions = getUnions();
+		if(null != unions){
+			for(RunPrepare union:unions){
+				run.union(union.build(runtime));
+			}
+		}
+		return run;
+	}
+}

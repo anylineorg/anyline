@@ -1956,7 +1956,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	@Override
 	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
-		if(prepare instanceof TablePrepare){
+		/*if(prepare instanceof TablePrepare){
 			run = new TableRun(runtime, prepare.getTable());
 			//检测 likes
 			likes(runtime, prepare.getTable(), configs);
@@ -1964,15 +1964,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run = new XMLRun();
 		}else if(prepare instanceof TextPrepare){
 			run = new TextRun();
+		}*/
+		run = prepare.build(runtime);
+		init(runtime, run, configs, conditions);
+		List<Run> unions = run.getUnions();
+		if(null != unions){
+			for(Run union:unions){
+				init(runtime, union, configs, conditions);
+			}
 		}
+		if(run.checkValid()){
+			//构造最终的查询SQL
+			fillQueryContent(runtime, run);
+		}
+		return run;
+	}
+	public void init(DataRuntime runtime, Run run, ConfigStore configs, String ... conditions){
 		if(null != run){
-			run.setRuntime(runtime);
+			RunPrepare prepare = run.getPrepare();
+			if(prepare instanceof TablePrepare){
+				likes(runtime, prepare.getTable(), configs);
+			}
 			//如果是text类型 将解析文本并抽取出变量
-			run.setPrepare(prepare);
 			if(run instanceof TextRun){
 				parseText(runtime, (TextRun)run);
 			}
-			run.setConfigStore(configs);
+			run.addConfigStore(configs);
+			configs = run.getConfigs();
 			//先把configs中的占位值取出
 			if(null != configs) {
 				List<Object> statics = configs.getStaticValues();
@@ -2007,12 +2025,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						}
 					}
 				}
-				//构造最终的查询SQL
-				fillQueryContent(runtime, run);
 			}
 		}
-		convert(runtime, configs, run);
-		return run;
 	}
 	/**
 	 * 解析文本中的占位符
@@ -2126,9 +2140,36 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				TextRun r = (TextRun) run;
 				fillQueryContent(runtime, r);
 			}
+			convert(runtime, run.getConfigs(), run);
+		}
+	}
+	/**
+	 * select[命令合成-子流程] <br/>
+	 * 构造查询主体
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 */
+	@Override
+	public void fillQueryContent(DataRuntime runtime, StringBuilder builder, Run run){
+		if(null != run){
+			if(run instanceof TableRun){
+				TableRun r = (TableRun) run;
+				fillQueryContent(runtime, builder, r);
+			}else if(run instanceof XMLRun){
+				XMLRun r = (XMLRun) run;
+				fillQueryContent(runtime, builder, r);
+			}else if(run instanceof TextRun){
+				TextRun r = (TextRun) run;
+				fillQueryContent(runtime, builder, r);
+			}
+			convert(runtime, run.getConfigs(), run);
 		}
 	}
 	protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
+		}
+	}
+	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, XMLRun run){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, XMLRun run)", 37));
 		}
@@ -2140,7 +2181,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		// appendOrderStore();
 		run.checkValid();
 	}
+	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TextRun run){
+		replaceVariable(runtime, run);
+		run.appendCondition(true);
+		run.appendGroup();
+		// appendOrderStore();
+		run.checkValid();
+	}
 	protected void fillQueryContent(DataRuntime runtime, TableRun run){
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
+		}
+	}
+	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run){
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 fillQueryContent(DataRuntime runtime, TableRun run)", 37));
 		}

@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public abstract class BasicRun implements Run {
-	protected static final Logger log = LoggerFactory.getLogger(BasicRun.class);
+public abstract class AbstractRun implements Run {
+	protected static final Logger log = LoggerFactory.getLogger(AbstractRun.class);
 	protected StringBuilder builder = new StringBuilder();
 	protected int batch;
 	protected int vol;//每行多少个值
@@ -79,6 +79,11 @@ public abstract class BasicRun implements Run {
 
 	protected String action;
 	protected boolean emptyCondition = true;
+	protected String distinct = "";
+	protected String alias;
+	protected List<Join> joins = new ArrayList<Join>();//关联表
+	protected boolean unionAll = false;
+	protected List<Run> unions = new ArrayList<>();
 
 	@Override
 	public boolean isEmptyCondition() {
@@ -473,6 +478,46 @@ public abstract class BasicRun implements Run {
 			String having = configs.getHaving();
 			if(BasicUtil.isNotEmpty(having)){
 				this.having = having;
+			}
+			OrderStore orders = configs.getOrders();
+			if(null != orders){
+				this.orderStore = orders;
+			}
+		}
+	}
+	@Override
+	public void addConfigStore(ConfigStore configs) {
+		if(null == this.configs){
+			this.configs = configs;
+		}else{
+			if(null != configs){
+				this.configs.and(configs);
+				GroupStore groups = configs.getGroups();
+				if(null != groups){
+					if(groupStore == null){
+						groupStore = new DefaultGroupStore();
+					}
+					List<Group> list = groups.getGroups();
+					for(Group group:list){
+						groupStore.group(group);
+					}
+					this.configs.setGroups(groupStore);
+				}
+				String having = configs.getHaving();
+				if(BasicUtil.isNotEmpty(having)){
+					this.having = having;
+					this.configs.having(having);
+				}
+				PageNavi navi = configs.getPageNavi();
+				if(null != navi){
+					this.pageNavi = navi;
+					this.configs.setPageNavi(navi);
+				}
+				OrderStore orders = configs.getOrders();
+				if(null != orders){
+					this.orderStore = orders;
+					this.configs.setOrders(orders);
+				}
 			}
 		}
 	}
@@ -1221,10 +1266,90 @@ public abstract class BasicRun implements Run {
 		}
 		return null;
 	}
-
 	@Override
 	public boolean checkValid() {
 		return false;
+	}
+
+	@Override
+	public Run setUnionAll(boolean all) {
+		this.unionAll = all;
+		return this;
+	}@Override
+	public boolean isUnionAll(){
+		return unionAll;
+	}
+	@Override
+	public Run union(Run run, boolean all) {
+		run.setUnionAll(all);
+		unions.add(run);
+		return this;
+	}
+
+	@Override
+	public Run union(Run run) {
+		unions.add(run);
+		return this;
+	}
+
+	@Override
+	public Run union(List<Run> unions, boolean all) {
+		for(Run union:unions){
+			union(union, all);
+		}
+		return this;
+	}
+
+	@Override
+	public Run union(List<Run> unions) {
+		for(Run union:unions){
+			union(union);
+		}
+		return this;
+	}
+
+	@Override
+	public List<Run> getUnions() {
+		return unions;
+	}
+
+	public Run join(Join join){
+		joins.add(join);
+		return this;
+	}
+	public Run join(Join.TYPE type, Table table, String condition){
+		Join join = new Join();
+		join.setTable(table);
+		join.setType(type);
+		join.setCondition(condition);
+		return join(join);
+	}
+	public Run join(Join.TYPE type, String table, String condition){
+		return join(type, new Table(table), condition);
+	}
+	public Run inner(String table, String condition){
+		return join(Join.TYPE.INNER, table, condition);
+	}
+	public Run inner(Table table, String condition){
+		return join(Join.TYPE.INNER, table, condition);
+	}
+	public Run left(String table, String condition){
+		return join(Join.TYPE.LEFT, table, condition);
+	}
+	public Run left(Table table, String condition){
+		return join(Join.TYPE.LEFT, table, condition);
+	}
+	public Run right(String table, String condition){
+		return join(Join.TYPE.RIGHT, table, condition);
+	}
+	public Run right(Table table, String condition){
+		return join(Join.TYPE.RIGHT, table, condition);
+	}
+	public Run full(String table, String condition){
+		return join(Join.TYPE.FULL, table, condition);
+	}
+	public Run full(Table table, String condition){
+		return join(Join.TYPE.FULL, table, condition);
 	}
 }
  

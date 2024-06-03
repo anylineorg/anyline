@@ -28,8 +28,8 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.AutoPrepare;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.entity.Compare;
-import org.anyline.entity.Order;
 import org.anyline.entity.Join;
+import org.anyline.entity.Order;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Schema;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class DefaultAutoPrepare extends AbstractRunPrepare implements AutoPrepare {
+public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements AutoPrepare {
 	protected String datasoruce;
 	protected Catalog catalog;
 	protected Schema schema;
@@ -467,6 +467,7 @@ public class DefaultAutoPrepare extends AbstractRunPrepare implements AutoPrepar
 	public String getAlias() {
 		return alias;
 	}
+
 
 	@Override
 	public void setAlias(String alias) {

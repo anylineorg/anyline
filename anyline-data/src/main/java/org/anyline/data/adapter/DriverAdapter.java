@@ -1261,6 +1261,7 @@ public interface DriverAdapter {
 	 * 构造查询主体 拼接where group等(不含分页 ORDER)
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
+	void fillQueryContent(DataRuntime runtime, StringBuilder builder,  Run run);
 	void fillQueryContent(DataRuntime runtime, Run run);
 
 	/**

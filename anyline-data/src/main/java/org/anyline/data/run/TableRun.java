@@ -29,7 +29,7 @@ import org.anyline.util.BasicUtil;
 
 import java.util.List;
 
-public class TableRun extends BasicRun implements Run {
+public class TableRun extends AbstractRun implements Run {
 
 	public TableRun(DataRuntime runtime, String table){
 		this.builder = new StringBuilder();
@@ -90,7 +90,7 @@ public class TableRun extends BasicRun implements Run {
 	public void appendOrderStore(){
 		 
 	}
-	public void appendGroup(){
+	public void appendGroup(StringBuilder builder){
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		}
@@ -101,6 +101,9 @@ public class TableRun extends BasicRun implements Run {
 				builder.append(" HAVING ").append(having);
 			}
 		} 
+	}
+	public void appendGroup(){
+		appendGroup(builder);
 	}
 
 	public boolean checkValid(){
@@ -121,7 +124,7 @@ public class TableRun extends BasicRun implements Run {
 	 * @param first 是否首位条件 如果是需要加where
 	 * @param placeholder 是否需要占位符
 	 */
-	public void appendCondition(DriverAdapter adapter, boolean first, boolean placeholder){
+	public void appendCondition(StringBuilder builder, DriverAdapter adapter, boolean first, boolean placeholder){
 		if(null == conditionChain){
 			return; 
 		}
@@ -146,8 +149,11 @@ public class TableRun extends BasicRun implements Run {
 		}
 		List<RunValue> values = conditionChain.getRunValues();
 		addValues(values);
-	} 
+	}
 
+	public void appendCondition(DriverAdapter adapter, boolean first, boolean placeholder){
+		appendCondition(builder, adapter, first, placeholder);
+	}
 	public void setConfigs(ConfigStore configs) {
 		this.configs = configs;
 		if(null != configs){
@@ -183,5 +189,4 @@ public class TableRun extends BasicRun implements Run {
 		}
 		return null;
 	}
-
-} 
+}

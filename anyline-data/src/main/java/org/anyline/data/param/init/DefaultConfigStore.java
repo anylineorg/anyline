@@ -733,6 +733,18 @@ public class DefaultConfigStore implements ConfigStore {
 				list.addConfig(item);
 			}
 		}
+		PageNavi navi = configs.getPageNavi();
+		if(null != navi) {
+			this.setPageNavi(navi);
+		}
+		GroupStore groups = configs.getGroups();
+		if(null != groups) {
+			this.setGroups(groups);
+		}
+		String having = configs.getHaving();
+		if(BasicUtil.isNotEmpty(having)) {
+			this.having(having);
+		}
 		chain = list;
 		return this;
 	}

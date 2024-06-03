@@ -19,6 +19,8 @@
 package org.anyline.data.prepare;
 
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
@@ -255,6 +257,7 @@ public interface RunPrepare extends Cloneable {
 			}
 		}
 	}
+	Run build(DataRuntime runtime);
 
 
 } 

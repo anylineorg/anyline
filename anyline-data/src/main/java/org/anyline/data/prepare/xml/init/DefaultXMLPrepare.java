@@ -27,6 +27,9 @@ import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.init.AbstractRunPrepare;
 import org.anyline.data.prepare.init.DefaultVariable;
 import org.anyline.data.prepare.xml.XMLPrepare;
+import org.anyline.data.run.Run;
+import org.anyline.data.run.XMLRun;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.Compare;
 import org.anyline.metadata.Catalog;
 import org.anyline.metadata.Column;
@@ -420,9 +423,17 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		return this;
 	}
 
+
 	@Override
 	public Table getTable() {
 		return null;
+	}
+	@Override
+	public Run build(DataRuntime runtime) {
+		XMLRun run = new XMLRun();
+		run.setPrepare(this);
+		run.setRuntime(runtime);
+		return run;
 	}
 	
 } 

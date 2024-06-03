@@ -34,20 +34,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class TextRun extends BasicRun implements Run {
+public class TextRun extends AbstractRun implements Run {
+	private String text;
+
 	public TextRun(){
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
-
 	}
 
-	public Run setPrepare(RunPrepare prepare){
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+		parseText();
+	}
+
+
+public Run setPrepare(RunPrepare prepare){
 		this.prepare = prepare;
 		this.table = prepare.getTable();
 		parseText(); 
 		return this; 
-	} 
+	}
 	public void init(){
 		super.init(); 
 		// 复制 RunPrepare 查询条件 
@@ -412,6 +423,8 @@ public class TextRun extends BasicRun implements Run {
 		}
 		return null;
 	}
+
+
 	public List<Variable> getVariables(String key){
 		List<Variable> list = new ArrayList<>();
 		if(null == key || null == variables){

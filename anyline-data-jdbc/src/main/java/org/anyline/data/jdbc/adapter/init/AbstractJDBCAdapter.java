@@ -1157,9 +1157,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	protected void fillQueryContent(DataRuntime runtime, TextRun run){
 		super.fillQueryContent(runtime, run);
 	}
+
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, TableRun run){
-		StringBuilder builder = run.getBuilder();
+	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run){
 		TablePrepare sql = (TablePrepare)run.getPrepare();
 		builder.append("SELECT ");
 		if(null != sql.getDistinct()){
@@ -1177,7 +1177,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			}
 		}
-		if(null != columns && columns.size()>0){
+		if(null != columns && !columns.isEmpty()){
 			// 指定查询列
 			boolean first = true;
 			for(Column column:columns.values()){
@@ -1243,12 +1243,30 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		//builder.append("\nWHERE 1=1\n\t");
 		/*添加查询条件*/
 		// appendConfigStore();
-		run.appendCondition(this, true, true);
-		run.appendGroup();
+		run.appendCondition(builder, this, true, true);
+		run.appendGroup(builder);
+	}
+
+	@Override
+	protected void fillQueryContent(DataRuntime runtime, TableRun run){
+		StringBuilder builder = run.getBuilder();
+		fillQueryContent(runtime, builder, run);
+		//UNION
+		List<Run> unions = run.getUnions();
+		if(null != unions){
+			for(Run union:unions){
+				builder.append("\n UNION ");
+				if(union.isUnionAll()){
+					builder.append(" ALL ");
+				}
+				builder.append("\n");
+				fillQueryContent(runtime, builder, union);
+				run.getRunValues().addAll(union.getRunValues());
+			}
+		}
 		run.appendOrderStore();
 		run.checkValid();
 	}
-
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 合成最终 select 命令 包含分页 排序

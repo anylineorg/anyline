@@ -22,11 +22,8 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.*;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.entity.Compare;
+import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
 
 import java.util.Collection;
@@ -56,8 +53,9 @@ public interface Run {
 	void setOrders(String[] orders); 
 	OrderStore getOrderStore() ; 
 	Run order(String order);
-	 
+
 	void setConfigStore(ConfigStore configs);
+	void addConfigStore(ConfigStore configs);
 	ConfigStore getConfigs() ;
 
 	/**
@@ -227,5 +225,19 @@ public interface Run {
 	void action(String action);
 
 	String log(ACTION.DML action, boolean placeholder);
+
+	Run setUnionAll(boolean all);
+	boolean isUnionAll();
+	Run union(Run run, boolean all);
+	Run union(Run run);
+	default Run unionAll(Run run){
+		return union(run, true);
+	}
+	Run union(List<Run> runs, boolean all);
+	Run union(List<Run> run);
+	default Run unionAll(List<Run> run){
+		return union(run, true);
+	}
+	List<Run> getUnions();
 
 }
