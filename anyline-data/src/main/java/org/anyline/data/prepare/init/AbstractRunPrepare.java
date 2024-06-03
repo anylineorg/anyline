@@ -56,6 +56,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();	//查询列
 	protected List<String> excludes = new ArrayList<>();  //不查询列
 	protected ConfigStore condition;
+	protected boolean unionAll = false;
+	protected List<RunPrepare> unions = new ArrayList<>();
 
 	// 运行时参数值
 	protected Vector<Object> runValues;
@@ -528,5 +530,47 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	public RunPrepare condition(ConfigStore condition) {
 		this.condition = condition;
 		return this;
+	}
+
+	@Override
+	public RunPrepare setUnionAll(boolean all) {
+		this.unionAll = all;
+		return this;
+	}@Override
+	public boolean isUnionAll(){
+		return unionAll;
+	}
+	@Override
+	public RunPrepare union(RunPrepare prepare, boolean all) {
+		prepare.setUnionAll(all);
+		unions.add(prepare);
+		return this;
+	}
+
+	@Override
+	public RunPrepare union(RunPrepare prepare) {
+		unions.add(prepare);
+		return this;
+	}
+
+	@Override
+	public RunPrepare union(List<RunPrepare> unions, boolean all) {
+		for(RunPrepare union:unions){
+			union(union, all);
+		}
+		return this;
+	}
+
+	@Override
+	public RunPrepare union(List<RunPrepare> unions) {
+		for(RunPrepare union:unions){
+			union(union);
+		}
+		return this;
+	}
+
+	@Override
+	public List<RunPrepare> getUnions() {
+		return Collections.emptyList();
 	}
 }

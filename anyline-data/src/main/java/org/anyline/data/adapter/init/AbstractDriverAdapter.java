@@ -2566,6 +2566,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run.setBatch(prepare.getBatch());
 			run.setRuntime(runtime);
 			run.setPrepare(prepare);
+			if(run instanceof TextRun){
+				parseText(runtime, (TextRun)run);
+			}
 			run.setConfigStore(configs);
 			run.addCondition(conditions);
 			run.init(); //

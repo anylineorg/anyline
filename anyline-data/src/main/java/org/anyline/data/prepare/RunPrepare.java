@@ -224,9 +224,22 @@ public interface RunPrepare extends Cloneable {
 	void setBatch(int batch);
 	int getBatch();
 
+
 	ConfigStore condition();
 	RunPrepare condition(ConfigStore configs);
-
+	RunPrepare setUnionAll(boolean all);
+	boolean isUnionAll();
+	RunPrepare union(RunPrepare prepare, boolean all);
+	RunPrepare union(RunPrepare prepare);
+	default RunPrepare unionAll(RunPrepare prepare){
+		return union(prepare, true);
+	}
+	RunPrepare union(List<RunPrepare> prepares, boolean all);
+	RunPrepare union(List<RunPrepare> prepare);
+	default RunPrepare unionAll(List<RunPrepare> prepare){
+		return union(prepare, true);
+	}
+	List<RunPrepare> getUnions();
 	/**
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围
@@ -242,5 +255,6 @@ public interface RunPrepare extends Cloneable {
 			}
 		}
 	}
+
 
 } 
