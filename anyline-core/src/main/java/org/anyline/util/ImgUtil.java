@@ -17,41 +17,23 @@
 
 
 package org.anyline.util;
- 
-import java.awt.Color; 
-import java.awt.Graphics; 
-import java.awt.Graphics2D; 
-import java.awt.Image; 
-import java.awt.Rectangle; 
-import java.awt.Toolkit; 
-import java.awt.color.ColorSpace; 
-import java.awt.geom.AffineTransform; 
-import java.awt.image.AffineTransformOp; 
-import java.awt.image.BufferedImage; 
-import java.awt.image.ColorConvertOp; 
-import java.awt.image.CropImageFilter; 
-import java.awt.image.FilteredImageSource; 
-import java.awt.image.ImageFilter; 
-import java.io.BufferedInputStream; 
-import java.io.ByteArrayOutputStream; 
-import java.io.File; 
-import java.io.FileInputStream; 
-import java.io.FileOutputStream; 
-import java.io.IOException; 
-import java.io.InputStream; 
-import java.io.OutputStream; 
-import java.net.HttpURLConnection; 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.awt.color.ColorSpace;
+import java.awt.geom.AffineTransform;
+import java.awt.image.*;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Iterator;
- 
-import javax.imageio.ImageIO; 
-import javax.imageio.ImageReadParam; 
-import javax.imageio.ImageReader; 
-import javax.imageio.stream.ImageInputStream; 
- 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory;
 
 /** 
  * 图片处理工具类:<br> 
@@ -171,7 +153,11 @@ public class ImgUtil {
     	scale(src, tar, format, width, height, false);
     } 
 	public static void scale(File src, File tar, int width, int height, boolean fill) {
-		scale(src, tar, "jpeg", width, height, fill);
+        String format = "JPEG";
+        if(src.getName().toLowerCase().endsWith("png")){
+            format = "PNG";
+        }
+        scale(src, tar, format, width, height, fill);
 	} 
     /** 
      * 图像切割(按指定起点坐标和宽高切割) 
@@ -192,20 +178,16 @@ public class ImgUtil {
 	    		format = "PNG"; 
 	    	} 
 	        Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(format);/*JPEG, PNG, BMP*/
-	        reader = (ImageReader)iterator.next();/*获取图片尺寸*/ 
+	        reader = iterator.next();/*获取图片尺寸*/
 	        iis = ImageIO.createImageInputStream(src);   
 	        reader.setInput(iis, true);
 	        ImageReadParam param = reader.getDefaultReadParam();   
 	        Rectangle rectangle = new Rectangle(x, y, w, h);/*指定截取范围*/
 	        param.setSourceRegion(rectangle);   
 	        BufferedImage bi = reader.read(0, param);
-	        format = "JPEG"; 
-	    	if(tar.getName().toLowerCase().endsWith("png")){
-	    		format = "PNG"; 
-	    	} 
 	        ImageIO.write(bi, format, tar);
 	    } catch (Exception e) {
-            log.error("cur file exception:", e);
+            log.error("cut file exception:", e);
 	    }finally{
 	    	try {
 				iis.close(); 
@@ -223,8 +205,12 @@ public class ImgUtil {
      * @param rows 目标切片行数.默认2, 必须是范围 [1, 20] 之内
      * @param cols 目标切片列数.默认2, 必须是范围 [1, 20] 之内
      */ 
-    public static void cut(File src, File dir, int rows, int cols) {
+    public static void split(File src, File dir, int rows, int cols) {
         try {
+            String format = "JPEG";
+            if(src.getName().toLowerCase().endsWith("png")){
+                format = "PNG";
+            }
             if(rows<=0||rows>20) rows = 2; // 切片行数 
             if(cols<=0||cols>20) cols = 2; // 切片列数 
             // 读取源图像 
@@ -264,7 +250,7 @@ public class ImgUtil {
                         if(null != dir && !dir.exists()){
                         	dir.mkdirs(); 
                         } 
-                        ImageIO.write(tag, "JPEG", new File(dir, "_r" + i + "_c" + j + ".jpg"));
+                        ImageIO.write(tag, format, new File(dir, "_r" + i + "_c" + j + "."+format));
                     } 
                 } 
             } 
@@ -291,7 +277,7 @@ public class ImgUtil {
      * @param width 目标切片宽度.默认200 
      * @param height 目标切片高度.默认150 
      */ 
-    public final static void cut3(File src, File dir, int width, int height) {
+    public final static void split(File src, int width, int height, File dir) {
         try {
             if(width<=0) width = 200; // 切片宽度 
             if(height<=0) height = 150; // 切片高度 
@@ -300,9 +286,6 @@ public class ImgUtil {
             int srcWidth = bi.getHeight(); // 源图宽度 
             int srcHeight = bi.getWidth(); // 源图高度 
             if (srcWidth > width && srcHeight > height) {
-                Image img; 
-                ImageFilter cropFilter; 
-                Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT);
                 int cols = 0; // 切片横向数量 
                 int rows = 0; // 切片纵向数量 
                 // 计算切片的横向和纵向数量 
@@ -315,31 +298,8 @@ public class ImgUtil {
                     rows = srcHeight / height; 
                 } else {
                     rows = (int) Math.floor(srcHeight / height) + 1; 
-                } 
-                // 循环建立切片 
-                // 改进的想法:是否可用多线程加快切割速度 
-                for (int i = 0; i < rows; i++) {
-                    for (int j = 0; j < cols; j++) {
-                        // 四个参数分别为图像起点坐标和宽高 
-                        // 即: CropImageFilter(int x, int y, int width, int height)
-                        cropFilter = new CropImageFilter(j * width, i * height,
-                                width, height);
-                        img = Toolkit.getDefaultToolkit().createImage( 
-                                new FilteredImageSource(image.getSource(),
-                                        cropFilter)); 
-                        BufferedImage tag = new BufferedImage(width,
-                                height, BufferedImage.TYPE_INT_RGB);
-                        Graphics g = tag.getGraphics(); 
-                        g.drawImage(img, 0, 0, null); // 绘制缩小后的图
-                        g.dispose(); 
- 
-                        if(null != dir && !dir.exists()){
-                        	dir.mkdirs(); 
-                        } 
-                        // 输出为文件 
-                        ImageIO.write(tag, "JPEG", new File(dir, "_r" + i + "_c" + j + ".jpg"));
-                    } 
-                } 
+                }
+                split(src, dir, rows, cols);
             } 
         } catch (Exception e) {
             log.error("cut img exception:", e);
@@ -370,11 +330,15 @@ public class ImgUtil {
      */ 
     public final static void gray(File src, File tar) {
         try {
+            String format = "JPEG";
+            if(src.getName().toLowerCase().endsWith("png")){
+                format = "PNG";
+            }
             BufferedImage img = ImageIO.read(src); 
             ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY); 
             ColorConvertOp op = new ColorConvertOp(cs, null);
             img = op.filter(img, null);
-            ImageIO.write(img, "JPEG", tar);
+            ImageIO.write(img, format, tar);
         } catch (IOException e) {
             log.error("gray exception:", e);
         } 
@@ -488,7 +452,7 @@ public class ImgUtil {
     			try {
 					out.close(); 
 				} catch (IOException e) {
-					e.printStackTrace(); 
+                    log.error("stream close exception:", e);
 				} 
     		} 
     	} 
@@ -515,7 +479,7 @@ public class ImgUtil {
 			try{
 				bi.flush(); 
 			}catch(Exception e){
-				 e.printStackTrace();
+                log.error("file size exception:", e);
 			} 
 		} 
         int[] result = {width, height};
