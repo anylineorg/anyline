@@ -23,6 +23,7 @@ import org.anyline.data.handler.DataHandler;
 import org.anyline.data.prepare.Group;
 import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
@@ -54,6 +55,7 @@ public interface ConfigStore extends Cloneable{
 	default String json(){
 		return json(false);
 	}
+	String getRunText(DataRuntime runtime, boolean placeholder);
 	/**
 	 * 设置查询或操作的数据源
 	 * @param datasource 查询或操作的数据源
@@ -821,6 +823,54 @@ public interface ConfigStore extends Cloneable{
 	}
 	default ConfigStore findInSetAnd(String var, Object value){
 		return and(Compare.FIND_IN_SET_AND, var, value);
+	}
+
+	default ConfigStore jsonContains(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.JSON_CONTAINS, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContains(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.JSON_CONTAINS, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContains(String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.JSON_CONTAINS, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContains(String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.JSON_CONTAINS, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContains(String var, Object value){
+		return and(Compare.JSON_CONTAINS, var, value);
+	}
+
+	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.JSON_CONTAINS_PATH_OR, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.JSON_CONTAINS_PATH_OR, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathOr(String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.JSON_CONTAINS_PATH_OR, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathOr(String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.JSON_CONTAINS_PATH_OR, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathOr(String var, Object value){
+		return and(Compare.JSON_CONTAINS_PATH_OR, var, value);
+	}
+
+	default ConfigStore jsonContainsPathAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.JSON_CONTAINS_PATH_AND, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.JSON_CONTAINS_PATH_AND, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathAnd(String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.JSON_CONTAINS_PATH_AND, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathAnd(String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.JSON_CONTAINS_PATH_AND, var, value, overCondition, overValue);
+	}
+	default ConfigStore jsonContainsPathAnd(String var, Object value){
+		return and(Compare.JSON_CONTAINS_PATH_AND, var, value);
 	}
 
 	default ConfigStore between(EMPTY_VALUE_SWITCH swt, String id, String var, Object min, Object max, boolean overCondition, boolean overValue){

@@ -29,6 +29,7 @@ import org.anyline.data.prepare.GroupStore;
 import org.anyline.data.prepare.init.AbstractGroup;
 import org.anyline.data.prepare.init.DefaultGroupStore;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.Compare.EMPTY_VALUE_SWITCH;
 import org.anyline.metadata.*;
@@ -81,6 +82,9 @@ public class DefaultConfigStore implements ConfigStore {
 			row.put("navi", navi.map(empty));
 		}
 		return row;
+	}
+	public String getRunText(DataRuntime runtime, boolean placeholder){
+		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder);
 	}
 	@Override
 	public Table table() {

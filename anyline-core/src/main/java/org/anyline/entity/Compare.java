@@ -260,6 +260,32 @@ public enum Compare {
             return false;
         }
     },
+    JSON_CONTAINS(71, "json_contains", "", " JSON_CONTAINS "){
+        public boolean isMultipleValue(){
+            return false;
+        }
+    },
+    JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH "){
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    JSON_CONTAINS_PATH_AND(76, "json_contains_path", "", " JSON_CONTAINS_PATH "){
+        public String formula(Object value, boolean placeholder){
+            //如果不需要占位符，必须在上一步把需要的引号加上
+            if(!placeholder){
+                String str = "";
+                if(null != value){
+                    str = value.toString();
+                }
+                return this.formula().replace("?", str);
+            }
+            return formula();
+        }
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
     BETWEEN(80, "区间",""," BETWEEN ? AND ? ")			{
         public boolean compare(Object value, Object target) {
             if(null == value){

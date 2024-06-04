@@ -259,6 +259,12 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 					placeholder = false;
 					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				}
+			}else if(compareCode == 71){							// JSON_CONTAINS
+				adapter.formula(runtime, builder, compare, null, val, placeholder);
+			}else if(compareCode == 75){							// JSON_CONTAINS_PATH_OR
+				adapter.formula(runtime, builder, compare, null, val, placeholder);
+			}else if(compareCode == 76){							// JSON_CONTAINS_PATH_AND
+				adapter.formula(runtime, builder, compare, null, val, placeholder);
 			}else if(compareCode == 90){							// IS NULL
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
