@@ -18,6 +18,7 @@
 
 package org.anyline.proxy;
 
+import org.anyline.adapter.EnvironmentWorker;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
@@ -78,12 +79,16 @@ public class ServiceProxy {
         }
         AnylineService service = null;
         try{
-            service = (AnylineService)ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + key);
+            EnvironmentWorker worker = ConfigTable.environment();
+            if(null != worker) {
+                if (worker.containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + key)) {
+                    service = (AnylineService) worker.getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX + key);
+                }
+            } else {
+                log.error("请在上下文环境初始化完成后调用");
+            }
         }catch (Exception e){
-            e.printStackTrace();
-        }
-        if(null == service){
-            log.error("请在上下文环境初始化完成后调用");
+            log.error("get service exception:", e);
         }
         return service;
     }
