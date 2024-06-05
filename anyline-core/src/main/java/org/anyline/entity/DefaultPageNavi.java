@@ -886,6 +886,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		DataRow row = new OriginRow();
 		row.put("page", curPage);
 		row.put("vol", pageRows);
+		row.put("total", totalRow);
 		return row;
 	}
 }
