@@ -215,12 +215,13 @@ public interface PageNavi extends Serializable, Cloneable{
 
 	/**
 	 * 设置是否需要是查询总行数<br/>
-	 * maps国为性能考虑默认不查总行数，通过这个配置强制开启总行数查询，执行完成后会在page navi中存放总行数结果
-	 * @param required 是否
+	 * maps:true:自动
+	 * DataSet: null或true自动
+	 * @param auto 是否自动
 	 * @return this
 	 */
-	PageNavi total(boolean required);
-	Boolean requiredTotal();
+	PageNavi autoCount(boolean auto);
+	Boolean autoCount();
 
 	PageNavi clone();
 

@@ -444,23 +444,19 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
-	/**
-	 * 设置是否需要是查询总行数<br/>
-	 * maps国为性能考虑默认不查总行数，通过这个配置强制开启总行数查询，执行完成后会在page navi中存放总行数结果
-	 * @param required 是否
-	 * @return this
-	 */
-	public ConfigStore total(boolean required){
-		if(null == navi) {
+
+	@Override
+	public ConfigStore autoCount(boolean auto){
+		if(null == navi){
 			navi = new DefaultPageNavi();
 		}
-		navi.total(required);
+		navi.autoCount(auto);
 		return this;
 	}
-
-	public Boolean requiredTotal(){
+	@Override
+	public Boolean autoCount(){
 		if(null != navi){
-			return navi.requiredTotal();
+			return navi.autoCount();
 		}
 		return null;
 	}

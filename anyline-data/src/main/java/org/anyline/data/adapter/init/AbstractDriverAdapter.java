@@ -1776,26 +1776,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		navi = run.getPageNavi();
 		long total = 0;
+		Boolean autoCount = true;
 		if (run.isValid()) {
 			if (null != navi) {
-				if (null != dmListener) {
-					dmListener.beforeTotal(runtime, random, run);
+				autoCount = navi.autoCount();//未设置或true时查询总数
+				if(null == autoCount){
+					autoCount = true;
 				}
-				fr = System.currentTimeMillis();
-				if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
-					// 第一条 query中设置的标识(只查一行)
-					total = 1;
-				}  else {
-					// 未计数(总数 )
-					if (navi.getTotalRow() == 0) {
-						total = count(runtime, random, run);
-						navi.setTotalRow(total);
-					} else {
-						total = navi.getTotalRow();
+				if(autoCount){
+					if (null != dmListener) {
+						dmListener.beforeTotal(runtime, random, run);
 					}
-				}
-				if (null != dmListener) {
-					dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+					fr = System.currentTimeMillis();
+					if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+						// 第一条 query中设置的标识(只查一行)
+						total = 1;
+					}  else {
+						// 未计数(总数 )
+						if (navi.getTotalRow() == 0) {
+							total = count(runtime, random, run);
+							navi.setTotalRow(total);
+						} else {
+							total = navi.getTotalRow();
+						}
+					}
+					if (null != dmListener) {
+						dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+					}
 				}
 			}
 			if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
@@ -1804,7 +1811,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		fr = System.currentTimeMillis();
 		if (run.isValid()) {
-			if((null == navi || total > 0)) {
+			if((null == navi || !autoCount || total > 0)) {
 				swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
 				if(swt == ACTION.SWITCH.BREAK){
 					return new EntitySet();
@@ -1923,8 +1930,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null != configs){
 				PageNavi navi = configs.getPageNavi();
 				if(null != navi) {
-					Boolean requiredTotal = navi.requiredTotal();
-					if (null != requiredTotal && requiredTotal) {
+					Boolean autoCount = navi.autoCount();
+					if (null != autoCount && autoCount) {
 						long total = count(runtime, random, run);
 						navi.setTotalRow(total);
 					}

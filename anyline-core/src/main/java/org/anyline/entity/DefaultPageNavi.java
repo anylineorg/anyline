@@ -49,6 +49,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	protected long displayPageLast 			= 0			; // 显示的最后页标签
 
 	protected Boolean requiredTotal			= null		; // map方法时默认不需要总行数
+	protected Boolean autoCount = PageNaviConfig.IS_AUTO_COUNT;
 	protected String baseLink				= null		; // 基础URL
 	protected OrderStore orders				= null 		; // 排序依据(根据 orderCol 排序分页)
 	protected int calType 					= 0			; // 分页计算方式(0-按页数 1-按开始结束数)
@@ -125,18 +126,12 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		return this;
 	}
 
-	/**
-	 * 设置是否需要是查询总行数<br/>
-	 * maps国为性能考虑默认不查总行数，通过这个配置强制开启总行数查询，执行完成后会在page navi中存放总行数结果
-	 * @param required 是否
-	 * @return this
-	 */
-	public PageNavi total(boolean required){
-		requiredTotal = required;
+	public PageNavi autoCount(boolean auto){
+		this.autoCount = auto;
 		return this;
 	}
-	public Boolean requiredTotal(){
-		return requiredTotal;
+	public Boolean autoCount(){
+		return autoCount;
 	}
 	@Override
 	public PageNavi setDataSize(int size) {

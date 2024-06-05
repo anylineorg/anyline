@@ -162,20 +162,17 @@ public interface ConfigStore extends Cloneable{
 	}
 
 	/**
-	 * 设置是否需要是查询总行数<br/>
-	 * maps国为性能考虑默认不查总行数，通过这个配置强制开启总行数查询，执行完成后会在page navi中存放总行数结果
-	 * @param required 是否
-	 * @return this
-	 */
-	ConfigStore total(boolean required);
-	Boolean requiredTotal();
-	/**
 	 * 设置分页
 	 * @param page 第page页 下标从1开始
 	 * @param rows 每页rows行
 	 * @return ConfigStore
 	 */
 	ConfigStore page(long page, int rows);
+
+	ConfigStore autoCount(boolean auto);
+
+	Boolean autoCount();
+
 	/**
 	 * 是否作为一个整体，不可分割，与其他条件合并时以()包围
 	 * @return boolean
