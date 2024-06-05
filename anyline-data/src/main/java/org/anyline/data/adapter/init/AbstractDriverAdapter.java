@@ -1998,6 +1998,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					run.addValue(new RunValue("none", item));
 				}
 			}
+
 			run.addCondition(conditions);
 
 			if(run.checkValid()) {
@@ -2005,8 +2006,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				run.init();
 				//检测不存在的列
 				if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)){
+					List<Join> joins = prepare.getJoins();
 					Table table = run.getTable();
-					if(null != table) {
+					if(null != table && (null == joins || joins.isEmpty())) {//TODO 单表时再检测
 						LinkedHashMap<String, Column> metadatas = columns(runtime, null, false, table, false);
 						//检测不存在的列
 						OrderStore orders = run.getOrderStore();
