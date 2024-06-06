@@ -1645,7 +1645,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		navi = run.getPageNavi();
 		long total = 0;
-		Boolean autoCount = true;
+		Boolean autoCount = false;
 		if (run.isValid()) {
 			if (null != navi) {
 				autoCount = navi.autoCount();//未设置或true时查询总数
@@ -1680,7 +1680,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		fr = System.currentTimeMillis();
 		if (run.isValid()) {
-			if(null == navi || total > 0 || false == autoCount){
+			if(null == navi || total > 0 || !autoCount){
 				if(null != dmListener){
 					dmListener.beforeQuery(runtime, random, run, total);
 				}
@@ -1783,7 +1783,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		navi = run.getPageNavi();
 		long total = 0;
-		Boolean autoCount = true;
+		Boolean autoCount = false;
 		if (run.isValid()) {
 			if (null != navi) {
 				autoCount = navi.autoCount();//未设置或true时查询总数
@@ -1818,7 +1818,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		fr = System.currentTimeMillis();
 		if (run.isValid()) {
-			if((null == navi || !autoCount || total > 0)) {
+			if(null == navi || !autoCount || total > 0) {
 				swt = InterceptorProxy.beforeQuery(runtime, random, run, navi);
 				if(swt == ACTION.SWITCH.BREAK){
 					return new EntitySet();

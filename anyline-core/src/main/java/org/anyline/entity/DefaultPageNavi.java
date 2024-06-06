@@ -115,14 +115,13 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		setFirstRow(first);
 		setLastRow(last);
 		setCalType(1);
-		setTotalRow(last-first+1);
+		//setTotalRow(last-first+1);
 		return this;
 	}
 	public PageNavi limit(long offset, int rows){
 		setFirstRow(offset);
-		setLastRow(offset+rows);
+		setLastRow(offset + rows - 1);
 		setCalType(1);
-		setTotalRow(rows);
 		return this;
 	}
 
@@ -882,6 +881,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		row.put("page", curPage);
 		row.put("vol", pageRows);
 		row.put("total", totalRow);
+		row.put("auto_count", autoCount);
 		return row;
 	}
 }

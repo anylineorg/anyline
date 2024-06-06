@@ -419,9 +419,9 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore scope(long first, long last){
 		if(null == navi) {
 			navi = new DefaultPageNavi();
+			navi.autoCount(false);
 		}
 		navi.scope(first, last);
-		navi.setTotalRow(last-first+1);
 		this.setPageNavi(navi);
 		return this;
 	}
@@ -435,12 +435,11 @@ public class DefaultConfigStore implements ConfigStore {
 	public ConfigStore limit(long offset, int rows){
 		if(null == navi) {
 			navi = new DefaultPageNavi();
+			navi.autoCount(false);
 		}
-		navi.setFirstRow(offset);
-		navi.setLastRow(offset+rows);
-		navi.setCalType(1);
-		navi.setTotalRow(rows);
+		navi.limit(offset, rows);
 		this.setPageNavi(navi);
+
 		return this;
 	}
 

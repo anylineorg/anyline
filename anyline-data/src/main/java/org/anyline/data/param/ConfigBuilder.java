@@ -56,6 +56,7 @@ public class ConfigBuilder {
         navi.setCurPage(row.getInt("page", 1));
         navi.setPageRows(row.getInt("vol", PageNaviConfig.DEFAULT_VAR_PAGE_DEFAULT_VOL));
         navi.setTotalRow(row.getInt("total", 0));
+        navi.autoCount(row.getBoolean("auto_count", PageNaviConfig.IS_AUTO_COUNT));
         return navi;
     }
     public static Config parseConfig(DataRow row){
