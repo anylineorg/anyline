@@ -30,18 +30,19 @@ import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
+import org.anyline.metadata.adapter.TableMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.util.BasicUtil;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Component("anyline.data.jdbc.adapter.sqlite")
 public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
-	
+
+	private String delimiter;
 	public DatabaseType type(){
 		return DatabaseType.SQLite;
 	}
@@ -55,9 +56,32 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 			alias(alias.name(), alias.standard());
 		}
 	}
-	
-	private String delimiter;
 
+
+	private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
+	public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+		ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
+		adapter.setNameRefer("NAME");
+		adapter.setNullableRefer("NOTNULL");
+		adapter.setDataTypeRefer("TYPE");
+		adapter.setDefaultRefer("DFLT_VALUE");
+		return adapter;
+	}
+	protected static TableMetadataAdapter defaultTableMetadataAdapter;
+	static {
+		defaultTableMetadataAdapter = new TableMetadataAdapter();
+		defaultTableMetadataAdapter.setNameRefer("NAME");
+	}
+	/**
+	 * table[结构集封装-依据]<br/>
+	 * 读取table元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return TableMetadataAdapter
+	 */
+	@Override
+	public TableMetadataAdapter tableMetadataAdapter(DataRuntime runtime){
+		return defaultTableMetadataAdapter;
+	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
@@ -1654,7 +1678,15 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM sqlite_master WHERE type='table'");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND name LIKE '").append(pattern).append("'");
+		}
+		runs.add(run);
+		return runs;
 	}
 
 	/**
@@ -2295,7 +2327,12 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, table, metadata);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		builder.append("PRAGMA  table_info(").append(table.getName()).append(")");
+		runs.add(run);
+		return runs;
 	}
 
 	/**
@@ -2419,9 +2456,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
-		return super.columnMetadataAdapter(runtime);
+		return defaultColumnMetadataAdapter;
 	}
-
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 元数据数字有效位数列<br/>
