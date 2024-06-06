@@ -2666,7 +2666,7 @@ public class BeanUtil {
 		ID > id
 		ABC > abc
 		*/
-		Pattern pattern = Pattern.compile("(?<=[a-z])([A-Z])");
+		Pattern pattern = Pattern.compile("(?<=[a-z0-9])([A-Z])");
 		Matcher matcher = pattern.matcher(str);
 		return matcher.replaceAll("_$1").toLowerCase();
 	}
