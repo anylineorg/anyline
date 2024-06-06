@@ -628,7 +628,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
-		return super.buildQuerySequence(runtime, next, names);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1220,7 +1221,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryProductRun(DataRuntime runtime) throws Exception {
-		return super.buildQueryProductRun(runtime);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1232,7 +1234,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryVersionRun(DataRuntime runtime) throws Exception {
-		return super.buildQueryVersionRun(runtime);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1246,7 +1249,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDatabasesRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryDatabasesRun(runtime, greedy, name);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1407,7 +1411,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryCatalogsRun(DataRuntime runtime, boolean greedy, String name) throws Exception {
-		return super.buildQueryCatalogsRun(runtime, greedy, name);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1551,7 +1556,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQuerySchemasRun(DataRuntime runtime, boolean greedy, Catalog catalog, String name) throws Exception {
-		return super.buildQuerySchemasRun(runtime, greedy, catalog, name);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1702,7 +1708,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesCommentRun(runtime, catalog, schema, pattern, types);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1836,7 +1843,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Table table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1903,7 +1911,15 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM sqlite_master WHERE type='view'");
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND name LIKE '").append(pattern).append("'");
+		}
+		runs.add(run);
+		return runs;
 	}
 
 	/**
@@ -1963,7 +1979,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception {
-		return super.buildQueryDdlsRun(runtime, view);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2029,7 +2046,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2087,7 +2105,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2151,7 +2170,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, catalog, schema, pattern, types);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2166,7 +2186,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags, String name) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master, tags, name);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2180,7 +2201,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master, Map<String,Object> tags) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master, tags);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2193,7 +2215,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryPartitionTablesRun(DataRuntime runtime, Table master) throws Exception {
-		return super.buildQueryPartitionTablesRun(runtime, master);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2254,7 +2277,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, PartitionTable table) throws Exception {
-		return super.buildQueryDdlsRun(runtime, table);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2330,7 +2354,7 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		StringBuilder builder = run.getBuilder();
-		builder.append("PRAGMA  table_info(").append(table.getName()).append(")");
+		builder.append("PRAGMA table_info(").append(table.getName()).append(")");
 		runs.add(run);
 		return runs;
 	}
@@ -2347,7 +2371,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
-		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 	/**
 	 * column[结果集封装]<br/>
@@ -2534,7 +2559,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryTagsRun(DataRuntime runtime, Table table, boolean metadata) throws Exception {
-		return super.buildQueryTagsRun(runtime, table, metadata);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2924,7 +2950,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryConstraintsRun(DataRuntime runtime, Table table, Column column, String pattern) {
-		return super.buildQueryConstraintsRun(runtime, table, column, pattern);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -2997,7 +3024,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
-		return super.buildQueryTriggersRun(runtime, table, events);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3080,7 +3108,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryProceduresRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern) {
-		return super.buildQueryProceduresRun(runtime, catalog, schema, pattern);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3149,7 +3178,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Procedure procedure) throws Exception {
-		return super.buildQueryDdlsRun(runtime, procedure);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3231,7 +3261,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryFunctionsRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQueryFunctionsRun(runtime, catalog, schema, name);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3302,7 +3333,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Function meta) throws Exception {
-		return super.buildQueryDdlsRun(runtime, meta);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3384,7 +3416,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQuerySequencesRun(DataRuntime runtime, Catalog catalog, Schema schema, String name) {
-		return super.buildQuerySequencesRun(runtime, catalog, schema, name);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
@@ -3455,7 +3488,8 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, Sequence meta) throws Exception {
-		return super.buildQueryDdlsRun(runtime, meta);
+		//TOTO 待实现
+		return new ArrayList<>();
 	}
 
 	/**
