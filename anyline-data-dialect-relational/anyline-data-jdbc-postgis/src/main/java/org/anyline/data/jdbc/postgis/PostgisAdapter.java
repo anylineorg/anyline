@@ -21,7 +21,7 @@ package org.anyline.data.jdbc.postgis;
 
 import org.anyline.annotation.Component;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
-import org.anyline.data.jdbc.postgresql.PostgresqlAdapter;
+import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -33,16 +33,18 @@ import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
 import org.postgresql.util.PGobject;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component("anyline.data.jdbc.adapter.postgis")
-public class PostgisAdapter extends PostgresqlAdapter implements JDBCAdapter {
+public class PostgisAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 
 	public DatabaseType type(){
 		return DatabaseType.PostGIS;
@@ -1660,27 +1662,8 @@ public class PostgisAdapter extends PostgresqlAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
-		builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
-		builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
-		builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
-		builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
-		builder.append("WHERE I.inhrelid IS NULL\n"); //GIS中没有f.relpartbound
-		if(!empty(schema)){
-			builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
-		}
-		if(BasicUtil.isNotEmpty(pattern)){
-			builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
-		}
-		if((types & 2) != 2){
-			//不包含视图
-			builder.append(" AND M.TABLE_TYPE != 'VIEW'");
-		}
-		return runs;
+		//已确认不能调用 buildQueryTablesRunWithPartBound
+		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 	/**

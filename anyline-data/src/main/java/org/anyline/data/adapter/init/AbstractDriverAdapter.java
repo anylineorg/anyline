@@ -1645,35 +1645,42 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		navi = run.getPageNavi();
 		long total = 0;
+		Boolean autoCount = true;
 		if (run.isValid()) {
 			if (null != navi) {
-				if (null != dmListener) {
-					dmListener.beforeTotal(runtime, random, run);
+				autoCount = navi.autoCount();//未设置或true时查询总数
+				if(null == autoCount){
+					autoCount = true;
 				}
-				fr = System.currentTimeMillis();
-				if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
-					// 第一条 query中设置的标识(只查一行)
-					total = 1;
-				} else {
-					// 未计数(总数 )
-					if (navi.getTotalRow() == 0) {
-						total = count(runtime, random, run);
-						navi.setTotalRow(total);
-					} else {
-						total = navi.getTotalRow();
+				if(autoCount) {
+					if (null != dmListener) {
+						dmListener.beforeTotal(runtime, random, run);
 					}
-				}
-				if (null != dmListener) {
-					dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
-				}
-				if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-					log.info("[查询记录总数][行数:{}]", total);
+					fr = System.currentTimeMillis();
+					if (navi.getCalType() == 1 && navi.getLastRow() == 0) {
+						// 第一条 query中设置的标识(只查一行)
+						total = 1;
+					} else {
+						// 未计数(总数 )
+						if (navi.getTotalRow() == 0) {
+							total = count(runtime, random, run);
+							navi.setTotalRow(total);
+						} else {
+							total = navi.getTotalRow();
+						}
+					}
+					if (null != dmListener) {
+						dmListener.afterTotal(runtime, random, run, true, total, System.currentTimeMillis() - fr);
+					}
+					if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+						log.info("[查询记录总数][行数:{}]", total);
+					}
 				}
 			}
 		}
 		fr = System.currentTimeMillis();
 		if (run.isValid()) {
-			if(null == navi || total > 0){
+			if(null == navi || total > 0 || false == autoCount){
 				if(null != dmListener){
 					dmListener.beforeQuery(runtime, random, run, total);
 				}

@@ -1705,6 +1705,31 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
+        builder.append("WHERE I.inhrelid IS NULL\n"); //GIS中没有f.relpartbound
+        if(!empty(schema)){
+            builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
+        }
+        if(BasicUtil.isNotEmpty(pattern)){
+            builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
+        }
+        if((types & 2) != 2){
+            //不包含视图
+            builder.append(" AND M.TABLE_TYPE != 'VIEW'");
+        }
+        return runs;
+    }
+    //与上一个方法的区别是 有些库没有区分 是否分区表 的元数据,不清楚的默认调用上一个方法，确认支持的再调用这个方法
+    //builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
+    protected List<Run> buildQueryTablesRunWithPartBound(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT M.*, obj_description(F.relfilenode,'pg_class')  AS TABLE_COMMENT\n");
+        builder.append("FROM  INFORMATION_SCHEMA.TABLES AS M\n");
+        builder.append("LEFT JOIN pg_namespace AS N ON N.NSPNAME = M.table_schema\n");
+        builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
+        builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
         if(!empty(schema)){
             builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");

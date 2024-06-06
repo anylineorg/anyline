@@ -1666,6 +1666,7 @@ public class OpenGaussAdapter extends PostgresGenusAdapter implements JDBCAdapte
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		//已确认不能调用buildQueryTablesRunWithPartBound
 		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 

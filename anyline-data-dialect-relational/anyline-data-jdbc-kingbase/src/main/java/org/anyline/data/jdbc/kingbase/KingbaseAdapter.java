@@ -1715,7 +1715,7 @@ public class KingbaseAdapter extends PostgresGenusAdapter implements JDBCAdapter
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+		return super.buildQueryTablesRunWithPartBound(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 	/**

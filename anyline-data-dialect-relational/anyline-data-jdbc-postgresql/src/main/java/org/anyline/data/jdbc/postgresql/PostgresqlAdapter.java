@@ -22,7 +22,6 @@ package org.anyline.data.jdbc.postgresql;
 import org.anyline.annotation.Component;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.PostgresGenusAdapter;
-import org.anyline.data.jdbc.adapter.init.alias.PostgresGenusTypeMetadataAlias;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -34,15 +33,14 @@ import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.util.BasicUtil;
 import org.postgresql.util.PGobject;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Component("anyline.data.jdbc.adapter.postgres")
 public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	
@@ -1660,7 +1658,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 */
 	@Override
 	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
-		return super.buildQueryTablesRun(runtime, greedy, catalog, schema, pattern, types);
+		return super.buildQueryTablesRunWithPartBound(runtime, greedy, catalog, schema, pattern, types);
 	}
 
 	/**
