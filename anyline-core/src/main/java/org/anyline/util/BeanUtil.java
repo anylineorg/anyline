@@ -2660,6 +2660,7 @@ public class BeanUtil {
 	 */
 	public static String camel_(String str){
 		/*
+		a1Bc > a1_bc
 		user_GroupId > user_group_id
 		userGroupId > user_group_id
 		userID > user_id
