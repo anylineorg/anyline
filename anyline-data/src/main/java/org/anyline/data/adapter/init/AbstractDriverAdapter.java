@@ -2969,7 +2969,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
-		if(null == obj){
+		if(null == obj && (null == configs || configs.isEmptyCondition())){
 			return null;
 		}
 		Run run = null;

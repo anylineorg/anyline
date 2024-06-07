@@ -47,6 +47,15 @@ public class SQLiteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		return DatabaseType.SQLite;
 	}
 
+	@Override
+	public boolean supportCatalog() {
+		return false;
+	}
+
+	@Override
+	public boolean supportSchema() {
+		return false;
+	}
 	public SQLiteAdapter(){
 		super();
 		delimiterFr = "`";

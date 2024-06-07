@@ -1584,6 +1584,12 @@ public interface DriverAdapter {
 		return buildDeleteRun(runtime, new Table(table), configs, obj, columns);
 	}
 
+	default Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs){
+		return buildDeleteRun(runtime,  table, configs, null, null);
+	}
+	default Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs){
+		return buildDeleteRun(runtime,  new Table(table), configs, null, null);
+	}
 	/**
 	 * delete[命令合成]<br/>
 	 * 合成 where column in (values)

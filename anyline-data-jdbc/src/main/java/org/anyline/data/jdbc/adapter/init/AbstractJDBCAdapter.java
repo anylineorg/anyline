@@ -2026,8 +2026,13 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
-		if(null == table || null == key || null == values){
-			return null;
+		if(null == table && null != configs){
+			table = configs.table();
+		}
+		if(null == table){
+			if((null == key || null == values) && (null == configs || configs.isEmptyCondition())) {
+				return null;
+			}
 		}
 		StringBuilder builder = new StringBuilder();
 		TableRun run = new TableRun(runtime, table);
