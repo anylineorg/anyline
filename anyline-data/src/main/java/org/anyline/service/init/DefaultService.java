@@ -72,16 +72,6 @@ public class DefaultService<E> implements AnylineService<E> {
         return dao.runtime().getAdapter();
     }
 
-    protected static CacheProvider cacheProvider;
-
-    public CacheProvider getCacheProvider() {
-        return cacheProvider;
-    }
-
-    public void setCacheProvider(CacheProvider cacheProvider) {
-        DefaultService.cacheProvider = cacheProvider;
-    }
-
     public AnylineDao getDao() {
         return dao;
     }
@@ -212,7 +202,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == cache || ConfigTable.IS_CACHE_DISABLED) {
             set = querys(dest, append(configs, obj), conditions);
         } else {
-            if (null != cacheProvider) {
+            if (null != CacheProxy.provider) {
                 set = queryFromCache(cache, dest, configs, conditions);
             } else {
                 set = querys(dest, configs, conditions);
@@ -232,7 +222,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == cache || ConfigTable.IS_CACHE_DISABLED) {
             set = querys(dest, append(configs, obj), conditions);
         } else {
-            if (null != cacheProvider) {
+            if (null != CacheProxy.provider) {
                 set = queryFromCache(cache, dest, configs, conditions);
             } else {
                 set = querys(dest, configs, conditions);
@@ -301,7 +291,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
         // 是否启动缓存
-        if (null == cache || null == cacheProvider || ConfigTable.IS_CACHE_DISABLED) {
+        if (null == cache || null == CacheProxy.provider || ConfigTable.IS_CACHE_DISABLED) {
             return query(dest, configs, obj, conditions);
         }
         DefaultPageNavi navi = new DefaultPageNavi();
@@ -323,8 +313,8 @@ public class DefaultService<E> implements AnylineService<E> {
             key += ks[1] + ":";
         }
         key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-        if (null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
+        if (null != CacheProxy.provider) {
+            CacheElement cacheElement = CacheProxy.provider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
                 Object cacheValue = cacheElement.getValue();
                 if (cacheValue instanceof DataRow) {
@@ -338,8 +328,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         // 调用实际 的方法
         row = query(dest, configs, obj, conditions);
-        if (null != row && null != cacheProvider) {
-            cacheProvider.put(cache, key, row);
+        if (null != row && null != CacheProxy.provider) {
+            CacheProxy.provider.put(cache, key, row);
         }
         if (null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
             row = new DataRow();
@@ -350,7 +340,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataRow cache(String cache, Table dest, ConfigStore configs, Object obj, String... conditions) {
         // 是否启动缓存
-        if (null == cache || null == cacheProvider || ConfigTable.IS_CACHE_DISABLED) {
+        if (null == cache || null == CacheProxy.provider || ConfigTable.IS_CACHE_DISABLED) {
             return query(dest, configs, obj, conditions);
         }
         DefaultPageNavi navi = new DefaultPageNavi();
@@ -372,8 +362,8 @@ public class DefaultService<E> implements AnylineService<E> {
             key += ks[1] + ":";
         }
         key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-        if (null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
+        if (null != CacheProxy.provider) {
+            CacheElement cacheElement = CacheProxy.provider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
                 Object cacheValue = cacheElement.getValue();
                 if (cacheValue instanceof DataRow) {
@@ -387,8 +377,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         // 调用实际 的方法
         row = query(dest, configs, obj, conditions);
-        if (null != row && null != cacheProvider) {
-            cacheProvider.put(cache, key, row);
+        if (null != row && null != CacheProxy.provider) {
+            CacheProxy.provider.put(cache, key, row);
         }
         if (null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
             row = new DataRow();
@@ -551,7 +541,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == cache) {
             set = querys(table, configs, obj, conditions);
         } else {
-            if (null != cacheProvider) {
+            if (null != CacheProxy.provider) {
                 //TODO
                 //set = queryFromCache(cache, table, configs, conditions);
             } else {
@@ -616,8 +606,8 @@ public class DefaultService<E> implements AnylineService<E> {
             key += ks[1] + ":";
         }
         key += CacheUtil.createCacheElementKey(true, true, table.getTable(), configs, conditions);
-        if (null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
+        if (null != CacheProxy.provider) {
+            CacheElement cacheElement = CacheProxy.provider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
                 Object cacheValue = cacheElement.getValue();
                 if (cacheValue instanceof DataRow) {
@@ -631,8 +621,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         // 调用实际 的方法
         row = query(table, configs, conditions);
-        if (null != row && null != cacheProvider) {
-            cacheProvider.put(cache, key, row);
+        if (null != row && null != CacheProxy.provider) {
+            CacheProxy.provider.put(cache, key, row);
         }
         if (null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL) {
             row = new DataRow();
@@ -652,12 +642,12 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public boolean removeCache(String channel, String dest, ConfigStore configs, String... conditions) {
-        if (null != cacheProvider) {
+        if (null != CacheProxy.provider) {
             dest = BasicUtil.compress(dest);
             conditions = BasicUtil.compress(conditions);
             String key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-            cacheProvider.remove(channel, "SET:" + key);
-            cacheProvider.remove(channel, "ROW:" + key);
+            CacheProxy.provider.remove(channel, "SET:" + key);
+            CacheProxy.provider.remove(channel, "ROW:" + key);
 
             DefaultPageNavi navi = new DefaultPageNavi();
             navi.setFirstRow(0);
@@ -668,18 +658,18 @@ public class DefaultService<E> implements AnylineService<E> {
             }
             configs.setPageNavi(navi);
             key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-            cacheProvider.remove(channel, "ROW:" + key);
+            CacheProxy.provider.remove(channel, "ROW:" + key);
         }
         return true;
     }
 
     @Override
     public boolean removeCache(String channel, Table dest, ConfigStore configs, String... conditions) {
-        if (null != cacheProvider) {
+        if (null != CacheProxy.provider) {
             conditions = BasicUtil.compress(conditions);
             String key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-            cacheProvider.remove(channel, "SET:" + key);
-            cacheProvider.remove(channel, "ROW:" + key);
+            CacheProxy.provider.remove(channel, "SET:" + key);
+            CacheProxy.provider.remove(channel, "ROW:" + key);
 
             DefaultPageNavi navi = new DefaultPageNavi();
             navi.setFirstRow(0);
@@ -690,7 +680,7 @@ public class DefaultService<E> implements AnylineService<E> {
             }
             configs.setPageNavi(navi);
             key = CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
-            cacheProvider.remove(channel, "ROW:" + key);
+            CacheProxy.provider.remove(channel, "ROW:" + key);
         }
         return true;
     }
@@ -704,16 +694,16 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public boolean clearCache(String channel) {
-        if (null != cacheProvider) {
-            return cacheProvider.clear(channel);
+        if (null != CacheProxy.provider) {
+            return CacheProxy.provider.clear(channel);
         } else {
             return false;
         }
     }
     @Override
     public boolean clearCaches() {
-        if (null != cacheProvider) {
-            return cacheProvider.clears();
+        if (null != CacheProxy.provider) {
+            return CacheProxy.provider.clears();
         } else {
             return false;
         }
@@ -1598,8 +1588,8 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         key += CacheUtil.createCacheElementKey(true, true, dest, configs, conditions);
         RunPrepare prepare = createRunPrepare(dest);
-        if (null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
+        if (null != CacheProxy.provider) {
+            CacheElement cacheElement = CacheProxy.provider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
                 Object cacheValue = cacheElement.getValue();
                 if (cacheValue instanceof DataSet) {
@@ -1625,7 +1615,7 @@ public class DefaultService<E> implements AnylineService<E> {
                         public void run() {
                             CacheUtil.start(_key, _max / 10);
                             DataSet newSet = dao.querys(_sql, _configs, _conditions);
-                            cacheProvider.put(_cache, _key, newSet);
+                            CacheProxy.provider.put(_cache, _key, newSet);
                             CacheUtil.stop(_key, _max / 10);
                         }
                     }).start();
@@ -1634,7 +1624,7 @@ public class DefaultService<E> implements AnylineService<E> {
             } else {
                 setPageLazy(dest, configs, conditions);
                 set = dao.querys(prepare, configs, conditions);
-                cacheProvider.put(cache, key, set);
+                CacheProxy.provider.put(cache, key, set);
             }
         }
         return set;
