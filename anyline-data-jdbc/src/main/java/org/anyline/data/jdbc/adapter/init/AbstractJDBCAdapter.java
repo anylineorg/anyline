@@ -9436,7 +9436,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			first = false;
 			Object value = null;
 			if(obj instanceof DataRow){
-				value = BeanUtil.getFieldValue(obj, key);
+				value = ((DataRow)obj).get(key);
 			}else if(obj instanceof Map){
 				value = ((Map)obj).get(key);
 			}else{
