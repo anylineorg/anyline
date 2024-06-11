@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*
+
 
 package org.anyline.data.mongodb.adapter;
 
@@ -27,8 +27,9 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.anyline.adapter.EntityAdapter;
+import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.init.DefaultDriverAdapter;
+import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.mongodb.entity.MongoDataRow;
 import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.param.ConfigStore;
@@ -47,10 +48,8 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.metadata.ACTION;
-import org.anyline.metadata.Metadata;
-import org.anyline.metadata.Column;
-import org.anyline.metadata.Table;
+import org.anyline.metadata.*;
+import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
@@ -61,13 +60,10 @@ import org.anyline.util.LogUtil;
 import org.bson.conversions.Bson;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
-@Component("anyline.data.jdbc.adapter.mongo")
-public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter {
+@Component("anyline.data.adapter.mongo")
+public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter {
 
     @Override
     public DatabaseType type() {
@@ -75,11 +71,30 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildInsertRun(runtime, batch, DataSourceUtil.parseDest(dest, data, configs), obj, configs, columns);
+    public boolean supportCatalog() {
+        return false;
     }
 
-    */
+    @Override
+    public boolean supportSchema() {
+        return false;
+    }
+
+    private static Map<Type, String> types = new HashMap<>();
+    static {
+        types.put(Table.TYPE.NORMAL, "collection");
+        types.put(Metadata.TYPE.TABLE, "collection");
+    }
+    @Override
+    public String name(Type type){
+        return types.get(type);
+    }
+
+    @Override
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
+        return buildInsertRun(runtime, batch, dest, obj, configs, columns);
+    }
+
 /**
      * 根据entity创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -87,7 +102,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param obj 数据
      * @param columns 需要插入的列
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-     *//*
+     */
 
     @Override
     protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
@@ -98,14 +113,13 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             if(null == pv){
                 List<String> pk = new ArrayList<>();
                 pk.add("_id");
-                generator.create(obj, DatabaseType.MongoDB, dest, pk, null);
+                generator.create(obj, DatabaseType.MongoDB, dest.getName(), pk, null);
             }
         }
         run.setValue(obj);
         return run;
     }
 
-    */
 /**
      * 根据collection创建 INSERT RunPrepare
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -113,7 +127,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param list 对象集合
      * @param columns 需要插入的列, 如果不指定则全部插入
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-     *//*
+     */
 
     @Override
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns){
@@ -127,14 +141,14 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 if(null != pv){
                     break;
                 }
-                generator.create(item, DatabaseType.MongoDB, dest, pk, null);
+                generator.create(item, DatabaseType.MongoDB, dest.getName(), pk, null);
             }
         }
         run.setValue(list);
         return run;
     }
-    */
-/**
+
+    /**
      * insert [命令执行]
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
@@ -142,16 +156,16 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @param pks pks
      * @return int 影响行数
-     *//*
+     */
 
     @Override
     public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         long cnt = 0;
         Object value = run.getValue();
-        String collection = run.getTable();
+        String collection = run.getTableName();
         if(null == value){
             if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
-                log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]", run.getTable());
+                log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]", run.getTableName());
             }
             return -1;
         }
@@ -162,17 +176,17 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             MongoCollection cons = null;
             if(value instanceof List){
                 List list = (List) value;
-                cons = database.getCollection(run.getTable(), list.get(0).getClass());
+                cons = database.getCollection(run.getTableName(), list.get(0).getClass());
                 cnt = list.size();
                 cons.insertMany(list);
             }else if(value instanceof DataSet){
                 DataSet set = (DataSet)value;
-                cons = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
+                cons = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
                 cons.insertMany(set.getRows());
                 cnt = set.size();
             }else if(value instanceof EntitySet){
                 List<Object> datas = ((EntitySet)value).getDatas();
-                cons = database.getCollection(run.getTable(), datas.get(0).getClass());
+                cons = database.getCollection(run.getTableName(), datas.get(0).getClass());
                 cons.insertMany(datas);
                 cnt = datas.size();
             }else if(value instanceof Collection){
@@ -182,28 +196,28 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                     list.add(item);
                     cnt ++;
                 }
-                cons = database.getCollection(run.getTable(), list.get(0).getClass());
+                cons = database.getCollection(run.getTableName(), list.get(0).getClass());
                 cons.insertMany(list);
             }else{
-                cons = database.getCollection(run.getTable(), value.getClass());
+                cons = database.getCollection(run.getTableName(), value.getClass());
                 cons.insertOne(value);
                 cnt = 1;
             }
 
             long millis = System.currentTimeMillis() - fr;
             boolean slow = false;
-            long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
+            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}ms][collection:{}]", random, run.getTable(), millis, collection);
+                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}ms][collection:{}]", random, run.getTableName(), millis, collection);
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
                 }
             }
             if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[action:insert][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(cnt, 34));
+                log.info("{}[action:insert][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(cnt, 34));
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -214,27 +228,26 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-                    log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTable(), BeanUtil.object2json(data));
+                    log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTableName(), BeanUtil.object2json(data));
                 }
             }
         }
         return cnt;
     }
 
-    */
-/**
+    /**
      * 创建查询SQL
      * @param prepare  构建最终执行命令的全部参数，包含表（或视图｜函数｜自定义SQL)查询条件 排序 分页等
      * @param configs 过滤条件及相关配置
      * @param conditions 简单过滤条件
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
-     *//*
+     */
 
     @Override
     public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
         Run run = null;
         if(prepare instanceof TablePrepare){
-            run = new TableRun(runtime, prepare.getTable());
+            run = new TableRun(runtime, prepare.getTableName());
         }else{
             throw new RuntimeException("不支持查询的类型");
         }
@@ -254,10 +267,6 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return run;
     }
 
-    @Override
-    public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-        return null;
-    }
 
     @Override
     protected void fillQueryContent(DataRuntime runtime, TableRun run){
@@ -266,9 +275,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
 
-        List<String> excludeColumns = run.getPrepare().getExcludeColumns();
+        List<String> excludeColumns = run.getExcludeColumns();
         if(null == excludeColumns || excludeColumns.isEmpty()){
-            ConfigStore configs = run.getConfigStore();
+            ConfigStore configs = run.getConfigs();
             if(null != configs) {
                 excludeColumns = configs.columns();
             }
@@ -277,9 +286,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             run.setExcludeColumns(excludeColumns);
         }
 
-        List<String> queryColumns = run.getPrepare().getQueryColumns();
+        List<String> queryColumns = run.getQueryColumns();
         if(null == queryColumns || queryColumns.isEmpty()){
-            ConfigStore configs = run.getConfigStore();
+            ConfigStore configs = run.getConfigs();
             if(null != configs) {
                 queryColumns = configs.columns();
             }
@@ -337,10 +346,10 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             boolean multiple = compare.isMultipleValue();
             if (multiple) {
                 List<Object> list = new ArrayList<>();
-                */
-/*for (RunValue rv : values) {
+
+                /*  for (RunValue rv : values) {
                     list.add(rv.getValue());
-                }*//*
+                } */
 
                 list.addAll(values);
                 value = list;
@@ -397,9 +406,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 bson = Filters.empty();
             }
             if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
-                log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTable(), bson);
+                log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
             }
-            FindIterable<MongoDataRow> rows = database.getCollection(run.getTable(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
+            FindIterable<MongoDataRow> rows = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列
@@ -433,7 +442,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
-                    log.error("{}[{}][cmd:select][collection:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), run.getTable());
+                    log.error("{}[{}][cmd:select][collection:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), run.getTableName());
                 }
             }
         }
@@ -455,9 +464,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             bson = Filters.empty();
         }
         if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
-            log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTable(), bson);
+            log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
         }
-        return database.getCollection(run.getTable()).countDocuments(bson);
+        return database.getCollection(run.getTableName()).countDocuments(bson);
     }
 
     @Override
@@ -470,26 +479,26 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
-        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTable(), run.getUpdate(), run.getFilter());
+        log.info("{}[action:update][collection:{}][update:{}][filter:{}]", random, run.getTableName(), run.getUpdate(), run.getFilter());
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
-        MongoCollection cons = database.getCollection(run.getTable());
+        MongoCollection cons = database.getCollection(run.getTableName());
         UpdateResult dr = cons.updateMany((Bson)run.getFilter(), (Bson)run.getUpdate());
         result = dr.getMatchedCount();
         long millis = System.currentTimeMillis() - fr;
         boolean slow = false;
-        long SLOW_SQL_MILLIS = SLOW_SQL_MILLIS(configs);
-        if(SLOW_SQL_MILLIS > 0 && IS_LOG_SLOW_SQL(configs)){
+        long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+        if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
             if(millis > SLOW_SQL_MILLIS){
                 slow = true;
-                log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(result, 34));
+                log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(result, 34));
                 if(null != dmListener){
                     dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true, result, millis);
                 }
             }
         }
         if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-            log.info("{}[action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(result, 34));
+            log.info("{}[action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(result, 34));
         }
         return result;
     }
@@ -503,17 +512,12 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     @Override
     public long truncate(DataRuntime runtime, String random, Table table) {
-        return 0;
-    }
-
-    @Override
-    public long truncate(DataRuntime runtime, String random, Table table) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
-        MongoCollection cons = database.getCollection(table);
+        MongoCollection cons = database.getCollection(table.getName());
         DeleteResult dr = cons.deleteMany(Filters.empty());
         result = dr.getDeletedCount();
         long millis = System.currentTimeMillis() - fr;
@@ -523,8 +527,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return result;
     }
 
-    */
-/**
+    /**
      * UPDATE [调用入口]<br/>
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
      * @param random 用来标记同一组命令
@@ -533,7 +536,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      * @param configs 条件
      * @param columns 需要插入或更新的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      * @return 影响行数
-     *//*
+     */
 
     @Override
     public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
@@ -569,10 +572,10 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             cols.remove("_ID");
         }
         boolean isReplaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
-        cols = checkMetadata(runtime, dest, configs, cols);
+        cols = checkMetadata(runtime, new Table(dest), configs, cols);
         List<Bson> updates = new ArrayList<>();
-        */
-/*构造SQL*//*
+
+        /*构造SQL*/
 
         if(!cols.isEmpty()){
             for(Column column:cols.values()){
@@ -624,7 +627,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
             run.setConfigStore(configs);
             run.init();
-            run.appendCondition();
+            run.appendCondition(this, true, true);
         }
         run.setFilter(parseCondition(null, run.getConditionChain()));
         return run;
@@ -634,8 +637,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(1);
-        */
-/*确定需要更新的列*//*
+
+    /*确定需要更新的列*/
+
 
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
@@ -683,7 +687,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
             run.setConfigStore(configs);
             run.init();
-            run.appendCondition();
+            run.appendCondition(this, true, true);
             run.setFilter(parseCondition(null, run.getConditionChain()));
         }
 
@@ -700,7 +704,9 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(null == key || null == values){
             return null;
         }
-        ConfigStore configs = new DefaultConfigStore();
+        if(null == configs) {
+            configs = new DefaultConfigStore();
+        }
         if(values instanceof Collection){
             Collection collection = (Collection)values;
             if(collection.isEmpty()){
@@ -714,21 +720,23 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, Object obj, String... columns) {
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String... columns) {
         if(null == obj){
             return null;
         }
         if(null == columns || columns.length == 0){
            columns = new String[]{"_id"};
         }
-        ConfigStore configs = new DefaultConfigStore();
+        if(null == configs) {
+            configs = new DefaultConfigStore();
+        }
         for(String column:columns){
             configs.and(column, BeanUtil.getFieldValue(obj, column));
         }
         return buildDeleteRun(runtime, dest, configs);
     }
 
-    */
+
 /* *****************************************************************************************************************
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
@@ -738,7 +746,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
      *
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
-     ******************************************************************************************************************//*
+     ******************************************************************************************************************/
 
     @Override
     public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
@@ -747,7 +755,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         }
         Run run = null;
         if(null == dest){
-            dest = DataSourceUtil.parseDest(dest, obj, null).dest();
+            dest = DataSourceUtil.parseDest(dest.getName(), obj, null);
         }
         if(null == dest){
             Object entity = obj;
@@ -756,7 +764,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             }
             Table table = EntityAdapterProxy.table(entity.getClass());
             if(null != table){
-                dest = table.getName();
+                dest = table;
             }
         }
         if(obj instanceof ConfigStore){
@@ -769,7 +777,7 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
             run.init();
             fillDeleteRunContent(runtime, run);
         }else{
-            run = buildDeleteRunFromEntity(runtime, dest, obj, columns);
+            run = buildDeleteRunFromEntity(runtime, dest, configs, obj, columns);
         }
         return run;
     }
@@ -789,11 +797,10 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         return null;
     }
 
-    */
-/**
+    /**
      * 构造删除主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
-     * *//*
+     * */
 
     @Override
     public void fillDeleteRunContent(DataRuntime runtime, Run run){
@@ -811,13 +818,13 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
     }
-    */
+
 /**
      * 执行删除
      * @param runtime DataRuntime
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      * @return int
-     *//*
+     */
 
     public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
         long result = -1;
@@ -834,16 +841,16 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
         if(swt == ACTION.SWITCH.BREAK){
             return -1;
         }
-        log.info("{}[action:delete][collection:{}][filter:{}]", random, run.getTable(), run.getFilter());
+        log.info("{}[action:delete][collection:{}][filter:{}]", random, run.getTableName(), run.getFilter());
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
-        MongoCollection cons = database.getCollection(run.getTable());
+        MongoCollection cons = database.getCollection(run.getTableName());
         DeleteResult dr = cons.deleteMany((Bson)run.getFilter());
         result = dr.getDeletedCount();
         cmd_success = true;
         long millis = System.currentTimeMillis() - fr;
         if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-            log.info("{}[action:delete][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTable(), millis, LogUtil.format(result, 34));
+            log.info("{}[action:delete][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(result, 34));
         }
         if(null != dmListener){
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
@@ -857,8 +864,14 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
 
     }
 
+
     @Override
     public LinkedHashMap<String, Column> metadata(DataRuntime runtime, RunPrepare prepare, boolean comment) {
+        return null;
+    }
+
+    @Override
+    public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
         return null;
     }
 
@@ -868,4 +881,4 @@ public class MongoAdapter extends DefaultDriverAdapter implements DriverAdapter 
     }
 
 }
-*/
+

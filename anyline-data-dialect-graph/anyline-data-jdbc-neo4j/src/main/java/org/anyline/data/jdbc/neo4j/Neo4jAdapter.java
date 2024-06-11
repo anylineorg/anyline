@@ -1021,8 +1021,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
         return run;
     }
-
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, Object obj, String ... columns){
+    @Override
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
