@@ -33,6 +33,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.NotSupportException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
@@ -1326,7 +1327,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
 	}
 
@@ -1346,17 +1347,34 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		builder.append(" IN (");
 		if(value instanceof Collection){
-			Collection<Object> coll = (Collection)value;
-			int size = coll.size();
-			for(int i=0; i<size; i++){
-				builder.append("?");
-				if(i < size-1){
+			Collection<Object> values = (Collection)value;
+			boolean first = true;
+			for(Object v:values){
+				if(!first){
 					builder.append(",");
+				}
+				first = false;
+				if(placeholder){
+					builder.append("?");
+				}else{
+					if(v instanceof Number){
+						builder.append(v);
+					}else{
+						builder.append("'").append(v).append("'");
+					}
 				}
 			}
 			builder.append(")");
 		}else{
-			builder.append("= ?");
+			if(placeholder){
+				builder.append(" = ?");
+			}else{
+				if(value instanceof Number){
+					builder.append(value);
+				}else{
+					builder.append("'").append(value).append("'");
+				}
+			}
 		}
 		return builder;
 	}

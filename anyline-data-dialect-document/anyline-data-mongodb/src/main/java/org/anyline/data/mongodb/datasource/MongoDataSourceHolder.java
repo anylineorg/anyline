@@ -18,7 +18,6 @@
 
 package org.anyline.data.mongodb.datasource;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
@@ -26,6 +25,7 @@ import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceKeyMap;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
+import org.anyline.data.mongodb.runtime.MongoRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.transaction.TransactionManage;
 import org.anyline.data.transaction.init.DefaultTransactionManage;
@@ -33,11 +33,12 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component("anyline.environment.data.datasource.loader.jdbc")
+@Component("anyline.environment.data.datasource.loader.Mongo")
 public class MongoDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final MongoDataSourceHolder instance = new MongoDataSourceHolder();
@@ -61,7 +62,6 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             if(BasicUtil.isEmpty(url)){
                 return null;
             }
-            MongoClient mongoClient = new MongoClient(host, port);
 
             Map<String, Object> map = new HashMap<>();
             map.put("type", type);
@@ -72,7 +72,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             runtime(key, datasource, true);
             return datasource;
         } catch (Exception e) {
-            log.error("注册JDBC数据源 异常:", e);
+            log.error("注册Mongo数据源 异常:", e);
         }
         return null;
     }
@@ -117,7 +117,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
         if(null != datasource) {
             DataSourceHolder.check(key, override);
             regTransactionManager(key, datasource);
-            DataRuntime runtime = JDBCRuntimeHolder.instance().reg(key, datasource);
+            DataRuntime runtime = MongoRuntimeHolder.instance().reg(key, datasource);
             if(null != runtime){
                 Map<String, Object> param = params.get(key);
                 if(null != param) {
@@ -154,7 +154,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
                 DataSourceHolder.check(key, override);
                 //创建事务管理器
                 regTransactionManager(key, (DataSource)datasource);
-                runtime = JDBCRuntimeHolder.instance().reg(key, (DataSource)datasource);
+                runtime = MongoRuntimeHolder.instance().reg(key, (DataSource)datasource);
                 if(null == adapter && null != type){
                     adapter = DriverAdapterHolder.getAdapter(type);
                 }
@@ -202,8 +202,8 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             if(BasicUtil.isEmpty(url)){
                 return null;
             }
-            //只解析jdbc系列
-            if(!url.toLowerCase().startsWith("jdbc:")){
+            //只解析Mongo系列
+            if(!url.toLowerCase().startsWith("Mongo:")){
                 return null;
             }
             params.put("url", url);
@@ -211,9 +211,6 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             String type = value(params, "type", String.class, null);
             if(BasicUtil.isEmpty(type)){
                 type = value(prefix, "type", String.class, null);
-            }
-            if (type == null) {
-                type = DataSourceUtil.POOL_TYPE_DEFAULT;
             }
             Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
             Object driver =  value(params, "driverClass");
@@ -232,9 +229,9 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             if(!params.containsKey(key)){
                 params.put(key, sets);
             }
-            log.info("[注入数据源][type:JDBC][key:{}][bean:{}]", key, datasource_id);
+            log.info("[注入数据源][type:Mongo][key:{}][bean:{}]", key, datasource_id);
         } catch (Exception e) {
-            log.error("[注入数据源失败][type:JDBC][key:{}][msg:{}]", key, e.toString());
+            log.error("[注入数据源失败][type:Mongo][key:{}][msg:{}]", key, e.toString());
             log.error("注入数据源 异常:", e);
             return null;
         }

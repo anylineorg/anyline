@@ -33,6 +33,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.NotSupportException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
@@ -1282,7 +1283,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
 	}
 

@@ -31,6 +31,7 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.NotSupportException;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.Column;
@@ -515,7 +516,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         return null;
     }
 

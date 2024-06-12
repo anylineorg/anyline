@@ -27,19 +27,22 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.PrimaryMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
-import org.anyline.util.BasicUtil;
 import org.postgresql.util.PGobject;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component("anyline.data.jdbc.adapter.postgres")
 public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapter {
@@ -672,7 +675,7 @@ public class PostgresqlAdapter extends PostgresGenusAdapter implements JDBCAdapt
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
 	}
 

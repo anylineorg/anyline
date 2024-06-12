@@ -27,6 +27,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
@@ -704,7 +705,7 @@ public class XuGuAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
 	}
 

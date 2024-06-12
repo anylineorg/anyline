@@ -233,7 +233,7 @@ public enum Compare {
             return BeanUtil.array2list(arrays).contains(value);
         }
         public boolean isMultipleValue(){
-            return false;
+            return true;
         }
     },
     FIND_IN_SET_OR(61, "find in set",""," FIND_IN_SET "){
@@ -245,7 +245,7 @@ public enum Compare {
             return BeanUtil.array2list(arrays).contains(value);
         }
         public boolean isMultipleValue(){
-            return false;
+            return true;
         }
     },
     FIND_IN_SET_AND(62, "find in set",""," FIND_IN_SET "){
@@ -257,31 +257,35 @@ public enum Compare {
             return BeanUtil.array2list(arrays).contains(value);
         }
         public boolean isMultipleValue(){
-            return false;
+            return true;
         }
     },
     JSON_CONTAINS(71, "json_contains", "", " JSON_CONTAINS "){
+        //json_contains(JSON_COLUMN,'"VIP"','$.name')
         public boolean isMultipleValue(){
             return false;
         }
     },
     JSON_CONTAINS_PATH_OR(75, "json_contains_path", "", " JSON_CONTAINS_PATH "){
+        //ONE 包含1个即可
+        public boolean isMultipleValue(){
+            return true;
+        }
+    },
+    JSON_CONTAINS_PATH_ONE(75, "json_contains_path", "", " JSON_CONTAINS_PATH "){
+        //ONE 包含1个即可
         public boolean isMultipleValue(){
             return true;
         }
     },
     JSON_CONTAINS_PATH_AND(76, "json_contains_path", "", " JSON_CONTAINS_PATH "){
-        public String formula(Object value, boolean placeholder){
-            //如果不需要占位符，必须在上一步把需要的引号加上
-            if(!placeholder){
-                String str = "";
-                if(null != value){
-                    str = value.toString();
-                }
-                return this.formula().replace("?", str);
-            }
-            return formula();
+        //ALL 必须包含全部
+        public boolean isMultipleValue(){
+            return true;
         }
+    },
+    JSON_CONTAINS_PATH_ALL(76, "json_contains_path", "", " JSON_CONTAINS_PATH "){
+        //ALL 必须包含全部
         public boolean isMultipleValue(){
             return true;
         }
@@ -475,7 +479,7 @@ public enum Compare {
             return false;
         }
         public boolean isMultipleValue(){
-            return true;
+            return false;
         }
     };
 
@@ -509,7 +513,7 @@ public enum Compare {
         return formula;
     }
 
-    public String formula(Object value, boolean placeholder){
+    public String formula(String column, Object value, boolean placeholder){
         //如果不需要占位符，必须在上一步把需要的引号加上
         if(!placeholder){
             String str = "";

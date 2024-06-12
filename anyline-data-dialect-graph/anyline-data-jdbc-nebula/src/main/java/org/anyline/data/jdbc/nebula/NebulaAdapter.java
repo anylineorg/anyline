@@ -539,7 +539,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         return null;
     }
 

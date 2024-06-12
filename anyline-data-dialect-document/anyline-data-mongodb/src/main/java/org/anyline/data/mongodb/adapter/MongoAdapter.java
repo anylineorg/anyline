@@ -267,6 +267,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return run;
     }
 
+    @Override
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+        return null;
+    }
+
 
     @Override
     protected void fillQueryContent(DataRuntime runtime, TableRun run){

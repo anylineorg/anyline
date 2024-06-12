@@ -24,6 +24,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
@@ -696,7 +697,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         List<Object> values = new ArrayList<>();
         if(null != value){
             if(value instanceof Collection){
@@ -721,12 +722,98 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             if(!first){
                 builder.append(" OR ");
             }
-            builder.append("FIND_IN_SET(?, ").append(column).append(")");
+            if(placeholder) {
+                builder.append("FIND_IN_SET(?, ").append(column).append(")");
+            }else{
+                builder.append("FIND_IN_SET('").append(v).append("', ").append(column).append(")");
+            }
             first = false;
         }
         if(values.size() > 1){
             builder.append(")");
         }
+        return value;
+    }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造 JSON_CONTAINS 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value
+     */
+    @Override
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+        //json_contains(JSON_COLUMN,'"VIP"','$.name')
+        String key = null;
+        if(column.contains(">")){
+            String[] ks = column.split(">");
+            column = ks[0];
+            key = ks[1];
+        }
+        builder.append("JSON_CONTAINS(").append(column).append(", ");
+        if(placeholder){
+            builder.append("?");
+        }
+        if(BasicUtil.isNotEmpty(key)){
+            builder.append(",'").append(key).append("'");
+        }
+        builder.append(")");
+        if(value instanceof Collection){
+            Collection list = ((Collection)value);
+            if(!list.isEmpty()){
+                value = list.iterator().next();
+            }
+        }
+        if(BasicUtil.isNumber(value)){
+            value = value.toString();
+        }else{
+            String str = value.toString();
+            if(!str.startsWith("\"")){
+                str = "\""+str+"\"";
+            }
+            value = str;
+        }
+        return value;
+    }
+    /**
+     * select[命令合成-子流程] <br/>
+     * 构造 JSON_CONTAINS 查询条件
+     * 如果不需要占位符 返回null  否则原样返回value
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param builder builder
+     * @param column 列
+     * @param compare 比较方式 默认 equal 多个值默认 in
+     * @param value value
+     * @return value
+     */
+    @Override
+    public Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+        //JSON_CONTAINS_PATH(JSON_COLUMN, 'all', '$.A', '$.D')
+        String scope = "one";
+        if(compare.getCode() == 76){
+            scope = "all";
+        }
+        Collection<Object> values = new ArrayList<>();
+        if(value instanceof Collection){
+            values = (Collection<Object>) value;
+        }else{
+            values.add(value);
+        }
+        builder.append("JSON_CONTAINS_PATH(").append(column).append(", '").append(scope).append("'");
+        for(Object v:values){
+            builder.append(", ");
+            if(placeholder){
+                builder.append("?");
+            }else{
+                builder.append("'").append(v).append("'");
+            }
+        }
+
+        builder.append(")");
         return value;
     }
     /**

@@ -32,6 +32,7 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.differ.*;
@@ -1296,7 +1297,37 @@ public interface DriverAdapter {
 	 * @param value value
 	 * @return value
 	 */
-	Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder);
+	default Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException{
+		throw new NotSupportException("不支持");
+	}
+	/**
+	 * select[命令合成-子流程] <br/>
+	 * 构造 JSON_CONTAINS 查询条件
+	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param column 列
+	 * @param compare 比较方式 默认 equal 多个值默认 in
+	 * @param value value
+	 * @return value
+	 */
+	default Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException{
+		throw new NotSupportException("不支持");
+	}
+	/**
+	 * select[命令合成-子流程] <br/>
+	 * 构造 JSON_CONTAINS 查询条件
+	 * 如果不需要占位符 返回null  否则原样返回value
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param builder builder
+	 * @param column 列
+	 * @param compare 比较方式 默认 equal 多个值默认 in
+	 * @param value value
+	 * @return value
+	 */
+	default Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException{
+		throw new NotSupportException("不支持");
+	}
 	/**
 	 * select[命令合成-子流程] <br/>
 	 * 构造(NOT) IN 查询条件
@@ -6482,17 +6513,18 @@ public interface DriverAdapter {
 	 * 比较运算符在不同数据库的区别
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param builder StringBuilder
+	 * @param column 列名
 	 * @param compare Compare
 	 * @param metadata 数据类型
 	 * @param value 值
 	 * @param placeholder 是否启用占位符
 	 */
-	default void formula(DataRuntime runtime, StringBuilder builder, Compare compare, Column metadata, Object value, boolean placeholder){
+	default void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder){
 		if(!placeholder) {
 			//不用占位 需要引号的在这里加上
 			value = write(runtime, metadata, value, placeholder);
 		}
-		builder.append(compare.formula(value, placeholder));
+		builder.append(compare.formula(column, value, placeholder));
 	}
 
 }

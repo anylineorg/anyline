@@ -32,7 +32,10 @@ import org.anyline.data.param.Config;
 import org.anyline.data.param.ConfigParser;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.param.init.DefaultConfigStore;
-import org.anyline.data.prepare.*;
+import org.anyline.data.prepare.ConditionChain;
+import org.anyline.data.prepare.RunPrepare;
+import org.anyline.data.prepare.SyntaxHelper;
+import org.anyline.data.prepare.Variable;
 import org.anyline.data.prepare.auto.TablePrepare;
 import org.anyline.data.prepare.auto.TextPrepare;
 import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
@@ -46,6 +49,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
+import org.anyline.exception.NotSupportException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.*;
@@ -2241,25 +2245,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder)", 37));
-		}
-		return null;
-	}
-
-	/**
-	 * select[命令合成-子流程] <br/>
-	 * 构造 FIND_IN_SET 查询条件
-	 * 如果不需要占位符 返回null  否则原样返回value
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param builder builder
-	 * @param column 列
-	 * @param compare 比较方式 默认 equal 多个值默认 in
-	 * @param value value
-	 * @return value
-	 */
-	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder)", 37));
 		}
 		return null;
 	}

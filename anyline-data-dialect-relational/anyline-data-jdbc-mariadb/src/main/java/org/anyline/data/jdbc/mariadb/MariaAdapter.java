@@ -22,7 +22,6 @@ package org.anyline.data.jdbc.mariadb;
 import org.anyline.annotation.Component;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.adapter.init.MySQLGenusAdapter;
-import org.anyline.data.jdbc.adapter.init.alias.MySQLGenusTypeMetadataAlias;
 import org.anyline.data.jdbc.adapter.init.reader.MySQLGenusReader;
 import org.anyline.data.jdbc.adapter.init.writer.MySQLGenusWriter;
 import org.anyline.data.param.ConfigStore;
@@ -30,6 +29,7 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
+import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
@@ -678,7 +678,7 @@ public class MariaAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return value
 	 */
 	@Override
-	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+	public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
 		return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
 	}
 

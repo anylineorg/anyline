@@ -36,6 +36,7 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.graph.EdgeRow;
 import org.anyline.entity.graph.VertexRow;
+import org.anyline.exception.NotSupportException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
@@ -1232,8 +1233,13 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return value
      */
     @Override
-    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+    public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         return super.createConditionFindInSet(runtime, builder, column, compare, value, placeholder);
+    }
+
+    @Override
+    public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
+        return builder;
     }
 
     /**
@@ -7683,11 +7689,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param value 值
      * @param placeholder 是否启用占位符
      */
-    public void formula(DataRuntime runtime, StringBuilder builder, Compare compare, Column metadata, Object value, boolean placeholder){
+    @Override
+    public void formula(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Column metadata, Object value, boolean placeholder){
         if(compare == Compare.EQUAL){
             compare = Compare.EQUALS;
         }
-        super.formula(runtime, builder, compare, metadata, value, placeholder);
+        super.formula(runtime, builder, column, compare, metadata, value, placeholder);
 
     }
 }
