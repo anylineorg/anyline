@@ -1938,7 +1938,7 @@ public class DateUtil {
 		long hours = TimeUnit.MILLISECONDS.toHours(ms);
 		long minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60;
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60;
-		long millis = TimeUnit.MILLISECONDS.toMillis(ms) % 1000;
+		long millis = ms % 1000;
 		return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
 	}
 }
