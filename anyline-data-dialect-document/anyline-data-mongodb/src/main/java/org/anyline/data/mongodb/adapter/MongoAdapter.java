@@ -53,10 +53,7 @@ import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 import org.bson.conversions.Bson;
 
 import java.lang.reflect.Field;
@@ -210,14 +207,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}ms][collection:{}]", random, run.getTableName(), millis, collection);
+                    log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}][collection:{}]", random, run.getTableName(), DateUtil.format(millis), collection);
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
                 }
             }
             if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-                log.info("{}[action:insert][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(cnt, 34));
+                log.info("{}[action:insert][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(cnt, 34));
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -436,7 +433,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 set.add(row);
             }
             if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
-                log.info("{}[封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - fr, set.size());
+                log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), set.size());
             }
         }catch(Exception e){
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -496,14 +493,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
             if(millis > SLOW_SQL_MILLIS){
                 slow = true;
-                log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(result, 34));
+                log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
                 if(null != dmListener){
                     dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true, result, millis);
                 }
             }
         }
         if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-            log.info("{}[action:update][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(result, 34));
+            log.info("{}[action:update][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
         }
         return result;
     }
@@ -527,7 +524,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         result = dr.getDeletedCount();
         long millis = System.currentTimeMillis() - fr;
         if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-            log.info("{}[action:truncate][collection:][执行耗时:{}ms]", random, table, millis);
+            log.info("{}[action:truncate][collection:][执行耗时:{}]", random, table, DateUtil.format(millis));
         }
         return result;
     }
@@ -855,7 +852,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         cmd_success = true;
         long millis = System.currentTimeMillis() - fr;
         if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-            log.info("{}[action:delete][collection:{}][执行耗时:{}ms][影响行数:{}]", random, run.getTableName(), millis, LogUtil.format(result, 34));
+            log.info("{}[action:delete][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
         }
         if(null != dmListener){
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);

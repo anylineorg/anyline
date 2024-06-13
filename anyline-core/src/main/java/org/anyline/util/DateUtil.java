@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class DateUtil {
 	private static int MaxDate;// 一月最大天数
@@ -1932,5 +1933,12 @@ public class DateUtil {
 	public static YearMonth yearMonth(Date date){
 		YearMonth yearMonth = YearMonth.of(year(date), month(date));
 		return yearMonth;
+	}
+	public static String format(long ms){
+		long hours = TimeUnit.MILLISECONDS.toHours(ms);
+		long minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60;
+		long seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60;
+		long millis = TimeUnit.MILLISECONDS.toMillis(ms) % 1000;
+		return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
 	}
 }

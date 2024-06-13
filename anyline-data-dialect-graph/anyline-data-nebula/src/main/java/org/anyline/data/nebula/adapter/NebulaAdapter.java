@@ -51,10 +51,7 @@ import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 
 import java.util.*;
 
@@ -610,7 +607,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
                     }
@@ -621,7 +618,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 if(batch > 1){
                     qty = LogUtil.format("约"+cnt, 34);
                 }
-                log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, qty);
+                log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
             }
         }catch(Exception e){
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
@@ -923,7 +920,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
                     }
@@ -934,7 +931,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 if(batch>1){
                     qty = "约"+result;
                 }
-                log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, LogUtil.format(qty, 34));
+                log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
             }
 
         }catch(Exception e) {
@@ -1328,15 +1325,15 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
                 slow = true;
                 if(time > SLOW_SQL_MILLIS){
-                    log.warn("{}[slow cmd][action:select][执行耗时:{}ms]{}", random, time, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                    log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(time), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.SELECT, null, cmd, values, null, true, set,time);
                     }
                 }
             }
             if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)){
-                log.info("{}[action:select][执行耗时:{}ms]", random, time);
-                log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, time, count);
+                log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(time));
+                log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(time), count);
             }
             set.setDatalink(runtime.datasource());
         }catch(Exception e){
@@ -1607,7 +1604,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
                 if(millis > SLOW_SQL_MILLIS){
                     slow = true;
-                    log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, action, millis, cmd, LogUtil.param(values));
+                    log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), cmd, LogUtil.param(values));
                     if(null != dmListener){
                         dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, cmd, values, null, true, result, millis);
                     }
@@ -1618,7 +1615,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 if(batch>1){
                     qty = "约"+result;
                 }
-                log.info("{}[action:{}][执行耗时:{}ms][影响行数:{}]", random, action, millis, LogUtil.format(qty, 34));
+                log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
             }
         }catch(Exception e){
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {

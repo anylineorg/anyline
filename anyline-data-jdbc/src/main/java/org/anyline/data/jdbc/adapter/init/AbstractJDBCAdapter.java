@@ -43,10 +43,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 import org.anyline.util.encrypt.MD5Util;
 import org.anyline.util.regular.RegularUtil;
 
@@ -627,7 +624,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
 					}
@@ -638,7 +635,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				if(batch > 1){
 					qty = LogUtil.format("约"+cnt, 34);
 				}
-				log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, qty);
+				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
 			}
 		}catch(Exception e){
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
@@ -847,7 +844,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
 					}
@@ -858,7 +855,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				if(batch>1){
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, LogUtil.format(qty, 34));
+				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
 
 		}catch(Exception e) {
@@ -1031,9 +1028,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][cmd:\n{}\n][input param:{}]\n[output param:{}]"
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
 							, random
-							, millis
+							, DateUtil.format(millis)
 							, procedure.getName()
 							, LogUtil.param(inputs)
 							, LogUtil.param(outputs));
@@ -1046,7 +1043,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				queryInterceptor.after(procedure, set, millis);
 			}*/
 			if(!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
-				log.info("{}[action:procedure][执行耗时:{}ms]", random, millis);
+				log.info("{}[action:procedure][执行耗时:{}]", random, DateUtil.format(millis));
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1505,14 +1502,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)){
 			if(millis > SLOW_SQL_MILLIS){
 				slow = true;
-				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+				log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
 				if(null != dmListener){
 					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
 				}
 			}
 		}
 		if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
-			log.info("{}[action:select][执行耗时:{}ms][封装行数:{}]", random, millis, LogUtil.format(map == null ?0:1, 34));
+			log.info("{}[action:select][执行耗时:{}][封装行数:{}]", random, DateUtil.format(millis), LogUtil.format(map == null ?0:1, 34));
 		}
 		return map;
 	}
@@ -1774,7 +1771,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, sql, inputs, list, true, result, millis);
 					}
@@ -1784,7 +1781,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				dmListener.afterExecute(runtime, random, procedure, result, millis);
 			}
 			if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:procedure][执行耗时:{}ms]\n[output param:{}]", random, millis, list);
+				log.info("{}[action:procedure][执行耗时:{}]\n[output param:{}]", random, DateUtil.format(millis), list);
 			}
 
 		}catch(Exception e){
@@ -1889,7 +1886,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, action, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
 					}
@@ -1900,11 +1897,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				if(batch>1){
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][执行耗时:{}ms][影响行数:{}]", random, action, millis, LogUtil.format(qty, 34));
+				log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
 		}catch(Exception e){
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-				e.printStackTrace();
+				log.error("execute exception:",e);
 			}
 			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
 				log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
@@ -2275,7 +2272,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			String sql = run.getFinalQuery(false);
 			columns = worker.metadata(this, runtime, random, run, comment);
 			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:metadata][执行耗时:{}ms]", random, System.currentTimeMillis() - fr);
+				log.info("{}[action:metadata][执行耗时:{}]", random, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 			if(comment){
 				Map<String,Table> tables = new HashMap<>();
@@ -2334,7 +2331,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			columns = new LinkedHashMap<>();
 			e.printStackTrace();
 		}
-		log.info("{}[action:metadata][封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - fr, LogUtil.format(columns.size(), 34));
+		log.info("{}[action:metadata][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), LogUtil.format(columns.size(), 34));
 		return columns;
 	}
 	/* *****************************************************************************************************************
@@ -3899,7 +3896,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 
 			// 方法(3)根据根据驱动内置接口补充
@@ -3912,7 +3909,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据根据驱动内置接口补充:{}][执行耗时:{}ms]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, System.currentTimeMillis() - fr);
+				log.info("{}[columns][catalog:{}][schema:{}][table:{}][total:{}][根据metadata解析:{}][根据系统表查询:{}][根据根据驱动内置接口补充:{}][执行耗时:{}]", random, catalog, schema, table, qty_total, qty_metadata, qty_dialect, qty_jdbc, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 			//检测主键
 			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
@@ -4432,7 +4429,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
+				log.info("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}]", random, catalog, schema, table, DateUtil.format(System.currentTimeMillis() - fr));
 			}
 		}catch (Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -9346,15 +9343,15 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			long times = configs.getLastExecuteTime();
 			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs) && times > SLOW_SQL_MILLIS){
 				slow = true;
-				log.warn("{}[slow cmd][action:select][执行耗时:{}ms]{}", random, times, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+				log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(times), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 				if(null != dmListener){
 					dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, set,times);
 				}
 
 			}
 			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)){
-				log.info("{}[action:select][执行耗时:{}ms]", random, times);
-				log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, configs.getLastPackageTime(), set.size());
+				log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(times));
+				log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(configs.getLastPackageTime()), set.size());
 			}
 			set.setDatalink(runtime.datasource());
 		}catch(Exception e){

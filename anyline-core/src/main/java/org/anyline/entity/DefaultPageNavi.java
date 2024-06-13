@@ -568,6 +568,9 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 				}
 			}
 		}
+		String totalRowFormat = NumberUtil.format(totalRow, "###,##0");
+		String totalPageFormat = NumberUtil.format(totalPage, "###,##0");
+		String curPageFormat = NumberUtil.format(curPage, "###,##0");
 
 		if("ajax".equals(adapter)){
 			configVarKey = config.KEY_ID_FLAG + flag;	// _anyline_navi_conf_0 
@@ -600,8 +603,8 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		navi.append("<div class=\"anyline-navi\">\n");
 		// 数据统计 
 		String statFormat = config.STYLE_STAT_FORMAT;  
-		statFormat = statFormat.replace("${totalRow}", totalRow+"").replace("${curPage}", curPage+"").replace("${totalPage}", totalPage+"");
-		statFormat = statFormat.replace("${total-row}", totalRow+"").replace("${cur-page}", curPage+"").replace("${total-page}", totalPage+"");
+		statFormat = statFormat.replace("${totalRow}", totalRowFormat).replace("${curPage}", curPageFormat).replace("${totalPage}", totalPageFormat);
+		statFormat = statFormat.replace("${total-row}", totalRowFormat).replace("${cur-page}", curPageFormat).replace("${total-page}", totalPageFormat);
 		if(showStat){
 			stat.append(statFormat).append("\n"); 
 		} 

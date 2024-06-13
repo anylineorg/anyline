@@ -41,6 +41,7 @@ import org.anyline.metadata.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -377,7 +378,7 @@ public class DefaultJDBCWorker implements DriverWorker {
 
         set.setDatalink(rt.datasource());
         if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
-            log.info("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid, set.size());
+            log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
         }
         return set;
     }
@@ -472,17 +473,17 @@ public class DefaultJDBCWorker implements DriverWorker {
         if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
             if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)){
                 slow = true;
-                log.warn("{}[slow cmd][action:select][执行耗时:{}ms]{}", random, mid[0]-fr, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                 if(null != adapter.getDMListener()){
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
                 }
             }
         }
         if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
-            log.info("{}[action:select][执行耗时:{}ms]", random, mid[0] - fr);
+            log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(mid[0] - fr));
         }
         if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
-            log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count[0]);
+            log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid[0]), count[0]);
         }
         return maps;
     }
@@ -545,17 +546,17 @@ public class DefaultJDBCWorker implements DriverWorker {
         if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
             if(time > ConfigStore.SLOW_SQL_MILLIS(configs)){
                 slow = true;
-                log.warn("{}[slow cmd][action:select][执行耗时:{}ms]{}", random, time, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+                log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(time), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
                 if(null != adapter.getDMListener()){
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, map, time);
                 }
             }
         }
         if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
-            log.info("{}[action:select][执行耗时:{}ms]", random, time);
+            log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(time));
         }
         if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
-            log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - fr, 1);
+            log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), 1);
         }
         return map;
     }

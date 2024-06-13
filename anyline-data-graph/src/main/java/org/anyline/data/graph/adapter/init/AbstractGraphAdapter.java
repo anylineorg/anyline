@@ -47,10 +47,7 @@ import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.EntityAdapterProxy;
 import org.anyline.proxy.InterceptorProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.LogUtil;
+import org.anyline.util.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -575,7 +572,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
 					}
@@ -586,7 +583,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				if(batch > 1){
 					qty = LogUtil.format("约"+cnt, 34);
 				}
-				log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, qty);
+				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
 			}
 
 		}catch(Exception e){
@@ -806,7 +803,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}ms]{}", random, action, run.getTable(), millis, run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, sql, values, null, true, result, millis);
 					}
@@ -817,7 +814,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				if(batch>1){
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][table:{}][执行耗时:{}ms][影响行数:{}]", random, action, run.getTable(), millis, LogUtil.format(qty, 34));
+				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
 
 		}catch(Exception e) {
@@ -991,9 +988,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][cmd:\n{}\n][input param:{}]\n[output param:{}]"
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
 							, random
-							, millis
+							, DateUtil.format(millis)
 							, procedure.getName()
 							, LogUtil.param(inputs)
 							, LogUtil.param(outputs));
@@ -1006,7 +1003,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				queryInterceptor.after(procedure, set, millis);
 			}*/
 			if(!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
-				log.info("{}[action:procedure][执行耗时:{}ms]", random, millis);
+				log.info("{}[action:procedure][执行耗时:{}]", random, DateUtil.format(millis));
 			}
 		}catch(Exception e){
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -1407,18 +1404,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
 				if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)){
 					slow = true;
-					log.warn("{}[slow cmd][action:select][执行耗时:{}ms]{}", random, mid[0]-fr, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
 					}
 				}
 			}
 			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)){
-				log.info("{}[action:select][执行耗时:{}ms]", random, mid[0] - fr);
+				log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(mid[0] - fr));
 			}
 			maps = process(runtime, maps);
 			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)){
-				log.info("{}[action:select][封装耗时:{}ms][封装行数:{}]", random, System.currentTimeMillis() - mid[0], count[0]);
+				log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid[0]), count[0]);
 			}
 		}catch(Exception e){
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
@@ -1487,14 +1484,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
 			if(millis > SLOW_SQL_MILLIS){
 				slow = true;
-				log.warn("{}[slow cmd][action:exists][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, millis, sql, LogUtil.param(values));
+				log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
 				if(null != dmListener){
 					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
 				}
 			}
 		}
 		if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
-			log.info("{}[action:select][执行耗时:{}ms][封装行数:{}]", random, millis, LogUtil.format(map == null ?0:1, 34));
+			log.info("{}[action:select][执行耗时:{}][封装行数:{}]", random, DateUtil.format(millis), LogUtil.format(map == null ?0:1, 34));
 		}
 		return map;
 	}
@@ -1753,7 +1750,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
 			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
 				if(millis > SLOW_SQL_MILLIS){
-					log.warn("{}[slow cmd][action:procedure][执行耗时:{}ms][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, millis, sql, LogUtil.param(inputs), LogUtil.param(list));
+					log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, sql, inputs, list, true, result, millis);
 					}
@@ -1763,7 +1760,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				dmListener.afterExecute(runtime, random, procedure, result, millis);
 			}
 			if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:procedure][执行耗时:{}ms]\n[output param:{}]", random, millis, list);
+				log.info("{}[action:procedure][执行耗时:{}]\n[output param:{}]", random, DateUtil.format(millis), list);
 			}
 
 		}catch(Exception e){
@@ -1871,7 +1868,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
 				if(millis > SLOW_SQL_MILLIS){
 					slow = true;
-					log.warn("{}[slow cmd][action:{}][执行耗时:{}ms][cmd:\n{}\n]\n[param:{}]", random, action, millis, sql, LogUtil.param(values));
+					log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
 					if(null != dmListener){
 						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
 					}
@@ -1882,7 +1879,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				if(batch>1){
 					qty = "约"+result;
 				}
-				log.info("{}[action:{}][执行耗时:{}ms][影响行数:{}]", random, action, millis, LogUtil.format(qty, 34));
+				log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
 		}catch(Exception e){
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {

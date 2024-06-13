@@ -772,7 +772,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             value = value.toString();
         }else{
             String str = value.toString();
-            if(!str.startsWith("\"")){
+            if(str.startsWith("${") && str.endsWith("}")){
+                str = str.substring(2, str.length()-1);
+            }else if(!str.startsWith("\"")){
                 str = "\""+str+"\"";
             }
             value = str;
