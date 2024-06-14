@@ -38,7 +38,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component("anyline.environment.data.datasource.loader.Mongo")
+@Component("anyline.environment.data.datasource.loader.mongo")
 public class MongoDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final MongoDataSourceHolder instance = new MongoDataSourceHolder();
