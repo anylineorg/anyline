@@ -774,6 +774,24 @@ public interface ConfigStore extends Cloneable{
 		return and(Compare.END_WITH, var, value);
 	}
 
+
+	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.REGEX, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+		return and(swt, Compare.REGEX, var, value, overCondition, overValue);
+	}
+	default ConfigStore regex(String id, String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.REGEX, id, var, value, overCondition, overValue);
+	}
+	default ConfigStore regex(String var, Object value, boolean overCondition, boolean overValue){
+		return and(Compare.REGEX, var, value, overCondition, overValue);
+	}
+	default ConfigStore regex(String var, Object value){
+		return and(Compare.REGEX, var, value);
+	}
+
+
 	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
 		return and(swt, Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
 	}
@@ -885,6 +903,7 @@ public interface ConfigStore extends Cloneable{
 	default ConfigStore between(String var, Object min, Object max){
 		return and(Compare.BETWEEN, var, Arrays.asList(min,max));
 	}
+
 
 	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
 		return and(swt, Compare.NOT_EQUAL, id, var, value, overCondition, overValue);
