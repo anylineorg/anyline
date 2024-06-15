@@ -16,7 +16,7 @@
 
 
 
-package org.anyline.data.jdbc.listener;
+package org.anyline.data.listener.init;
 
 import org.anyline.annotation.Component;
 import org.anyline.bean.LoadListener;
@@ -39,7 +39,7 @@ import org.anyline.util.ConfigTable;
 import java.util.Map;
 
 @Component("anyline.environment.data.listener.jdbc")
-public class JDBCLoadListener implements LoadListener {
+public class DataSourceLoadListener implements LoadListener {
     @Override
     public void load() {
         //缓存

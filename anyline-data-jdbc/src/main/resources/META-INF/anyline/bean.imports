@@ -1,1 +1,0 @@
-anyline.data.loader.jdbc=org.anyline.data.jdbc.datasource.JDBCDataSourceLoader

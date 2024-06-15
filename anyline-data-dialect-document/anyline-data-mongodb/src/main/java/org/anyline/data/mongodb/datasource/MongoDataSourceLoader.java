@@ -59,7 +59,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
                     loadDefault = false;
                 }catch (Exception e){
                     runtime = null;
-                    log.error("加载JDBC数据源 异常:", e);
+                    log.error("加载mongo数据源 异常:", e);
                 }
             }
 
@@ -130,7 +130,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
                         }
                     }
                 }catch (Exception e){
-                    log.error("[注入数据源失败][type:JDBC][key:{}][msg:{}]", prefix, e.toString());
+                    log.error("[注入数据源失败][type:mongo][key:{}][msg:{}]", prefix, e.toString());
                 }
             }
         }

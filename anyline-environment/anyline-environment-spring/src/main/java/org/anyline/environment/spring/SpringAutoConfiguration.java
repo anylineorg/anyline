@@ -37,7 +37,7 @@ import java.util.Map;
 @Component("anyline.environment.configuration.spring")
 public class SpringAutoConfiguration implements InitializingBean {
     private Map<String, LoadListener> listeners;
-
+    private boolean loadStatus = false;
     @Autowired
     public void setWorker(SpringEnvironmentWorker worker){
         ConfigTable.setWorker(worker);
@@ -89,10 +89,11 @@ public class SpringAutoConfiguration implements InitializingBean {
         listenerLoad();
     }
     private void listenerLoad(){
-        if(null != listeners && null != ConfigTable.worker) {
+        if(!loadStatus && null != listeners && null != ConfigTable.worker) {
             for (LoadListener listener : listeners.values()) {
                 listener.load();
             }
+            loadStatus = true;
         }
     }
 }

@@ -263,7 +263,7 @@ public interface DataSourceHolder {
 	static void check(String key, boolean override) throws Exception {
 		if(contains(key)){
 			if(!override){
-				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+				throw new Exception("[数据源重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 			}else{
 				//清空
 				RuntimeHolder.destroy(key);
