@@ -89,7 +89,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildInsertRun(runtime, batch, dest, obj, configs, columns);
+        return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
     }
 
 /**

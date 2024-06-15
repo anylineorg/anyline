@@ -20,10 +20,8 @@ package org.anyline.data.mongodb.runtime;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.mongodb.entity.MongoDataRow;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntime;
 import org.anyline.util.ConfigTable;
 
@@ -56,6 +54,7 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
 
     public MongoRuntime(String key, MongoClient client, MongoDatabase database, DriverAdapter adapter){
         setKey(key);
+        setClient(client);
         setProcessor(database);
         setAdapter(adapter);
     }

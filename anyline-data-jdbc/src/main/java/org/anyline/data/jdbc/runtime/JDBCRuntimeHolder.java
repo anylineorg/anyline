@@ -66,7 +66,7 @@ public class JDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeH
             runtime.setKey(key);
             runtime.setAdapter(adapter);
             runtime.setProcessor(datasource);
-            temporary.put(key, (DataSource) datasource);
+            temporary.put(key, datasource);
             log.warn("[创建临时数据源][key:{}][type:{}]", key, datasource.getClass().getSimpleName());
             runtimes.put(key, runtime);
         }else{

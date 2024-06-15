@@ -1,0 +1,1 @@
+anyline.data.loader.mongo=org.anyline.data.mongodb.datasource.MongoDataSourceLoader

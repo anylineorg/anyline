@@ -40,7 +40,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-@Component("anyline.environment.data.datasource.loader.jdbc")
+@Component("anyline.environment.data.datasource.holder.jdbc")
 public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final JDBCDataSourceHolder instance = new JDBCDataSourceHolder();
@@ -210,7 +210,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             }else{
                 //上下文还没加载完先缓存起来，最后统一注册
                 if(!caches.containsKey(key) || override){
-                    caches.put(key, (DataSource)datasource);
+                    caches.put(key, datasource);
                 }
             }
         }

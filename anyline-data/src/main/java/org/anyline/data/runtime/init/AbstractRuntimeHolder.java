@@ -30,7 +30,7 @@ public abstract class AbstractRuntimeHolder implements RuntimeHolder {
     /**
      * 临时数据源
      */
-    protected static Map<String, DataSource> temporary = new HashMap<>();
+    protected static Map<String, Object> temporary = new HashMap<>();
 
     public static String parseAdapterKey(String url){
         return parseParamValue(url, "adapter");
