@@ -22,10 +22,10 @@ import org.anyline.annotation.Component;
 import org.anyline.data.jdbc.opengauss.OpenGaussAdapter;
 import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.vastbase")
-public class VastBaseAdapter extends OpenGaussAdapter {
+public class VastbaseAdapter extends OpenGaussAdapter {
     
     public DatabaseType type(){
-        return DatabaseType.VastBase;
+        return DatabaseType.Vastbase;
     }
     
     private String delimiter;

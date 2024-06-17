@@ -448,7 +448,7 @@ public enum DatabaseType implements Serializable {
         UXDB                	("优炫数据库"                            	,KEY_CASE.SRC	,900	,null	,"com.uxsino.uxdb.Driver"	,"jdbc:uxdb://{host}:{port:5432}/{database}"),
         Vald                	("Vald"                             	,KEY_CASE.SRC	,757	,null	,""	,""),
         Valentina           	("Valentina Server"                 	,KEY_CASE.SRC	,676	,null	,""	,""),
-        VastBase            	("海量数据"                             	,KEY_CASE.SRC	,900	,null	,"org.postgresql.Driver"	,"jdbc:postgresql://{host}:{port:5432}/{database}"),
+        Vastbase            	("海量数据"                             	,KEY_CASE.SRC	,900	,null	,"org.postgresql.Driver"	,"jdbc:postgresql://{host}:{port:5432}/{database}"),
         VelocityDB          	("VelocityDB"                       	,KEY_CASE.SRC	,648	,null	,""	,""),
         Vertica             	("Vertica"                          	,KEY_CASE.SRC	,958	,null	,"com.vertica.jdbc.Driver"	,"jdbc:vertica://{host}:{port:5433}/{database}"),
         Vespa               	("Vespa"                            	,KEY_CASE.SRC	,742	,null	,""	,""),
