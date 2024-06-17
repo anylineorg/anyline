@@ -33,11 +33,11 @@ import java.sql.SQLException;
 
 public class SpringTransactionManage extends DefaultTransactionManage implements TransactionManage {
     private final DataSourceTransactionManager manager;
-    public SpringTransactionManage(DataSource datasource){
+    public SpringTransactionManage(DataSource datasource) {
         manager = new DataSourceTransactionManager();
         manager.setDataSource(datasource);
     }
-    public SpringTransactionManage(DataSourceTransactionManager manager){
+    public SpringTransactionManage(DataSourceTransactionManager manager) {
         this.manager = manager;
     }
     @Override
@@ -75,7 +75,7 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
      * @param define TransactionDefine
      * @return TransactionDefinition
      */
-    private TransactionDefinition definition(TransactionDefine define){
+    private TransactionDefinition definition(TransactionDefine define) {
         DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
         definition.setPropagationBehavior(define.getPropagationBehavior());
         String behaviorName = define.getPropagationBehaviorName();
@@ -94,7 +94,7 @@ public class SpringTransactionManage extends DefaultTransactionManage implements
      * @param status TransactionStatus
      * @return TransactionState
      */
-    private TransactionState state(TransactionStatus status){
+    private TransactionState state(TransactionStatus status) {
         TransactionState state = new DefaultTransactionState();
         state.setOrigin(status);
         return state;

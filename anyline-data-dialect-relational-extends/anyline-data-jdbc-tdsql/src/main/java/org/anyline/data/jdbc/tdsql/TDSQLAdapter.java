@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.tdsql")
 public class TDSQLAdapter extends MySQLGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.TDSQL;
     }
     

@@ -47,13 +47,13 @@ public interface ConditionChain extends Condition {
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围
 	 */
-	default void filter(LinkedHashMap<String, Column> metadatas){
+	default void filter(LinkedHashMap<String, Column> metadatas) {
 		List<Condition> cons = getConditions();
-		if(null != cons){
+		if(null != cons) {
 			int size = cons.size();
-			for(int i=size-1; i>=0; i--){
+			for(int i=size-1; i>=0; i--) {
 				Condition con = cons.get(i);
-				if(con instanceof ConditionChain){
+				if(con instanceof ConditionChain) {
 					((ConditionChain)con).filter(metadatas);
 				}else {
 					String id = con.getId();

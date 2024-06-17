@@ -38,46 +38,46 @@ public class MySQLGeometryAdapter {
         types.put(6, Geometry.Type.MultiPolygon);
         types.put(7, Geometry.Type.GeometryCollection);
     }
-    public static void init(Geometry geometry){
-        if(null != geometry){
-            if(null == geometry.srid()){
+    public static void init(Geometry geometry) {
+        if(null != geometry) {
+            if(null == geometry.srid()) {
                 geometry.srid(0);
             }
             Byte endian = geometry.endian();
-            if(null == endian){
+            if(null == endian) {
                 geometry.endian(1);
             }
             Integer type = geometry.type();
-            if(null == type){
-                if(geometry instanceof Point){
+            if(null == type) {
+                if(geometry instanceof Point) {
                     type = 1;
-                }else if(geometry instanceof LineString){
+                }else if(geometry instanceof LineString) {
                     type = 2;
-                }else if(geometry instanceof Polygon){
+                }else if(geometry instanceof Polygon) {
                     type = 3;
-                }else if(geometry instanceof MultiPoint){
+                }else if(geometry instanceof MultiPoint) {
                     type = 4;
-                }else if(geometry instanceof MultiLine){
+                }else if(geometry instanceof MultiLine) {
                     type = 5;
-                }else if(geometry instanceof MultiPolygon){
+                }else if(geometry instanceof MultiPolygon) {
                     type = 6;
-                }else if(geometry instanceof GeometryCollection){
+                }else if(geometry instanceof GeometryCollection) {
                     type = 7;
                 }
                 geometry.type(type);
             }
         }
     }
-    public static Geometry.Type type(Integer type){
+    public static Geometry.Type type(Integer type) {
         return types.get(type);
     }
-    public static String sql(Geometry geometry){
+    public static String sql(Geometry geometry) {
         return null;
     }
-    public static String sql(Point point){
+    public static String sql(Point point) {
         return "Point(" + point.x() + " " + point.y() + ")";
     }
-    public static Geometry parse(byte[] bytes){
+    public static Geometry parse(byte[] bytes) {
         Geometry geometry = null;
         //取字节数组的前4个来解析srid
         byte[] srid_bytes = new byte[4];
@@ -87,19 +87,19 @@ public class MySQLGeometryAdapter {
         // 解析SRID
         int srid = NumberUtil.byte2int(bytes, 0, 4, endian==0);
         int type = NumberUtil.byte2int(bytes, 5, 4, endian==0);
-        if(type == 1){
+        if(type == 1) {
             geometry = parsePoint(bytes);
-        }else if(type == 2){
+        }else if(type == 2) {
             geometry = parseLine(bytes);
-        }else if(type == 3){
+        }else if(type == 3) {
             geometry = parsePolygon(bytes);
-        }else if(type == 4){
+        }else if(type == 4) {
             geometry = parseMultiPoint(bytes);
-        }else if(type == 5){
+        }else if(type == 5) {
             geometry = parseMultiLine(bytes);
-        }else if(type == 6){
+        }else if(type == 6) {
             geometry = parseMultiPolygon(bytes);
-        }else if(type == 7){
+        }else if(type == 7) {
             geometry = parseGeometryCollection(bytes);
         }
         geometry.endian(endian);
@@ -125,16 +125,16 @@ public class MySQLGeometryAdapter {
      * @param bytes bytes
      * @return Point
      */
-    public static Point parsePoint(byte[] bytes){
+    public static Point parsePoint(byte[] bytes) {
         Point point = point(bytes, 9);
         return point;
     }
 
-    public static Point point(byte[] bytes, int offset){
+    public static Point point(byte[] bytes, int offset) {
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
         return point(buffer);
     }
-    public static Point point(ByteBuffer buffer){
+    public static Point point(ByteBuffer buffer) {
         Point point = new Point(buffer.readDouble(), buffer.readDouble());
         point.tag("Point");
         point.type(1);
@@ -164,7 +164,7 @@ public class MySQLGeometryAdapter {
      * @param bytes bytes
      * @return LineString
      */
-    public static LineString parseLine(byte[] bytes){
+    public static LineString parseLine(byte[] bytes) {
         LineString line = line(bytes, 9);
         return line;
     }
@@ -175,14 +175,14 @@ public class MySQLGeometryAdapter {
      * @param offset point count的开始位置
      * @return LineString
      */
-    public static LineString line(byte[] bytes, int offset){
+    public static LineString line(byte[] bytes, int offset) {
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
         return line(buffer);
     }
-    public static LineString line(ByteBuffer buffer){
+    public static LineString line(ByteBuffer buffer) {
         List<Point> points = new ArrayList<>();
         int count = buffer.readInt();
-        for(int i=0; i<count; i++){
+        for(int i=0; i<count; i++) {
             Point point = point(buffer);
             points.add(point);
         }
@@ -277,7 +277,7 @@ public class MySQLGeometryAdapter {
      * @param bytes bytes
      * @return Polygon
      */
-    public static Polygon parsePolygon(byte[] bytes){
+    public static Polygon parsePolygon(byte[] bytes) {
         Polygon polygon = polygon(bytes, 9);
         return polygon;
     }
@@ -288,11 +288,11 @@ public class MySQLGeometryAdapter {
      * @param offset 环数量开始位置
      * @return Polygon
      */
-    public static Polygon polygon(byte[] bytes, int offset){
+    public static Polygon polygon(byte[] bytes, int offset) {
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], offset);
         return polygon(buffer);
     }
-    public static Polygon polygon(ByteBuffer buffer){
+    public static Polygon polygon(ByteBuffer buffer) {
         Polygon polygon = new Polygon();
         polygon.tag("Polygon");
         polygon.type(3);
@@ -303,9 +303,9 @@ public class MySQLGeometryAdapter {
         Ring out = ring(buffer);
         out.clockwise(true);
         polygon.add(out);
-        if(ring_count > 1){
+        if(ring_count > 1) {
             //内环(可能有多个)
-            for(int r=1; r<ring_count; r++){
+            for(int r=1; r<ring_count; r++) {
                 //内环中Point数量
                 Ring in = ring(buffer);
                 in.clockwise(false);
@@ -314,10 +314,10 @@ public class MySQLGeometryAdapter {
         }
         return polygon;
     }
-    public static Ring ring(ByteBuffer buffer){
+    public static Ring ring(ByteBuffer buffer) {
         List<Point> points = new ArrayList<>();
         int point_count = buffer.readInt();
-        for(int p=0; p<point_count; p++){
+        for(int p=0; p<point_count; p++) {
             points.add(point(buffer));
         }
         Ring ring = new Ring(points);
@@ -354,15 +354,15 @@ public class MySQLGeometryAdapter {
      * @param bytes bytes
      * @return MultiPoint
      */
-    public static MultiPoint parseMultiPoint(byte[] bytes){
+    public static MultiPoint parseMultiPoint(byte[] bytes) {
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
         return multiPoint(buffer);
     }
-    public static MultiPoint multiPoint(ByteBuffer buffer){
+    public static MultiPoint multiPoint(ByteBuffer buffer) {
         //点数量
         int count = buffer.readInt();
         List<Point> points = new ArrayList<>();
-        for(int i=0; i<count; i++){
+        for(int i=0; i<count; i++) {
             //跳过 Endian(1位)和 WKB type(4位)
             buffer.step(5);
             points.add(point(buffer));
@@ -411,15 +411,15 @@ public class MySQLGeometryAdapter {
      * @param bytes bytes
      * @return MultiPoint
      */
-    public static MultiLine parseMultiLine(byte[] bytes){
+    public static MultiLine parseMultiLine(byte[] bytes) {
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
         return multiLine(buffer);
     }
-    public static MultiLine multiLine(ByteBuffer buffer){
+    public static MultiLine multiLine(ByteBuffer buffer) {
         //线段数量
         int line_count = buffer.readInt();
         List<LineString> lines = new ArrayList<>();
-        for(int l=0; l<line_count; l++){
+        for(int l=0; l<line_count; l++) {
             //跳过 Endian(1位)和 WKB type(4位)
             buffer.step(5);
             lines.add(line(buffer));
@@ -514,15 +514,15 @@ public class MySQLGeometryAdapter {
      * @param bytes bytes
      * @return MultiPolygon
      */
-    public static MultiPolygon parseMultiPolygon(byte[] bytes){
+    public static MultiPolygon parseMultiPolygon(byte[] bytes) {
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
         return multiPolygon(buffer);
     }
-    public static MultiPolygon multiPolygon(ByteBuffer buffer){
+    public static MultiPolygon multiPolygon(ByteBuffer buffer) {
         //面数量
         int polygon_count = buffer.readInt();
         List<Polygon> polygons = new ArrayList<>();
-        for(int py=0; py<polygon_count; py++){
+        for(int py=0; py<polygon_count; py++) {
             //跳过Endian(1)+WKB type(4)
             buffer.step(5);
             Polygon polygon = polygon(buffer);
@@ -637,28 +637,28 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
      * @param bytes bytes
      * @return GeometryCollection
      */
-    public static GeometryCollection parseGeometryCollection(byte[] bytes){
+    public static GeometryCollection parseGeometryCollection(byte[] bytes) {
         GeometryCollection collection = new GeometryCollection();
         ByteBuffer buffer = new ByteBuffer(bytes, bytes[4], 9);
         //Geometry count
         int geometryCount = buffer.readInt();
-        for(int g=0; g<geometryCount; g++){
+        for(int g=0; g<geometryCount; g++) {
             //Endian
             buffer.step(1);
             //WKB type
             int type = buffer.readInt();
             Geometry geometry = null;
-            if(type == 1){
+            if(type == 1) {
                 geometry = point(buffer);
-            }else if(type == 2){
+            }else if(type == 2) {
                 geometry = line(buffer);
-            }else if(type == 3){
+            }else if(type == 3) {
                 geometry = polygon(buffer);
-            }else if(type == 4){
+            }else if(type == 4) {
                 geometry = multiPoint(buffer);
-            }else if(type == 5){
+            }else if(type == 5) {
                 geometry = multiLine(buffer);
-            }else if(type == 6){
+            }else if(type == 6) {
                 geometry = multiPolygon(buffer);
             }
             if(null != geometry) {
@@ -677,47 +677,47 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
      * @param geometry geometry
      * @return bytes
      */
-    public static byte[] wkb(Geometry geometry){
-        if(geometry instanceof Point){
+    public static byte[] wkb(Geometry geometry) {
+        if(geometry instanceof Point) {
             return wkb((Point)geometry);
-        }else if(geometry instanceof LineString){
+        }else if(geometry instanceof LineString) {
             return wkb((LineString)geometry);
-        }else if(geometry instanceof Polygon){
+        }else if(geometry instanceof Polygon) {
             return wkb((Polygon)geometry);
-        }else if(geometry instanceof MultiPoint){
+        }else if(geometry instanceof MultiPoint) {
             return wkb((MultiPoint)geometry);
-        }else if(geometry instanceof MultiLine){
+        }else if(geometry instanceof MultiLine) {
             return wkb((MultiLine)geometry);
-        }else if(geometry instanceof MultiPolygon){
+        }else if(geometry instanceof MultiPolygon) {
             return wkb((MultiPolygon)geometry);
-        }else if(geometry instanceof GeometryCollection){
+        }else if(geometry instanceof GeometryCollection) {
             return wkb((GeometryCollection)geometry);
         }
         return null;
     }
 
-    public static void wkb(ByteBuffer buffer, Geometry geometry, boolean head){
-        if(geometry instanceof Point){
+    public static void wkb(ByteBuffer buffer, Geometry geometry, boolean head) {
+        if(geometry instanceof Point) {
             wkb(buffer, (Point)geometry, head);
-        }else if(geometry instanceof LineString){
+        }else if(geometry instanceof LineString) {
             wkb(buffer, (LineString)geometry, head);
-        }else if(geometry instanceof Polygon){
+        }else if(geometry instanceof Polygon) {
             wkb(buffer, (Polygon)geometry, head);
-        }else if(geometry instanceof MultiPoint){
+        }else if(geometry instanceof MultiPoint) {
             wkb(buffer, (MultiPoint)geometry, head);
-        }else if(geometry instanceof MultiLine){
+        }else if(geometry instanceof MultiLine) {
             wkb(buffer, (MultiLine)geometry, head);
-        }else if(geometry instanceof MultiPolygon){
+        }else if(geometry instanceof MultiPolygon) {
             wkb(buffer, (MultiPolygon)geometry, head);
         }
     }
-    /*public static void head(ByteBuffer buffer, Geometry geometry){
+    /*public static void head(ByteBuffer buffer, Geometry geometry) {
         buffer.put(geometry.srid());
         buffer.put((byte) geometry.endian());
         buffer.put(geometry.type());
     }*/
 
-    public static byte[] wkb(Point point){
+    public static byte[] wkb(Point point) {
         init(point);
         ByteBuffer buffer = new ByteBuffer(25, point.endian());
         buffer.put(point.srid());
@@ -725,15 +725,15 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         byte[] bytes = buffer.bytes();
         return bytes;
     }
-    public static void wkb(ByteBuffer buffer, Point point, boolean head){
-        if(head){
+    public static void wkb(ByteBuffer buffer, Point point, boolean head) {
+        if(head) {
             buffer.put((byte) point.endian());
             buffer.put(point.type());
         }
         buffer.put(point.x());
         buffer.put(point.y());
     }
-    public static byte[] wkb(LineString line){
+    public static byte[] wkb(LineString line) {
         List<Point> points = line.points();
         ByteBuffer buffer = new ByteBuffer(points.size()*16+13, line.endian());
         buffer.put(line.srid());
@@ -741,23 +741,23 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         byte[] bytes = buffer.bytes();
         return bytes;
     }
-    public static void wkb(ByteBuffer buffer, LineString line, boolean head){
-        if(head){
+    public static void wkb(ByteBuffer buffer, LineString line, boolean head) {
+        if(head) {
             buffer.put((byte)line.endian());
             buffer.put(line.type());
         }
         List<Point> points = line.points();
         buffer.put(points.size());
-        for(Point point:points){
+        for(Point point:points) {
             wkb(buffer, point, false);
         }
     }
 
-    public static byte[] wkb(Polygon polygon){
+    public static byte[] wkb(Polygon polygon) {
         init(polygon);
         List<Ring> rings = polygon.rings();
         int len  = 13;
-        for(Ring ring:rings){
+        for(Ring ring:rings) {
             len += ring.points().size()*16 + 4;
         }
         ByteBuffer buffer = new ByteBuffer(len, polygon.endian());
@@ -766,26 +766,26 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         return buffer.bytes();
     }
 
-    public static void wkb(ByteBuffer buffer, Polygon polygon, boolean head){
-        if(head){
+    public static void wkb(ByteBuffer buffer, Polygon polygon, boolean head) {
+        if(head) {
             buffer.put((byte)polygon.endian());
             buffer.put(polygon.type());
         }
         List<Ring> rings = polygon.rings();
         buffer.put(rings.size());
-        for(Ring ring:rings){
+        for(Ring ring:rings) {
             wkb(buffer, ring);
         }
     }
 
-    public static void wkb(ByteBuffer buffer, Ring ring){
+    public static void wkb(ByteBuffer buffer, Ring ring) {
         List<Point> points = ring.points();
         buffer.put(points.size());
-        for(Point point:points){
+        for(Point point:points) {
             wkb(buffer, point, false);
         }
     }
-    public static byte[] wkb(MultiPoint multiPoint){
+    public static byte[] wkb(MultiPoint multiPoint) {
         init(multiPoint);
         List<Point> points = multiPoint.points();
         int len = 13 + points.size()*(16+1+4); //xy + endian + type
@@ -795,24 +795,24 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         return buffer.bytes();
     }
 
-    public static void  wkb(ByteBuffer buffer, MultiPoint multiPoint, boolean head){
-        if(head){
+    public static void  wkb(ByteBuffer buffer, MultiPoint multiPoint, boolean head) {
+        if(head) {
             buffer.put((byte)multiPoint.endian());
             buffer.put(multiPoint.type());
         }
         List<Point> points = multiPoint.points();
         buffer.put(points.size());
-        for(Point point:points){
+        for(Point point:points) {
             buffer.put((byte)multiPoint.endian());
             buffer.put(point.type());
             wkb(buffer, point, false);
         }
     }
-    public static byte[] wkb(MultiLine multiLine){
+    public static byte[] wkb(MultiLine multiLine) {
         init(multiLine);
         int len = 13;
         List<LineString> lines = multiLine.lines();
-        for(LineString line:lines){
+        for(LineString line:lines) {
             len += (1 + 4 + 4);
             List<Point> points = line.points();
             len += points.size()*16;
@@ -822,25 +822,25 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         wkb(buffer, multiLine, true);
         return buffer.bytes();
     }
-    public static void wkb(ByteBuffer buffer, MultiLine multiLine, boolean head){
-        if(head){
+    public static void wkb(ByteBuffer buffer, MultiLine multiLine, boolean head) {
+        if(head) {
             buffer.put((byte)multiLine.endian());
             buffer.put(multiLine.type());
         }
         List<LineString> lines = multiLine.lines();
         buffer.put(lines.size());
-        for(LineString line:lines){
+        for(LineString line:lines) {
             wkb(buffer, line, true);
         }
     }
-    public static byte[] wkb(MultiPolygon multiPolygon){
+    public static byte[] wkb(MultiPolygon multiPolygon) {
         init(multiPolygon);
         int len = 13;
         List<Polygon> polygons = multiPolygon.polygons();
-        for(Polygon polygon:polygons){
+        for(Polygon polygon:polygons) {
             len += 9;
             List<Ring> rings = polygon.rings();
-            for(Ring ring:rings){
+            for(Ring ring:rings) {
                 len += 4;
                 len += ring.points().size()*16;
             }
@@ -850,14 +850,14 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         wkb(buffer, multiPolygon, true);
         return buffer.bytes();
     }
-    public static void wkb(ByteBuffer buffer, MultiPolygon multiPolygon, boolean head){
-        if(head){
+    public static void wkb(ByteBuffer buffer, MultiPolygon multiPolygon, boolean head) {
+        if(head) {
             buffer.put((byte)multiPolygon.endian());
             buffer.put(multiPolygon.type());
         }
         List<Polygon> polygons = multiPolygon.polygons();
         buffer.put(polygons.size());
-        for(Polygon polygon:polygons){
+        for(Polygon polygon:polygons) {
             wkb(buffer, polygon, true);
         }
     }
@@ -866,7 +866,7 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
      * @param collection GeometryCollection
      * @return bytes
      */
-    public static byte[] wkb(GeometryCollection collection){
+    public static byte[] wkb(GeometryCollection collection) {
         init(collection);
         ByteBuffer buffer = new ByteBuffer(collection.endian());
         List<Geometry> list = collection.collection();
@@ -874,7 +874,7 @@ Geometry 1, Geometry 2, ..., Geometry N: 表示 GeometryCollection 中的每个�
         buffer.put((byte) collection.endian());
         buffer.put(collection.type());
         buffer.put(list.size());
-        for(Geometry geometry:list){
+        for(Geometry geometry:list) {
             wkb(buffer, geometry, true);
         }
         byte[] bytes = buffer.bytes();

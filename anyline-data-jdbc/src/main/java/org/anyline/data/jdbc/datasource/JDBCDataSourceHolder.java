@@ -44,7 +44,7 @@ import java.util.Map;
 public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final JDBCDataSourceHolder instance = new JDBCDataSourceHolder();
-    public static JDBCDataSourceHolder instance(){
+    public static JDBCDataSourceHolder instance() {
         return instance;
     }
     static {
@@ -61,10 +61,10 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
 
             @Override
             public Object exe(Object value, Object def) throws ConvertException {
-                if(null != value){
+                if(null != value) {
                     try {
                         return Class.forName(value.toString()).newInstance();
-                    }catch (Exception e){
+                    }catch (Exception e) {
                         log.error("类型转换 异常:", e);
                     }
                 }
@@ -72,10 +72,10 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             }
         });
     }
-    public JDBCDataSourceHolder(){
-        for(DatabaseType type:DatabaseType.values()){
+    public JDBCDataSourceHolder() {
+        for(DatabaseType type:DatabaseType.values()) {
             String url = type.url();
-            if(url.contains("jdbc:") && url.contains("://")){ // jdbc:postgresql://localhost:35432/simple
+            if(url.contains("jdbc:") && url.contains("://")) { // jdbc:postgresql://localhost:35432/simple
                 DataSourceHolder.register(type, this);
                 DataSourceHolder.register(type.driver(), this);
                 DataSourceHolder.register(type.name().toUpperCase(), this);
@@ -91,28 +91,28 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
     }
     public String reg(String key, String prefix) {
         try {
-            if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
+            if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")) {
                 prefix += ".";
             }
             String type = value(prefix, "type", String.class, null);
-            if(null == type){//未设置类型 先取默认数据源类型
+            if(null == type) {//未设置类型 先取默认数据源类型
                 type = value(prefix.substring(0, prefix.length()- key.length()-1), "type", String.class, null);
             }
             if (type == null) {
                 type = DataSourceUtil.POOL_TYPE_DEFAULT;
             }
             String url = value(prefix, "url", String.class, null);
-            if(BasicUtil.isEmpty(url)){
+            if(BasicUtil.isEmpty(url)) {
                 return null;
             }
-            if(!url.startsWith("jdbc:")){
+            if(!url.startsWith("jdbc:")) {
                 //只注册jdbc驱动
                 return null;
             }
             Map<String, Object> map = new HashMap<>();
             map.put("type", type);
             String datasource = inject(key, prefix, map, true);
-            if(null == datasource){//创建数据源失败
+            if(null == datasource) {//创建数据源失败
                 return null;
             }
             runtime(key, datasource, true);
@@ -150,7 +150,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         return false;
     }
 
-    public String regTransactionManager(String key, DataSource datasource, boolean primary){
+    public String regTransactionManager(String key, DataSource datasource, boolean primary) {
         if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
             TransactionManage.reg(key, new DefaultTransactionManage(datasource));
         }
@@ -164,25 +164,25 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             DataSourceHolder.check(key, override);
             regTransactionManager(key, datasource);
             DataRuntime runtime = JDBCRuntimeHolder.instance().reg(key, datasource);
-            if(null != runtime){
+            if(null != runtime) {
                 Map<String, Object> param = params.get(key);
                 if(null != param) {
                     runtime.setDriver(param.get("driver") + "");
                     String url = param.get("url") + "";
                     runtime.setUrl(url);
                     String adapter = param.get("adapter")+"";
-                    if(BasicUtil.isEmpty(adapter)){
+                    if(BasicUtil.isEmpty(adapter)) {
                         adapter = org.anyline.data.util.DataSourceUtil.parseAdapterKey(url);
                     }
                     runtime.setAdapterKey(adapter);
                     String catalog = param.get("catalog")+"";
-                    if(BasicUtil.isEmpty(catalog)){
+                    if(BasicUtil.isEmpty(catalog)) {
                         catalog = org.anyline.data.util.DataSourceUtil.parseCatalog(url);
                     }
                     runtime.setCatalog(catalog);
 
                     String schema = param.get("schema")+"";
-                    if(BasicUtil.isEmpty(schema)){
+                    if(BasicUtil.isEmpty(schema)) {
                         schema = org.anyline.data.util.DataSourceUtil.parseSchema(url);
                     }
                     runtime.setSchema(schema);
@@ -201,15 +201,15 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
                 //创建事务管理器
                 regTransactionManager(key, (DataSource)datasource);
                 runtime = JDBCRuntimeHolder.instance().reg(key, (DataSource)datasource);
-                if(null == adapter && null != type){
+                if(null == adapter && null != type) {
                     adapter = DriverAdapterHolder.getAdapter(type);
                 }
-                if(null != adapter){
+                if(null != adapter) {
                     runtime.setAdapter(adapter);
                 }
             }else{
                 //上下文还没加载完先缓存起来，最后统一注册
-                if(!caches.containsKey(key) || override){
+                if(!caches.containsKey(key) || override) {
                     caches.put(key, datasource);
                 }
             }
@@ -242,20 +242,20 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
         String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         try {
             String url =  value(params, "url", String.class, null);
-            if(BasicUtil.isEmpty(url)){
+            if(BasicUtil.isEmpty(url)) {
                 url = value(prefix, "url", String.class, null);
             }
-            if(BasicUtil.isEmpty(url)){
+            if(BasicUtil.isEmpty(url)) {
                 return null;
             }
             //只解析jdbc系列
-            if(!url.toLowerCase().startsWith("jdbc:")){
+            if(!url.toLowerCase().startsWith("jdbc:")) {
                 return null;
             }
             params.put("url", url);
 
             String type = value(params, "type", String.class, null);
-            if(BasicUtil.isEmpty(type)){
+            if(BasicUtil.isEmpty(type)) {
                 type = value(prefix, "type", String.class, null);
             }
             if (type == null) {
@@ -263,7 +263,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             }
             Class<? extends DataSource> poolClass = (Class<? extends DataSource>) Class.forName(type);
             Object driver =  value(params, "driverClass");
-            if(null == driver){
+            if(null == driver) {
                 driver = value(prefix, "driverClass");
             }
             if(driver instanceof String) {
@@ -275,7 +275,7 @@ public class JDBCDataSourceHolder extends AbstractDataSourceHolder implements Da
             }
             DataSourceHolder.params.put(key, params);
             Map<String, Object> sets = ConfigTable.environment().inject(datasource_id, prefix, params, DataSourceKeyMap.maps, poolClass);
-            if(!params.containsKey(key)){
+            if(!params.containsKey(key)) {
                 params.put(key, sets);
             }
             log.info("[注入数据源][type:JDBC][key:{}][bean:{}]", key, datasource_id);

@@ -42,7 +42,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
     public List<String> load() {
         List<String> list = new ArrayList<>();
         boolean loadDefault = true; //是否需要加载default
-        if(!ConfigTable.environment().containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")){
+        if(!ConfigTable.environment().containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")) {
             //如果还没有注册默认数据源
             // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
             MongoDatabase datasource = null;
@@ -50,14 +50,14 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
 
             try{
                 datasource = ConfigTable.environment().getBean(MongoDatabase.class);
-            }catch (Exception e){
+            }catch (Exception e) {
                 runtime = null;
             }
-            if(null != datasource){
+            if(null != datasource) {
                 try {
                     runtime =  holder().create("default", datasource, false);
                     loadDefault = false;
-                }catch (Exception e){
+                }catch (Exception e) {
                     runtime = null;
                     log.error("加载mongo数据源 异常:", e);
                 }
@@ -71,7 +71,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
                 }else{
                     String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
-                    if(BasicUtil.isNotEmpty(adapterKey)){
+                    if(BasicUtil.isNotEmpty(adapterKey)) {
                         runtime.setAdapterKey(adapterKey);
                     }
                 }
@@ -96,7 +96,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
      * @param loadDefault 是否加载默认数据源
      * @return keys
      */
-    protected List<String> load(String head, boolean loadDefault){
+    protected List<String> load(String head, boolean loadDefault) {
         //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
@@ -112,24 +112,24 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
         //多数据源
         // 读取配置文件获取更多数据源 anyline.datasource.list
         String prefixs = ConfigTable.environment().string(null, head + ".list");
-        if(null == prefixs){
+        if(null == prefixs) {
             //anyline.datasource-list
             prefixs = ConfigTable.environment().string(null,head + "-list");
         }
-        if(null != prefixs){
+        if(null != prefixs) {
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 try {
                     //返回 datasource的bean id
                     // sso, anyline.datasource.sso, env
                     //上下文初始化前后会调用 两次第二次就不执行加载了
-                    if(!ConfigTable.worker.containsBean("anyline.service."+prefix)){
+                    if(!ConfigTable.worker.containsBean("anyline.service."+prefix)) {
                         String datasource =  holder().create(prefix, head + "." + prefix);
                         if(null != datasource) {
                             list.add(datasource);
                         }
                     }
-                }catch (Exception e){
+                }catch (Exception e) {
                     log.error("[注入数据源失败][type:mongo][key:{}][msg:{}]", prefix, e.toString());
                 }
             }

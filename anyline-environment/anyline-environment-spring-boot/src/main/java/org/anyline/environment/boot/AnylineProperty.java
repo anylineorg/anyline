@@ -1184,8 +1184,8 @@ public class AnylineProperty {
 
     public void setGenerators(Map<String, PrimaryGenerator.GENERATOR> generators) {
         this.generators = generators;
-        if(null != generators){
-            for(String key:generators.keySet()){
+        if(null != generators) {
+            for(String key:generators.keySet()) {
                 ConfigTable.GENERATOR.put(key, generators.get(key));
             }
         }

@@ -33,7 +33,7 @@ public interface DataWriter {
      * 支持的类型符合这些类型的 在写入数据库之前 由当前writer转换
      * @return class ColumnType StringColumnType
      */
-    default Object[] supports(){
+    default Object[] supports() {
         return null;
     }
 }

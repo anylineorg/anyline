@@ -46,7 +46,7 @@ public class BasicUtil {
 		}
 		if (obj instanceof Collection && recursion) {
 			Collection collection = (Collection) obj;
-			if(collection.isEmpty()){
+			if(collection.isEmpty()) {
 				return true;
 			}
 			for (Object item : collection) {
@@ -54,29 +54,29 @@ public class BasicUtil {
 					return false;
 				}
 			}
-		}else if(obj.getClass().isArray()){
-			if(obj instanceof int[]){
-				if(((int[])obj).length > 0){
+		}else if(obj.getClass().isArray()) {
+			if(obj instanceof int[]) {
+				if(((int[])obj).length > 0) {
 					return false;
 				}
-			}else if(obj instanceof double[]){
-				if(((double[])obj).length > 0){
+			}else if(obj instanceof double[]) {
+				if(((double[])obj).length > 0) {
 					return false;
 				}
-			}else if(obj instanceof float[]){
-				if(((float[])obj).length > 0){
+			}else if(obj instanceof float[]) {
+				if(((float[])obj).length > 0) {
 					return false;
 				}
-			}else if(obj instanceof short[]){
-				if(((short[])obj).length > 0){
+			}else if(obj instanceof short[]) {
+				if(((short[])obj).length > 0) {
 					return false;
 				}
-			}else if(obj instanceof byte[]){
-				if(((byte[])obj).length > 0){
+			}else if(obj instanceof byte[]) {
+				if(((byte[])obj).length > 0) {
 					return false;
 				}
-			}else if(obj instanceof boolean[]){
-				if(((boolean[])obj).length > 0){
+			}else if(obj instanceof boolean[]) {
+				if(((boolean[])obj).length > 0) {
 					return false;
 				}
 			}else{
@@ -89,11 +89,11 @@ public class BasicUtil {
 			}
 		} else if (obj instanceof Map) {
 			Map map = (Map) obj;
-			if(map.isEmpty()){
+			if(map.isEmpty()) {
 				return true;
 			}
-			if(recursion){
-				for(Object item:map.values()){
+			if(recursion) {
+				for(Object item:map.values()) {
 					if (!isEmpty(recursion, item)) {
 						return false;
 					}
@@ -103,7 +103,7 @@ public class BasicUtil {
 			}
 		} else {
 			String tmp = obj.toString();
-			if(null == tmp){
+			if(null == tmp) {
 				return true;
 			}
 			tmp = tmp.trim();
@@ -124,11 +124,11 @@ public class BasicUtil {
 	 * @return boolean
 	 */
 	public static boolean isEmpty(Object ... objs) {
-		if(null == objs){
+		if(null == objs) {
 			return true;
 		}
-		for(Object obj:objs){
-			if(!isEmpty(false, obj)){
+		for(Object obj:objs) {
+			if(!isEmpty(false, obj)) {
 				return false;
 			}
 		}
@@ -141,24 +141,24 @@ public class BasicUtil {
 	public static boolean isNotEmpty(boolean recursion, Object obj) {
 		return !isEmpty(recursion, obj);
 	}
-	public static boolean equals(byte[] bytes1, byte[] bytes2){
-		if(null == bytes1){
-			if(null == bytes2){
+	public static boolean equals(byte[] bytes1, byte[] bytes2) {
+		if(null == bytes1) {
+			if(null == bytes2) {
 				return true;
 			}else{
 				return false;
 			}
 		}
-		if(null == bytes2){
+		if(null == bytes2) {
 			return false;
 		}
 		int l1 = bytes1.length;
 		int l2 = bytes2.length;
-		if(l1 != l2){
+		if(l1 != l2) {
 			return false;
 		}
-		for (int i=0; i<l1; i++){
-			if(bytes1[i] != bytes2[i]){
+		for (int i=0; i<l1; i++) {
+			if(bytes1[i] != bytes2[i]) {
 				return false;
 			}
 		}
@@ -187,10 +187,10 @@ public class BasicUtil {
 				return false;
 			}
 		} else {
-			if(null == obj2){
+			if(null == obj2) {
 				return false;
 			}else {
-				if(ignoreCase){
+				if(ignoreCase) {
 					return obj1.toString().equalsIgnoreCase(obj2.toString());
 				}else {
 					return obj1.toString().equals(obj2.toString());
@@ -294,7 +294,7 @@ public class BasicUtil {
 	 * @param length length
 	 * @return String
 	 */
-	public static String getRandomCnString(int length){
+	public static String getRandomCnString(int length) {
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < length; i++) {
 			String str = null;
@@ -351,42 +351,42 @@ public class BasicUtil {
 		}
 		return result;
 	}
-	public static boolean isBoolean(Object obj){
+	public static boolean isBoolean(Object obj) {
 		boolean result = false;
-		if(null == obj){
+		if(null == obj) {
 			return result;
 		}
-		if(obj instanceof Boolean){
+		if(obj instanceof Boolean) {
 			return true;
 		}
-		if(obj.toString().equalsIgnoreCase("true") || obj.toString().equalsIgnoreCase("false")){
+		if(obj.toString().equalsIgnoreCase("true") || obj.toString().equalsIgnoreCase("false")) {
 			return true;
 		}
 		return result;
 	}
-	public static boolean isDate(Object obj){
-		if(null == obj){
+	public static boolean isDate(Object obj) {
+		if(null == obj) {
 			return false;
 		}
-		if(obj instanceof Date){
+		if(obj instanceof Date) {
 			return true;
 		}
 		return RegularUtil.isDate(obj.toString());
 	}
-	public static boolean isDateTime(Object obj){
-		if(null == obj){
+	public static boolean isDateTime(Object obj) {
+		if(null == obj) {
 			return false;
 		}
-		if(obj instanceof Date){
+		if(obj instanceof Date) {
 			return true;
 		}
 		return RegularUtil.isDateTime(obj.toString());
 	}
 
-	public static Byte parseByte(Object value, Byte def){
+	public static Byte parseByte(Object value, Byte def) {
 		try {
 			return Byte.parseByte(value.toString());
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -397,7 +397,7 @@ public class BasicUtil {
 		if (null == value) {
 			return def;
 		}
-		if(value instanceof Short){
+		if(value instanceof Short) {
 			return (Short) value;
 		}
 		try {
@@ -418,7 +418,7 @@ public class BasicUtil {
 		if (null == value) {
 			return def;
 		}
-		if(value instanceof Integer){
+		if(value instanceof Integer) {
 			return (Integer) value;
 		}
 		try {
@@ -439,7 +439,7 @@ public class BasicUtil {
 		if (null == value) {
 			return def;
 		}
-		if(value instanceof Float){
+		if(value instanceof Float) {
 			return (Float) value;
 		}
 		try {
@@ -452,7 +452,7 @@ public class BasicUtil {
 		if (null == value) {
 			return def;
 		}
-		if(value instanceof Double){
+		if(value instanceof Double) {
 			return (Double) value;
 		}
 		try {
@@ -470,24 +470,24 @@ public class BasicUtil {
 		if (null == value) {
 			return def;
 		}
-		if(value instanceof BigDecimal){
+		if(value instanceof BigDecimal) {
 			return (BigDecimal) value;
 		}
 		BigDecimal result = null;
-		if(value instanceof Long){
+		if(value instanceof Long) {
 			result = new BigDecimal((Long)value);
-		}else if(value instanceof Date){
+		}else if(value instanceof Date) {
 			Date date = (Date)value;
 			result = new BigDecimal(date.getTime());
-		}else if(value instanceof java.sql.Timestamp){
+		}else if(value instanceof java.sql.Timestamp) {
 			java.sql.Timestamp timestamp = (java.sql.Timestamp)value;
 			result = new BigDecimal(timestamp.getTime());
-		}else if(value instanceof java.sql.Date){
+		}else if(value instanceof java.sql.Date) {
 			Date date = (java.sql.Date)value;
 			result = new BigDecimal(date.getTime());
-		}else if(value instanceof LocalDateTime){
+		}else if(value instanceof LocalDateTime) {
 			result = new BigDecimal(DateUtil.parse((LocalDateTime)value).getTime());
-		}else if(value instanceof LocalDate){
+		}else if(value instanceof LocalDate) {
 			result = new BigDecimal(DateUtil.parse((LocalDate)value).getTime());
 		}else{
 			try {
@@ -496,18 +496,18 @@ public class BasicUtil {
 				return def;
 			}
 		}
-		if(null == result){
+		if(null == result) {
 			result = def;
 		}
 		return result;
 	}
 	public static Long parseLong(Object value, Long def) {
 		try{
-			if(null == value){
+			if(null == value) {
 				return def;
 			}
 			return parseLong(value);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return def;
 		}
 	}
@@ -516,22 +516,22 @@ public class BasicUtil {
 			//return null;
 			//应该抛出异常
 		}
-		if(value instanceof Long){
+		if(value instanceof Long) {
 			return (Long)value;
 		}
-		if(value instanceof Date){
+		if(value instanceof Date) {
 			Date date = (Date)value;
 			return date.getTime();
 		}
-		if(value instanceof java.sql.Timestamp){
+		if(value instanceof java.sql.Timestamp) {
 			java.sql.Timestamp timestamp = (java.sql.Timestamp)value;
 			return timestamp.getTime();
 		}
-		if(value instanceof java.sql.Date){
+		if(value instanceof java.sql.Date) {
 			Date date = (java.sql.Date)value;
 			return date.getTime();
 		}
-		if(value instanceof LocalDateTime || value instanceof LocalDate){
+		if(value instanceof LocalDateTime || value instanceof LocalDate) {
 			return DateUtil.parse(value).getTime();
 		}
 		return Long.parseLong(value.toString());
@@ -545,7 +545,7 @@ public class BasicUtil {
 	 * @return Boolean
 	 */
 	public static Boolean parseBoolean(Object obj, Boolean def) {
-		if(obj instanceof Boolean){
+		if(obj instanceof Boolean) {
 			return (Boolean) obj;
 		}
 		try {
@@ -556,7 +556,7 @@ public class BasicUtil {
 	}
 
 	public static Boolean parseBoolean(Object obj) {
-		if(obj instanceof Boolean){
+		if(obj instanceof Boolean) {
 			return (Boolean)obj;
 		}
 		if ("1".equals(obj.toString())
@@ -591,7 +591,7 @@ public class BasicUtil {
 			int temp = num % 2;
 			num = (num - temp) / 2;
 			if (temp == 1) {
-				if (count == 0){
+				if (count == 0) {
 					list.add("1");
 				}else{
 					list.add((2 << (count - 1)) + "");
@@ -692,7 +692,7 @@ public class BasicUtil {
 	public static List<String> compress(List<String> strs) {
 		List<String> result = new ArrayList<>();
 		if (null != strs) {
-			for(String str:strs){
+			for(String str:strs) {
 				result.add(compress(str));
 			}
 		}
@@ -767,20 +767,20 @@ public class BasicUtil {
 		Iterator<?> it = map.keySet().iterator();
 		while (it.hasNext()) {
 			Object value = it.next();
-			if(null != value){
+			if(null != value) {
 				keys.add(value.toString());
 			}
 		}
 		return keys;
 	}
 
-	public static List<String> split(String str, String separator){
+	public static List<String> split(String str, String separator) {
 		List<String> list = new ArrayList<>();
-		if(null !=str && null != separator){
+		if(null !=str && null != separator) {
 			String tmps[] = str.split(separator);
-			for(String tmp : tmps){
+			for(String tmp : tmps) {
 				tmp = tmp.trim();
-				if(BasicUtil.isNotEmpty(tmp)){
+				if(BasicUtil.isNotEmpty(tmp)) {
 					list.add(tmp);
 				}
 			}
@@ -836,10 +836,10 @@ public class BasicUtil {
 		if (to > len) {
 			to = len;
 		}
-		if(to < 0){
+		if(to < 0) {
 			to = src.length() + to;
 		}
-		if(to < 0 || to < fr){
+		if(to < 0 || to < fr) {
 			return null;
 		}
 		return src.substring(fr, to);
@@ -851,12 +851,12 @@ public class BasicUtil {
 	 * @param len 截取长度
 	 * @return String
 	 */
-	public static String left(String src, int len){
-		if(null == src){
+	public static String left(String src, int len) {
+		if(null == src) {
 			return null;
 		}
 		int max = src.length();
-		if(len > max){
+		if(len > max) {
 			len = max;
 		}
 		return src.substring(0, len);
@@ -868,12 +868,12 @@ public class BasicUtil {
 	 * @param len 截取长度
 	 * @return String
 	 */
-	public static String right(String src, int len){
-		if(null == src){
+	public static String right(String src, int len) {
+		if(null == src) {
 			return null;
 		}
 		int max = src.length();
-		if(len > max){
+		if(len > max) {
 			len = max;
 		}
 		return src.substring(max-len, max);
@@ -885,25 +885,25 @@ public class BasicUtil {
 	 * @param src 原文
 	 * @return String
 	 */
-	public static String ellipsis(int length, String src){
+	public static String ellipsis(int length, String src) {
 		String result ="";
 		int size = length * 2;
 		String chrs[] = src.split("");
 		long cnt = 0;
 		boolean above = false;
-		for(String chr:chrs){
-			if(cnt >= size){
+		for(String chr:chrs) {
+			if(cnt >= size) {
 				above = true;
 				break;
 			}
-			if(SINGLE_CHAR.contains(chr.toLowerCase())){
+			if(SINGLE_CHAR.contains(chr.toLowerCase())) {
 				cnt += 1;
 			}else{
 				cnt += 2;
 			}
 			result += chr;
 		}
-		if(above){
+		if(above) {
 			result += "...";
 		}
 		return result;
@@ -914,22 +914,22 @@ public class BasicUtil {
 	 * @return List
 	 */
 	@SuppressWarnings("rawtypes")
-	public static List<InetAddress> localInetAddress(){
+	public static List<InetAddress> localInetAddress() {
 		List<InetAddress> ips = new ArrayList<InetAddress>();
 		try{
 			Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces();
 			InetAddress ip = null;
-			while (allNetInterfaces.hasMoreElements()){
+			while (allNetInterfaces.hasMoreElements()) {
 				NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
 				Enumeration addresses = netInterface.getInetAddresses();
-				while (addresses.hasMoreElements()){
+				while (addresses.hasMoreElements()) {
 					ip = (InetAddress) addresses.nextElement();
-					if(ip != null && ip instanceof Inet4Address){
+					if(ip != null && ip instanceof Inet4Address) {
 						ips.add(ip);
 					}
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return ips;
@@ -938,10 +938,10 @@ public class BasicUtil {
 	 * 获取本机IP地址
 	 * @return List
 	 */
-	public static List<String> localIps(){
+	public static List<String> localIps() {
 		List<String> ips = new ArrayList<>();
 		List<InetAddress> list = localInetAddress();
-		for(InetAddress ip:list){
+		for(InetAddress ip:list) {
 			ips.add(ip.getHostAddress());
 		}
 		return ips;
@@ -955,88 +955,88 @@ public class BasicUtil {
 	 * @param ignoreNull  是否忽略null, 如果忽略 则无论是否包含null都返回false
 	 * @return boolean
 	 */
-	public static boolean containsString(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
-		if(null == objs){
+	public static boolean containsString(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj) {
+		if(null == objs) {
 			return false;
 		}
 		return containsString(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
-	public static int index(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
-		if(null == objs){
+	public static int index(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj) {
+		if(null == objs) {
 			return -1;
 		}
 		return index(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
-	public static boolean containsString(Object[] objs, String obj){
+	public static boolean containsString(Object[] objs, String obj) {
 		return containsString(false, false, objs, obj);
 	}
-	public static int index(Object[] objs, String obj){
+	public static int index(Object[] objs, String obj) {
 		return index(false, false, objs, obj);
 	}
-	public static boolean contains(Object[] objs, Object obj){
-		if(null == objs){
+	public static boolean contains(Object[] objs, Object obj) {
+		if(null == objs) {
 			return false;
 		}
 		return contains(false, BeanUtil.array2list(objs), obj);
 	}
-	public static int index(Object[] objs, Object obj){
-		if(null == objs){
+	public static int index(Object[] objs, Object obj) {
+		if(null == objs) {
 			return -1;
 		}
 		return index(false, BeanUtil.array2list(objs), obj);
 	}
 
-	public static int index(boolean ignoreNull, Collection<Object> objs, Object obj){
+	public static int index(boolean ignoreNull, Collection<Object> objs, Object obj) {
 		return index(ignoreNull, objs, obj);
 	}
-	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj){
-		if(null == objs){
+	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj) {
+		if(null == objs) {
 			return false;
 		}
-		for(Object o : objs){
-			if(ignoreNull){
-				if(null == obj || null == o){
+		for(Object o : objs) {
+			if(ignoreNull) {
+				if(null == obj || null == o) {
 					continue;
 				}
 			}else{
-				if(null == obj && null == o){
+				if(null == obj && null == o) {
 					return true;
 				}
 			}
-			if(null == o){
+			if(null == o) {
 				continue;
 			}
-			if(obj.equals(o)){
+			if(obj.equals(o)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	public static <T> boolean containsString(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj){
-		if(null == objs){
+	public static <T> boolean containsString(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj) {
+		if(null == objs) {
 			return false;
 		}
 		int idx = 0;
-		for(T o : objs){
-			if(ignoreNull){
-				if(null == obj || null == o){
+		for(T o : objs) {
+			if(ignoreNull) {
+				if(null == obj || null == o) {
 					continue;
 				}
 			}else{
-				if(null == obj && null == o){
+				if(null == obj && null == o) {
 					return true;
 				}
 			}
 			if (null != obj) {
-				if(null == o){
+				if(null == o) {
 					continue;
 				}
 				String val = o.toString();
-				if(ignoreCase){
+				if(ignoreCase) {
 					obj = obj.toLowerCase();
 					val = val.toLowerCase();
 				}
-				if(obj.equals(val)){
+				if(obj.equals(val)) {
 					return true;
 				}
 			}
@@ -1044,42 +1044,42 @@ public class BasicUtil {
 		return false;
 	}
 
-	public static <T> int index(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj){
+	public static <T> int index(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj) {
 		int idx = -1;
-		if(null == objs){
+		if(null == objs) {
 			return -1;
 		}
-		for(T o : objs){
+		for(T o : objs) {
 			idx ++;
-			if(ignoreNull){
-				if(null == obj || null == o){
+			if(ignoreNull) {
+				if(null == obj || null == o) {
 					continue;
 				}
 			}else{
-				if(null == obj && null == o){
+				if(null == obj && null == o) {
 					return idx;
 				}
 			}
 			if (null != obj) {
-				if(null == o){
+				if(null == o) {
 					continue;
 				}
 				String val = o.toString();
-				if(ignoreCase){
+				if(ignoreCase) {
 					obj = obj.toLowerCase();
 					val = val.toLowerCase();
 				}
-				if(obj.equals(val)){
+				if(obj.equals(val)) {
 					return idx;
 				}
 			}
 		}
 		return -1;
 	}
-	public static boolean containsString(Collection<Object> objs, String obj){
+	public static boolean containsString(Collection<Object> objs, String obj) {
 		return containsString(false, false, objs, obj);
 	}
-	public static int index(Collection<Object> objs, String obj){
+	public static int index(Collection<Object> objs, String obj) {
 		return index(false, false, objs, obj);
 	}
 
@@ -1089,16 +1089,16 @@ public class BasicUtil {
 	 * @param split split
 	 * @return String
 	 */
-   public static String concat(List<String> list, String split){
-	   if(null == list){
+   public static String concat(List<String> list, String split) {
+	   if(null == list) {
 		   return "";
 	   }
 	   StringBuffer result = new StringBuffer();
-	   for(String val:list){
-		   if(BasicUtil.isEmpty(val)){
+	   for(String val:list) {
+		   if(BasicUtil.isEmpty(val)) {
 			   continue;
 		   }
-		   if(result.length() > 0){
+		   if(result.length() > 0) {
 			   result.append(split);
 		   }
 		   result.append(val);
@@ -1108,9 +1108,9 @@ public class BasicUtil {
 
 	public static String concat(String split, String ... values) {
 		StringBuilder builder = new StringBuilder();
-		if(null != values){
-			for(String value:values){
-				if(BasicUtil.isEmpty(value)){
+		if(null != values) {
+			for(String value:values) {
+				if(BasicUtil.isEmpty(value)) {
 					continue;
 				}
 				if (builder.length() > 0) {
@@ -1121,19 +1121,19 @@ public class BasicUtil {
 		}
 		return builder.toString();
 	}
-   public static String omit(String src, int left, int right){
+   public static String omit(String src, int left, int right) {
 	   return omit(src, left, right, "*");
    }
-   public static String omit(String src, int left, int right, String ellipsis){
+   public static String omit(String src, int left, int right, String ellipsis) {
 	   String result = "";
-	   if(BasicUtil.isEmpty(src)){
+	   if(BasicUtil.isEmpty(src)) {
 		   return result;
 	   }
 	   int length = src.length();
-		if(left > length){
+		if(left > length) {
 			left = length;
 		}
-		if(right > length - left){
+		if(right > length - left) {
 			right = length - left;
 		}
 		String l = src.substring(0, left);
@@ -1157,30 +1157,30 @@ public class BasicUtil {
 	 * @param properties2 属性列表2
 	 * @return boolean
 	 */
-	public static boolean equals(Object v1, Object v2, List<String> properties1, List<String> properties2){
+	public static boolean equals(Object v1, Object v2, List<String> properties1, List<String> properties2) {
 		boolean result = false;
-		if(null == v1 && null == v2){
+		if(null == v1 && null == v2) {
 			return true;
-		}else if(null == v1 || null == v2){
+		}else if(null == v1 || null == v2) {
 			return false;
 		}
 		if(v1 instanceof String || v1 instanceof Number || v1 instanceof Boolean || v1 instanceof Date) {
 			// v1基础类型
-			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
+			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date) {
 				// v2基础类型
 				result = v2.toString().equals(v1.toString());
 			}else{
 				// v2非基础类型
-				if(null != properties2 && properties2.size()>0){
+				if(null != properties2 && properties2.size()>0) {
 					v2 = BeanUtil.getFieldValue(v2, properties2.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
 			}
 		}else{
 			// v1非基础类型
-			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
+			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date) {
 				// v2基础类型
-				if(null != properties1 && properties1.size()>0){
+				if(null != properties1 && properties1.size()>0) {
 					v1 = BeanUtil.getFieldValue(v1, properties1.get(0))+"";
 				}
 				result = v2.toString().equals(v1.toString());
@@ -1188,19 +1188,19 @@ public class BasicUtil {
 				// v2非基础类型
 				boolean eq = true;
 				int psize = 0;
-				if(null == properties1 || null == properties2){
+				if(null == properties1 || null == properties2) {
 					eq = false;
 				}else{
 					// 取长度较短的一个长度
 					psize = NumberUtil.min(properties1.size(), properties2.size());
 				}
-				if(psize > 0){
-					for(int i=0; i<psize; i++){
+				if(psize > 0) {
+					for(int i=0; i<psize; i++) {
 						String p1 = properties1.get(i);
 						String p2 = properties2.get(i);
 						String vv1 = BeanUtil.getFieldValue(v1, p1)+"";
 						String vv2 = BeanUtil.getFieldValue(v2, p2)+"";
-						if(!vv1.equals(vv2)){
+						if(!vv1.equals(vv2)) {
 							eq = false;
 							break;
 						}
@@ -1209,7 +1209,7 @@ public class BasicUtil {
 					// 没有设置property
 					eq = v1.equals(v2);
 				}
-				if(eq){
+				if(eq) {
 					result = true;
 				}
 			}
@@ -1224,17 +1224,17 @@ public class BasicUtil {
 	 * @param properties 属性(ID:CD, NM:NAME)(ID, NM)
 	 * @return boolean
 	 */
-	public static boolean equals(Object v1, Object v2, String properties){
+	public static boolean equals(Object v1, Object v2, String properties) {
 		boolean result = false;
 		List<String> properties1 = new ArrayList<>();
 		List<String> properties2 = new ArrayList<>();
-		if(BasicUtil.isNotEmpty(properties)){
+		if(BasicUtil.isNotEmpty(properties)) {
 			String[] ps = properties.split(",");
-			for(String p:ps){
-				if(BasicUtil.isNotEmpty(p)){
+			for(String p:ps) {
+				if(BasicUtil.isNotEmpty(p)) {
 					String p1 = p;
 					String p2 = p;
-					if(p.contains(":")){
+					if(p.contains(":")) {
 						String[] tmps = p.split(":");
 						p1 = tmps[0];
 						p2 = tmps[1];
@@ -1253,16 +1253,16 @@ public class BasicUtil {
 	 * @param size 总行数
 	 * @return 最终下标
 	 */
-	public static int index(int index, int size){
-		if(size == 0){
+	public static int index(int index, int size) {
+		if(size == 0) {
 			return 0;
 		}
-		if(index >= size){
+		if(index >= size) {
 			index = size -1;
-		}else if(index < 0){
+		}else if(index < 0) {
 			//倒数
 			index = size + index;
-			if(index < 0){
+			if(index < 0) {
 				//超出0按0算
 				index = 0;
 			}
@@ -1278,36 +1278,36 @@ public class BasicUtil {
 	 * @param total 总数
 	 * @return [开始, 结束]
 	 */
-	public static int[] range(Integer begin, Integer end, Integer qty, Integer total){
+	public static int[] range(Integer begin, Integer end, Integer qty, Integer total) {
 		int[] result = new int[2];
-		if(null != begin && begin < 0){
+		if(null != begin && begin < 0) {
 			begin = 0;
 		}
-		if(null != end && end < 0){// end<0, 取最后-end个
+		if(null != end && end < 0) {// end<0, 取最后-end个
 			begin = total + end;
 			end = total;
 		}
-		if(null != begin && null != qty){
+		if(null != begin && null != qty) {
 			end = begin + qty;
 		}
-		if(null != total){
-			if(null == end || end > total){
+		if(null != total) {
+			if(null == end || end > total) {
 				end = total;
 			}
 		}
-		if(null == begin){
+		if(null == begin) {
 			begin = 0;
 		}
-		if(null == end){
+		if(null == end) {
 			end = total;
 		}
-		if(end < begin){
+		if(end < begin) {
 			end = begin;
 		}
-		if(begin <0){
+		if(begin <0) {
 			begin = 0;
 		}
-		if(end <0){
+		if(end <0) {
 			end = 0;
 		}
 		result[0] = begin;
@@ -1322,11 +1322,11 @@ public class BasicUtil {
 	 * @param str string
 	 * @return boolean
 	 */
-	public static boolean checkEl(String str){
-		if(null != str){
-			if(str.startsWith("${") && str.endsWith("}")){
+	public static boolean checkEl(String str) {
+		if(null != str) {
+			if(str.startsWith("${") && str.endsWith("}")) {
 				String body = RegularUtil.cut(str, "${", "}");
-				if(body.length() == str.length()-3){
+				if(body.length() == str.length()-3) {
 					//过滤 ${A}XX{B} 格式
 					return true;
 				}

@@ -25,41 +25,41 @@ public class MultiPolygon extends Geometry{
 
     private List<Polygon> polygons = new ArrayList<>();
 
-    public MultiPolygon(){
+    public MultiPolygon() {
         type = 6;
     }
-    public MultiPolygon(List<Polygon> polygons){
+    public MultiPolygon(List<Polygon> polygons) {
         this();
         this.polygons = polygons;
     }
-    public MultiPolygon add(Polygon polygon){
+    public MultiPolygon add(Polygon polygon) {
         polygons.add(polygon);
         return this;
     }
 
-    public MultiPolygon add(List<Polygon> polygons){
+    public MultiPolygon add(List<Polygon> polygons) {
         if(null != polygons) {
             polygons.addAll(polygons);
         }
         return this;
     }
-    public MultiPolygon clear(){
+    public MultiPolygon clear() {
         //polygons.clear();
         polygons = new ArrayList<>();
         return this;
     }
-    public List<Polygon> polygons(){
+    public List<Polygon> polygons() {
         return polygons;
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(Polygon polygon:polygons){
-            if(!first){
+        for(Polygon polygon:polygons) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;
@@ -85,7 +85,7 @@ public class MultiPolygon extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
@@ -94,8 +94,8 @@ public class MultiPolygon extends Geometry{
             builder.append("(");
         }
         boolean first = true;
-        for(Polygon polygon:polygons){
-            if(!first){
+        for(Polygon polygon:polygons) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;

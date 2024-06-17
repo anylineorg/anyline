@@ -32,11 +32,11 @@ public class DefaultOrderStore implements OrderStore{
 	}
 	@Override
 	public void order(Order order, boolean override) {
-		if(null == order){
+		if(null == order) {
 			return; 
 		} 
 		Order tmp = getOrder(order.getColumn()); 
-		if(null != tmp){
+		if(null != tmp) {
 			if(override) {
 				tmp.setType(order.getType());
 			}
@@ -89,30 +89,30 @@ public class DefaultOrderStore implements OrderStore{
 	public void order(String str) {
 		order(str, true);
 	}
-	public Order getOrder(String order){
-		if(null == order){
+	public Order getOrder(String order) {
+		if(null == order) {
 			return null; 
 		} 
-		if(null != orders){
-			for(Order o:orders){
-				if(null != o && order.equalsIgnoreCase(o.getColumn())){
+		if(null != orders) {
+			for(Order o:orders) {
+				if(null != o && order.equalsIgnoreCase(o.getColumn())) {
 					return o; 
 				} 
 			} 
 		} 
 		return null; 
 	} 
-	public String getRunText(String delimiter){
+	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
-		if(null != orders && !orders.isEmpty()){
+		if(null != orders && !orders.isEmpty()) {
 			builder.append("\nORDER BY ");
-			for(int i=0; i<orders.size(); i++){
+			for(int i=0; i<orders.size(); i++) {
 				Order order = orders.get(i);
-				if(null == order){
+				if(null == order) {
 					continue;
 				}
 				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
-				if(i<orders.size()-1){
+				if(i<orders.size()-1) {
 					builder.append(",");
 				} 
 			} 
@@ -120,14 +120,14 @@ public class DefaultOrderStore implements OrderStore{
 		return builder.toString(); 
 	} 
  
-	public void clear(){
+	public void clear() {
 		orders.clear(); 
 	}
-	public List<Order> getOrders(){
+	public List<Order> getOrders() {
 		return this.orders;
 	}
-	public boolean isEmpty(){
-		if(null != orders){
+	public boolean isEmpty() {
+		if(null != orders) {
 			return orders.isEmpty();
 		}
 		return true;
@@ -136,12 +136,12 @@ public class DefaultOrderStore implements OrderStore{
 		DefaultOrderStore clone = null;
 		try{
 			clone = (DefaultOrderStore)super.clone();
-		}catch (Exception ignored){
+		}catch (Exception ignored) {
 			clone = new DefaultOrderStore();;
 		}
-		if(null != this.orders){
+		if(null != this.orders) {
 			List<Order> orders = new ArrayList<>();
-			for(Order order:this.orders){
+			for(Order order:this.orders) {
 				orders.add(order.clone());
 			}
 			clone.orders = orders;

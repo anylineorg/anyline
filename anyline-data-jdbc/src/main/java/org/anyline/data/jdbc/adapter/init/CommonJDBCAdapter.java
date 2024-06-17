@@ -31,12 +31,12 @@ public class CommonJDBCAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public boolean match(DataRuntime runtime, boolean compensate) {
-        if(!ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER){
+        if(!ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER) {
             return false;
         }
         String feature = runtime.getFeature();
         //第二次匹配时再执行
-        if(compensate && null != feature && feature.contains(":jdbc:")){
+        if(compensate && null != feature && feature.contains(":jdbc:")) {
             return true;
         }
         return false;

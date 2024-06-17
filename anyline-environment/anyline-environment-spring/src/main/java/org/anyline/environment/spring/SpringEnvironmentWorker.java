@@ -60,11 +60,11 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
         ConfigTable.setWorker(this);
         this.environment = environment;
         Field[] fields = ConfigTable.class.getDeclaredFields();
-        for(Field field:fields){
+        for(Field field:fields) {
             String name = field.getName();
             String value = string("anyline",  "." + name);
             if(BasicUtil.isNotEmpty(value)) {
-                if(Modifier.isFinal(field.getModifiers())){
+                if(Modifier.isFinal(field.getModifiers())) {
                     continue;
                 }
                 BeanUtil.setFieldValue(null, field, value);
@@ -79,15 +79,15 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
             return null;
         }
     }
-    public <T> Map<String, T> getBeans(Class<T> clazz){
+    public <T> Map<String, T> getBeans(Class<T> clazz) {
         return context.getBeansOfType(clazz);
     }
-    private static BeanDefinition convert(BeanDefine define){
+    private static BeanDefinition convert(BeanDefine define) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(define.getType());
         LinkedHashMap<String, Object> values = define.getValues();
-        for(String key:values.keySet()){
+        for(String key:values.keySet()) {
             Object value = values.get(key);
-            if(value instanceof ValueReference){
+            if(value instanceof ValueReference) {
                 builder.addPropertyReference(key, ((ValueReference)value).getName());
             }else{
                 builder.addPropertyValue(key, value);
@@ -97,30 +97,30 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
         builder.setLazyInit(define.isLazy());
         return builder.getBeanDefinition();
     }
-    public boolean regBean(String name, BeanDefine bean){
+    public boolean regBean(String name, BeanDefine bean) {
         return reg(name, bean);
     }
-    public boolean regBean(String name, Object bean){
+    public boolean regBean(String name, Object bean) {
         return reg(name, bean);
     }
-    public boolean reg(String name, Object bean){
-        if(bean instanceof BeanDefine){
+    public boolean reg(String name, Object bean) {
+        if(bean instanceof BeanDefine) {
             BeanDefine define = (BeanDefine)bean;
-            if(name.endsWith("default")){
+            if(name.endsWith("default")) {
                 define.setPrimary(true);
             }
             factory.registerBeanDefinition(name, convert(define));
-        }else if(bean instanceof BeanDefinition){
+        }else if(bean instanceof BeanDefinition) {
             BeanDefinition definition = (BeanDefinition)bean;
-            if(name.endsWith("default")){
+            if(name.endsWith("default")) {
                 definition.setPrimary(true);
             }
             factory.registerBeanDefinition(name, definition);
-        }else if(bean instanceof Class){
+        }else if(bean instanceof Class) {
             Class clazz = (Class) bean;
             try {
                 factory.registerSingleton(name, clazz.newInstance());
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }else {
@@ -128,49 +128,49 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
         }
         return true;
     }
-    public boolean destroyBean(String bean){
-        if(factory.containsBean(bean)){
+    public boolean destroyBean(String bean) {
+        if(factory.containsBean(bean)) {
             factory.destroySingleton(bean);
         }
-        if(factory.containsBeanDefinition(bean)){
+        if(factory.containsBeanDefinition(bean)) {
             factory.removeBeanDefinition(bean);
         }
         return true;
     }
-    public <T> T getBean(Class<T> clazz){
+    public <T> T getBean(Class<T> clazz) {
         Map<String, T> beans = getBeans(clazz);
-        if(null != beans && !beans.isEmpty()){
-            for(Map.Entry<String, T> set:beans.entrySet()){
+        if(null != beans && !beans.isEmpty()) {
+            for(Map.Entry<String, T> set:beans.entrySet()) {
                 T bean = set.getValue();
-                if(null != bean){
+                if(null != bean) {
                     return bean;
                 }
             }
         }
         return null;
     }
-    public <T> T getBean(String name, Class<T> clazz){
+    public <T> T getBean(String name, Class<T> clazz) {
         return factory.getBean(name, clazz);
     }
 
-    public boolean containsBean(String name){
+    public boolean containsBean(String name) {
         return factory.containsBean(name);
     }
-    public Object getSingletonBean(String name){
+    public Object getSingletonBean(String name) {
         return factory.getSingleton(name);
     }
 
-    public boolean containsSingleton(String name){
+    public boolean containsSingleton(String name) {
         return factory.containsSingleton(name);
     }
-    public <T> T getSingletonBean(String name, Class<T> clazz){
+    public <T> T getSingletonBean(String name, Class<T> clazz) {
         return (T) factory.getSingleton(name);
     }
     @Override
     public Object get(String key) {
         Object val = environment.getProperty(key);
-        if(null == val){
-            if(key.startsWith("anyline.")){
+        if(null == val) {
+            if(key.startsWith("anyline.")) {
                 key = key.replace("anyline.","");
             }else{
                 key = "anyline." + key;
@@ -179,7 +179,7 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
         }
         return val;
     }
-    public String getString(String key){
+    public String getString(String key) {
         return environment.getProperty(key);
     }
 
@@ -196,16 +196,16 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
         BeanDefinitionBuilder ds_builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
         //List<Field> fields = ClassUtil.getFields(poolClass, false, false);
         List<Method> methods = ClassUtil.getMethods(clazz, true);
-        for(Method method:methods){
-            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())){
+        for(Method method:methods) {
+            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())) {
                 String name = method.getName();
-                // public void setMaximumPoolSize(int maxPoolSize){this.maxPoolSize = maxPoolSize;}
-                if(name.startsWith("set")){
+                // public void setMaximumPoolSize(int maxPoolSize) {this.maxPoolSize = maxPoolSize;}
+                if(name.startsWith("set")) {
                     //根据方法名
                     name = name.substring(3, 4).toLowerCase() + name.substring(4);
                     Class paramType = method.getParameters()[0].getType();
                     Object value = BeanUtil.value(params, name, alias, paramType, null);
-                    if(null == value){
+                    if(null == value) {
                         value = value(prefix, name, alias, paramType, null);
                     }
                     if(null != value) {
@@ -234,10 +234,10 @@ public class SpringEnvironmentWorker extends DefaultEnvironmentWorker implements
         Map<String, Object> cache = new HashMap<>();
         BeanDefinitionBuilder ds_builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
         List<Method> methods = ClassUtil.getMethods(clazz, true);
-        for(Method method:methods){
-            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())){
+        for(Method method:methods) {
+            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())) {
                 String name = method.getName();
-                if(name.startsWith("set")){
+                if(name.startsWith("set")) {
                     //根据方法名
                     name = name.substring(3, 4).toLowerCase() + name.substring(4);
                     Object value = BeanUtil.value(params, name, null, Object.class, null);

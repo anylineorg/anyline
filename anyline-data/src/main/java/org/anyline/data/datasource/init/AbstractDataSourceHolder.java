@@ -28,17 +28,17 @@ import org.anyline.util.ConfigTable;
 import java.util.Map;
 
 public abstract class AbstractDataSourceHolder implements DataSourceHolder {
-    public <T> T value(String prefix, String key, Class<T> clazz, T def){
+    public <T> T value(String prefix, String key, Class<T> clazz, T def) {
         return ConfigTable.environment().value(prefix, key, DataSourceKeyMap.maps, clazz, def);
     }
-    public Object value(String prefix, String key){
+    public Object value(String prefix, String key) {
         return ConfigTable.environment().value(prefix, key, DataSourceKeyMap.maps, Object.class, null);
     }
 
-    public <T> T value(Map map, String keys, Class<T> clazz, T def){
+    public <T> T value(Map map, String keys, Class<T> clazz, T def) {
         return BeanUtil.value(map, keys, DataSourceKeyMap.maps, clazz, def);
     }
-    public static Object value(Map map, String keys){
+    public static Object value(Map map, String keys) {
         return BeanUtil.value(map, keys, DataSourceKeyMap.maps, Object.class, null);
     }
 

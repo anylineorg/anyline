@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.xigemadb")
 public class XigemaDBAdapter extends InformixAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.xigemaDB;
     }
     

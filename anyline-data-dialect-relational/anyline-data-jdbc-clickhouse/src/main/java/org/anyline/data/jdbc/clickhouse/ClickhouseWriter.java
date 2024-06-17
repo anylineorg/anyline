@@ -37,12 +37,12 @@ public enum ClickhouseWriter {
             if(!placeholder && null != value) {
                 Date date = (Date) ConvertProxy.convert(value, Date.class, false);
                 TypeMetadata.CATEGORY category = null;
-                if(null != type){
+                if(null != type) {
                     category = type.getCategory();
                 }
-                if(category == TypeMetadata.CATEGORY.DATE){
+                if(category == TypeMetadata.CATEGORY.DATE) {
                     value = " toDate('"+DateUtil.format(date)+"')";
-                }else if(category == TypeMetadata.CATEGORY.DATETIME){
+                }else if(category == TypeMetadata.CATEGORY.DATETIME) {
                     value = " toDateTime('"+DateUtil.format(date)+"')";
                 }
             }
@@ -50,15 +50,15 @@ public enum ClickhouseWriter {
         }
     })
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataWriter writer(){
+    public DataWriter writer() {
         return writer;
     }
     private final Object[] supports;
     private final DataWriter writer;
-    ClickhouseWriter(Object[] supports, DataWriter writer){
+    ClickhouseWriter(Object[] supports, DataWriter writer) {
         this.supports = supports;
         this.writer = writer;
     }

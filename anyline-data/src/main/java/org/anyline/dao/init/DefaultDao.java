@@ -58,8 +58,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	//用于ServiceProxy中生成多个service/dao/jdbc
 	protected DataRuntime runtime = null;
 
-	public DataRuntime runtime(){
-		if(null == runtime){
+	public DataRuntime runtime() {
+		if(null == runtime) {
 			runtime = RuntimeHolder.runtime();
 		}
 		return runtime;
@@ -73,7 +73,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 是否固定数据源
 	 * @return boolean
 	 */
-	public boolean fix(){
+	public boolean fix() {
 		return true;
 	}
 
@@ -83,7 +83,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> ddls(DataRuntime runtime, MetadataDiffer differ){
+	public List<Run> ddls(DataRuntime runtime, MetadataDiffer differ) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -95,7 +95,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> ddls(DataRuntime runtime, List<MetadataDiffer> differs){
+	public List<Run> ddls(DataRuntime runtime, List<MetadataDiffer> differs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
@@ -151,7 +151,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String... conditions) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		EntitySet set = runtime.getAdapter().selects(runtime, null, prepare, clazz, configs, conditions);
@@ -172,7 +172,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataRow
 	 */
 	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().sequence(runtime, null, next, names);
@@ -189,8 +189,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		if(null == runtime){
+	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().count(runtime, null, prepare, configs, conditions);
@@ -207,8 +207,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return boolean
 	 */
 	@Override
-	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
-		if(null == runtime){
+	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().exists(runtime, random, prepare, configs, conditions);
@@ -226,8 +226,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
-		if(null == runtime){
+	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		long result = runtime.getAdapter().update(runtime, random, batch, dest, data, configs, columns);
@@ -251,25 +251,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param mode 0:inser 1:update
 	 * @return int
 	 */
-	private int checkMany2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
+	private int checkMany2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode) {
 		int result = 0;
 		//ManyToMany
-		if(dependency <= 0){
+		if(dependency <= 0) {
 			return result;
 		}
-		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map) {
 			return result;
 		}
-		if(obj instanceof EntitySet){
+		if(obj instanceof EntitySet) {
 			EntitySet set = (EntitySet) obj;
-			for(Object entity:set){
+			for(Object entity:set) {
 				checkMany2ManyDependencySave(runtime, random, entity, dependency, mode);
 			}
 		}else{
 			Class clazz = obj.getClass();
 			Column pc = EntityAdapterProxy.primaryKey(clazz);
 			String pk = null;
-			if(null != pc){
+			if(null != pc) {
 				pk = pc.getName();
 			}
 			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
@@ -280,7 +280,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(obj);
 					Object pv = primaryValueMap.get(pk.toUpperCase());
 					Object fv = BeanUtil.getFieldValue(obj, field);
-					if(null == fv){
+					if(null == fv) {
 						continue;
 					}
 					DataSet set = new DataSet();
@@ -292,23 +292,23 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						//通过子表完整查询 List<Department> departments
 						Column joinpc = EntityAdapterProxy.primaryKey(clazz);
 						String joinpk = null;
-						if(null != joinpc){
+						if(null != joinpc) {
 							joinpk = joinpc.getName();
 						}
-						if(fv.getClass().isArray()){
+						if(fv.getClass().isArray()) {
 							Object[] objs = (Object[])fv;
-							for(Object item:objs){
+							for(Object item:objs) {
 								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
 							}
-						}else if(fv instanceof Collection){
+						}else if(fv instanceof Collection) {
 							Collection objs = (Collection) fv;
-							for(Object item:objs){
+							for(Object item:objs) {
 								fvs.add(EntityAdapterProxy.primaryValue(item).get(joinpk.toUpperCase()));
 							}
 						}
 					}
 
-					for(Object item:fvs){
+					for(Object item:fvs) {
 						DataRow row = new DataRow();
 						row.put(join.joinColumn, pv);
 						row.put(join.inverseJoinColumn, item);
@@ -316,8 +316,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 					if(mode == 1) {
 						long qty = runtime.getAdapter().deletes(runtime, random, join.joinTable, join.joinColumn, pv);
-						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
-							if(!(obj instanceof DataRow)){
+						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0) {
+							if(!(obj instanceof DataRow)) {
 								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY);
 								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY);
 							}
@@ -325,7 +325,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					}
 					runtime.getAdapter().save(runtime, random, join.joinTable, set);
 
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						log.error("check dependency exception:", e);
 					}else{
@@ -338,25 +338,25 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		return result;
 	}
 
-	private int checkOne2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode){
+	private int checkOne2ManyDependencySave(DataRuntime runtime, String random, Object obj, int dependency, int mode) {
 		int result = 0;
 		//OneToMany
-		if(dependency <= 0){
+		if(dependency <= 0) {
 			return result;
 		}
-		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map){
+		if(obj instanceof DataSet || obj instanceof DataRow || obj instanceof Map) {
 			return result;
 		}
-		if(obj instanceof EntitySet){
+		if(obj instanceof EntitySet) {
 			EntitySet set = (EntitySet) obj;
-			for(Object entity:set){
+			for(Object entity:set) {
 				checkOne2ManyDependencySave(runtime, random, entity, dependency, mode);
 			}
 		}else{
 			Class clazz = obj.getClass();
 			Column pc = EntityAdapterProxy.primaryKey(clazz);
 			String pk = null;
-			if(null != pc){
+			if(null != pc) {
 				pk = pc.getName();
 			}
 			List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
@@ -365,47 +365,47 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					OneToMany join = PersistenceAdapter.oneToMany(field);
 					Object pv = EntityAdapterProxy.primaryValue(obj).get(pk.toUpperCase());
 					Object fv = BeanUtil.getFieldValue(obj, field);
-					if(null == fv){
+					if(null == fv) {
 						continue;
 					}
 
-					if(null == join.joinField){
+					if(null == join.joinField) {
 						throw new RuntimeException(field+"关联属性异常");
 					}
 
-					if(null == join.joinColumn){
+					if(null == join.joinColumn) {
 						throw new RuntimeException(field+"关联列异常");
 					}
 
-					if(null == join.dependencyTable){
+					if(null == join.dependencyTable) {
 						throw new RuntimeException(field+"关联表异常");
 					}
 					if(mode == 1) {
 						long qty = runtime.getAdapter().deletes(runtime, random, join.dependencyTable, join.joinColumn, pv);
-						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
-							if(!(obj instanceof Map)){
+						if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0) {
+							if(!(obj instanceof Map)) {
 								checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 								checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 							}
 						}
 					}
 					Collection items = new ArrayList();
-					if(fv.getClass().isArray()){
+					if(fv.getClass().isArray()) {
 						Object[] objs = (Object[])fv;
-						for(Object item:objs){
+						for(Object item:objs) {
 							BeanUtil.setFieldValue(item, join.joinField, pv);
 							items.add(item);
 						}
-					}else if(fv instanceof Collection){
+					}else if(fv instanceof Collection) {
 						Collection cols = (Collection) fv;
-						for(Object item:cols){
+						for(Object item:cols) {
 							BeanUtil.setFieldValue(item, join.joinField, pv);
 							items.add(item);
 						}
 					}
 					runtime.getAdapter().save(runtime, random, join.dependencyTable, items);
 
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						log.error("check dependency exception:", e);
 					}else{
@@ -420,19 +420,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	protected <T> void checkMany2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//ManyToMany
-		if(set.size()==0 || dependency <= 0){
+		if(set.size()==0 || dependency <= 0) {
 			return;
 		}
 		dependency --;
 		Class clazz = set.get(0).getClass();
 		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
-		if(null != pc){
+		if(null != pc) {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
 		Compare compare = ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE;
-		for(Field field:fields){
+		for(Field field:fields) {
 			try {
 				ManyToMany join = PersistenceAdapter.manyToMany(field);
 				if(Compare.EQUAL == compare || set.size() == 1) {
@@ -455,11 +455,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 							BeanUtil.setFieldValue(entity, field, dependencys);
 						}
 					}
-				}else if(Compare.IN == compare){
+				}else if(Compare.IN == compare) {
 					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
 					Map<T, Object> idmap = new HashMap<>();
-					for(T entity:set){
+					for(T entity:set) {
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						Object pv = primaryValueMap.get(pk.toUpperCase());
 						pvs.add(pv);
@@ -471,7 +471,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						ConfigStore conditions = new DefaultConfigStore();
 						conditions.and(join.joinColumn, pvs);
 						DataSet allItems = runtime.getAdapter().querys(runtime, random, new DefaultTablePrepare(join.joinTable), conditions);
-						for(T entity:set){
+						for(T entity:set) {
 							DataSet items = allItems.getRows(join.joinColumn, idmap.get(entity)+"");
 							List<String> ids = items.getStrings(join.inverseJoinColumn);
 							BeanUtil.setFieldValue(entity, field, ids);
@@ -483,13 +483,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						conditions.param("JOIN_PVS", pvs);
 						String sql = "SELECT M.*, F."+join.joinColumn+" FK_"+join.joinColumn+" FROM " + join.dependencyTable + " M RIGHT JOIN "+join.joinTable+" F ON M." + join.dependencyPk + " = "+join.inverseJoinColumn +" WHERE "+join.joinColumn+" IN(#{JOIN_PVS})";
 						DataSet alls = runtime.getAdapter().querys(runtime, random, new DefaultTextPrepare(sql), conditions);
-						for(T entity:set){
+						for(T entity:set) {
 							DataSet items = alls.getRows("FK_"+join.joinColumn, idmap.get(entity)+"");
 							BeanUtil.setFieldValue(entity, field, items.entity(join.itemClass));
 						}
 					}
 				}
-			}catch (Exception e){
+			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					log.error("check dependency exception:", e);
 				}else{
@@ -499,17 +499,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 	}
 
-	private int checkMany2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
+	private int checkMany2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency) {
 		int result = 0;
 		//ManyToMany
-		if(dependency <= 0){
+		if(dependency <= 0) {
 			return result;
 		}
 		dependency --;
 		Class clazz = entity.getClass();
 		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
-		if(null != pc){
+		if(null != pc) {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "ManyToMany");
@@ -519,7 +519,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
 				runtime.getAdapter().deletes(runtime, random, join.joinTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
 
-			}catch (Exception e){
+			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					log.error("check dependenty exception:", e);
 				}else{
@@ -529,17 +529,17 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	private int checkOne2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency){
+	private int checkOne2ManyDependencyDelete(DataRuntime runtime, String random, Object entity, int dependency) {
 		int result = 0;
 		//OneToMany
-		if(dependency <= 0){
+		if(dependency <= 0) {
 			return result;
 		}
 		dependency --;
 		Class clazz = entity.getClass();
 		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
-		if(null != pc){
+		if(null != pc) {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
@@ -549,7 +549,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 				//DELETE FROM HR_DEPLOYEE_DEPARTMENT WHERE EMPLOYEE_ID = ?
 				runtime.getAdapter().deletes(runtime, random, join.dependencyTable, join.joinColumn, EntityAdapterProxy.primaryValue(entity).get(pk.toUpperCase()));
 
-			}catch (Exception e){
+			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					log.error("check dependency exception:", e);
 				}else{
@@ -561,19 +561,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	protected <T> void checkOne2ManyDependencyQuery(DataRuntime runtime, String random, EntitySet<T> set, int dependency) {
 		//OneToMany
-		if(set.isEmpty() || dependency <= 0){
+		if(set.isEmpty() || dependency <= 0) {
 			return;
 		}
 		dependency --;
 		Class clazz = set.get(0).getClass();
 		Column pc = EntityAdapterProxy.primaryKey(clazz);
 		String pk = null;
-		if(null != pc){
+		if(null != pc) {
 			pk = pc.getName();
 		}
 		List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "OneToMany");
 		Compare compare = ConfigTable.ENTITY_FIELD_SELECT_DEPENDENCY_COMPARE;
-		for(Field field:fields){
+		for(Field field:fields) {
 			try {
 				OneToMany join = PersistenceAdapter.oneToMany(field);
 				if(Compare.EQUAL == compare || set.size() == 1) {
@@ -588,11 +588,11 @@ public class DefaultDao<E> implements AnylineDao<E> {
 						EntitySet<T> dependencys = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, new DefaultConfigStore().and(join.joinColumn, pv));
 						BeanUtil.setFieldValue(entity, field, dependencys);
 					}
-				}else if(Compare.IN == compare){
+				}else if(Compare.IN == compare) {
 					//查出所有相关 再逐行分配
 					List pvs = new ArrayList();
 					Map<T, Object> idmap = new HashMap<>();
-					for(T entity:set){
+					for(T entity:set) {
 						Map<String, Object> primaryValueMap = EntityAdapterProxy.primaryValue(entity);
 						Object pv = primaryValueMap.get(pk.toUpperCase());
 						pvs.add(pv);
@@ -603,13 +603,13 @@ public class DefaultDao<E> implements AnylineDao<E> {
 					ConfigStore conditions = new DefaultConfigStore();
 					conditions.and(join.joinColumn, pvs);
 					EntitySet<T> alls = runtime.getAdapter().selects(runtime, random, null, join.dependencyClass, conditions);
-					for(T entity:set){
+					for(T entity:set) {
 						EntitySet items = alls.gets(join.joinField, idmap.get(entity));
 						BeanUtil.setFieldValue(entity, field, items);
 					}
 
 				}
-			}catch (Exception e){
+			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					log.error("check dependency exception:", e);
 				}else{
@@ -630,8 +630,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String>  columns){
-		if(null == runtime){
+	public long save(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String>  columns) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		long result = runtime.getAdapter().save(runtime, random, dest, data, configs, columns);
@@ -658,7 +658,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		long result =  runtime.getAdapter().insert(runtime, random, batch, dest, data, configs, columns);
@@ -666,6 +666,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		checkMany2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 		checkOne2ManyDependencySave(runtime, random, data, ENTITY_FIELD_INSERT_DEPENDENCY, 0);
 		return result;
+	}
+
+	@Override
+	public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().insert(dest, prepare, configs, columns);
 	}
 
 	/**
@@ -677,8 +685,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return DataSet
 	 */
-	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run){
-		if(null == runtime){
+	protected DataSet select(DataRuntime runtime, String random, boolean system, String table, ConfigStore configs, Run run) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().select(runtime, random, system, table, configs, run);
@@ -695,7 +703,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().execute(runtime, random, prepare, configs, conditions);
@@ -704,14 +712,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, RunPrepare prepare, Collection<Object> values) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().execute(runtime, random, batch, null, prepare, values);
 	}
 	@Override
 	public long execute(DataRuntime runtime, String random, int batch, int vol, RunPrepare prepare, Collection<Object> values) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().execute(runtime, random, batch, vol,null, prepare, values);
@@ -725,8 +733,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return 是否成功
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
-		if(null == runtime){
+	public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().execute(runtime, random, procedure);
@@ -739,8 +747,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
-		if(null == runtime){
+	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().querys(runtime, random, procedure, navi);
@@ -757,8 +765,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param <T>
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, String key, Collection<T> values){
-		if(null == runtime){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, String key, Collection<T> values) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().deletes(runtime, random, batch, table, key, values);
@@ -767,12 +775,12 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		long qty = runtime.getAdapter().delete(runtime, random, dest, configs, obj, columns);
-		if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0){
-			if(!(obj instanceof DataRow)){
+		if(qty > 0 && ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY > 0) {
+			if(!(obj instanceof DataRow)) {
 				checkMany2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 				checkOne2ManyDependencyDelete(runtime, random, obj, ConfigTable.ENTITY_FIELD_DELETE_DEPENDENCY );
 			}
@@ -781,15 +789,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 	@Override
 	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().delete(runtime, random, table, configs, conditions);
 
 	}
 	@Override
-	public long truncate(DataRuntime runtime, String random, Table table){
-		if(null == runtime){
+	public long truncate(DataRuntime runtime, String random, Table table) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().truncate(runtime, random, table);
@@ -829,7 +837,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public String version(DataRuntime runtime, String random) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().version(runtime, random);
@@ -837,7 +845,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 
 	@Override
 	public String product(DataRuntime runtime, String random) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().product(runtime, random);
@@ -848,35 +856,35 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @param prepare RunPrepare
 	 * @return LinkedHashMap
 	 */
-	public LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment){
+	public LinkedHashMap<String, Column> metadata(RunPrepare prepare, boolean comment) {
 		DataRuntime runtime = runtime();
 		return runtime.getAdapter().metadata(runtime, prepare, comment);
 	}
 
 	@Override
-	public Database database(DataRuntime runtime, String random){
-		if(null == runtime){
+	public Database database(DataRuntime runtime, String random) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().database(runtime, random);
 	}
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
-		if(null == runtime){
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().databases(runtime, random, name);
 	}
 	@Override
-	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
-		if(null == runtime){
+	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().databases(runtime, random, greedy, name);
 	}
 	@Override
-	public Database database(DataRuntime runtime, String random, String name){
-		if(null == runtime){
+	public Database database(DataRuntime runtime, String random, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().database(runtime, random, name);
@@ -884,43 +892,43 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public Catalog catalog(DataRuntime runtime, String random){
-		if(null == runtime){
+	public Catalog catalog(DataRuntime runtime, String random) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().catalog(runtime, random);
 	}
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
-		if(null == runtime){
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().catalogs(runtime, random, name);
 	}
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
-		if(null == runtime){
+	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().catalogs(runtime, random, greedy, name);
 	}
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
-		if(null == runtime){
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().schemas(runtime, random, catalog, name);
 	}
 	@Override
-	public Schema schema(DataRuntime runtime, String random){
-		if(null == runtime){
+	public Schema schema(DataRuntime runtime, String random) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().schema(runtime, random);
 	}
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
-		if(null == runtime){
+	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().schemas(runtime, random, greedy, catalog, name);
@@ -945,16 +953,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		if(null == runtime){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		if(null == runtime){
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, struct);
@@ -980,16 +988,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		if(null == runtime){
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		if(null == runtime){
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().vertexTables(runtime, random, catalog, schema, pattern, types, struct);
@@ -1015,16 +1023,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		if(null == runtime){
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
-		if(null == runtime){
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().edgeTables(runtime, random, catalog, schema, pattern, types, struct);
@@ -1037,8 +1045,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, meta, init);
@@ -1051,8 +1059,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, VertexTable meta, boolean init){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, VertexTable meta, boolean init) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, meta, init);
@@ -1065,8 +1073,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, table, init);
@@ -1092,8 +1100,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
-		if(null == runtime){
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().views(runtime, random, greedy, catalog, schema, pattern, types);
@@ -1105,8 +1113,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, View view) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, view);
@@ -1122,7 +1130,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().masterTables(runtime, random, greedy, catalog, schema, pattern, types);
@@ -1134,8 +1142,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, table);
@@ -1151,8 +1159,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name){
-		if(null == runtime){
+	public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().partitionTables(runtime, random, greedy, master, tags, name);
@@ -1164,8 +1172,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, table);
@@ -1178,16 +1186,16 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, Column> columns(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
-		if(null == runtime){
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().columns(runtime, random, greedy, table, primary);
 	}
 
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
-		if(null == runtime){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().columns(runtime, random, greedy, catalog, schema);
@@ -1203,7 +1211,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().tags(runtime, random, greedy, table);
@@ -1222,8 +1230,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return map
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
-		if(null == runtime){
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().primary(runtime, random, greedy, table);
@@ -1236,8 +1244,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
-		if(null == runtime){
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().foreigns(runtime, random, greedy, table);
@@ -1253,15 +1261,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name){
-		if(null == runtime){
+	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().indexs(runtime, random, greedy, table, name);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String name){
-		if(null == runtime){
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().indexs(runtime, random, table, name);
@@ -1277,14 +1285,14 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String name) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().constraints(runtime, random, greedy, table, name);
 	}
 	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String name) {
-		if(null == runtime){
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().constraints(runtime, random, table, column, name);
@@ -1293,8 +1301,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													trigger
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
-		if(null == runtime){
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().triggers(runtime, random, greedy, table, events);
@@ -1305,15 +1313,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													procedure
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name){
-		if(null == runtime){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().procedures(runtime, random, greedy, catalog, schema, name);
 	}
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
-		if(null == runtime){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().procedures(runtime, random, catalog, schema, name);
@@ -1325,8 +1333,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, procedure);
@@ -1337,15 +1345,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													function
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name){
-		if(null == runtime){
+	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().functions(runtime, random, greedy, catalog, schema, name);
 	}
 	@Override
-	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
-		if(null == runtime){
+	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().functions(runtime, random, catalog, schema, name);
@@ -1357,8 +1365,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Function function){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, Function function) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, function);
@@ -1368,15 +1376,15 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * 													sequence
 	 ******************************************************************************************************************/
 	@Override
-	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name){
-		if(null == runtime){
+	public <T extends Sequence> List<T> sequences(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().sequences(runtime, random, greedy, catalog, schema, name);
 	}
 	@Override
-	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name){
-		if(null == runtime){
+	public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().sequences(runtime, random, catalog, schema, name);
@@ -1388,8 +1396,8 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return list
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Sequence sequence){
-		if(null == runtime){
+	public List<String> ddl(DataRuntime runtime, String random, Sequence sequence) {
+		if(null == runtime) {
 			runtime = runtime();
 		}
 		return runtime.getAdapter().ddl(runtime, random, sequence);
@@ -1906,7 +1914,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * private static String random()
 	 ******************************************************************************************************************/
 
-	private String random(DataRuntime runtime){
+	private String random(DataRuntime runtime) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[cmd:").append(System.currentTimeMillis()).append("-").append(BasicUtil.getRandomNumberString(8))
 				.append("][thread:")

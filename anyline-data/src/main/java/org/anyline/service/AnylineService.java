@@ -67,7 +67,7 @@ public interface AnylineService<E>{
 	 * 验证相关数据源是否正常,异常会被捕捉并返回false
 	 * @return boolean
 	 */
-	default boolean validity(){
+	default boolean validity() {
 		return DataSourceHolder.validity(datasource());
 	}
 	/**
@@ -79,7 +79,7 @@ public interface AnylineService<E>{
 	default boolean hit() throws Exception {
 		return DataSourceHolder.hit(datasource());
 	}
-	default List<String> copy(){
+	default List<String> copy() {
 		return DataSourceHolder.copy(datasource());
 	}
 
@@ -113,61 +113,79 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	long insert(int batch, String dest, Object data, ConfigStore configs, List<String> columns);
-	default long insert(int batch, String dest, Object data, List<String> columns){
+	default long insert(int batch, String dest, Object data, List<String> columns) {
 		return insert(batch, dest, data, null, columns);
 	}
-	default long insert(int batch, Object data, String ... columns){
+	default long insert(int batch, Object data, String ... columns) {
 		return insert(batch, (String)null, data, BeanUtil.array2list(columns));
 	}
-	default long insert(int batch, Object data, ConfigStore configs, String ... columns){
+	default long insert(int batch, Object data, ConfigStore configs, String ... columns) {
 		return insert(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
-	default long insert(int batch, String dest, Object data, String ... columns){
+	default long insert(int batch, String dest, Object data, String ... columns) {
 		return insert(batch, dest, data, BeanUtil.array2list(columns));
 	}
-	default long insert(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+	default long insert(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
 		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long insert(String dest, Object data, List<String> columns){
+	default long insert(String dest, Object data, List<String> columns) {
 		return insert(0, dest, data, columns);
 	}
-	default long insert(String dest, Object data, ConfigStore configs, List<String> columns){
+	default long insert(String dest, Object data, ConfigStore configs, List<String> columns) {
 		return insert(0, dest, data, configs, columns);
 	}
-	default long insert(String dest, Object data, String ... columns){
+	default long insert(String dest, Object data, String ... columns) {
 		return insert(dest, data, BeanUtil.array2list(columns));
 	}
-	default long insert(String dest, Object data, ConfigStore configs, String ... columns){
+	default long insert(String dest, Object data, ConfigStore configs, String ... columns) {
 		return insert(dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long insert(Object data, String ... columns){
+	default long insert(Object data, String ... columns) {
 		return insert((String)null, data, BeanUtil.array2list(columns));
 	}
-	default long insert(Object data, ConfigStore configs, String ... columns){
+	default long insert(Object data, ConfigStore configs, String ... columns) {
 		return insert((String)null, data, configs, BeanUtil.array2list(columns));
 	}
 
 	long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
-	default long insert(int batch, Table dest, Object data, List<String> columns){
+	default long insert(int batch, Table dest, Object data, List<String> columns) {
 		return insert(batch, dest, data, null, columns);
 	}
-	default long insert(int batch, Table dest, Object data, String ... columns){
+	default long insert(int batch, Table dest, Object data, String ... columns) {
 		return insert(batch, dest, data, BeanUtil.array2list(columns));
 	}
-	default long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+	default long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
 		return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long insert(Table dest, Object data, List<String> columns){
+	default long insert(Table dest, Object data, List<String> columns) {
 		return insert(0, dest, data, columns);
 	}
-	default long insert(Table dest, Object data, ConfigStore configs, List<String> columns){
+	default long insert(Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return insert(0, dest, data, configs, columns);
 	}
-	default long insert(Table dest, Object data, String ... columns){
+	default long insert(Table dest, Object data, String ... columns) {
 		return insert(dest, data, BeanUtil.array2list(columns));
 	}
-	default long insert(Table dest, Object data, ConfigStore configs, String ... columns){
+	default long insert(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return insert(dest, data, configs, BeanUtil.array2list(columns));
+	}
+
+	/**
+	 * insert into table select * from table
+	 * @param dest 表 table(c1,c2,c3)
+	 * @param prepare 一般通过TableBuilder生成查询
+	 * @param columns 插入的列
+	 * @return 影响行数
+	 */
+	long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns);
+	default long insert(Table dest, RunPrepare prepare, String ... columns) {
+		return insert(dest, prepare, null, columns);
+	}
+	default long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
+		return insert(new Table(dest), prepare, configs, columns);
+	}
+	default long insert(String dest, RunPrepare prepare, String ... columns) {
+		return insert(new Table(dest), prepare, null, columns);
 	}
 	/* *****************************************************************************************************************
 	 * 													UPDATE
@@ -188,49 +206,49 @@ public interface AnylineService<E>{
 	 */
 
 	long update(int batch, String dest, Object data, ConfigStore configs, List<String>columns);
-	default long update(int batch, String dest, Object data, String ... columns){
+	default long update(int batch, String dest, Object data, String ... columns) {
 		return update(batch, dest, data, null, BeanUtil.array2list(columns));
 	}
-	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+	default long update(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
 		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long update(int batch, Object data, String ... columns){
+	default long update(int batch, Object data, String ... columns) {
 		return update(batch, (String)null, data, null, BeanUtil.array2list(columns));
 	}
-	default long update(int batch, Object data, ConfigStore configs, String ... columns){
+	default long update(int batch, Object data, ConfigStore configs, String ... columns) {
 		return update(batch, (String)null, data, configs, BeanUtil.array2list(columns));
 	}
 
-	default long update(String dest, Object data, ConfigStore configs, List<String>columns){
+	default long update(String dest, Object data, ConfigStore configs, List<String>columns) {
 		return update(0, dest, data, configs, columns);
 	}
-	default long update(String dest, Object data, String ... columns){
+	default long update(String dest, Object data, String ... columns) {
 		return update(dest, data, null, BeanUtil.array2list(columns));
 	}
-	default long update(String dest, Object data, ConfigStore configs, String ... columns){
+	default long update(String dest, Object data, ConfigStore configs, String ... columns) {
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long update(Object data, String ... columns){
+	default long update(Object data, String ... columns) {
 		return update((String)null, data, null, BeanUtil.array2list(columns));
 	}
-	default long update(Object data, ConfigStore configs, String ... columns){
+	default long update(Object data, ConfigStore configs, String ... columns) {
 		return update((String)null, data, configs, BeanUtil.array2list(columns));
 	}
 
 	long update(int batch, Table dest, Object data, ConfigStore configs, List<String>columns);
-	default long update(int batch, Table dest, Object data, String ... columns){
+	default long update(int batch, Table dest, Object data, String ... columns) {
 		return update(batch, dest, data, null, BeanUtil.array2list(columns));
 	}
-	default long update(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+	default long update(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
 		return update(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long update(Table dest, Object data, ConfigStore configs, List<String>columns){
+	default long update(Table dest, Object data, ConfigStore configs, List<String>columns) {
 		return update(0, dest, data, configs, columns);
 	}
-	default long update(Table dest, Object data, String ... columns){
+	default long update(Table dest, Object data, String ... columns) {
 		return update(dest, data, null, BeanUtil.array2list(columns));
 	}
-	default long update(Table dest, Object data, ConfigStore configs, String ... columns){
+	default long update(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return update(dest, data, configs, BeanUtil.array2list(columns));
 	}
 	/* *****************************************************************************************************************
@@ -253,67 +271,67 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	long save(int batch, String dest, Object data, ConfigStore configs, List<String> columns);
-	default long save(int batch, String dest, Object data, List<String> columns){
+	default long save(int batch, String dest, Object data, List<String> columns) {
 		return save(batch, dest, data, null, columns);
 	}
-	default long save(int batch, String dest, Object data, String ... columns){
+	default long save(int batch, String dest, Object data, String ... columns) {
 		return save(batch, dest, data, BeanUtil.array2list(columns));
 	}
-	default long save(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+	default long save(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
 		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long save(int batch, Object data, String ... columns){
+	default long save(int batch, Object data, String ... columns) {
 		return save(batch, (String)null, data, columns);
 	}
-	default long save(int batch, Object data, ConfigStore configs, String ... columns){
+	default long save(int batch, Object data, ConfigStore configs, String ... columns) {
 		return save(batch, (String)null, data, configs, columns);
 	}
-	default long save(String dest, Object data, List<String> columns){
+	default long save(String dest, Object data, List<String> columns) {
 		return save(0, dest, data, columns);
 	}
-	default long save(String dest, Object data, ConfigStore configs, List<String> columns){
+	default long save(String dest, Object data, ConfigStore configs, List<String> columns) {
 		return save(0, dest, data, configs, columns);
 	}
-	default long save(String dest, Object data, String ... columns){
+	default long save(String dest, Object data, String ... columns) {
 		return save(dest, data, BeanUtil.array2list(columns));
 	}
-	default long save(String dest, Object data, ConfigStore configs, String ... columns){
+	default long save(String dest, Object data, ConfigStore configs, String ... columns) {
 		return save(dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long save(Object data, String ... columns){
+	default long save(Object data, String ... columns) {
 		return save((String)null, data, columns);
 	}
-	default long save(Object data, ConfigStore configs, String ... columns){
+	default long save(Object data, ConfigStore configs, String ... columns) {
 		return save((String)null, data, configs, columns);
 	}
-	default long save(Object data, List<String> columns){
+	default long save(Object data, List<String> columns) {
 		return save((String)null, data, columns);
 	}
-	default long save(Object data, ConfigStore configs, List<String> columns){
+	default long save(Object data, ConfigStore configs, List<String> columns) {
 		return save((String)null, data, configs, columns);
 	}
 
 	long save(int batch, Table dest, Object data, ConfigStore configs, List<String> columns);
-	default long save(int batch, Table dest, Object data, List<String> columns){
+	default long save(int batch, Table dest, Object data, List<String> columns) {
 		return save(batch, dest, data, null, columns);
 	}
 
-	default long save(int batch, Table dest, Object data, String ... columns){
+	default long save(int batch, Table dest, Object data, String ... columns) {
 		return save(batch, dest, data, BeanUtil.array2list(columns));
 	}
-	default long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+	default long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
 		return save(batch, dest, data, configs, BeanUtil.array2list(columns));
 	}
-	default long save(Table dest, Object data, List<String> columns){
+	default long save(Table dest, Object data, List<String> columns) {
 		return save(0, dest, data, columns);
 	}
-	default long save(Table dest, Object data, ConfigStore configs, List<String> columns){
+	default long save(Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return save(0, dest, data, configs, columns);
 	}
-	default long save(Table dest, Object data, String ... columns){
+	default long save(Table dest, Object data, String ... columns) {
 		return save(dest, data, BeanUtil.array2list(columns));
 	}
-	default long save(Table dest, Object data, ConfigStore configs, String ... columns){
+	default long save(Table dest, Object data, ConfigStore configs, String ... columns) {
 		return save(dest, data, configs, BeanUtil.array2list(columns));
 	}
 
@@ -337,42 +355,42 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet querys(DataSet set, ConfigStore configs){
-		if(null != configs){
+	default DataSet querys(DataSet set, ConfigStore configs) {
+		if(null != configs) {
 			ConfigChain chain = configs.getConfigChain();
-			if(null != chain){
+			if(null != chain) {
 				List<Config> list = chain.getConfigs();
-				if(null != list){
-					for(Config config:list){
+				if(null != list) {
+					for(Config config:list) {
 						set = set.select.filter(config.getCompare(), config.getVariable(), config.getValues());
 					}
 				}
 			}
 			PageNavi navi = configs.getPageNavi();
-			if(null != navi){
+			if(null != navi) {
 				set = set.getRows(navi);
 			}
 		}
 		return set;
 	}
-	default DataSet querys(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet querys(String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(dest, configs, obj, conditions);
 	}
-	default DataSet querys(String dest, Object obj, String ... conditions){
+	default DataSet querys(String dest, Object obj, String ... conditions) {
 		return querys(dest, (ConfigStore) null, obj, conditions);
 	}
-	default void querys(String dest, DataHandler handler, Object obj, String ... conditions){
+	default void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(dest, configs, obj, conditions);
 	}
-	default DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions){
+	default DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
 		return querys(dest, configs, obj, conditions);
@@ -387,38 +405,38 @@ public interface AnylineService<E>{
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	default DataSet querys(String dest, long first, long last, Object obj, String ... conditions){
+	default DataSet querys(String dest, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return querys(dest, configs, obj, conditions);
 	}
 
-	default DataSet querys(String dest, ConfigStore configs, String ... conditions){
+	default DataSet querys(String dest, ConfigStore configs, String ... conditions) {
 		return querys(dest, configs, null, conditions);
 	}
-	default DataSet querys(String dest, long first, long last, ConfigStore configs, String ... conditions){
+	default DataSet querys(String dest, long first, long last, ConfigStore configs, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(dest, configs, conditions);
 	}
-	default DataSet querys(String dest, String ... conditions){
+	default DataSet querys(String dest, String ... conditions) {
 		return querys(dest, (Object) null, conditions);
 	}
-	default void querys(String dest, DataHandler handler, String ... conditions){
+	default void querys(String dest, DataHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(dest, configs, conditions);
 	}
-	default DataSet querys(String dest, PageNavi navi, String ... conditions){
+	default DataSet querys(String dest, PageNavi navi, String ... conditions) {
 		return querys(dest, navi, null, conditions);
 	}
-	default DataSet querys(String dest, long first, long last, String ... conditions){
+	default DataSet querys(String dest, long first, long last, String ... conditions) {
 		return querys(dest, first, last, null, conditions);
 	}
-	default DataSet querys(String dest, DataHandler handler, long first, long last, String ... conditions){
+	default DataSet querys(String dest, DataHandler handler, long first, long last, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
 		ConfigStore configs = new DefaultConfigStore();
 		navi.scope(first, last);
@@ -428,24 +446,24 @@ public interface AnylineService<E>{
 	}
 
 	DataSet querys(Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(dest, configs, obj, conditions);
 	}
-	default DataSet querys(Table dest, Object obj, String ... conditions){
+	default DataSet querys(Table dest, Object obj, String ... conditions) {
 		return querys(dest, (ConfigStore) null, obj, conditions);
 	}
-	default void querys(Table dest, DataHandler handler, Object obj, String ... conditions){
+	default void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(dest, configs, obj, conditions);
 	}
-	default DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions){
+	default DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
 		return querys(dest, configs, obj, conditions);
@@ -460,38 +478,38 @@ public interface AnylineService<E>{
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	default DataSet querys(Table dest, long first, long last, Object obj, String ... conditions){
+	default DataSet querys(Table dest, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return querys(dest, configs, obj, conditions);
 	}
 
-	default DataSet querys(Table dest, ConfigStore configs, String ... conditions){
+	default DataSet querys(Table dest, ConfigStore configs, String ... conditions) {
 		return querys(dest, configs, null, conditions);
 	}
-	default DataSet querys(Table dest, long first, long last, ConfigStore configs, String ... conditions){
+	default DataSet querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(dest, configs, conditions);
 	}
-	default DataSet querys(Table dest, String ... conditions){
+	default DataSet querys(Table dest, String ... conditions) {
 		return querys(dest, (Object) null, conditions);
 	}
-	default void querys(Table dest, DataHandler handler, String ... conditions){
+	default void querys(Table dest, DataHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(dest, configs, conditions);
 	}
-	default DataSet querys(Table dest, PageNavi navi, String ... conditions){
+	default DataSet querys(Table dest, PageNavi navi, String ... conditions) {
 		return querys(dest, navi, null, conditions);
 	}
-	default DataSet querys(Table dest, long first, long last, String ... conditions){
+	default DataSet querys(Table dest, long first, long last, String ... conditions) {
 		return querys(dest, first, last, null, conditions);
 	}
-	default DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions){
+	default DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
 		ConfigStore configs = new DefaultConfigStore();
 		navi.scope(first, last);
@@ -501,32 +519,32 @@ public interface AnylineService<E>{
 	}
 	DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow query(String dest, Object obj, String ... conditions){
+	default DataRow query(String dest, Object obj, String ... conditions) {
 		return query(dest, null, obj, conditions);
 	}
-	default DataRow query(String dest, ConfigStore configs, String ... conditions){
+	default DataRow query(String dest, ConfigStore configs, String ... conditions) {
 		return query(dest, configs, null, conditions);
 	}
-	default DataRow query(String dest, String ... conditions){
+	default DataRow query(String dest, String ... conditions) {
 		return query(dest, (ConfigStore) null, conditions);
 	}
-	default DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	default DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return query(prepare, configs, null, conditions);
 	}
-	default DataRow query(RunPrepare prepare, Object obj, String ... conditions){
+	default DataRow query(RunPrepare prepare, Object obj, String ... conditions) {
 		return query(prepare, null, obj, conditions);
 	}
-	default DataRow query(RunPrepare prepare, String ... conditions){
+	default DataRow query(RunPrepare prepare, String ... conditions) {
 		return query(prepare, null, null, conditions);
 	}
 	DataRow query(Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow query(Table dest, Object obj, String ... conditions){
+	default DataRow query(Table dest, Object obj, String ... conditions) {
 		return query(dest, null, obj, conditions);
 	}
-	default DataRow query(Table dest, ConfigStore configs, String ... conditions){
+	default DataRow query(Table dest, ConfigStore configs, String ... conditions) {
 		return query(dest, configs, null, conditions);
 	}
-	default DataRow query(Table dest, String ... conditions){
+	default DataRow query(Table dest, String ... conditions) {
 		return query(dest, (ConfigStore) null, conditions);
 	}
 
@@ -542,7 +560,7 @@ public interface AnylineService<E>{
 	 * @param name 序列名
 	 * @return long 查询失败返回null
 	 */
-	default BigDecimal sequence(String name){
+	default BigDecimal sequence(String name) {
 		return sequence(true, name);
 	}
 
@@ -553,7 +571,7 @@ public interface AnylineService<E>{
 	 * @return DataRow 查询结果按序列名保存到DataRow中，查询失败返回null
 	 */
 	DataRow sequences(boolean next, String ... names);
-	default DataRow sequences(String ... names){
+	default DataRow sequences(String ... names) {
 		return sequences(true, names);
 	}
 
@@ -568,97 +586,97 @@ public interface AnylineService<E>{
 	 * @param <T> T
 	 */
 	<T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions) {
 		return selects(dest, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
 
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return selects(dest, clazz, configs, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, String ... conditions) {
 		return selects(dest, clazz, navi, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, String ... conditions) {
 		return selects(dest, clazz, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return selects(dest, clazz, configs, conditions);
 	}
-	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions){
+	default <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions) {
 		return selects(dest, clazz, first, last, (T) null, conditions);
 	}
 
 	<T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions) {
 		return selects(dest, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return selects(dest, clazz, configs, entity, conditions);
 	}
 
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return selects(dest, clazz, configs, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, String ... conditions) {
 		return selects(dest, clazz, navi, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, String ... conditions) {
 		return selects(dest, clazz, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return selects(dest, clazz, configs, conditions);
 	}
-	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions){
+	default <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions) {
 		return selects(dest, clazz, first, last, (T) null, conditions);
 	}
 
 	<T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> T select(String dest, Class<T> clazz, T entity, String ... conditions){
+	default <T> T select(String dest, Class<T> clazz, T entity, String ... conditions) {
 		return select(dest, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+	default <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return select(dest, clazz, configs, (T) null, conditions);
 	}
-	default <T> T select(String dest, Class<T> clazz, String ... conditions){
+	default <T> T select(String dest, Class<T> clazz, String ... conditions) {
 		return select(dest, clazz, (T) null, conditions);
 	}
 	<T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions){
+	default <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions) {
 		return select(dest, clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+	default <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return select(dest, clazz, configs, (T) null, conditions);
 	}
-	default <T> T select(Table dest, Class<T> clazz, String ... conditions){
+	default <T> T select(Table dest, Class<T> clazz, String ... conditions) {
 		return select(dest, clazz, (T) null, conditions);
 	}
 
@@ -672,71 +690,71 @@ public interface AnylineService<E>{
 	 * @param <T> T
 	 */
 	<T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.setPageNavi(navi);
 		return selects(clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions) {
 		return selects(clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return selects(clazz, configs, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return selects(clazz, configs, entity, conditions);
 	}
 	<T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
-	default <T> T select(Class<T> clazz, T entity, String ... conditions){
+	default <T> T select(Class<T> clazz, T entity, String ... conditions) {
 		return select(clazz, (ConfigStore) null, entity, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return selects(clazz, configs, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions) {
 		return selects(clazz, navi, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, String ... conditions) {
 		return selects(clazz, (T) null, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return selects(clazz, configs, conditions);
 	}
-	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
+	default <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions) {
 		return selects(clazz, first, last, (T) null, conditions);
 	}
 
-	default <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions){
+	default <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return select(clazz, configs, (T) null, conditions);
 	}
-	default <T> T select(Class<T> clazz, String ... conditions){
+	default <T> T select(Class<T> clazz, String ... conditions) {
 		return select(clazz, (T) null, conditions);
 	}
 	/*根据service构造泛型查询*/
 	EntitySet<E> gets(ConfigStore configs, String ... conditions);
-	default EntitySet<E> gets(PageNavi navi, String ... conditions){
+	default EntitySet<E> gets(PageNavi navi, String ... conditions) {
 		return gets(new DefaultConfigStore().setPageNavi(navi), conditions);
 	}
 
 	// 与DataSet querys(String dest, String ... conditions);  签名冲突
-	default EntitySet<E> gets(String ... conditions){
+	default EntitySet<E> gets(String ... conditions) {
 		return gets((ConfigStore) null, conditions);
 	}
-	default EntitySet<E> gets(EntityHandler<E> handler, String ... conditions){
+	default EntitySet<E> gets(EntityHandler<E> handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		return gets(configs, conditions);
 	}
-	default EntitySet<E> gets(long first, long last, String ... conditions){
+	default EntitySet<E> gets(long first, long last, String ... conditions) {
 		return gets(new DefaultConfigStore(first, last), conditions);
 	}
 	E get(ConfigStore configs, String ... conditions);
-	default E get(String ... conditions){
+	default E get(String ... conditions) {
 		return get(null, conditions);
 	}
 
@@ -749,70 +767,70 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default void maps(String dest, DataHandler handler, Object obj, String ... conditions){
+	default void maps(String dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		maps(dest, configs, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, Object obj, String ... conditions) {
 		return maps(dest, (ConfigStore) null, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions) {
 		return maps(dest, new DefaultConfigStore(first, last), obj, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, ConfigStore configs, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, ConfigStore configs, String ... conditions) {
 		return maps(dest, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, String ... conditions) {
 		return maps(dest, (ConfigStore) null, null, conditions);
 	}
-	default void maps(String dest, DataHandler handler, String ... conditions){
+	default void maps(String dest, DataHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		maps(dest, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, PageNavi navi, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, PageNavi navi, String ... conditions) {
 		return maps(dest, new DefaultConfigStore().setPageNavi(navi), null, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions) {
 		return maps(dest, first, last, null, conditions);
 	}
-	default List<Map<String, Object>> maps(String dest, DataHandler handler, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(String dest, DataHandler handler, long first, long last, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		configs.handler(handler);
 		return maps(dest, first, last, conditions, conditions);
 	}
 
 	List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default void maps(Table dest, DataHandler handler, Object obj, String ... conditions){
+	default void maps(Table dest, DataHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		maps(dest, configs, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions) {
 		return maps(dest, (ConfigStore) null, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, long first, long last, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, long first, long last, Object obj, String ... conditions) {
 		return maps(dest, new DefaultConfigStore(first, last), obj, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, ConfigStore configs, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, ConfigStore configs, String ... conditions) {
 		return maps(dest, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, String ... conditions) {
 		return maps(dest, (ConfigStore) null, null, conditions);
 	}
-	default void maps(Table dest, DataHandler handler, String ... conditions){
+	default void maps(Table dest, DataHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		maps(dest, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions) {
 		return maps(dest, new DefaultConfigStore().setPageNavi(navi), null, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions) {
 		return maps(dest, first, last, null, conditions);
 	}
-	default List<Map<String, Object>> maps(Table dest, DataHandler handler, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(Table dest, DataHandler handler, long first, long last, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		configs.handler(handler);
 		return maps(dest, first, last, configs, conditions);
@@ -827,40 +845,40 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return maps(prepare, configs, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(RunPrepare prepare, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(RunPrepare prepare, Object obj, String ... conditions) {
 		return maps(prepare, (ConfigStore) null, obj, conditions);
 	}
-	default void maps(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+	default void maps(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(prepare, configs, obj, conditions);
 	}
-	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return maps(prepare, configs, obj, conditions);
 	}
 
-	default List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	default List<Map<String, Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return maps(prepare, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(RunPrepare prepare, String ... conditions){
+	default List<Map<String, Object>> maps(RunPrepare prepare, String ... conditions) {
 		return maps(prepare, (ConfigStore) null, null, conditions);
 	}
-	default void maps(RunPrepare prepare, StreamHandler handler, String ... conditions){
+	default void maps(RunPrepare prepare, StreamHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		maps(prepare, configs, null, conditions);
 	}
-	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, String ... conditions){
+	default List<Map<String, Object>> maps(RunPrepare prepare, long first, long last, String ... conditions) {
 		return maps(prepare, first, last, null, conditions);
 	}
 	/**
@@ -879,37 +897,37 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return caches(cache, dest, configs, obj, conditions);
 	}
-	default DataSet caches(String cache, String dest, Object obj, String ... conditions){
+	default DataSet caches(String cache, String dest, Object obj, String ... conditions) {
 		return caches(cache, dest, null, obj, conditions);
 	}
-	default DataSet caches(String cache, String dest, long first, long last, Object obj, String ... conditions){
+	default DataSet caches(String cache, String dest, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return caches(cache, dest, configs, obj, conditions);
 	}
 
 	DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return caches(cache, dest, configs, obj, conditions);
 	}
-	default DataSet caches(String cache, Table dest, Object obj, String ... conditions){
+	default DataSet caches(String cache, Table dest, Object obj, String ... conditions) {
 		return caches(cache, dest, null, obj, conditions);
 	}
-	default DataSet caches(String cache, Table dest, long first, long last, Object obj, String ... conditions){
+	default DataSet caches(String cache, Table dest, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return caches(cache, dest, configs, obj, conditions);
 	}
@@ -923,60 +941,60 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow cache(String cache, String dest, Object obj, String ... conditions){
+	default DataRow cache(String cache, String dest, Object obj, String ... conditions) {
 		return cache(cache, dest, null, obj, conditions);
 	}
-	default DataSet caches(String cache, String dest, ConfigStore configs, String ... conditions){
+	default DataSet caches(String cache, String dest, ConfigStore configs, String ... conditions) {
 		return caches(cache, dest, configs, (Object) null, conditions);
 	}
-	default DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, String ... conditions){
+	default DataSet caches(String cache, String dest, long first, long last, ConfigStore configs, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return caches(cache, dest, configs, conditions);
 	}
-	default DataSet caches(String cache, String dest, String ... conditions){
+	default DataSet caches(String cache, String dest, String ... conditions) {
 		return caches(cache, dest, null, null, conditions);
 	}
-	default DataSet caches(String cache, String dest, long first, long last, String ... conditions){
+	default DataSet caches(String cache, String dest, long first, long last, String ... conditions) {
 		return caches(cache, dest, first, last, null, conditions);
 	}
-	default DataRow cache(String cache, String dest, ConfigStore configs, String ... conditions){
+	default DataRow cache(String cache, String dest, ConfigStore configs, String ... conditions) {
 		return cache(cache, dest, configs, null, conditions);
 	}
-	default DataRow cache(String cache, String dest, String ... conditions){
+	default DataRow cache(String cache, String dest, String ... conditions) {
 		return cache(cache, dest, null, null, conditions);
 	}
 
 	DataRow cache(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow cache(String cache, Table dest, Object obj, String ... conditions){
+	default DataRow cache(String cache, Table dest, Object obj, String ... conditions) {
 		return cache(cache, dest, null, obj, conditions);
 	}
-	default DataSet caches(String cache, Table dest, ConfigStore configs, String ... conditions){
+	default DataSet caches(String cache, Table dest, ConfigStore configs, String ... conditions) {
 		return caches(cache, dest, configs, (Object) null, conditions);
 	}
-	default DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions){
+	default DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return caches(cache, dest, configs, conditions);
 	}
-	default DataSet caches(String cache, Table dest, String ... conditions){
+	default DataSet caches(String cache, Table dest, String ... conditions) {
 		return caches(cache, dest, null, null, conditions);
 	}
-	default DataSet caches(String cache, Table dest, long first, long last, String ... conditions){
+	default DataSet caches(String cache, Table dest, long first, long last, String ... conditions) {
 		return caches(cache, dest, first, last, null, conditions);
 	}
-	default DataRow cache(String cache, Table dest, ConfigStore configs, String ... conditions){
+	default DataRow cache(String cache, Table dest, ConfigStore configs, String ... conditions) {
 		return cache(cache, dest, configs, null, conditions);
 	}
-	default DataRow cache(String cache, Table dest, String ... conditions){
+	default DataRow cache(String cache, Table dest, String ... conditions) {
 		return cache(cache, dest, null, null, conditions);
 	}
 	/*多表查询, 左右连接时使用*/
@@ -990,40 +1008,40 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet querys(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+	default DataSet querys(RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return querys(prepare, configs, obj, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
+	default DataSet querys(RunPrepare prepare, Object obj, String ... conditions) {
 		return querys(prepare, (ConfigStore) null, obj, conditions);
 	}
-	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+	default void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(prepare, configs, obj, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+	default DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return querys(prepare, configs, obj, conditions);
 	}
 
-	default DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions){
+	default DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return querys(prepare, configs, null, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, String ... conditions){
+	default DataSet querys(RunPrepare prepare, String ... conditions) {
 		return querys(prepare, (ConfigStore) null, null, conditions);
 	}
-	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
+	default void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore();
 		configs.handler(handler);
 		querys(prepare, configs, null, conditions);
 	}
-	default DataSet querys(RunPrepare prepare, long first, long last, String ... conditions){
+	default DataSet querys(RunPrepare prepare, long first, long last, String ... conditions) {
 		return querys(prepare, first, last, null, conditions);
 	}
 
@@ -1037,10 +1055,10 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions){
+	default DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions) {
 		return caches(cache, prepare, null, obj, conditions);
 	}
-	default DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+	default DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
 		ConfigStore configs = new DefaultConfigStore(first, last);
 		return caches(cache, prepare, configs, obj, conditions);
 	}
@@ -1055,31 +1073,31 @@ public interface AnylineService<E>{
 	 * @return DataSet
 	 */
 	DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
-	default DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions){
+	default DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions) {
 		return cache(cache, prepare, null, obj, conditions);
 	}
-	default DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	default DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return caches(cache, prepare, configs, null, conditions);
 	}
-	default DataSet caches(String cache, RunPrepare prepare, String ... conditions){
+	default DataSet caches(String cache, RunPrepare prepare, String ... conditions) {
 		return caches(cache, prepare, null, null, conditions);
 	}
-	default DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions){
+	default DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions) {
 		return caches(cache, prepare, first, last, null, conditions);
 	}
-	default DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	default DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return cache(cache, prepare, configs, null, conditions);
 	}
-	default DataRow cache(String cache, RunPrepare prepare, long first, long last, ConfigStore configs, String ... conditions){
+	default DataRow cache(String cache, RunPrepare prepare, long first, long last, ConfigStore configs, String ... conditions) {
 		DefaultPageNavi navi = new DefaultPageNavi();
-		if(null == configs){
+		if(null == configs) {
 			configs = new DefaultConfigStore();
 		}
 		navi.scope(first, last);
 		configs.setPageNavi(navi);
 		return cache(cache, prepare, configs, conditions);
 	}
-	default DataRow cache(String cache, RunPrepare prepare, String ... conditions){
+	default DataRow cache(String cache, RunPrepare prepare, String ... conditions) {
 		return cache(cache, prepare, null, null, conditions);
 	}
 
@@ -1092,18 +1110,18 @@ public interface AnylineService<E>{
 	 * @return boolean
 	 */
 	boolean removeCache(String channel, String dest, ConfigStore configs, String ... conditions);
-	default boolean removeCache(String channel, String dest, String ... conditions){
+	default boolean removeCache(String channel, String dest, String ... conditions) {
 		return removeCache(channel, dest, null, conditions);
 	}
-	default boolean removeCache(String channel, String dest, long first, long last, String ... conditions){
+	default boolean removeCache(String channel, String dest, long first, long last, String ... conditions) {
 		return removeCache(channel, dest, new DefaultConfigStore(first, last), conditions);
 	}
 
 	boolean removeCache(String channel, Table dest, ConfigStore configs, String ... conditions);
-	default boolean removeCache(String channel, Table dest, String ... conditions){
+	default boolean removeCache(String channel, Table dest, String ... conditions) {
 		return removeCache(channel, dest, null, conditions);
 	}
-	default boolean removeCache(String channel, Table dest, long first, long last, String ... conditions){
+	default boolean removeCache(String channel, Table dest, long first, long last, String ... conditions) {
 		return removeCache(channel, dest, new DefaultConfigStore(first, last), conditions);
 	}
 
@@ -1133,28 +1151,28 @@ public interface AnylineService<E>{
 	 * @return boolean
 	 */
 	boolean exists(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default boolean exists(String dest, Object obj, String ... conditions){
+	default boolean exists(String dest, Object obj, String ... conditions) {
 		return exists(dest, null, obj, conditions);
 	}
-	default boolean exists(String dest, ConfigStore configs, String ... conditions){
+	default boolean exists(String dest, ConfigStore configs, String ... conditions) {
 		return exists(dest, configs, null, conditions);
 	}
-	default boolean exists(String dest, String ... conditions){
+	default boolean exists(String dest, String ... conditions) {
 		return exists(dest, null, null, conditions);
 	}
 	boolean exists(String dest, DataRow row);
-	default boolean exists(DataRow row){
+	default boolean exists(DataRow row) {
 		return exists((String)null, row);
 	}
 
 	boolean exists(Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default boolean exists(Table dest, Object obj, String ... conditions){
+	default boolean exists(Table dest, Object obj, String ... conditions) {
 		return exists(dest, null, obj, conditions);
 	}
-	default boolean exists(Table dest, ConfigStore configs, String ... conditions){
+	default boolean exists(Table dest, ConfigStore configs, String ... conditions) {
 		return exists(dest, configs, null, conditions);
 	}
-	default boolean exists(Table dest, String ... conditions){
+	default boolean exists(Table dest, String ... conditions) {
 		return exists(dest, null, null, conditions);
 	}
 	boolean exists(Table dest, DataRow row);
@@ -1172,24 +1190,24 @@ public interface AnylineService<E>{
 	 * @return long
 	 */
 	long count(String dest, ConfigStore configs, Object obj, String ... conditions);
-	default long count(String dest, Object obj, String ... conditions){
+	default long count(String dest, Object obj, String ... conditions) {
 		return count(dest, null, obj, conditions);
 	}
-	default long count(String dest, ConfigStore configs, String ... conditions){
+	default long count(String dest, ConfigStore configs, String ... conditions) {
 		return count(dest, configs, null, conditions);
 	}
-	default long count(String dest, String ... conditions){
+	default long count(String dest, String ... conditions) {
 		return count(dest, null, null, conditions);
 	}
 
 	long count(Table dest, ConfigStore configs, Object obj, String ... conditions);
-	default long count(Table dest, Object obj, String ... conditions){
+	default long count(Table dest, Object obj, String ... conditions) {
 		return count(dest, null, obj, conditions);
 	}
-	default long count(Table dest, ConfigStore configs, String ... conditions){
+	default long count(Table dest, ConfigStore configs, String ... conditions) {
 		return count(dest, configs, null, conditions);
 	}
-	default long count(Table dest, String ... conditions){
+	default long count(Table dest, String ... conditions) {
 		return count(dest, null, null, conditions);
 	}
 
@@ -1212,7 +1230,7 @@ public interface AnylineService<E>{
 	 * @return int
 	 */ 
 	long execute(String dest, ConfigStore configs, String ... conditions);
-	default long execute(String dest, String ... conditions){
+	default long execute(String dest, String ... conditions) {
 		return execute(dest, null, conditions);
 	}
 
@@ -1223,28 +1241,28 @@ public interface AnylineService<E>{
 	 * @param brk 失败后是否中断
 	 * @return 成功数量,失败数量
 	 */
-	default int[] execute(File file, Charset charset, boolean brk){
+	default int[] execute(File file, Charset charset, boolean brk) {
 		String txt = FileUtil.read(file).toString();
 		return execute(txt, brk);
 	}
 
-	default int[] execute(File file, boolean brk){
+	default int[] execute(File file, boolean brk) {
 		return execute(file, StandardCharsets.UTF_8, brk);
 	}
 
-	default int[] execute(String txt, boolean brk){
+	default int[] execute(String txt, boolean brk) {
 		int success = 0;
 		int fail = 0;
 		String sqls[] = txt.split(";");
-		for(String sql:sqls){
+		for(String sql:sqls) {
 			if(BasicUtil.isNotEmpty(sql)) {
 				try{
 					execute(sql);
 					success++;
-				}catch (Exception e){
+				}catch (Exception e) {
 					fail ++;
 					e.printStackTrace();
-					if(brk){
+					if(brk) {
 						break;
 					}
 				}
@@ -1281,7 +1299,7 @@ public interface AnylineService<E>{
 	 * @param inputs  inputs
 	 * @return boolean
 	 */ 
-	default boolean executeProcedure(String procedure, String... inputs){
+	default boolean executeProcedure(String procedure, String... inputs) {
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
 		for (String input : inputs) {
@@ -1306,12 +1324,12 @@ public interface AnylineService<E>{
 	 * @param inputs  inputs
 	 * @return DataSet
 	 */
-	default DataSet querysProcedure(String procedure, long first, long last, String ... inputs){
+	default DataSet querysProcedure(String procedure, long first, long last, String ... inputs) {
 		PageNavi navi = new DefaultPageNavi();
 		navi.scope(first, last);
 		return querysProcedure(procedure, navi, inputs);
 	}
-	default DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs){
+	default DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs) {
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
 		if (null != inputs) {
@@ -1321,19 +1339,19 @@ public interface AnylineService<E>{
 		}
 		return querys(proc, navi);
 	}
-	default DataSet querysProcedure(String procedure, String ... inputs){
+	default DataSet querysProcedure(String procedure, String ... inputs) {
 		return querysProcedure(procedure, null, inputs);
 	}
-	default DataSet querys(Procedure procedure, String ... inputs){
+	default DataSet querys(Procedure procedure, String ... inputs) {
 		return querys(procedure, null, inputs);
 	}
-	default DataSet querys(Procedure procedure, long first, long last, String ... inputs){
+	default DataSet querys(Procedure procedure, long first, long last, String ... inputs) {
 		PageNavi navi = new DefaultPageNavi();
 		navi.scope(first, last);
 		return querys(procedure, navi, inputs);
 	}
 
-	default DataRow queryProcedure(String procedure, String ... inputs){
+	default DataRow queryProcedure(String procedure, String ... inputs) {
 		Procedure proc = new Procedure();
 		proc.setName(procedure);
 		return query(procedure, inputs);
@@ -1363,7 +1381,7 @@ public interface AnylineService<E>{
 	 */
 	long delete(String dest, DataSet set, String ... columns);
 	long delete(Table dest, DataSet set, String ... columns);
-	default long delete(DataSet set, String ... columns){
+	default long delete(DataSet set, String ... columns) {
 		return delete((Table)null, set, columns);
 	}
 	long delete(String dest, DataRow row, String ... columns);
@@ -1416,10 +1434,10 @@ public interface AnylineService<E>{
 	 */
 	<T> long deletes(int batch, String table, String key, Collection<T> values);
 	<T> long deletes(int batch, Table table, String key, Collection<T> values);
-	default <T> long deletes(String table, String key, Collection<T> values){
+	default <T> long deletes(String table, String key, Collection<T> values) {
 		return deletes(0, table, key, values);
 	}
-	default <T> long deletes(Table table, String key, Collection<T> values){
+	default <T> long deletes(Table table, String key, Collection<T> values) {
 		return deletes(0, table, key, values);
 	}
 
@@ -1436,10 +1454,10 @@ public interface AnylineService<E>{
 	 */
 	<T> long deletes(int batch, String table, String key, T ... values);
 	<T> long deletes(int batch, Table table, String key, T ... values);
-	default <T> long deletes(String table, String key, T ... values){
+	default <T> long deletes(String table, String key, T ... values) {
 		return deletes(0, table, key, values);
 	}
-	default <T> long deletes(Table table, String key, T ... values){
+	default <T> long deletes(Table table, String key, T ... values) {
 		return deletes(0, table, key, values);
 	}
 	long truncate(String table);
@@ -1450,121 +1468,121 @@ public interface AnylineService<E>{
 	 ******************************************************************************************************************/
 
 	List<String> tables(Catalog catalog, Schema schema, String name, int types);
-	default List<String> tables(String catalog, String schema, String name, int types){
+	default List<String> tables(String catalog, String schema, String name, int types) {
 		Catalog _catalog = null;
-		if(BasicUtil.isNotEmpty(catalog)){
+		if(BasicUtil.isNotEmpty(catalog)) {
 			_catalog = new Catalog(catalog);
 		}
 		return tables(_catalog, new Schema(schema), name, types);
 	}
-	default List<String> tables(Schema schema, String name, int types){
+	default List<String> tables(Schema schema, String name, int types) {
 		return tables(null, schema, name, types);
 	}
-	default List<String> tables(String schema, String name, int types){
+	default List<String> tables(String schema, String name, int types) {
 		return tables(null, new Schema(schema), name, types);
 	}
-	default List<String> tables(String name, int types){
+	default List<String> tables(String name, int types) {
 		return tables((Catalog) null, null, name, types);
 	}
-	default List<String> tables(int types){
+	default List<String> tables(int types) {
 		return tables((Catalog) null, null, null, types);
 	}
-	default List<String> tables(){
+	default List<String> tables() {
 		return tables(Table.TYPE.NORMAL.value);
 	}
 
 	List<String> views(boolean greedy, Catalog catalog, Schema schema, String name, int types);
-	default List<String> views(boolean greedy, Schema schema, String name, int types){
+	default List<String> views(boolean greedy, Schema schema, String name, int types) {
 		return views(greedy, null, schema, name, types);
 	}
-	default List<String> views(boolean greedy, String name, int types){
+	default List<String> views(boolean greedy, String name, int types) {
 		return views(greedy, null, null, name, types);
 	}
-	default List<String> views(boolean greedy, int types){
+	default List<String> views(boolean greedy, int types) {
 		return views(greedy, null, null, null, types);
 	}
-	default List<String> views(boolean greedy){
+	default List<String> views(boolean greedy) {
 		return views(greedy, View.TYPE.NORMAL.value);
 	}
-	default List<String> views(Catalog catalog, Schema schema, String name, int types){
+	default List<String> views(Catalog catalog, Schema schema, String name, int types) {
 		return views(false, catalog, schema, name, types);
 	}
-	default List<String> views(Schema schema, String name, int types){
+	default List<String> views(Schema schema, String name, int types) {
 		return views(false, null, schema, name, types);
 	}
-	default List<String> views(String name, int types){
+	default List<String> views(String name, int types) {
 		return views(false, null, null, name, types);
 	}
-	default List<String> views(int types){
+	default List<String> views(int types) {
 		return views(false, null, null, null, types);
 	}
-	default List<String> views(){
+	default List<String> views() {
 		return views(false, View.TYPE.NORMAL.value);
 	}
 
 	List<String> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types);
-	default List<String> masterTables(boolean greedy, Schema schema, String name, int types){
+	default List<String> masterTables(boolean greedy, Schema schema, String name, int types) {
 		return masterTables(greedy, null, schema, name, types);
 	}
-	default List<String> masterTables(boolean greedy, String name, int types){
+	default List<String> masterTables(boolean greedy, String name, int types) {
 		return masterTables(greedy, null, null, name, types);
 	}
-	default List<String> masterTables(boolean greedy, int types){
+	default List<String> masterTables(boolean greedy, int types) {
 		return masterTables(greedy, null, null, null, types);
 	}
-	default List<String> masterTables(boolean greedy){
+	default List<String> masterTables(boolean greedy) {
 		return masterTables(greedy, MasterTable.TYPE.NORMAL.value);
 	}
-	default List<String> masterTables(Catalog catalog, Schema schema, String name, int types){
+	default List<String> masterTables(Catalog catalog, Schema schema, String name, int types) {
 		return masterTables(false, catalog, schema, name, types);
 	}
-	default List<String> masterTables(Schema schema, String name, int types){
+	default List<String> masterTables(Schema schema, String name, int types) {
 		return masterTables(false, null, schema, name, types);
 	}
-	default List<String> masterTables(String name, int types){
+	default List<String> masterTables(String name, int types) {
 		return masterTables(false, null, null, name, types);
 	}
-	default List<String> masterTables(int types){
+	default List<String> masterTables(int types) {
 		return masterTables(false, null, null, null, types);
 	}
-	default List<String> masterTables(){
+	default List<String> masterTables() {
 		return masterTables(false, MasterTable.TYPE.NORMAL.value);
 	}
 
 	List<String> columns(boolean greedy, Table table);
-	default List<String> columns(boolean greedy, String table){
+	default List<String> columns(boolean greedy, String table) {
 		return columns(greedy, (Catalog) null, null, table);
 	}
-	default List<String> columns(boolean greedy, Catalog catalog, Schema schema, String table){
+	default List<String> columns(boolean greedy, Catalog catalog, Schema schema, String table) {
 		return columns(greedy, new Table(catalog, schema, table));
 	}
-	default List<String> columns(boolean greedy, String catalog, String schema, String table){
+	default List<String> columns(boolean greedy, String catalog, String schema, String table) {
 		return columns(greedy, new Table(catalog, schema, table));
 	}
-	default List<String> columns(Table table){
+	default List<String> columns(Table table) {
 		return columns(false, table);
 	}
-	default List<String> columns(String table){
+	default List<String> columns(String table) {
 		return columns(false, (Catalog) null, null, table);
 	}
-	default List<String> columns(Catalog catalog, Schema schema, String table){
+	default List<String> columns(Catalog catalog, Schema schema, String table) {
 		return columns(false, catalog, schema, table);
 	}
 
 	List<String> tags(boolean greedy, Table table);
-	default List<String> tags(boolean greedy, Catalog catalog, Schema schema, String table){
+	default List<String> tags(boolean greedy, Catalog catalog, Schema schema, String table) {
 		return tags(greedy, new Table(catalog, schema, table));
 	}
-	default List<String> tags(boolean greedy, String table){
+	default List<String> tags(boolean greedy, String table) {
 		return tags(greedy, null, null, table);
 	}
-	default List<String> tags(Table table){
+	default List<String> tags(Table table) {
 		return tags(false, table);
 	}
-	default List<String> tags(String table){
+	default List<String> tags(String table) {
 		return tags(false, new Table(table));
 	}
-	default List<String> tags(Catalog catalog, Schema schema, String table){
+	default List<String> tags(Catalog catalog, Schema schema, String table) {
 		return tags(false, new Table(catalog, schema, table));
 	}
 
@@ -1584,7 +1602,7 @@ public interface AnylineService<E>{
 	 * @return LinkedHashMap
 	 */
 	LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition);
-	default LinkedHashMap<String, Column> metadata(String sql){
+	default LinkedHashMap<String, Column> metadata(String sql) {
 		return metadata(sql, false, false);
 	}
 	ConfigStore condition();
@@ -1676,11 +1694,11 @@ public interface AnylineService<E>{
 		 * @return databases
 		 */
 		LinkedHashMap<String, Database> databases(String name);
-		default LinkedHashMap<String, Database> databases(){
+		default LinkedHashMap<String, Database> databases() {
 			return databases(null);
 		}
 		List<Database> databases(boolean greedy, String name);
-		default List<Database> databases(boolean greedy){
+		default List<Database> databases(boolean greedy) {
 			return databases(greedy, null);
 		}
 		Database database(String name);
@@ -1690,11 +1708,11 @@ public interface AnylineService<E>{
 		 **************************************************************************************************************/
 		Catalog catalog();
 		LinkedHashMap<String, Catalog> catalogs(String name);
-		default LinkedHashMap<String, Catalog> catalogs(){
+		default LinkedHashMap<String, Catalog> catalogs() {
 			return catalogs(null);
 		}
 		List<Catalog> catalogs(boolean greedy, String name);
-		default List<Catalog> catalogs(boolean greedy){
+		default List<Catalog> catalogs(boolean greedy) {
 			return catalogs(greedy, null);
 		}
 
@@ -1703,23 +1721,23 @@ public interface AnylineService<E>{
 		 **************************************************************************************************************/
 		Schema schema();
 		LinkedHashMap<String, Schema> schemas(Catalog catalog, String name);
-		default LinkedHashMap<String, Schema> schemas(Catalog catalog){
+		default LinkedHashMap<String, Schema> schemas(Catalog catalog) {
 			return schemas(catalog, null);
 		}
-		default LinkedHashMap<String, Schema> schemas(){
+		default LinkedHashMap<String, Schema> schemas() {
 			return schemas(null, null);
 		}
-		default LinkedHashMap<String, Schema> schemas(String name){
+		default LinkedHashMap<String, Schema> schemas(String name) {
 			return schemas(null, name);
 		}
 		List<Schema> schemas(boolean greedy, Catalog catalog, String name);
-		default List<Schema> schemas(boolean greedy){
+		default List<Schema> schemas(boolean greedy) {
 			return schemas(greedy, null, null);
 		}
-		default List<Schema> schemas(boolean greedy, Catalog catalog){
+		default List<Schema> schemas(boolean greedy, Catalog catalog) {
 			return schemas(greedy, catalog, null);
 		}
-		default List<Schema> schemas(boolean greedy, String name){
+		default List<Schema> schemas(boolean greedy, String name) {
 			return schemas(greedy, null, name);
 		}
 		/* *************************************************************************************************************
@@ -1733,11 +1751,11 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean exists(boolean greedy, Table table);
-		default boolean exists(Table table){
+		default boolean exists(Table table) {
 			return exists(false, table);
 		}
 		boolean exists(boolean greedy, View view);
-		default boolean exists(View view){
+		default boolean exists(View view) {
 			return exists(false, view);
 		}
 		/**
@@ -1750,93 +1768,93 @@ public interface AnylineService<E>{
 		 * @return tables
 		 */
 		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return tables(greedy, catalog, schema, name, types, config);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, int struct) {
 			return tables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, boolean struct) {
 			return tables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String name, int types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, String name, int types, boolean struct) {
 			return tables(greedy, null, null, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String name, int types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, String name, int types, int struct) {
 			return tables(greedy, null, null, name, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, int types, int struct){
+		default <T extends Table> List<T> tables(boolean greedy, int types, int struct) {
 			return tables(greedy, null, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, int types, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, int types, boolean struct) {
 			return tables(greedy, null, types, struct);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, boolean struct){
+		default <T extends Table> List<T> tables(boolean greedy, boolean struct) {
 			return tables(greedy, Table.TYPE.NORMAL.value, struct);
 		}
 
 		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return tables(catalog, schema, name, types, config);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct) {
 			return tables( null, schema, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct) {
 			return tables( null, schema, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, int struct) {
 			return tables( null, null, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct) {
 			return tables( null, null, name, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct) {
 			return tables( null, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct){
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct) {
 			return tables( null, types, struct);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(){
+		default <T extends Table> LinkedHashMap<String, T> tables() {
 			return tables( Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types){
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
 			return tables(greedy, catalog, schema, name, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types){
+		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types) {
 			return tables(greedy, null, schema, name, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, String name, int types){
+		default <T extends Table> List<T> tables(boolean greedy, String name, int types) {
 			return tables(greedy, null, null, name, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy, int types){
+		default <T extends Table> List<T> tables(boolean greedy, int types) {
 			return tables(greedy, null, types, false);
 		}
-		default <T extends Table> List<T> tables(boolean greedy){
+		default <T extends Table> List<T> tables(boolean greedy) {
 			return tables(greedy, Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types){
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types) {
 			return tables(catalog, schema, name, types, false);
 		}
 
-		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types){
+		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types) {
 			return tables( null, schema, name, types, false);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types){
+		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types) {
 			return tables( null, null, name, types, false);
 		}
-		default <T extends Table> LinkedHashMap<String, T> tables(int types){
+		default <T extends Table> LinkedHashMap<String, T> tables(int types) {
 			return tables( null, types, false);
 		}
 
@@ -1849,63 +1867,63 @@ public interface AnylineService<E>{
 		 * @return Table
 		 */
 		Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
-		default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct){
+		default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return table(greedy, catalog, schema, name, config);
 		}
-		default Table table(boolean greedy, Schema schema, String name, int struct){
+		default Table table(boolean greedy, Schema schema, String name, int struct) {
 			return table(greedy, null, schema, name, struct);
 		}
-		default Table table(boolean greedy, Schema schema, String name, boolean struct){
+		default Table table(boolean greedy, Schema schema, String name, boolean struct) {
 			return table(greedy, null, schema, name, struct);
 		}
-		default Table table(boolean greedy, String name, int struct){
+		default Table table(boolean greedy, String name, int struct) {
 			return table(greedy, null, null, name, struct);
 		}
-		default Table table(boolean greedy, String name, boolean struct){
+		default Table table(boolean greedy, String name, boolean struct) {
 			return table(greedy, null, null, name, struct);
 		}
 
 		Table table(Catalog catalog, Schema schema, String name, int struct);
-		default Table table(Catalog catalog, Schema schema, String name, boolean struct){
+		default Table table(Catalog catalog, Schema schema, String name, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return table(catalog, schema, name, config);
 		}
-		default Table table(Schema schema, String name, int struct){
+		default Table table(Schema schema, String name, int struct) {
 			return table(false, null, schema, name, struct);
 		}
-		default Table table(Schema schema, String name, boolean struct){
+		default Table table(Schema schema, String name, boolean struct) {
 			return table(false, null, schema, name, struct);
 		}
-		default Table table(String name, int struct){
+		default Table table(String name, int struct) {
 			return table(false, null, null, name, struct);
 		}
-		default Table table(String name, boolean struct){
+		default Table table(String name, boolean struct) {
 			return table(false, null, null, name, struct);
 		}
-		default Table table(boolean greedy, Catalog catalog, Schema schema, String name){
+		default Table table(boolean greedy, Catalog catalog, Schema schema, String name) {
 			return table(greedy, catalog, schema, name, true);
 		}
-		default Table table(boolean greedy, Schema schema, String name){
+		default Table table(boolean greedy, Schema schema, String name) {
 			return table(greedy, null, schema, name, true);
 		}
-		default Table table(boolean greedy, String name){
+		default Table table(boolean greedy, String name) {
 			return table(greedy, null, null, name, true);
 		}
 
-		default Table table(Catalog catalog, Schema schema, String name){
+		default Table table(Catalog catalog, Schema schema, String name) {
 			return table( catalog, schema, name, true);
 		}
-		default Table table(Schema schema, String name){
+		default Table table(Schema schema, String name) {
 			return table( null, schema, name, true);
 		}
-		default Table table(String name){
+		default Table table(String name) {
 			return table( null, null, name, true);
 		}
 
@@ -1916,13 +1934,13 @@ public interface AnylineService<E>{
 		 * @return ddl
 		 */
 		List<String> ddl(Table table, boolean init);
-		default List<String> ddl(String table, boolean init){
+		default List<String> ddl(String table, boolean init) {
 			return ddl(new Table(table), init);
 		}
-		default List<String> ddl(Table table){
+		default List<String> ddl(Table table) {
 			return ddl(table, false);
 		}
-		default List<String> ddl(String table){
+		default List<String> ddl(String table) {
 			return ddl(new Table(table));
 		}
 
@@ -1931,48 +1949,48 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types);
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, Schema schema, String name, int types){
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, Schema schema, String name, int types) {
 			return views(greedy, null, schema, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, int types){
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, String name, int types) {
 			return views(greedy, null, null, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, int types){
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy, int types) {
 			return views(greedy, null, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(boolean greedy){
+		default <T extends View> LinkedHashMap<String, T> views(boolean greedy) {
 			return views(greedy, View.TYPE.NORMAL.value);
 		}
 
 		<T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types);
-		default <T extends View> LinkedHashMap<String, T> views(Schema schema, String name, int types){
+		default <T extends View> LinkedHashMap<String, T> views(Schema schema, String name, int types) {
 			return views(false, null, schema, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(String name, int types){
+		default <T extends View> LinkedHashMap<String, T> views(String name, int types) {
 			return views(false, null, null, name, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(int types){
+		default <T extends View> LinkedHashMap<String, T> views(int types) {
 			return views(false, null, types);
 		}
-		default <T extends View> LinkedHashMap<String, T> views(){
+		default <T extends View> LinkedHashMap<String, T> views() {
 			return views(false, View.TYPE.NORMAL.value);
 		}
 
 		View view(boolean greedy, Catalog catalog, Schema schema, String name);
-		default View view(boolean greedy, Schema schema, String name){
+		default View view(boolean greedy, Schema schema, String name) {
 			return view(greedy, null, schema, name);
 		}
-		default View view(boolean greedy, String name){
+		default View view(boolean greedy, String name) {
 			return view(greedy, null, null, name);
 		}
 
-		default View view(Catalog catalog, Schema schema, String name){
+		default View view(Catalog catalog, Schema schema, String name) {
 			return view(false, catalog, schema, name);
 		}
-		default View view(Schema schema, String name){
+		default View view(Schema schema, String name) {
 			return view(false, null, schema, name);
 		}
-		default View view(String name){
+		default View view(String name) {
 			return view(false, null, null, name);
 		}
 		List<String> ddl(View view);
@@ -1988,73 +2006,73 @@ public interface AnylineService<E>{
 		 * @return LinkedHashMap
 		 */
 		boolean exists(boolean greedy, MasterTable table);
-		default boolean exists(MasterTable table){
+		default boolean exists(MasterTable table) {
 			return exists(false, table);
 		}
 		<T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types);
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Schema schema, String name, int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Schema schema, String name, int types) {
 			return masterTables(greedy, null, schema, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, String name, int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, String name, int types) {
 			return masterTables(greedy, null, null, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, int types) {
 			return masterTables(greedy, null, null, null, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy) {
 			return masterTables(greedy, MasterTable.TYPE.NORMAL.value);
 		}
 
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(Catalog catalog, Schema schema, String name, int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(Catalog catalog, Schema schema, String name, int types) {
 			return masterTables(false, catalog, schema, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(Schema schema, String name, int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(Schema schema, String name, int types) {
 			return masterTables(false, schema, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(String name, int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(String name, int types) {
 			return masterTables(false, name, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(int types){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(int types) {
 			return masterTables(false, types);
 		}
-		default <T extends MasterTable> LinkedHashMap<String, T> masterTables(){
+		default <T extends MasterTable> LinkedHashMap<String, T> masterTables() {
 			return masterTables(false);
 		}
 
 		MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct);
-		default MasterTable mtable(boolean greedy, Schema schema, String name, boolean struct){
+		default MasterTable mtable(boolean greedy, Schema schema, String name, boolean struct) {
 			return mtable(greedy, null, schema, name, struct);
 		}
-		default MasterTable mtable(boolean greedy, String name, boolean struct){
+		default MasterTable mtable(boolean greedy, String name, boolean struct) {
 			return mtable(greedy, null, null, name, struct);
 		}
 
-		default MasterTable mtable(Catalog catalog, Schema schema, String name, boolean struct){
+		default MasterTable mtable(Catalog catalog, Schema schema, String name, boolean struct) {
 			return mtable(false, catalog, schema, name, struct);
 		}
-		default MasterTable mtable(Schema schema, String name, boolean struct){
+		default MasterTable mtable(Schema schema, String name, boolean struct) {
 			return mtable(false, schema, name, struct);
 		}
-		default MasterTable mtable(String name, boolean struct){
+		default MasterTable mtable(String name, boolean struct) {
 			return mtable(false, name, struct);
 		}
 
-		default MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name){
+		default MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name) {
 			return mtable(greedy, catalog, schema, name, true);
 		}
-		default MasterTable mtable(boolean greedy, Schema schema, String name){
+		default MasterTable mtable(boolean greedy, Schema schema, String name) {
 			return mtable(greedy, schema, name, true);
 		}
-		default MasterTable mtable(boolean greedy, String name){
+		default MasterTable mtable(boolean greedy, String name) {
 			return mtable(greedy, name, true);
 		}
-		default MasterTable mtable(Catalog catalog, Schema schema, String name){
+		default MasterTable mtable(Catalog catalog, Schema schema, String name) {
 			return mtable(false, catalog, schema, name, true);
 		}
-		default MasterTable mtable(Schema schema, String name){
+		default MasterTable mtable(Schema schema, String name) {
 			return mtable(false, schema, name, true);
 		}
-		default MasterTable mtable(String name){
+		default MasterTable mtable(String name) {
 			return mtable(false, name, true);
 		}
 		List<String> ddl(MasterTable table);
@@ -2069,7 +2087,7 @@ public interface AnylineService<E>{
 		 * @return LinkedHashMap
 		 */
 		boolean exists(boolean greedy, PartitionTable table);
-		default boolean exists(PartitionTable table){
+		default boolean exists(PartitionTable table) {
 			return exists(false, table);
 		}
 		/**
@@ -2080,66 +2098,66 @@ public interface AnylineService<E>{
 		 * @return PartitionTables
 		 */
 		<T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, Map<String,Object> tags, String name);
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master, Map<String,Object> tags, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master, Map<String,Object> tags, String name) {
 			return partitionTables(false, master, tags, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, Map<String,Object> tags){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, Map<String,Object> tags) {
 			return partitionTables(greedy, master, tags, null);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master, Map<String,Object> tags){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master, Map<String,Object> tags) {
 			return partitionTables(false, master, tags, null);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, Catalog catalog, Schema schema, String master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, Catalog catalog, Schema schema, String master, String name) {
 			return partitionTables(greedy, new MasterTable(catalog, schema, master), null, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, Schema schema, String master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, Schema schema, String master, String name) {
 			return partitionTables(greedy, new MasterTable(schema, master), null, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, String master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, String master, String name) {
 			return partitionTables(greedy, new MasterTable(master), null, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, String master){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, String master) {
 			return partitionTables(greedy, new MasterTable(master), null, null);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master) {
 			return partitionTables(greedy, master, null, null);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, String name) {
 			return partitionTables(greedy, master, null, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(Catalog catalog, Schema schema, String master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(Catalog catalog, Schema schema, String master, String name) {
 			return partitionTables(false, catalog, schema, master, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(Schema schema, String master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(Schema schema, String master, String name) {
 			return partitionTables(false, schema, master, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(String master, String name){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(String master, String name) {
 			return partitionTables(false, master, name);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(String master){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(String master) {
 			return partitionTables(false, master);
 		}
-		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master){
+		default <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master) {
 			return partitionTables(false, master);
 		}
 
 		PartitionTable ptable(boolean greedy, MasterTable master, String name);
-		default PartitionTable ptable(boolean greedy, Catalog catalog, Schema schema, String master, String name){
+		default PartitionTable ptable(boolean greedy, Catalog catalog, Schema schema, String master, String name) {
 			return ptable(greedy, new MasterTable(catalog, schema, master), name);
 		}
-		default PartitionTable ptable(boolean greedy, Schema schema, String master, String name){
+		default PartitionTable ptable(boolean greedy, Schema schema, String master, String name) {
 			return ptable(greedy, new MasterTable(schema, master), name);
 		}
-		default PartitionTable ptable(boolean greedy, String master, String name){
+		default PartitionTable ptable(boolean greedy, String master, String name) {
 			return ptable(greedy, new MasterTable(master), name);
 		}
-		default PartitionTable ptable(Catalog catalog, Schema schema, String master, String name){
+		default PartitionTable ptable(Catalog catalog, Schema schema, String master, String name) {
 			return ptable(false, catalog, schema, master, name);
 		}
-		default PartitionTable ptable(Schema schema, String master, String name){
+		default PartitionTable ptable(Schema schema, String master, String name) {
 			return ptable(false, new MasterTable(schema, master), name);
 		}
-		default PartitionTable ptable(String master, String name){
+		default PartitionTable ptable(String master, String name) {
 			return ptable(false, new MasterTable(master), name);
 		}
 
@@ -2155,7 +2173,7 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean exists(boolean greedy, VertexTable meta);
-		default boolean exists(VertexTable meta){
+		default boolean exists(VertexTable meta) {
 			return exists(false, meta);
 		}
 
@@ -2169,93 +2187,93 @@ public interface AnylineService<E>{
 		 * @return vertexTables
 		 */
 		<T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return vertexTables(greedy, catalog, schema, name, types, config);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types, int struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types, int struct) {
 			return vertexTables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types, boolean struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types, boolean struct) {
 			return vertexTables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, String name, int types, boolean struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, String name, int types, boolean struct) {
 			return vertexTables(greedy, null, null, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, String name, int types, int struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, String name, int types, int struct) {
 			return vertexTables(greedy, null, null, name, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, int types, int struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, int types, int struct) {
 			return vertexTables(greedy, null, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, int types, boolean struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, int types, boolean struct) {
 			return vertexTables(greedy, null, types, struct);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, boolean struct){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, boolean struct) {
 			return vertexTables(greedy, Table.TYPE.NORMAL.value, struct);
 		}
 
 		<T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, boolean struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return vertexTables(catalog, schema, name, types, config);
 		}
 
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, int struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, int struct) {
 			return vertexTables( null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, boolean struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, boolean struct) {
 			return vertexTables( null, schema, name, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, int struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, int struct) {
 			return vertexTables( null, null, name, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, boolean struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, boolean struct) {
 			return vertexTables( null, null, name, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, int struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, int struct) {
 			return vertexTables( null, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, boolean struct){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, boolean struct) {
 			return vertexTables( null, types, struct);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables() {
 			return vertexTables( Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
 			return vertexTables(greedy, catalog, schema, name, types, false);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types) {
 			return vertexTables(greedy, null, schema, name, types, false);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, String name, int types){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, String name, int types) {
 			return vertexTables(greedy, null, null, name, types, false);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy, int types){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy, int types) {
 			return vertexTables(greedy, null, types, false);
 		}
-		default <T extends VertexTable> List<T> vertexTables(boolean greedy){
+		default <T extends VertexTable> List<T> vertexTables(boolean greedy) {
 			return vertexTables(greedy, Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types) {
 			return vertexTables(catalog, schema, name, types, false);
 		}
 
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types) {
 			return vertexTables( null, schema, name, types, false);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types) {
 			return vertexTables( null, null, name, types, false);
 		}
-		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types){
+		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types) {
 			return vertexTables( null, types, false);
 		}
 
@@ -2268,63 +2286,63 @@ public interface AnylineService<E>{
 		 * @return Table
 		 */
 		VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
-		default VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct){
+		default VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return vertexTable(greedy, catalog, schema, name, config);
 		}
-		default VertexTable vertexTable(boolean greedy, Schema schema, String name, int struct){
+		default VertexTable vertexTable(boolean greedy, Schema schema, String name, int struct) {
 			return vertexTable(greedy, null, schema, name, struct);
 		}
-		default VertexTable vertexTable(boolean greedy, Schema schema, String name, boolean struct){
+		default VertexTable vertexTable(boolean greedy, Schema schema, String name, boolean struct) {
 			return vertexTable(greedy, null, schema, name, struct);
 		}
-		default VertexTable vertexTable(boolean greedy, String name, int struct){
+		default VertexTable vertexTable(boolean greedy, String name, int struct) {
 			return vertexTable(greedy, null, null, name, struct);
 		}
-		default VertexTable vertexTable(boolean greedy, String name, boolean struct){
+		default VertexTable vertexTable(boolean greedy, String name, boolean struct) {
 			return vertexTable(greedy, null, null, name, struct);
 		}
 
 		VertexTable vertexTable(Catalog catalog, Schema schema, String name, int struct);
-		default VertexTable vertexTable(Catalog catalog, Schema schema, String name, boolean struct){
+		default VertexTable vertexTable(Catalog catalog, Schema schema, String name, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return vertexTable(catalog, schema, name, config);
 		}
-		default VertexTable vertexTable(Schema schema, String name, int struct){
+		default VertexTable vertexTable(Schema schema, String name, int struct) {
 			return vertexTable(false, null, schema, name, struct);
 		}
-		default VertexTable vertexTable(Schema schema, String name, boolean struct){
+		default VertexTable vertexTable(Schema schema, String name, boolean struct) {
 			return vertexTable(false, null, schema, name, struct);
 		}
-		default VertexTable vertexTable(String name, int struct){
+		default VertexTable vertexTable(String name, int struct) {
 			return vertexTable(false, null, null, name, struct);
 		}
-		default VertexTable vertexTable(String name, boolean struct){
+		default VertexTable vertexTable(String name, boolean struct) {
 			return vertexTable(false, null, null, name, struct);
 		}
-		default VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name){
+		default VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name) {
 			return vertexTable(greedy, catalog, schema, name, true);
 		}
-		default VertexTable vertexTable(boolean greedy, Schema schema, String name){
+		default VertexTable vertexTable(boolean greedy, Schema schema, String name) {
 			return vertexTable(greedy, null, schema, name, true);
 		}
-		default VertexTable vertexTable(boolean greedy, String name){
+		default VertexTable vertexTable(boolean greedy, String name) {
 			return vertexTable(greedy, null, null, name, true);
 		}
 
-		default VertexTable vertexTable(Catalog catalog, Schema schema, String name){
+		default VertexTable vertexTable(Catalog catalog, Schema schema, String name) {
 			return vertexTable( catalog, schema, name, true);
 		}
-		default VertexTable vertexTable(Schema schema, String name){
+		default VertexTable vertexTable(Schema schema, String name) {
 			return vertexTable( null, schema, name, true);
 		}
-		default VertexTable vertexTable(String name){
+		default VertexTable vertexTable(String name) {
 			return vertexTable( null, null, name, true);
 		}
 
@@ -2335,7 +2353,7 @@ public interface AnylineService<E>{
 		 * @return ddl
 		 */
 		List<String> ddl(VertexTable meta, boolean init);
-		default List<String> ddl(VertexTable meta){
+		default List<String> ddl(VertexTable meta) {
 			return ddl(meta, false);
 		}
 
@@ -2350,7 +2368,7 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean exists(boolean greedy, EdgeTable meta);
-		default boolean exists(EdgeTable meta){
+		default boolean exists(EdgeTable meta) {
 			return exists(false, meta);
 		}
 
@@ -2364,93 +2382,93 @@ public interface AnylineService<E>{
 		 * @return edgeTables
 		 */
 		<T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return edgeTables(greedy, catalog, schema, name, types, config);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types, int struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types, int struct) {
 			return edgeTables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types, boolean struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types, boolean struct) {
 			return edgeTables(greedy, null, schema, name, types, struct);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, String name, int types, boolean struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, String name, int types, boolean struct) {
 			return edgeTables(greedy, null, null, name, types, struct);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, String name, int types, int struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, String name, int types, int struct) {
 			return edgeTables(greedy, null, null, name, types, struct);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, int types, int struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, int types, int struct) {
 			return edgeTables(greedy, null, types, struct);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, int types, boolean struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, int types, boolean struct) {
 			return edgeTables(greedy, null, types, struct);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, boolean struct){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, boolean struct) {
 			return edgeTables(greedy, Table.TYPE.NORMAL.value, struct);
 		}
 
 		<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, boolean struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return edgeTables(catalog, schema, name, types, config);
 		}
 
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, int struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, int struct) {
 			return edgeTables( null, schema, name, types, struct);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, boolean struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, boolean struct) {
 			return edgeTables( null, schema, name, types, struct);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, int struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, int struct) {
 			return edgeTables( null, null, name, types, struct);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, boolean struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, boolean struct) {
 			return edgeTables( null, null, name, types, struct);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, int struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, int struct) {
 			return edgeTables( null, types, struct);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, boolean struct){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, boolean struct) {
 			return edgeTables( null, types, struct);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables() {
 			return edgeTables( Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
 			return edgeTables(greedy, catalog, schema, name, types, false);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types) {
 			return edgeTables(greedy, null, schema, name, types, false);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, String name, int types){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, String name, int types) {
 			return edgeTables(greedy, null, null, name, types, false);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, int types){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, int types) {
 			return edgeTables(greedy, null, types, false);
 		}
-		default <T extends EdgeTable> List<T> edgeTables(boolean greedy){
+		default <T extends EdgeTable> List<T> edgeTables(boolean greedy) {
 			return edgeTables(greedy, Table.TYPE.NORMAL.value, false);
 		}
 
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types) {
 			return edgeTables(catalog, schema, name, types, false);
 		}
 
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types) {
 			return edgeTables( null, schema, name, types, false);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types) {
 			return edgeTables( null, null, name, types, false);
 		}
-		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types){
+		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types) {
 			return edgeTables( null, types, false);
 		}
 
@@ -2463,63 +2481,63 @@ public interface AnylineService<E>{
 		 * @return Table
 		 */
 		EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
-		default EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct){
+		default EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return edgeTable(greedy, catalog, schema, name, config);
 		}
-		default EdgeTable edgeTable(boolean greedy, Schema schema, String name, int struct){
+		default EdgeTable edgeTable(boolean greedy, Schema schema, String name, int struct) {
 			return edgeTable(greedy, null, schema, name, struct);
 		}
-		default EdgeTable edgeTable(boolean greedy, Schema schema, String name, boolean struct){
+		default EdgeTable edgeTable(boolean greedy, Schema schema, String name, boolean struct) {
 			return edgeTable(greedy, null, schema, name, struct);
 		}
-		default EdgeTable edgeTable(boolean greedy, String name, int struct){
+		default EdgeTable edgeTable(boolean greedy, String name, int struct) {
 			return edgeTable(greedy, null, null, name, struct);
 		}
-		default EdgeTable edgeTable(boolean greedy, String name, boolean struct){
+		default EdgeTable edgeTable(boolean greedy, String name, boolean struct) {
 			return edgeTable(greedy, null, null, name, struct);
 		}
 
 		EdgeTable edgeTable(Catalog catalog, Schema schema, String name, int struct);
-		default EdgeTable edgeTable(Catalog catalog, Schema schema, String name, boolean struct){
+		default EdgeTable edgeTable(Catalog catalog, Schema schema, String name, boolean struct) {
 			int config = 0;
-			if(struct){
+			if(struct) {
 				config = 32767;
 			}
 			return edgeTable(catalog, schema, name, config);
 		}
-		default EdgeTable edgeTable(Schema schema, String name, int struct){
+		default EdgeTable edgeTable(Schema schema, String name, int struct) {
 			return edgeTable(false, null, schema, name, struct);
 		}
-		default EdgeTable edgeTable(Schema schema, String name, boolean struct){
+		default EdgeTable edgeTable(Schema schema, String name, boolean struct) {
 			return edgeTable(false, null, schema, name, struct);
 		}
-		default EdgeTable edgeTable(String name, int struct){
+		default EdgeTable edgeTable(String name, int struct) {
 			return edgeTable(false, null, null, name, struct);
 		}
-		default EdgeTable edgeTable(String name, boolean struct){
+		default EdgeTable edgeTable(String name, boolean struct) {
 			return edgeTable(false, null, null, name, struct);
 		}
-		default EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name){
+		default EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name) {
 			return edgeTable(greedy, catalog, schema, name, true);
 		}
-		default EdgeTable edgeTable(boolean greedy, Schema schema, String name){
+		default EdgeTable edgeTable(boolean greedy, Schema schema, String name) {
 			return edgeTable(greedy, null, schema, name, true);
 		}
-		default EdgeTable edgeTable(boolean greedy, String name){
+		default EdgeTable edgeTable(boolean greedy, String name) {
 			return edgeTable(greedy, null, null, name, true);
 		}
 
-		default EdgeTable edgeTable(Catalog catalog, Schema schema, String name){
+		default EdgeTable edgeTable(Catalog catalog, Schema schema, String name) {
 			return edgeTable( catalog, schema, name, true);
 		}
-		default EdgeTable edgeTable(Schema schema, String name){
+		default EdgeTable edgeTable(Schema schema, String name) {
 			return edgeTable( null, schema, name, true);
 		}
-		default EdgeTable edgeTable(String name){
+		default EdgeTable edgeTable(String name) {
 			return edgeTable( null, null, name, true);
 		}
 
@@ -2530,7 +2548,7 @@ public interface AnylineService<E>{
 		 * @return ddl
 		 */
 		List<String> ddl(EdgeTable meta, boolean init);
-		default List<String> ddl(EdgeTable meta){
+		default List<String> ddl(EdgeTable meta) {
 			return ddl(meta, false);
 		}
 
@@ -2543,25 +2561,25 @@ public interface AnylineService<E>{
 		 * @return boolean
 		 */
 		boolean exists(boolean greedy, Table table, Column column);
-		default boolean exists(boolean greedy, Column column){
+		default boolean exists(boolean greedy, Column column) {
 			return exists(greedy, null, column);
 		}
-		default boolean exists(boolean greedy, String table, String column){
+		default boolean exists(boolean greedy, String table, String column) {
 			return exists(greedy, new Table(table), new Column(column));
 		}
-		default boolean exists(boolean greedy, Catalog catalog, Schema schema, String table, String column){
+		default boolean exists(boolean greedy, Catalog catalog, Schema schema, String table, String column) {
 			return exists(greedy, new Table(catalog, schema, table), new Column(column));
 		}
-		default boolean exists(Column column){
+		default boolean exists(Column column) {
 			return exists(false, null, column); 
 		}
-		default boolean exists(String table, String column){
+		default boolean exists(String table, String column) {
 			return exists(false, new Table(table), new Column(column));
 		}
-		default boolean exists(Table table, String column){
+		default boolean exists(Table table, String column) {
 			return exists(false, table, new Column(column));
 		}
-		default boolean exists(Catalog catalog, Schema schema, String table, String column){
+		default boolean exists(Catalog catalog, Schema schema, String table, String column) {
 			return exists(false, new Table(catalog, schema, table), new Column(column));
 		}
 		/**
@@ -2571,19 +2589,19 @@ public interface AnylineService<E>{
 		 * @return map
 		 */
 		<T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table);
-		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table){
+		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, String table) {
 			return columns(greedy, new Table(table));
 		}
-		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table){
+		default <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Catalog catalog, Schema schema, String table) {
 			return columns(greedy, new Table(catalog, schema, table));
 		}
-		default <T extends Column> LinkedHashMap<String, T> columns(Table table){
+		default <T extends Column> LinkedHashMap<String, T> columns(Table table) {
 			return columns(false, table);
 		}
-		default <T extends Column> LinkedHashMap<String, T> columns(String table){
+		default <T extends Column> LinkedHashMap<String, T> columns(String table) {
 			return columns(false, new Table(table));
 		}
-		default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table){
+		default <T extends Column> LinkedHashMap<String, T> columns(Catalog catalog, Schema schema, String table) {
 			return columns(false, new Table(catalog, schema, table));
 		}
 
@@ -2595,13 +2613,13 @@ public interface AnylineService<E>{
 		 * @return List
 		 */
 		<T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema);
-		default <T extends Column> List<T> columns(Catalog catalog, Schema schema){
+		default <T extends Column> List<T> columns(Catalog catalog, Schema schema) {
 			return columns(false, catalog, schema);
 		}
-		default <T extends Column> List<T> columns(boolean greedy){
+		default <T extends Column> List<T> columns(boolean greedy) {
 			return columns(greedy, null, null);
 		}
-		default <T extends Column> List<T> columns(){
+		default <T extends Column> List<T> columns() {
 			return columns(false, null, null);
 		}
 
@@ -2612,19 +2630,19 @@ public interface AnylineService<E>{
 		 * @return Column
 		 */
 		Column column(boolean greedy, Table table, String name);
-		default Column column(boolean greedy, String table, String name){
+		default Column column(boolean greedy, String table, String name) {
 			return column(greedy, new Table(table), name);
 		}
-		default Column column(boolean greedy, Catalog catalog, Schema schema, String table, String name){
+		default Column column(boolean greedy, Catalog catalog, Schema schema, String table, String name) {
 			return column(greedy, new Table(catalog, schema, table), name);
 		}
-		default Column column(Table table, String name){
+		default Column column(Table table, String name) {
 			return column(false, table, name);
 		}
-		default Column column(String table, String name){
+		default Column column(String table, String name) {
 			return column(false, new Table(table), name);
 		}
-		default Column column(Catalog catalog, Schema schema, String table, String name){
+		default Column column(Catalog catalog, Schema schema, String table, String name) {
 			return column(false, new Table(catalog, schema, table), name);
 		}
 
@@ -2632,19 +2650,19 @@ public interface AnylineService<E>{
 		 * 													tag
 		 ******************************************************************************************************************/
 		<T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table);
-		default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table){
+		default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, String table) {
 			return tags(greedy, new Table(table));
 		}
-		default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Catalog catalog, Schema schema, String table){
+		default <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Catalog catalog, Schema schema, String table) {
 			return tags(greedy, new Table(catalog, schema, table));
 		}
-		default <T extends Tag> LinkedHashMap<String, T> tags(Table table){
+		default <T extends Tag> LinkedHashMap<String, T> tags(Table table) {
 			return tags(false, table);
 		}
-		default <T extends Tag> LinkedHashMap<String, T> tags(String table){
+		default <T extends Tag> LinkedHashMap<String, T> tags(String table) {
 			return tags(false, null, null, table);
 		}
-		default <T extends Tag> LinkedHashMap<String, T> tags(Catalog catalog, Schema schema, String table){
+		default <T extends Tag> LinkedHashMap<String, T> tags(Catalog catalog, Schema schema, String table) {
 			return tags(false, new Table(catalog, schema, table));
 		}
 
@@ -2653,19 +2671,19 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		PrimaryKey primary(boolean greedy, Table table);
-		default PrimaryKey primary(boolean greedy, String table){
+		default PrimaryKey primary(boolean greedy, String table) {
 			return primary(greedy, new Table(table));
 		}
-		default PrimaryKey primary(boolean greedy, Catalog catalog, Schema schema, String table){
+		default PrimaryKey primary(boolean greedy, Catalog catalog, Schema schema, String table) {
 			return primary(greedy, new Table(catalog, schema, table));
 		}
-		default PrimaryKey primary(Table table){
+		default PrimaryKey primary(Table table) {
 			return primary(false, table);
 		}
-		default PrimaryKey primary(String table){
+		default PrimaryKey primary(String table) {
 			return primary(false, new Table(table));
 		}
-		default PrimaryKey primary(Catalog catalog, Schema schema, String table){
+		default PrimaryKey primary(Catalog catalog, Schema schema, String table) {
 			return primary(false, new Table(catalog, schema, table));
 		}
 
@@ -2674,51 +2692,51 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table);
-		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, String table){
+		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, String table) {
 			return foreigns(greedy, new Table(table));
 		}
-		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Catalog catalog, Schema schema, String table){
+		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Catalog catalog, Schema schema, String table) {
 			return foreigns(greedy, new Table(catalog, schema, table));
 		}
-		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(Table table){
+		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(Table table) {
 			return foreigns(false, table);
 		}
-		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(String table){
+		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(String table) {
 			return foreigns(false, new Table(table));
 		}
-		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(Catalog catalog, Schema schema, String table){
+		default <T extends ForeignKey> LinkedHashMap<String, T> foreigns(Catalog catalog, Schema schema, String table) {
 			return foreigns(false, new Table(catalog, schema, table));
 		}
 		ForeignKey foreign(boolean greedy, Table table, List<String> columns);
-		default ForeignKey foreign(boolean greedy, Table table, String ... columns){
+		default ForeignKey foreign(boolean greedy, Table table, String ... columns) {
 			return foreign(greedy, table, BeanUtil.array2list(columns));
 		}
-		default ForeignKey foreign(boolean greedy, String table, String ... columns){
+		default ForeignKey foreign(boolean greedy, String table, String ... columns) {
 			return foreign(greedy, new Table(table), BeanUtil.array2list(columns));
 		}
-		default ForeignKey foreign(boolean greedy, String table, List<String> columns){
+		default ForeignKey foreign(boolean greedy, String table, List<String> columns) {
 			return foreign(greedy, new Table(table), columns);
 		}
 		//与上面的foreign(boolean greedy, String table, String ... columns)冲突
 		//ForeignKey foreign(boolean greedy, Catalog catalog, Schema schema, String table, String ... columns);
-		default ForeignKey foreign(boolean greedy, Catalog catalog, Schema schema, String table, List<String> columns){
+		default ForeignKey foreign(boolean greedy, Catalog catalog, Schema schema, String table, List<String> columns) {
 			return foreign(greedy, new Table(catalog, schema, table), columns);
 		}
-		default ForeignKey foreign(Table table, String ... columns){
+		default ForeignKey foreign(Table table, String ... columns) {
 			return foreign(false, table, BeanUtil.array2list(columns));
 		}
-		default ForeignKey foreign(Table table, List<String> columns){
+		default ForeignKey foreign(Table table, List<String> columns) {
 			return foreign(false, table, columns);
 		}
-		default ForeignKey foreign(String table, String ... columns){
+		default ForeignKey foreign(String table, String ... columns) {
 			return foreign(false, new Table(table), BeanUtil.array2list(columns));
 		}
-		default ForeignKey foreign(String table, List<String> columns){
+		default ForeignKey foreign(String table, List<String> columns) {
 			return foreign(false, new Table(table), columns);
 		}
 		//与上面的foreign(String table, String ... columns)冲突
 		//ForeignKey foreign(Catalog catalog, Schema schema, String table, String ... columns);
-		default ForeignKey foreign(Catalog catalog, Schema schema, String table, List<String> columns){
+		default ForeignKey foreign(Catalog catalog, Schema schema, String table, List<String> columns) {
 			return foreign(false, new Table(catalog, schema, table), columns);
 		}
 		/* *****************************************************************************************************************
@@ -2726,41 +2744,41 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends Index> List<T> indexs(boolean greedy, Table table);
-		default <T extends Index> List<T> indexs(boolean greedy, String table){
+		default <T extends Index> List<T> indexs(boolean greedy, String table) {
 			return indexs(greedy, new Table(table));
 		}
-		default <T extends Index> List<T> indexs(boolean greedy){
+		default <T extends Index> List<T> indexs(boolean greedy) {
 			return indexs(greedy, (Table)null);
 		}
-		default <T extends Index> List<T> indexs(boolean greedy, Catalog catalog, Schema schema, String table){
+		default <T extends Index> List<T> indexs(boolean greedy, Catalog catalog, Schema schema, String table) {
 			return indexs(greedy, new Table(catalog, schema, table));
 		}
 
 		<T extends Index> LinkedHashMap<String, T> indexs(Table table);
-		default <T extends Index> LinkedHashMap<String, T> indexs(String table){
+		default <T extends Index> LinkedHashMap<String, T> indexs(String table) {
 			return indexs(new Table(table));
 		}
-		default <T extends Index> LinkedHashMap<String, T> indexs(){
+		default <T extends Index> LinkedHashMap<String, T> indexs() {
 			return indexs((Table)null);
 		}
-		default <T extends Index> LinkedHashMap<String, T> indexs(Catalog catalog, Schema schema, String table){
+		default <T extends Index> LinkedHashMap<String, T> indexs(Catalog catalog, Schema schema, String table) {
 			return indexs(new Table(catalog, schema, table));
 		}
 
 		Index index(boolean greedy, Table table, String name);
-		default Index index(boolean greedy, String table, String name){
+		default Index index(boolean greedy, String table, String name) {
 			return index(greedy, new Table(table), name);
 		}
-		default Index index(boolean greedy, String name){
+		default Index index(boolean greedy, String name) {
 			return index(greedy, (Table) null, name);
 		}
-		default Index index(Table table, String name){
+		default Index index(Table table, String name) {
 			return index(false, table, name);
 		}
-		default Index index(String table, String name){
+		default Index index(String table, String name) {
 			return index(false, new Table(table), name);
 		}
-		default Index index(String name){
+		default Index index(String name) {
 			return index(false, name);
 		}
 
@@ -2769,46 +2787,46 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends Constraint> List<T> constraints(boolean greedy, Table table, String name);
-		default <T extends Constraint> List<T> constraints(boolean greedy, Table table){
+		default <T extends Constraint> List<T> constraints(boolean greedy, Table table) {
 			return constraints(greedy, table, null);
 		}
-		default <T extends Constraint> List<T> constraints(boolean greedy, String table){
+		default <T extends Constraint> List<T> constraints(boolean greedy, String table) {
 			return constraints(greedy, new Table(table));
 		}
-		default <T extends Constraint> List<T> constraints(boolean greedy, Catalog catalog, Schema schema, String table){
+		default <T extends Constraint> List<T> constraints(boolean greedy, Catalog catalog, Schema schema, String table) {
 			return constraints(greedy, new Table(catalog, schema, table));
 		}
 
 		<T extends Constraint> LinkedHashMap<String, T> constraints(Table table, String name);
-		default <T extends Constraint> LinkedHashMap<String, T> constraints(Table table){
+		default <T extends Constraint> LinkedHashMap<String, T> constraints(Table table) {
 			return constraints(table, null);
 		}
-		default <T extends Constraint> LinkedHashMap<String, T> constraints(String table){
+		default <T extends Constraint> LinkedHashMap<String, T> constraints(String table) {
 			return constraints(new Table(table));
 		}
-		default <T extends Constraint> LinkedHashMap<String, T> constraints(Catalog catalog, Schema schema, String table){
+		default <T extends Constraint> LinkedHashMap<String, T> constraints(Catalog catalog, Schema schema, String table) {
 			return constraints( new Table(catalog, schema, table));
 		}
 
 		<T extends Constraint> LinkedHashMap<String, T> constraints(Column column, String name);
-		default <T extends Constraint> LinkedHashMap<String, T> constraints(Column column){
+		default <T extends Constraint> LinkedHashMap<String, T> constraints(Column column) {
 			return constraints(column, null);
 		}
 
 		Constraint constraint(boolean greedy, Table table, String name);
-		default Constraint constraint(boolean greedy, String table, String name){
+		default Constraint constraint(boolean greedy, String table, String name) {
 			return constraint(greedy, new Table(table), name);
 		}
-		default Constraint constraint(boolean greedy, String name){
+		default Constraint constraint(boolean greedy, String name) {
 			return constraint(greedy, (Table)null, name);
 		}
-		default Constraint constraint(Table table, String name){
+		default Constraint constraint(Table table, String name) {
 			return constraint(false, table, name);
 		}
-		default Constraint constraint(String table, String name){
+		default Constraint constraint(String table, String name) {
 			return constraint(false, table, name);
 		}
-		default Constraint constraint(String name){
+		default Constraint constraint(String name) {
 			return constraint(false, name);
 		}
 
@@ -2816,53 +2834,53 @@ public interface AnylineService<E>{
 		 * 													trigger
 		 ******************************************************************************************************************/
 		<T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events);
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Catalog catalog, Schema schema, String table, List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Catalog catalog, Schema schema, String table, List<Trigger.EVENT> events) {
 			return triggers(greedy, new Table(catalog, schema, table), events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Schema schema, String table, List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Schema schema, String table, List<Trigger.EVENT> events) {
 			return triggers(greedy, new Table(schema, table), events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, String table, List<Trigger.EVENT> events) {
 			return triggers(greedy, new Table(table), events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, List<Trigger.EVENT> events) {
 			return triggers(greedy, (Table) null, events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy) {
 			return triggers(greedy,(Table) null, null);
 		}
- 		default <T extends Trigger> LinkedHashMap<String, T> triggers(Catalog catalog, Schema schema, String table, List<Trigger.EVENT> events){
+ 		default <T extends Trigger> LinkedHashMap<String, T> triggers(Catalog catalog, Schema schema, String table, List<Trigger.EVENT> events) {
 			return triggers(false, new Table(catalog, schema, table), events);
 		}
 
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(Schema schema, String table, List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(Schema schema, String table, List<Trigger.EVENT> events) {
 			return triggers(false, schema, table, events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(String table, List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(String table, List<Trigger.EVENT> events) {
 			return triggers(false, table, events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(List<Trigger.EVENT> events){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers(List<Trigger.EVENT> events) {
 			return triggers(false, events);
 		}
-		default <T extends Trigger> LinkedHashMap<String, T> triggers(){
+		default <T extends Trigger> LinkedHashMap<String, T> triggers() {
 			return triggers(false);
 		}
 
 		Trigger trigger(boolean greedy, Catalog catalog, Schema schema, String name);
-		default Trigger trigger(boolean greedy, Schema schema, String name){
+		default Trigger trigger(boolean greedy, Schema schema, String name) {
 			return trigger(greedy, null, schema, name);
 		}
-		default Trigger trigger(boolean greedy, String name){
+		default Trigger trigger(boolean greedy, String name) {
 			return trigger(greedy, null, null, name);
 		}
 
-		default Trigger trigger(Catalog catalog, Schema schema, String name){
+		default Trigger trigger(Catalog catalog, Schema schema, String name) {
 			return trigger(false, catalog, schema, name);
 		}
-		default Trigger trigger(Schema schema, String name){
+		default Trigger trigger(Schema schema, String name) {
 			return trigger(false, null, schema, name);
 		}
-		default Trigger trigger(String name){
+		default Trigger trigger(String name) {
 			return trigger(false, name);
 		}
 
@@ -2871,41 +2889,41 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends Procedure> List<T> procedures(boolean greedy, Catalog catalog, Schema schema, String name);
-		default <T extends Procedure> List<T> procedures(boolean greedy, Schema schema, String name){
+		default <T extends Procedure> List<T> procedures(boolean greedy, Schema schema, String name) {
 			return procedures(greedy, null, schema, name);
 		}
-		default <T extends Procedure> List<T> procedures(boolean greedy, String name){
+		default <T extends Procedure> List<T> procedures(boolean greedy, String name) {
 			return procedures(greedy, null, null, name);
 		}
-		default <T extends Procedure> List<T> procedures(boolean greedy){
+		default <T extends Procedure> List<T> procedures(boolean greedy) {
 			return procedures(greedy, null, null, null);
 		}
 
 		<T extends Procedure> LinkedHashMap<String, T> procedures(Catalog catalog, Schema schema, String name);
-		default <T extends Procedure> LinkedHashMap<String, T> procedures(Schema schema, String name){
+		default <T extends Procedure> LinkedHashMap<String, T> procedures(Schema schema, String name) {
 			return procedures(null, schema, name);
 		}
-		default <T extends Procedure> LinkedHashMap<String, T> procedures(String name){
+		default <T extends Procedure> LinkedHashMap<String, T> procedures(String name) {
 			return procedures(null, null, name);
 		}
-		default <T extends Procedure> LinkedHashMap<String, T> procedures(){
+		default <T extends Procedure> LinkedHashMap<String, T> procedures() {
 			return procedures(null, null, null);
 		}
 
 		Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name);
-		default Procedure procedure(boolean greedy, Schema schema, String name){
+		default Procedure procedure(boolean greedy, Schema schema, String name) {
 			return procedure(greedy, null, schema, name);
 		}
-		default Procedure procedure(boolean greedy, String name){
+		default Procedure procedure(boolean greedy, String name) {
 			return procedure(greedy, null, null, name);
 		}
-		default Procedure procedure(Catalog catalog, Schema schema, String name){
+		default Procedure procedure(Catalog catalog, Schema schema, String name) {
 			return procedure(false, catalog, schema, name);
 		}
-		default Procedure procedure(Schema schema, String name){
+		default Procedure procedure(Schema schema, String name) {
 			return procedure(false, schema, name);
 		}
-		default Procedure procedure(String name){
+		default Procedure procedure(String name) {
 			return procedure(false, name);
 		}
 		List<String> ddl(Procedure procedure);
@@ -2915,40 +2933,40 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends Function> List<T> functions(boolean greedy, Catalog catalog, Schema schema, String name);
-		default <T extends Function> List<T> functions(boolean greedy, Schema schema, String name){
+		default <T extends Function> List<T> functions(boolean greedy, Schema schema, String name) {
 			return functions(greedy, null, schema, name);
 		}
-		default <T extends Function> List<T> functions(boolean greedy, String name){
+		default <T extends Function> List<T> functions(boolean greedy, String name) {
 			return functions(greedy, null, null, name);
 		}
-		default <T extends Function> List<T> functions(boolean greedy){
+		default <T extends Function> List<T> functions(boolean greedy) {
 			return functions(greedy, null, null, null);
 		}
 		<T extends Function> LinkedHashMap<String, T> functions(Catalog catalog, Schema schema, String name);
-		default <T extends Function> LinkedHashMap<String, T> functions(Schema schema, String name){
+		default <T extends Function> LinkedHashMap<String, T> functions(Schema schema, String name) {
 			return functions(null, schema, name);
 		}
-		default <T extends Function> LinkedHashMap<String, T> functions(String name){
+		default <T extends Function> LinkedHashMap<String, T> functions(String name) {
 			return functions(null, name);
 		}
-		default <T extends Function> LinkedHashMap<String, T> functions(){
+		default <T extends Function> LinkedHashMap<String, T> functions() {
 			return functions(null);
 		}
 
 		Function function(boolean greedy, Catalog catalog, Schema schema, String name);
-		default Function function(boolean greedy, Schema schema, String name){
+		default Function function(boolean greedy, Schema schema, String name) {
 			return function(greedy, null, schema, name);
 		}
-		default Function function(boolean greedy, String name){
+		default Function function(boolean greedy, String name) {
 			return function(greedy, null, null, name);
 		}
-		default Function function(Catalog catalog, Schema schema, String name){
+		default Function function(Catalog catalog, Schema schema, String name) {
 			return function(false, catalog, schema, name);
 		}
-		default Function function(Schema schema, String name){
+		default Function function(Schema schema, String name) {
 			return function(false, schema, name);
 		}
-		default Function function(String name){
+		default Function function(String name) {
 			return function(false, name);
 		}
 		List<String> ddl(Function function);
@@ -2958,40 +2976,40 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 
 		<T extends Sequence> List<T> sequences(boolean greedy, Catalog catalog, Schema schema, String name);
-		default <T extends Sequence> List<T> sequences(boolean greedy, Schema schema, String name){
+		default <T extends Sequence> List<T> sequences(boolean greedy, Schema schema, String name) {
 			return sequences(greedy, null, schema, name);
 		}
-		default <T extends Sequence> List<T> sequences(boolean greedy, String name){
+		default <T extends Sequence> List<T> sequences(boolean greedy, String name) {
 			return sequences(greedy, null, null, name);
 		}
-		default <T extends Sequence> List<T> sequences(boolean greedy){
+		default <T extends Sequence> List<T> sequences(boolean greedy) {
 			return sequences(greedy, null, null, null);
 		}
 		<T extends Sequence> LinkedHashMap<String, T> sequences(Catalog catalog, Schema schema, String name);
-		default <T extends Sequence> LinkedHashMap<String, T> sequences(Schema schema, String name){
+		default <T extends Sequence> LinkedHashMap<String, T> sequences(Schema schema, String name) {
 			return sequences(null, schema, name);
 		}
-		default <T extends Sequence> LinkedHashMap<String, T> sequences(String name){
+		default <T extends Sequence> LinkedHashMap<String, T> sequences(String name) {
 			return sequences(null, name);
 		}
-		default <T extends Sequence> LinkedHashMap<String, T> sequences(){
+		default <T extends Sequence> LinkedHashMap<String, T> sequences() {
 			return sequences(null);
 		}
 
 		Sequence sequence(boolean greedy, Catalog catalog, Schema schema, String name);
-		default Sequence sequence(boolean greedy, Schema schema, String name){
+		default Sequence sequence(boolean greedy, Schema schema, String name) {
 			return sequence(greedy, null, schema, name);
 		}
-		default Sequence sequence(boolean greedy, String name){
+		default Sequence sequence(boolean greedy, String name) {
 			return sequence(greedy, null, null, name);
 		}
-		default Sequence sequence(Catalog catalog, Schema schema, String name){
+		default Sequence sequence(Catalog catalog, Schema schema, String name) {
 			return sequence(false, catalog, schema, name);
 		}
-		default Sequence sequence(Schema schema, String name){
+		default Sequence sequence(Schema schema, String name) {
 			return sequence(false, schema, name);
 		}
-		default Sequence sequence(String name){
+		default Sequence sequence(String name) {
 			return sequence(false, name);
 		}
 		List<String> ddl(Sequence sequence);

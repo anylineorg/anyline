@@ -62,7 +62,7 @@ public class ServiceProxy {
     private static AnylineService service;
     private static AnylineService.DDLService ddl;
     private static AnylineService.MetaDataService metadata;
-    public ServiceProxy(){}
+    public ServiceProxy() {}
 
     public static void init(AnylineService service) {
         ServiceProxy.service = service;
@@ -70,11 +70,11 @@ public class ServiceProxy {
         ServiceProxy.metadata = service.metadata();
     }
 
-    public static AnylineService service(){
+    public static AnylineService service() {
         return service("default");
     }
-    public static AnylineService service(String key){
-        if(null == key){
+    public static AnylineService service(String key) {
+        if(null == key) {
             key = "default";
         }
         AnylineService service = null;
@@ -87,13 +87,13 @@ public class ServiceProxy {
             } else {
                 log.error("请在上下文环境初始化完成后调用");
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("get service exception:", e);
         }
         return service;
     }
-    public static AnylineService service(DatabaseType type, DriverAdapter adapter){
-        if(null == adapter){
+    public static AnylineService service(DatabaseType type, DriverAdapter adapter) {
+        if(null == adapter) {
             return null;
         }
         DataRuntime runtime = new AbstractRuntime();
@@ -105,12 +105,12 @@ public class ServiceProxy {
         dao.setRuntime(runtime);
         return service;
     }
-    public static AnylineService service(DatabaseType type){
+    public static AnylineService service(DatabaseType type) {
         DriverAdapter adapter = DriverAdapterHolder.getAdapter(type);
-        if(null == adapter && type.url().contains("jdbc:") && ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER){
+        if(null == adapter && type.url().contains("jdbc:") && ConfigTable.IS_ENABLE_COMMON_JDBC_ADAPTER) {
             try {
                 adapter = (DriverAdapter) ConfigTable.environment().getBean("anyline.data.jdbc.adapter.common");
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -150,7 +150,7 @@ public class ServiceProxy {
         return temporary(datasource, database, null);
     }
 
-    public static ConfigStore condition(){
+    public static ConfigStore condition() {
         return new DefaultConfigStore();
     }
 
@@ -176,67 +176,87 @@ public class ServiceProxy {
      * 													INSERT
      ******************************************************************************************************************/
 
-    public static long insert(int batch, String dest, Object data, List<String>  columns){
+    public static long insert(int batch, String dest, Object data, List<String>  columns) {
         return service.insert(batch, dest, data, columns);
     }
-    public static long insert(int batch, String dest, Object data, String ... columns){
+    public static long insert(int batch, String dest, Object data, String ... columns) {
         return service.insert(batch, dest, data, columns);
     }
-    public static long insert(int batch, Object data, String ... columns){
+    public static long insert(int batch, Object data, String ... columns) {
         return service.insert(batch, data, columns);
     }
-    public static long insert(String dest, Object data, List<String> columns){
+    public static long insert(String dest, Object data, List<String> columns) {
         return service.insert(dest, data, columns);
     }
-    public static long insert(String dest, Object data, String ... columns){
+    public static long insert(String dest, Object data, String ... columns) {
         return service.insert(dest, data, columns);
     }
-    public static long insert(Object data, String ... columns){
+    public static long insert(Object data, String ... columns) {
         return service.insert(data, columns);
     }
 
-    public static long insert(int batch, String dest, Object data, ConfigStore configs, List<String>  columns){
+    public static long insert(int batch, String dest, Object data, ConfigStore configs, List<String>  columns) {
         return service.insert(batch, dest, data, configs, columns);
     }
-    public static long insert(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+    public static long insert(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
         return service.insert(batch, dest, data, configs, columns);
     }
-    public static long insert(int batch, Object data, ConfigStore configs, String ... columns){
+    public static long insert(int batch, Object data, ConfigStore configs, String ... columns) {
         return service.insert(batch, data, configs, columns);
     }
-    public static long insert(String dest, Object data, ConfigStore configs, List<String> columns){
+    public static long insert(String dest, Object data, ConfigStore configs, List<String> columns) {
         return service.insert(dest, data, configs, columns);
     }
-    public static long insert(String dest, Object data, ConfigStore configs, String ... columns){
+    public static long insert(String dest, Object data, ConfigStore configs, String ... columns) {
         return service.insert(dest, data, configs, columns);
     }
-    public static long insert(Object data, ConfigStore configs, String ... columns){
+    public static long insert(Object data, ConfigStore configs, String ... columns) {
         return service.insert(data, configs, columns);
     }
 
-    public static long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public static long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return service.insert(batch, dest, data, configs, columns);
     }
-    public static long insert(int batch, Table dest, Object data, List<String> columns){
+    public static long insert(int batch, Table dest, Object data, List<String> columns) {
         return insert(batch, dest, data, null, columns);
     }
-    public static long insert(int batch, Table dest, Object data, String ... columns){
+    public static long insert(int batch, Table dest, Object data, String ... columns) {
         return insert(batch, dest, data, BeanUtil.array2list(columns));
     }
-    public static long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+    public static long insert(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
         return insert(batch, dest, data, configs, BeanUtil.array2list(columns));
     }
-    public static long insert(Table dest, Object data, List<String> columns){
+    public static long insert(Table dest, Object data, List<String> columns) {
         return insert(0, dest, data, columns);
     }
-    public static long insert(Table dest, Object data, ConfigStore configs, List<String> columns){
+    public static long insert(Table dest, Object data, ConfigStore configs, List<String> columns) {
         return insert(0, dest, data, configs, columns);
     }
-    public static long insert(Table dest, Object data, String ... columns){
+    public static long insert(Table dest, Object data, String ... columns) {
         return insert(dest, data, BeanUtil.array2list(columns));
     }
-    public static long insert(Table dest, Object data, ConfigStore configs, String ... columns){
+    public static long insert(Table dest, Object data, ConfigStore configs, String ... columns) {
         return insert(dest, data, configs, BeanUtil.array2list(columns));
+    }
+
+    /**
+     * insert into table select * from table
+     * @param dest 表 table(c1,c2,c3)
+     * @param prepare 一般通过TableBuilder生成查询
+     * @param columns 插入的列
+     * @return 影响行数
+     */
+    public static long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns){
+        return service.insert(dest, prepare, configs, columns);
+    }
+    public static long insert(Table dest, RunPrepare prepare, String ... columns) {
+        return insert(dest, prepare, null, columns);
+    }
+    public static long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
+        return insert(new Table(dest), prepare, configs, columns);
+    }
+    public static long insert(String dest, RunPrepare prepare, String ... columns) {
+        return insert(new Table(dest), prepare, null, columns);
     }
     /* *****************************************************************************************************************
      * 													UPDATE
@@ -256,52 +276,52 @@ public class ServiceProxy {
      * @return int 影响行数
      */
 
-    public static long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public static long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return service.update(batch, dest, data, configs, columns);
     }
-    public static long update(int batch, String dest, Object data, String ... columns){
+    public static long update(int batch, String dest, Object data, String ... columns) {
         return service.update(batch, dest, data, columns);
     }
-    public static long update(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+    public static long update(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
         return service.update(batch, dest, data, configs, columns);
     }
 
-    public static long update(int batch, Object data, String ... columns){
+    public static long update(int batch, Object data, String ... columns) {
         return service.update(batch, data, columns);
     }
-    public static long update(int batch, Object data, ConfigStore configs, String ... columns){
+    public static long update(int batch, Object data, ConfigStore configs, String ... columns) {
         return service.update(batch, data, configs, columns);
     }
 
-    public static long update(String dest, Object data, String ... columns){
+    public static long update(String dest, Object data, String ... columns) {
         return service.update(dest, data, columns);
     }
-    public static long update(String dest, Object data, ConfigStore configs, String ... columns){
+    public static long update(String dest, Object data, ConfigStore configs, String ... columns) {
         return service.update(dest, data, configs, columns);
     }
-    public static long update(Object data, String ... columns){
+    public static long update(Object data, String ... columns) {
         return service.update(data, columns);
     }
-    public static long update(Object data, ConfigStore configs, String ... columns){
+    public static long update(Object data, ConfigStore configs, String ... columns) {
         return service.update(data, configs, columns);
     }
 
-    public static long update(int batch, Table dest, Object data, ConfigStore configs, List<String>columns){
+    public static long update(int batch, Table dest, Object data, ConfigStore configs, List<String>columns) {
         return service.update(batch, dest, data, configs, columns);
     }
-    public static long update(int batch, Table dest, Object data, String ... columns){
+    public static long update(int batch, Table dest, Object data, String ... columns) {
         return update(batch, dest, data, null, BeanUtil.array2list(columns));
     }
-    public static long update(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+    public static long update(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
         return update(batch, dest, data, configs, BeanUtil.array2list(columns));
     }
-    public static long update(Table dest, Object data, ConfigStore configs, List<String>columns){
+    public static long update(Table dest, Object data, ConfigStore configs, List<String>columns) {
         return update(0, dest, data, configs, columns);
     }
-    public static long update(Table dest, Object data, String ... columns){
+    public static long update(Table dest, Object data, String ... columns) {
         return update(dest, data, null, BeanUtil.array2list(columns));
     }
-    public static long update(Table dest, Object data, ConfigStore configs, String ... columns){
+    public static long update(Table dest, Object data, ConfigStore configs, String ... columns) {
         return update(dest, data, configs, BeanUtil.array2list(columns));
     }
     /* *****************************************************************************************************************
@@ -323,66 +343,66 @@ public class ServiceProxy {
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @return 影响行数
      */
-    public static long save(int batch, String dest, Object data, List<String>  columns){
+    public static long save(int batch, String dest, Object data, List<String>  columns) {
         return service.save(batch, dest, data, columns);
     }
-    public static long save(int batch, String dest, Object data, String ... columns){
+    public static long save(int batch, String dest, Object data, String ... columns) {
         return service.save(batch, dest, data, columns);
     }
-    public static long save(int batch, Object data, String ... columns){
+    public static long save(int batch, Object data, String ... columns) {
         return service.save(batch, data, columns);
     }
-    public static long save(String dest, Object data, String ... columns){
+    public static long save(String dest, Object data, String ... columns) {
         return service.save(dest, data, columns);
     }
-    public static long save(Object data, String ... columns){
+    public static long save(Object data, String ... columns) {
         return service.save(data, columns);
     }
-    public static long save(int batch, String dest, Object data, ConfigStore configs, List<String>  columns){
+    public static long save(int batch, String dest, Object data, ConfigStore configs, List<String>  columns) {
         return service.save(batch, dest, data, configs, columns);
     }
-    public static long save(int batch, String dest, Object data, ConfigStore configs, String ... columns){
+    public static long save(int batch, String dest, Object data, ConfigStore configs, String ... columns) {
         return service.save(batch, dest, data, configs, columns);
     }
-    public static long save(int batch, Object data, ConfigStore configs, String ... columns){
+    public static long save(int batch, Object data, ConfigStore configs, String ... columns) {
         return service.save(batch, data, configs, columns);
     }
-    public static long save(int batch, String dest, ConfigStore configs, Object data, String ... columns){
+    public static long save(int batch, String dest, ConfigStore configs, Object data, String ... columns) {
         return service.save(batch, dest, data, configs, columns);
     }
-    public static long save(String dest, Object data, ConfigStore configs, String ... columns){
+    public static long save(String dest, Object data, ConfigStore configs, String ... columns) {
         return service.save(dest, data, configs, columns);
     }
-    public static long save(Object data, ConfigStore configs, String ... columns){
+    public static long save(Object data, ConfigStore configs, String ... columns) {
         return service.save(data, configs, columns);
     }
-    public static long save(String dest, ConfigStore configs, Object data, String ... columns){
+    public static long save(String dest, ConfigStore configs, Object data, String ... columns) {
         return service.save(dest, data, configs, columns);
     }
 
-    public static long save(int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public static long save(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return service.save(batch, dest, data, configs, columns);
     }
-    public static long save(int batch, Table dest, Object data, List<String> columns){
+    public static long save(int batch, Table dest, Object data, List<String> columns) {
         return save(batch, dest, data, null, columns);
     }
 
-    public static long save(int batch, Table dest, Object data, String ... columns){
+    public static long save(int batch, Table dest, Object data, String ... columns) {
         return save(batch, dest, data, BeanUtil.array2list(columns));
     }
-    public static long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns){
+    public static long save(int batch, Table dest, Object data, ConfigStore configs, String ... columns) {
         return save(batch, dest, data, configs, BeanUtil.array2list(columns));
     }
-    public static long save(Table dest, Object data, List<String> columns){
+    public static long save(Table dest, Object data, List<String> columns) {
         return save(0, dest, data, columns);
     }
-    public static long save(Table dest, Object data, ConfigStore configs, List<String> columns){
+    public static long save(Table dest, Object data, ConfigStore configs, List<String> columns) {
         return save(0, dest, data, configs, columns);
     }
-    public static long save(Table dest, Object data, String ... columns){
+    public static long save(Table dest, Object data, String ... columns) {
         return save(dest, data, BeanUtil.array2list(columns));
     }
-    public static long save(Table dest, Object data, ConfigStore configs, String ... columns){
+    public static long save(Table dest, Object data, ConfigStore configs, String ... columns) {
         return save(dest, data, configs, BeanUtil.array2list(columns));
     }
     /* *****************************************************************************************************************
@@ -404,19 +424,19 @@ public class ServiceProxy {
      *
      * @return DataSet
      */
-    public static DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet querys(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, configs, obj, conditions);
     }
-    public static DataSet querys(DataSet set, ConfigStore configs){
+    public static DataSet querys(DataSet set, ConfigStore configs) {
         return service.querys(set, configs);
     }
-    public static DataSet querys(String dest, Object obj, String ... conditions){
+    public static DataSet querys(String dest, Object obj, String ... conditions) {
         return service.querys(dest, obj, conditions);
     }
-    public static void querys(String dest, DataHandler handler, Object obj, String ... conditions){
+    public static void querys(String dest, DataHandler handler, Object obj, String ... conditions) {
         service.querys(dest, handler, obj, conditions);
     }
-    public static DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions){
+    public static DataSet querys(String dest, PageNavi navi, Object obj, String ... conditions) {
         return service.querys(dest, navi, obj, conditions);
     }
 
@@ -429,26 +449,26 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String dest, long first, long last, Object obj, String ... conditions){
+    public static DataSet querys(String dest, long first, long last, Object obj, String ... conditions) {
         return service.querys(dest, first, last, obj, conditions);
     }
-    public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataRow query(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.query(dest, configs, obj, conditions);
     }
-    public static DataRow query(String dest, Object obj, String ... conditions){
+    public static DataRow query(String dest, Object obj, String ... conditions) {
         return service.query(dest, obj, conditions);
     }
 
-    public static DataSet querys(String dest, ConfigStore configs, String ... conditions){
+    public static DataSet querys(String dest, ConfigStore configs, String ... conditions) {
         return service.querys(dest, configs, conditions);
     }
-    public static DataSet querys(String dest, String ... conditions){
+    public static DataSet querys(String dest, String ... conditions) {
         return service.querys(dest, conditions);
     }
-    public static void querys(String dest, DataHandler handler, String ... conditions){
+    public static void querys(String dest, DataHandler handler, String ... conditions) {
         service.querys(dest, handler, conditions);
     }
-    public static DataSet querys(String dest, PageNavi navi, String ... conditions){
+    public static DataSet querys(String dest, PageNavi navi, String ... conditions) {
         return service.querys(dest, navi, conditions);
     }
 
@@ -460,23 +480,23 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(String dest, long first, long last, String ... conditions){
+    public static DataSet querys(String dest, long first, long last, String ... conditions) {
         return service.querys(dest, first, last, conditions);
     }
 
-    public static DataSet querys(Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet querys(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, configs, obj, conditions);
     }
-    public static DataSet querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet querys(Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(dest, first, last, configs, obj, conditions);
     }
-    public static DataSet querys(Table dest, Object obj, String ... conditions){
+    public static DataSet querys(Table dest, Object obj, String ... conditions) {
         return service.querys(dest, obj, conditions);
     }
-    public static void querys(Table dest, DataHandler handler, Object obj, String ... conditions){
+    public static void querys(Table dest, DataHandler handler, Object obj, String ... conditions) {
         service.querys(dest, handler, obj, conditions);
     }
-    public static DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions){
+    public static DataSet querys(Table dest, PageNavi navi, Object obj, String ... conditions) {
         return service.querys(dest, navi, obj, conditions);
     }
 
@@ -489,141 +509,141 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return DataSet
      */
-    public static DataSet querys(Table dest, long first, long last, Object obj, String ... conditions){
+    public static DataSet querys(Table dest, long first, long last, Object obj, String ... conditions) {
         return service.querys(dest, first, last, obj, conditions);
     }
 
-    public static DataSet querys(Table dest, ConfigStore configs, String ... conditions){
+    public static DataSet querys(Table dest, ConfigStore configs, String ... conditions) {
         return service.querys(dest, configs, conditions);
     }
-    public static DataSet querys(Table dest, long first, long last, ConfigStore configs, String ... conditions){
+    public static DataSet querys(Table dest, long first, long last, ConfigStore configs, String ... conditions) {
         return service.querys(dest, first, last, configs, conditions);
     }
-    public static DataSet querys(Table dest, String ... conditions){
+    public static DataSet querys(Table dest, String ... conditions) {
         return service.querys(dest, conditions);
     }
-    public static void querys(Table dest, DataHandler handler, String ... conditions){
+    public static void querys(Table dest, DataHandler handler, String ... conditions) {
        service.querys(dest, handler, conditions);
     }
-    public static DataSet querys(Table dest, PageNavi navi, String ... conditions){
+    public static DataSet querys(Table dest, PageNavi navi, String ... conditions) {
         return service.querys(dest, navi, conditions);
     }
-    public static DataSet querys(Table dest, long first, long last, String ... conditions){
+    public static DataSet querys(Table dest, long first, long last, String ... conditions) {
         return service.querys(dest, first, last, conditions);
     }
-    public static DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions){
+    public static DataSet querys(Table dest, DataHandler handler, long first, long last, String ... conditions) {
         return service.querys(dest, handler, first, last, conditions);
     }
 
-    public static DataRow query(String dest, ConfigStore configs, String ... conditions){
+    public static DataRow query(String dest, ConfigStore configs, String ... conditions) {
         return service.query(dest, configs, conditions);
     }
-    public static DataRow query(String dest, String ... conditions){
+    public static DataRow query(String dest, String ... conditions) {
         return service.query(dest, conditions);
     }
-    public static DataRow query(Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataRow query(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.query(dest, configs, obj, conditions);
     }
-    public static DataRow query(Table dest, Object obj, String ... conditions){
+    public static DataRow query(Table dest, Object obj, String ... conditions) {
         return service.query(dest, obj, conditions);
     }
-    public static DataRow query(Table dest, ConfigStore configs, String ... conditions){
+    public static DataRow query(Table dest, ConfigStore configs, String ... conditions) {
         return service.query(dest, configs, conditions);
     }
-    public static DataRow query(Table dest, String ... conditions){
+    public static DataRow query(Table dest, String ... conditions) {
         return service.query(dest, conditions);
     }
 
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
         return service.selects(dest, clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
         return service.selects(dest, clazz, navi, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, T entity, String ... conditions) {
         return service.selects(dest, clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
         return service.selects(dest, clazz, handler, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
         return service.selects(dest, clazz, first, last, entity, conditions);
     }
-    public static <T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+    public static <T> T select(String dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
         return (T)service.select(dest, clazz, configs, entity, conditions);
     }
-    public static <T> T select(String dest, Class<T> clazz, T entity, String ... conditions){
+    public static <T> T select(String dest, Class<T> clazz, T entity, String ... conditions) {
         return (T)service.selects(dest, clazz, entity, conditions);
     }
-    public static <T> T select(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+    public static <T> T select(String dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
         return (T)service.selects(dest, clazz, handler, entity, conditions);
     }
 
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return service.selects(dest, clazz, configs, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, PageNavi navi, String ... conditions) {
         return service.selects(dest, clazz, navi, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, String ... conditions) {
         return service.selects(dest, clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
         return service.selects(dest, clazz, handler, conditions);
     }
-    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions){
+    public static <T> EntitySet<T> selects(String dest, Class<T> clazz, long first, long last, String ... conditions) {
         return service.selects(dest, clazz, first, last, conditions);
     }
 
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
         return service.selects(dest, clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
         return service.selects(dest, clazz, navi, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, T entity, String ... conditions) {
         return service.selects(dest, clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
         return service.selects(dest, clazz, handler, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, T entity, String ... conditions) {
         return service.selects(dest, clazz, first, last, entity, conditions);
     }
 
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return service.selects(dest, clazz, configs, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, PageNavi navi, String ... conditions) {
         return service.selects(dest, clazz, navi, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, String ... conditions) {
         return service.selects(dest, clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
         return service.selects(dest, clazz, handler, conditions);
     }
-    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions){
+    public static <T> EntitySet<T> selects(Table dest, Class<T> clazz, long first, long last, String ... conditions) {
         return service.selects(dest, clazz, first, last, conditions);
     }
 
-    public static <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public static <T> T select(String dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return (T)service.select(dest, clazz, configs, conditions);
     }
-    public static <T> T select(String dest, Class<T> clazz, String ... conditions){
+    public static <T> T select(String dest, Class<T> clazz, String ... conditions) {
         return (T)service.select(dest, clazz, conditions);
     }
 
-    public static <T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+    public static <T> T select(Table dest, Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
         return (T)service.select(dest, clazz, configs, entity, conditions);
     }
-    public static <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions){
+    public static <T> T select(Table dest, Class<T> clazz, T entity, String ... conditions) {
         return (T)service.select(dest, clazz, entity, conditions);
     }
-    public static <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public static <T> T select(Table dest, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return (T)service.select(dest, clazz, configs, conditions);
     }
-    public static <T> T select(Table dest, Class<T> clazz, String ... conditions){
+    public static <T> T select(Table dest, Class<T> clazz, String ... conditions) {
         return (T)service.select(dest, clazz, conditions);
     }
     /**
@@ -635,47 +655,47 @@ public class ServiceProxy {
      * @return EntitySet
      * @param <T> T
      */
-    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
         return service.selects(clazz, configs, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, T entity, String ... conditions) {
         return service.selects(clazz, navi, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, T entity, String ... conditions) {
         return service.selects(clazz, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, T entity, String ... conditions) {
         return service.selects(clazz, handler, entity, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, T entity, String ... conditions) {
         return service.selects(clazz, first, last, entity, conditions);
     }
-    public static <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions){
+    public static <T> T select(Class<T> clazz, ConfigStore configs, T entity, String ... conditions) {
         return (T)service.select(clazz, configs, entity, conditions);
     }
-    public static <T> T select(Class<T> clazz, T entity, String ... conditions){
+    public static <T> T select(Class<T> clazz, T entity, String ... conditions) {
         return (T)service.select(clazz, entity, conditions);
     }
 
-    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, ConfigStore configs, String ... conditions) {
         return service.selects(clazz, configs, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, PageNavi navi, String ... conditions) {
         return service.selects(clazz, navi, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, String ... conditions) {
         return service.selects(clazz, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, EntityHandler<T> handler, String ... conditions) {
         return service.selects(clazz, handler, conditions);
     }
-    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions){
+    public static <T> EntitySet<T> selects(Class<T> clazz, long first, long last, String ... conditions) {
         return service.selects(clazz, first, last, conditions);
     }
-    public static <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions){
+    public static <T> T select(Class<T> clazz, ConfigStore configs, String ... conditions) {
         return (T)service.select(clazz, configs, conditions);
     }
-    public static <T> T select(Class<T> clazz, String ... conditions){
+    public static <T> T select(Class<T> clazz, String ... conditions) {
         return (T)service.select(clazz, conditions);
     }
 
@@ -687,59 +707,59 @@ public class ServiceProxy {
      * @param conditions	固定查询条件
      * @return List
      */
-    public static List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.maps(dest, configs, conditions);
     }
-    public static List<Map<String, Object>> maps(String dest, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(String dest, Object obj, String ... conditions) {
         return service.maps(dest, obj, conditions);
     }
-    public static void maps(String dest, DataHandler handler, Object obj, String ... conditions){
+    public static void maps(String dest, DataHandler handler, Object obj, String ... conditions) {
         service.maps(dest, handler, obj, conditions);
     }
-    public static List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(String dest, long first, long last, Object obj, String ... conditions) {
         return service.maps(dest, first, last, obj, conditions);
     }
-    public static List<Map<String, Object>> maps(String dest, ConfigStore configs, String ... conditions){
+    public static List<Map<String, Object>> maps(String dest, ConfigStore configs, String ... conditions) {
         return service.maps(dest, configs, conditions);
     }
-    public static List<Map<String, Object>> maps(String dest, String ... conditions){
+    public static List<Map<String, Object>> maps(String dest, String ... conditions) {
         return service.maps(dest, conditions);
     }
-    public static void maps(String dest, DataHandler handler, String ... conditions){
+    public static void maps(String dest, DataHandler handler, String ... conditions) {
         service.maps(dest, handler, conditions);
     }
-    public static List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions){
+    public static List<Map<String, Object>> maps(String dest, long first, long last, String ... conditions) {
         return service.maps(dest, first, last, conditions);
     }
 
-    public static List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.maps(dest, configs, obj, conditions);
     }
-    public static void maps(Table dest, DataHandler handler, Object obj, String ... conditions){
+    public static void maps(Table dest, DataHandler handler, Object obj, String ... conditions) {
         service.maps(dest, handler, obj, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, Object obj, String ... conditions) {
         return service.maps(dest, obj, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, long first, long last, Object obj, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, long first, long last, Object obj, String ... conditions) {
         return service.maps(dest, first, last, obj, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, ConfigStore configs, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, ConfigStore configs, String ... conditions) {
         return service.maps(dest, configs, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, String ... conditions) {
         return service.maps(dest, conditions);
     }
-    public static void maps(Table dest, DataHandler handler, String ... conditions){
+    public static void maps(Table dest, DataHandler handler, String ... conditions) {
         service.maps(dest, handler, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, PageNavi navi, String ... conditions) {
         return service.maps(dest, navi, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, long first, long last, String ... conditions) {
         return service.maps(dest, first, last, conditions);
     }
-    public static List<Map<String, Object>> maps(Table dest, DataHandler handler, long first, long last, String ... conditions){
+    public static List<Map<String, Object>> maps(Table dest, DataHandler handler, long first, long last, String ... conditions) {
         return service.maps(dest, handler, first, last, conditions);
     }
 
@@ -748,7 +768,7 @@ public class ServiceProxy {
      * @param table 表
      * @return List
      */
-    public static List<String> column2param(String table){
+    public static List<String> column2param(String table) {
         return service.column2param(table);
     }
 
@@ -761,147 +781,147 @@ public class ServiceProxy {
      * @param conditions 	固定查询条件
      * @return DataSet
      */
-    public static DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, String dest, Object obj, String ... conditions){
+    public static DataSet caches(String cache, String dest, Object obj, String ... conditions) {
         return service.caches(cache, dest, obj, conditions);
     }
-    public static DataSet caches(String cache, String dest, long first, long last, Object obj, String ... conditions){
+    public static DataSet caches(String cache, String dest, long first, long last, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, obj, conditions);
     }
 
-    public static DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, Object obj, String ... conditions){
+    public static DataSet caches(String cache, Table dest, Object obj, String ... conditions) {
         return service.caches(cache, dest, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, Object obj, String ... conditions){
+    public static DataSet caches(String cache, Table dest, long first, long last, Object obj, String ... conditions) {
         return service.caches(cache, dest, first, last, obj, conditions);
     }
 
-    public static DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataRow cache(String cache, String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.cache(cache, dest, configs, obj, conditions);
     }
-    public static DataRow cache(String cache, String dest, Object obj, String ... conditions){
+    public static DataRow cache(String cache, String dest, Object obj, String ... conditions) {
         return service.cache(cache, dest, obj, conditions);
     }
 
-    public static DataSet caches(String cache, String dest, ConfigStore configs, String ... conditions){
+    public static DataSet caches(String cache, String dest, ConfigStore configs, String ... conditions) {
         return service.caches(cache, dest, configs, conditions);
     }
-    public static DataSet caches(String cache, String dest, String ... conditions){
+    public static DataSet caches(String cache, String dest, String ... conditions) {
         return service.caches(cache, dest, conditions);
     }
-    public static DataSet caches(String cache, String dest, long first, long last, String ... conditions){
+    public static DataSet caches(String cache, String dest, long first, long last, String ... conditions) {
         return service.caches(cache, dest, first, last, conditions);
     }
-    public static DataRow cache(String cache, String dest, ConfigStore configs, String ... conditions){
+    public static DataRow cache(String cache, String dest, ConfigStore configs, String ... conditions) {
         return service.cache(cache, dest, configs, conditions);
     }
-    public static DataRow cache(String cache, String dest, String ... conditions){
+    public static DataRow cache(String cache, String dest, String ... conditions) {
         return service.cache(cache, dest, conditions);
     }
 
-    public static DataRow cache(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static DataRow cache(String cache, Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.cache(cache, dest, configs, obj, conditions);
     }
-    public static DataRow cache(String cache, Table dest, Object obj, String ... conditions){
+    public static DataRow cache(String cache, Table dest, Object obj, String ... conditions) {
         return service.cache(cache, dest, obj, conditions);
     }
-    public static DataSet caches(String cache, Table dest, ConfigStore configs, String ... conditions){
+    public static DataSet caches(String cache, Table dest, ConfigStore configs, String ... conditions) {
         return service.caches(cache, dest, configs, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions){
+    public static DataSet caches(String cache, Table dest, long first, long last, ConfigStore configs, String ... conditions) {
         return service.caches(cache, dest, first, last, configs, conditions);
     }
-    public static DataSet caches(String cache, Table dest, String ... conditions){
+    public static DataSet caches(String cache, Table dest, String ... conditions) {
         return service.caches(cache, dest, conditions);
     }
-    public static DataSet caches(String cache, Table dest, long first, long last, String ... conditions){
+    public static DataSet caches(String cache, Table dest, long first, long last, String ... conditions) {
         return service.caches(cache, dest, first, last, conditions);
     }
-    public static DataRow cache(String cache, Table dest, ConfigStore configs, String ... conditions){
+    public static DataRow cache(String cache, Table dest, ConfigStore configs, String ... conditions) {
         return service.cache(cache, dest, configs, conditions);
     }
-    public static DataRow cache(String cache, Table dest, String ... conditions){
+    public static DataRow cache(String cache, Table dest, String ... conditions) {
         return service.cache(cache, dest, conditions);
     }
 
     /*多表查询, 左右连接时使用*/
-    public static DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.querys(prepare, configs, obj, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, Object obj, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, Object obj, String ... conditions) {
         return service.querys(prepare, obj, conditions);
     }
-    public static void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions){
+    public static void querys(RunPrepare prepare, StreamHandler handler, Object obj, String ... conditions) {
         service.querys(prepare, handler, obj, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
         return service.querys(prepare, first, last, obj, conditions);
     }
-    public static DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.query(prepare, configs, obj, conditions);
     }
-    public static DataRow query(RunPrepare prepare, Object obj, String ... conditions){
+    public static DataRow query(RunPrepare prepare, Object obj, String ... conditions) {
         return service.query(prepare, obj, conditions);
     }
 
-    public static DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.querys(prepare, configs, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, String ... conditions) {
         return service.querys(prepare, conditions);
     }
-    public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions){
+    public static void querys(RunPrepare prepare, StreamHandler handler, String ... conditions) {
         service.querys(prepare, handler, conditions);
     }
-    public static DataSet querys(RunPrepare prepare, long first, long last, String ... conditions){
+    public static DataSet querys(RunPrepare prepare, long first, long last, String ... conditions) {
         return service.querys(prepare, first, last, conditions);
     }
-    public static DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static DataRow query(RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.query(prepare, configs, conditions);
     }
-    public static DataRow query(RunPrepare prepare, String ... conditions){
+    public static DataRow query(RunPrepare prepare, String ... conditions) {
         return service.query(prepare, conditions);
     }
-    public static void query(RunPrepare prepare, StreamHandler handler, String ... conditions){
+    public static void query(RunPrepare prepare, StreamHandler handler, String ... conditions) {
         service.query(prepare, handler, conditions);
     }
 
-    public static DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.caches(cache, prepare, configs, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions) {
         return service.caches(cache, prepare, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
         return service.caches(cache, prepare, first, last, obj, conditions);
     }
-    public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+    public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         return service.cache(cache, prepare, configs, obj, conditions);
     }
-    public static DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions){
+    public static DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions) {
         return service.cache(cache, prepare, obj, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.caches(cache, prepare, configs, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, String ... conditions) {
         return service.caches(cache, prepare, conditions);
     }
-    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions){
+    public static DataSet caches(String cache, RunPrepare prepare, long first, long last, String ... conditions) {
         return service.caches(cache, prepare, first, last, conditions);
     }
-    public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public static DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return service.cache(cache, prepare, configs, conditions);
     }
-    public static DataRow cache(String cache, RunPrepare prepare, String ... conditions){
+    public static DataRow cache(String cache, RunPrepare prepare, String ... conditions) {
         return service.cache(cache, prepare, conditions);
     }
 
@@ -913,23 +933,23 @@ public class ServiceProxy {
      * @param conditions 	固定查询条件
      * @return boolean
      */
-    public static boolean removeCache(String channel, String dest, ConfigStore configs, String ... conditions){
+    public static boolean removeCache(String channel, String dest, ConfigStore configs, String ... conditions) {
         return service.removeCache(channel, dest, configs, conditions);
     }
-    public static boolean removeCache(String channel, String dest, String ... conditions){
+    public static boolean removeCache(String channel, String dest, String ... conditions) {
         return service.removeCache(channel, dest, conditions);
     }
 
-    public static boolean removeCache(String channel, String dest, long first, long last, String ... conditions){
+    public static boolean removeCache(String channel, String dest, long first, long last, String ... conditions) {
         return service.removeCache(channel, dest, first, last, conditions);
     }
-    public static boolean removeCache(String channel, Table dest, ConfigStore configs, String ... conditions){
+    public static boolean removeCache(String channel, Table dest, ConfigStore configs, String ... conditions) {
         return service.removeCache(channel, dest, configs, conditions);
     }
-    public static boolean removeCache(String channel, Table dest, String ... conditions){
+    public static boolean removeCache(String channel, Table dest, String ... conditions) {
         return service.removeCache(channel, dest, conditions);
     }
-    public static boolean removeCache(String channel, Table dest, long first, long last, String ... conditions){
+    public static boolean removeCache(String channel, Table dest, long first, long last, String ... conditions) {
         return service.removeCache(channel, dest, first, last, conditions);
     }
     /**
@@ -937,7 +957,7 @@ public class ServiceProxy {
      * @param channel channel
      * @return boolean
      */
-    public static boolean clearCache(String channel){
+    public static boolean clearCache(String channel) {
         return service.clearCache(channel);
     }
 
@@ -952,66 +972,66 @@ public class ServiceProxy {
      * @param conditions 	固定查询条件
      * @return boolean
      */
-    public static boolean exists(String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static boolean exists(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.exists(dest, configs, obj, conditions);
     }
-    public static boolean exists(String dest, Object obj, String ... conditions){
+    public static boolean exists(String dest, Object obj, String ... conditions) {
         return service.exists(dest, obj, conditions);
     }
-    public static boolean exists(String dest, ConfigStore configs, String ... conditions){
+    public static boolean exists(String dest, ConfigStore configs, String ... conditions) {
         return service.exists(dest, configs, conditions);
     }
-    public static boolean exists(String dest, String ... conditions){
+    public static boolean exists(String dest, String ... conditions) {
         return service.exists(dest, conditions);
     }
-    public static boolean exists(String dest, DataRow row){
+    public static boolean exists(String dest, DataRow row) {
         return service.exists(dest, row);
     }
-    public static boolean exists(DataRow row){
+    public static boolean exists(DataRow row) {
         return service.exists(row);
     }
-    public static boolean exists(Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static boolean exists(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.exists(dest, configs, obj, conditions);
     }
-    public static boolean exists(Table dest, Object obj, String ... conditions){
+    public static boolean exists(Table dest, Object obj, String ... conditions) {
         return service.exists(dest, obj, conditions);
     }
-    public static boolean exists(Table dest, ConfigStore configs, String ... conditions){
+    public static boolean exists(Table dest, ConfigStore configs, String ... conditions) {
         return service.exists(dest, configs, conditions);
     }
-    public static boolean exists(Table dest, String ... conditions){
+    public static boolean exists(Table dest, String ... conditions) {
         return service.exists(dest, conditions);
     }
-    public static boolean exists(Table dest, DataRow row){
+    public static boolean exists(Table dest, DataRow row) {
         return service.exists(dest, row);
     }
 
     /* *****************************************************************************************************************
      * 													COUNT
      ******************************************************************************************************************/
-    public static long count(String dest, ConfigStore configs, Object obj, String ... conditions){
+    public static long count(String dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.count(dest, configs, obj, conditions);
     }
-    public static long count(String dest, Object obj, String ... conditions){
+    public static long count(String dest, Object obj, String ... conditions) {
         return service.count(dest, obj, conditions);
     }
-    public static long count(String dest, ConfigStore configs, String ... conditions){
+    public static long count(String dest, ConfigStore configs, String ... conditions) {
         return service.count(dest, configs, conditions);
     }
-    public static long count(String dest, String ... conditions){
+    public static long count(String dest, String ... conditions) {
         return service.count(dest, conditions);
     }
 
-    public static long count(Table dest, ConfigStore configs, Object obj, String ... conditions){
+    public static long count(Table dest, ConfigStore configs, Object obj, String ... conditions) {
         return service.count(dest, configs, obj, conditions);
     }
-    public static long count(Table dest, Object obj, String ... conditions){
+    public static long count(Table dest, Object obj, String ... conditions) {
         return service.count(dest, obj, conditions);
     }
-    public static long count(Table dest, ConfigStore configs, String ... conditions){
+    public static long count(Table dest, ConfigStore configs, String ... conditions) {
         return service.count(dest, configs, conditions);
     }
-    public static long count(Table dest, String ... conditions){
+    public static long count(Table dest, String ... conditions) {
         return service.count(dest, conditions);
     }
 
@@ -1026,15 +1046,15 @@ public class ServiceProxy {
      * @param brk 失败后是否中断
      * @return 成功数量,失败数量
      */
-    public static int[] execute(File file, Charset charset, boolean brk){
+    public static int[] execute(File file, Charset charset, boolean brk) {
         return service.execute(file, charset, brk);
     }
 
-    public static int[] execute(File file, boolean brk){
+    public static int[] execute(File file, boolean brk) {
         return execute(file, StandardCharsets.UTF_8, brk);
     }
 
-    public static int[] execute(String txt, boolean brk){
+    public static int[] execute(String txt, boolean brk) {
         return service.execute(txt, brk);
     }
     /**
@@ -1044,10 +1064,10 @@ public class ServiceProxy {
      * @param conditions  conditions
      * @return int
      */
-    public static long execute(String dest, ConfigStore configs, String ... conditions){
+    public static long execute(String dest, ConfigStore configs, String ... conditions) {
         return service.execute(dest, configs, conditions);
     }
-    public static long execute(String dest, String ... conditions){
+    public static long execute(String dest, String ... conditions) {
         return service.execute(dest, conditions);
     }
     /**
@@ -1056,10 +1076,10 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return boolean
      */
-    public static boolean executeProcedure(String procedure, String... inputs){
+    public static boolean executeProcedure(String procedure, String... inputs) {
         return service.executeProcedure(procedure, inputs);
     }
-    public static boolean execute(Procedure procedure, String... inputs){
+    public static boolean execute(Procedure procedure, String... inputs) {
         return service.execute(procedure, inputs);
     }
     /**
@@ -1070,43 +1090,43 @@ public class ServiceProxy {
      * @param inputs  inputs
      * @return DataSet
      */
-    public static DataSet querysProcedure(String procedure, long first, long last, String ... inputs){
+    public static DataSet querysProcedure(String procedure, long first, long last, String ... inputs) {
         return service.querysProcedure(procedure, first, last, inputs);
     }
-    public static DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs){
+    public static DataSet querysProcedure(String procedure, PageNavi navi, String ... inputs) {
         return service.querysProcedure(procedure, navi, inputs);
     }
-    public static DataSet querysProcedure(String procedure, String ... inputs){
+    public static DataSet querysProcedure(String procedure, String ... inputs) {
         return service.querysProcedure(procedure, inputs);
     }
-    public static DataSet querys(Procedure procedure, long first, long last, String ... inputs){
+    public static DataSet querys(Procedure procedure, long first, long last, String ... inputs) {
         return service.querys(procedure, first, last, inputs);
     }
-    public static DataSet querys(Procedure procedure, PageNavi navi, String ... inputs){
+    public static DataSet querys(Procedure procedure, PageNavi navi, String ... inputs) {
         return service.querys(procedure, navi, inputs);
     }
 
-    public static DataRow queryProcedure(String procedure, String ... inputs){
+    public static DataRow queryProcedure(String procedure, String ... inputs) {
         return service.queryProcedure(procedure, inputs);
     }
 
-    public static DataRow query(Procedure procedure, String ... inputs){
+    public static DataRow query(Procedure procedure, String ... inputs) {
         return service.query(procedure, inputs);
     }
 
     /* *****************************************************************************************************************
      * 													DELETE
      ******************************************************************************************************************/
-    public static long truncate(String table){
+    public static long truncate(String table) {
         return service.truncate(table);
     }
-    public static long truncate(Table table){
+    public static long truncate(Table table) {
         return service.truncate(table);
     }
-    public static long delete(String table, ConfigStore configs, String ... conditions){
+    public static long delete(String table, ConfigStore configs, String ... conditions) {
         return service.delete(table, configs, conditions);
     }
-    public static long delete(Table dest, ConfigStore configs, String ... conditions){
+    public static long delete(Table dest, ConfigStore configs, String ... conditions) {
         return service().delete(dest, configs, conditions);
     }
     /**
@@ -1116,19 +1136,19 @@ public class ServiceProxy {
      * @param columns 生成删除条件的列, 如果不设置则根据主键删除
      * @return 影响行数
      */
-    public static long delete(String dest, DataSet set, String ... columns){
+    public static long delete(String dest, DataSet set, String ... columns) {
         return service.delete(dest, set, columns);
     }
-    public static long delete(Table dest, DataSet set, String ... columns){
+    public static long delete(Table dest, DataSet set, String ... columns) {
         return service.delete(dest, set, columns);
     }
-    public static long delete(DataSet set, String ... columns){
+    public static long delete(DataSet set, String ... columns) {
         return service.delete(set, columns);
     }
-    public static long delete(String dest, DataRow row, String ... columns){
+    public static long delete(String dest, DataRow row, String ... columns) {
         return service.delete(dest, row, columns);
     }
-    public static long delete(Table dest, DataRow row, String ... columns){
+    public static long delete(Table dest, DataRow row, String ... columns) {
         return service.delete(dest, row, columns);
     }
 
@@ -1138,7 +1158,7 @@ public class ServiceProxy {
      * @param columns 生成删除条件的列, 如果不设置则根据主键删除
      * @return 影响行数
      */
-    public static long delete(Object obj, String ... columns){
+    public static long delete(Object obj, String ... columns) {
         return service.delete(obj, columns);
     }
 
@@ -1148,10 +1168,10 @@ public class ServiceProxy {
      * @param kvs key-value
      * @return 影响行数
      */
-    public static long delete(String table, String ... kvs){
+    public static long delete(String table, String ... kvs) {
         return service.delete(table, kvs);
     }
-    public static long delete(Table table, String ... kvs){
+    public static long delete(Table table, String ... kvs) {
         return service.delete(table, kvs);
     }
 
@@ -1162,17 +1182,17 @@ public class ServiceProxy {
      * @param values 值集合
      * @return 影响行数
      */
-    public static long deletes(String table, String key, Collection<Object> values){
+    public static long deletes(String table, String key, Collection<Object> values) {
         return service.deletes(table, key, values);
     }
-    public static long deletes(Table table, String key, Collection<Object> values){
+    public static long deletes(Table table, String key, Collection<Object> values) {
         return service.deletes(table, key, values);
     }
 
-    public static long deletes(int batch, String table, String key, Collection<Object> values){
+    public static long deletes(int batch, String table, String key, Collection<Object> values) {
         return service.deletes(batch, table, key, values);
     }
-    public static long deletes(int batch, Table table, String key, Collection<Object> values){
+    public static long deletes(int batch, Table table, String key, Collection<Object> values) {
         return service.deletes(batch, table, key, values);
     }
 
@@ -1183,19 +1203,19 @@ public class ServiceProxy {
      * @param values 值集合
      * @return 影响行数
      */
-    public static <T> long deletes(String table, String key, T ... values){
+    public static <T> long deletes(String table, String key, T ... values) {
         return service.deletes(table, key, values);
     }
 
-    public static <T> long deletes(Table table, String key, T ... values){
+    public static <T> long deletes(Table table, String key, T ... values) {
         return service.deletes(table, key, values);
     }
 
-    public static <T> long deletes(int batch, String table, String key, T ... values){
+    public static <T> long deletes(int batch, String table, String key, T ... values) {
         return service.deletes(batch, table, key, values);
     }
 
-    public static <T> long deletes(int batch, Table table, String key, T ... values){
+    public static <T> long deletes(int batch, Table table, String key, T ... values) {
         return service.deletes(batch, table, key, values);
     }
 
@@ -1203,55 +1223,55 @@ public class ServiceProxy {
      * 													METADATA
      ******************************************************************************************************************/
 
-    public static List<String> tables(Catalog catalog, Schema schema, String name, int types){
+    public static List<String> tables(Catalog catalog, Schema schema, String name, int types) {
         return service.tables(catalog, schema, name, types);
     }
-    public static List<String> tables(Schema schema, String name, int types){
+    public static List<String> tables(Schema schema, String name, int types) {
         return service.tables(schema, name, types);
     }
-    public static List<String> tables(String name, int types){
+    public static List<String> tables(String name, int types) {
         return service.tables(name, types);
     }
-    public static List<String> tables(int types){
+    public static List<String> tables(int types) {
         return service.tables(types);
     }
-    public static List<String> tables(){
+    public static List<String> tables() {
         return service.tables();
     }
 
-    public static List<String> masterTables(Catalog catalog, Schema schema, String name, int types){
+    public static List<String> masterTables(Catalog catalog, Schema schema, String name, int types) {
         return service.masterTables(catalog, schema, name, types);
     }
-    public static List<String> masterTables(Schema schema, String name, int types){
+    public static List<String> masterTables(Schema schema, String name, int types) {
         return service.masterTables(schema, name, types);
     }
-    public static List<String> masterTables(String name, int types){
+    public static List<String> masterTables(String name, int types) {
         return service.masterTables(name, types);
     }
-    public static List<String> masterTables(int types){
+    public static List<String> masterTables(int types) {
         return service.masterTables(types);
     }
-    public static List<String> masterTables(){
+    public static List<String> masterTables() {
         return service.masterTables();
     }
 
-    public static List<String> columns(Table table){
+    public static List<String> columns(Table table) {
         return service.columns(table);
     }
-    public static List<String> columns(String table){
+    public static List<String> columns(String table) {
         return service.columns(table);
     }
-    public static List<String> columns(Catalog catalog, Schema schema, String table){
+    public static List<String> columns(Catalog catalog, Schema schema, String table) {
         return service.columns(catalog, schema, table);
     }
 
-    public static List<String> tags(Table table){
+    public static List<String> tags(Table table) {
         return service.tags(table);
     }
-    public static List<String> tags(String table){
+    public static List<String> tags(String table) {
         return service.tags(table);
     }
-    public static List<String> tags(Catalog catalog, Schema schema, String table){
+    public static List<String> tags(Catalog catalog, Schema schema, String table) {
         return service.tags(catalog, schema, table);
     }
     /**
@@ -1259,7 +1279,7 @@ public class ServiceProxy {
      * @param differ differ
      * @return sqls
      */
-    public static List<Run> ddls(MetadataDiffer differ){
+    public static List<Run> ddls(MetadataDiffer differ) {
         return service.ddls(differ);
     }
     /**
@@ -1267,14 +1287,14 @@ public class ServiceProxy {
      * @param differs differs
      * @return sqls
      */
-    public static List<Run> ddls(List<MetadataDiffer> differs){
+    public static List<Run> ddls(List<MetadataDiffer> differs) {
         return service.ddls(differs);
     }
 
-    public static AnylineService.DDLService ddl(){
+    public static AnylineService.DDLService ddl() {
         return service.ddl();
     }
-    public static AnylineService.MetaDataService metadata(){
+    public static AnylineService.MetaDataService metadata() {
         return service.metadata();
     }
 }

@@ -31,8 +31,8 @@ public interface Order extends Cloneable, Serializable{
 	void setType(String type) ;
 	Order clone();
 	enum TYPE{
-		ASC				{public String getCode(){return "ASC";} 	public String getName(){return "正序";}}, 
-		DESC			{public String getCode(){return "DESC";} 	public String getName(){return "倒序";}};
+		ASC				{public String getCode() {return "ASC";} 	public String getName() {return "正序";}},
+		DESC			{public String getCode() {return "DESC";} 	public String getName() {return "倒序";}};
 		public abstract String getName();
 		public abstract String getCode();
 	}

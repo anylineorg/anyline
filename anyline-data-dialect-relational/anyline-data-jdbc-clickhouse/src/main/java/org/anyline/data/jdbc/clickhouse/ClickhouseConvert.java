@@ -28,7 +28,7 @@ import org.anyline.util.DateUtil;
 import java.util.Date;
 
 public class ClickhouseConvert {
-    public static void reg(){
+    public static void reg() {
         ConvertProxy.reg(new AbstractConvert(UnsignedByte.class, Double.class) {
             @Override
             public Object exe(Object value, Object def) throws ConvertException {

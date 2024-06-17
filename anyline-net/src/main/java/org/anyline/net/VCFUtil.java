@@ -38,7 +38,7 @@ public class VCFUtil {
      * TEL;CELL:手机号
      * END:VCARD
      */
-    public static String format(String mobile, String name){
+    public static String format(String mobile, String name) {
         StringBuilder builder = new StringBuilder();
         builder.append("BEGIN:VCARD\n");
         builder.append("ERSION:2.1\n");
@@ -47,7 +47,7 @@ public class VCFUtil {
         builder.append("END:VCARD");
         return builder.toString();
     }
-    public static String format(String mobile){
+    public static String format(String mobile) {
         return format(mobile, mobile);
     }
 
@@ -56,14 +56,14 @@ public class VCFUtil {
      * @param mobiles 手机号或手机号, 姓名
      * @return String
      */
-    public static String format(List<String> mobiles){
+    public static String format(List<String> mobiles) {
        StringBuilder builder = new StringBuilder();
-       for(String mobile:mobiles){
-            if(mobile.contains(",")){
+       for(String mobile:mobiles) {
+            if(mobile.contains(",")) {
                 String[] items = mobile.split(",");
-                if(items.length==1){
+                if(items.length==1) {
                     builder.append(format(items[0])).append("\n");
-                }else if(items.length>1){
+                }else if(items.length>1) {
                     builder.append(format(items[0], items[1])).append("\n");
                 }
             }else{
@@ -120,7 +120,7 @@ public class VCFUtil {
                     }
                 }
                 str = sb.toString();
-            }catch(Exception ignored){
+            }catch(Exception ignored) {
             }
         }
         return str;
@@ -131,7 +131,7 @@ public class VCFUtil {
      * @param str 需要解码的字符串
      * @return 解码后的字符串
      */
-    public static String decode(String str){
+    public static String decode(String str) {
         if (str != null) {
             try {
                 StringBuffer sb = new StringBuffer(str);
@@ -171,7 +171,7 @@ public class VCFUtil {
                     }
                     str = new String(buffer.toByteArray(), StandardCharsets.UTF_8);
                 }
-            }catch(Exception e){
+            }catch(Exception e) {
                 log.error("decode exception:", e);
             }
         }

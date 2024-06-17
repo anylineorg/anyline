@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.kundb")
 public class KunDBAdapter extends MySQLGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.KunDB;
     }
     

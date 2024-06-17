@@ -51,46 +51,46 @@ public class Coordinate {
 	private boolean direct = false			; // 是否直辖市
 	private boolean correct = false			; //
 
-	public Coordinate(String location){
-		if(BasicUtil.isNotEmpty(location)){
+	public Coordinate(String location) {
+		if(BasicUtil.isNotEmpty(location)) {
 			String[] tmps = location.split(",");
-			if(tmps.length > 1){
+			if(tmps.length > 1) {
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
 	}
-	public Coordinate(){
+	public Coordinate() {
 	}
-	public Coordinate(SRS srs, String lng, String lat){
+	public Coordinate(SRS srs, String lng, String lat) {
 		this.srs = srs;
 		point = new Point(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
 	}
-	public Coordinate(SRS srs, Double lng, Double lat){
+	public Coordinate(SRS srs, Double lng, Double lat) {
 		this.srs = srs;
 		point = new Point(lng, lat);
 	}
-	public Coordinate(String lng, String lat){
+	public Coordinate(String lng, String lat) {
 		point = new Point(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
 	}
-	public Coordinate(Double lng, Double lat){
+	public Coordinate(Double lng, Double lat) {
 		point = new Point(lng, lat);
 	}
-	public Coordinate convert(SRS srs){
+	public Coordinate convert(SRS srs) {
 		Double[] loc = GISUtil.convert(this.srs, point.x(), point.y(), srs);
 		point = new Point(loc[0], loc[1]);
 		this.setSrs(srs);
 		return this;
 	}
-	public boolean isEmpty(){
-		if(null == point || null == point.x() || null == point.y()){
+	public boolean isEmpty() {
+		if(null == point || null == point.x() || null == point.y()) {
 			return true; 
 		} 
 		return false; 
 	}
-	public void setLocation(String location){
-		if(BasicUtil.isNotEmpty(location)){
+	public void setLocation(String location) {
+		if(BasicUtil.isNotEmpty(location)) {
 			String[] tmps = location.split(",");
-			if(tmps.length > 1){
+			if(tmps.length > 1) {
 				point = new Point(BasicUtil.parseDouble(tmps[0], null), BasicUtil.parseDouble(tmps[1], null));
 			}
 		}
@@ -140,7 +140,7 @@ public class Coordinate {
 	}
 
 	public void setLng(Double lng) {
-		if(null == point){
+		if(null == point) {
 			point = new Point();
 		}
 		this.point.x(lng);
@@ -154,7 +154,7 @@ public class Coordinate {
 	}
 
 	public void setLat(Double lat) {
-		if(null == point){
+		if(null == point) {
 			point = new Point();
 		}
 		point.y(lat);
@@ -210,7 +210,7 @@ public class Coordinate {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String toString(){
+	public String toString() {
 		return "["+point.x()+","+point.y()+"]";
 	}
 
@@ -310,19 +310,19 @@ public class Coordinate {
 		this.accuracy = accuracy;
 	}
 
-	public Coordinate correct(){
-		if(correct){
+	public Coordinate correct() {
+		if(correct) {
 			return this;
 		}
 		String code = BasicUtil.evl(getVillageCode(), getTownCode(), getCountyCode(), getCityCode(), getProvinceCode());
-		if(null == code){
+		if(null == code) {
 			return this;
 		}
 		if(code.startsWith("11")
 				||code.startsWith("12")
 				||code.startsWith("31")
 				||code.startsWith("50")
-		){
+		) {
 			cityCode = countyCode;
 			cityName = countyName;
 			countyCode = townCode;

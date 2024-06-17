@@ -44,28 +44,28 @@ public class ImgUtil {
  
 	public static enum IMAGE_TYPE{
 		GIF{
-			public String getName(){return "图形交换格式";} 
-			public String getCode(){return "gif";} 
+			public String getName() {return "图形交换格式";}
+			public String getCode() {return "gif";}
 		} 
 		, JPG{
-			public String getName(){return "联合照片专家组";} 
-			public String getCode(){return "jpg";} 
+			public String getName() {return "联合照片专家组";}
+			public String getCode() {return "jpg";}
 		} 
 		, JPEG{
-			public String getName(){return "联合照片专家组";} 
-			public String getCode(){return "jpeg";} 
+			public String getName() {return "联合照片专家组";}
+			public String getCode() {return "jpeg";}
 		} 
 		, BMP{
-			public String getName(){return "位图, Windows操作系统中的标准图像文件格式";}
-			public String getCode(){return "bmp";} 
+			public String getName() {return "位图, Windows操作系统中的标准图像文件格式";}
+			public String getCode() {return "bmp";}
 		} 
 		, PNG{
-			public String getName(){return "可移植网络图形";} 
-			public String getCode(){return "png";} 
+			public String getName() {return "可移植网络图形";}
+			public String getCode() {return "png";}
 		} 
 		, PSD{
-			public String getName(){return "Photoshop的专用格式Photoshop";} 
-			public String getCode(){return "psd";} 
+			public String getName() {return "Photoshop的专用格式Photoshop";}
+			public String getCode() {return "psd";}
 		} 
 		; 
 		public abstract String getName(); 
@@ -93,7 +93,7 @@ public class ImgUtil {
             g.drawImage(image, 0, 0, null); // 绘制缩小后的图
             g.dispose(); 
             File dir = tar.getParentFile(); 
-            if(null != dir && !dir.exists()){
+            if(null != dir && !dir.exists()) {
             	dir.mkdirs(); 
             } 
             ImageIO.write(tag, "JPEG", tar);// 输出到文件流
@@ -129,7 +129,7 @@ public class ImgUtil {
                 Graphics2D g = image.createGraphics(); 
                 g.setColor(Color.white); 
                 g.fillRect(0, 0, width, height);
-                if (width == itemp.getWidth(null)){
+                if (width == itemp.getWidth(null)) {
                     g.drawImage(itemp, 0, (height - itemp.getHeight(null)) / 2, itemp.getWidth(null), itemp.getHeight(null), Color.white, null);
                 }else{
                     g.drawImage(itemp, (width - itemp.getWidth(null)) / 2, 0, itemp.getWidth(null), itemp.getHeight(null), Color.white, null);
@@ -138,7 +138,7 @@ public class ImgUtil {
                 itemp = image; 
             } 
             File dir = tar.getParentFile(); 
-            if(null != dir && !dir.exists()){
+            if(null != dir && !dir.exists()) {
             	dir.mkdirs(); 
             } 
            // ImageIO.write((BufferedImage) itemp, "JPEG", tar);
@@ -154,7 +154,7 @@ public class ImgUtil {
     } 
 	public static void scale(File src, File tar, int width, int height, boolean fill) {
         String format = "JPEG";
-        if(src.getName().toLowerCase().endsWith("png")){
+        if(src.getName().toLowerCase().endsWith("png")) {
             format = "PNG";
         }
         scale(src, tar, format, width, height, fill);
@@ -174,7 +174,7 @@ public class ImgUtil {
 		ImageInputStream iis = null; 
 	    try {
 	    	String format = "JPEG"; 
-	    	if(src.getName().toLowerCase().endsWith("png")){
+	    	if(src.getName().toLowerCase().endsWith("png")) {
 	    		format = "PNG"; 
 	    	} 
 	        Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(format);/*JPEG, PNG, BMP*/
@@ -208,7 +208,7 @@ public class ImgUtil {
     public static void split(File src, File dir, int rows, int cols) {
         try {
             String format = "JPEG";
-            if(src.getName().toLowerCase().endsWith("png")){
+            if(src.getName().toLowerCase().endsWith("png")) {
                 format = "PNG";
             }
             if(rows<=0||rows>20) rows = 2; // 切片行数 
@@ -247,7 +247,7 @@ public class ImgUtil {
                         g.dispose(); 
                         // 输出为文件 
  
-                        if(null != dir && !dir.exists()){
+                        if(null != dir && !dir.exists()) {
                         	dir.mkdirs(); 
                         } 
                         ImageIO.write(tag, format, new File(dir, "_r" + i + "_c" + j + "."+format));
@@ -258,7 +258,7 @@ public class ImgUtil {
             log.error("cut file exception:", e);
         } 
     } 
-    public static float getSizeScale(File file){
+    public static float getSizeScale(File file) {
     	float scale = 0; 
 		try {
 			 BufferedImage bi = ImageIO.read(file); 
@@ -331,7 +331,7 @@ public class ImgUtil {
     public final static void gray(File src, File tar) {
         try {
             String format = "JPEG";
-            if(src.getName().toLowerCase().endsWith("png")){
+            if(src.getName().toLowerCase().endsWith("png")) {
                 format = "PNG";
             }
             BufferedImage img = ImageIO.read(src); 
@@ -360,7 +360,7 @@ public class ImgUtil {
         }finally{
         	try{
         		in.close(); 
-        	}catch(Exception ignored){
+        	}catch(Exception ignored) {
         	} 
         }
 
@@ -387,14 +387,14 @@ public class ImgUtil {
 	        byte[] buf = new byte[BUFFER_SIZE]; 
 	        while (true) {
 	            c = bis.read(buf); 
-	            if (c == EOF){
+	            if (c == EOF) {
 	                break; 
 	            } 
 	            baos.write(buf, 0, c);
 	        } 
 	        data = baos.toByteArray(); 
 	        baos.flush(); 
-    	}catch(Exception e){
+    	}catch(Exception e) {
             log.error("base642file exception:", e);
     	}finally{
     		try{
@@ -406,7 +406,7 @@ public class ImgUtil {
                 bis.close();
                 assert baos != null;
                 baos.close();
-    		}catch(Exception ignored){
+    		}catch(Exception ignored) {
     		} 
     	}
 
@@ -424,7 +424,7 @@ public class ImgUtil {
     public static boolean base64Img(File file, String str) {
     	if (null == str || null == file) return false; 
     	File dir = file.getParentFile(); 
-    	if(null != dir && !dir.exists()){
+    	if(null != dir && !dir.exists()) {
     		dir.mkdirs(); 
     	} 
     	str = str.replace("data:image/jpeg;base64, ","").replace("data:image/png;base64, ","");
@@ -448,7 +448,7 @@ public class ImgUtil {
             log.error("base642img exception:", e);
     		return false; 
     	} finally{
-    		if(null != out){
+    		if(null != out) {
     			try {
 					out.close(); 
 				} catch (IOException e) {
@@ -465,7 +465,7 @@ public class ImgUtil {
      * @param img  img
      * @return int
      */ 
-	public static int[] size(File img){
+	public static int[] size(File img) {
     	int width = -1; 
     	int height = -1; 
     	BufferedImage bi = null; 
@@ -478,17 +478,17 @@ public class ImgUtil {
 		}finally{
 			try{
 				bi.flush(); 
-			}catch(Exception e){
+			}catch(Exception e) {
                 log.error("file size exception:", e);
 			} 
 		} 
         int[] result = {width, height};
     	return result; 
     } 
-	public static int width(File img){
+	public static int width(File img) {
 		return size(img)[0]; 
 	} 
-	public static int height(File img){
+	public static int height(File img) {
 		return size(img)[1]; 
 	} 
 }

@@ -32,25 +32,25 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     protected LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
     protected LinkedHashMap<String, Integer> positions = new LinkedHashMap<>();
     protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
-    public Constraint(){
+    public Constraint() {
     }
 
-    public Constraint(String name){
+    public Constraint(String name) {
         setName(name);
     }
-    public Constraint(Table table, String name){
+    public Constraint(Table table, String name) {
         setTable(table);
         setName(name);
     }
-    public Constraint(Table table, String name, String type){
+    public Constraint(Table table, String name, String type) {
         setTable(table);
         setName(name);
         setType(type);
     }
     public String getName() {
-        if(null == name){
+        if(null == name) {
             name = "constraint_";
-            if(null != columns){
+            if(null != columns) {
                 name += BeanUtil.concat(columns.keySet());
             }
         }
@@ -66,8 +66,8 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     }
 
     public Table getTable(boolean update) {
-        if(update){
-            if(null != table && null != table.getUpdate()){
+        if(update) {
+            if(null != table && null != table.getUpdate()) {
                 return (Table)table.getUpdate();
             }
         }
@@ -75,14 +75,14 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     }
 
     public boolean isUnique() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.isUnique();
         }
         return type == TYPE.UNIQUE || type == TYPE.PRIMARY_KEY;
     }
 
     public TYPE getType() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.type;
         }
         return type;
@@ -94,19 +94,19 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     }
 
     public E setType(String type) {
-        if(null != type){
+        if(null != type) {
             type = type.toUpperCase();
-            if(type.contains("PRIMARY") || type.equals("P")){
+            if(type.contains("PRIMARY") || type.equals("P")) {
                 this.type = TYPE.PRIMARY_KEY;
-            }else if(type.contains("FOREIGN")){
+            }else if(type.contains("FOREIGN")) {
                 this.type = TYPE.FOREIGN_KEY;
-            }else if(type.contains("UNIQUE")){
+            }else if(type.contains("UNIQUE")) {
                 this.type = TYPE.UNIQUE;
-            }else if(type.contains("NOT")){
+            }else if(type.contains("NOT")) {
                 this.type = TYPE.NOT_NULL;
-            }else if(type.contains("DEFAULT")){
+            }else if(type.contains("DEFAULT")) {
                 this.type = TYPE.DEFAULT;
-            }else if(type.contains("CHECK") || type.equals("C")){
+            }else if(type.contains("CHECK") || type.equals("C")) {
                 this.type = TYPE.CHECK;
             }
         }
@@ -114,17 +114,17 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     }
 
     public LinkedHashMap<String, Column> getColumns() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.columns;
         }
         return columns;
 
     }
     public Column getColumn(String name) {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getColumn(name);
         }
-        if(null != columns && null != name){
+        if(null != columns && null != name) {
             return columns.get(name.toUpperCase());
         }
         return null;
@@ -134,25 +134,25 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
         this.columns = columns;
         return (E)this;
     }
-    public E addColumn(Column column){
-        if(null == columns){
+    public E addColumn(Column column) {
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
         columns.put(column.getName().toUpperCase(), column);
         return (E)this;
     }
 
-    public E addColumn(String column){
+    public E addColumn(String column) {
         return addColumn(new Column(column));
     }
 
-    public E addColumn(String column, String order){
+    public E addColumn(String column, String order) {
         return addColumn(column, order, 0);
     }
-    public E addColumn(String column, String order, int position){
+    public E addColumn(String column, String order, int position) {
         positions.put(column.toUpperCase(), position);
         Order.TYPE type = Order.TYPE.ASC;
-        if(null != order && order.toUpperCase().contains("DESC")){
+        if(null != order && order.toUpperCase().contains("DESC")) {
             type = Order.TYPE.DESC;
         }
         setOrder(column, type);
@@ -172,7 +172,7 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
         this.orders.put(column.getName().toUpperCase(), order);
         return (E)this;
     }
-    public Order.TYPE getOrder(String column){
+    public Order.TYPE getOrder(String column) {
         return orders.get(column.toUpperCase());
     }
 
@@ -182,7 +182,7 @@ public class Constraint<E extends Constraint> extends Metadata<E> implements Ser
     public E clone() {
         E copy = super.clone();
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-        for(Column column:this.columns.values()){
+        for(Column column:this.columns.values()) {
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);
         }

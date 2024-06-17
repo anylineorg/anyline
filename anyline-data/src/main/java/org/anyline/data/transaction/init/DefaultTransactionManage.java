@@ -31,8 +31,8 @@ import java.sql.Savepoint;
 
 public class DefaultTransactionManage implements TransactionManage {
     private DataSource datasource;
-    public DefaultTransactionManage(){}
-    public DefaultTransactionManage(DataSource datasource){
+    public DefaultTransactionManage() {}
+    public DefaultTransactionManage(DataSource datasource) {
         this.datasource = datasource;
     }
 
@@ -59,7 +59,7 @@ public class DefaultTransactionManage implements TransactionManage {
                 isNew = true;
                 ThreadConnectionHolder.set(datasource, con);
             }
-        }else if(TransactionDefine.MODE.APPLICATION == mode){
+        }else if(TransactionDefine.MODE.APPLICATION == mode) {
             //应用内事务
             con = ApplicationConnectionHolder.get(datasource, name);
             if(null == con) {
@@ -95,9 +95,9 @@ public class DefaultTransactionManage implements TransactionManage {
         String name = state.getName();
         log.info("[提交事务][name:{}]", name);
         TransactionDefine.MODE mode = state.getMode();
-        if(TransactionDefine.MODE.THREAD == mode){
+        if(TransactionDefine.MODE.THREAD == mode) {
             ThreadConnectionHolder.remove(ds);
-        }else if(TransactionDefine.MODE.APPLICATION == mode){
+        }else if(TransactionDefine.MODE.APPLICATION == mode) {
             ApplicationConnectionHolder.remove(ds, name);
         }
         TransactionManage.records.remove(state);
@@ -118,9 +118,9 @@ public class DefaultTransactionManage implements TransactionManage {
         String name = state.getName();
         log.info("[回滚事务][name:{}]", name);
         TransactionDefine.MODE mode = state.getMode();
-        if(TransactionDefine.MODE.THREAD == mode){
+        if(TransactionDefine.MODE.THREAD == mode) {
             ThreadConnectionHolder.remove(ds);
-        }else if(TransactionDefine.MODE.APPLICATION == mode){
+        }else if(TransactionDefine.MODE.APPLICATION == mode) {
             ApplicationConnectionHolder.remove(ds, name);
         }
         TransactionManage.records.remove(state);

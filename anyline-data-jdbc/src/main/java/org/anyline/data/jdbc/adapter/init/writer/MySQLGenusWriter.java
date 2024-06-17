@@ -32,24 +32,24 @@ public enum MySQLGenusWriter {
             Point point = null;
             if(value instanceof Point) {
                 point = (Point) value;
-            }else if(value instanceof double[]){
+            }else if(value instanceof double[]) {
                 double[] xy = (double[]) value;
-                if(xy.length >= 2){
+                if(xy.length >= 2) {
                     point = new Point(xy[0], xy[1]);
                 }
-            }else if(value instanceof Double[]){
+            }else if(value instanceof Double[]) {
                 Double[] xy = (Double[]) value;
-                if(xy.length >= 2){
+                if(xy.length >= 2) {
                     point = new Point(xy[0], xy[1]);
                 }
-            }else if(value instanceof int[]){
+            }else if(value instanceof int[]) {
                 int[] xy = (int[]) value;
-                if(xy.length >= 2){
+                if(xy.length >= 2) {
                     point = new Point(xy[0], xy[1]);
                 }
-            }else if(value instanceof Integer[]){
+            }else if(value instanceof Integer[]) {
                 Integer[] xy = (Integer[]) value;
-                if(xy.length >= 2){
+                if(xy.length >= 2) {
                     point = new Point(xy[0], xy[1]);
                 }
             }
@@ -155,15 +155,15 @@ public enum MySQLGenusWriter {
     })
 
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataWriter writer(){
+    public DataWriter writer() {
         return writer;
     }
     private final Object[] supports;
     private final DataWriter writer;
-    MySQLGenusWriter(Object[] supports, DataWriter writer){
+    MySQLGenusWriter(Object[] supports, DataWriter writer) {
         this.supports = supports;
         this.writer = writer;
     }

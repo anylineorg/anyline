@@ -83,7 +83,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         types.put(Metadata.TYPE.TABLE, "collection");
     }
     @Override
-    public String name(Type type){
+    public String name(Type type) {
         return types.get(type);
     }
 
@@ -102,12 +102,12 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
             Object pv = BeanUtil.getFieldValue(obj, "_id");
-            if(null == pv){
+            if(null == pv) {
                 List<String> pk = new ArrayList<>();
                 pk.add("_id");
                 generator.create(obj, DatabaseType.MongoDB, dest.getName(), pk, null);
@@ -127,7 +127,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore confis, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
         if(null != generator) {
@@ -135,7 +135,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             pk.add("_id");
             for (Object item : list) {
                 Object pv = BeanUtil.getFieldValue(item, "_id");
-                if(null != pv){
+                if(null != pv) {
                     break;
                 }
                 generator.create(item, DatabaseType.MongoDB, dest.getName(), pk, null);
@@ -160,8 +160,8 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         long cnt = 0;
         Object value = run.getValue();
         String collection = run.getTableName();
-        if(null == value){
-            if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
+        if(null == value) {
+            if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
                 log.warn("[valid:false][action:insert][collection:{}][不具备执行条件]", run.getTableName());
             }
             return -1;
@@ -171,25 +171,25 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         long fr = System.currentTimeMillis();
         try {
             MongoCollection cons = null;
-            if(value instanceof List){
+            if(value instanceof List) {
                 List list = (List) value;
                 cons = database.getCollection(run.getTableName(), list.get(0).getClass());
                 cnt = list.size();
                 cons.insertMany(list);
-            }else if(value instanceof DataSet){
+            }else if(value instanceof DataSet) {
                 DataSet set = (DataSet)value;
                 cons = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS);
                 cons.insertMany(set.getRows());
                 cnt = set.size();
-            }else if(value instanceof EntitySet){
+            }else if(value instanceof EntitySet) {
                 List<Object> datas = ((EntitySet)value).getDatas();
                 cons = database.getCollection(run.getTableName(), datas.get(0).getClass());
                 cons.insertMany(datas);
                 cnt = datas.size();
-            }else if(value instanceof Collection){
+            }else if(value instanceof Collection) {
                 Collection items = (Collection) value;
                 List<Object> list = new ArrayList<>();
-                for(Object item:items){
+                for(Object item:items) {
                     list.add(item);
                     cnt ++;
                 }
@@ -204,11 +204,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             long millis = System.currentTimeMillis() - fr;
             boolean slow = false;
             long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
-                if(millis > SLOW_SQL_MILLIS){
+            if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+                if(millis > SLOW_SQL_MILLIS) {
                     slow = true;
                     log.warn("{}[slow cmd][action:insert][collection:{}][执行耗时:{}][collection:{}]", random, run.getTableName(), DateUtil.format(millis), collection);
-                    if(null != dmListener){
+                    if(null != dmListener) {
                         dmListener.slow(runtime, random, ACTION.DML.INSERT, run, null, null, null, true, cnt, millis);
                     }
                 }
@@ -216,15 +216,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if (!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                 log.info("{}[action:insert][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(cnt, 34));
             }
-        }catch(Exception e){
+        }catch(Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 log.error("insert 异常:", e);
             }
-            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
                 SQLUpdateException ex = new SQLUpdateException("insert异常:"+e, e);
                 throw ex;
             }else{
-                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
+                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
                     log.error("{}[{}][collection:{}][param:{}]", random, LogUtil.format("插入异常:", 33)+e, run.getTableName(), BeanUtil.object2json(data));
                 }
             }
@@ -241,14 +241,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         Run run = null;
-        if(prepare instanceof TablePrepare){
+        if(prepare instanceof TablePrepare) {
             run = new TableRun(runtime, prepare.getTableName());
         }else{
             throw new RuntimeException("不支持查询的类型");
         }
-        if(null != run){
+        if(null != run) {
             run.setRuntime(runtime);
             //如果是text类型 将解析文本并抽取出变量
             run.setPrepare(prepare);
@@ -271,40 +271,40 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
 
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
         Bson bson = null;
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
         run.setFilter(bson);
 
         List<String> excludeColumns = run.getExcludeColumns();
-        if(null == excludeColumns || excludeColumns.isEmpty()){
+        if(null == excludeColumns || excludeColumns.isEmpty()) {
             ConfigStore configs = run.getConfigs();
             if(null != configs) {
                 excludeColumns = configs.columns();
             }
         }
-        if(null != excludeColumns && excludeColumns.size()>0){
+        if(null != excludeColumns && excludeColumns.size()>0) {
             run.setExcludeColumns(excludeColumns);
         }
 
         List<String> queryColumns = run.getQueryColumns();
-        if(null == queryColumns || queryColumns.isEmpty()){
+        if(null == queryColumns || queryColumns.isEmpty()) {
             ConfigStore configs = run.getConfigs();
             if(null != configs) {
                 queryColumns = configs.columns();
             }
         }
-        if(null != queryColumns && queryColumns.size()>0){
+        if(null != queryColumns && queryColumns.size()>0) {
             run.setQueryColumns(queryColumns);
         }
     }
-    private Bson parseCondition(Bson bson, Condition condition){
-        if(condition instanceof ConditionChain){
+    private Bson parseCondition(Bson bson, Condition condition) {
+        if(condition instanceof ConditionChain) {
             ConditionChain chain = (ConditionChain)condition;
             bson = parseCondition(bson, chain);
         }else{
-            if(condition instanceof AutoCondition){
+            if(condition instanceof AutoCondition) {
                 AutoCondition auto = (AutoCondition)condition;
                 //List<RunValue> values = condition.getRunValues();
                 List<Object> values = auto.getValues();
@@ -323,14 +323,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return bson;
     }
 
-    private Bson parseCondition(Bson bson, ConditionChain chain){
+    private Bson parseCondition(Bson bson, ConditionChain chain) {
         String join = chain.getJoin();
         Bson child = null;
         List<Condition> conditions = chain.getConditions();
-        for(Condition con:conditions){
+        for(Condition con:conditions) {
             child = parseCondition(child, con);
         }
-        if(null == bson){
+        if(null == bson) {
             bson = child;
         }else {
             if(null != child) {
@@ -343,7 +343,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
         return bson;
     }
-    private Bson bson(Compare compare, String column, List<Object> values){
+    private Bson bson(Compare compare, String column, List<Object> values) {
         Bson bson = null;
         if(null != values && !values.isEmpty()) {
             Object value = null;
@@ -361,35 +361,35 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 value = values.get(0);
             }
             int cc = compare.getCode();
-            if(cc == 10){                                           //  EQUAL
+            if(cc == 10) {                                           //  EQUAL
                 bson = Filters.eq(column, value);
-            }else if(cc == 50 || cc == 999){                        //  LIKE Compare.REGEX
+            }else if(cc == 50 || cc == 999) {                        //  LIKE Compare.REGEX
                 bson = Filters.regex(column, value.toString());
-            }else if(cc == 51){                                     //  START_WITH
+            }else if(cc == 51) {                                     //  START_WITH
                 bson = Filters.regex(column, "^"+value);
-            }else if(cc == 52){                                     //  END_WITH
+            }else if(cc == 52) {                                     //  END_WITH
                 bson = Filters.regex(column, value+"$");
-            }else if(cc == 20){                                     //  GREAT
+            }else if(cc == 20) {                                     //  GREAT
                 bson = Filters.gt(column, value);
-            }else if(cc == 21){                                     //  GREAT_EQUAL
+            }else if(cc == 21) {                                     //  GREAT_EQUAL
                 bson = Filters.gte(column, value);
-            }else if(cc == 30){                                     //  LESS
+            }else if(cc == 30) {                                     //  LESS
                 bson = Filters.lt(column, value);
-            }else if(cc == 31){                                     //  LESS_EQUAL
+            }else if(cc == 31) {                                     //  LESS_EQUAL
                 bson = Filters.lte(column, value);
-            }else if(cc == 40){                                     //  IN
+            }else if(cc == 40) {                                     //  IN
                 bson = Filters.in(column, BeanUtil.list2array(values));
-            }else if(cc == 80){                                     //  BETWEEN
-                if(values.size() > 1){
+            }else if(cc == 80) {                                     //  BETWEEN
+                if(values.size() > 1) {
                     bson = Filters.and(Filters.gte(column, values.get(0)), Filters.lte(column, values.get(1)));
                 }
-            }else if(cc == 110){                                    //  NOT EQUAL
+            }else if(cc == 110) {                                    //  NOT EQUAL
                 bson = Filters.ne(column, value);
-            }else if(cc == 140){                                    //  NOT IN
+            }else if(cc == 140) {                                    //  NOT IN
                 bson = Filters.nin(column, BeanUtil.list2array(values));
-            }else if(cc == 150){                                    //  NOT LIKE
-            }else if(cc == 151){                                     //  NOT START_WITH
-            }else if(cc == 152){                                     //  NOT END_WITH
+            }else if(cc == 150) {                                    //  NOT LIKE
+            }else if(cc == 151) {                                     //  NOT START_WITH
+            }else if(cc == 152) {                                     //  NOT END_WITH
             }
 
         }
@@ -398,7 +398,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     @Override
     public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
         long fr = System.currentTimeMillis();
-        if(null == random){
+        if(null == random) {
             random = random(runtime);
         }
         DataSet set = new DataSet();
@@ -406,46 +406,46 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             MongoRuntime rt = (MongoRuntime) runtime;
             MongoDatabase database = rt.getDatabase();
             Bson bson = (Bson)run.getFilter();
-            if(null == bson){
+            if(null == bson) {
                 bson = Filters.empty();
             }
-            if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
+            if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
                 log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
             }
             FindIterable<MongoDataRow> rows = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列
-            if(null != queryColumns && queryColumns.size()>0){
+            if(null != queryColumns && queryColumns.size()>0) {
                 fields.add(Projections.include(queryColumns));
             }
             //不查询的列
             List<String> excludeColumn = run.getExcludeColumns();
-            if(null != excludeColumn && excludeColumn.size()>0){
+            if(null != excludeColumn && excludeColumn.size()>0) {
                 fields.add(Projections.exclude(excludeColumn));
             }
-            if(fields.size() > 0){
+            if(fields.size() > 0) {
                 rows.projection(Projections.fields(fields));
             }
             PageNavi navi = run.getPageNavi();
-            if(null != navi){
+            if(null != navi) {
                 rows.skip((int)navi.getFirstRow()).limit(navi.getPageRows());
             }
-            for(MongoDataRow row:rows){
+            for(MongoDataRow row:rows) {
                 set.add(row);
             }
-            if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
+            if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                 log.info("{}[封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), set.size());
             }
-        }catch(Exception e){
+        }catch(Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 log.error("select 异常:", e);
             }
-            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
                 SQLQueryException ex = new SQLQueryException("query异常:"+e, e);
                 throw ex;
             }else{
-                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
+                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
                     log.error("{}[{}][cmd:select][collection:{}]", random, LogUtil.format("查询异常:", 33)+e.toString(), run.getTableName());
                 }
             }
@@ -464,10 +464,10 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         MongoRuntime rt = (MongoRuntime) runtime;
         MongoDatabase database = rt.getDatabase();
         Bson bson = (Bson)run.getFilter();
-        if(null == bson){
+        if(null == bson) {
             bson = Filters.empty();
         }
-        if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
+        if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
             log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
         }
         return database.getCollection(run.getTableName()).countDocuments(bson);
@@ -492,11 +492,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         long millis = System.currentTimeMillis() - fr;
         boolean slow = false;
         long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-        if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
-            if(millis > SLOW_SQL_MILLIS){
+        if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+            if(millis > SLOW_SQL_MILLIS) {
                 slow = true;
                 log.warn("{}[slow cmd][action:update][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
-                if(null != dmListener){
+                if(null != dmListener) {
                     dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, null, null, null, true, result, millis);
                 }
             }
@@ -543,22 +543,22 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
         List<String> primaryKeys = new ArrayList<>();
-        if(null != columns && columns.size() >0 ){
+        if(null != columns && columns.size() >0 ) {
             cols = columns;
         }else{
             cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
         }
-        if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+        if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
             primaryKeys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
         }else{
             primaryKeys = new ArrayList<>();
@@ -566,7 +566,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         }
 
         // 不更新主键 除非显示指定
-        for(String pk:primaryKeys){
+        for(String pk:primaryKeys) {
             if(!columns.containsKey(pk.toUpperCase())) {
                 cols.remove(pk.toUpperCase());
             }
@@ -581,37 +581,37 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
         /*构造SQL*/
 
-        if(!cols.isEmpty()){
-            for(Column column:cols.values()){
+        if(!cols.isEmpty()) {
+            for(Column column:cols.values()) {
                 String key = column.getName();
                 Object value = null;
-                if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
                 }
-                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
-                if(BasicUtil.checkEl(value+"")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+                if(BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                 }else{
-                    if("NULL".equals(value)){
+                    if("NULL".equals(value)) {
                         value = null;
-                    }else if("".equals(value) && isReplaceEmptyNull){
+                    }else if("".equals(value) && isReplaceEmptyNull) {
                         value = null;
                     }
                     boolean chk = true;
-                    if(null == value){
-                        if(!ConfigTable.IS_UPDATE_NULL_FIELD){
+                    if(null == value) {
+                        if(!ConfigTable.IS_UPDATE_NULL_FIELD) {
                             chk = false;
                         }
-                    }else if("".equals(value)){
-                        if(!ConfigTable.IS_UPDATE_EMPTY_FIELD){
+                    }else if("".equals(value)) {
+                        if(!ConfigTable.IS_UPDATE_EMPTY_FIELD) {
                             chk = false;
                         }
                     }
-                    if(chk){
+                    if(chk) {
                         updates.add(Updates.set(key, value));
                     }
                 }
@@ -638,19 +638,19 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(1);
 
         /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
-        if(primaryKeys.size() == 0){
+        if(primaryKeys.size() == 0) {
             throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 
         // 不更新主键 除非显示指定
-        for(String pk:primaryKeys){
+        for(String pk:primaryKeys) {
             if(!columns.containsKey(pk.toUpperCase())) {
                 cols.remove(pk.toUpperCase());
             }
@@ -663,18 +663,18 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         boolean replaceEmptyNull = row.isReplaceEmptyNull();
 
         List<Bson> updates = new ArrayList<>();
-        if(!cols.isEmpty()){
-            for(Column col:cols.values()){
+        if(!cols.isEmpty()) {
+            for(Column col:cols.values()) {
                 String key = col.getName();
                 Object value = row.get(key);
-                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
-                if(BasicUtil.checkEl(value+"")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+                if(BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                  }else{
-                     if("NULL".equals(value)){
+                     if("NULL".equals(value)) {
                         value = null;
-                    }else if("".equals(value) && replaceEmptyNull){
+                    }else if("".equals(value) && replaceEmptyNull) {
                         value = null;
                     }
                 }
@@ -703,15 +703,15 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
-        if(null == key || null == values){
+        if(null == key || null == values) {
             return null;
         }
         if(null == configs) {
             configs = new DefaultConfigStore();
         }
-        if(values instanceof Collection){
+        if(values instanceof Collection) {
             Collection collection = (Collection)values;
-            if(collection.isEmpty()){
+            if(collection.isEmpty()) {
                 return null;
             }
             configs.in(key, collection);
@@ -725,13 +725,13 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String... columns) {
         //没有configs条件的 才根据主键删除
         if(null == configs || configs.isEmptyCondition()) {
-            if(null == columns || columns.length == 0){
+            if(null == columns || columns.length == 0) {
                 columns = new String[]{"_id"};
             }
             if(null == configs) {
                 configs = new DefaultConfigStore();
             }
-            for(String column:columns){
+            for(String column:columns) {
                 configs.and(column, BeanUtil.getFieldValue(obj, column));
             }
         }
@@ -751,25 +751,25 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      ******************************************************************************************************************/
 
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
-        if(null == obj && (null == configs || configs.isEmptyCondition())){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
+        if(null == obj && (null == configs || configs.isEmptyCondition())) {
             return null;
         }
         Run run = null;
-        if(null == dest){
+        if(null == dest) {
             dest = DataSourceUtil.parseDest(null, obj, configs);
         }
-        if(null == dest){
+        if(null == dest) {
             Object entity = obj;
-            if(obj instanceof Collection){
+            if(obj instanceof Collection) {
                 entity = ((Collection)obj).iterator().next();
             }
             Table table = EntityAdapterProxy.table(entity.getClass());
-            if(null != table){
+            if(null != table) {
                 dest = table;
             }
         }
-        if(obj instanceof ConfigStore){
+        if(obj instanceof ConfigStore) {
             run = new TableRun(runtime, dest);
             RunPrepare prepare = new DefaultTablePrepare();
             prepare.setDest(dest);
@@ -800,7 +800,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs){
+    public Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs) {
         TableRun run = new TableRun(runtime, table);
         run.setConfigs(configs);
         run.init();
@@ -813,16 +813,16 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * */
 
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run){
-        if(null != run){
-            if(run instanceof TableRun){
+    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+        if(null != run) {
+            if(run instanceof TableRun) {
                 TableRun r = (TableRun) run;
                 fillDeleteRunContent(runtime, r);
             }
         }
     }
 
-    protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
+    protected void fillDeleteRunContent(DataRuntime runtime, TableRun run) {
         Bson bson = null;
         ConditionChain chain = run.getConditionChain();
         bson = parseCondition(bson, chain);
@@ -836,19 +836,19 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * @return int
      */
 
-    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         long result = -1;
         boolean cmd_success = false;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
         swt = InterceptorProxy.beforeDelete(runtime, random, run);
-        if(swt == ACTION.SWITCH.BREAK){
+        if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
-        if(null != dmListener){
+        if(null != dmListener) {
             swt = dmListener.beforeDelete(runtime, random, run);
         }
-        if(swt == ACTION.SWITCH.BREAK){
+        if(swt == ACTION.SWITCH.BREAK) {
             return -1;
         }
         log.info("{}[action:delete][collection:{}][filter:{}]", random, run.getTableName(), run.getFilter());
@@ -862,7 +862,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
             log.info("{}[action:delete][collection:{}][执行耗时:{}][影响行数:{}]", random, run.getTableName(), DateUtil.format(millis), LogUtil.format(result, 34));
         }
-        if(null != dmListener){
+        if(null != dmListener) {
             dmListener.afterDelete(runtime, random, run, cmd_success, result, millis);
         }
         InterceptorProxy.afterDelete(runtime, random, run, cmd_success, result, millis);

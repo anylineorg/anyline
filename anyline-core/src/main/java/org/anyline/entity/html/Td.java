@@ -44,10 +44,10 @@ public class Td {
     }
     private String widthUnit = "px";     // 默认长度单位 px pt cm/厘米
 
-    public Td(){
+    public Td() {
 
     }
-    public Td(String text){
+    public Td(String text) {
         setText(text);
     }
     public void setStyles(Map<String, String> styles) {
@@ -62,41 +62,41 @@ public class Td {
         this.src = src;
     }
 
-    public int getOffset(){
+    public int getOffset() {
         return offset;
     }
     public int getColspan() {
         return colspan;
     }
-    public boolean isEmpty(){
-        if(null != src){
+    public boolean isEmpty() {
+        if(null != src) {
             return false;
         }
-        if(null != clazz){
+        if(null != clazz) {
             return false;
         }
-        if(null != text){
+        if(null != text) {
             return false;
         }
-        if(merge >= 0){
+        if(merge >= 0) {
             return false;
         }
-        if(rowspan >1){
+        if(rowspan >1) {
             return false;
         }
-        if(colspan >1){
+        if(colspan >1) {
             return false;
         }
-        if(isRemove()){
+        if(isRemove()) {
             return false;
         }
         return true;
     }
-    public Td setOffset(int offset){
+    public Td setOffset(int offset) {
         this.offset = offset;
         return this;
     }
-    public Td addOffset(int offset){
+    public Td addOffset(int offset) {
         this.offset += offset;
         return this;
     }
@@ -107,7 +107,7 @@ public class Td {
             // 后面的所有列偏移+(colspan-1)
            /* Tr tr = this.getTr();
             int max = tr.getTds().size();
-            for(int i=this.getColIndex()+1; i<max; i++){
+            for(int i=this.getColIndex()+1; i<max; i++) {
                 Td td = tr.getTd(i);
                 td.addOffset(colspan-1);
             }*/
@@ -127,8 +127,8 @@ public class Td {
         return this;
     }
     // 根据 rowspan colspan合并
-    public void merge(){
-        if(isMerge){
+    public void merge() {
+        if(isMerge) {
             return;
         }
         org.anyline.entity.html.Tr tr = getTr();
@@ -137,18 +137,18 @@ public class Td {
         int cols = tds.indexOf(this);
         int rows = trs.indexOf(tr);
 
-        for(int c=cols+1; c<cols+colspan; c++){
+        for(int c=cols+1; c<cols+colspan; c++) {
             tr.getTd(c).setRemove(true);
         }
-        for(int r=rows+1; r<rows+rowspan; r++){
+        for(int r=rows+1; r<rows+rowspan; r++) {
             tr = trs.get(r);
-            for(int c=cols; c<cols+colspan; c++){
+            for(int c=cols; c<cols+colspan; c++) {
                 tr.getTd(c).setRemove(true);
             }
         }
         isMerge = true;
     }
-    public int[] index(){
+    public int[] index() {
         int result[] = new int[2];
         org.anyline.entity.html.Tr tr = getTr();
         List<Td> tds = tr.getTds();
@@ -156,12 +156,12 @@ public class Td {
         result[1] = tds.indexOf(this);
         return result;
     }
-    public int getColIndex(){
+    public int getColIndex() {
         org.anyline.entity.html.Tr tr = getTr();
         List<Td> tds = tr.getTds();
         return tds.indexOf(this);
     }
-    public int getRowIndex(){
+    public int getRowIndex() {
         org.anyline.entity.html.Tr tr = getTr();
         return tr.index();
     }
@@ -200,13 +200,13 @@ public class Td {
     }
 
     public String getTextNvl() {
-        if(null == text){
+        if(null == text) {
             return "";
         }
         return text;
     }
     public String getTextTrim() {
-        if(null == text){
+        if(null == text) {
             return "";
         }
         return text.trim();
@@ -240,7 +240,7 @@ public class Td {
         return this;
     }
 
-    public void build(StringBuilder builder){
+    public void build(StringBuilder builder) {
         if(null == builder) {
             builder = new StringBuilder();
         }
@@ -272,55 +272,55 @@ public class Td {
         }
     }
 
-    public String build(){
+    public String build() {
         StringBuilder builder = new StringBuilder();
         build(builder);
         return builder.toString();
     }
 
-    public Td left(){
+    public Td left() {
         Td left = null;
         List<Td> tcs = tr.getTds();
         int index = tcs.indexOf(this);
-        if(index > 0){
+        if(index > 0) {
             left = tcs.get(index-1);
         }
         return left;
     }
-    public Td right(){
+    public Td right() {
         Td right = null;
         List<Td> tcs = tr.getTds();
         int index = tcs.indexOf(this);
-        if(index < tcs.size()-1){
+        if(index < tcs.size()-1) {
             right = tcs.get(index+1);
         }
         return right;
     }
-    public Td bottom(){
+    public Td bottom() {
         Td bottom = null;
         org.anyline.entity.html.Table table = tr.getTable();
         List<org.anyline.entity.html.Tr> trs = table.getTrs();
         int y = trs.indexOf(tr);
-        if(y < trs.size()-1){
+        if(y < trs.size()-1) {
             org.anyline.entity.html.Tr tr = trs.get(y+1);
             int x = tr.getTds().indexOf(this);
             bottom = tr.getTd(x);
         }
         return bottom;
     }
-    public Td top(){
+    public Td top() {
         Td top = null;
         org.anyline.entity.html.Table table = tr.getTable();
         List<org.anyline.entity.html.Tr> trs = table.getTrs();
         int y = trs.indexOf(tr);
-        if(y < trs.size()-1 && y>0){
+        if(y < trs.size()-1 && y>0) {
             org.anyline.entity.html.Tr tr = trs.get(y-1);
             int x = tr.getTds().indexOf(this);
             top = tr.getTd(x);
         }
         return top;
     }
-    public Td removeLeftBorder(){
+    public Td removeLeftBorder() {
         removeBorder( "left");
         Td left = left();
         if(null != left) {
@@ -328,7 +328,7 @@ public class Td {
         }
         return this;
     }
-    public Td removeRightBorder(){
+    public Td removeRightBorder() {
         removeBorder("right");
         Td right = right();
         if(null != right) {
@@ -336,7 +336,7 @@ public class Td {
         }
         return this;
     }
-    public Td removeTopBorder(){
+    public Td removeTopBorder() {
         removeBorder("top");
         Td top = top();
         if(null != top) {
@@ -344,7 +344,7 @@ public class Td {
         }
         return this;
     }
-    public Td removeBottomBorder(){
+    public Td removeBottomBorder() {
         removeBorder( "bottom");
         Td bottom = bottom();
         if(null != bottom) {
@@ -352,16 +352,16 @@ public class Td {
         }
         return this;
     }
-    public Td removeTl2brBorder(){
+    public Td removeTl2brBorder() {
         removeBorder( "tl2br");
         return this;
     }
 
-    public Td removeTr2blBorder(){
+    public Td removeTr2blBorder() {
         removeBorder( "tr2bl");
         return this;
     }
-    public Td removeBorder(String side){
+    public Td removeBorder(String side) {
         styles.remove( "border-"+side+"-size");
         styles.remove("border-"+side+"-color");
         styles.remove("border-"+side+"-style");
@@ -369,7 +369,7 @@ public class Td {
         return this;
     }
 
-    public Td removeBorder(){
+    public Td removeBorder() {
         removeLeftBorder();
         removeRightBorder();
         removeTopBorder();
@@ -378,7 +378,7 @@ public class Td {
         removeTr2blBorder();
         return this;
     }
-    public Td setBorder(){
+    public Td setBorder() {
         setLeftBorder();
         setRightBorder();
         setTopBorder();
@@ -387,7 +387,7 @@ public class Td {
         // setTr2blBorder();
         return this;
     }
-    public Td setBorder(String weight, String color, String style){
+    public Td setBorder(String weight, String color, String style) {
         setLeftBorder(weight, color, style);
         setRightBorder(weight, color, style);
         setTopBorder(weight, color, style);
@@ -396,23 +396,23 @@ public class Td {
         // setTr2blBorder(weight, color, style);
         return this;
     }
-    public Td setLeftBorder(){
+    public Td setLeftBorder() {
         setBorder( "left", "1px", "auto", "single");
         return this;
     }
-    public Td setRightBorder(){
+    public Td setRightBorder() {
         setBorder( "right", "1px", "auto", "single");
         return this;
     }
-    public Td setTopBorder(){
+    public Td setTopBorder() {
         setBorder( "top", "1px", "auto", "single");
         return this;
     }
-    public Td setBottomBorder(){
+    public Td setBottomBorder() {
         setBorder( "bottom", "1px", "auto", "single");
         return this;
     }
-    public Td setTl2brBorder(){
+    public Td setTl2brBorder() {
         setBorder( "tl2br", "1px", "auto", "single");
         return this;
     }
@@ -423,13 +423,13 @@ public class Td {
      * @param bottom 左下文本
      * @return td
      */
-    public Td setTl2brBorder(String top, String bottom){
+    public Td setTl2brBorder(String top, String bottom) {
         String text = "<div style='text-align:right'>" + top + "</div><div style='text-align:left'>"+bottom+"</div>";
         setText(text);
         setBorder( "tl2br", "1px", "auto", "single");
         return this;
     }
-    public Td setTr2blBorder(){
+    public Td setTr2blBorder() {
         setBorder( "tr2bl", "1px", "auto", "single");
         return this;
     }
@@ -439,128 +439,128 @@ public class Td {
      * @param bottom 右下文本
      * @return td
      */
-    public Td setTr2blBorder(String top, String bottom){
+    public Td setTr2blBorder(String top, String bottom) {
         String text = "<div style='text-align:left'>" + top + "</div><div style='text-align:right'>"+bottom+"</div>";
         setText(text);
         setBorder( "tr2bl", "1px", "auto", "single");
         return this;
     }
 
-    public Td setLeftBorder(String width, String color, String style){
+    public Td setLeftBorder(String width, String color, String style) {
         setBorder( "left", width, color, style);
         return this;
     }
-    public Td setLeftBorder(int width, String color, String style){
+    public Td setLeftBorder(int width, String color, String style) {
         setBorder( "left", width+widthUnit, color, style);
         return this;
     }
-    public Td setLeftBorder(double width, String color, String style){
+    public Td setLeftBorder(double width, String color, String style) {
         setBorder( "left", width+widthUnit, color, style);
         return this;
     }
-    public Td setRightBorder(String width, String color, String style){
+    public Td setRightBorder(String width, String color, String style) {
         setBorder( "right", width, color, style);
         return this;
     }
-    public Td setRightBorder(int width, String color, String style){
+    public Td setRightBorder(int width, String color, String style) {
         setBorder( "right", width+widthUnit, color, style);
         return this;
     }
-    public Td setRightBorder(double width, String color, String style){
+    public Td setRightBorder(double width, String color, String style) {
         setBorder( "right", width+widthUnit, color, style);
         return this;
     }
-    public Td setTopBorder(String width, String color, String style){
+    public Td setTopBorder(String width, String color, String style) {
         setBorder( "top", width, color, style);
         return this;
     }
-    public Td setTopBorder(int width, String color, String style){
+    public Td setTopBorder(int width, String color, String style) {
         setBorder( "top", width+widthUnit, color, style);
         return this;
     }
-    public Td setTopBorder(double width, String color, String style){
+    public Td setTopBorder(double width, String color, String style) {
         setBorder( "top", width+widthUnit, color, style);
         return this;
     }
-    public Td setBottomBorder(String width, String color, String style){
+    public Td setBottomBorder(String width, String color, String style) {
         setBorder( "bottom", width, color, style);
         return this;
     }
-    public Td setBottomBorder(int width, String color, String style){
+    public Td setBottomBorder(int width, String color, String style) {
         setBorder( "bottom", width+widthUnit, color, style);
         return this;
     }
-    public Td setBottomBorder(double width, String color, String style){
+    public Td setBottomBorder(double width, String color, String style) {
         setBorder( "bottom", width+widthUnit, color, style);
         return this;
     }
-    public Td setTl2brBorder(String width, String color, String style){
+    public Td setTl2brBorder(String width, String color, String style) {
         setBorder( "tl2br", width, color, style);
         return this;
     }
-    public Td setTl2brBorder(int width, String color, String style){
+    public Td setTl2brBorder(int width, String color, String style) {
         setBorder( "tl2br", width+widthUnit, color, style);
         return this;
     }
-    public Td setTl2brBorder(double width, String color, String style){
+    public Td setTl2brBorder(double width, String color, String style) {
         setBorder( "tl2br", width+widthUnit, color, style);
         return this;
     }
-    public Td setTr2blBorder(String width, String color, String style){
+    public Td setTr2blBorder(String width, String color, String style) {
         setBorder( "tr2bl", width, color, style);
         return this;
     }
-    public Td setTr2blBorder(int width, String color, String style){
+    public Td setTr2blBorder(int width, String color, String style) {
         setBorder( "tr2bl", width+widthUnit, color, style);
         return this;
     }
-    public Td setTr2blBorder(double width, String color, String style){
+    public Td setTr2blBorder(double width, String color, String style) {
         setBorder( "tr2bl", width+widthUnit, color, style);
         return this;
     }
-    public Td setBorder(String side, String width, String color, String style){
+    public Td setBorder(String side, String width, String color, String style) {
         styles.put("border-"+side+"-style", style);
         styles.put("border-"+side+"-color", color);
         styles.put("border-"+side+"-width", width);
         return this;
     }
-    public Td setBorder(String side, int width, String color, String style){
+    public Td setBorder(String side, int width, String color, String style) {
         return setBorder(side, width+widthUnit, color, style);
     }
-    public Td setBorder(String side, double width, String color, String style){
+    public Td setBorder(String side, double width, String color, String style) {
         return setBorder(side, width+widthUnit, color, style);
     }
-    public Td setColor(String color){
+    public Td setColor(String color) {
         styles.put("color", color);
         return this;
     }
-    public Td setFont(String weight, String eastAsia, String ascii, String hint){
+    public Td setFont(String weight, String eastAsia, String ascii, String hint) {
         styles.put("font-weight", weight);
         styles.put("font-family-eastAsia", eastAsia);
         styles.put("font-family-ascii", ascii);
         styles.put("font-family-hint", hint);
         return this;
     }
-    public Td setFontSize(String weight){
+    public Td setFontSize(String weight) {
         styles.put("font-weight", weight);
         return this;
     }
-    public Td setFontWeight(String weight){
+    public Td setFontWeight(String weight) {
         styles.put("font-weight", weight);
         return this;
     }
-    public Td setFontFamily(String font){
+    public Td setFontFamily(String font) {
         styles.put("font-family-eastAsia", font);
         styles.put("font-family-ascii", font);
         styles.put("font-family-hint", font);
         return this;
     }
 
-    public Td setAlign(String align){
+    public Td setAlign(String align) {
         styles.put("text-align", align);
         return this;
     }
-    public Td setVerticalAlign(String align){
+    public Td setVerticalAlign(String align) {
         styles.put("vertical-align", align);
         return this;
     }
@@ -570,7 +570,7 @@ public class Td {
      * @param color 颜色
      * @return Td
      */
-    public Td setBackgroundColor(String color){
+    public Td setBackgroundColor(String color) {
         styles.put("background-color", color);
         return this;
     }
@@ -579,7 +579,7 @@ public class Td {
      * 清除样式
      * @return td
      */
-    public Td removeStyle(){
+    public Td removeStyle() {
         styles.clear();
         return this;
     }
@@ -587,7 +587,7 @@ public class Td {
      * 清除背景色
      * @return td
      */
-    public Td removeBackgroundColor(){
+    public Td removeBackgroundColor() {
         styles.remove("background-color");
         return this;
     }
@@ -596,7 +596,7 @@ public class Td {
      * 清除颜色
      * @return Td
      */
-    public Td removeColor(){
+    public Td removeColor() {
         styles.remove("color");
         return this;
     }
@@ -605,15 +605,15 @@ public class Td {
      * @param bold 是否
      * @return Td
      */
-    public Td setBold(boolean bold){
-        if(bold){
+    public Td setBold(boolean bold) {
+        if(bold) {
             styles.put("font-weight", "700");
         }else{
             styles.remove("font-weight");
         }
         return this;
     }
-    public Td setBold(){
+    public Td setBold() {
         setBold(true);
         return this;
     }
@@ -623,15 +623,15 @@ public class Td {
      * @param underline 是否
      * @return Td
      */
-    public Td setUnderline(boolean underline){
-        if(underline){
+    public Td setUnderline(boolean underline) {
+        if(underline) {
             styles.put("underline", "true");
         }else{
             styles.remove("underline");
         }
         return this;
     }
-    public Td setUnderline(){
+    public Td setUnderline() {
         setUnderline(true);
         return this;
     }
@@ -641,25 +641,25 @@ public class Td {
      * @param strike 是否
      * @return Td
      */
-    public Td setStrike(boolean strike){
-        if(strike){
+    public Td setStrike(boolean strike) {
+        if(strike) {
             styles.put("strike", "true");
         }else{
             styles.remove("");
         }
         return this;
     }
-    public Td setStrike(){
+    public Td setStrike() {
         setStrike(true);
         return this;
     }
 
-    public Td setDelete(){
+    public Td setDelete() {
         setStrike(true);
         return this;
     }
-    public Td setDelete(boolean strike){
-        if(strike){
+    public Td setDelete(boolean strike) {
+        if(strike) {
             styles.put("strike", "true");
         }else{
             styles.remove("");
@@ -671,7 +671,7 @@ public class Td {
      * @param italic 是否
      * @return Td
      */
-    public Td setItalic(boolean italic){
+    public Td setItalic(boolean italic) {
         if(italic) {
             styles.put("italic", "true");
         }else{
@@ -680,80 +680,80 @@ public class Td {
         return this;
     }
 
-    public Td setItalic(){
+    public Td setItalic() {
         return setItalic(true);
     }
-    public Td setLineHeight(String height){
+    public Td setLineHeight(String height) {
         styles.put("line-height", height);
         return this;
     }
-    public Td setLineHeight(int height){
+    public Td setLineHeight(int height) {
         return setLineHeight(height+widthUnit);
     }
-    public Td setLineHeight(double height){
+    public Td setLineHeight(double height) {
         return setLineHeight(height+widthUnit);
     }
-    public Td setPadding(String padding){
+    public Td setPadding(String padding) {
         styles.put("padding-left", padding);
         styles.put("padding-right", padding);
         styles.put("padding-top", padding);
         styles.put("padding-bottom", padding);
         return this;
     }
-    public Td setPadding(int padding){
+    public Td setPadding(int padding) {
         return setPadding(padding+widthUnit);
     }
-    public Td setPadding(double padding){
+    public Td setPadding(double padding) {
         return setPadding(padding+widthUnit);
     }
 
-    public Td setBottomPadding(String padding){
+    public Td setBottomPadding(String padding) {
         return setPadding("bottom", padding);
     }
-    public Td setBottomPadding(int padding){
+    public Td setBottomPadding(int padding) {
         return setPadding("bottom", padding);
     }
-    public Td setBottomPadding(double padding){
+    public Td setBottomPadding(double padding) {
         return setPadding("bottom", padding);
     }
 
-    public Td setTopPadding(String padding){
+    public Td setTopPadding(String padding) {
         return setPadding("top", padding);
     }
-    public Td setTopPadding(int padding){
+    public Td setTopPadding(int padding) {
         return setPadding("top", padding);
     }
-    public Td setTopPadding(double padding){
+    public Td setTopPadding(double padding) {
         return setPadding("top", padding);
     }
 
-    public Td setRightPadding(String padding){
+    public Td setRightPadding(String padding) {
         return setPadding("right", padding);
     }
-    public Td setRightPadding(int padding){
+    public Td setRightPadding(int padding) {
         return setPadding("right", padding);
     }
-    public Td setRightPadding(double padding){
+    public Td setRightPadding(double padding) {
         return setPadding("right", padding);
     }
 
-    public Td setLeftPadding(String padding){
+    public Td setLeftPadding(String padding) {
         return setPadding("left", padding);
     }
-    public Td setLeftPadding(int padding){
+    public Td setLeftPadding(int padding) {
         return setPadding("left", padding);
     }
-    public Td setLeftPadding(double padding){
+    public Td setLeftPadding(double padding) {
         return setPadding("left", padding);
     }
-    public Td setPadding(String side, String padding){
+    public Td setPadding(String side, String padding) {
         styles.put("padding-"+side, padding);
         return this;
     }
-    public Td setPadding(String side, int padding){
+    public Td setPadding(String side, int padding) {
         return setPadding(side, padding+widthUnit);
     }
-    public Td setPadding(String side, double padding){
+    public Td setPadding(String side, double padding) {
         return setPadding(side, padding+widthUnit);
     }
 
@@ -765,10 +765,10 @@ public class Td {
         this.widthUnit = widthUnit;
     }
 
-    public void addStyle(String key, String value){
+    public void addStyle(String key, String value) {
         styles.put(key, value);
     }
-    public Td createCopy(boolean style, boolean content){
+    public Td createCopy(boolean style, boolean content) {
         Td copy = new Td();
 
         copy.setWidthUnit(widthUnit);
@@ -788,7 +788,7 @@ public class Td {
         return copy;
     }
 
-    public Td createCopy(){
+    public Td createCopy() {
         return createCopy(true, false);
     }
 }

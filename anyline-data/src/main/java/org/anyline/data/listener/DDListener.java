@@ -34,13 +34,13 @@ public interface DDListener {
      * @param column 列
      * @return SWITCH
      */
-    default SWITCH prepareAdd(DataRuntime runtime, String random, Column column){ return SWITCH.CONTINUE;}
-    default SWITCH beforeAdd(DataRuntime runtime, String random, Column column, List<Run> runs){ return SWITCH.CONTINUE;}
-    default SWITCH afterAdd(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAdd(DataRuntime runtime, String random, Column column) { return SWITCH.CONTINUE;}
+    default SWITCH beforeAdd(DataRuntime runtime, String random, Column column, List<Run> runs) { return SWITCH.CONTINUE;}
+    default SWITCH afterAdd(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Column column){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Column column, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Column column) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Column column, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 修改列之后触发
@@ -53,7 +53,7 @@ public interface DDListener {
      * @param exception exception
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, Exception exception){return SWITCH.CONTINUE;}
+    default SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, Exception exception) {return SWITCH.CONTINUE;}
     /**
      * 修改列之后触发
      * 触发之后如果返回true dao将再执行一次 alter column
@@ -66,15 +66,15 @@ public interface DDListener {
      * @param exception exception
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, long rows, Exception exception){return SWITCH.CONTINUE;}
+    default SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, long rows, Exception exception) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Column column){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Column column, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Column column) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Column column, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Column column){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Column column, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Column column) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Column column, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Column column, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 table 之前触发
@@ -83,23 +83,23 @@ public interface DDListener {
      * @param table 表
      * @return SWITCH
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, Table table){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, Table table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, Table table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, Table table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH parepareAlter(DataRuntime runtime, String random, Table table){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Table table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Table table, Collection<Column> columns){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Table table, Collection<Column> columns, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH parepareAlter(DataRuntime runtime, String random, Table table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Table table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Table table, Collection<Column> columns) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Table table, Collection<Column> columns, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Table table){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Table table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Table table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Table table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Table table){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Table table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Table table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Table table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Table table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 view 之前调用
@@ -108,21 +108,21 @@ public interface DDListener {
      * @param view view
      * @return SWITCH
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, View view){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, View view, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, View view) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, View view, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, View view){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, View view, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, View view) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, View view, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, View view){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, View view, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, View view) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, View view, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, View view){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, View view, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, View view) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, View view, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, View view, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 MasterTable 之前调用
@@ -131,21 +131,21 @@ public interface DDListener {
      * @param table table
      * @return SWITCH
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, MasterTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, MasterTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, MasterTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, MasterTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, MasterTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, MasterTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, MasterTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, MasterTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, MasterTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, MasterTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, MasterTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, MasterTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, MasterTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, MasterTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, MasterTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, MasterTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, MasterTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 PartitionTable 之前调用
@@ -154,21 +154,21 @@ public interface DDListener {
      * @param table table
      * @return SWITCH
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, PartitionTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, PartitionTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, PartitionTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, PartitionTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, PartitionTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, PartitionTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, PartitionTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, PartitionTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, PartitionTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, PartitionTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, PartitionTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, PartitionTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, PartitionTable table){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, PartitionTable table, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, PartitionTable table) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, PartitionTable table, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, PartitionTable table, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 index 之前触发
@@ -177,21 +177,21 @@ public interface DDListener {
      * @param index index
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareAdd(DataRuntime runtime, String random, Index index){return SWITCH.CONTINUE;}
-    default SWITCH beforeAdd(DataRuntime runtime, String random, Index index, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAdd(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAdd(DataRuntime runtime, String random, Index index) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAdd(DataRuntime runtime, String random, Index index, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAdd(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Index index){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Index index, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Index index) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Index index, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Index index){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Index index, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Index index) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Index index, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Index index){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Index index, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Index index) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Index index, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Index index, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 primary 之前触发
@@ -200,21 +200,21 @@ public interface DDListener {
      * @param primary primary
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareAdd(DataRuntime runtime, String random, PrimaryKey primary){return SWITCH.CONTINUE;}
-    default SWITCH beforeAdd(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAdd(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAdd(DataRuntime runtime, String random, PrimaryKey primary) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAdd(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAdd(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, PrimaryKey primary){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, PrimaryKey primary) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, PrimaryKey primary){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, PrimaryKey primary) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, PrimaryKey primary){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, PrimaryKey primary) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, PrimaryKey primary, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
     /**
      * 创建 foreign 之前触发
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
@@ -222,21 +222,21 @@ public interface DDListener {
      * @param foreign foreign
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareAdd(DataRuntime runtime, String random, ForeignKey foreign){return SWITCH.CONTINUE;}
-    default SWITCH beforeAdd(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAdd(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAdd(DataRuntime runtime, String random, ForeignKey foreign) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAdd(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAdd(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, ForeignKey foreign){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, ForeignKey foreign) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, ForeignKey foreign){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, ForeignKey foreign) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, ForeignKey foreign){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, ForeignKey foreign) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, ForeignKey foreign, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建constraint之前触发
@@ -245,21 +245,21 @@ public interface DDListener {
      * @param constraint constraint
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareAdd(DataRuntime runtime, String random, Constraint constraint){return SWITCH.CONTINUE;}
-    default SWITCH beforeAdd(DataRuntime runtime, String random, Constraint constraint, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAdd(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAdd(DataRuntime runtime, String random, Constraint constraint) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAdd(DataRuntime runtime, String random, Constraint constraint, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAdd(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Constraint constraint){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Constraint constraint, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Constraint constraint) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Constraint constraint, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Constraint constraint){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Constraint constraint, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Constraint constraint) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Constraint constraint, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Constraint constraint){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Constraint constraint, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Constraint constraint) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Constraint constraint, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Constraint constraint, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建procedure之前触发
@@ -268,21 +268,21 @@ public interface DDListener {
      * @param procedure procedure
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, Procedure procedure, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, Procedure procedure) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, Procedure procedure, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Procedure procedure, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Procedure procedure) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Procedure procedure, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Procedure procedure, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Procedure procedure) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Procedure procedure, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Procedure procedure){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Procedure procedure, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Procedure procedure) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Procedure procedure, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Procedure procedure, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
     /**
      * 创建 function 之前触发
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
@@ -290,21 +290,21 @@ public interface DDListener {
      * @param function function
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, Function function){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, Function function, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, Function function) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, Function function, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Function function){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Function function, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Function function) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Function function, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Function function){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Function function, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Function function) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Function function, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Function function){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Function function, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Function function) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Function function, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Function function, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 sequence 之前触发
@@ -313,21 +313,21 @@ public interface DDListener {
      * @param sequence sequence
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, Sequence sequence) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, Sequence sequence, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Sequence sequence) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Sequence sequence, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Sequence sequence) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Sequence sequence, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Sequence sequence){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Sequence sequence, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Sequence sequence) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Sequence sequence, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Sequence sequence, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
     /**
      * 创建 trigger 之前触发
@@ -336,20 +336,20 @@ public interface DDListener {
      * @param trigger trigger
      * @return default SWITCH  如果返回false则中断执行
      */
-    default SWITCH prepareCreate(DataRuntime runtime, String random, Trigger trigger){return SWITCH.CONTINUE;}
-    default SWITCH beforeCreate(DataRuntime runtime, String random, Trigger trigger, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterCreate(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareCreate(DataRuntime runtime, String random, Trigger trigger) {return SWITCH.CONTINUE;}
+    default SWITCH beforeCreate(DataRuntime runtime, String random, Trigger trigger, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterCreate(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareAlter(DataRuntime runtime, String random, Trigger trigger){return SWITCH.CONTINUE;}
-    default SWITCH beforeAlter(DataRuntime runtime, String random, Trigger trigger, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterAlter(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareAlter(DataRuntime runtime, String random, Trigger trigger) {return SWITCH.CONTINUE;}
+    default SWITCH beforeAlter(DataRuntime runtime, String random, Trigger trigger, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterAlter(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareDrop(DataRuntime runtime, String random, Trigger trigger){return SWITCH.CONTINUE;}
-    default SWITCH beforeDrop(DataRuntime runtime, String random, Trigger trigger, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterDrop(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareDrop(DataRuntime runtime, String random, Trigger trigger) {return SWITCH.CONTINUE;}
+    default SWITCH beforeDrop(DataRuntime runtime, String random, Trigger trigger, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterDrop(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
-    default SWITCH prepareRename(DataRuntime runtime, String random, Trigger trigger){return SWITCH.CONTINUE;}
-    default SWITCH beforeRename(DataRuntime runtime, String random, Trigger trigger, List<Run> runs){return SWITCH.CONTINUE;}
-    default SWITCH afterRename(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis){return SWITCH.CONTINUE;}
+    default SWITCH prepareRename(DataRuntime runtime, String random, Trigger trigger) {return SWITCH.CONTINUE;}
+    default SWITCH beforeRename(DataRuntime runtime, String random, Trigger trigger, List<Run> runs) {return SWITCH.CONTINUE;}
+    default SWITCH afterRename(DataRuntime runtime, String random, Trigger trigger, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
 
 }

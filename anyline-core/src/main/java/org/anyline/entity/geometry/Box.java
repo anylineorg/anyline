@@ -22,8 +22,8 @@ public class Box extends Geometry{
 
     private Point p1;
     private Point p2;
-    public Box(){}
-    public Box(Point p1, Point p2){
+    public Box() {}
+    public Box(Point p1, Point p2) {
         this.p1 = p1;
         this.p2 = p2;
     }
@@ -82,16 +82,16 @@ public class Box extends Geometry{
     public String sql(boolean tag, boolean bracket) {
 
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
-        if(bracket){
+        if(bracket) {
             builder.append("(");
         }
         builder.append(p1.sql(false, false));
         builder.append(",");
         builder.append(p2.sql(false, false));
-        if(bracket){
+        if(bracket) {
             builder.append(")");
         }
         return builder.toString();

@@ -41,24 +41,24 @@ public class DataReaderFactory {
      * @param supports 支持的类型,或者通过reader.supports()返回 必选一个
      * @param reader DataReader 符合supports条件的数据 在从数据库中读取后由当前reader转换类型
      */
-    public static void reg(DatabaseType dbt, Object[] supports, DataReader reader){
+    public static void reg(DatabaseType dbt, Object[] supports, DataReader reader) {
         if(null == supports) {
             supports = reader.supports();
         }
-        if(null == supports){
+        if(null == supports) {
             log.warn("[DataReader 未声明支持类型][cass:{}]", reader.getClass().getName());
             return;
         }
-        if(null == dbt){
+        if(null == dbt) {
             dbt = DatabaseType.NONE;
         }
         Map<Object, DataReader> map = readers.get(dbt);
-        if(null == map){
+        if(null == map) {
             map = new HashMap<>();
             readers.put(dbt, map);
         }
         for(Object support:supports) {
-            if(support instanceof String){
+            if(support instanceof String) {
                 support = ((String) support).toUpperCase();
             }
             map.put(support, reader);
@@ -67,18 +67,18 @@ public class DataReaderFactory {
     public static void reg(DatabaseType dbt, DataReader reader) {
         reg(dbt, null, reader);
     }
-    public static void reg(Object[] supports, DataReader reader){
+    public static void reg(Object[] supports, DataReader reader) {
         reg(DatabaseType.NONE, supports, reader);
     }
-    public static void reg(DataReader reader){
+    public static void reg(DataReader reader) {
         reg(DatabaseType.NONE, null, reader);
     }
 
-    public static DataReader reader(DatabaseType dbt, Object type){
-        if(null == dbt){
+    public static DataReader reader(DatabaseType dbt, Object type) {
+        if(null == dbt) {
             dbt = DatabaseType.NONE;
         }
-        if(type instanceof String){
+        if(type instanceof String) {
             type = ((String) type).toUpperCase();
         }
         Map<Object, DataReader> map = readers.get(dbt);

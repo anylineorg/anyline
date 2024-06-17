@@ -42,14 +42,14 @@ import java.util.Map;
 @Component("anyline.environment.spring.data.datasource.holder.jdbc")
 public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	private static final SpringJDBCDataSourceHolder instance = new SpringJDBCDataSourceHolder();
-	public static SpringJDBCDataSourceHolder instance(){
+	public static SpringJDBCDataSourceHolder instance() {
 		return instance;
 	}
 
-	public SpringJDBCDataSourceHolder(){
-		for(DatabaseType type:DatabaseType.values()){
+	public SpringJDBCDataSourceHolder() {
+		for(DatabaseType type:DatabaseType.values()) {
 			String url = type.url();
-			if(url.contains("jdbc:") && url.contains("://")){ // jdbc:postgresql://localhost:35432/simple
+			if(url.contains("jdbc:") && url.contains("://")) { // jdbc:postgresql://localhost:35432/simple
 				DataSourceHolder.register(type, this);
 				DataSourceHolder.register(type.driver(), this);
 				DataSourceHolder.register(type.name().toUpperCase(), this);
@@ -70,19 +70,19 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 * @param key key
 	 * @return DataSource
 	 */
-	public static DataSource datasource(String key){
+	public static DataSource datasource(String key) {
 		DataSource datasource = null;
 		DataRuntime runtime = RuntimeHolder.runtime(key);
-		if(null != runtime){
+		if(null != runtime) {
 			JdbcTemplate jdbc = (JdbcTemplate) runtime.getProcessor();
-			if(null != jdbc){
+			if(null != jdbc) {
 				datasource = jdbc.getDataSource();
 			}
 		}
 		return datasource;
 	}
 
-	public static DataSource datasource(){
+	public static DataSource datasource() {
 		return datasource("default");
 	}
 
@@ -120,25 +120,25 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 			DataSourceHolder.check(key, override);
 			regTransactionManager(key, datasource);
 			DataRuntime runtime = SpringJDBCRuntimeHolder.instance().reg(key, datasource);
-			if(null != runtime){
+			if(null != runtime) {
 				Map<String, Object> param = params.get(key);
 				if(null != param) {
 					runtime.setDriver(param.get("driver") + "");
 					String url = param.get("url") + "";
 					runtime.setUrl(url);
 					String adapter = param.get("adapter")+"";
-					if(BasicUtil.isEmpty(adapter)){
+					if(BasicUtil.isEmpty(adapter)) {
 						adapter = DataSourceUtil.parseAdapterKey(url);
 					}
 					runtime.setAdapterKey(adapter);
 					String catalog = param.get("catalog")+"";
-					if(BasicUtil.isEmpty(catalog)){
+					if(BasicUtil.isEmpty(catalog)) {
 						catalog = DataSourceUtil.parseCatalog(url);
 					}
 					runtime.setCatalog(catalog);
 
 					String schema = param.get("schema")+"";
-					if(BasicUtil.isEmpty(schema)){
+					if(BasicUtil.isEmpty(schema)) {
 						schema = DataSourceUtil.parseSchema(url);
 					}
 					runtime.setSchema(schema);
@@ -155,15 +155,15 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 				//创建事务管理器
 				regTransactionManager(key, (DataSource)datasource);
 				runtime = SpringJDBCRuntimeHolder.instance().reg(key, (DataSource)datasource);
-				if(null == adapter && null != type){
+				if(null == adapter && null != type) {
 					adapter = DriverAdapterHolder.getAdapter(type);
 				}
-				if(null != adapter){
+				if(null != adapter) {
 					runtime.setAdapter(adapter);
 				}
 			}else{
 				//spring还没加载完先缓存起来，最后统一注册
-				if(!caches.containsKey(key) || override){
+				if(!caches.containsKey(key) || override) {
 					caches.put(key, datasource);
 				}
 			}
@@ -174,12 +174,12 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	/**
 	 * 在spring启动之前注册的数据源
 	 */
-	public void loadCache(){
-		for(String key:caches.keySet()){
+	public void loadCache() {
+		for(String key:caches.keySet()) {
 			Object datasource = caches.get(key);
 			try {
 				runtime(key, datasource, true);
-			}catch (Exception e){
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -203,7 +203,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		Connection con = null;
 		try{
 			con = DataSourceUtils.getConnection(datasource);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return false;
 		}finally {
 			if (null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)) {
@@ -232,7 +232,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 *
 	 * ****************************************************************************************************************/
 
-	public String regTransactionManager(String key, DataSource datasource, boolean primary){
+	public String regTransactionManager(String key, DataSource datasource, boolean primary) {
 
 		/*String tm_id = DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  key;
 		if(ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {

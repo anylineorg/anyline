@@ -39,27 +39,27 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         VERTEX(32),
         EDGE(64);
         public final int value;
-        TYPE(int value){
+        TYPE(int value) {
             this.value = value;
         }
-        public int value(){
+        public int value() {
             return value;
         }
     }
     private static Map<Integer, Type> types = new HashMap<>();
     static {
-        for(TYPE type: TYPE.values()){
+        for(TYPE type: TYPE.values()) {
             types.put(type.value, type);
         }
     }
 
-    public static Map<Integer, Type> types(){
+    public static Map<Integer, Type> types() {
         return types;
     }
-    public static Type type(int type){
+    public static Type type(int type) {
         return types().get(type);
     }
-    public static List<Type> types(int types){
+    public static List<Type> types(int types) {
         List<Type> list = new ArrayList<>();
         int count = 0;
         while (types >= 1) {
@@ -67,12 +67,12 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             types = (types - temp) / 2;
             if (temp == 1) {
                 Type t = null;
-                if (count == 0){
+                if (count == 0) {
                     t = type(1);
                 }else{
                     t = type((2 << (count - 1)));
                 }
-                if(null != t){
+                if(null != t) {
                     list.add(t);
                 }
             }
@@ -89,7 +89,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         CONSTRAINT(64),
         DDL(32768);
         public final int value;
-        STRUCT(int value){
+        STRUCT(int value) {
             this.value = value;
         }
     }
@@ -203,11 +203,11 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
 
     protected boolean autoDropColumn = ConfigTable.IS_DDL_AUTO_DROP_COLUMN;     //执行alter时是否删除 数据库中存在 但table 中不存在的列(属性)
 
-    public Table(){
+    public Table() {
     }
-    public Table(String name){
-        if(null != name){
-            if(name.contains(":") || name.contains(" ")){
+    public Table(String name) {
+        if(null != name) {
+            if(name.contains(":") || name.contains(" ")) {
                 //自定义XML或sql
                 this.name = name;
             }else {
@@ -230,13 +230,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
     }
 
-    public Table(String schema, String table){
+    public Table(String schema, String table) {
         this(null, schema, table);
     }
-    public Table(Schema schema, String table){
+    public Table(Schema schema, String table) {
         this(null, schema, table);
     }
-    public Table(String catalog, String schema, String name){
+    public Table(String catalog, String schema, String name) {
         if(BasicUtil.isNotEmpty(catalog)) {
             this.catalog = new Catalog(catalog);
         }
@@ -245,13 +245,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         this.name = name;
     }
-    public Table(Catalog catalog, Schema schema, String name){
+    public Table(Catalog catalog, Schema schema, String name) {
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
     }
 
-    public static Table from(Class clazz){
+    public static Table from(Class clazz) {
         return EntityAdapterProxy.table(clazz);
     }
     public Table setKeyword(String keyword) {
@@ -260,14 +260,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public Distribution getDistribution() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getDistribution();
         }
         return distribution;
     }
 
     public Table setDistribution(Distribution distribution) {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.setDistribution(distribution);
         }
         this.distribution = distribution;
@@ -280,7 +280,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * @param columns 分桶依据列
      * @return this
      */
-    public Table setDistribution(Distribution.TYPE type, int buckets, String ... columns){
+    public Table setDistribution(Distribution.TYPE type, int buckets, String ... columns) {
         setDistribution(new Distribution(type, buckets, columns));
         return this;
     }
@@ -290,50 +290,50 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * @param columns 分桶依据列
      * @return this
      */
-    public Table setDistribution(Distribution.TYPE type, String ... columns){
+    public Table setDistribution(Distribution.TYPE type, String ... columns) {
         setDistribution(new Distribution(type, columns));
         return this;
     }
-    public E drop(){
+    public E drop() {
         this.action = ACTION.DDL.TABLE_DROP;
         return super.drop();
     }
-    public int getPrimaryKeySize(){
+    public int getPrimaryKeySize() {
         PrimaryKey pk = getPrimaryKey();
-        if(null != pk){
+        if(null != pk) {
             return pk.getColumns().size();
         }
         return 0;
     }
     public List<Key> getKeys() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getKeys();
         }
         return keys;
     }
 
     public Table setKeys(List<Key> keys) {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.setKeys(keys);
         }
         this.keys = keys;
         return this;
     }
-    public Table addKey(Key key){
-        if(getmap && null != update){
+    public Table addKey(Key key) {
+        if(getmap && null != update) {
             return update.addKey(key);
         }
-        if(null == keys){
+        if(null == keys) {
             keys = new ArrayList<>();
         }
         keys.add(key);
         return this;
     }
-    public Table addKey(Key.TYPE type, String ... columns){
-        if(getmap && null != update){
+    public Table addKey(Key.TYPE type, String ... columns) {
+        if(getmap && null != update) {
             return update.addKey(type, columns);
         }
-        if(null == keys){
+        if(null == keys) {
             keys = new ArrayList<>();
         }
         Key key = new Key();
@@ -344,7 +344,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public Partition getPartition() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.partition;
         }
         return partition;
@@ -356,14 +356,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * @param values 分区依据值
      * @return Table
      */
-    public Table partitionFor(Partition.TYPE type, Object ... values){
+    public Table partitionFor(Partition.TYPE type, Object ... values) {
         Partition partition = new Partition();
         partition.setType(type);
         partition.addValues(values);
         return setPartition(partition);
     }
     public Table setPartition(Partition partition) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setPartition(partition);
             return this;
         }
@@ -371,7 +371,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
-    public Table partitionBy(Partition.TYPE type, String ... columns){
+    public Table partitionBy(Partition.TYPE type, String ... columns) {
         Partition partition = new Partition();
         partition.setType(type);
         partition.setColumns(columns);
@@ -379,7 +379,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getMasterName() {
-        if(null != master){
+        if(null != master) {
             return master.getName();
         }
         return null;
@@ -412,27 +412,27 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
     public Table addMaterializes(View view) {
-        if(null == this.materializes){
+        if(null == this.materializes) {
             this.materializes = new LinkedHashMap<>();
         }
         this.materializes.put(view.getName().toUpperCase(), view);
         return this;
     }
 
-    public LinkedHashMap<String, Column> primarys(){
+    public LinkedHashMap<String, Column> primarys() {
         LinkedHashMap<String, Column> pks = new LinkedHashMap<>();
-        for(Map.Entry<String, Column> item:columns.entrySet()){
+        for(Map.Entry<String, Column> item:columns.entrySet()) {
             Column column = item.getValue();
             String key = item.getKey();
-            if(column.isPrimaryKey() == 1){
+            if(column.isPrimaryKey() == 1) {
                 pks.put(key, column);
             }
         }
         return pks;
     }
-    public Column primary(){
-        for(Column column:columns.values()){
-            if(column.isPrimaryKey() == 1){
+    public Column primary() {
+        for(Column column:columns.values()) {
+            if(column.isPrimaryKey() == 1) {
                 return column;
             }
         }
@@ -441,7 +441,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public E clone() {
         E clone = super.clone();
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-        for(Column column:this.columns.values()){
+        for(Column column:this.columns.values()) {
             Column col = column.clone();
             cols.put(col.getName().toUpperCase(), col);
         }
@@ -449,8 +449,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return clone;
     }
 
-    public Table addColumn(Column column){
-        if(setmap && null != update){
+    public Table addColumn(Column column) {
+        if(setmap && null != update) {
             update.addColumn(column);
             return this;
         }
@@ -463,37 +463,37 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
     public Long getTtl() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.ttl;
         }
         return ttl;
     }
 
     public Table setTtl(Long ttl) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTtl(ttl);
             return this;
         }
         this.ttl = ttl;
         return this;
     }
-    public Column addColumn(String name, String type, int precision, int scale){
+    public Column addColumn(String name, String type, int precision, int scale) {
         Column column = new Column(name, type, precision, scale);
         addColumn(column);
         return column;
     }
-    public Column addColumn(String name, String type, int precision){
+    public Column addColumn(String name, String type, int precision) {
         Column column = new Column(name, type, precision);
         addColumn(column);
         return column;
     }
-    public Column addColumn(String name, String type){
+    public Column addColumn(String name, String type) {
         return addColumn(name, type, true, null);
     }
-    public Column addColumn(String name, TypeMetadata type){
+    public Column addColumn(String name, TypeMetadata type) {
         return addColumn(name, type, true, null);
     }
-    public Column addColumn(String name, String type, boolean nullable, Object def){
+    public Column addColumn(String name, String type, boolean nullable, Object def) {
         Column column = new Column();
         column.setName(name);
         column.nullable(nullable);
@@ -502,7 +502,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         addColumn(column);
         return column;
     }
-    public Column addColumn(String name, TypeMetadata type, boolean nullable, Object def){
+    public Column addColumn(String name, TypeMetadata type, boolean nullable, Object def) {
         Column column = new Column();
         column.setName(name);
         column.nullable(nullable);
@@ -511,14 +511,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         addColumn(column);
         return column;
     }
-    public Table setPrimaryKey(String ... keys){
-        if(setmap && null != update){
+    public Table setPrimaryKey(String ... keys) {
+        if(setmap && null != update) {
             update.setPrimaryKey(keys);
             return this;
         }
-        if(null != primaryKey){
+        if(null != primaryKey) {
             //取消原主键中的列标记
-            for(Column column:primaryKey.getColumns().values()){
+            for(Column column:primaryKey.getColumns().values()) {
                 column.primary(false);
             }
         }
@@ -541,20 +541,20 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
-    public Table setPrimaryKey(PrimaryKey primaryKey){
-        if(setmap && null != update){
+    public Table setPrimaryKey(PrimaryKey primaryKey) {
+        if(setmap && null != update) {
             update.setPrimaryKey(primaryKey);
             return this;
         }
 
-        if(null != this.primaryKey){
+        if(null != this.primaryKey) {
             //取消原主键中的列标记
-            for(Column column:this.primaryKey.getColumns().values()){
+            for(Column column:this.primaryKey.getColumns().values()) {
                 column.primary(false);
             }
         }
-        if(null != columns){
-            for(Column column:columns.values()){
+        if(null != columns) {
+            for(Column column:columns.values()) {
                 column.primary(false);
             }
         }
@@ -571,7 +571,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * 根据主键对象，设置列主键标识<br/>
      * @return this
      */
-    public Table checkColumnPrimary(){
+    public Table checkColumnPrimary() {
         if(null != primaryKey) {
             LinkedHashMap<String, Column> pcs = primaryKey.getColumns();
             if (null != pcs) {
@@ -594,11 +594,11 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      *
      * @return this
      */
-    public Table createPrimaryKey(){
+    public Table createPrimaryKey() {
         if(null == primaryKey && null != columns) {
-            for(Column column:columns.values()){
-                if(column.isPrimaryKey() == 1){
-                    if(null == primaryKey){
+            for(Column column:columns.values()) {
+                if(column.isPrimaryKey() == 1) {
+                    if(null == primaryKey) {
                         primaryKey = new PrimaryKey();
                     }
                     primaryKey.addColumn(column);
@@ -608,27 +608,27 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
-    public Table addTag(Tag tag){
-        if(setmap && null != update){
+    public Table addTag(Tag tag) {
+        if(setmap && null != update) {
             update.addTag(tag);
             return this;
         }
         tag.setTable(this);
-        if(null == tags){
+        if(null == tags) {
             tags = new LinkedHashMap<>();
         }
         tags.put(tag.getName(), tag);
         return this;
     }
-    public Tag addTag(String name, String type){
+    public Tag addTag(String name, String type) {
         return addTag(name, type, true, null);
     }
-    public Tag addTag(String name, String type, Object value){
+    public Tag addTag(String name, String type, Object value) {
         Tag tag = new Tag(name, type, value);
         addTag(tag);
         return tag;
     }
-    public Tag addTag(String name, String type, boolean nullable, Object def){
+    public Tag addTag(String name, String type, boolean nullable, Object def) {
         Tag tag = new Tag();
         tag.setName(name);
         tag.nullable(nullable);
@@ -637,13 +637,13 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         addTag(tag);
         return tag;
     }
-    public String getName(boolean greedy){
+    public String getName(boolean greedy) {
         String result = "";
-        if(greedy){
-            if(BasicUtil.isNotEmpty(catalog)){
+        if(greedy) {
+            if(BasicUtil.isNotEmpty(catalog)) {
                 result = catalog.getName()+".";
             }
-            if(BasicUtil.isNotEmpty(schema)){
+            if(BasicUtil.isNotEmpty(schema)) {
                 result = result + schema.getName() + ".";
             }
             result = result + name;
@@ -653,14 +653,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return result;
     }
     public String getType() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.type;
         }
         return type;
     }
 
     public Table setType(String type) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setType(type);
             return this;
         }
@@ -669,14 +669,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getTypeCat() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.typeCat;
         }
         return typeCat;
     }
 
     public Table setTypeCat(String typeCat) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTypeCat(typeCat);
             return this;
         }
@@ -685,14 +685,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getTypeSchema() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.typeSchema;
         }
         return typeSchema;
     }
 
     public Table setTypeSchema(String typeSchema) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTypeSchema(typeSchema);
             return this;
         }
@@ -701,14 +701,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getTypeName() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.typeName;
         }
         return typeName;
     }
 
     public Table setTypeName(String typeName) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTypeName(typeName);
             return this;
         }
@@ -717,14 +717,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getSelfReferencingColumn() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.selfReferencingColumn;
         }
         return selfReferencingColumn;
     }
 
     public Table setSelfReferencingColumn(String selfReferencingColumn) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setSelfReferencingColumn(selfReferencingColumn);
             return this;
         }
@@ -733,14 +733,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getRefGeneration() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.refGeneration;
         }
         return refGeneration;
     }
 
     public Table setRefGeneration(String refGeneration) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setRefGeneration(refGeneration);
             return this;
         }
@@ -748,19 +748,19 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
-    public List<Column> columns(){
+    public List<Column> columns() {
         List<Column> list = new ArrayList<>();
         LinkedHashMap<String, Column> columns = getColumns();
-        for (Column column:columns.values()){
+        for (Column column:columns.values()) {
             list.add(column);
         }
         return list;
     }
     public LinkedHashMap<String, Column> getColumns() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getColumns();
         }
-        if(null == columns){
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
         return columns;
@@ -774,8 +774,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public List<String> getColumns(boolean name) {
         LinkedHashMap<String, Column> columns = getColumns();
         List<String> names = new ArrayList<>();
-        if(null != columns){
-            for(Column column:columns.values()){
+        if(null != columns) {
+            for(Column column:columns.values()) {
                 names.add(column.getName());
             }
         }
@@ -783,7 +783,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public <T extends Column> Table setColumns(LinkedHashMap<String, T> columns) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setColumns(columns);
             return this;
         }
@@ -795,27 +795,27 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return this;
     }
-    public List<Tag> tags(){
+    public List<Tag> tags() {
         List<Tag> list = new ArrayList<>();
         LinkedHashMap<String, Tag> tags = getTags();
-        for(Tag tag:tags.values()){
+        for(Tag tag:tags.values()) {
             list.add(tag);
         }
         return list;
     }
 
     public LinkedHashMap<String, Tag> getTags() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getTags();
         }
-        if(null == tags){
+        if(null == tags) {
             tags = new LinkedHashMap<>();
         }
         return tags;
     }
 
     public Table setTags(LinkedHashMap<String, Tag> tags) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTags(tags);
             return this;
         }
@@ -827,17 +827,17 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return this;
     }
-    public Index getIndex(String name){
-        if(null != indexes && null != name){
+    public Index getIndex(String name) {
+        if(null != indexes && null != name) {
             return indexes.get(name.toUpperCase());
         }
         return null;
     }
     public <T extends Index> LinkedHashMap<String, T> getIndexes() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getIndexes();
         }
-        if(null == indexes){
+        if(null == indexes) {
             indexes = new LinkedHashMap<>();
         }
         return (LinkedHashMap<String, T>) indexes;
@@ -845,21 +845,21 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     public <T extends Index> LinkedHashMap<String, T> getIndexs() {
         return getIndexes();
     }
-    public LinkedHashMap<String, Column> getPrimaryKeyColumns(){
+    public LinkedHashMap<String, Column> getPrimaryKeyColumns() {
         PrimaryKey pk = getPrimaryKey();
-        if(null != pk){
+        if(null != pk) {
             return pk.getColumns();
         }
         return new LinkedHashMap<>();
     }
-    public PrimaryKey getPrimaryKey(){
-        if(getmap && null != update){
+    public PrimaryKey getPrimaryKey() {
+        if(getmap && null != update) {
             return update.getPrimaryKey();
         }
-        if(null == primaryKey){
-            for(Column column: columns.values()){
-                if(column.isPrimaryKey() ==1){
-                    if(null == primaryKey){
+        if(null == primaryKey) {
+            for(Column column: columns.values()) {
+                if(column.isPrimaryKey() ==1) {
+                    if(null == primaryKey) {
                         primaryKey = new PrimaryKey();
                         primaryKey.setName("pk_"+getName());
                         primaryKey.setTable(this);
@@ -868,9 +868,9 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 }
             }
         }
-        if(null == primaryKey){
-            for(Index index: indexes.values()){
-                if(index.isPrimary()){
+        if(null == primaryKey) {
+            for(Index index: indexes.values()) {
+                if(index.isPrimary()) {
                     primaryKey = new PrimaryKey();
                     primaryKey.setName(index.getName());
                     primaryKey.setTable(this);
@@ -890,27 +890,27 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public <T extends Index> Table setIndexes(LinkedHashMap<String, T> indexes) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setIndexes(indexes);
             return this;
         }
 
         this.indexes = (LinkedHashMap<String, Index>) indexes;
-        for(Index index: indexes.values()){
+        for(Index index: indexes.values()) {
             index.setTable(this);
         }
         return this;
     }
-    public Table add(Index index){
-        if(null == indexes){
+    public Table add(Index index) {
+        if(null == indexes) {
             indexes = new LinkedHashMap<>();
         }
         index.setTable(this);
         indexes.put(index.getName().toUpperCase(), index);
         return this;
     }
-    public Table add(Constraint constraint){
-        if(null == constraints){
+    public Table add(Constraint constraint) {
+        if(null == constraints) {
             constraints = new LinkedHashMap<>();
         }
         constraint.setTable(this);
@@ -918,17 +918,17 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
     public <T extends Constraint> LinkedHashMap<String, T> getConstraints() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getConstraints();
         }
-        if(null == constraints){
+        if(null == constraints) {
             constraints = new LinkedHashMap<>();
         }
         return (LinkedHashMap<String, T>) constraints;
     }
 
     public Table setConstraints(LinkedHashMap<String, Constraint> constraints) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setConstraints(constraints);
             return this;
         }
@@ -936,31 +936,31 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return this;
     }
 
-    public Column getColumn(String name){
-        if(getmap && null != update){
+    public Column getColumn(String name) {
+        if(getmap && null != update) {
             return update.getColumn(name);
         }
-        if(null == columns || null == name){
+        if(null == columns || null == name) {
             return null;
         }
         return columns.get(name.toUpperCase());
     }
-    public Column getTag(String name){
-        if(getmap && null != update){
+    public Column getTag(String name) {
+        if(getmap && null != update) {
             return update.getTag(name);
         }
         return tags.get(name.toUpperCase());
     }
 
     public String getEngine() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.engine;
         }
         return engine;
     }
 
     public Table setEngine(String engine) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setEngine(engine);
             return this;
         }
@@ -969,14 +969,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getCharset() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.charset;
         }
         return charset;
     }
 
     public Table setCharset(String charset) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCharset(charset);
             return this;
         }
@@ -985,14 +985,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public String getCollate() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.collate;
         }
         return collate;
     }
 
     public Table setCollate(String collate) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCollate(collate);
             return this;
         }
@@ -1001,14 +1001,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public int getSrid() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.srid;
         }
         return srid;
     }
 
     public Table setSrid(int srid) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setSrid(srid);
             return this;
         }
@@ -1104,7 +1104,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
     }
 
     public Table setTemporary(boolean temporary) {
-        if(temporary){
+        if(temporary) {
             this.temporary = 1;
         }else{
             this.temporary = 0;
@@ -1149,23 +1149,23 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * @param nullFirst 未设置位置(setPosition)的列是否排在最前
      * @return Table
      */
-    public Table sort(boolean nullFirst){
+    public Table sort(boolean nullFirst) {
         sort = true;
-        if(null != columns){
+        if(null != columns) {
             Column.sort(columns, nullFirst);
         }
         return this;
     }
-    public Table sort(){
+    public Table sort() {
         return sort(false);
     }
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(keyword).append(":");
-        if(null != catalog && BasicUtil.isNotEmpty(catalog.getName())){
+        if(null != catalog && BasicUtil.isNotEmpty(catalog.getName())) {
             builder.append(catalog.getName()).append(".");
         }
-        if(null != schema && BasicUtil.isNotEmpty(schema.getName())){
+        if(null != schema && BasicUtil.isNotEmpty(schema.getName())) {
             builder.append(schema.getName()).append(".");
         }
         builder.append(name);
@@ -1179,7 +1179,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         return equals(table, ignoreCase,false);
     }
     public boolean equals(Table table, boolean ignoreCase, boolean ignoreSchema) {
-        if(null == table){
+        if(null == table) {
             return false;
         }
         if(!ignoreSchema) {
@@ -1193,7 +1193,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             }
         }
         boolean name_equals = BasicUtil.equals(this.name, table.getName());
-        if(!name_equals){
+        if(!name_equals) {
             return false;
         }
         return true;
@@ -1204,14 +1204,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * @param table table
      * @return boolean
      */
-    public boolean primaryEquals(Table table){
-        if(null == table){
+    public boolean primaryEquals(Table table) {
+        if(null == table) {
             return false;
         }
         PrimaryKey pks = getPrimaryKey();
         PrimaryKey tpks = table.getPrimaryKey();
-        if(null == pks){
-            if(null == tpks){
+        if(null == pks) {
+            if(null == tpks) {
                 return true;
             }else{
                 return false;
@@ -1219,7 +1219,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return pks.equals(tpks);
     }
-    public TableDiffer compare(Table table){
+    public TableDiffer compare(Table table) {
         return TableDiffer.compare(this, table);
     }
     /**
@@ -1231,14 +1231,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             RANDOM 			("RANDOM"  			, "随机分桶");
             final String code;
             final String name;
-            TYPE(String code, String name){
+            TYPE(String code, String name) {
                 this.code = code;
                 this.name = name;
             }
-            public String getName(){
+            public String getName() {
                 return name;
             }
-            public String getCode(){
+            public String getCode() {
                 return code;
             }
         }
@@ -1254,15 +1254,15 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
          * 分桶依据列
          */
         private LinkedHashMap<String, Column> columns;
-        public Distribution(){
+        public Distribution() {
 
         }
-        public Distribution(TYPE type, int buckets, String ... columns){
+        public Distribution(TYPE type, int buckets, String ... columns) {
             setBuckets(buckets);
             setType(type);
             setColumns(columns);
         }
-        public Distribution(TYPE type, String ... columns){
+        public Distribution(TYPE type, String ... columns) {
             setType(type);
             setColumns(columns);
         }
@@ -1293,11 +1293,11 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             return this;
         }
         public Distribution setColumns(String ... columns) {
-            if(null == this.columns){
+            if(null == this.columns) {
                 this.columns = new LinkedHashMap<>();
             }
-            if(null != columns){
-                for (String column:columns){
+            if(null != columns) {
+                for (String column:columns) {
                     this.columns.put(column.toUpperCase(), new Column(column));
                 }
             }
@@ -1311,14 +1311,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             UNIQUE 			    ("UNIQUE"  			, "主键列");
             final String code;
             final String name;
-            TYPE(String code, String name){
+            TYPE(String code, String name) {
                 this.code = code;
                 this.name = name;
             }
-            public String getName(){
+            public String getName() {
                 return name;
             }
-            public String getCode(){
+            public String getCode() {
                 return code;
             }
         }
@@ -1343,11 +1343,11 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             return this;
         }
         public Key setColumns(String ... columns) {
-            if(null == this.columns){
+            if(null == this.columns) {
                 this.columns = new LinkedHashMap<>();
             }
-            if(null != columns){
-                for (String column:columns){
+            if(null != columns) {
+                for (String column:columns) {
                     this.columns.put(column.toUpperCase(), new Column(column));
                 }
             }
@@ -1376,24 +1376,24 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         private Partition.TYPE type;
         private LinkedHashMap<String, Column> columns;
 
-        public Partition(){
+        public Partition() {
 
         }
-        public Partition(Partition.TYPE type){
+        public Partition(Partition.TYPE type) {
             this.type = type;
         }
-        public Partition(Partition.TYPE type, String ... columns){
+        public Partition(Partition.TYPE type, String ... columns) {
             this.type = type;
             this.columns = new LinkedHashMap<>();
-            for(String column:columns){
+            for(String column:columns) {
                 this.columns.put(column.toUpperCase(), new Column(column));
             }
         }
-        public Partition addSlice(Slice slice){
+        public Partition addSlice(Slice slice) {
             slices.add(slice);
             return this;
         }
-        public List<Slice> getSlices(){
+        public List<Slice> getSlices() {
             return this.slices;
         }
         public Partition.TYPE getType() {
@@ -1414,26 +1414,26 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             return this;
         }
 
-        public Partition setColumns(String ... columns){
+        public Partition setColumns(String ... columns) {
             this.columns = new LinkedHashMap<>();
-            for(String column:columns){
+            for(String column:columns) {
                 this.columns.put(column.toUpperCase(), new Column(column));
             }
             return this;
         }
-        public Partition addColumn(Column column){
-            if(null == columns){
+        public Partition addColumn(Column column) {
+            if(null == columns) {
                 columns = new LinkedHashMap<>();
             }
             columns.put(column.getName().toUpperCase(), column);
 
             return this;
         }
-        public Partition addColumn(String column){
+        public Partition addColumn(String column) {
             return addColumn(new Column(column));
         }
 
-        public Partition setRange(Object min, Object max){
+        public Partition setRange(Object min, Object max) {
             this.min = min;
             this.max = max;
             return this;
@@ -1476,12 +1476,12 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             for(Object item:items) {
                 if (item instanceof Collection) {
                     Collection cons = (Collection) item;
-                    for(Object con:cons){
+                    for(Object con:cons) {
                         addValues(con);
                     }
-                }else if(item instanceof Object[]){
+                }else if(item instanceof Object[]) {
                     Object[] objs = (Object[]) item;
-                    for(Object obj:objs){
+                    for(Object obj:objs) {
                         addValues(obj);
                     }
                 }else {
@@ -1552,24 +1552,24 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
                 return this;
             }
             public Slice setValues(Object ... values) {
-                if(null == this.values){
+                if(null == this.values) {
                     this.values = new ArrayList<>();
                 }
-                if(null != values){
-                    for(Object value:values){
+                if(null != values) {
+                    for(Object value:values) {
                         this.values.add(value);
                     }
                 }
                 return this;
             }
             public Slice addValue(Object value) {
-                if(null == value){
+                if(null == value) {
                     return this;
                 }
-                if(null == this.values){
+                if(null == this.values) {
                     this.values = new ArrayList<>();
                 }
-                if(value instanceof Collection){
+                if(value instanceof Collection) {
                     this.values.addAll((Collection<?>) value);
                 }else {
                     this.values.add(value);
@@ -1578,8 +1578,8 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             }
 
             public Slice addValues(Object ... values) {
-                if(null != values){
-                    for(Object value:values){
+                if(null != values) {
+                    for(Object value:values) {
                         addValue(value);
                     }
                 }
@@ -1609,7 +1609,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
             }
 
             public Slice setLess(String column, Object less) {
-                if(null == this.less){
+                if(null == this.less) {
                     this.less = new LinkedHashMap<>();
                 }
                 this.less.put(column.toUpperCase(), less);

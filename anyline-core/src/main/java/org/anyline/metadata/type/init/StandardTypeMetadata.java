@@ -62,97 +62,97 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              String
      *
      * ****************************************************************************************************************/
-    CHAR(CATEGORY.CHAR, "CHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, Informix, HANA, Derby, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+    CHAR(CATEGORY.CHAR, "CHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, Informix, HANA, Derby, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
-            if(null != value){
+            if(null != value) {
                 String str = value.toString();
-                if(BasicUtil.checkEl(str)){
+                if(BasicUtil.checkEl(str)) {
                     //${A.USER_ID}
                     value = str.substring(2, str.length() - 1);
                     return value;
                 }
             }
-            if(value instanceof String){
-            }else if(value instanceof Date){
+            if(value instanceof String) {
+            }else if(value instanceof Date) {
                 value = DateUtil.format((Date)value);
             }else{
                 value = value.toString();
             }
-            if(!placeholder){
+            if(!placeholder) {
                 value = "'" + value + "'";
             }
             return value;
         }
     }
-   , NCHAR(CATEGORY.CHAR, "NCHAR", null, String.class, 0, 1, 1, ORACLE, MSSQL, Informix, GBase8S, SinoDB){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NCHAR(CATEGORY.CHAR, "NCHAR", null, String.class, 0, 1, 1, ORACLE, MSSQL, Informix, GBase8S, SinoDB) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , CLOB(CATEGORY.TEXT, "CLOB", null, String.class,1, 1, 1, ORACLE, Informix, GBase8S, SinoDB, Derby, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , CLOB(CATEGORY.TEXT, "CLOB", null, String.class,1, 1, 1, ORACLE, Informix, GBase8S, SinoDB, Derby, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , NCLOB(CATEGORY.TEXT, "NCLOB", null, String.class,1, 1, 1, ORACLE, HANA){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NCLOB(CATEGORY.TEXT, "NCLOB", null, String.class,1, 1, 1, ORACLE, HANA) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , NVARCHAR(CATEGORY.CHAR, "NVARCHAR", null, String.class, 0, 1, 1, MSSQL, Informix, GBase8S, SinoDB, HANA, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , NVARCHAR(CATEGORY.CHAR, "NVARCHAR", null, String.class, 0, 1, 1, MSSQL, Informix, GBase8S, SinoDB, HANA, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , LVARCHAR(CATEGORY.CHAR, "LVARCHAR", null, String.class, 0, 1, 1, Informix, GBase8S, SinoDB, SinoDB){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , LVARCHAR(CATEGORY.CHAR, "LVARCHAR", null, String.class, 0, 1, 1, Informix, GBase8S, SinoDB, SinoDB) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , NVARCHAR2(CATEGORY.CHAR, "NVARCHAR2", NVARCHAR, String.class, 0, 1, 1, ORACLE){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NVARCHAR2(CATEGORY.CHAR, "NVARCHAR2", NVARCHAR, String.class, 0, 1, 1, ORACLE) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , LONGTEXT(CATEGORY.TEXT, "LONGTEXT", null, String.class,1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , LONGTEXT(CATEGORY.TEXT, "LONGTEXT", null, String.class,1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , MEDIUMTEXT(CATEGORY.TEXT, "MEDIUMTEXT", null, String.class,1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , MEDIUMTEXT(CATEGORY.TEXT, "MEDIUMTEXT", null, String.class,1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , TEXT(CATEGORY.TEXT, "TEXT", null, String.class,1, 1, 1, MySQL, PostgreSQL, SQLite, Informix, GBase8S, SinoDB, IoTDB, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , TEXT(CATEGORY.TEXT, "TEXT", null, String.class,1, 1, 1, MySQL, PostgreSQL, SQLite, Informix, GBase8S, SinoDB, IoTDB, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , MATCH_ONLY_TEXT(CATEGORY.TEXT, "match_only_text", null, String.class,1, 1, 1, ElasticSearch){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , MATCH_ONLY_TEXT(CATEGORY.TEXT, "match_only_text", null, String.class,1, 1, 1, ElasticSearch) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
 
-   , NTEXT(CATEGORY.TEXT, "NTEXT", null, String.class,1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , NTEXT(CATEGORY.TEXT, "NTEXT", null, String.class,1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , TINYTEXT(CATEGORY.TEXT, "TINYTEXT", null, String.class,1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , TINYTEXT(CATEGORY.TEXT, "TINYTEXT", null, String.class,1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
     , ACLITEM(CATEGORY.TEXT, "ACLITEM", null, String.class, 1, 1, 1, KingBase)
     /**
      * Informix(长度不超过 255 )
      */
-   , VARCHAR(CATEGORY.CHAR, "VARCHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , VARCHAR(CATEGORY.CHAR, "VARCHAR", null, String.class, 0, 1, 1, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, KingBase, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , VARCHAR2(CATEGORY.CHAR, "VARCHAR2", VARCHAR, String.class, 0, 1, 1, ORACLE, KingBase, DM, oscar){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , VARCHAR2(CATEGORY.CHAR, "VARCHAR2", VARCHAR, String.class, 0, 1, 1, ORACLE, KingBase, DM, oscar) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , SYSNAME(CATEGORY.TEXT, "SYSNAME", null, String.class,1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , SYSNAME(CATEGORY.TEXT, "SYSNAME", null, String.class,1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-   , UUID(CATEGORY.TEXT, "UUID", null, String.class,1, 1, 1, PostgreSQL, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+   , UUID(CATEGORY.TEXT, "UUID", null, String.class,1, 1, 1, PostgreSQL, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
-            if(null != value){
+            if(null != value) {
                 value = java.util.UUID.fromString(value.toString());
             }
-            if(null == value){
+            if(null == value) {
                 value = def;
             }
             return value;
         }
     }
-   , UNIQUEIDENTIFIER(CATEGORY.TEXT, "UNIQUEIDENTIFIER", null, String.class,1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+   , UNIQUEIDENTIFIER(CATEGORY.TEXT, "UNIQUEIDENTIFIER", null, String.class,1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
     /**
      * mysql(byte[])
@@ -160,17 +160,17 @@ public enum StandardTypeMetadata implements TypeMetadata {
    , BINARY(CATEGORY.BYTES, "BINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA, ElasticSearch)
    , VARBINARY(CATEGORY.BYTES, "VARBINARY", null, byte[].class, 0, 1, 1, MySQL, MSSQL, HANA)
 
-    , STRING(CATEGORY.TEXT, "String", null, String.class, 1, 1, 1, Doris, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , STRING(CATEGORY.TEXT, "String", null, String.class, 1, 1, 1, Doris, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , FixedString(CATEGORY.TEXT, "FixedString", null, String.class, 0, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , FixedString(CATEGORY.TEXT, "FixedString", null, String.class, 0, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , FIXED_STRING(CATEGORY.TEXT, "FIXED_STRING", null, String.class, 0, 1, 1, Nebula){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , FIXED_STRING(CATEGORY.TEXT, "FIXED_STRING", null, String.class, 0, 1, 1, Nebula) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
-    , HLL(CATEGORY.TEXT, "HLL", null, String.class, 0, 1, 1, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return CHAR.write(value, def, placeholder);}
+    , HLL(CATEGORY.TEXT, "HLL", null, String.class, 0, 1, 1, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return CHAR.write(value, def, placeholder);}
     }
 
     /* *****************************************************************************************************************
@@ -178,10 +178,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              String-format
      *
      * ****************************************************************************************************************/
-   , JSON(CATEGORY.TEXT, "JSON", null, String.class,1, 1, 1, MySQL, PostgreSQL, KingBase, Doris){
+   , JSON(CATEGORY.TEXT, "JSON", null, String.class,1, 1, 1, MySQL, PostgreSQL, KingBase, Doris) {
         @Override
         public Object convert(Object value, Class target, Object def) {
-            if(null == value){
+            if(null == value) {
                 return def;
             }
             Class transfer = transfer();
@@ -197,17 +197,17 @@ public enum StandardTypeMetadata implements TypeMetadata {
                 }else{
                     value = super.convert(value, target, def);
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 //不能转成DataSet的List
                 value = super.convert(value, target, def);
             }
             return value;
         }
-        public Object read(Object value, Object def, Class clazz){
-            if(null == value){
+        public Object read(Object value, Object def, Class clazz) {
+            if(null == value) {
                 return value;
             }
-            if(value.getClass() == clazz){
+            if(value.getClass() == clazz) {
                 return value;
             }
             String str = value.toString().trim();
@@ -222,13 +222,13 @@ public enum StandardTypeMetadata implements TypeMetadata {
                         while (items.hasNext()) {
                             JsonNode item = items.next();
                             Object row = DataRow.parseJsonObject(KeyAdapter.KEY_CASE.CONFIG, item);
-                            if(row instanceof DataRow){
+                            if(row instanceof DataRow) {
                             }else{
                                 isDataRow = false;
                             }
                             list.add(row);
                         }
-                        if(isDataRow){
+                        if(isDataRow) {
                             value = DataSet.parse(list);
                         }else{
                             value = list;
@@ -237,13 +237,13 @@ public enum StandardTypeMetadata implements TypeMetadata {
                         value = DataRow.parseJson(node);
                     }
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
             return value;}
 
     }
-   , XML(CATEGORY.TEXT, "XML", null, String.class,1, 1, 1, MSSQL, KingBase){}
+   , XML(CATEGORY.TEXT, "XML", null, String.class,1, 1, 1, MSSQL, KingBase) {}
     /* *****************************************************************************************************************
      *
      *                                              number-int/long
@@ -261,7 +261,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , INT64(CATEGORY.INT, "INT64", null, Integer.class, 1, 1, 1, IoTDB, ClickHouse)
     , INT128(CATEGORY.INT, "INT128", null, Integer.class, 1, 1, 1, ClickHouse)
     , INT256(CATEGORY.INT, "INT256", null, Integer.class, 1, 1, 1, ClickHouse)
-    , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch){}
+    , LONG_TEXT(CATEGORY.TEXT, "LONG", null, String.class,1, 1, 1, ORACLE, ElasticSearch) {}
     , INT2(CATEGORY.INT, "INT2", null, Integer.class,1, 1, 1, PostgreSQL)
     , INT4(CATEGORY.INT, "INT4", null, Integer.class,1, 1, 1, PostgreSQL)
     , INT8(CATEGORY.INT, "INT8", null, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
@@ -281,50 +281,50 @@ public enum StandardTypeMetadata implements TypeMetadata {
     , SMALLSERIAL(CATEGORY.INT, "SMALLSERIAL", SMALLINT, Integer.class,1, 1, 1, PostgreSQL)
     , BIGSERIAL(CATEGORY.INT, "BIGSERIAL", BIGINT, Long.class,1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB)
     , BOOLEAN(CATEGORY.BOOLEAN, "BOOLEAN", null, Boolean.class,1, 1, 1, Informix, GBase8S, SinoDB, HANA, ElasticSearch, KingBase)
-    , BOOL(CATEGORY.BOOLEAN, "BOOL", null, Boolean.class,1, 1, 1, PostgreSQL, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BOOLEAN.write(value, def, placeholder);}
+    , BOOL(CATEGORY.BOOLEAN, "BOOL", null, Boolean.class,1, 1, 1, PostgreSQL, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BOOLEAN.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
      *
      *                                              number-double/float
      *
      * ****************************************************************************************************************/
-    , DECIMAL(CATEGORY.FLOAT, "DECIMAL", null, BigDecimal.class, 1, 0, 0, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+    , DECIMAL(CATEGORY.FLOAT, "DECIMAL", null, BigDecimal.class, 1, 0, 0, MySQL, PostgreSQL, ORACLE, Informix, GBase8S, SinoDB, HANA, Derby, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             BigDecimal result = BasicUtil.parseDecimal(value, null);
-            if(null != def && null == result){
+            if(null != def && null == result) {
                 result = BasicUtil.parseDecimal(def, null);
             }
             return result;
         }
     }
-    , DEC(CATEGORY.FLOAT, "DEC", null, BigDecimal.class, 1, 0, 0, DM){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , DEC(CATEGORY.FLOAT, "DEC", null, BigDecimal.class, 1, 0, 0, DM) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
            return DECIMAL.write(value, def, array, placeholder);
         }
     }
-   , SMALLDECIMAL(CATEGORY.FLOAT, "SMALLDECIMAL", null, BigDecimal.class, 1, 0, 0, HANA){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , SMALLDECIMAL(CATEGORY.FLOAT, "SMALLDECIMAL", null, BigDecimal.class, 1, 0, 0, HANA) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DECIMAL.write(value, def, placeholder);
         }
     }
-   , DOUBLE(CATEGORY.FLOAT, "DOUBLE", null, Double.class, 1, 0, 0, MySQL, Informix, GBase8S, SinoDB, HANA, IoTDB, ElasticSearch, Derby, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+   , DOUBLE(CATEGORY.FLOAT, "DOUBLE", null, Double.class, 1, 0, 0, MySQL, Informix, GBase8S, SinoDB, HANA, IoTDB, ElasticSearch, Derby, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             Double result = BasicUtil.parseDouble(value, null);
-            if(null != def && null == result){
+            if(null != def && null == result) {
                 result = BasicUtil.parseDouble(def, null);
             }
             return result;
         }
     }
-    , DOUBLE_PRECISION(CATEGORY.FLOAT, "DOUBLE PRECISION", null, Double.class, 1, 1, 1, H2){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    , DOUBLE_PRECISION(CATEGORY.FLOAT, "DOUBLE PRECISION", null, Double.class, 1, 1, 1, H2) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
     /**
      * mysql(p, s)
@@ -333,111 +333,111 @@ public enum StandardTypeMetadata implements TypeMetadata {
      * oracle(p)
      * mysql, oracle(BigDecimal)
      */
-   , FLOAT(CATEGORY.FLOAT, "FLOAT", null, Float.class, 1, 2, 3, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+   , FLOAT(CATEGORY.FLOAT, "FLOAT", null, Float.class, 1, 2, 3, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             Float result = BasicUtil.parseFloat(value, null);
-            if(null != def && null == result){
+            if(null != def && null == result) {
                 result = BasicUtil.parseFloat(def, null);
             }
             return result;
         }
     }
-   , SMALLFLOAT(CATEGORY.FLOAT, "SMALLFLOAT", null, Float.class, 1, 0, 1, Informix, GBase8S, SinoDB){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+   , SMALLFLOAT(CATEGORY.FLOAT, "SMALLFLOAT", null, Float.class, 1, 0, 1, Informix, GBase8S, SinoDB) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    , FLOAT4(CATEGORY.FLOAT, "FLOAT4", null, Float.class, 1, 2, 1, PostgreSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    , FLOAT4(CATEGORY.FLOAT, "FLOAT4", null, Float.class, 1, 2, 1, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    , SCALED_FLOAT(CATEGORY.FLOAT, "SCALED_FLOAT", null, Float.class, 1, 2, 1, ElasticSearch){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    , SCALED_FLOAT(CATEGORY.FLOAT, "SCALED_FLOAT", null, Float.class, 1, 2, 1, ElasticSearch) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    , HALF_FLOAT(CATEGORY.FLOAT, "HALF_FLOAT", null, Float.class, 1, 2, 1, ElasticSearch){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    , HALF_FLOAT(CATEGORY.FLOAT, "HALF_FLOAT", null, Float.class, 1, 2, 1, ElasticSearch) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    , FLOAT8(CATEGORY.FLOAT, "FLOAT8", null, Double.class, 1, 2, 1, PostgreSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+    , FLOAT8(CATEGORY.FLOAT, "FLOAT8", null, Double.class, 1, 2, 1, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
-    , DECFLOAT(CATEGORY.FLOAT, "DECFLOAT", null, Double.class, 1, 2, 1, H2){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+    , DECFLOAT(CATEGORY.FLOAT, "DECFLOAT", null, Double.class, 1, 2, 1, H2) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
-   , BINARY_DOUBLE(CATEGORY.FLOAT, "BINARY_DOUBLE", null, Double.class, 1, 0, 0, ORACLE){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+   , BINARY_DOUBLE(CATEGORY.FLOAT, "BINARY_DOUBLE", null, Double.class, 1, 0, 0, ORACLE) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
-   , BINARY_FLOAT(CATEGORY.FLOAT, "BINARY_FLOAT", null, Float.class, 1, 0, 0, ORACLE){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DOUBLE.write(value, def, placeholder);}
+   , BINARY_FLOAT(CATEGORY.FLOAT, "BINARY_FLOAT", null, Float.class, 1, 0, 0, ORACLE) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DOUBLE.write(value, def, placeholder);}
     }
-   , MONEY(CATEGORY.FLOAT, "MONEY", null, BigDecimal.class, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , MONEY(CATEGORY.FLOAT, "MONEY", null, BigDecimal.class, 1, 1, 1, PostgreSQL, Informix, GBase8S, SinoDB, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DECIMAL.write(value, def, placeholder);}
     }
-   , SMALLMONEY(CATEGORY.FLOAT, "SMALLMONEY", null, BigDecimal.class, 1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , SMALLMONEY(CATEGORY.FLOAT, "SMALLMONEY", null, BigDecimal.class, 1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DECIMAL.write(value, def, placeholder);}
     }
-   , NUMERIC(CATEGORY.FLOAT, "NUMERIC", null, BigDecimal.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , NUMERIC(CATEGORY.FLOAT, "NUMERIC", null, BigDecimal.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DECIMAL.write(value, def, placeholder);}
     }
-   , NUMBER(CATEGORY.FLOAT, "NUMBER", null, BigDecimal.class, 1, 2, 2, ORACLE){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DECIMAL.write(value, def, placeholder);}
+   , NUMBER(CATEGORY.FLOAT, "NUMBER", null, BigDecimal.class, 1, 2, 2, ORACLE) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DECIMAL.write(value, def, placeholder);}
     }
-   , REAL(CATEGORY.FLOAT, "REAL", DOUBLE, Double.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+   , REAL(CATEGORY.FLOAT, "REAL", DOUBLE, Double.class, 1, 0, 0, MySQL, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT8(CATEGORY.INT, "Int8", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return SHORT.write(value, def, placeholder);}
+    ,CLICKHOUSE_INT8(CATEGORY.INT, "Int8", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return SHORT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT16(CATEGORY.INT, "Int16", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return TINYINT.write(value, def, placeholder);}
+    ,CLICKHOUSE_INT16(CATEGORY.INT, "Int16", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return TINYINT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT32(CATEGORY.INT, "Int32", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return SMALLINT.write(value, def, placeholder);}
+    ,CLICKHOUSE_INT32(CATEGORY.INT, "Int32", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return SMALLINT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT64(CATEGORY.INT, "Int64", INTEGER, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BIGINT.write(value, def, placeholder);}
+    ,CLICKHOUSE_INT64(CATEGORY.INT, "Int64", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BIGINT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT128(CATEGORY.INT, "Int128", INTEGER, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_INT128(CATEGORY.INT, "Int128", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_INT256(CATEGORY.INT, "Int256", INTEGER, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_INT256(CATEGORY.INT, "Int256", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
 
-    ,CLICKHOUSE_UINT8(CATEGORY.INT, "UInt8", INTEGER, Short.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_UINT8(CATEGORY.INT, "UInt8", INTEGER, Short.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT16(CATEGORY.INT, "UInt16", INTEGER, Short.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_UINT16(CATEGORY.INT, "UInt16", INTEGER, Short.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT32(CATEGORY.INT, "UInt32", INTEGER, Integer.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_UINT32(CATEGORY.INT, "UInt32", INTEGER, Integer.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT64(CATEGORY.INT, "UInt64", INTEGER, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_UINT64(CATEGORY.INT, "UInt64", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT128(CATEGORY.INT, "UInt128", INTEGER, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_UINT128(CATEGORY.INT, "UInt128", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_UINT256(CATEGORY.INT, "UInt256", INTEGER, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return INTEGER.write(value, def, placeholder);}
+    ,CLICKHOUSE_UINT256(CATEGORY.INT, "UInt256", INTEGER, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return INTEGER.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "Float32", FLOAT, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,CLICKHOUSE_FLOAT32(CATEGORY.FLOAT, "Float32", FLOAT, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "Float64", DOUBLE, Long.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,CLICKHOUSE_FLOAT64(CATEGORY.FLOAT, "Float64", DOUBLE, Long.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL32(CATEGORY.FLOAT, "Decimal32", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,CLICKHOUSE_DECIMAL32(CATEGORY.FLOAT, "Decimal32", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL64(CATEGORY.FLOAT, "Decimal64", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,CLICKHOUSE_DECIMAL64(CATEGORY.FLOAT, "Decimal64", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL128(CATEGORY.FLOAT, "Decimal128", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,CLICKHOUSE_DECIMAL128(CATEGORY.FLOAT, "Decimal128", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
-    ,CLICKHOUSE_DECIMAL256(CATEGORY.FLOAT, "Decimal256", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return FLOAT.write(value, def, placeholder);}
+    ,CLICKHOUSE_DECIMAL256(CATEGORY.FLOAT, "Decimal256", DECIMAL, BigDecimal.class, 1, 0, 2, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return FLOAT.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
      *
@@ -445,17 +445,17 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                               write 需要根据数据库类型 由内置函数转换
      *
      * ****************************************************************************************************************/
-    , DATE(CATEGORY.DATE, "DATE", null, java.sql.Date.class, 1, 1, 1, MySQL, PostgreSQL, Informix, GBase8S, SinoDB, HANA, Derby, Doris, ElasticSearch){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+    , DATE(CATEGORY.DATE, "DATE", null, java.sql.Date.class, 1, 1, 1, MySQL, PostgreSQL, Informix, GBase8S, SinoDB, HANA, Derby, Doris, ElasticSearch) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             Date date = DateUtil.parse(value);
-            if(null == date && null != def){
+            if(null == date && null != def) {
                 date = DateUtil.parse(def);
             }
             if (null != date) {
-                if(placeholder){
+                if(placeholder) {
                     value = new java.sql.Date(date.getTime());
                 }else{
                     value = "'" + DateUtil.format(date, "yyyy-MM-dd") +"'";
@@ -464,17 +464,17 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-    , DATE_NANOS(CATEGORY.DATE, "date_nanos", null, java.sql.Date.class, 1, 1, 1, ElasticSearch){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+    , DATE_NANOS(CATEGORY.DATE, "date_nanos", null, java.sql.Date.class, 1, 1, 1, ElasticSearch) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             Date date = DateUtil.parse(value);
-            if(null == date && null != def){
+            if(null == date && null != def) {
                 date = DateUtil.parse(def);
             }
             if (null != date) {
-                if(placeholder){
+                if(placeholder) {
                     value = new java.sql.Date(date.getTime());
                 }else{
                     value = "'" + DateUtil.format(date, "yyyy-MM-dd") +"'";
@@ -483,17 +483,17 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-   , DATETIME(CATEGORY.DATETIME, "DATETIME", "DATETIME({S})", null, LocalDateTime.class, 1, 1, 2, MySQL, Informix, GBase8S, SinoDB, Doris){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+   , DATETIME(CATEGORY.DATETIME, "DATETIME", "DATETIME({S})", null, LocalDateTime.class, 1, 1, 2, MySQL, Informix, GBase8S, SinoDB, Doris) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             Date date = DateUtil.parse(value);
-            if(null == date && null != def){
+            if(null == date && null != def) {
                 date = DateUtil.parse(def);
             }
             if(null != date) {
-                if(placeholder){
+                if(placeholder) {
                     value = new java.sql.Timestamp(date.getTime());
                 }else{
                     value = "'" + DateUtil.format(date) + "'";
@@ -504,39 +504,39 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-    , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+    , DATETIME2(CATEGORY.DATETIME, "DATETIME2", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
-    , DATETIME_WITH_TIME_ZONE(CATEGORY.DATETIME, "DATETIME WITH TIME ZONE", "DATETIME({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, DM){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+    , DATETIME_WITH_TIME_ZONE(CATEGORY.DATETIME, "DATETIME WITH TIME ZONE", "DATETIME({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, DM) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
     /**
      * MSSQL<br/>
      * 2020-01-01 15:10:10.0000011
      */
-   , DATETIMEOFFSET(CATEGORY.DATETIME, "DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , DATETIMEOFFSET(CATEGORY.DATETIME, "DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
-   , SMALLDATETIME(CATEGORY.DATETIME, "SMALLDATETIME", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , SMALLDATETIME(CATEGORY.DATETIME, "SMALLDATETIME", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
-   , SQL_DATETIMEOFFSET(CATEGORY.DATETIME, "SQL_DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , SQL_DATETIMEOFFSET(CATEGORY.DATETIME, "SQL_DATETIMEOFFSET", null, java.sql.Timestamp.class, 1, 1, 1, MSSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
-   , SECONDDATE(CATEGORY.DATE, "SECONDDATE", null, java.util.Date.class, 1, 1, 1, HANA){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return DATETIME.write(value, def, placeholder);}
+   , SECONDDATE(CATEGORY.DATE, "SECONDDATE", null, java.util.Date.class, 1, 1, 1, HANA) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return DATETIME.write(value, def, placeholder);}
     }
-   , TIME(CATEGORY.TIME, "TIME", null, java.sql.Time.class, 1, 1, 1, MySQL, PostgreSQL, HANA, Derby){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+   , TIME(CATEGORY.TIME, "TIME", null, java.sql.Time.class, 1, 1, 1, MySQL, PostgreSQL, HANA, Derby) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
             Date date = DateUtil.parse(value);
-            if(null == date && null != def){
+            if(null == date && null != def) {
                 date = DateUtil.parse(def);
             }
             if(null != date) {
-                if(placeholder){
+                if(placeholder) {
                     value = new Time(date.getTime());
                 }else{
                     value = "'" + DateUtil.format(date, "HH:mm:ss") + "'";
@@ -547,63 +547,63 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , TIME_WITH_TIME_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return TIME.write(value, def, placeholder);
         }
     }
-    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , TIME_WITH_ZONE(CATEGORY.TIME, "TIME WITH TIME ZONE","TIME({S}) WITH TIME ZONE", null, java.sql.Time.class, 1, 1, 2, DM, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , TIMEZ(CATEGORY.TIME, "TIMEZ", null, java.sql.Time.class, 1, 1, 1, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return TIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP({S})", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , TIMESTAMP(CATEGORY.TIMESTAMP, "TIMESTAMP({S})", null, java.sql.Timestamp.class, 1, 1, 2, MySQL, PostgreSQL, ORACLE, HANA, Derby) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP,  "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , TIMESTAMP_WITH_TIME_ZONE(CATEGORY.TIMESTAMP,  "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , TIMESTAMP_WITH_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH TIME ZONE", "TIMESTAMP({S}) WITH TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", "TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , TIMESTAMP_WITH_LOCAL_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE", "TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
-    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE","TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , TIMESTAMP_WITH_LOCAL_TIME_ZONE(CATEGORY.TIMESTAMP, "TIMESTAMP WITH LOCAL TIME ZONE","TIMESTAMP({S}) WITH LOCAL TIME ZONE", null, java.sql.Timestamp.class, 1, 1, 2, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , TIMESTAMPTZ(CATEGORY.TIMESTAMP, "TIMESTAMPTZ", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , TIMESTAMPTZ(CATEGORY.TIMESTAMP, "TIMESTAMPTZ", null, java.sql.Timestamp.class, 1, 1, 1, PostgreSQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
-   , YEAR(CATEGORY.DATE, "YEAR", null, java.sql.Date.class, 1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+   , YEAR(CATEGORY.DATE, "YEAR", null, java.sql.Date.class, 1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATE.write(value, def, placeholder);
         }
     }
-    , CLICKHOUSE_DATE32(CATEGORY.DATE, "DATE32", null, java.sql.Date.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , CLICKHOUSE_DATE32(CATEGORY.DATE, "DATE32", null, java.sql.Date.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATE.write(value, def, placeholder);
         }
     }
-    , CLICKHOUSE_DATETIME64(CATEGORY.DATE, "DATETIME64", null, java.sql.Timestamp.class, 1, 1, 1, ClickHouse){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+    , CLICKHOUSE_DATETIME64(CATEGORY.DATE, "DATETIME64", null, java.sql.Timestamp.class, 1, 1, 1, ClickHouse) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return DATETIME.write(value, def, placeholder);
         }
     }
@@ -627,28 +627,28 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              byte[]
      *
      * ****************************************************************************************************************/
-   , BLOB(CATEGORY.BLOB, "BLOB", null, byte[].class, 1, 1, 1, MySQL, ORACLE, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase){
-        public Object read(Object value, Object def, Class clazz){
-            if(clazz == byte[].class){
+   , BLOB(CATEGORY.BLOB, "BLOB", null, byte[].class, 1, 1, 1, MySQL, ORACLE, SQLite, Informix, GBase8S, SinoDB, HANA, Derby, KingBase) {
+        public Object read(Object value, Object def, Class clazz) {
+            if(clazz == byte[].class) {
 
-            }else if(clazz == String.class){
+            }else if(clazz == String.class) {
                 value = new String((byte[])value);
             }
             return value;
         }
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
-            if(value instanceof byte[]){
+            if(value instanceof byte[]) {
 
             }else {
-                if(value instanceof String){
+                if(value instanceof String) {
                     String str = (String)value;
-                    if(Base64Util.verify(str)){
+                    if(Base64Util.verify(str)) {
                         try {
                             value = Base64Util.decode(str);
-                        }catch (Exception e){
+                        }catch (Exception e) {
                             value = str.getBytes();
                         }
                     }else{
@@ -659,19 +659,19 @@ public enum StandardTypeMetadata implements TypeMetadata {
             return value;
         }
     }
-   , LONGBLOB(CATEGORY.BYTES, "LONGBLOB", null, byte[].class, 1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , LONGBLOB(CATEGORY.BYTES, "LONGBLOB", null, byte[].class, 1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BLOB.write(value, def, placeholder);}
     }
-   , MEDIUMBLOB(CATEGORY.BYTES, "MEDIUMBLOB", null, byte[].class, 1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , MEDIUMBLOB(CATEGORY.BYTES, "MEDIUMBLOB", null, byte[].class, 1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BLOB.write(value, def, placeholder);}
     }
-   , TINYBLOB(CATEGORY.BYTES, "TINYBLOB", null, byte[].class, 1, 1, 1, MySQL){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , TINYBLOB(CATEGORY.BYTES, "TINYBLOB", null, byte[].class, 1, 1, 1, MySQL) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BLOB.write(value, def, placeholder);}
     }
    , MULTILINESTRING(CATEGORY.BYTES, "MULTILINESTRING", null, byte[].class, 1, 1, 1, MySQL)
    , BYTEA(CATEGORY.BYTES, "BYTEA", null, byte[].class, 1, 1, 1, PostgreSQL)
-   , JSONB(CATEGORY.BYTES, "JSONB", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase){
-        public Object write(Object value, Object def, boolean array, boolean placeholder){return BLOB.write(value, def, placeholder);}
+   , JSONB(CATEGORY.BYTES, "JSONB", null, byte[].class, 1, 1, 1, PostgreSQL, KingBase) {
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {return BLOB.write(value, def, placeholder);}
     }
     /* *****************************************************************************************************************
      *
@@ -685,28 +685,28 @@ public enum StandardTypeMetadata implements TypeMetadata {
      *                                              byte[]-geometry
      *
      * ****************************************************************************************************************/
-   , POINT(CATEGORY.GEOMETRY, "POINT", null, Point.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL, KingBase){
-        public Object read(Object value, Object def, Class clazz){
-            if(null == value){
+   , POINT(CATEGORY.GEOMETRY, "POINT", null, Point.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL, KingBase) {
+        public Object read(Object value, Object def, Class clazz) {
+            if(null == value) {
                 return value;
             }
             return value;
         }
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
-            if(null == value){
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
+            if(null == value) {
                 value = def;
             }
-            if(value instanceof byte[]){
+            if(value instanceof byte[]) {
                 return value;
             }
             return value;
         }
     }
-   , ST_POINT(CATEGORY.GEOMETRY, "ST_POINT", null, Point.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL){
-        public Object read(Object value, Object def, Class clazz){
+   , ST_POINT(CATEGORY.GEOMETRY, "ST_POINT", null, Point.class, byte[].class, 1, 1, 1, MySQL, PostgreSQL) {
+        public Object read(Object value, Object def, Class clazz) {
             return POINT.read(value, def, clazz);
         }
-        public Object write(Object value, Object def, boolean array, boolean placeholder){
+        public Object write(Object value, Object def, boolean array, boolean placeholder) {
             return POINT.write(value, def, placeholder);
         }
     }
@@ -862,15 +862,15 @@ public enum StandardTypeMetadata implements TypeMetadata {
     private final int ignoreScale;
     private boolean array;
     private TypeMetadata.Config config;
-    StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
         if(null != origin) {
             this.origin = origin;
         }else{
             this.origin = this;
         }
-        if(null != dbs){
-            for(DatabaseType db:dbs){
+        if(null != dbs) {
+            for(DatabaseType db:dbs) {
                 this.dbs.add(db);
             }
         }
@@ -882,47 +882,47 @@ public enum StandardTypeMetadata implements TypeMetadata {
         this.ignoreScale = ignoreScale;
         this.formula = formula;
     }
-    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this(category, name, null, origin, transfer, compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
-    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this(category, name, null, origin, null, compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
-    StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    StandardTypeMetadata(CATEGORY category, String name, String formula, TypeMetadata origin, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this(category, name, formula, origin,null,  compatible, ignoreLength, ignorePrecision, ignoreScale, dbs);
     }
-    public TypeMetadata getOrigin(){
+    public TypeMetadata getOrigin() {
         return origin;
     }
     @Override
-    public CATEGORY getCategory(){
+    public CATEGORY getCategory() {
         return category;
     }
     @Override
-    public CATEGORY_GROUP getCategoryGroup(){
+    public CATEGORY_GROUP getCategoryGroup() {
         if(null != category) {
             return category.group();
         }
         return CATEGORY_GROUP.NONE;
     }
     @Override
-    public Object convert(Object value, Object def){
+    public Object convert(Object value, Object def) {
         return convert(value, null, def);
     }
 
     @Override
-    public Object convert(Object value, Class target, boolean array){
+    public Object convert(Object value, Class target, boolean array) {
         Object def = null;
         return convert(value, target, array, def);
     }
 
     @Override
     public Object convert(Object value, Class target, boolean array, Object def) {
-        if(null == target){
+        if(null == target) {
             target = compatible;
         }
-        if(null != value){
-            if(value.getClass() == target){
+        if(null != value) {
+            if(value.getClass() == target) {
                 return value;
             }
             if(null != transfer) {
@@ -940,10 +940,10 @@ public enum StandardTypeMetadata implements TypeMetadata {
 
     @Override
     public Object read(Object value, Object def, Class clazz, boolean array) {
-        if(null == clazz){
+        if(null == clazz) {
             clazz = transfer;
         }
-        if(null == clazz){
+        if(null == clazz) {
             clazz = compatible;
         }
         value = ConvertProxy.convert(value, clazz, array, def, false);
@@ -960,14 +960,14 @@ public enum StandardTypeMetadata implements TypeMetadata {
      */
     @Override
     public Object write(Object value, Object def, boolean array, boolean placeholder) {
-        if(null != value){
+        if(null != value) {
             if(value.getClass() != compatible) {
                 if (null != transfer) {
                     value = ConvertProxy.convert(value, transfer, array, def);
                 }
                 value = ConvertProxy.convert(value, compatible, array, def);
             }
-            if(null != value && compatible == String.class && !placeholder){
+            if(null != value && compatible == String.class && !placeholder) {
                 value = "'" + value + "'";
             }
         }
@@ -1033,7 +1033,7 @@ public enum StandardTypeMetadata implements TypeMetadata {
 
     @Override
     public TypeMetadata.Config config() {
-        if(null == config){
+        if(null == config) {
             config = new TypeMetadata.Config();
             config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
         }

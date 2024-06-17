@@ -43,15 +43,15 @@ public enum OracleWriter {
         }
     }),
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataWriter writer(){
+    public DataWriter writer() {
         return writer;
     }
     private final Object[] supports;
     private final DataWriter writer;
-    OracleWriter(Object[] supports, DataWriter writer){
+    OracleWriter(Object[] supports, DataWriter writer) {
         this.supports = supports;
         this.writer = writer;
     }

@@ -31,10 +31,10 @@ public class TablesDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Table> updates = new LinkedHashMap<>();
     private LinkedHashMap<String, TableDiffer> differs =new LinkedHashMap<>();
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
-    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests){
+    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests) {
         return compare(origins, dests, true);
     }
 
@@ -45,36 +45,36 @@ public class TablesDiffer implements MetadataDiffer {
      * @param ignoreSchema 是否忽略 catalog schema
      * @return TablesDiffer
      */
-    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, boolean ignoreSchema){
+    public static TablesDiffer compare(LinkedHashMap<String, Table> origins, LinkedHashMap<String, Table> dests, boolean ignoreSchema) {
         TablesDiffer differ = new TablesDiffer();
         LinkedHashMap<String, Table> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Table> drops = new LinkedHashMap<>();
         LinkedHashMap<String, Table> updates = new LinkedHashMap<>();
         LinkedHashMap<String, TableDiffer> differs =new LinkedHashMap<>();
-        if(null == origins){
+        if(null == origins) {
             origins = new LinkedHashMap<>();
         }
-        if(null == dests){
+        if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        for(String key:origins.keySet()){
+        for(String key:origins.keySet()) {
             Table origin = origins.get(key);
             Table dest = dests.get(key);
-            if(null == dest){
+            if(null == dest) {
                 //新表不存在
                 drops.put(key, origin);
             }else {
                 //更新部分
                 TableDiffer dif = origin.compare(dest);
-                if(!dif.isEmpty()){
+                if(!dif.isEmpty()) {
                     origin.setUpdate(dest, false, false);
                     updates.put(key, origin);
                     differs.put(key, dif);
                 }
             }
         }
-        for(String key:dests.keySet()){
-            if(!origins.containsKey(key)){
+        for(String key:dests.keySet()) {
+            if(!origins.containsKey(key)) {
                 adds.put(key, dests.get(key));
             }
         }

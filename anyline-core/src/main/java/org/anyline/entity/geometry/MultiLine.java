@@ -24,41 +24,41 @@ import java.util.List;
 public class MultiLine extends Geometry{
     private List<LineString> lines = new ArrayList<>();
 
-    public MultiLine(){
+    public MultiLine() {
         type = 5;
     }
-    public MultiLine(List<LineString> lines){
+    public MultiLine(List<LineString> lines) {
         this();
         this.lines = lines;
     }
-    public MultiLine add(LineString line){
+    public MultiLine add(LineString line) {
         lines.add(line);
         return this;
     }
 
-    public MultiLine add(List<LineString> lines){
+    public MultiLine add(List<LineString> lines) {
         if(null != lines) {
             lines.addAll(lines);
         }
         return this;
     }
-    public MultiLine clear(){
+    public MultiLine clear() {
         //lines.clear();
         lines = new ArrayList<>();
         return this;
     }
-    public List<LineString> lines(){
+    public List<LineString> lines() {
         return lines;
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(LineString line:lines){
-            if(!first){
+        for(LineString line:lines) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;
@@ -67,7 +67,7 @@ public class MultiLine extends Geometry{
         builder.append(")");
         return builder.toString();
     }
-    public String toString(){
+    public String toString() {
         return toString(true);
     }
     /**
@@ -78,7 +78,7 @@ public class MultiLine extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
@@ -87,8 +87,8 @@ public class MultiLine extends Geometry{
             builder.append("(");
         }
         boolean first = true;
-        for(LineString line:lines){
-            if(!first){
+        for(LineString line:lines) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;
@@ -99,7 +99,7 @@ public class MultiLine extends Geometry{
         }
         return builder.toString();
     }
-    public String sql(){
+    public String sql() {
         return sql(true, true);
     }
 

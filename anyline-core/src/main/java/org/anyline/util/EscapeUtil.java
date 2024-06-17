@@ -55,13 +55,13 @@ public class EscapeUtil{
         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F,     
         0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F        
     };         
-    public static String escape(Object obj){
+    public static String escape(Object obj) {
     	if(null == obj) return ""; 
     	return escape(obj.toString()); 
     } 
     public static String escape(String s) {
         StringBuffer sbuf = new StringBuffer(); 
-    	if(null==s || s.isEmpty()){
+    	if(null==s || s.isEmpty()) {
     		return "";        
     	} 
         int len = s.length();         
@@ -69,7 +69,7 @@ public class EscapeUtil{
             int ch = s.charAt(i);         
             if (ch == ' ') {                       // space : map to '+'          
                 sbuf.append(' ');         
-            } else if(ch == '/'){
+            } else if(ch == '/') {
             	sbuf.append('/'); 
             }else if ('A' <= ch && ch <= 'Z') {   // 'A'..'Z' : as it was         
                 sbuf.append((char)ch);         
@@ -95,14 +95,14 @@ public class EscapeUtil{
         }         
         return sbuf.toString();         
     }
-    public static String escape2(String s){
+    public static String escape2(String s) {
         return escape(escape(s));
     }
-    public static String unescape2(String s){
+    public static String unescape2(String s) {
         return unescape(unescape(s));
     }
     public static String unescape(String s) {
-        if(null==s || s.isEmpty()){
+        if(null==s || s.isEmpty()) {
     		return s; 
     	} 
         StringBuffer sbuf = new StringBuffer();         
@@ -143,7 +143,7 @@ public class EscapeUtil{
         }         
         return sbuf.toString();         
     }         
-    public static String doubleUnescape(String s){
+    public static String doubleUnescape(String s) {
     	return unescape(unescape(s)); 
     } 
 }   

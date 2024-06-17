@@ -26,14 +26,14 @@ public enum SRS {
 
     private final String title;
     private final String remark;
-    SRS(String title, String remark){
+    SRS(String title, String remark) {
         this.title = title;
         this.remark = remark;
     }
-    public String title(){
+    public String title() {
         return title;
     }
-    public String remark(){
+    public String remark() {
         return remark;
     }
 }

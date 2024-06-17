@@ -36,7 +36,7 @@ public class ClassUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(ClassUtil.class);
 	private static Map<Class, Class> INTERFACE_IMPLEMENT = new HashMap<>();
-	public static void regImplement(Class interfaceClass, Class implementClass){
+	public static void regImplement(Class interfaceClass, Class implementClass) {
 		INTERFACE_IMPLEMENT.put(interfaceClass, implementClass);
 	}
 
@@ -49,12 +49,12 @@ public class ClassUtil {
 	public static boolean isPrimitiveClass(Object obj) {
 		try {
 			Class clazz = null;
-			if(obj instanceof Class){
+			if(obj instanceof Class) {
 				clazz = (Class) obj;
 			}else{
 				clazz = obj.getClass();
 			}
-			if(clazz.isPrimitive() || ((Class<?>)clazz.getField("TYPE").get(null)).isPrimitive()){
+			if(clazz.isPrimitive() || ((Class<?>)clazz.getField("TYPE").get(null)).isPrimitive()) {
 				return true;
 			}else{
 				return false;
@@ -69,33 +69,33 @@ public class ClassUtil {
 	 * @param obj obj
 	 * @return boolean
 	 */
-	public static boolean isWrapClass(Object obj){
+	public static boolean isWrapClass(Object obj) {
 		return !isPrimitiveClass(obj);
 	}
-	public static List<Class<?>> list(String packageName, boolean recursion, Class<?> ... bases){
+	public static List<Class<?>> list(String packageName, boolean recursion, Class<?> ... bases) {
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		try {
 			List<String> names = getClassNames(packageName, recursion);
 			for (String name : names) {
 				try {
-					if(name.startsWith("java")){
+					if(name.startsWith("java")) {
 						continue;
 					}
 					Class<?> c = Class.forName(name);
 					if (isInSub(c, bases)) {
 						list.add(c);
 					}
-				}catch (NoClassDefFoundError e){
+				}catch (NoClassDefFoundError e) {
 				}catch (Exception e) {
 				}
 			}
-		}catch (NoClassDefFoundError e){
-		}catch(Exception e){
+		}catch (NoClassDefFoundError e) {
+		}catch(Exception e) {
 		}
 		return list;
 	}
 
-	public static List<String> names(String packageName, boolean recursion, Class<?> ... bases){
+	public static List<String> names(String packageName, boolean recursion, Class<?> ... bases) {
 		List<String> list = new ArrayList<>();
 		try {
 			List<String> names = getClassNames(packageName, recursion);
@@ -109,7 +109,7 @@ public class ClassUtil {
 
 				}
 			}
-		}catch(Exception ignored){
+		}catch(Exception ignored) {
 		}
 		return list;
 	}
@@ -120,20 +120,20 @@ public class ClassUtil {
 	 * @param bases  父类或接口
 	 * @return boolean
 	 */
-	public static boolean isInSub(Class<?> clazz, Class<?> ... bases){
+	public static boolean isInSub(Class<?> clazz, Class<?> ... bases) {
 		List<Class> list = new ArrayList<>();//避免[null]
-		if(null != bases){
-			for(Class<?> base : bases){
-				if(null != base){
+		if(null != bases) {
+			for(Class<?> base : bases) {
+				if(null != base) {
 					list.add(base);
 				}
 			}
 		}
-		if(list.isEmpty()){
+		if(list.isEmpty()) {
 			return true;
 		}
-		for(Class<?> base : bases){
-			if(base.isAssignableFrom(clazz)){
+		for(Class<?> base : bases) {
+			if(base.isAssignableFrom(clazz)) {
 				return true;
 			}
 		}
@@ -146,21 +146,21 @@ public class ClassUtil {
 	 * @param bases  bases
 	 * @return boolean
 	 */
-	public static boolean isAllSub(Class<?> clazz, Class<?> ... bases){
+	public static boolean isAllSub(Class<?> clazz, Class<?> ... bases) {
 		List<Class> list = new ArrayList<>();//避免[null]
-		if(null != bases){
-			for(Class<?> base : bases){
-				if(null != base){
+		if(null != bases) {
+			for(Class<?> base : bases) {
+				if(null != base) {
 					list.add(base);
 				}
 			}
 		}
-		if(list.isEmpty()){
+		if(list.isEmpty()) {
 			return true;
 		}
 
-		for(Class<?> base : bases){
-			if(!base.isAssignableFrom(clazz)){
+		for(Class<?> base : bases) {
+			if(!base.isAssignableFrom(clazz)) {
 				return false;
 			}
 		}
@@ -221,7 +221,7 @@ public class ClassUtil {
 				if (childFilePath.endsWith(".class") && !childFilePath.contains("$")) {
 					String c = childFilePath.split("classes")[1].replace(".class","");
 					c = c.replace("\\",".").replace("//",".");
-					if(c.startsWith(".")){
+					if(c.startsWith(".")) {
 						c = c.substring(1);
 					}
 					myClassName.add(c);
@@ -301,10 +301,10 @@ public class ClassUtil {
 		}
 		return names;
 	}
-	public static boolean hasAnnotation(Class clazz, String annotation){
+	public static boolean hasAnnotation(Class clazz, String annotation) {
 		Annotation[] annotations = clazz.getAnnotations();
-		for(Annotation item:annotations){
-			if(item.annotationType().getSimpleName().equalsIgnoreCase(annotation)){
+		for(Annotation item:annotations) {
+			if(item.annotationType().getSimpleName().equalsIgnoreCase(annotation)) {
 				return true;
 			}
 		}
@@ -321,16 +321,16 @@ public class ClassUtil {
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> getAnnotationFieldValues(Class target, String annotation, String field, int qty){
+	public static List<Object> getAnnotationFieldValues(Class target, String annotation, String field, int qty) {
 		Annotation[] annotations = target.getAnnotations();
 		return getAnnotationFieldValues(annotations, annotation, field, qty);
 	}
-	public static List<Object> getAnnotationFieldValues(Class target, String annotation, String field){
+	public static List<Object> getAnnotationFieldValues(Class target, String annotation, String field) {
 		return getAnnotationFieldValues(target, annotation, field, -1);
 	}
-	public static Object getAnnotationFieldValue(Class target, String annotation, String field){
+	public static Object getAnnotationFieldValue(Class target, String annotation, String field) {
 		List<Object> values = getAnnotationFieldValues(target, annotation, field, 1);
-		if(!values.isEmpty()){
+		if(!values.isEmpty()) {
 			return values.get(0);
 		}
 		return null;
@@ -346,31 +346,31 @@ public class ClassUtil {
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> getAnnotationFieldValues(Field target, String annotation, String field, int qty){
+	public static List<Object> getAnnotationFieldValues(Field target, String annotation, String field, int qty) {
 		Annotation[] annotations = target.getAnnotations();
 		return getAnnotationFieldValues(annotations, annotation, field, qty);
 	}
-	public static List<Object> getAnnotationFieldValues(Field target, String annotation, String field){
+	public static List<Object> getAnnotationFieldValues(Field target, String annotation, String field) {
 		return getAnnotationFieldValues(target, annotation, field, -1);
 	}
-	public static Object getAnnotationFieldValue(Field target, String annotation, String field){
+	public static Object getAnnotationFieldValue(Field target, String annotation, String field) {
 		List<Object> values = getAnnotationFieldValues(target, annotation, field, 1);
-		if(!values.isEmpty()){
+		if(!values.isEmpty()) {
 			return values.get(0);
 		}
 		return null;
 	}
-	private static List<Object> getAnnotationFieldValues(Annotation[] annotations, String annotation, String field, int qty){
+	private static List<Object> getAnnotationFieldValues(Annotation[] annotations, String annotation, String field, int qty) {
 		List<Object> list = new ArrayList<>();
-		for(Annotation an : annotations){
+		for(Annotation an : annotations) {
 			String name = an.annotationType().getSimpleName();
-			if(!match(name, annotation)){
+			if(!match(name, annotation)) {
 				continue;//注解名不匹配
 			}
 			Method methods[] = an.annotationType().getMethods();
-			for(Method method:methods){
+			for(Method method:methods) {
 				name = method.getName();
-				if(!match(name, field)){
+				if(!match(name, field)) {
 					continue;//属性名不匹配
 				}
 				try {
@@ -379,14 +379,14 @@ public class ClassUtil {
 						Object values[] = (Object[]) value;
 						for (Object v : values) {
 							list.add(v);
-							if(qty >0 && list.size()>=qty){
+							if(qty >0 && list.size()>=qty) {
 								return list;
 							}
 						}
 					} else {
 						list.add(value);
 					}
-				}catch (Exception e){
+				}catch (Exception e) {
 				}
 			}
 
@@ -394,7 +394,7 @@ public class ClassUtil {
 		return list;
 	}
 
-	private static boolean match(String value, String regex){
+	private static boolean match(String value, String regex) {
 		regex = regex.replace("*",".*").toUpperCase();
 		return value.toUpperCase().matches(regex);
 	}
@@ -406,15 +406,15 @@ public class ClassUtil {
 	 * @param finals  是否返回final属性
 	 * @return List
 	 */
-	public static List<Field> getFields(Class<?> clazz, boolean statics, boolean finals){
+	public static List<Field> getFields(Class<?> clazz, boolean statics, boolean finals) {
 		List<Field> fields = new ArrayList<Field>();
-		while(null != clazz){
+		while(null != clazz) {
 			Field[] tmp = clazz.getDeclaredFields();
-			for(Field field:tmp){
-				if(!statics && Modifier.isStatic(field.getModifiers())){
+			for(Field field:tmp) {
+				if(!statics && Modifier.isStatic(field.getModifiers())) {
 					continue;
 				}
-				if(!finals && Modifier.isFinal(field.getModifiers())){
+				if(!finals && Modifier.isFinal(field.getModifiers())) {
 					continue;
 				}
 				fields.add(field);
@@ -423,73 +423,73 @@ public class ClassUtil {
 		}
 		return fields;
 	}
-	public static List<Field> getFields(Class<?> clazz){
+	public static List<Field> getFields(Class<?> clazz) {
 		return getFields(clazz, true, true);
 	}
-	public static List<String> getFieldsName(Class<?> clazz){
+	public static List<String> getFieldsName(Class<?> clazz) {
 		List<Field> fields = getFields(clazz);
 		List<String> keys = new ArrayList<>();
-		for(Field field:fields){
+		for(Field field:fields) {
 			keys.add(field.getName());
 		}
 		return keys;
 	}
-	public static List<Method> getMethods(Class<?> clazz, boolean recursion){
+	public static List<Method> getMethods(Class<?> clazz, boolean recursion) {
 		List<Method> list = new ArrayList<>();
 		Method[] methods = clazz.getMethods();
-		for(Method method:methods){
+		for(Method method:methods) {
 			list.add(method);
 		}
 		// 递归父类
-		if(null != clazz && recursion){
+		if(null != clazz && recursion) {
 			clazz = clazz.getSuperclass();
-			if(null != clazz){
+			if(null != clazz) {
 				list.addAll(getMethods(clazz, recursion));
 			}
 		}
 		return list;
 	}
-	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes){
+	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes) {
 		Method method = null;
 		try{
 			method = clazz.getMethod(name, parameterTypes);
-		}catch(Exception ignored){}
-		if(null == method){
+		}catch(Exception ignored) {}
+		if(null == method) {
 			try{
 				method = clazz.getDeclaredMethod(name, parameterTypes);
-			}catch(Exception e){
+			}catch(Exception e) {
 
 			}
 		}
 		// 递归父类
-		if(null == method && recursion){
+		if(null == method && recursion) {
 			clazz = clazz.getSuperclass();
-			if(null != clazz){
+			if(null != clazz) {
 				method = getMethod(clazz, name, recursion, parameterTypes);
 			}
 		}
 		return method;
 	}
 
-	public static Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes){
+	public static Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
 		return getMethod(clazz, name, false, parameterTypes);
 	}
-	public static Field getField(Class<?> clazz, String name, boolean recursion){
+	public static Field getField(Class<?> clazz, String name, boolean recursion) {
 		Field field = null;
 		try{
 			field = clazz.getField(name);
-		}catch(Exception ignored){}
-		if(null == field){
+		}catch(Exception ignored) {}
+		if(null == field) {
 			try{
 				field = clazz.getDeclaredField(name);
-			}catch(Exception e){
+			}catch(Exception e) {
 
 			}
 		}
 		// 递归父类
-		if(null == field && recursion){
+		if(null == field && recursion) {
 			clazz = clazz.getSuperclass();
-			if(null != clazz){
+			if(null != clazz) {
 				field = getField(clazz, name);
 			}
 		}
@@ -504,28 +504,28 @@ public class ClassUtil {
 	 * @param ignoreSplit 是否忽略分隔符号
 	 * @return Field
 	 */
-	public static Field getField(List<Field> fields, String name, boolean ignoreCase, boolean ignoreSplit){
-		if(null == name){
+	public static Field getField(List<Field> fields, String name, boolean ignoreCase, boolean ignoreSplit) {
+		if(null == name) {
 			return null;
 		}
 		Field field = null;
-		for(Field item:fields){
+		for(Field item:fields) {
 			String itemName = item.getName();
-			if(ignoreCase){
+			if(ignoreCase) {
 				itemName = itemName.toUpperCase();
 				name = name.toUpperCase();
 			}
-			if(ignoreSplit){
+			if(ignoreSplit) {
 				itemName = itemName.replace("-","").replace("_","");
 				name = name.replace("-","").replace("_","");
 			}
-			if(name.equals(itemName)){
+			if(name.equals(itemName)) {
 				field = item;
 			}
 		}
 		return field;
 	}
-	public static Field getField(Class<?> clazz, String name){
+	public static Field getField(Class<?> clazz, String name) {
 		return getField(clazz, name, true);
 	}
 
@@ -536,17 +536,17 @@ public class ClassUtil {
 	 * @return List
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
-	public static List<Field> getFieldsByAnnotation(Class clazz, Class annotation){
+	public static List<Field> getFieldsByAnnotation(Class clazz, Class annotation) {
 		List<Field> list = new ArrayList<Field>();
 		try{
 			List<Field> fields = getFields(clazz);
-			for(Field field:fields){
+			for(Field field:fields) {
 				Annotation at = field.getAnnotation(annotation);
-				if(null != at){
+				if(null != at) {
 					list.add(field);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return list;
@@ -558,10 +558,10 @@ public class ClassUtil {
 	 * @param names 注解名称
 	 * @return Annotation
 	 */
-	public static List<Annotation> getFieldAnnotations(Field field, String ... names){
+	public static List<Annotation> getFieldAnnotations(Field field, String ... names) {
 		List<Annotation> list = new ArrayList<>();
 		Annotation[] annotations = field.getAnnotations();
-		for(Annotation annotation:annotations){
+		for(Annotation annotation:annotations) {
 			for(String name:names) {
 				if (match(annotation.annotationType().getSimpleName(), name)) {
 					list.add(annotation);
@@ -578,9 +578,9 @@ public class ClassUtil {
 	 * @param names 注解名称
 	 * @return Annotation
 	 */
-	public static Annotation getFieldAnnotation(Field field, String ... names){
+	public static Annotation getFieldAnnotation(Field field, String ... names) {
 		List<Annotation> list = getFieldAnnotations(field, names);
-		if(list.size()>0){
+		if(list.size()>0) {
 			return list.get(0);
 		}
 		return null;
@@ -593,22 +593,22 @@ public class ClassUtil {
 	 * @return List
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
-	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations){
+	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations) {
 		List<Field> list = new ArrayList<Field>();
 		try{
 			List<Field> fields = getFields(clazz);
-			for(Field field:fields){
+			for(Field field:fields) {
 				Annotation[] ans = field.getAnnotations();
-				for(Annotation an:ans){
-					for(String annotation:annotations){
-						if(match(an.annotationType().getSimpleName(), annotation)){
+				for(Annotation an:ans) {
+					for(String annotation:annotations) {
+						if(match(an.annotationType().getSimpleName(), annotation)) {
 							list.add(field);
 							break;
 						}
 					}
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return list;
@@ -622,34 +622,34 @@ public class ClassUtil {
 	 */
 
 	@SuppressWarnings({"unchecked","rawtypes" })
-	public static List<Class> getClasses(String pack, Class ... bases){
+	public static List<Class> getClasses(String pack, Class ... bases) {
 		List<Class> list = new ArrayList<Class>();
 		File dir = new File(ClassUtil.class.getResource("/").getFile(), pack.replace(".", File.separator));
 		List<File> files = FileUtil.getAllChildrenFile(dir, ".class");
-		for(File file:files){
+		for(File file:files) {
 			try{
 				String path = file.getAbsolutePath();
-				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 					log.debug("[检索类][file:{}]", path);
 				}
-				if(path.contains(File.separator+"classes"+File.separator)){
+				if(path.contains(File.separator+"classes"+File.separator)) {
 					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
 				}
 				path = path.replace(File.separator, ".");
 				path = path.replace(".classes.","").replace(".class","");
-				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+				if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 					log.debug("[检索类][class:{}]", path);
 				}
 				Class clazz = Class.forName(path);
-				if(clazz.getName().contains("$")){
+				if(clazz.getName().contains("$")) {
 					continue;
 				}
-				if(null != bases && bases.length>0){
-					for(Class base:bases){
-						if(clazz.equals(base)){
+				if(null != bases && bases.length>0) {
+					for(Class base:bases) {
+						if(clazz.equals(base)) {
 							continue;
 						}
-						if(base.isAssignableFrom(clazz)){
+						if(base.isAssignableFrom(clazz)) {
 							list.add(clazz);
 							continue;
 						}
@@ -657,7 +657,7 @@ public class ClassUtil {
 				}else{
 					list.add(clazz);
 				}
-			}catch(Exception e){
+			}catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -670,14 +670,14 @@ public class ClassUtil {
 	 * @param configs 注册名.注解属性名, 不区分大小写 支持模糊匹配 如 *Table.ID*
 	 * @return String
 	 */
-	public static String parseAnnotationFieldValue(Class clazz, String ... configs){
-		for(String config:configs){
+	public static String parseAnnotationFieldValue(Class clazz, String ... configs) {
+		for(String config:configs) {
 			String[] tmps = config.split("\\.");
-			if(tmps.length <2){
+			if(tmps.length <2) {
 				continue;
 			}
 			Object name = getAnnotationFieldValue(clazz, tmps[0], tmps[1]);
-			if(BasicUtil.isNotEmpty(name)){
+			if(BasicUtil.isNotEmpty(name)) {
 				return name.toString();
 			}
 		}
@@ -691,21 +691,21 @@ public class ClassUtil {
 	 *                可以只提供注解名如Column则依次按Column.name, Column.value解析
 	 * @return String
 	 */
-	public static String parseAnnotationFieldValue(Field field, String ... configs){
-		for(String config:configs){
+	public static String parseAnnotationFieldValue(Field field, String ... configs) {
+		for(String config:configs) {
 			String[] tmps = config.split("\\.");
-			if(tmps.length >= 2){
+			if(tmps.length >= 2) {
 				Object value = getAnnotationFieldValue(field, tmps[0], tmps[1]);
-				if(BasicUtil.isNotEmpty(value)){
+				if(BasicUtil.isNotEmpty(value)) {
 					return value.toString();
 				}
 			}else {
 				Object value = getAnnotationFieldValue(field, config, "name");
-				if(BasicUtil.isNotEmpty(value)){
+				if(BasicUtil.isNotEmpty(value)) {
 					return value.toString();
 				}
 				value = getAnnotationFieldValue(field, config, "value");
-				if(BasicUtil.isNotEmpty(value)){
+				if(BasicUtil.isNotEmpty(value)) {
 					return value.toString();
 				}
 			}
@@ -718,9 +718,9 @@ public class ClassUtil {
 	 * @param field 属性
 	 * @return Class
 	 */
-	public static Class getComponentClass(Field field){
+	public static Class getComponentClass(Field field) {
 		//数组
-		if(field.getType().isArray()){
+		if(field.getType().isArray()) {
 			return field.getType().getComponentType();
 		}
 		//集合
@@ -732,7 +732,7 @@ public class ClassUtil {
 				Class itemClass = (Class) args[0];
 				return itemClass;
 			}
-		}else if(gtype instanceof Class){
+		}else if(gtype instanceof Class) {
 			return (Class) gtype;
 		}
 		return null;
@@ -743,9 +743,9 @@ public class ClassUtil {
 	 * @param clazz 需要是实例化过的对象getClass()返回的结果
 	 * @return Class
 	 */
-	public static Class getComponentClass(Class clazz){
+	public static Class getComponentClass(Class clazz) {
 		//数组
-		if(clazz.isArray()){
+		if(clazz.isArray()) {
 			return clazz.getComponentType();
 		}
 		//集合
@@ -754,21 +754,21 @@ public class ClassUtil {
 		Type actualTypeArgument = pty.getActualTypeArguments()[0];
 		return (Class)actualTypeArgument;
 	}
-	public static Class getComponentClass(Object obj){
-		if(null == obj){
+	public static Class getComponentClass(Object obj) {
+		if(null == obj) {
 			return null;
 		}
-		if(obj instanceof Field){
+		if(obj instanceof Field) {
 			return getComponentClass((Field) obj);
-		}else if(obj instanceof Class){
+		}else if(obj instanceof Class) {
 			return getComponentClass((Class)obj);
 		}
-		if(obj instanceof Collection){
+		if(obj instanceof Collection) {
 			Collection col = (Collection) obj;
-			for(Object item:col){
+			for(Object item:col) {
 				return item.getClass();
 			}
-		}else if(obj.getClass().isArray()){
+		}else if(obj.getClass().isArray()) {
 			return obj.getClass().getComponentType();
 		}
 		return getComponentClass(obj.getClass());
@@ -781,14 +781,14 @@ public class ClassUtil {
 	 * @param obj 对象
 	 * @return 类型
 	 */
-	public static String type(Object obj){
+	public static String type(Object obj) {
 		String type = null;
 		if(null != obj) {
 			type = type(obj.getClass());
 		}
 		return type;
 	}
-	public static String type(Field field){
+	public static String type(Field field) {
 		String type = null;
 		if(null != field) {
 			Class clazz = field.getType();
@@ -796,7 +796,7 @@ public class ClassUtil {
 		}
 		return type;
 	}
-	public static String type(Class clazz){
+	public static String type(Class clazz) {
 		String type = null;
 		if(null != clazz) {
 			if (clazz.isArray()) {
@@ -813,23 +813,23 @@ public class ClassUtil {
 				&& !clazz.isEnum()
 				&& !clazz.isArray()
 				&& !Modifier.isAbstract(clazz.getModifiers())
-		){
+		) {
 			return clazz.newInstance();
 		}
 		Class implementClass = INTERFACE_IMPLEMENT.get(clazz);
-		if(null != implementClass){
+		if(null != implementClass) {
 			return implementClass.newInstance();
 		}
-		if(isInSub(clazz, List.class)){
+		if(isInSub(clazz, List.class)) {
 			return new ArrayList<>();
 		}
-		if(isInSub(clazz, Set.class)){
+		if(isInSub(clazz, Set.class)) {
 			return new HashSet();
 		}
-		if(isInSub(clazz, Collection.class)){
+		if(isInSub(clazz, Collection.class)) {
 			return new ArrayList<>();
 		}
-		if(isInSub(clazz, Map.class)){
+		if(isInSub(clazz, Map.class)) {
 			return new HashMap<>();
 		}
 		return null;

@@ -24,36 +24,36 @@ import java.io.Serializable;
 
 public class Schema extends Metadata<Schema> implements Serializable {
     protected String keyword = "SCHEMA"           ;
-    public Schema(){
+    public Schema() {
 
     }
-    public Schema(String name){
+    public Schema(String name) {
         this.name = name;
     }
-    public String toString(){
+    public String toString() {
         String str = getKeyword()+":";
-        if(null != catalog){
+        if(null != catalog) {
             str += getCatalogName() + ".";
         }
         str += name;
         return str;
     }
-    public boolean isEmpty(){
-        if(null == name || name.trim().isEmpty()){
+    public boolean isEmpty() {
+        if(null == name || name.trim().isEmpty()) {
             return true;
         }
         return false;
     }
 
-    public boolean equals(Schema schema){
+    public boolean equals(Schema schema) {
         return equals(schema, true);
     }
-    public boolean equals(Schema schema, boolean ignoreCase){
-        if(null == schema){
+    public boolean equals(Schema schema, boolean ignoreCase) {
+        if(null == schema) {
             return false;
         }
         boolean catalog_equal = BasicUtil.equals(this.catalog, schema.getCatalog(), ignoreCase);
-        if(catalog_equal){
+        if(catalog_equal) {
             return BasicUtil.equals(this.name, schema.getName(), ignoreCase);
         }
         return false;

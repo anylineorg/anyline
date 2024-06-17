@@ -23,25 +23,25 @@ import java.util.List;
 
 public class GeometryCollection extends Geometry{
     private List<Geometry> collection = new ArrayList<>();
-    public GeometryCollection(){
+    public GeometryCollection() {
         type = 7;
     }
-    public List<Geometry> collection(){
+    public List<Geometry> collection() {
         return collection;
     }
-    public GeometryCollection add(Geometry geometry){
+    public GeometryCollection add(Geometry geometry) {
         collection.add(geometry);
         return this;
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(Geometry geometry:collection){
-            if(!first){
+        for(Geometry geometry:collection) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;
@@ -71,7 +71,7 @@ public class GeometryCollection extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
@@ -80,8 +80,8 @@ public class GeometryCollection extends Geometry{
             builder.append("(");
         }
         boolean first = true;
-        for(Geometry geometry:collection){
-            if(!first){
+        for(Geometry geometry:collection) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;

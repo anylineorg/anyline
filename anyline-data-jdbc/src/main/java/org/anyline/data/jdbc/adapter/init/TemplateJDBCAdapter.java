@@ -31,26 +31,26 @@ import java.util.LinkedHashMap;
 //
 public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 
-/*    public DatabaseType type(){
+/*    public DatabaseType type() {
         return DatabaseType.NONE;
     }
 
-    public TemplateJDBCAdapter(){
+    public TemplateJDBCAdapter() {
         super();
         delimiterFr = "`";
         delimiterTo = "`";
-        for(MySQLTypeMetadataAlias alias:MySQLTypeMetadataAlias.values()){
+        for(MySQLTypeMetadataAlias alias:MySQLTypeMetadataAlias.values()) {
             reg(alias);
 			alias(alias.name(), alias.standard());
         }
-        for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()){
+        for (MySQLTypeMetadataAlias alias: MySQLTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());
         }
-        for(MySQLWriter writer: MySQLWriter.values()){
+        for(MySQLWriter writer: MySQLWriter.values()) {
             reg(writer.supports(), writer.writer());
         }
-        for(MySQLReader reader: MySQLReader.values()){
+        for(MySQLReader reader: MySQLReader.values()) {
             reg(reader.supports(), reader.reader());
         }
     }
@@ -75,12 +75,12 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      *  ***************************************************************************************************************/
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
         super.checkSchema(runtime, datasource, meta);
     }
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
         super.checkSchema(runtime, con, meta);
     }
     /**
@@ -90,7 +90,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @param <T> Metadata
      */
 	@Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
@@ -105,7 +105,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
@@ -116,7 +116,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
 	 * @return String[]
 	 */
 	@Override
-	public String[] correctSchemaFromJDBC(String catalog, String schema){
+	public String[] correctSchemaFromJDBC(String catalog, String schema) {
 		return super.correctSchemaFromJDBC(catalog, schema);
 	}
 
@@ -128,7 +128,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataLengthRefer(runtime, meta);
     }
 
@@ -140,7 +140,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
@@ -152,10 +152,10 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataScaleRefer(runtime, meta);
     }
-    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.insertFoot(configs, columns);
     }
 
@@ -165,7 +165,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
         return super.value(runtime, column, value);
     }
 
@@ -184,7 +184,7 @@ public abstract class TemplateJDBCAdapter extends AbstractJDBCAdapter {
      * 伪表
      * @return String
      */
-    protected String dummy(){
+    protected String dummy() {
         return super.dummy();
     }
     /* *****************************************************************************************************************

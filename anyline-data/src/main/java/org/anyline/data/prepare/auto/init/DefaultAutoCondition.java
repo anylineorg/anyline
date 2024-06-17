@@ -52,7 +52,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	private Compare orCompare = Compare.EQUAL;
  
  
-	public DefaultAutoCondition(Config config){
+	public DefaultAutoCondition(Config config) {
 		setJoin(config.getJoin());
 		setTable(config.getPrefix());   	// 表名或表别名
 		setColumn(config.getVariable());   // 列名
@@ -62,10 +62,10 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
 		setSwt(config.getSwt());
 		setRunText(config.getText());
-		if(BasicUtil.isNotEmpty(text)){
+		if(BasicUtil.isNotEmpty(text)) {
 			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		}
-		if(BasicUtil.isNotEmpty(text) || BasicUtil.isNotEmpty(true, values) || config.getSwt() == EMPTY_VALUE_SWITCH.NULL || config.getSwt() == EMPTY_VALUE_SWITCH.SRC){
+		if(BasicUtil.isNotEmpty(text) || BasicUtil.isNotEmpty(true, values) || config.getSwt() == EMPTY_VALUE_SWITCH.NULL || config.getSwt() == EMPTY_VALUE_SWITCH.SRC) {
 			setActive(true); 
 		} 
 	} 
@@ -76,18 +76,18 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @param values 值 
 	 * @param compare  比较方式 
 	 */ 
-	public DefaultAutoCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object values){
+	public DefaultAutoCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object values) {
 		setSwt(swt);
 		setTable(prefix);
 		setColumn(var);
 		setValues(values);
 		setCompare(compare);
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX);
-		if(BasicUtil.isNotEmpty(true, values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
+		if(BasicUtil.isNotEmpty(true, values) || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC) {
 			setActive(true); 
 		} 
 	} 
-	public DefaultAutoCondition(String text){
+	public DefaultAutoCondition(String text) {
 		this.text = text; 
 		this.active = true; 
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE); 
@@ -101,22 +101,22 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @return String
 	 */
 	@Override
-	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder){
+	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
 		runValues = new ArrayList<>();
 		String text = "";
-		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){//没有变量
+		if(this.variableType == Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {//没有变量
 			text = this.text; 
 		}else{
 			String txt = "";
-			//if(BasicUtil.isNotEmpty(true, values) || isRequired()){
+			//if(BasicUtil.isNotEmpty(true, values) || isRequired()) {
 				txt = getRunText(prefix, runtime, values, compare, placeholder);
-				if(BasicUtil.isNotEmpty(txt)){
+				if(BasicUtil.isNotEmpty(txt)) {
 					text = txt;
 				}
-				if(BasicUtil.isNotEmpty(true, orValues)){
+				if(BasicUtil.isNotEmpty(true, orValues)) {
 					txt = getRunText(prefix, runtime, orValues, orCompare, placeholder);
-					if(BasicUtil.isNotEmpty(txt)){
-						if(BasicUtil.isEmpty(text)){
+					if(BasicUtil.isNotEmpty(txt)) {
+						if(BasicUtil.isEmpty(text)) {
 							text = txt;
 						}else{
 							text = "(" + text +" OR " + txt + ")";
@@ -136,13 +136,13 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	 * @param placeholder 是否需要占位符
 	 * @return string
 	 */
-	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare, boolean placeholder){
+	public String getRunText(String prefix, DataRuntime runtime, Object val, Compare compare, boolean placeholder) {
 		StringBuilder builder = new StringBuilder();
 		String delimiterFr = "";
 		String delimiterTo = "";
 		boolean support = true;
 		DriverAdapter adapter = null;
-		if (null != runtime){
+		if (null != runtime) {
 			adapter = runtime.getAdapter();;
 		}
 		if(null != adapter) {
@@ -151,22 +151,22 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		}
 		boolean empty = BasicUtil.isEmpty(true, val);
 		int compareCode = compare.getCode();
-		if(compareCode == -1){
+		if(compareCode == -1) {
 			//只作参数赋值
 			return "";
 		}
-		if(empty){
-			if(swt == EMPTY_VALUE_SWITCH.BREAK || swt == EMPTY_VALUE_SWITCH.IGNORE){
+		if(empty) {
+			if(swt == EMPTY_VALUE_SWITCH.BREAK || swt == EMPTY_VALUE_SWITCH.IGNORE) {
 				return  "";
 			}
 		}
-		if(BasicUtil.isNotEmpty(table)){
+		if(BasicUtil.isNotEmpty(table)) {
 			prefix = table;
 		}
 
 		StringBuilder col_builder = new StringBuilder();
-		if(!column.contains(".")){
-			if(BasicUtil.isNotEmpty(prefix)){
+		if(!column.contains(".")) {
+			if(BasicUtil.isNotEmpty(prefix)) {
 				SQLUtil.delimiter(col_builder, prefix, delimiterFr, delimiterTo).append(".");
 			}else {
 				if (BasicUtil.isNotEmpty(table)) {
@@ -175,56 +175,56 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 			}
 		}
 		SQLUtil.delimiter(col_builder, column, delimiterFr, delimiterTo);
-		if(compareCode >=60 && compareCode <= 62){				// FIND_IN_SET(?, CODES)
+		if(compareCode >=60 && compareCode <= 62) {				// FIND_IN_SET(?, CODES)
 			try {
 				val = adapter.createConditionFindInSet(runtime, builder, col_builder.toString(), compare, val, placeholder);
-			}catch (NotSupportException ignored){
+			}catch (NotSupportException ignored) {
 				support = false;
 			}
-		}else if(compareCode == 71){							// JSON_CONTAINS
+		}else if(compareCode == 71) {							// JSON_CONTAINS
 			try {
 				val = adapter.createConditionJsonContains(runtime, builder, col_builder.toString(), compare, val, placeholder);
-			}catch (NotSupportException ignored){
+			}catch (NotSupportException ignored) {
 				support = false;
 			}
-		}else if(compareCode == 75 || compareCode == 76){		// JSON_CONTAINS_PATH_OR
+		}else if(compareCode == 75 || compareCode == 76) {		// JSON_CONTAINS_PATH_OR
 			try {
 				val = adapter.createConditionJsonContainsPath(runtime, builder, col_builder.toString(), compare, val, placeholder);
-			}catch (NotSupportException ignored){
+			}catch (NotSupportException ignored) {
 				support = false;
 			}
 
 		}else{
 			builder.append(col_builder);
-			if(compareCode == 10 || compareCode == 11){
+			if(compareCode == 10 || compareCode == 11) {
 				Object v = getValue(val);
 				boolean is_origin = false;
 				String static_value = null;
-				if(v instanceof String){
+				if(v instanceof String) {
 					String str = (String)v;
-					//if(str.startsWith("${") && str.endsWith("}")){
-					if(BasicUtil.checkEl(str)){
+					//if(str.startsWith("${") && str.endsWith("}")) {
+					if(BasicUtil.checkEl(str)) {
 						is_origin = true;
 						// formula中再解析
 						// static_value = str.substring(2, str.length() - 1);
 					}
 				}
-				if(is_origin){
+				if(is_origin) {
 					//原生SQL值
 					placeholder = false;
 					adapter.formula(runtime, builder, column, Compare.EQUAL, null, v, placeholder);
 					//builder.append(static_value);
 					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}else if("NULL".equals(v)){
+				}else if("NULL".equals(v)) {
 					placeholder = false;
 					adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder);
 					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}else if (empty){//空值根据swt处理
-					if(swt == EMPTY_VALUE_SWITCH.NULL){//按NULL处理
+				}else if (empty) {//空值根据swt处理
+					if(swt == EMPTY_VALUE_SWITCH.NULL) {//按NULL处理
 						placeholder = false;
 						adapter.formula(runtime, builder, column, Compare.NULL, null, null,placeholder);
 						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v){
+					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v) {
 						//原样处理
 						placeholder = false;
 						adapter.formula(runtime, builder, column, Compare.NULL, null, null, placeholder);
@@ -235,24 +235,24 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 				}else{
 					adapter.formula(runtime, builder, column, compare, null, v, placeholder);
 				}
-			}else if(compareCode == 20){ 							// > ?
+			}else if(compareCode == 20) { 							// > ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder);
-			}else if(compareCode == 21){ 							// >= ?
+			}else if(compareCode == 21) { 							// >= ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder);
-			}else if(compareCode == 30){ 							// < ?
+			}else if(compareCode == 30) { 							// < ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder);
-			}else if(compareCode == 110){ 							// <> ?
+			}else if(compareCode == 110) { 							// <> ?
 				Object v = getValue(val);
-				if("NULL".equals(v.toString())){
+				if("NULL".equals(v.toString())) {
 					placeholder = false;
 					adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder);
 					this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-				}else if (empty){//空值根据swt处理
-					if(swt == EMPTY_VALUE_SWITCH.NULL){
+				}else if (empty) {//空值根据swt处理
+					if(swt == EMPTY_VALUE_SWITCH.NULL) {
 						placeholder = false;
 						adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder);
 						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v){
+					}else if(swt == EMPTY_VALUE_SWITCH.SRC && null == v) {
 						placeholder = false;
 						adapter.formula(runtime, builder, column, Compare.NOT_NULL, null, null, placeholder);
 						this.variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
@@ -262,35 +262,35 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 				}else{
 					adapter.formula(runtime, builder, column, compare, null, val, placeholder);
 				}
-			}else if(compareCode == 31){ 							// <= ?
+			}else if(compareCode == 31) { 							// <= ?
 				adapter.formula(runtime, builder,  column,compare, null, val, placeholder);
-			}else if(compareCode == 80){ 							// BETWEEN ? AND ?
+			}else if(compareCode == 80) { 							// BETWEEN ? AND ?
 				adapter.formula(runtime, builder, column, compare, null, val, placeholder);
-			}else if(compareCode == 40 || compareCode == 140){		// IN(?, ?, ?)
+			}else if(compareCode == 40 || compareCode == 140) {		// IN(?, ?, ?)
 				adapter.createConditionIn(runtime, builder, compare, val, placeholder);
 			}else if((compareCode >= 50 && compareCode <= 52) 		// LIKE ?
-					|| (compareCode >= 150 && compareCode <= 152)){ // NOT LIKE ?
+					|| (compareCode >= 150 && compareCode <= 152)) { // NOT LIKE ?
 				RunValue rv = adapter.createConditionLike(runtime, builder, compare, val, placeholder) ;
-				if(rv.isPlaceholder()){
+				if(rv.isPlaceholder()) {
 					val = rv.getValue();
 				}else{
 					//没有占位符
 					placeholder = false;
 					variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				}
-			}else if(compareCode == 90){							// IS NULL
+			}else if(compareCode == 90) {							// IS NULL
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
-			}else if(compareCode == 190){							// IS NOT NULL
+			}else if(compareCode == 190) {							// IS NOT NULL
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 91){							// IS EMPTY
+			}else if(compareCode == 91) {							// IS EMPTY
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
 				placeholder = false;
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
-			}else if(compareCode == 191){							// IS NOT EMPTY
+			}else if(compareCode == 191) {							// IS NOT EMPTY
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
 			}else{
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
@@ -298,12 +298,12 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		}
 
 		// runtime value 有占位符
-		if(support && placeholder && variableType != Condition.VARIABLE_PLACEHOLDER_TYPE_NONE){
-			if(null == val){
+		if(support && placeholder && variableType != Condition.VARIABLE_PLACEHOLDER_TYPE_NONE) {
+			if(null == val) {
 				runValues.add(new RunValue(this.column, val));
 			}else { //多个值 IN 、 BETWEEN 、 FIND_IN_SET
 				// (compareCode == 40 || compareCode == 140 || compareCode == 80 || (compareCode >=60 && compareCode <= 62) || compareCode == 75 || compareCode ==76) {
-				if(compare.isMultipleValue()){
+				if(compare.isMultipleValue()) {
 					List<Object> list = getValues(val);
 					if (null != list) {
 						for (Object obj : list) {
@@ -320,11 +320,11 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 	} 
 
 	@SuppressWarnings({"rawtypes" }) 
-	public Object getValue(Object src){
+	public Object getValue(Object src) {
 		Object value = null; 
-		if(null != src){
-			if(src instanceof List){
-				if(!((List) src).isEmpty()){
+		if(null != src) {
+			if(src instanceof List) {
+				if(!((List) src).isEmpty()) {
 					value = ((List)src).get(0); 
 				} 
 			}else{
@@ -334,10 +334,10 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		return value; 
 	} 
 	@SuppressWarnings({"unchecked","rawtypes" })
-	public List<Object> getValues(Object src){
+	public List<Object> getValues(Object src) {
 		List<Object> values = new ArrayList<>();
-		if(null != src){
-			if(src instanceof List){
+		if(null != src) {
+			if(src instanceof List) {
 				values = (List)src; 
 			}else{
 				values.add(src); 
@@ -345,20 +345,20 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		}
 		return values; 
 	} 
-	public Object getValue(){
+	public Object getValue() {
 		return getValue(values);
 	} 
-	public List<Object> getValues(){
+	public List<Object> getValues() {
 		return getValues(values);
 	} 
-	public Object getOrValue(){
+	public Object getOrValue() {
 		return getValue(orValues);
 	} 
-	public List<Object> getOrValues(){
+	public List<Object> getOrValues() {
 		return getValues(orValues);
 	} 
  
-	public String getId(){
+	public String getId() {
 		return column; 
 	}
 
@@ -392,7 +392,7 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		this.orCompare = orCompare;
 		return this;
 	}
-	public String toString(){
+	public String toString() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("join", this.getJoin());
 		map.put("column", column);

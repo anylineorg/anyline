@@ -23,15 +23,15 @@ import java.util.LinkedHashMap;
 
 public class PrimaryKey extends Index<PrimaryKey> implements Serializable {
     protected String keyword = "PrimaryKey";
-    public PrimaryKey(){
+    public PrimaryKey() {
         primary = true;
     }
-    public boolean isPrimary(){
+    public boolean isPrimary() {
         return true;
     }
 
-    public PrimaryKey addColumn(Column column){
-        if(null == columns){
+    public PrimaryKey addColumn(Column column) {
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
         column.setNullable(false);

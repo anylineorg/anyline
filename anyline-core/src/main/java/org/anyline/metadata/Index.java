@@ -36,25 +36,25 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     protected LinkedHashMap<String, Order.TYPE> orders = new LinkedHashMap<>();
 
     protected boolean unique;
-    public Index(){}
-    public Index(String name){
+    public Index() {}
+    public Index(String name) {
         setName(name);
     }
-    public Index(Table table, String name, boolean unique){
+    public Index(Table table, String name, boolean unique) {
         setTable(table);
         setName(name);
         setUnique(unique);
     }
-    public Index(Table table, String name){
+    public Index(Table table, String name) {
         setTable(table);
         setName(name);
     }
-    public M drop(){
+    public M drop() {
         this.action = ACTION.DDL.INDEX_DROP;
         return super.drop();
     }
     public boolean isCluster() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.cluster;
         }
         return cluster;
@@ -77,7 +77,7 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
         this.positions.put(column.getName().toUpperCase(), position);
         return (M)this;
     }
-    public Integer getPosition(String column){
+    public Integer getPosition(String column) {
         return positions.get(column.toUpperCase());
     }
 
@@ -94,41 +94,41 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
         this.orders.put(column.getName().toUpperCase(), order);
         return (M)this;
     }
-    public Order.TYPE getOrder(String column){
+    public Order.TYPE getOrder(String column) {
         return orders.get(column.toUpperCase());
     }
-    public M addColumn(Column column){
-        if(null == columns){
+    public M addColumn(Column column) {
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
         columns.put(column.getName().toUpperCase(), column);
         return (M)this;
     }
-    public M addColumn(String column){
+    public M addColumn(String column) {
         return addColumn(new Column(column));
     }
 
-    public M addColumn(String column, String order){
+    public M addColumn(String column, String order) {
         return addColumn(column, order, 0);
     }
-    public M addColumn(String column, String order, int position){
+    public M addColumn(String column, String order, int position) {
         positions.put(column.toUpperCase(), position);
         Order.TYPE type = Order.TYPE.ASC;
-        if(null != order && order.toUpperCase().contains("DESC")){
+        if(null != order && order.toUpperCase().contains("DESC")) {
             type = Order.TYPE.DESC;
         }
         setOrder(column, type);
         return addColumn(new Column(column));
     }
-    public M addColumn(String column, int position){
+    public M addColumn(String column, int position) {
         positions.put(column.toUpperCase(), position);
         return addColumn(new Column(column));
     }
 
     public String getName() {
-        if(null == name){
+        if(null == name) {
             name = "index_";
-            if(null != columns){
+            if(null != columns) {
                 name += BeanUtil.concat(columns.keySet(), "_");
             }
         }
@@ -136,10 +136,10 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     }
 
     public Column getColumn(String name) {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getColumn(name);
         }
-        if(null != columns && null != name){
+        if(null != columns && null != name) {
             return columns.get(name.toUpperCase());
         }
         return null;
@@ -169,7 +169,7 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     }
 
     public M setCluster(boolean cluster) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCluster(cluster);
             return (M)this;
         }
@@ -178,14 +178,14 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     }
 
     public boolean isFulltext() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.fulltext;
         }
         return fulltext;
     }
 
     public M setFulltext(boolean fulltext) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setFulltext(fulltext);
             return (M)this;
         }
@@ -194,14 +194,14 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     }
 
     public boolean isSpatial() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.spatial;
         }
         return spatial;
     }
 
     public M setSpatial(boolean spatial) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setSpatial(spatial);
             return (M)this;
         }
@@ -210,19 +210,19 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     }
 
     public boolean isPrimary() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.primary;
         }
         return primary;
     }
 
     public M setPrimary(boolean primary) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setPrimary(primary);
             return (M)this;
         }
         this.primary = primary;
-        if(primary){
+        if(primary) {
             setCluster(true);
             setUnique(true);
         }
@@ -231,8 +231,8 @@ public class Index<M extends Index> extends Metadata<M> implements Serializable 
     public String getKeyword() {
         return this.keyword;
     }
-    public boolean equals(Index index){
-        if(null == index){
+    public boolean equals(Index index) {
+        if(null == index) {
             return false;
         }
         String this_define = BeanUtil.concat(getColumns().values(), "name",",", false, true) + ":" + action;

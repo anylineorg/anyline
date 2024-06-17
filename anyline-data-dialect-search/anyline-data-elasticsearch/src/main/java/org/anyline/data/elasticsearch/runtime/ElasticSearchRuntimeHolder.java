@@ -44,7 +44,7 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
 
     private static Map<String, RestClient> temporary = new HashMap<>();
 
-    public ElasticSearchRuntimeHolder(){
+    public ElasticSearchRuntimeHolder() {
         RuntimeHolderProxy.reg(RestClient.class, this);
         RuntimeHolderProxy.reg(ElasticSearchDataSource.class, this);
     }
@@ -67,10 +67,10 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
 
     public DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         ElasticSearchRuntime runtime = new ElasticSearchRuntime();
-        if(null == adapter){
+        if(null == adapter) {
             adapter = ConfigTable.environment().getBean(ElasticSearchAdapter.class);
         }
-        if(datasource instanceof RestClient){
+        if(datasource instanceof RestClient) {
             String key = "temporary_es";
             temporary.remove(key);
             //DriverAdapterHolder.remove(key);
@@ -93,7 +93,7 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
      * @param key 数据源前缀
      *//*
 
-    public static void reg(String key){
+    public static void reg(String key) {
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         RestClient client = ConfigTable.environment().getBean(datasource_key, RestClient.class);
         reg(key, client, null);
@@ -107,13 +107,13 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
      * @param adapter adapter 可以为空 第一次执行时补齐
      *//*
 
-    public static ElasticSearchRuntime reg(String datasource, RestClient client, DriverAdapter adapter){
+    public static ElasticSearchRuntime reg(String datasource, RestClient client, DriverAdapter adapter) {
         log.debug("[create jdbc runtime][key:{}]", datasource);
-        if(null == adapter){
+        if(null == adapter) {
             adapter = ConfigTable.environment().getBean(ElasticSearchAdapter.class);
         }
         ElasticSearchRuntime runtime = new ElasticSearchRuntime(datasource, client, adapter);
-        if(runtimes.containsKey(datasource)){
+        if(runtimes.containsKey(datasource)) {
             destroy(datasource);
         }
         runtimes.put(datasource, runtime);
@@ -133,7 +133,7 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
 
     }
 
-    public boolean destroy(String key){
+    public boolean destroy(String key) {
         try {
             runtimes.remove(key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
@@ -143,10 +143,10 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销
             Map<String, DataRuntime> runtimes = runtimes(key);
-            for(String item:runtimes.keySet()){
+            for(String item:runtimes.keySet()) {
                 destroy(item);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             return false;
         }
         return true;

@@ -21,8 +21,8 @@ package org.anyline.bean.init;
 import org.anyline.bean.ValueReference;
 
 public class DefaultValueReference implements ValueReference {
-    public DefaultValueReference(){}
-    public DefaultValueReference(String name){
+    public DefaultValueReference() {}
+    public DefaultValueReference(String name) {
         this.name = name;
     }
 

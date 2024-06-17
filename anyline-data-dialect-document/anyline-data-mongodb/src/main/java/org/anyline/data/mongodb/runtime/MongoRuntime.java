@@ -30,7 +30,7 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
     protected MongoClient client;
     protected MongoDatabase database;
 
-    public MongoRuntime(){
+    public MongoRuntime() {
         ConfigTable.DEFAULT_MONGO_ENTITY_CLASS = MongoDataRow.class;
     }
 
@@ -41,32 +41,32 @@ public class MongoRuntime extends AbstractRuntime implements DataRuntime {
     public void setProcessor(Object processor) {
         if(processor instanceof MongoClient) {
             this.client = (MongoClient) processor;
-        }else if(processor instanceof MongoDatabase){
+        }else if(processor instanceof MongoDatabase) {
             this.database = (MongoDatabase)processor;
         }
     }
 
 
-    public String datasource(){
+    public String datasource() {
         String datasource = key;
         return datasource;
     }
 
-    public MongoRuntime(String key, MongoClient client, MongoDatabase database, DriverAdapter adapter){
+    public MongoRuntime(String key, MongoClient client, MongoDatabase database, DriverAdapter adapter) {
         setKey(key);
         setClient(client);
         setProcessor(database);
         setAdapter(adapter);
     }
 
-    public MongoClient client(){
+    public MongoClient client() {
         return client;
     }
 
 
     public String getFeature(boolean connection) {
-        if(null == feature){
-            if(null != client){
+        if(null == feature) {
+            if(null != client) {
                 feature = client.getClass().getName();
             }
         }

@@ -41,13 +41,13 @@ public class RegularMatchPrefix implements Regular{
 	 * @param regx  regx
 	 * @return boolean
 	 */ 
-	public boolean match(String src, String regx){
+	public boolean match(String src, String regx) {
 		boolean result = false; 
 		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			result = matcher.matchesPrefix(src, pattern);
-		}catch(Exception e){
+		}catch(Exception e) {
 			result = false;
 			log.error("[match error][src:{}][regx:{}]", src, regx);
 			e.printStackTrace();
@@ -61,23 +61,23 @@ public class RegularMatchPrefix implements Regular{
 	 * @param regx	表达式  regx	表达式
 	 * @return List
 	 */ 
-	public List<List<String>> fetchs(String src, String regx){
+	public List<List<String>> fetchs(String src, String regx) {
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.matchesPrefix(input, pattern)){
+			while(matcher.matchesPrefix(input, pattern)) {
 				MatchResult matchResult = matcher.getMatch(); 
 				int groups = matchResult.groups(); 
 				List<String> item = new ArrayList<>();
-				for(int i=0; i<=groups; i++){
+				for(int i=0; i<=groups; i++) {
 					item.add(matchResult.group(i)); 
 				} 
 				list.add(item); 
 			} 
-		}catch(Exception e){
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+		}catch(Exception e) {
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				e.printStackTrace();
 			} 
 		} 
@@ -90,19 +90,19 @@ public class RegularMatchPrefix implements Regular{
 	 * @param idx		指定提取位置  idx		指定提取位置
 	 * @return List
 	 */ 
-	public List<String> fetch(String src, String regx, int idx){
+	public List<String> fetch(String src, String regx, int idx) {
 		List<String> list = new ArrayList<>();
 		 
 		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.matchesPrefix(input, pattern)){
+			while(matcher.matchesPrefix(input, pattern)) {
 				MatchResult matchResult = matcher.getMatch(); 
 				list.add(matchResult.group(idx)); 
 			} 
-		}catch(Exception e){
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+		}catch(Exception e) {
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				e.printStackTrace();
 			} 
 		} 
@@ -118,10 +118,10 @@ public class RegularMatchPrefix implements Regular{
 	 * @param regx  regx
 	 * @return List
 	 */ 
-	public List<String> pick(List<String> src, String regx){
+	public List<String> pick(List<String> src, String regx) {
 		List<String> list = new ArrayList<>();
-		for(String item : src){
-			if(match(item, regx)){
+		for(String item : src) {
+			if(match(item, regx)) {
 				list.add(item);
 			} 
 		} 
@@ -133,10 +133,10 @@ public class RegularMatchPrefix implements Regular{
 	 * @param regx  regx
 	 * @return List
 	 */ 
-	public List<String> wipe(List<String> src, String regx){
+	public List<String> wipe(List<String> src, String regx) {
 		List<String> list = new ArrayList<>();
-		for(String item : src){
-			if(!match(item, regx)){
+		for(String item : src) {
+			if(!match(item, regx)) {
 				list.add(item);
 			} 
 		} 

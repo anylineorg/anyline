@@ -233,12 +233,12 @@ public interface RunPrepare extends Cloneable {
 	boolean isUnionAll();
 	RunPrepare union(RunPrepare prepare, boolean all);
 	RunPrepare union(RunPrepare prepare);
-	default RunPrepare unionAll(RunPrepare prepare){
+	default RunPrepare unionAll(RunPrepare prepare) {
 		return union(prepare, true);
 	}
 	RunPrepare union(List<RunPrepare> prepares, boolean all);
 	RunPrepare union(List<RunPrepare> prepare);
-	default RunPrepare unionAll(List<RunPrepare> prepare){
+	default RunPrepare unionAll(List<RunPrepare> prepare) {
 		return union(prepare, true);
 	}
 	List<RunPrepare> getUnions();
@@ -246,12 +246,12 @@ public interface RunPrepare extends Cloneable {
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围
 	 */
-	default void filter(LinkedHashMap<String, Column> metadatas){
+	default void filter(LinkedHashMap<String, Column> metadatas) {
 		LinkedHashMap<String, Column> columns = getColumns();
-		if(null != columns){
+		if(null != columns) {
 			List<String> keys = BeanUtil.getMapKeys(columns);
-			for(String key:keys){
-				if(SQLUtil.isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())){
+			for(String key:keys) {
+				if(SQLUtil.isSingleColumn(key) && !metadatas.containsKey(key.toUpperCase())) {
 					columns.remove(key);
 				}
 			}

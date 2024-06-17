@@ -45,7 +45,7 @@ import java.util.*;
 
 public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 
-    public OracleGenusAdapter(){
+    public OracleGenusAdapter() {
         super();
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("DATA_LENGTH", null, null, 0, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
@@ -63,7 +63,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("DATA_LENGTH", null, null, 1, 1, 1));
 
-        for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()){
+        for(OracleGenusTypeMetadataAlias alias: OracleGenusTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
@@ -88,12 +88,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         types.put(Metadata.TYPE.VIEW, "VIEW");
     }
     @Override
-    public String name(Type type){
+    public String name(Type type) {
         return types.get(type);
     }
 
     private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+    public ColumnMetadataAdapter defaultColumnMetadataAdapter() {
         ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
         adapter.setNameRefer("COLUMN_NAME");
         adapter.setCatalogRefer("");//忽略
@@ -169,7 +169,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -182,7 +182,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
     }
 
@@ -219,28 +219,28 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        if(null == set || set.isEmpty()){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(null == set || set.isEmpty()) {
             return;
         }
         checkName(runtime, null, dest);
         StringBuilder builder = run.getBuilder();
         DataRow first = set.getRow(0);
         Map<String, Sequence> sequens = new HashMap<>();
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
             Object value = first.getStringNvl(key);
             if(null != value) {
                 if(value instanceof String) {
                     String str = (String) value;
                     if (str.toUpperCase().contains(".NEXTVAL")) {
-                        //if(str.startsWith("${") && str.endsWith("}")){
-                        if(BasicUtil.checkEl(str)){
+                        //if(str.startsWith("${") && str.endsWith("}")) {
+                        if(BasicUtil.checkEl(str)) {
                             str = str.substring(2, str.length() - 1);
                         }
                         sequens.put(key, new Sequence(str));
                     }
-                }else if(value instanceof Sequence){
+                }else if(value instanceof Sequence) {
                     Sequence sequence = (Sequence) value;
                     if (sequence.isFetchValueBeforeInsert()) {
                         createPrimaryValue(runtime, set, sequence);
@@ -259,7 +259,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         }
 
         Boolean override = null;
-        if(null != configs){
+        if(null != configs) {
             override = configs.override();
         }
         String select = insertsSelect(runtime, run, dest, set, configs, columns, sequens, generator, pks);
@@ -286,38 +286,38 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        if(null == list || list.isEmpty()){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(null == list || list.isEmpty()) {
             return;
         }
         int batch = run.getBatch();
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
         checkName(runtime, null, dest);
-        if(list instanceof DataSet){
+        if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
             fillInsertContent(runtime, run, dest, set, configs, columns);
             return;
         }
         Object first = list.iterator().next();
         Map<String, Sequence> sequens = new HashMap<>();
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
             Object value = BeanUtil.getFieldValue(first, key);
             if(null != value) {
                 if(value instanceof String) {
                     String str = (String) value;
                     if (str.toUpperCase().contains(".NEXTVAL")) {
-                        //if(str.startsWith("${") && str.endsWith("}")){
-                        if(BasicUtil.checkEl(str)){
+                        //if(str.startsWith("${") && str.endsWith("}")) {
+                        if(BasicUtil.checkEl(str)) {
                             str = str.substring(2, str.length() - 1);
                         }
                         sequens.put(key, new Sequence(str));
                     }
-                }else if(value instanceof Sequence){
+                }else if(value instanceof Sequence) {
                     Sequence sequence = (Sequence) value;
                     if (sequence.isFetchValueBeforeInsert()) {
                         createPrimaryValue(runtime, list, sequence);
@@ -337,7 +337,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         String head = insertHead(configs);
         String select = insertsSelect(runtime, run, dest, list, configs, columns, sequens, generator, pks);
         Boolean override = null;
-        if(null != configs){
+        if(null != configs) {
             override = configs.override();
         }
         if(null == override) {
@@ -385,7 +385,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
         return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
     }
 
@@ -395,7 +395,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String batchInsertSeparator(){
+    public String batchInsertSeparator() {
         return ",";
     }
 
@@ -405,7 +405,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean supportInsertPlaceholder(){
+    public boolean supportInsertPlaceholder() {
         return true;
     }
     /**
@@ -415,7 +415,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param value value
      */
     @Override
-    protected void setPrimaryValue(Object obj, Object value){
+    protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
     /**
@@ -428,7 +428,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.createInsertRun(runtime, dest, obj, configs, columns);
     }
 
@@ -442,7 +442,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
         return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
 
@@ -468,10 +468,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         long cnt = 0;
         if(data instanceof Collection) {
-            if(null == configs){
+            if(null == configs) {
                 configs = new DefaultConfigStore();
             }
             configs.supportKeyHolder(false);
@@ -479,7 +479,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         }else{
             //单行的可以返回序列号
             String pk = getPrimayKey(data);
-            if(null != pk){
+            if(null != pk) {
                 pks = new String[]{pk};
             }else{
                 pks = null;
@@ -531,7 +531,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -558,19 +558,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
     /**
@@ -596,11 +596,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
     @Override
-    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
     /**
@@ -613,7 +613,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         return super.update(runtime, random, dest, data, configs, run);
     }
 
@@ -645,24 +645,24 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.save(runtime, random, dest, data, configs, columns);
     }
 
     @Override
-    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
+    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected Boolean checkOverride(Object obj){
+    protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
     @Override
-    protected Map<String, Object> checkPv(Object obj){
+    protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
     }
 
@@ -673,11 +673,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
     @Override
-    protected boolean isMultipleValue(Column column){
+    protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
     /**
@@ -687,7 +687,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.checkMetadata(runtime, table, configs, columns);
     }
 
@@ -727,7 +727,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -740,7 +740,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         return super.querys(runtime, random, procedure, navi);
     }
 
@@ -756,7 +756,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Entity
      */
     @Override
-    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return super.selects(runtime, random, prepare, clazz, configs, conditions);
     }
 
@@ -772,7 +772,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      *
      */
     @Override
-    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
+    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
         return super.select(runtime, random, clazz, table, configs, run);
     }
 
@@ -788,7 +788,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return maps 返回map集合
      */
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -800,7 +800,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildQueryRun(runtime, prepare, configs, conditions);
     }
 
@@ -811,20 +811,20 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         String key = "CURRVAL";
-        if(next){
+        if(next) {
             key = "NEXTVAL";
         }
         if(null != names && names.length>0) {
             builder.append("SELECT ");
             boolean first = true;
             for (String name : names) {
-                if(!first){
+                if(!first) {
                     builder.append(",");
                 }
                 first = false;
@@ -846,19 +846,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, Run run){
+    public void fillQueryContent(DataRuntime runtime, Run run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
         super.fillQueryContent(runtime, run);
     }
     /**
@@ -936,7 +936,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return maps
      */
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
     /**
@@ -960,7 +960,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return DataRow 保存序列查询结果 以存储过程name作为key
      */
     @Override
-    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
         return super.sequence(runtime, random, next, names);
     }
 
@@ -972,7 +972,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return  maps
      */
     @Override
-    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
         return super.process(runtime, list);
     }
 
@@ -996,7 +996,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -1007,7 +1007,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalTotal(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run) {
         return super.mergeFinalTotal(runtime, run);
     }
 
@@ -1019,7 +1019,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, Run run){
+    public long count(DataRuntime runtime, String random, Run run) {
         return super.count(runtime, random, run);
     }
 
@@ -1040,11 +1040,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
     @Override
-    public String mergeFinalExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run) {
         String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
         sql = compressCondition(runtime, sql);
         return sql;
@@ -1079,7 +1079,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
     /**
@@ -1090,7 +1090,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+    public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
     /**
@@ -1103,19 +1103,19 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+    protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
     }
 
@@ -1126,7 +1126,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run){
+    public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
     /**
@@ -1171,7 +1171,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> T
      */
     @Override
-    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values) {
         return super.deletes(runtime, random, batch, table, configs, key, values);
     }
 
@@ -1186,7 +1186,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
         return super.delete(runtime, random, dest, configs, obj, columns);
     }
 
@@ -1202,7 +1202,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
         return super.delete(runtime, random, table, configs, conditions);
     }
 
@@ -1214,7 +1214,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 1表示成功执行
      */
     @Override
-    public long truncate(DataRuntime runtime, String random, Table table){
+    public long truncate(DataRuntime runtime, String random, Table table) {
         return super.truncate(runtime, random, table);
     }
 
@@ -1228,7 +1228,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         return super.buildDeleteRun(runtime, dest, configs, obj, columns);
     }
 
@@ -1242,12 +1242,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values){
+    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
         return super.buildDeleteRun(runtime, batch, table, configs, key, values);
     }
 
     @Override
-    public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+    public List<Run> buildTruncateRun(DataRuntime runtime, String table) {
         return super.buildTruncateRun(runtime, table);
     }
 
@@ -1285,7 +1285,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run){
+    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
         super.fillDeleteRunContent(runtime, run);
     }
 
@@ -1298,7 +1298,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.delete(runtime, random, configs, run);
     }
 
@@ -1346,7 +1346,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.databases(runtime, random, greedy, name);
     }
     /**
@@ -1357,7 +1357,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
         return super.databases(runtime, random, name);
     }
     /**
@@ -1390,10 +1390,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == databases){
+        if(null == databases) {
             databases = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             Database database = new Database();
             database.setName(row.getString("DATABASE_NAME"));
             databases.put(database.getName().toUpperCase(), database);
@@ -1445,7 +1445,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
 		return super.product(runtime, index, create, product, set);
 	}
 
@@ -1459,7 +1459,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, boolean create, String product){
+	public String product(DataRuntime runtime, boolean create, String product) {
 		return super.product(runtime, create, product);
 	}
 
@@ -1474,7 +1474,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
 		return super.version(runtime, index, create, version, set);
 	}
 
@@ -1488,7 +1488,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, boolean create, String version){
+	public String version(DataRuntime runtime, boolean create, String version) {
 		return super.version(runtime, create, version);
 	}
     /* *****************************************************************************************************************
@@ -1514,7 +1514,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
         return super.catalogs(runtime, random, name);
     }
     /**
@@ -1525,7 +1525,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.catalogs(runtime, random, greedy, name);
     }
 
@@ -1668,9 +1668,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return Database
      */
     @Override
-    public Database database(DataRuntime runtime, String random){
+    public Database database(DataRuntime runtime, String random) {
         Schema schema = schema(runtime, random);
-        if(null != schema){
+        if(null != schema) {
             return new Database(schema.getName());
         }
         return super.database(runtime, random);
@@ -1682,7 +1682,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String product(DataRuntime runtime, String random){
+    public String product(DataRuntime runtime, String random) {
         return super.product(runtime, random);
     }
     /**
@@ -1692,7 +1692,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String version(DataRuntime runtime, String random){
+    public String version(DataRuntime runtime, String random) {
         return super.version(runtime, random);
     }
     /**
@@ -1704,7 +1704,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
         return super.schemas(runtime, random, catalog, name);
     }
     /**
@@ -1716,7 +1716,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
+    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
         return super.schemas(runtime, random, greedy, catalog, name);
     }
 
@@ -1843,7 +1843,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
     }
 
@@ -1856,12 +1856,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
         super.tableMap(runtime, random, greedy, catalog, schema);
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, catalog, schema, pattern, types, struct);
     }
 
@@ -1892,18 +1892,18 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("FROM ALL_OBJECTS M LEFT JOIN ALL_TAB_COMMENTS F \n");
         builder.append("ON M.OBJECT_NAME = F.TABLE_NAME  AND M.OWNER = F.OWNER AND M.object_type = F.TABLE_TYPE \n");
         builder.append("WHERE 1=1");
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND M.OBJECT_NAME LIKE '").append(pattern).append("'");
         }
         List<String> tps = names(Table.types(types));
-        if(null != tps && !tps.isEmpty()){;
+        if(null != tps && !tps.isEmpty()) {;
             builder.append(" AND M.OBJECT_TYPE IN(");
             boolean first = true;
-            for(String tmp:tps){
-                if(!first){
+            for(String tmp:tps) {
+                if(!first) {
                     builder.append(",");
                 }
                 builder.append("'").append(tmp).append("'");
@@ -1933,10 +1933,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM ALL_TAB_COMMENTS WHERE 1=1 \n");
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND OWNER = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
         }
         return runs;
@@ -2060,7 +2060,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
         return super.ddl(runtime, random, table, init);
     }
 
@@ -2087,7 +2087,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
 
@@ -2123,7 +2123,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.views(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2157,14 +2157,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == views){
+        if(null == views) {
             views = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("TABLE_NAME");
             String schemaName = row.getString("TABLE_SCHEMA");
             T view = views.get(name.toUpperCase());
-            if(null == view){
+            if(null == view) {
                 view = (T)new View();
             }
             view.setCatalog(catalog);
@@ -2202,7 +2202,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, View view){
+    public List<String> ddl(DataRuntime runtime, String random, View view) {
         return super.ddl(runtime, random, view);
     }
 
@@ -2229,7 +2229,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, view, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2265,7 +2265,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2324,7 +2324,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+    public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
         return super.ddl(runtime, random, table);
     }
     /**
@@ -2349,7 +2349,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2383,7 +2383,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern){
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
         return super.partitionTables(runtime, random, greedy, master, tags, pattern);
     }
 
@@ -2471,7 +2471,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
         return super.ddl(runtime, random, table);
     }
 
@@ -2498,7 +2498,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2526,7 +2526,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
         return super.columns(runtime, random, greedy, table, primary);
     }
 
@@ -2543,7 +2543,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
         return super.columns(runtime, random, greedy, catalog, schema, table);
     }
     /**
@@ -2560,14 +2560,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         Catalog catalog = null;
         Schema schema = null;
         String name = null;
-        if(null != table){
+        if(null != table) {
             name = table.getName();
             schema = table.getSchema();
         }
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata){
+        if(metadata) {
             builder.append("SELECT * FROM ");
             name(runtime, builder, table);
             builder.append(" WHERE 1=0");
@@ -2578,7 +2578,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             if (BasicUtil.isNotEmpty(name)) {
                 builder.append("AND M.TABLE_NAME = '").append(name).append("'");
             }
-            if(!empty(schema)){
+            if(!empty(schema)) {
                 builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
             }
             //builder.append("\nORDER BY M.TABLE_NAME");
@@ -2598,10 +2598,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
-        if(!tables.isEmpty()){
+        if(!tables.isEmpty()) {
             table = tables.get(0);
         }
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             schema = table.getSchema();
         }
@@ -2613,7 +2613,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN ALL_COL_COMMENTS F ON M.TABLE_NAME = F.TABLE_NAME AND M.COLUMN_NAME = F.COLUMN_NAME AND M.OWNER = F.OWNER\n");
         builder.append("WHERE 1=1\n");
 
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND M.OWNER = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
@@ -2668,7 +2668,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) {
         return super.init(runtime, index, meta, table, row);
     }
 
@@ -2682,7 +2682,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
@@ -2693,7 +2693,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
         return defaultColumnMetadataAdapter;
     }
 
@@ -2705,7 +2705,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataAdapter(runtime, meta);
     }
 
@@ -2732,7 +2732,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Tag
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.tags(runtime, random, greedy, table);
     }
     /**
@@ -2801,7 +2801,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.primary(runtime, random, greedy, table);
     }
 
@@ -2822,7 +2822,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("WHERE CON.CONSTRAINT_NAME = COL.CONSTRAINT_NAME\n");
         builder.append("AND CON.CONSTRAINT_TYPE = 'P'\n");
         builder.append("AND COL.TABLE_NAME = '").append(table.getName()).append("'\n");
-        if(BasicUtil.isNotEmpty(table.getSchema())){
+        if(BasicUtil.isNotEmpty(table.getSchema())) {
             builder.append(" AND COL.OWNER = '").append(table.getSchemaName()).append("'");
         }
         return runs;
@@ -2863,7 +2863,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryMetadataAdapter
      */
     @Override
-    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
+    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
         PrimaryMetadataAdapter config = super.primaryMetadataAdapter(runtime);
         config.setNameRefer("CONSTRAINT_NAME");
         config.setCatalogRefer((String)null);
@@ -2901,7 +2901,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.foreigns(runtime, random, greedy, table);
     }
     /**
@@ -2922,8 +2922,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN USER_CONS_COLUMNS KCU ON UC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME \n");
         builder.append("JOIN USER_CONSTRAINTS RC ON UC.R_CONSTRAINT_NAME = RC.CONSTRAINT_NAME \n");
         builder.append("JOIN USER_CONS_COLUMNS RCC ON RC.CONSTRAINT_NAME = RCC.CONSTRAINT_NAME AND KCU.POSITION = RCC.POSITION");
-        if(null != table){
-            if(BasicUtil.isNotEmpty(table.getCatalogName())){
+        if(null != table) {
+            if(BasicUtil.isNotEmpty(table.getCatalogName())) {
                 builder.append(" AND UC.OWNER = '").append(table.getCatalogName()).append("'\n");
             }
             builder.append(" AND UC.TABLE_NAME = '").append(table.getName()).append("'\n");
@@ -2942,13 +2942,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
-        if(null == foreigns){
+        if(null == foreigns) {
             foreigns = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("CONSTRAINT_NAME");
             T foreign = foreigns.get(name.toUpperCase());
-            if(null == foreign){
+            if(null == foreign) {
                 foreign = (T)new ForeignKey();
                 foreign.setName(name);
                 foreign.setTable(row.getString("TABLE_NAME"));
@@ -2990,7 +2990,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.indexs(runtime, random, greedy, table, pattern);
     }
     /**
@@ -3004,7 +3004,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
+    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
         return super.indexs(runtime, random, table, pattern);
     }
     /**
@@ -3016,7 +3016,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name){
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -3027,13 +3027,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("WHERE 1=1\n");
         String schema = table.getSchemaName();
         String tab = table.getName();
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append("AND M.INDEX_OWNER = '").append(schema).append("'\n");
         }
-        if(BasicUtil.isNotEmpty(tab)){
+        if(BasicUtil.isNotEmpty(tab)) {
             builder.append("AND M.TABLE_NAME = '").append(tab).append("'\n");
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append("AND M.INDEX_NAME = '").append(name).append("'\n");
         }
         return runs;
@@ -3069,7 +3069,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-        if(null == indexs){
+        if(null == indexs) {
             indexs = new ArrayList<>();
         }
         return indexs;
@@ -3142,7 +3142,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return IndexMetadataAdapter
      */
     @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
         IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
         adapter.setNameRefer("INDEX_NAME");
         adapter.setTableRefer("TABLE_NAME");
@@ -3177,7 +3177,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.constraints(runtime, random, greedy, table, pattern);
     }
     /**
@@ -3192,7 +3192,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern){
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
         return super.constraints(runtime, random, table, column, pattern);
     }
 
@@ -3214,15 +3214,15 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         String catalog = null;
         String schema = null;
         String tab = null;
-        if(null != table){
+        if(null != table) {
             catalog = table.getCatalogName();
             schema = table.getSchemaName();
             tab = table.getName();
         }
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND OWNER = '").append(schema).append("'");
         }
-        if(BasicUtil.isNotEmpty(tab)){
+        if(BasicUtil.isNotEmpty(tab)) {
             builder.append(" AND TABLE_NAME = '").append(tab).append("'");
         }
         return runs;
@@ -3259,35 +3259,35 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-        if(null == constraints){
+        if(null == constraints) {
             constraints = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("CONSTRAINT_NAME");
-            if(null == name){
+            if(null == name) {
                 continue;
             }
             T constraint = constraints.get(name.toUpperCase());
-            if(null == constraint && create){
+            if(null == constraint && create) {
                 constraint = (T)new Constraint();
                 constraints.put(name.toUpperCase(), constraint);
             };
 
             String schema = row.getString("OWNER");
             constraint.setSchema(schema);
-            if(null == table){
+            if(null == table) {
                 table = new Table(null, schema, row.getString("TABLE_NAME"));
             }
             constraint.setTable(table);
             constraint.setName(name);
             String type = row.getString("CONSTRAINT_TYPE");
-            if("P".equalsIgnoreCase(type)){
+            if("P".equalsIgnoreCase(type)) {
                 constraint.setType(Constraint.TYPE.PRIMARY_KEY);
-            }else if("R".equalsIgnoreCase(type)){
+            }else if("R".equalsIgnoreCase(type)) {
                 constraint.setType(Constraint.TYPE.FOREIGN_KEY);
-            }else if("C".equalsIgnoreCase(type)){
+            }else if("C".equalsIgnoreCase(type)) {
                 String chk = row.getString("SEARCH_CONDITION");
-                if(null != chk && chk.contains("IS NOT NULL")){
+                if(null != chk && chk.contains("IS NOT NULL")) {
                     constraint.setType(Constraint.TYPE.NOT_NULL);
                 }
             }
@@ -3317,7 +3317,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return  LinkedHashMap
      * @param <T> Index
      */
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
         return super.triggers(runtime, random, greedy, table, events);
     }
     /**
@@ -3328,27 +3328,27 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param events 事件 INSERT|UPDATE|DELETE
      * @return sqls
      */
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM USER_TRIGGERS WHERE 1=1");
-        if(null != table){
+        if(null != table) {
             Schema schemae = table.getSchema();
             String tableName = table.getName();
-            if(BasicUtil.isNotEmpty(schemae)){
+            if(BasicUtil.isNotEmpty(schemae)) {
                 builder.append(" AND TABLE_OWNER = '").append(schemae).append("'");
             }
-            if(BasicUtil.isNotEmpty(tableName)){
+            if(BasicUtil.isNotEmpty(tableName)) {
                 builder.append(" AND TABLE_NAME = '").append(tableName).append("'");
             }
         }
-        if(null != events && events.size()>0){
+        if(null != events && events.size()>0) {
             builder.append(" AND(");
             boolean first = true;
-            for(Trigger.EVENT event:events){
-                if(!first){
+            for(Trigger.EVENT event:events) {
+                if(!first) {
                     builder.append(" OR ");
                 }
                 builder.append("TRIGGERING_EVENT ='").append(event);
@@ -3370,13 +3370,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception {
-        if(null == triggers){
+        if(null == triggers) {
             triggers = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("TRIGGER_NAME");
             T trigger = triggers.get(name.toUpperCase());
-            if(null == trigger){
+            if(null == trigger) {
                 trigger = (T)new Trigger();
             }
             trigger.setName(name);
@@ -3387,14 +3387,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 boolean each = false;
                 //TRIGGER_NAME AFTER INSERT ON TABLE_NAME FOR EACH ROW
                 String des = row.getStringNvl("DESCRIPTION").toUpperCase();
-                if(des.contains("ROW")){
+                if(des.contains("ROW")) {
                     each = true;
                 }
                 trigger.setEach(each);
                 String[] tmps = des.split(" ");
                 trigger.setTime(Trigger.TIME.valueOf(tmps[1]));
                 trigger.addEvent(Trigger.EVENT.valueOf(tmps[2]));
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("封装trigger 异常:", e);
             }
             trigger.setDefinition(row.getString("TRIGGER_BODY"));
@@ -3438,7 +3438,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, greedy, catalog, schema, pattern);
     }
     /**
@@ -3453,7 +3453,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, catalog, schema, pattern);
     }
     /**
@@ -3521,7 +3521,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
     /**
@@ -3547,7 +3547,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, procedure, ddls, set);
     }
 
@@ -3670,7 +3670,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Function meta){
+    public List<String> ddl(DataRuntime runtime, String random, Function meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3696,7 +3696,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, function, ddls, set);
     }
 
@@ -3767,10 +3767,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM all_sequences WHERE 1=1\n");
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND SEQUENCE_OWNER = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" AND SEQUENCE_NAME = '").append(name).append("'");
         }
         return runs;
@@ -3789,10 +3789,10 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-        if(null == sequences){
+        if(null == sequences) {
             sequences = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = new Sequence(name);
             sequences.add((T)init(sequence, row));
@@ -3812,18 +3812,18 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-        if(null == sequences){
+        if(null == sequences) {
             sequences = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = sequences.get(name.toUpperCase());
             sequences.put(name.toUpperCase(), (T)init(sequence, row));
         }
         return sequences;
     }
-    protected Sequence init(Sequence sequence, DataRow row){
-        if(null == sequence){
+    protected Sequence init(Sequence sequence, DataRow row) {
+        if(null == sequence) {
             sequence = new Sequence();
         }
         sequence.setName(row.getString("SEQUENCE_NAME"));
@@ -3859,7 +3859,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+    public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3885,7 +3885,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, sequence, ddls, set);
     }
 
@@ -3904,7 +3904,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name) {
         return super.search(metas, catalog, schema, name);
     }
 
@@ -3918,7 +3918,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
+    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name) {
         return super.schema(schemas, catalog, name);
     }
 
@@ -3931,7 +3931,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Catalog> T catalog(List<T> catalogs, String name){
+    public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
     /**
@@ -3943,7 +3943,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Database> T database(List<T> databases, String name){
+    public <T extends Database> T database(List<T> databases, String name) {
         return super.database(databases, name);
     }
     /* *****************************************************************************************************************
@@ -3976,7 +3976,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
@@ -4162,7 +4162,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        if(BasicUtil.isNotEmpty(meta.getComment())){
+        if(BasicUtil.isNotEmpty(meta.getComment())) {
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -4185,7 +4185,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         LinkedHashMap<String, Column> columns = meta.getColumns();
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String comment = column.getComment();
             if(BasicUtil.isNotEmpty(comment)) {
                 Run run = new SimpleRun(runtime);
@@ -4195,7 +4195,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 name(runtime, builder, meta).append(".");
                 Column update = (Column)column.getUpdate();
                 String name = null;
-                if(null != update){
+                if(null != update) {
                     name = update.getName();
                 }else{
                     name = column.getName();
@@ -4229,7 +4229,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return builder;
     }
 
@@ -4240,7 +4240,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param table 表
      */
     @Override
-    public void checkPrimary(DataRuntime runtime, Table table){
+    public void checkPrimary(DataRuntime runtime, Table table) {
         super.checkPrimary(runtime, table);
     }
 
@@ -4253,18 +4253,18 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
         String name = null;
-        if(null != primary){
+        if(null != primary) {
             pks = primary.getColumns();
             name = primary.getName();
         }else{
             pks = meta.primarys();
         }
-        if(!pks.isEmpty()){
-            if(BasicUtil.isEmpty(name)){
+        if(!pks.isEmpty()) {
+            if(BasicUtil.isEmpty(name)) {
                 name = "PK_" + meta.getName();
             }
             builder.append(",CONSTRAINT ");
@@ -4272,13 +4272,13 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             builder.append(" PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
-            for(Column pk:pks.values()){
-                if(!first){
+            for(Column pk:pks.values()) {
+                if(!first) {
                     builder.append(",");
                 }
                 delimiter(builder, pk.getName());
                 String order = pk.getOrder();
-                if(null != order){
+                if(null != order) {
                     builder.append(" ").append(order);
                 }
                 first = false;
@@ -4297,7 +4297,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta) {
         return builder;
     }
 
@@ -4310,7 +4310,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.charset(runtime, builder, meta);
     }
 
@@ -4324,7 +4324,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
         return builder;
     }
 
@@ -4543,7 +4543,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkViewExists(runtime, builder, exists);
     }
 
@@ -4556,7 +4556,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta) {
         return super.comment(runtime, builder, meta);
     }
 
@@ -4987,7 +4987,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             name(runtime, builder, table);
         }
         // Column update = column.getUpdate();
-        // if(null == update){
+        // if(null == update) {
         // 添加列
         builder.append(" ADD ");
         delimiter(builder, meta.getName()).append(" ");
@@ -5084,7 +5084,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         TypeMetadata update_metadata = update.getTypeMetadata();
         TypeMetadata column_metadata = meta.getTypeMetadata();
 
-        if(uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)){
+        if(uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)) {
             runs.addAll(buildDropRun(runtime, update));
         }else {
             if (null != update_metadata && !update_metadata.equals(column_metadata)) {
@@ -5136,7 +5136,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String alterColumnKeyword(DataRuntime runtime){
+    public String alterColumnKeyword(DataRuntime runtime) {
         return "ALTER";
     }
 
@@ -5149,7 +5149,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.addColumnGuide(runtime, builder, meta);
     }
 
@@ -5162,7 +5162,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.dropColumnGuide(runtime, builder, meta);
     }
 
@@ -5182,7 +5182,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Object def = null;
-        if(null != meta.getUpdate()){
+        if(null != meta.getUpdate()) {
             def = meta.getUpdate().getDefaultValue();
         }else {
             def = meta.getDefaultValue();
@@ -5190,7 +5190,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append("ALTER TABLE ");
         name(runtime, builder, meta.getTable(true)).append(" MODIFY ");
         delimiter(builder, meta.getName());
-        if(null != def){
+        if(null != def) {
             defaultValue(runtime, builder, meta);
             //format(builder, def);
             //builder.append(def);
@@ -5217,14 +5217,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         int nullable = meta.isNullable();
         int uNullable = meta.getUpdate().isNullable();
-        if(nullable != -1 && uNullable != -1){
-            if(nullable == uNullable){
+        if(nullable != -1 && uNullable != -1) {
+            if(nullable == uNullable) {
                 return runs;
             }
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true)).append(" MODIFY ");
             delimiter(builder, meta.getName());
-            if(uNullable == 0){
+            if(uNullable == 0) {
                 builder.append(" NOT ");
             }
             builder.append(" NULL");
@@ -5246,7 +5246,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = null;
-        if(null != meta.getUpdate()){
+        if(null != meta.getUpdate()) {
             comment = meta.getUpdate().getComment();
         }else {
             comment = meta.getComment();
@@ -5259,7 +5259,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             name(runtime, builder, meta.getTable(true)).append(".");
             Column update = meta.getUpdate();
             String name = null;
-            if(null != update){
+            if(null != update) {
                 name = update.getName();
             }else{
                 name = meta.getName();
@@ -5305,7 +5305,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.define(runtime, builder, meta, action);
     }
 
@@ -5319,7 +5319,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
     /**
@@ -5331,7 +5331,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.type(runtime, builder, meta);
     }
     /**
@@ -5346,7 +5346,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
         return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
     }
 
@@ -5359,7 +5359,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
     /**
@@ -5371,7 +5371,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
 
@@ -5383,7 +5383,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.defaultValue(runtime, builder, meta);
     }
 
@@ -5396,7 +5396,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.primary(runtime, builder, meta);
     }
 
@@ -5409,7 +5409,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.increment(runtime, builder, meta);
     }
     /**
@@ -5421,7 +5421,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.onupdate(runtime, builder, meta);
     }
 
@@ -5434,7 +5434,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.position(runtime, builder, meta);
     }
 
@@ -5447,7 +5447,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.comment(runtime, builder, meta);
     }
 
@@ -5659,7 +5659,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkTagExists(runtime, builder, exists);
     }
 
@@ -5765,7 +5765,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 name(runtime, builder, meta.getTable(true));
             }
             String name = meta.getName();
-            if(BasicUtil.isEmpty(name)){
+            if(BasicUtil.isEmpty(name)) {
                 name = "PK_" + meta.getTableName(true);
             }
             builder.append(" ADD CONSTRAINT ");
@@ -6081,7 +6081,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Table table = meta.getTable(true);
-        if(meta.isPrimary()){
+        if(meta.isPrimary()) {
             builder.append("ALTER TABLE ");
             name(runtime, builder, table);
             builder.append(" DROP CONSTRAINT ").append(meta.getName());
@@ -6112,7 +6112,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.type(runtime, builder, meta);
     }
     /**
@@ -6124,7 +6124,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.comment(runtime, builder, meta);
     }
     /* *****************************************************************************************************************
@@ -6377,7 +6377,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta){
+    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
         return super.each(runtime, builder, meta);
     }
 
@@ -6508,7 +6508,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param parameter parameter
      */
     @Override
-    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter){
+    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter) {
         return super.parameter(runtime, builder, parameter);
     }
 
@@ -6753,12 +6753,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * ****************************************************************************************************************/
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
         super.checkSchema(runtime, datasource,meta);
     }
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
         super.checkSchema(runtime, con, meta);
     }
     /**
@@ -6768,7 +6768,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Metadata
      */
 	@Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
@@ -6783,7 +6783,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
@@ -6796,7 +6796,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 
@@ -6807,7 +6807,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
 	 * @return String[]
 	 */
 	@Override
-	public String[] correctSchemaFromJDBC(String catalog, String schema){
+	public String[] correctSchemaFromJDBC(String catalog, String schema) {
 		return super.correctSchemaFromJDBC(catalog, schema);
 	}
     
@@ -6820,7 +6820,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataLengthRefer(runtime, meta);
     }
 
@@ -6832,7 +6832,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
@@ -6844,7 +6844,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataScaleRefer(runtime, meta);
     }
 
@@ -6853,8 +6853,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @param value SQL_BUILD_IN_VALUE
      * @return String
      */
-    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME){
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
             return "sysdate";
         }
         return null;
@@ -6867,7 +6867,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String concat(DataRuntime runtime, String ... args){
+    public String concat(DataRuntime runtime, String ... args) {
         return concatOr(runtime, args);
     }
 
@@ -6875,7 +6875,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * 伪表
      * @return String
      */
-    protected String dummy(){
+    protected String dummy() {
         return super.dummy();
     }
     /* *****************************************************************************************************************
@@ -6884,12 +6884,12 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      *
      *  *****************************************************************************************************************/
 
-    protected void merge(DataRuntime runtime, StringBuilder builder, Table dest, ConfigStore configs, String select, LinkedHashMap<String, Column> columns, LinkedHashMap<String, Column> pks){
+    protected void merge(DataRuntime runtime, StringBuilder builder, Table dest, ConfigStore configs, String select, LinkedHashMap<String, Column> columns, LinkedHashMap<String, Column> pks) {
         List<String> bys = configs.overrideByColumns();
-        if(null == bys){
+        if(null == bys) {
             bys = new ArrayList<>();
         }
-        if(bys.isEmpty()){
+        if(bys.isEmpty()) {
             bys = Column.names(pks);
         }
         builder.append("MERGE INTO ");
@@ -6907,7 +6907,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append(concat("D",",", Column.names(columns)));
         builder.append(")\n");
         //如果需要覆盖
-        if(configs.override()){
+        if(configs.override()) {
             builder.append("WHEN MATCHED THEN \n");
             List<String> cols = Column.names(columns);
             cols.removeAll(bys);//不更新主键
@@ -6915,18 +6915,18 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         }
     }
 
-    protected String insertSelectHead(LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens){
+    protected String insertSelectHead(LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT ");
         boolean start = true;
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
             Sequence seq = sequens.get(key);
-            if(!start){
+            if(!start) {
                 builder.append(",");
             }
             start = false;
-            if(null != seq){
+            if(null != seq) {
                 builder.append(seq.sql());
             }else{
                 builder.append("I.");
@@ -6936,22 +6936,22 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             delimiter(builder, key);
         }
         builder.append("\nFROM( ");
-        for(Sequence seq:sequens.values()){
+        for(Sequence seq:sequens.values()) {
             columns.remove(seq.sql().toUpperCase());
         }
         return builder.toString();
     }
     //批量插入select 部分
-    protected String insertsSelect(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks){
+    protected String insertsSelect(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks) {
         StringBuilder builder = new StringBuilder();
         builder.append(insertSelectHead(columns, sequens));
         boolean first = true;
         boolean batch = run.getBatch() > 1;
         for(DataRow row:set) {
-            if(row.hasPrimaryKeys() && null != generator){
+            if(row.hasPrimaryKeys() && null != generator) {
                 generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            if(!first && !batch){
+            if(!first && !batch) {
                 builder.append("\n\tUNION ALL");
             }
             if(first || !batch) {
@@ -6967,17 +6967,17 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append(") I ");
         return builder.toString();
     }
-    protected String insertsSelect(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks){
+    protected String insertsSelect(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns, Map<String, Sequence> sequens, PrimaryGenerator generator, LinkedHashMap<String, Column> pks) {
         StringBuilder builder = new StringBuilder();
         builder.append(insertSelectHead(columns, sequens));
         boolean batch = run.getBatch() > 1;
         boolean first = true;
-        for(Object obj:list){
+        for(Object obj:list) {
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
-            if(!create && null != generator){
+            if(!create && null != generator) {
                 generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
-            if(!first && !batch){
+            if(!first && !batch) {
                 builder.append("\n\tUNION ALL");
             }
             if(first || !batch) {
@@ -6993,14 +6993,14 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         builder.append(") I ");
         return builder.toString();
     }
-    protected void createPrimaryValue(DataRuntime runtime, Collection list, Sequence sequence){
+    protected void createPrimaryValue(DataRuntime runtime, Collection list, Sequence sequence) {
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT ").append(sequence.sql()).append(" AS ID FROM(\n");
         int size = list.size();
-        for(int i=0; i<size; i++){
+        for(int i=0; i<size; i++) {
             builder.append("SELECT NULL FROM DUAL\n");
-            if(i<size-1){
+            if(i<size-1) {
                 builder.append("UNION ALL\n");
             }
         }
@@ -7008,11 +7008,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         try{
             List<Map<String, Object>> maps = worker.maps(this, runtime, null, null, run);
             int i=0;
-            for(Object obj:list){
+            for(Object obj:list) {
                 Object value = maps.get(i++).get("ID");
                 setPrimaryValue(obj, value);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("create primary value exception", e);
         }
     }

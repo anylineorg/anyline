@@ -255,8 +255,8 @@ public abstract class AnylineConfig {
 	private static boolean listener_running = false;	// 监听是否启动
 	protected static Map<String, Map<String, Object>> listener_files = new Hashtable<>(); // 监听文件更新<文件名, 最后加载时间>
 
-	private synchronized static void listener(){
-		if(listener_running){
+	private synchronized static void listener() {
+		if(listener_running) {
 			return;
 		}
 		listener_running = true;
@@ -283,7 +283,7 @@ public abstract class AnylineConfig {
 						}
 					}
 
-					if(ConfigTable.getInt("RELOAD", 0) != 0){
+					if(ConfigTable.getInt("RELOAD", 0) != 0) {
 						listener_running = false;
 						break;
 					}
@@ -305,15 +305,15 @@ public abstract class AnylineConfig {
 		addListener(file, T, instances, compatibles);
 		String txt = FileUtil.read(file).toString();
 		parse(T, txt, instances, compatibles);
-		if(ConfigTable.getInt("RELOAD", 0) == 0){
+		if(ConfigTable.getInt("RELOAD", 0) == 0) {
 			listener();
 		}
 		return instances;
 	}
-	public static Map<String, Map<String, Object>> getListeners(){
+	public static Map<String, Map<String, Object>> getListeners() {
 		return listener_files;
 	}
-	public static Map<String, Object> addListener(File file, Class clazz, Hashtable<String, AnylineConfig> instances, String[] compatibles){
+	public static Map<String, Object> addListener(File file, Class clazz, Hashtable<String, AnylineConfig> instances, String[] compatibles) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("CLAZZ", clazz);
 		params.put("INSTANCES", instances);

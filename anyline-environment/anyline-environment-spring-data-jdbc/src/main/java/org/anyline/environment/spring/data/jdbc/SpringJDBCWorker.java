@@ -63,7 +63,7 @@ public class SpringJDBCWorker implements DriverWorker {
      * @return Class
      */
     @Override
-    public Class<? extends DriverAdapter> supportAdapterType(){
+    public Class<? extends DriverAdapter> supportAdapterType() {
         return JDBCAdapter.class;
     }
 
@@ -83,22 +83,22 @@ public class SpringJDBCWorker implements DriverWorker {
 
     @Override
     public void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource) {
-        if(null != connection && !DataSourceUtils.isConnectionTransactional(connection, datasource)){
+        if(null != connection && !DataSourceUtils.isConnectionTransactional(connection, datasource)) {
             DataSourceUtils.releaseConnection(connection, datasource);
         }
     }
 
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource ds, T meta) {
-        if(null == meta || null != meta.getCheckSchemaTime()){
+        if(null == meta || null != meta.getCheckSchemaTime()) {
             return;
         }
         String catalog = meta.getCatalogName();
-        if(null== catalog){
+        if(null== catalog) {
             catalog = runtime.getCatalog();
         }
         String schema = meta.getSchemaName();
-        if(null == schema){
+        if(null == schema) {
             schema = runtime.getSchema();
         }
 
@@ -122,14 +122,14 @@ public class SpringJDBCWorker implements DriverWorker {
         }
     }
 
-    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta){
-        if(null != meta){
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
+        if(null != meta) {
             String catalog = meta.getCatalogName();
-            if(null== catalog){
+            if(null== catalog) {
                 catalog = runtime.getCatalog();
             }
             String schema = meta.getSchemaName();
-            if(null == schema){
+            if(null == schema) {
                 schema = runtime.getSchema();
             }
 
@@ -149,15 +149,15 @@ public class SpringJDBCWorker implements DriverWorker {
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
 
-        if(null == meta){
+        if(null == meta) {
             return;
         }
         String catalog = meta.getCatalogName();
-        if(null== catalog){
+        if(null== catalog) {
             catalog = runtime.getCatalog();
         }
         String schema = meta.getSchemaName();
-        if(null == schema){
+        if(null == schema) {
             schema = runtime.getSchema();
         }
 
@@ -185,7 +185,7 @@ public class SpringJDBCWorker implements DriverWorker {
         }
     }
 
-    private JdbcTemplate jdbc(DataRuntime runtime){
+    private JdbcTemplate jdbc(DataRuntime runtime) {
         return (JdbcTemplate) runtime.getProcessor();
     }
 
@@ -202,21 +202,21 @@ public class SpringJDBCWorker implements DriverWorker {
         }
         set.setMetadata(metadatas);
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return set;
         }
 
         StreamHandler _handler = null;
-        if(null != configs){
+        if(null != configs) {
             DataHandler handler = configs.handler();
-            if(handler instanceof StreamHandler){
+            if(handler instanceof StreamHandler) {
                 _handler = (StreamHandler) handler;
             }
         }
         final StreamHandler handler = _handler;
 
         long[] count = new long[]{0};
-        if(null != handler){
+        if(null != handler) {
             DataSource datasource = null;
             Connection con = null;
             PreparedStatement ps = null;
@@ -237,7 +237,7 @@ public class SpringJDBCWorker implements DriverWorker {
                     }
                 }
                 rs = ps.executeQuery();
-                if(keep && handler instanceof ResultSetHandler){
+                if(keep && handler instanceof ResultSetHandler) {
                     ConnectionHandler ch = new SimpleConnectionHandler(datasource, con, ps, rs);
                     ch.setWorker(this);
                     handler.handler(ch);
@@ -246,7 +246,7 @@ public class SpringJDBCWorker implements DriverWorker {
                     while (rs.next()) {
                         count[0] ++;
                         boolean next = JDBCUtil.stream(adapter, handler, rs, configs, true, runtime, null);
-                        if(!next){
+                        if(!next) {
                             break;
                         }
                     }
@@ -262,11 +262,11 @@ public class SpringJDBCWorker implements DriverWorker {
             //end stream handler
         }else {
             fr = System.currentTimeMillis();
-            if(null != values && values.size()>0){
+            if(null != values && values.size()>0) {
                 jdbc.query(sql, values.toArray(), new RowCallbackHandler() {
                     @Override
                     public void processRow(ResultSet rs) throws SQLException {
-                        if(!process[0]){
+                        if(!process[0]) {
                             mid[0] = System.currentTimeMillis();
                             process[0] = true;
                         }
@@ -278,7 +278,7 @@ public class SpringJDBCWorker implements DriverWorker {
                 jdbc.query(sql, new RowCallbackHandler() {
                     @Override
                     public void processRow(ResultSet rs) throws SQLException {
-                        if(!process[0]){
+                        if(!process[0]) {
                             mid[0] = System.currentTimeMillis();
                             process[0] = true;
                         }
@@ -289,7 +289,7 @@ public class SpringJDBCWorker implements DriverWorker {
             }
             count[0] = set.size();
         }
-        if(!process[0]){
+        if(!process[0]) {
             mid[0] = System.currentTimeMillis();
         }
         configs.setLastPackageTime(System.currentTimeMillis() - mid[0]);
@@ -312,35 +312,35 @@ public class SpringJDBCWorker implements DriverWorker {
         final String rdm = random;
         final DataRuntime rt = runtime;
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return new DataSet();
         }
-        DataSet set = (DataSet) jdbc.execute(new CallableStatementCreator(){
+        DataSet set = (DataSet) jdbc.execute(new CallableStatementCreator() {
             public CallableStatement createCallableStatement(Connection conn) throws SQLException {
                 String sql = "{call " +procedure.getName()+"(";
                 final int sizeIn = inputs.size();
                 final int sizeOut = outputs.size();
                 final int size = sizeIn + sizeOut;
-                for(int i=0; i<size; i++){
+                for(int i=0; i<size; i++) {
                     sql += "?";
-                    if(i < size-1){
+                    if(i < size-1) {
                         sql += ",";
                     }
                 }
                 sql += ")}";
 
                 CallableStatement cs = conn.prepareCall(sql);
-                for(int i=1; i<=sizeIn; i++){
+                for(int i=1; i<=sizeIn; i++) {
                     Parameter param = inputs.get(i-1);
                     Object value = param.getValue();
-                    if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+                    if(null == value || "NULL".equalsIgnoreCase(value.toString())) {
                         value = null;
                     }
                     cs.setObject(i, value, param.getType());
                 }
-                for(int i=1; i<=sizeOut; i++){
+                for(int i=1; i<=sizeOut; i++) {
                     Parameter param = outputs.get(i-1);
-                    if(null == param.getValue()){
+                    if(null == param.getValue()) {
                         cs.registerOutParameter(i+sizeIn, param.getType());
                     }else{
                         cs.setObject(i, param.getValue(), param.getType());
@@ -350,15 +350,15 @@ public class SpringJDBCWorker implements DriverWorker {
                 JDBCUtil.queryTimeout(cs, null);
                 return cs;
             }
-        }, new CallableStatementCallback<Object>(){
+        }, new CallableStatementCallback<Object>() {
             public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
                 ResultSet rs = cs.executeQuery();
                 DataSet set = new DataSet();
                 ResultSetMetaData rsmd = rs.getMetaData();
                 int cols = rsmd.getColumnCount();
-                for(int i=1; i<=cols; i++){
+                for(int i=1; i<=cols; i++) {
                     String name = rsmd.getColumnLabel(i);
-                    if(null == name){
+                    if(null == name) {
                         name = rsmd.getColumnName(i);
                     }
                     set.addHead(name);
@@ -367,36 +367,36 @@ public class SpringJDBCWorker implements DriverWorker {
                 int index = 0;
                 long first = -1;
                 long last = -1;
-                if(null != navi){
+                if(null != navi) {
                     first = navi.getFirstRow();
                     last = navi.getLastRow();
                 }
-                while(rs.next()){
-                    if(first ==-1 || (index >= first && index <= last)){
+                while(rs.next()) {
+                    if(first ==-1 || (index >= first && index <= last)) {
                         DataRow row = new DataRow();
-                        for(int i=1; i<=cols; i++){
+                        for(int i=1; i<=cols; i++) {
                             row.put(false, rsmd.getColumnLabel(i), rs.getObject(i));
                         }
                         set.addRow(row);
                     }
                     index ++;
-                    if(first != -1){
-                        if(index > last){
+                    if(first != -1) {
+                        if(index > last) {
                             break;
                         }
-                        if(first ==0 && last==0){// 只取一行
+                        if(first ==0 && last==0) {// 只取一行
                             break;
                         }
                     }
                 }
-                if(null != navi){
+                if(null != navi) {
                     navi.setTotalRow(index);
                     set.setNavi(navi);
                     navi.setDataSize(set.size());
                 }
 
                 set.setDatalink(rt.datasource());
-                if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
+                if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
                     log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
                 }
                 return set;
@@ -418,13 +418,13 @@ public class SpringJDBCWorker implements DriverWorker {
         String sql = run.getFinalQuery();
         List<Object> values = run.getValues();
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return new ArrayList<>();
         }
         StreamHandler _handler = null;
-        if(null != configs){
+        if(null != configs) {
             DataHandler handler = configs.handler();
-            if(handler instanceof StreamHandler){
+            if(handler instanceof StreamHandler) {
                 _handler = (StreamHandler) handler;
             }
         }
@@ -433,7 +433,7 @@ public class SpringJDBCWorker implements DriverWorker {
         final StreamHandler handler = _handler;
         long fr = System.currentTimeMillis();
         final long[] mid = {System.currentTimeMillis()};
-        if(null != handler){
+        if(null != handler) {
             DataSource datasource = null;
             Connection con = null;
             PreparedStatement ps = null;
@@ -454,7 +454,7 @@ public class SpringJDBCWorker implements DriverWorker {
                     }
                 }
                 rs = ps.executeQuery();
-                if(keep && handler instanceof ResultSetHandler){
+                if(keep && handler instanceof ResultSetHandler) {
                     ConnectionHandler ch = new SimpleConnectionHandler(datasource, con, ps, rs);
                     ch.setWorker(this);
                     handler.handler(ch);
@@ -463,7 +463,7 @@ public class SpringJDBCWorker implements DriverWorker {
                     while (rs.next()) {
                         count[0] ++;
                         boolean next = org.anyline.data.jdbc.util.JDBCUtil.stream(adapter, handler, rs, configs, true, runtime, null);
-                        if(!next){
+                        if(!next) {
                             break;
                         }
                     }
@@ -488,19 +488,19 @@ public class SpringJDBCWorker implements DriverWorker {
             count[0] = maps.size();
         }
         boolean slow = false;
-        if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
-            if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)){
+        if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
+            if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)) {
                 slow = true;
                 log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                if(null != adapter.getDMListener()){
+                if(null != adapter.getDMListener()) {
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
                 }
             }
         }
-        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
+        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
             log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(mid[0] - fr));
         }
-        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
+        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
             log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid[0]), count[0]);
         }
         return maps;
@@ -520,7 +520,7 @@ public class SpringJDBCWorker implements DriverWorker {
         String sql = run.getFinalExists();
         List<Object> values = run.getValues();
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return new HashMap<>();
         }
         if (null != values && !values.isEmpty()) {
@@ -535,17 +535,17 @@ public class SpringJDBCWorker implements DriverWorker {
         long cnt = -1;
         KeyHolder keyholder = null;
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return -1;
         }
         String cmd = run.getFinalInsert();
         int batch = run.getBatch();
         List<Object> values = run.getValues();
-        if(batch > 1){
+        if(batch > 1) {
             cnt = batch(jdbc, cmd, batch, run.getVol(), values);
         }else {
             //是否支持返回自增值
-            if(adapter.supportKeyHolder(runtime, configs)){
+            if(adapter.supportKeyHolder(runtime, configs)) {
                 //需要返回自增
                 keyholder = new GeneratedKeyHolder();
                 cnt = jdbc.update(new PreparedStatementCreator() {
@@ -587,32 +587,32 @@ public class SpringJDBCWorker implements DriverWorker {
      * @param keyholder  keyholder
      * @return boolean
      */
-    public boolean identity(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, KeyHolder keyholder, String generatedKey){
+    public boolean identity(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, KeyHolder keyholder, String generatedKey) {
         try {
-            if(null == keyholder){
+            if(null == keyholder) {
                 return false;
             }
-            if(!adapter.supportKeyHolder(runtime, configs)){
+            if(!adapter.supportKeyHolder(runtime, configs)) {
                 return false;
             }
             List<Map<String,Object>> keys = keyholder.getKeyList();
-            if(null == generatedKey && keys.size()>0){
+            if(null == generatedKey && keys.size()>0) {
                 Map<String,Object> key = keys.get(0);
                 generatedKey = key.keySet().iterator().next();
             }
-            if(data instanceof Collection){
+            if(data instanceof Collection) {
                 //批量插入
                 List<Object> ids = new ArrayList<>();
                 Collection list = (Collection) data;
                 //检测是否有主键值
-                for(Object item:list){
-                    if(BasicUtil.isNotEmpty(true, EntityAdapter.getPrimaryValue(item))){
+                for(Object item:list) {
+                    if(BasicUtil.isNotEmpty(true, EntityAdapter.getPrimaryValue(item))) {
                         //已经有主键值了
                         return true;
                     }
                     break;
                 }
-                if(BasicUtil.isEmpty(generatedKey)){
+                if(BasicUtil.isEmpty(generatedKey)) {
                     return false;
                 }
                 int i = 0;
@@ -644,7 +644,7 @@ public class SpringJDBCWorker implements DriverWorker {
                 }
             }else{
                 if(null != keys && !keys.isEmpty()) {
-                    if(BasicUtil.isEmpty(true, EntityAdapter.getPrimaryValue(data))){
+                    if(BasicUtil.isEmpty(true, EntityAdapter.getPrimaryValue(data))) {
                         Object id = keys.get(0).get(generatedKey);
                         EntityAdapter.setPrimaryValue(data, id);
                         if (ConfigStore.IS_LOG_SQL(configs) && log.isWarnEnabled()) {
@@ -653,7 +653,7 @@ public class SpringJDBCWorker implements DriverWorker {
                     }
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                 e.printStackTrace();
             }
@@ -664,13 +664,13 @@ public class SpringJDBCWorker implements DriverWorker {
         }
         return true;
     }
-    public long batch(JdbcTemplate jdbc, String sql, int batch, int vol, List<Object> values){
+    public long batch(JdbcTemplate jdbc, String sql, int batch, int vol, List<Object> values) {
         int size = values.size(); //一共多少参数
         int line = size; //一共多少行
         if(vol > 0) {
            line = size / vol;
         }
-        if(null == jdbc){
+        if(null == jdbc) {
             return line;
         }
         final int _line = line;
@@ -680,7 +680,7 @@ public class SpringJDBCWorker implements DriverWorker {
             new BatchPreparedStatementSetter() {
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     //i从0开始 参数下标从1开始
-                    for(int p=1; p<=vol; p++){
+                    for(int p=1; p<=vol; p++) {
                         ps.setObject(p, values.get(vol*i+p-1));
                     }
                 }
@@ -697,10 +697,10 @@ public class SpringJDBCWorker implements DriverWorker {
         List<Object> values = run.getValues();
         int batch = run.getBatch();
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return -1;
         }
-        if(batch > 1){
+        if(batch > 1) {
             result = batch(jdbc, cmd, batch, run.getVol(), values);
         }else {
             Object[] vals = values.toArray();
@@ -723,7 +723,7 @@ public class SpringJDBCWorker implements DriverWorker {
     public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception{
         List<Object> list = new ArrayList<Object>();
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return list;
         }
 
@@ -781,13 +781,13 @@ public class SpringJDBCWorker implements DriverWorker {
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
         long result = -1;
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return result;
         }
         int batch = run.getBatch();
         String sql = run.getFinalExecute();
         List<Object> values = run.getValues();
-        if(batch>1){
+        if(batch>1) {
             result = batch(jdbc, sql, batch, run.getVol(), values);
         }else {
             if (null != values && !values.isEmpty()) {
@@ -806,20 +806,20 @@ public class SpringJDBCWorker implements DriverWorker {
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */
-    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment){
+    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         LinkedHashMap<String, Column> columns = null;
         JdbcTemplate jdbc =jdbc(runtime);
         String sql = run.getFinalQuery(false);
         if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
             log.info("{}[action:metadata][cmd:\n{}\n]", random, sql);
         }
-        if(null == jdbc){
+        if(null == jdbc) {
             return new LinkedHashMap<>();
         }
         SqlRowSet rs = jdbc.queryForRowSet(sql);
         try {
             columns = SpringJDBCUtil.columns(adapter, runtime, true, null, null, rs);
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return columns;
@@ -834,21 +834,21 @@ public class SpringJDBCWorker implements DriverWorker {
      * @return product
      * @throws Exception 异常
      */
-    public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product){
+    public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product) {
         DataSource datasource = null;
         Connection con = null;
         try {
             JdbcTemplate jdbc = jdbc(runtime);
-            if(null == jdbc){
+            if(null == jdbc) {
                 return null;
             }
             datasource = jdbc.getDataSource();
             con = DataSourceUtils.getConnection(datasource);
             product = con.getMetaData().getDatabaseProductName();
-        }catch (Exception e){
+        }catch (Exception e) {
             log.warn("[check product][fail:{}]", e.toString());
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)) {
                 DataSourceUtils.releaseConnection(con, datasource);
             }
         }
@@ -864,21 +864,21 @@ public class SpringJDBCWorker implements DriverWorker {
      * @return version
      * @throws Exception 异常
      */
-    public String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version){
+    public String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version) {
         Connection con = null;
         DataSource ds = null;
         try {
             JdbcTemplate jdbc = jdbc(runtime);
-            if(null == jdbc){
+            if(null == jdbc) {
                 return null;
             }
             ds = jdbc.getDataSource();
             con = DataSourceUtils.getConnection(ds);
             version = con.getMetaData().getDatabaseProductVersion();
-        }catch (Exception e){
+        }catch (Exception e) {
             log.warn("[check version][fail:{}]", e.toString());
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
@@ -903,7 +903,7 @@ public class SpringJDBCWorker implements DriverWorker {
         Connection con = null;
         try{
             JdbcTemplate jdbc = jdbc(runtime);
-            if(null == jdbc){
+            if(null == jdbc) {
                 return new LinkedHashMap<>();
             }
             ds = jdbc.getDataSource();
@@ -911,10 +911,10 @@ public class SpringJDBCWorker implements DriverWorker {
             DatabaseMetaData dbmd = con.getMetaData();
             String catalogName = null;
             String schemaName = null;
-            if(null != catalog){
+            if(null != catalog) {
                 catalogName = catalog.getName();
             }
-            if(null != schema){
+            if(null != schema) {
                 schemaName = schema.getName();
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
@@ -922,7 +922,7 @@ public class SpringJDBCWorker implements DriverWorker {
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
             tables = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, tables, set);
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
@@ -947,7 +947,7 @@ public class SpringJDBCWorker implements DriverWorker {
         Connection con = null;
         try{
             JdbcTemplate jdbc = jdbc(runtime);
-            if(null == jdbc){
+            if(null == jdbc) {
                 return new ArrayList<>();
             }
             ds = jdbc.getDataSource();
@@ -955,10 +955,10 @@ public class SpringJDBCWorker implements DriverWorker {
             DatabaseMetaData dbmd = con.getMetaData();
             String catalogName = null;
             String schemaName = null;
-            if(null != catalog){
+            if(null != catalog) {
                 catalogName = catalog.getName();
             }
-            if(null != schema){
+            if(null != schema) {
                 schemaName = schema.getName();
             }
 
@@ -967,7 +967,7 @@ public class SpringJDBCWorker implements DriverWorker {
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, tps);
             tables = org.anyline.data.jdbc.util.JDBCUtil.tables(adapter, runtime, create, tables, set);
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
@@ -992,7 +992,7 @@ public class SpringJDBCWorker implements DriverWorker {
         Connection con = null;
         try {
             JdbcTemplate jdbc = jdbc(runtime);
-            if(null == jdbc){
+            if(null == jdbc) {
                 return new LinkedHashMap<>();
             }
             ds = jdbc.getDataSource();
@@ -1001,17 +1001,17 @@ public class SpringJDBCWorker implements DriverWorker {
 
             String catalogName = null;
             String schemaName = null;
-            if(null != catalog){
+            if(null != catalog) {
                 catalogName = catalog.getName();
             }
-            if(null != schema){
+            if(null != schema) {
                 schemaName = schema.getName();
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
             ResultSet set = dbmd.getTables(tmp[0], tmp[1], pattern, new String[]{"VIEW"});
             views = org.anyline.data.jdbc.util.JDBCUtil.views(adapter, runtime, create, views, set);
         }finally {
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
@@ -1097,11 +1097,11 @@ public class SpringJDBCWorker implements DriverWorker {
     public <T extends Index> LinkedHashMap<String, T> indexs(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
         DataSource ds = null;
         Connection con = null;
-        if(null == indexs){
+        if(null == indexs) {
             indexs = new LinkedHashMap<>();
         }
         JdbcTemplate jdbc = jdbc(runtime);
-        if(null == jdbc){
+        if(null == jdbc) {
             return new LinkedHashMap<>();
         }
         try{
@@ -1115,12 +1115,12 @@ public class SpringJDBCWorker implements DriverWorker {
             LinkedHashMap<String, Column> columns = null;
             while (set.next()) {
                 String name = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "INDEX_NAME", set);
-                if(null == name){
+                if(null == name) {
                     continue;
                 }
                 T index = indexs.get(name.toUpperCase());
-                if(null == index){
-                    if(create){
+                if(null == index) {
+                    if(create) {
                         index = (T)new Index();
                         indexs.put(name.toUpperCase(), index);
                     }else{
@@ -1132,17 +1132,17 @@ public class SpringJDBCWorker implements DriverWorker {
                     String catalog = BasicUtil.evl(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_CATALOG", set), org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_CAT", set));
                     String schema = BasicUtil.evl(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_SCHEMA", set), org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_SCHEM", set));
                     adapter.correctSchemaFromJDBC(runtime, index, catalog, schema);
-                    if(!adapter.equals(table.getCatalog(), index.getCatalog()) || !adapter.equals(table.getSchema(), index.getSchema())){
+                    if(!adapter.equals(table.getCatalog(), index.getCatalog()) || !adapter.equals(table.getSchema(), index.getSchema())) {
                         continue;
                     }
                     index.setTable(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_NAME", set));
                     indexs.put(name.toUpperCase(), index);
                     columns = new LinkedHashMap<>();
                     index.setColumns(columns);
-                    if(name.equalsIgnoreCase("PRIMARY")){
+                    if(name.equalsIgnoreCase("PRIMARY")) {
                         index.setCluster(true);
                         index.setPrimary(true);
-                    }else if(name.equalsIgnoreCase("PK_"+table.getName())){
+                    }else if(name.equalsIgnoreCase("PK_"+table.getName())) {
                         index.setCluster(true);
                         index.setPrimary(true);
                     }
@@ -1152,14 +1152,14 @@ public class SpringJDBCWorker implements DriverWorker {
                 String columnName = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "COLUMN_NAME", set);
                 Column col = table.getColumn(columnName.toUpperCase());
                 Column column = null;
-                if(null != col){
+                if(null != col) {
                     column = (Column) col.clone();
                 }else{
                     column = new Column();
                     column.setName(columnName);
                 }
                 String order = org.anyline.data.jdbc.util.JDBCUtil.string(keys, "ASC_OR_DESC", set);
-                if(null != order && order.startsWith("D")){
+                if(null != order && order.startsWith("D")) {
                     order = "DESC";
                 }else{
                     order = "ASC";
@@ -1169,7 +1169,7 @@ public class SpringJDBCWorker implements DriverWorker {
                 columns.put(column.getName().toUpperCase(), column);
             }
         }finally{
-            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)){
+            if(null != con && !DataSourceUtils.isConnectionTransactional(con, ds)) {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }

@@ -39,13 +39,13 @@ public class RegxpContain implements Regular{
 	 * @param regx 表达式
 	 * @return boolean
 	 */ 
-	public boolean match(String src, String regx){
+	public boolean match(String src, String regx) {
 		boolean result = false; 
 		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			result = matcher.contains(src, pattern);
-		}catch(Exception e){
+		}catch(Exception e) {
 			result = false; 
 		} 
 		return result; 
@@ -56,22 +56,22 @@ public class RegxpContain implements Regular{
 	 * @param regx	表达式  regx	表达式
 	 * @return List
 	 */ 
-	public List<List<String>> fetchs(String src, String regx){
+	public List<List<String>> fetchs(String src, String regx) {
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
-			while(matcher.contains(input, pattern)){
+			while(matcher.contains(input, pattern)) {
 				MatchResult matchResult = matcher.getMatch(); 
 				int groups = matchResult.groups(); 
 				List<String> item = new ArrayList<>();
-				for(int i=0; i<groups; i++){
+				for(int i=0; i<groups; i++) {
 					item.add(matchResult.group(i)); 
 				} 
 				list.add(item); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			e.printStackTrace(); 
 		} 
@@ -92,11 +92,11 @@ public class RegxpContain implements Regular{
 			PatternMatcher matcher = new Perl5Matcher(); 
 			PatternMatcherInput input = new PatternMatcherInput(src); 
 			 
-			while(matcher.contains(input, pattern)){
+			while(matcher.contains(input, pattern)) {
 				MatchResult matchResult = matcher.getMatch(); 
 				list.add(matchResult.group(idx)); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			e.printStackTrace(); 
 			throw e; 
@@ -113,10 +113,10 @@ public class RegxpContain implements Regular{
 	 * @param regx 表达式
 	 * @return List
 	 */ 
-	public List<String> pick(List<String> src, String regx){
+	public List<String> pick(List<String> src, String regx) {
 		List<String> list = new ArrayList<>();
-		for(String item : src){
-			if(match(item, regx)){
+		for(String item : src) {
+			if(match(item, regx)) {
 				list.add(item);
 			} 
 		} 
@@ -128,10 +128,10 @@ public class RegxpContain implements Regular{
 	 * @param regx 表达式
 	 * @return List
 	 */ 
-	public List<String> wipe(List<String> src, String regx){
+	public List<String> wipe(List<String> src, String regx) {
 		List<String> list = new ArrayList<>();
-		for(String item : src){
-			if(!match(item, regx)){
+		for(String item : src) {
+			if(!match(item, regx)) {
 				list.add(item);
 			} 
 		} 

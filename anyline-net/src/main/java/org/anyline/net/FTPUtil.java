@@ -51,7 +51,7 @@ public class FTPUtil {
         client = new FTPClient();   
         client.setControlEncoding("UTF-8");  
     }   
-    public FTPUtil(String host, String account, String password, int port){
+    public FTPUtil(String host, String account, String password, int port) {
         client = new FTPClient();
     	this.host = host; 
     	this.account = account; 
@@ -60,7 +60,7 @@ public class FTPUtil {
         client.setControlEncoding("UTF-8");  
 		connect(); 
     }   
-    public FTPUtil(String host, String account, String password){
+    public FTPUtil(String host, String account, String password) {
         client = new FTPClient();   
     	this.host = host; 
     	this.account = account; 
@@ -69,19 +69,19 @@ public class FTPUtil {
 		connect(); 
     } 
  
-    public static FTPUtil getInstance (String host, String account, String password, int port){
+    public static FTPUtil getInstance (String host, String account, String password, int port) {
     	String key = "host:"+host+", account:"+account+", password:"+password+", port:"+port;
     	FTPUtil util = instances.get(key); 
-    	if(null == util){
+    	if(null == util) {
     		util = new FTPUtil(host, account, password, port);
     	} 
     	return util; 
     }   
-    public static FTPUtil getInstance(String host, String account, String password){
+    public static FTPUtil getInstance(String host, String account, String password) {
     	return getInstance(host, account, password, 21);
     } 
        
-    public void setTimeOut(int defaultTimeoutSecond, int connectTimeoutSecond, int dataTimeoutSecond){
+    public void setTimeOut(int defaultTimeoutSecond, int connectTimeoutSecond, int dataTimeoutSecond) {
         try {
             client.setDefaultTimeout(defaultTimeoutSecond * 1000);   
             client.setConnectTimeout(connectTimeoutSecond * 1000); // commons-net-3.5.jar   
@@ -92,7 +92,7 @@ public class FTPUtil {
         }   
     }   
  
-	public int fileSize(String dir){
+	public int fileSize(String dir) {
 		int size = 0; 
 		try {
 	        cd(dir); 
@@ -116,7 +116,7 @@ public class FTPUtil {
 	    try {
 	        client.setFileType(FTPClient.BINARY_FILE_TYPE); 
 	        File _localDir = local.getParentFile(); 
-        	if(null != _localDir && !_localDir.exists()){
+        	if(null != _localDir && !_localDir.exists()) {
         		_localDir.mkdirs(); 
         	} 
             OutputStream is = new FileOutputStream(local);    
@@ -129,11 +129,11 @@ public class FTPUtil {
 	    return success;   
 	}
 
-    public FTPClient getFTPClient(){
+    public FTPClient getFTPClient() {
         return client;   
     }   
        
-    public void setControlEncoding(String charset){
+    public void setControlEncoding(String charset) {
         client.setControlEncoding(charset);   
     }   
        
@@ -157,7 +157,7 @@ public class FTPUtil {
 	        client.setFileType(FTP.BINARY_FILE_TYPE);
 	        // ftp.setFileType(FTP.ASCII_FILE_TYPE);   
 	        client.enterLocalPassiveMode();  
-    	}catch(Exception e){
+    	}catch(Exception e) {
             log.error("connect exception:", e);
     	} 
            
@@ -172,7 +172,7 @@ public class FTPUtil {
         return client.isConnected();   
     }   
        
-    public void disconnect(){
+    public void disconnect() {
         if (client.isConnected()) {
             try {
                 client.logout();   
@@ -274,7 +274,7 @@ public class FTPUtil {
              makeDir(paths.get(0)); 
              client.storeFile(remote, in);
              result = true; 
-         }catch(Exception e){
+         }catch(Exception e) {
              log.error("upload file exception:", e);
          } finally {
              try {
@@ -293,7 +293,7 @@ public class FTPUtil {
         if (!local.exists()) {
         	return result; 
         } 
-        if(local.isDirectory()){
+        if(local.isDirectory()) {
         	uploadDir(remote, local);
         }else{
         	uploadFile(remote, local);
@@ -306,10 +306,10 @@ public class FTPUtil {
      * @param remotePath 远程目录 /home/test/a  
      * @param local 本地目录 D:/test/a  
      */   
-    public void uploadDir(String remotePath, File local){
+    public void uploadDir(String remotePath, File local) {
     	log.debug("[ftp upload dir][remote:{}][local:{}]", remotePath, local.getAbsolutePath());
         if (null != local &&local.exists()) {
-            if(!cd(remotePath)){
+            if(!cd(remotePath)) {
                 try {
 					client.makeDirectory(remotePath); 
 				} catch (IOException e) {
@@ -348,7 +348,7 @@ public class FTPUtil {
 	    } 
 	    return success;   
 	} 
-	public boolean cd(String dir){
+	public boolean cd(String dir) {
 		boolean result = false; 
 		try {
 			result = client.changeWorkingDirectory(dir); 
@@ -360,11 +360,11 @@ public class FTPUtil {
 		} 
 		return result; 
 	} 
-	private void downloadDir(File localDir){
+	private void downloadDir(File localDir) {
 		try{
 			FTPFile[] files = client.listFiles(); 
-	        for(FTPFile file:files){
-	        	if(file.isDirectory()){
+	        for(FTPFile file:files) {
+	        	if(file.isDirectory()) {
 	        		cd(file.getName()); 
 	        		downloadDir(new File(localDir+"/"+file.getName())); 
 	        	}else{
@@ -372,7 +372,7 @@ public class FTPUtil {
 	        		downloadFile(this.dir+"/"+file.getName(), local);
 	        	} 
 	        } 
-        }catch(Exception e){
+        }catch(Exception e) {
             log.error("download dir exception:", e);
     	} 
 	} 

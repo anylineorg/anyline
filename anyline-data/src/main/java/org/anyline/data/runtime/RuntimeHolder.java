@@ -42,7 +42,7 @@ public interface RuntimeHolder {
     DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception;
    static boolean destroy(String datasource) throws Exception{
        DataRuntime runtime = RuntimeHolder.runtime(datasource);
-       if(null != runtime){
+       if(null != runtime) {
            return runtime.destroy();
        }
        return false;
@@ -53,18 +53,18 @@ public interface RuntimeHolder {
      * @param origin 源
      * @return Map
      */
-    static Map<String, DataRuntime> runtimes(String origin){
+    static Map<String, DataRuntime> runtimes(String origin) {
         Map<String, DataRuntime> map = new Hashtable<>();
-        for(String key:RuntimeHolder.runtimes.keySet()){
+        for(String key:RuntimeHolder.runtimes.keySet()) {
             DataRuntime runtime = runtimes.get(key);
-            if(origin.equals(runtime.origin())){
+            if(origin.equals(runtime.origin())) {
                 map.put(key, runtime);
             }
         }
         return map;
     }
 
-    static DataRuntime runtime(){
+    static DataRuntime runtime() {
         return runtime(null);
     }
     /**
@@ -72,14 +72,14 @@ public interface RuntimeHolder {
      * @param datasource 数据源
      * @return DataRuntime
      */
-    static DataRuntime runtime(String datasource){
+    static DataRuntime runtime(String datasource) {
         DataRuntime runtime = null;
-        if(null == datasource){
+        if(null == datasource) {
             //通用数据源
             datasource = "default";
         }
         runtime = runtimes.get(datasource);
-        if(null == runtime){
+        if(null == runtime) {
             throw new RuntimeException("未注册数据源:"+datasource);
         }
         return runtime;
@@ -90,8 +90,8 @@ public interface RuntimeHolder {
      * @param key key
      * @return boolean
      */
-    static boolean contains(String key){
-        if(null == key){
+    static boolean contains(String key) {
+        if(null == key) {
             return false;
         }
         return runtimes.containsKey(key);
@@ -101,7 +101,7 @@ public interface RuntimeHolder {
      * 全部runtime.key
      * @return list
      */
-    static List<String> keys(){
+    static List<String> keys() {
         List<String> list = new ArrayList<>();
         list.addAll(runtimes.keySet());
         return list;

@@ -27,32 +27,32 @@ public class IndexsDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
 
-    public static IndexsDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests){
+    public static IndexsDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests) {
         IndexsDiffer differ = new IndexsDiffer();
         LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
         LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
 
-        if(null != origins){
+        if(null != origins) {
             origins = new LinkedHashMap<>();
         }
-        if(null == dests){
+        if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        for(String key:origins.keySet()){
+        for(String key:origins.keySet()) {
             Index origin = origins.get(key);
             Index dest = dests.get(key);
-            if(null == dest){
+            if(null == dest) {
                 drops.put(key, origins.get(origin));
             }else {
-                if(!origin.equals(dest)){
+                if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
                     updates.put(key, origin);
                 }
             }
         }
-        for(String key:dests.keySet()){
-            if(!origins.containsKey(key)){
+        for(String key:dests.keySet()) {
+            if(!origins.containsKey(key)) {
                 adds.put(key, dests.get(key));
             }
         }
@@ -62,7 +62,7 @@ public class IndexsDiffer implements MetadataDiffer {
         return differ;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
 

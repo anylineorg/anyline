@@ -49,7 +49,7 @@ public class NumberUtil {
 		BigDecimal num = null;
 		try{
 			num = new BigDecimal(src);
-		}catch(Exception ignored){
+		}catch(Exception ignored) {
 			return "";
 		}
 		return format(num, pattern);
@@ -75,7 +75,7 @@ public class NumberUtil {
 	 * @param num num
 	 * @return String
 	 */
-	public static String upper(long num){
+	public static String upper(long num) {
 		return NumberTextUtil.getInstance(NumberTextUtil.Lang.ChineseSimplified).getText(num);
 	}
 
@@ -88,7 +88,7 @@ public class NumberUtil {
 	public static BigDecimal max(BigDecimal... nums) {
 		BigDecimal max = nums[0];
 		for (BigDecimal num:nums) {
-			if(null == max){
+			if(null == max) {
 				max = num;
 			}else if (null != num && max.compareTo(num) <0) {
 				max = num;
@@ -106,7 +106,7 @@ public class NumberUtil {
 	public static BigDecimal min(BigDecimal... nums) {
 		BigDecimal min = nums[0];
 		for (BigDecimal num:nums) {
-			if(null == min){
+			if(null == min) {
 				min = num;
 			}else if (null != num && min.compareTo(num) >0) {
 				min = num;
@@ -303,13 +303,13 @@ public class NumberUtil {
 	public static List<Integer> random(int fr, int to, int qty) {
 		List<Integer> list = new ArrayList<Integer>();
 		Random r = new Random();
-		while(true){
+		while(true) {
 			int rdm = fr + r.nextInt(to - fr);
-			if(list.contains(rdm)){
+			if(list.contains(rdm)) {
 				continue;
 			}
 			list.add(rdm);
-			if(list.size() == qty){
+			if(list.size() == qty) {
 				break;
 			}
 		}
@@ -318,13 +318,13 @@ public class NumberUtil {
 	public static List<Double> random(double fr, double to, int qty) {
 		List<Double> list = new ArrayList<Double>();
 		Random r = new Random();
-		while(true){
+		while(true) {
 			double rdm = fr + r.nextDouble() * (to - fr);
-			if(list.contains(rdm)){
+			if(list.contains(rdm)) {
 				continue;
 			}
 			list.add(rdm);
-			if(list.size() == qty){
+			if(list.size() == qty) {
 				break;
 			}
 		}
@@ -333,13 +333,13 @@ public class NumberUtil {
 	public static List<Float> random(float fr, float to, int qty) {
 		List<Float> list = new ArrayList<Float>();
 		Random r = new Random();
-		while(true){
+		while(true) {
 			float rdm = fr + r.nextFloat() * (to - fr);
-			if(list.contains(rdm)){
+			if(list.contains(rdm)) {
 				continue;
 			}
 			list.add(rdm);
-			if(list.size() == qty){
+			if(list.size() == qty) {
 				break;
 			}
 		}
@@ -348,23 +348,23 @@ public class NumberUtil {
 	public static List<Long> random(long fr, long to, int qty) {
 		List<Long> list = new ArrayList<Long>();
 		Random r = new Random();
-		while(true){
+		while(true) {
 			long rdm = fr + r.nextLong() * (to - fr);
-			if(list.contains(rdm)){
+			if(list.contains(rdm)) {
 				continue;
 			}
 			list.add(rdm);
-			if(list.size() == qty){
+			if(list.size() == qty) {
 				break;
 			}
 		}
 		return list;
 	}
 
-	public static boolean isInt(double src){
+	public static boolean isInt(double src) {
 		return src == (int)src;
 	}
-	public static boolean isInt(float src){
+	public static boolean isInt(float src) {
 		return src == (int)src;
 	}
 
@@ -392,7 +392,7 @@ public class NumberUtil {
 	 * @param big 是否大端
 	 * @return 4个字节的byte数组
 	 */
-	public static byte[] int2bytes(int in, boolean big){
+	public static byte[] int2bytes(int in, boolean big) {
 		byte[] bytes = new byte[4];
 		int idx = 0;
 		if(big) {
@@ -405,7 +405,7 @@ public class NumberUtil {
 			}
 		}
 		/*
-		if(big){
+		if(big) {
 			bytes[3] = (byte) (0xff & (i >> 0));
 			bytes[2] = (byte) (0xff & (i >> 8));
 			bytes[1] = (byte) (0xff & (i >> 16));
@@ -418,7 +418,7 @@ public class NumberUtil {
 		}*/
 		return bytes;
 	}
-	public static byte[] short2bytes(short in, boolean big){
+	public static byte[] short2bytes(short in, boolean big) {
 		byte[] bytes = new byte[2];
 		int idx = 0;
 		if(big) {
@@ -504,7 +504,7 @@ public class NumberUtil {
 	 * @param hex hex
 	 * @return int
 	 */
-	public static int hex2dec(String hex){
+	public static int hex2dec(String hex) {
 		return Integer.parseInt(hex, 16);
 	}
 
@@ -515,10 +515,10 @@ public class NumberUtil {
 	 * @param len 长度
 	 * @return int
 	 */
-	public static int hex2dec(String[] hex, int start, int len){
+	public static int hex2dec(String[] hex, int start, int len) {
 		StringBuilder builder = new StringBuilder();
 		int end = hex.length;
-		for(int i=start; i<end && i<start+len; i++){
+		for(int i=start; i<end && i<start+len; i++) {
 			builder.append(hex[i]);
 		}
 		return Integer.valueOf(builder.toString(), 16);
@@ -539,11 +539,11 @@ public class NumberUtil {
 		for(int i = start; i < start+len; i++) {
 			size ++;
 			String hex = Integer.toHexString(bytes[i] & 0xFF);
-			if(hex.length() < 2){
+			if(hex.length() < 2) {
 				builder.append(0);
 			}
 			builder.append(hex);
-			if(size<len && null != split){
+			if(size<len && null != split) {
 				builder.append(split);
 			}
 		}
@@ -554,29 +554,29 @@ public class NumberUtil {
 	}
 	public static String[] byte2hexs(byte[] bytes) {
 		String[] hexs = new String[bytes.length];
-		for(int i=0; i<hexs.length; i++){
+		for(int i=0; i<hexs.length; i++) {
 			hexs[i] = byte2hex(bytes[i]);
 		}
 		return hexs;
 	}
 	public static String byte2hex(byte b) {
 		String hex = Integer.toHexString(b & 0xFF);
-		if(hex.length() < 2){
+		if(hex.length() < 2) {
 			hex = "0" + hex;
 		}
 		return hex;
 	}
 
-	public static String dec2hex(int number){
+	public static String dec2hex(int number) {
 		String hex = Integer.toHexString(number & 0xFF);
-		if(hex.length() < 2){
+		if(hex.length() < 2) {
 			hex = "0" + hex;
 		}
 		return hex;
 	}
-	public static String[] dec2hex(int[] numbers){
+	public static String[] dec2hex(int[] numbers) {
 		String[] hex = new String[numbers.length];
-		for(int i=0; i<hex.length; i++){
+		for(int i=0; i<hex.length; i++) {
 			hex[i] = Integer.toHexString(numbers[i]);
 		}
 		return hex;
@@ -590,32 +590,32 @@ public class NumberUtil {
 	 * @param charset 编码
 	 * @return String
 	 */
-	public static String byte2string(byte[] bytes, int start, int len, Charset charset){
+	public static String byte2string(byte[] bytes, int start, int len, Charset charset) {
 		byte[] bts = new byte[len];
 		int max =bytes.length;
 		int idx = 0;
-		for(int i=start; i<=max && i<start+len; i++){
+		for(int i=start; i<=max && i<start+len; i++) {
 			bts[idx++] = bytes[i];
 		}
 		return new String(bts, charset);
 	}
-	public static String byte2string(byte[] bytes, int start, int len){
+	public static String byte2string(byte[] bytes, int start, int len) {
 		return byte2string(bytes, start, len, StandardCharsets.UTF_8);
 	}
-	public static String byte2string(byte[] bytes){
+	public static String byte2string(byte[] bytes) {
 		return byte2string(bytes, 0, bytes.length, StandardCharsets.UTF_8);
 	}
-	public static String byte2string(byte[] bytes, int start){
+	public static String byte2string(byte[] bytes, int start) {
 		return byte2string(bytes, start, bytes.length-start, StandardCharsets.UTF_8);
 	}
-	public static String byte2string(byte[] bytes, Charset charset){
+	public static String byte2string(byte[] bytes, Charset charset) {
 		return byte2string(bytes, 0, bytes.length, charset);
 	}
 
-	public static byte[] hex2bytes(String hex){
+	public static byte[] hex2bytes(String hex) {
 		int hexlen = hex.length();
 		byte[] result;
-		if (hexlen % 2 == 1){
+		if (hexlen % 2 == 1) {
 			// 奇数
 			hexlen++;
 			result = new byte[(hexlen/2)];
@@ -625,14 +625,14 @@ public class NumberUtil {
 			result = new byte[(hexlen/2)];
 		}
 		int j=0;
-		for (int i = 0; i < hexlen; i+=2){
+		for (int i = 0; i < hexlen; i+=2) {
 			result[j]=hex2byte(hex.substring(i, i+2));
 			j++;
 		}
 		return result;
 	}
 
-	public static byte hex2byte(String hex){
+	public static byte hex2byte(String hex) {
 		return (byte)Integer.parseInt(hex, 16);
 	}
 
@@ -667,7 +667,7 @@ public class NumberUtil {
 	 * @param b byte
 	 * @return String
 	 */
-	public static String byte2bin(byte  b){
+	public static String byte2bin(byte  b) {
 		String value = Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
 		return value;
 	}public static int byte2decimal(byte res) {
@@ -751,10 +751,10 @@ public class NumberUtil {
 		}
 		return array;
 	}
-	public static byte[] string2bytes(String src, String charset){
+	public static byte[] string2bytes(String src, String charset) {
 		return src.getBytes(Charset.forName(charset));
 	}
-	public static byte[] string2bytes(String src){
+	public static byte[] string2bytes(String src) {
 		return src.getBytes(StandardCharsets.UTF_8);
 	}
 
@@ -803,24 +803,24 @@ public class NumberUtil {
 	public static String compress(String src, boolean integer) {
 		if (null != src) {
 			int idx = src.indexOf(".");
-			if(idx != -1){
+			if(idx != -1) {
 				src = src.replaceAll("^0+","");
 				src = src.replaceAll("0+$","");
 			}
-			if(".".equals(src)){
-				if(integer){
+			if(".".equals(src)) {
+				if(integer) {
 					src = "0";
 				}else{
 					src = "0.0";
 				}
-			}else if(src.endsWith(".")){
-				if(integer){
+			}else if(src.endsWith(".")) {
+				if(integer) {
 					src = src.substring(0, src.length()-1);
 				}else{
 					src = src + "0";
 				}
 			}
-			if(src.startsWith(".")){
+			if(src.startsWith(".")) {
 				src = "0" + src;
 			}
 		}
@@ -841,10 +841,10 @@ public class NumberUtil {
 	 * @param bytes bytes
 	 * @return double[]
 	 */
-	public static double[] byte2points(byte[] bytes){
+	public static double[] byte2points(byte[] bytes) {
 		int len=(bytes.length-13)/8;
 		double[] result=new double[len];
-		for(int i=0;i<len; i++){
+		for(int i=0;i<len; i++) {
 			result[i]=byte2double(bytes, 13+i*8);
 		}
 		return result;
@@ -943,14 +943,14 @@ public class NumberUtil {
 		int qty = 0;
 		BigDecimal sum = BigDecimal.ZERO;
 		for (BigDecimal item:list) {        //求和
-			if(null != item){
+			if(null != item) {
 				sum = sum.add(item);
 			}
-			if(null != item){
+			if(null != item) {
 				qty ++;
 			}
 		}
-		if(qty > 0){
+		if(qty > 0) {
 			return sum.divide(new BigDecimal(qty), scale, round);
 		}
 		return null;
@@ -959,11 +959,11 @@ public class NumberUtil {
 		int qty = list.size();
 		BigDecimal sum = BigDecimal.ZERO;
 		for (BigDecimal item:list) {        //求和
-			if(null != item){
+			if(null != item) {
 				sum = sum.add(item);
 			}
 		}
-		if(qty > 0){
+		if(qty > 0) {
 			return sum.divide(new BigDecimal(qty), scale, round);
 		}
 		return null;
@@ -993,15 +993,15 @@ public class NumberUtil {
 		BigDecimal avg = avg(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
-			if(null != item){
+			if(null != item) {
 				BigDecimal sub = item.subtract(avg);
 				var = var.add(sub.multiply(sub));
 			}
-			if(null != item){
+			if(null != item) {
 				qty ++;
 			}
 		}
-		if(qty > 1){
+		if(qty > 1) {
 			return var.divide(new BigDecimal(qty-1), scale, round);
 		}
 		return null;
@@ -1011,12 +1011,12 @@ public class NumberUtil {
 		BigDecimal avg = avga(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
-			if(null != item){
+			if(null != item) {
 				BigDecimal sub = item.subtract(avg);
 				var = var.add(sub.multiply(sub));
 			}
 		}
-		if(qty > 1){
+		if(qty > 1) {
 			return var.divide(new BigDecimal(qty-1), scale, round);
 		}
 		return null;
@@ -1046,15 +1046,15 @@ public class NumberUtil {
 		BigDecimal avg = avg(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
-			if(null != item){
+			if(null != item) {
 				BigDecimal sub = item.subtract(avg);
 				var = var.add(sub.multiply(sub));
 			}
-			if(null != item){
+			if(null != item) {
 				qty ++;
 			}
 		}
-		if(qty > 0){
+		if(qty > 0) {
 			return var.divide(new BigDecimal(qty), scale, round);
 		}
 		return null;
@@ -1064,12 +1064,12 @@ public class NumberUtil {
 		BigDecimal avg = avga(list, scale, round);
 		BigDecimal var = BigDecimal.ZERO;
 		for (BigDecimal item : list) {
-			if(null != item){
+			if(null != item) {
 				BigDecimal sub = item.subtract(avg);
 				var = var.add(sub.multiply(sub));
 			}
 		}
-		if(qty > 0){
+		if(qty > 0) {
 			return var.divide(new BigDecimal(qty), scale, round);
 		}
 		return null;
@@ -1096,14 +1096,14 @@ public class NumberUtil {
 	 */
 	public static BigDecimal stdev(List<BigDecimal> list, int scale, int round) {
 		BigDecimal var = var(list, scale, round);
-		if(null != var){
+		if(null != var) {
 			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
 		}
 		return  null;
 	}
 	public static BigDecimal stdeva(List<BigDecimal> list, int scale, int round) {
 		BigDecimal var = vara(list, scale, round);
-		if(null != var){
+		if(null != var) {
 			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
 		}
 		return  null;
@@ -1130,14 +1130,14 @@ public class NumberUtil {
 	 */
 	public static BigDecimal stdevp(List<BigDecimal> list, int scale, int round) {
 		BigDecimal var = varp(list, scale, round);
-		if(null != var){
+		if(null != var) {
 			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
 		}
 		return  null;
 	}
 	public static BigDecimal stdevpa(List<BigDecimal> list, int scale, int round) {
 		BigDecimal var = varpa(list, scale, round);
-		if(null != var){
+		if(null != var) {
 			return new BigDecimal(Math.sqrt(var.doubleValue())).setScale(scale, round);
 		}
 		return  null;

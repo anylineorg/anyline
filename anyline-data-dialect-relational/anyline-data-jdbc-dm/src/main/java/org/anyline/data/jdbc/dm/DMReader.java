@@ -65,15 +65,15 @@ public enum DMReader {
      * 支持的类型符合这些类型的 在读取之后 由当前reader转换
      * @return class ColumnType StringColumnType
      */
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataReader reader(){
+    public DataReader reader() {
         return reader;
     }
     private final Object[] supports;
     private final DataReader reader;
-    DMReader(Object[] supports, DataReader reader){
+    DMReader(Object[] supports, DataReader reader) {
         this.supports = supports;
         this.reader = reader;
     }

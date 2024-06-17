@@ -50,34 +50,34 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
         List<String> list = new ArrayList<>();
         holder.loadCache();
         boolean loadDefault = true; //是否需要加载default
-        if(!DataSourceHolder.contains("default")){
+        if(!DataSourceHolder.contains("default")) {
             //如果还没有注册默认数据源
             // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
             JdbcTemplate jdbc = null;
             DataSource datasource = null;
             try{
                 jdbc = ConfigTable.environment().getBean(JdbcTemplate.class);
-            }catch (Exception ignored){}
+            }catch (Exception ignored) {}
             DataRuntime runtime = null;
-            if(null != jdbc){
+            if(null != jdbc) {
                 try {
                     runtime = SpringJDBCRuntimeHolder.instance().reg("default", jdbc, null);
                     datasource = jdbc.getDataSource();
                     loadDefault = false;
-                }catch (Exception e){
+                }catch (Exception e) {
                     runtime = null;
                 }
             }else{
                 try{
                     datasource = ConfigTable.environment().getBean(DataSource.class);
-                }catch (Exception e){
+                }catch (Exception e) {
                     runtime = null;
                 }
-                if(null != datasource){
+                if(null != datasource) {
                     try {
                         runtime =  holder.create("default", datasource, false);
                         loadDefault = false;
-                    }catch (Exception e){
+                    }catch (Exception e) {
                         runtime = null;
                         e.printStackTrace();
                     }
@@ -93,12 +93,12 @@ public class SpringJDBCDataSourceLoader extends JDBCDataSourceLoader implements 
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
                 }else{
                     String adapterKey = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "adapter");
-                    if(BasicUtil.isNotEmpty(adapterKey)){
+                    if(BasicUtil.isNotEmpty(adapterKey)) {
                         runtime.setAdapterKey(adapterKey);
                     }
                 }
                 DataSourceTransactionManager dm = ConfigTable.environment().getBean(DataSourceTransactionManager.class);
-                if(null != dm){
+                if(null != dm) {
                     TransactionManage manage = new SpringTransactionManage(dm);
                     TransactionManage.reg("default", manage);
                 }else{

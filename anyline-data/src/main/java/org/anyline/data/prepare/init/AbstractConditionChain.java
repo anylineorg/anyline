@@ -36,9 +36,9 @@ public abstract class AbstractConditionChain extends AbstractCondition implement
 	protected List<Condition> conditions = new ArrayList<>();
 	protected int joinSize; 
 	 
-	public void init(){
-		for(Condition condition:conditions){
-			if(null == condition){
+	public void init() {
+		for(Condition condition:conditions) {
+			if(null == condition) {
 				continue;
 			} 
 			condition.init(); 
@@ -49,36 +49,36 @@ public abstract class AbstractConditionChain extends AbstractCondition implement
 	 * @param condition  condition
 	 * @return ConditionChain
 	 */ 
-	public ConditionChain addCondition(Condition condition){
+	public ConditionChain addCondition(Condition condition) {
 		conditions.add(condition); 
 		return this; 
 	}
 
-	protected void addRunValue(RunValue value){
-		if(null == value){
+	protected void addRunValue(RunValue value) {
+		if(null == value) {
 			return;
 		}
 		runValues.add(value);
 	}
-	protected void addRunValue(List<RunValue> values){
-		for(RunValue value:values){
+	protected void addRunValue(List<RunValue> values) {
+		for(RunValue value:values) {
 			addRunValue(value);
 		}
 	}
 	@SuppressWarnings("unchecked") 
-	protected void addRunValue(String key, Object value){
-		if(null == value){
+	protected void addRunValue(String key, Object value) {
+		if(null == value) {
 			return; 
 		}
-		if(null == key){
+		if(null == key) {
 			key = "none";
 		}
-		if(value instanceof RunValue){
+		if(value instanceof RunValue) {
 			throw new RuntimeException("run value");
 		}
-		if(value instanceof Collection){
+		if(value instanceof Collection) {
 			Collection<Object> list = (Collection<Object>)value;
-			for(Object obj:list){
+			for(Object obj:list) {
 				RunValue v = new RunValue(key, obj);
 				addRunValue(v);
 			}
@@ -87,27 +87,27 @@ public abstract class AbstractConditionChain extends AbstractCondition implement
 			addRunValue(v);
 		} 
 	} 
-	public List<RunValue> getRunValues(){
+	public List<RunValue> getRunValues() {
 		return runValues; 
 	} 
-	public String getJoin(){
-		if(BasicUtil.isNotEmpty(join)){
+	public String getJoin() {
+		if(BasicUtil.isNotEmpty(join)) {
 			return join;
 		}
 		return Condition.CONDITION_JOIN_TYPE_AND; 
 	} 
-	public int getJoinSize(){
+	public int getJoinSize() {
 		return joinSize; 
 	} 
 	public List<Condition> getConditions() {
 		return conditions; 
 	}
-	public boolean isValid(){
-		if(!super.isValid()){
+	public boolean isValid() {
+		if(!super.isValid()) {
 			return false;
 		}
-		for(Condition con:conditions){
-			if(null != con && !con.isValid()){
+		for(Condition con:conditions) {
+			if(null != con && !con.isValid()) {
 				return false;
 			}
 		}
@@ -117,11 +117,11 @@ public abstract class AbstractConditionChain extends AbstractCondition implement
 		AbstractConditionChain clone = null;
 		try {
 			clone = (AbstractConditionChain) super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 		}
-		if(null != this.conditions){
+		if(null != this.conditions) {
 			List<Condition> conditions = new ArrayList<>();
-			for (Condition condition:this.conditions){
+			for (Condition condition:this.conditions) {
 				conditions.add(condition.clone());
 			}
 			clone.conditions = conditions;

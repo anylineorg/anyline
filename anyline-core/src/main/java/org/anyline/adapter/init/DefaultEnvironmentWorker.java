@@ -45,27 +45,27 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
     protected static Logger log = LoggerFactory.getLogger(DefaultEnvironmentWorker.class);
     private static DefaultEnvironmentWorker instance = null;
     private static final Map<String, Object> factory = new HashMap<>();
-    public static EnvironmentWorker start(File config){
-        if(null == instance){
+    public static EnvironmentWorker start(File config) {
+        if(null == instance) {
             instance = new DefaultEnvironmentWorker();
         }
         ConfigTable.setWorker(instance);
-        if(null != config){
+        if(null != config) {
             ConfigTable.parseEnvironment(FileUtil.read(config, StandardCharsets.UTF_8).toString(), config.getName());
         }
         try {
             loadBean();
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
         Map<String, LoadListener> listeners = instance.getBeans(LoadListener.class);
-        for(LoadListener listener:listeners.values()){
+        for(LoadListener listener:listeners.values()) {
             listener.load();
         }
         return instance;
     }
-    public static EnvironmentWorker start(){
+    public static EnvironmentWorker start() {
         return start(null);
     }
     public static void loadBean() throws Exception{
@@ -82,9 +82,9 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             String protocol = url.getProtocol().toLowerCase();
-            if("file".equals(protocol)){
+            if("file".equals(protocol)) {
                 loadBean(new File(url.getFile()));
-            }else if("jar".equals(protocol)){
+            }else if("jar".equals(protocol)) {
                 JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
                 log.debug("[load bean form jar][path:{}]", jar.getName());
                 loadBean(jar);
@@ -102,24 +102,24 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
         //3.加载jar文件同目录的config
         File file = new File(FileUtil.merge(ConfigTable.getClassPath(), "config/bean.imports"));
-        if(file.exists()){
+        if(file.exists()) {
             loadBean(FileUtil.read(file, "UTF-8").toString());
         }
     }
 
-    public static void loadBean(File file){
-        if(null != file && file.exists()){
-            if(file.isDirectory()){
+    public static void loadBean(File file) {
+        if(null != file && file.exists()) {
+            if(file.isDirectory()) {
                 List<File> files = FileUtil.getAllChildrenFile(file, "bean.imports", ".jar");
-                for(File item:files){
+                for(File item:files) {
                     loadBean(item);
                 }
             }else{
                 String name = file.getName().toLowerCase();
-                if(name.endsWith(".jar")){
+                if(name.endsWith(".jar")) {
                     try {
                         loadBean(new JarFile(file));
-                    }catch (Exception e){
+                    }catch (Exception e) {
                         e.printStackTrace();
                     }
                 }else{
@@ -128,7 +128,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             }
         }
     }
-    public static void loadBean(JarFile jar){
+    public static void loadBean(JarFile jar) {
         Enumeration<JarEntry> jarEntrys = jar.entries();
         while (jarEntrys.hasMoreElements()) {
             JarEntry entry = jarEntrys.nextElement();
@@ -138,10 +138,10 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                     InputStream in = jar.getInputStream(entry);
                     String txt = FileUtil.read(in, StandardCharsets.UTF_8).toString();
                     loadBean(txt);
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else if(name.contains("jar")){
+            }else if(name.contains("jar")) {
                 //二级jar
             }
         }
@@ -150,10 +150,10 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         List<String> classes = ZipUtil.classes(jar, "org.anyline", false);
         ClassLoader loader = ConfigTable.class.getClassLoader();
         Class component = null;
-        for(String clazz:classes){
+        for(String clazz:classes) {
             try {
                 //log.warn("load class:{}", clazz);
-                if(clazz.contains(".web.") || clazz.contains(".net.")){
+                if(clazz.contains(".web.") || clazz.contains(".net.")) {
                     continue;
                 }
                 Class<?> c = loader.loadClass(clazz);
@@ -173,14 +173,14 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                             }
                         }
                     }
-                    if(null == beanName){
+                    if(null == beanName) {
                         beanName = c.getName();
                     }
                     Object bean = c.newInstance();
                     autowired(bean);
                     instance.reg(beanName, bean);
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -195,25 +195,25 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         Class clazz = object.getClass();
         //属性赋值
         List<Field> fields = ClassUtil.getFields(clazz, false, false);
-        for(Field field:fields){
+        for(Field field:fields) {
             Annotation annotation = field.getAnnotation(Autowired.class);
-            if(null != annotation){
+            if(null != annotation) {
                 Object val = BeanUtil.getFieldValue(object, field);
-                if(null != val){
+                if(null != val) {
                     continue;
                 }
                 Method methods[] = annotation.annotationType().getMethods();
                 String beanName = null; //需要注入给属性的的bean name
-                for(Method method:methods){
+                for(Method method:methods) {
                     String name = method.getName();
-                    if(name.equalsIgnoreCase("value") || name.equalsIgnoreCase("name")){
+                    if(name.equalsIgnoreCase("value") || name.equalsIgnoreCase("name")) {
                         Object value = method.invoke(annotation);
-                        if(null != value){
+                        if(null != value) {
                             beanName = value.toString();
                         }
                     }
                 }
-                if(BasicUtil.isNotEmpty(beanName)){
+                if(BasicUtil.isNotEmpty(beanName)) {
                     val = instance.getBean(beanName);
                 }else{
                     Class beanClass = field.getType();
@@ -224,18 +224,18 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
         //方法赋值
         List<Method> methods = ClassUtil.getMethods(clazz, true);
-        for(Method method:methods){
+        for(Method method:methods) {
             Annotation annotation = method.getAnnotation(Autowired.class);
-            if(null != annotation){
+            if(null != annotation) {
                 Type[] types = method.getGenericParameterTypes();
-                for(Type type:types){
+                for(Type type:types) {
                     //如果泛型参数是参数化类型
-                    if (type instanceof ParameterizedType){
+                    if (type instanceof ParameterizedType) {
                         //强转参数化类型
                         ParameterizedType pt = (ParameterizedType)type;
                         Type[] arguments = pt.getActualTypeArguments();//获得真实参数化信息
                         Class pclass = Class.forName(pt.getRawType().getTypeName());
-                        if(ClassUtil.isInSub(pclass, Map.class)){
+                        if(ClassUtil.isInSub(pclass, Map.class)) {
                             //map参数
                             Type kt = arguments[0];
                             Type vt = arguments[1];
@@ -243,13 +243,13 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                             Class vc = Class.forName(vt.getTypeName());
                             Map<String, Object> beans = ConfigTable.environment().getBeans(vc);
                             method.invoke(object, beans);
-                        }else if(ClassUtil.isInSub(pclass, Collection.class)){
+                        }else if(ClassUtil.isInSub(pclass, Collection.class)) {
                             //集合参数
                             Type ct = arguments[0];
                             Class cc = Class.forName(ct.getTypeName());
                             Map<String, Object> beans = ConfigTable.environment().getBeans(cc);
                             List<Object> values = new ArrayList<>();
-                            for(Object bean:beans.values()){
+                            for(Object bean:beans.values()) {
                                 values.add(bean);
                             }
                             method.invoke(object, values);
@@ -260,14 +260,14 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
             }
         }
     }
-    public static void loadBean(String config){
+    public static void loadBean(String config) {
         String[] lines = config.split("\n");
-        for(String line:lines){
+        for(String line:lines) {
             String[] kv = line.split("=");
-            if(kv.length == 2){
+            if(kv.length == 2) {
                 try {
                     instance.reg(kv[0], new DefaultBeanDefine(kv[1], false));
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -276,21 +276,21 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
 
     public Object getBean(String name) {
         Object bean = factory.get(name);
-        if(bean instanceof BeanDefine){
+        if(bean instanceof BeanDefine) {
             bean = instance(name, (BeanDefine) bean);
         }
         return bean;
     }
-    public <T> Map<String, T> getBeans(Class<T> clazz){
+    public <T> Map<String, T> getBeans(Class<T> clazz) {
         Map<String, T> map = new HashMap<>();
-        for(String key:factory.keySet()){
+        for(String key:factory.keySet()) {
             Object bean = factory.get(key);
-            if(null != bean){
+            if(null != bean) {
                 if(ClassUtil.isInSub(bean.getClass(), clazz)) {
                     map.put(key, (T) bean);
-                }else if(bean instanceof BeanDefine){
+                }else if(bean instanceof BeanDefine) {
                     BeanDefine define = (BeanDefine) bean;
-                    if(ClassUtil.isInSub(bean.getClass(), define.getType())){
+                    if(ClassUtil.isInSub(bean.getClass(), define.getType())) {
                         map.put(key, (T) instance(key, define));
                     }
                 }
@@ -298,7 +298,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         }
         return map;
     }
-    public Object instance(BeanDefine define){
+    public Object instance(BeanDefine define) {
         Object bean = null;
         Class type = define.getType();
         try {
@@ -308,13 +308,13 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                 Object value = values.get(key);
                 if (value instanceof ValueReference) {
                     value = getBean(((ValueReference) value).getName());
-                    if(value instanceof BeanDefine){
+                    if(value instanceof BeanDefine) {
                         value = instance(key, (BeanDefine) value);
                     }
                 }
                 BeanUtil.setFieldValue(bean, key, value, true,false);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return bean;
@@ -327,20 +327,20 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         return bean;
     }
 
-    public boolean regBean(String name, Object bean){
+    public boolean regBean(String name, Object bean) {
         return reg(name, bean);
     }
-    public boolean regBean(String name, BeanDefine bean){
+    public boolean regBean(String name, BeanDefine bean) {
         return reg(name, bean);
     }
-    public boolean reg(String name, Object bean){
+    public boolean reg(String name, Object bean) {
         Object type = bean;
-        if(bean instanceof BeanDefine){
+        if(bean instanceof BeanDefine) {
             BeanDefine define = (BeanDefine)bean;
-            if(name.endsWith("default")){
+            if(name.endsWith("default")) {
                 define.setPrimary(true);
             }
-            if(define.isLazy()){
+            if(define.isLazy()) {
                 factory.put(name, define);
                 type = define.getTypeName();
             }else {
@@ -348,11 +348,11 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                 factory.put(name, insance);
                 type = insance;
             }
-        }else if(bean instanceof Class){
+        }else if(bean instanceof Class) {
             Class clazz = (Class) bean;
             try {
                 factory.put(name, clazz.newInstance());
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }else {
@@ -361,40 +361,40 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         log.debug("[reg bean][name:{}][instance:{}]", name, type);
         return true;
     }
-    public boolean destroyBean(String bean){
+    public boolean destroyBean(String bean) {
         return destroy(bean);
     }
-    public static boolean destroy(String bean){
+    public static boolean destroy(String bean) {
         factory.remove(bean);
         return true;
     }
-    public <T> T getBean(Class<T> clazz){
+    public <T> T getBean(Class<T> clazz) {
         Map<String, T> beans = getBeans(clazz);
         T bean = null;
-        if(null != beans && !beans.isEmpty()){
+        if(null != beans && !beans.isEmpty()) {
             bean = beans.values().iterator().next();
         }
-        if(null != bean){
+        if(null != bean) {
             try {
-                if(bean instanceof BeanDefine){
+                if(bean instanceof BeanDefine) {
                     bean = (T)instance(null, (BeanDefine) bean);
                 }
                 autowired(bean);
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return bean;
     }
-    public <T> T getBean(String name, Class<T> clazz){
+    public <T> T getBean(String name, Class<T> clazz) {
         Object bean = factory.get(name);
-        if(bean instanceof BeanDefine){
+        if(bean instanceof BeanDefine) {
             bean = instance(name, (BeanDefine) bean);
         }
-        if(null != bean && ClassUtil.isInSub(bean.getClass(), clazz)){
+        if(null != bean && ClassUtil.isInSub(bean.getClass(), clazz)) {
             try{
                 autowired(bean);
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
             return (T) bean;
@@ -402,24 +402,24 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         return null;
     }
 
-    public boolean containsBean(String name){
+    public boolean containsBean(String name) {
         return factory.containsKey(name);
     }
-    public Object getSingletonBean(String name){
+    public Object getSingletonBean(String name) {
         return factory.get(name);
     }
 
-    public boolean containsSingleton(String name){
+    public boolean containsSingleton(String name) {
         return containsBean(name);
     }
-    public <T> T getSingletonBean(String name, Class<T> clazz){
+    public <T> T getSingletonBean(String name, Class<T> clazz) {
         return getBean(name, clazz);
     }
     @Override
     public Object get(String key) {
         return null; //ConfigTable.get(key);递归
     }
-    public String getString(String key){
+    public String getString(String key) {
         return ConfigTable.getString(key);
     }
     /**
@@ -428,78 +428,78 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
      * @param keys key 多个以,分隔 第一个有值的key生效
      * @return String
      */
-    public String string(String prefixes, String keys){
+    public String string(String prefixes, String keys) {
         String value = null;
-        if(null == keys){
+        if(null == keys) {
             return value;
         }
-        if(null == prefixes){
+        if(null == prefixes) {
             prefixes = "";
         }
         String[] ps= prefixes.split(",");
         String[] kss = keys.split(",");
-        for(String p:ps){
-            for(String key:kss){
+        for(String p:ps) {
+            for(String key:kss) {
                 key = p + key;
                 value = getString(key);
-                if(null != value){
+                if(null != value) {
                     return value;
                 }
                 //以中划线分隔的配置文件
                 String[] ks = key.split("-");
                 String sKey = null;
-                for(String k:ks){
-                    if(null == sKey){
+                for(String k:ks) {
+                    if(null == sKey) {
                         sKey = k;
                     }else{
                         sKey = sKey + CharUtil.toUpperCaseHeader(k);
                     }
                 }
                 value = getString(sKey);
-                if(null != value){
+                if(null != value) {
                     return value;
                 }
 
                 //以下划线分隔的配置文件
                 ks = key.split("_");
                 sKey = null;
-                for(String k:ks){
-                    if(null == sKey){
+                for(String k:ks) {
+                    if(null == sKey) {
                         sKey = k;
                     }else{
                         sKey = sKey + CharUtil.toUpperCaseHeader(k);
                     }
                 }
                 value = getString(sKey);
-                if(null != value){
+                if(null != value) {
                     return value;
                 }
 
                 ks = key.toLowerCase().split("_");
                 sKey = null;
-                for(String k:ks){
-                    if(null == sKey){
+                for(String k:ks) {
+                    if(null == sKey) {
                         sKey = k;
                     }else{
                         sKey = sKey + CharUtil.toUpperCaseHeader(k);
                     }
                 }
                 value = getString(sKey);
-                if(null != value){
+                if(null != value) {
                     return value;
                 }
 
                 //中划线
                 sKey = key.replace("_","-");
                 value = getString(sKey);
-                if(null != value){
+                if(null != value) {
                     return value;
                 }
 
                 //小写中划线
                 sKey = key.toLowerCase().replace("_","-");
                 value = getString(sKey);
-                if(null != value){
+                if(null != value) {
                     return value;
                 }
             }
@@ -519,16 +519,16 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         BeanDefine define = new DefaultBeanDefine(clazz);
         //List<Field> fields = ClassUtil.getFields(poolClass, false, false);
         List<Method> methods = ClassUtil.getMethods(clazz, true);
-        for(Method method:methods){
-            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())){
+        for(Method method:methods) {
+            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())) {
                 String name = method.getName();
-                // public void setMaximumPoolSize(int maxPoolSize){this.maxPoolSize = maxPoolSize;}
-                if(name.startsWith("set")){
+                // public void setMaximumPoolSize(int maxPoolSize) {this.maxPoolSize = maxPoolSize;}
+                if(name.startsWith("set")) {
                     //根据方法名
                     name = name.substring(3, 4).toLowerCase() + name.substring(4);
                     Class paramType = method.getParameters()[0].getType();
                     Object value = BeanUtil.value(params, name, alias, paramType, null);
-                    if(null == value){
+                    if(null == value) {
                         value = value(prefix, name, alias, paramType, null);
                     }
                     if(null != value) {
@@ -539,7 +539,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                 }
             }
         }
-        for(Object key:params.keySet()){
+        for(Object key:params.keySet()) {
             define.addValue(key.toString(), params.get(key));
         }
          regBean(id, define);
@@ -559,10 +559,10 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
         Map<String, Object> cache = new HashMap<>();
         BeanDefine define = new DefaultBeanDefine(clazz);
         List<Method> methods = ClassUtil.getMethods(clazz, true);
-        for(Method method:methods){
-            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())){
+        for(Method method:methods) {
+            if (method.getParameterCount() == 1 && Modifier.isPublic(method.getModifiers())) {
                 String name = method.getName();
-                if(name.startsWith("set")){
+                if(name.startsWith("set")) {
                     //根据方法名
                     name = name.substring(3, 4).toLowerCase() + name.substring(4);
                     Object value = BeanUtil.value(params, name, null, Object.class, null);
@@ -577,7 +577,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
                 }
             }
         }
-        for(Object key:params.keySet()){
+        for(Object key:params.keySet()) {
             define.addValue(key.toString(), params.get(key));
         }
         regBean(id, define);

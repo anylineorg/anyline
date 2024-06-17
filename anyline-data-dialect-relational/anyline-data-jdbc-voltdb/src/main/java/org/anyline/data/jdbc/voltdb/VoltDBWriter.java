@@ -41,15 +41,15 @@ public enum VoltDBWriter {
         }
     })
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataWriter writer(){
+    public DataWriter writer() {
         return writer;
     }
     private final Object[] supports;
     private final DataWriter writer;
-    VoltDBWriter(Object[] supports, DataWriter writer){
+    VoltDBWriter(Object[] supports, DataWriter writer) {
         this.supports = supports;
         this.writer = writer;
     }

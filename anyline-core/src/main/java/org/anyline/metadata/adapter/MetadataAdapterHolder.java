@@ -64,14 +64,14 @@ public class MetadataAdapterHolder {
      * @param config 配置项
      * @return Config
      */
-    public static TypeMetadata.Config reg(DatabaseType database, TypeMetadata type, TypeMetadata.Config config){
+    public static TypeMetadata.Config reg(DatabaseType database, TypeMetadata type, TypeMetadata.Config config) {
         LinkedHashMap<TypeMetadata, TypeMetadata.Config> configs = typeConfigs.get(database);
-        if(null == configs){
+        if(null == configs) {
             configs = new LinkedHashMap<>();
             typeConfigs.put(database, configs);
         }
         TypeMetadata.Config src = configs.get(type);
-        if(null == src){
+        if(null == src) {
             src = new TypeMetadata.Config();
         }
         src.merge(config);
@@ -89,14 +89,14 @@ public class MetadataAdapterHolder {
      * @param config 配置项
      * @return Config
      */
-    public static TypeMetadata.Config reg(DatabaseType database, String type, TypeMetadata.Config config){
+    public static TypeMetadata.Config reg(DatabaseType database, String type, TypeMetadata.Config config) {
         LinkedHashMap<String, TypeMetadata.Config> configs = typeNameConfigs.get(database);
-        if(null == configs){
+        if(null == configs) {
             configs = new LinkedHashMap<>();
             typeNameConfigs.put(database, configs);
         }
         TypeMetadata.Config src = configs.get(type.toUpperCase());
-        if(null == src){
+        if(null == src) {
             src = new TypeMetadata.Config();
         }
         src.merge(config);
@@ -112,14 +112,14 @@ public class MetadataAdapterHolder {
      * @param config 配置项
      * @return Config
      */
-    public static TypeMetadata.Config reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Config config){
+    public static TypeMetadata.Config reg(DatabaseType database, TypeMetadata.CATEGORY category, TypeMetadata.Config config) {
         LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> configs = typeCategoryConfigs.get(database);
-        if(null == configs){
+        if(null == configs) {
             configs = new LinkedHashMap<>();
             typeCategoryConfigs.put(database, configs);
         }
         TypeMetadata.Config src = configs.get(category);
-        if(null == src){
+        if(null == src) {
             src = config;
         }else{
             src.merge(config);
@@ -134,7 +134,7 @@ public class MetadataAdapterHolder {
      * @param type 数据类型
      * @return config
      */
-    public static TypeMetadata.Config get(DatabaseType database, TypeMetadata type){
+    public static TypeMetadata.Config get(DatabaseType database, TypeMetadata type) {
         TypeMetadata.Config config = null;
         if(null != type) {
             LinkedHashMap<TypeMetadata, TypeMetadata.Config> configs = typeConfigs.get(database);
@@ -150,7 +150,7 @@ public class MetadataAdapterHolder {
      * @param type 数据类型名称
      * @return config
      */
-    public static TypeMetadata.Config get(DatabaseType database, String type){
+    public static TypeMetadata.Config get(DatabaseType database, String type) {
         TypeMetadata.Config config = null;
         if(null != type) {
             LinkedHashMap<String, TypeMetadata.Config> configs = typeNameConfigs.get(database);
@@ -166,7 +166,7 @@ public class MetadataAdapterHolder {
      * @param category 数据类型大类
      * @return config
      */
-    public static TypeMetadata.Config get(DatabaseType database, TypeMetadata.CATEGORY category){
+    public static TypeMetadata.Config get(DatabaseType database, TypeMetadata.CATEGORY category) {
         TypeMetadata.Config config = null;
         if(null != category) {
             LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> configs = typeCategoryConfigs.get(database);
@@ -174,7 +174,7 @@ public class MetadataAdapterHolder {
                 config = configs.get(category);
             }
         }
-        if(null == config){
+        if(null == config) {
             LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config> configs = typeCategoryConfigs.get(DatabaseType.NONE);
             if (null != configs) {
                 config = configs.get(category);
@@ -189,7 +189,7 @@ public class MetadataAdapterHolder {
      * @return int
      */
     public static int ignoreLength(DatabaseType database, TypeMetadata type) {
-        if(null == type){
+        if(null == type) {
             return -1;
         }
         int result = -1;
@@ -201,25 +201,25 @@ public class MetadataAdapterHolder {
 		 */
         //1.配置类 数据类型
         TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
-        if(null != config){
+        if(null != config) {
             result = config.ignoreLength();
         }
         //2.配置类-数据类型名称
-        if(result == -1){
+        if(result == -1) {
             //根据数据类型名称
             config = MetadataAdapterHolder.get(database, type.getName());
-            if(null != config){
+            if(null != config) {
                 result = config.ignoreLength();
             }
         }
         //3.数据类型自带
-        if(result ==-1){
+        if(result ==-1) {
             result = type.ignoreLength();
         }
         //4.配置类-数据类型大类
-        if(result ==-1){
+        if(result ==-1) {
             config = MetadataAdapterHolder.get(database, type.getCategory());
-            if(null != config){
+            if(null != config) {
                 result = config.ignoreLength();
             }
         }
@@ -232,7 +232,7 @@ public class MetadataAdapterHolder {
      * @return int
      */
     public static int ignorePrecision(DatabaseType database, TypeMetadata type) {
-        if(null == type){
+        if(null == type) {
             return -1;
         }
         int result = -1;
@@ -244,25 +244,25 @@ public class MetadataAdapterHolder {
 		 */
         //1.配置类 数据类型
         TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
-        if(null != config){
+        if(null != config) {
             result = config.ignorePrecision();
         }
         //2.配置类-数据类型名称
-        if(result == -1){
+        if(result == -1) {
             //根据数据类型名称
             config = MetadataAdapterHolder.get(database, type.getName());
-            if(null != config){
+            if(null != config) {
                 result = config.ignorePrecision();
             }
         }
         //3.数据类型自带
-        if(result ==-1){
+        if(result ==-1) {
             result = type.ignorePrecision();
         }
         //4.配置类-数据类型大类
-        if(result ==-1){
+        if(result ==-1) {
             config = MetadataAdapterHolder.get(database, type.getCategory());
-            if(null != config){
+            if(null != config) {
                 result = config.ignorePrecision();
             }
         }
@@ -275,7 +275,7 @@ public class MetadataAdapterHolder {
      * @return int
      */
     public static int ignoreScale(DatabaseType database, TypeMetadata type) {
-        if(null == type){
+        if(null == type) {
             return -1;
         }
         int result = -1;
@@ -287,25 +287,25 @@ public class MetadataAdapterHolder {
 		 */
         //1.配置类 数据类型
         TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
-        if(null != config){
+        if(null != config) {
             result = config.ignoreScale();
         }
         //2.配置类-数据类型名称
-        if(result == -1){
+        if(result == -1) {
             //根据数据类型名称
             config = MetadataAdapterHolder.get(database, type.getName());
-            if(null != config){
+            if(null != config) {
                 result = config.ignoreScale();
             }
         }
         //3.数据类型自带
-        if(result ==-1){
+        if(result ==-1) {
             result = type.ignorePrecision();
         }
         //4.配置类-数据类型大类
-        if(result ==-1){
+        if(result ==-1) {
             config = MetadataAdapterHolder.get(database, type.getCategory());
-            if(null != config){
+            if(null != config) {
                 result = config.ignoreScale();
             }
         }

@@ -22,14 +22,14 @@ import org.anyline.util.encrypt.MD5Util;
 
 public class MixUtil {
 
-    public static String mix(String seed, String origin){
+    public static String mix(String seed, String origin) {
         return mix(seed, 6, 8, origin);
     }
-    public static String mix(String origin){
+    public static String mix(String origin) {
         return mix(ConfigTable.MIX_DEFAULT_SEED, 6, 8, origin);
     }
-    public static String mix(String seed, int begin, int end, String origin){
-        if(BasicUtil.isEmpty(origin)){
+    public static String mix(String seed, int begin, int end, String origin) {
+        if(BasicUtil.isEmpty(origin)) {
             return null;
         }
         String md5 = MD5Util.crypto(origin);
@@ -44,13 +44,13 @@ public class MixUtil {
      * @param origin 源
      * @return boolean
      */
-    public static boolean verify(String verify, String seed, String origin){
+    public static boolean verify(String verify, String seed, String origin) {
         return verify(verify, seed, 6, 8, origin);
     }
-    public static boolean verify(String verify, String origin){
+    public static boolean verify(String verify, String origin) {
         return verify(verify, ConfigTable.MIX_DEFAULT_SEED, 6, 8, origin);
     }
-    public static boolean verify(String verify, String seed, int begin, int end, String origin){
+    public static boolean verify(String verify, String seed, int begin, int end, String origin) {
         String result = MD5Util.crypto(seed + MD5Util.crypto(origin).substring(begin) + origin).substring(begin, end);
         return result.equals(verify);
     }

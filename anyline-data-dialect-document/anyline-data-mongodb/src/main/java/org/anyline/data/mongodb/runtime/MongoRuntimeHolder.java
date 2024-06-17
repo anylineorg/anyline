@@ -38,10 +38,10 @@ import java.util.Map;
 @Component("anyline.environment.data.runtime.holder.mongo")
 public class MongoRuntimeHolder extends AbstractRuntimeHolder implements RuntimeHolder {
     private static final MongoRuntimeHolder instance = new MongoRuntimeHolder();
-    public static MongoRuntimeHolder instance(){
+    public static MongoRuntimeHolder instance() {
         return instance;
     }
-    public MongoRuntimeHolder(){
+    public MongoRuntimeHolder() {
     }
 
     /**
@@ -54,7 +54,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
      */
     public DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         MongoRuntime runtime = new MongoRuntime();
-        if(datasource instanceof MongoDatabase){
+        if(datasource instanceof MongoDatabase) {
             String key = "temporary_mongo";
             //关闭上一个
             close(key);
@@ -79,11 +79,11 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
      * @param key 数据源前缀
      * @param datasource 数据源bean id
      */
-    public DataRuntime reg(String key, String datasource){
+    public DataRuntime reg(String key, String datasource) {
         return null;
     }
 
-    public DataRuntime reg(String key, MongoClient client, MongoDatabase database){
+    public DataRuntime reg(String key, MongoClient client, MongoDatabase database) {
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         log.info("[注入数据源][type:mongo][key:{}][bean:{}]", key, datasource_key);
         ConfigTable.environment().regBean(datasource_key, database);
@@ -96,10 +96,10 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
      * @param database MongoDatabase
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-    public MongoRuntime reg(String datasource,  MongoClient client, MongoDatabase database, MongoAdapter adapter){
+    public MongoRuntime reg(String datasource,  MongoClient client, MongoDatabase database, MongoAdapter adapter) {
         log.debug("[create Mongo runtime][key:{}]", datasource);
         MongoRuntime runtime = new MongoRuntime(datasource, client, database, adapter);
-        if(runtimes.containsKey(datasource)){
+        if(runtimes.containsKey(datasource)) {
             destroy(datasource);
         }
         runtimes.put(datasource, runtime);
@@ -119,7 +119,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
         ConfigTable.environment().regBean(service_key, serviceDefine);
         return runtime;
     }
-    public boolean destroy(String key){
+    public boolean destroy(String key) {
         try {
             runtimes.remove(key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
@@ -131,10 +131,10 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销
             Map<String, DataRuntime> runtimes = RuntimeHolder.runtimes(key);
-            for(String item:runtimes.keySet()){
+            for(String item:runtimes.keySet()) {
                 destroy(item);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("注销数据源 异常:", e);
             return false;
         }
@@ -142,13 +142,13 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
     }
 
 
-    public static void close(String key){
+    public static void close(String key) {
         /*Object datasource = null;
-        if(ConfigTable.environment().containsBean(key)){
+        if(ConfigTable.environment().containsBean(key)) {
             datasource = ConfigTable.environment().getBean(key);
             try {
                 closeConnection(datasource);
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("close connection exception:", e);
             }
         }
@@ -163,7 +163,7 @@ public class MongoRuntimeHolder extends AbstractRuntimeHolder implements Runtime
     }
     public static void closeConnection(Object datasource) throws Exception {
         /*Method method = ClassUtil.getMethod(datasource.getClass(), "close");
-        if(null != method){
+        if(null != method) {
             method.invoke(datasource);
         }*/
     }

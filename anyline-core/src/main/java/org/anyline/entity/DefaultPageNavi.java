@@ -69,13 +69,13 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	protected boolean showVol = true; 
 	protected String loadMoreFormat = "";
 
-	public DefaultPageNavi(){}
+	public DefaultPageNavi() {}
 
 	/**
 	 * Page
 	 * @param page 当前第几页
 	 */
-	public DefaultPageNavi(long page){
+	public DefaultPageNavi(long page) {
 		this.curPage = page;
 	}
 
@@ -84,7 +84,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * @param page 当前第几页
 	 * @param vol 每页多少行
 	 */
-	public DefaultPageNavi(long page, int vol){
+	public DefaultPageNavi(long page, int vol) {
 		this.curPage = page;
 		this.pageRows = vol;
 	}
@@ -94,42 +94,44 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		setPageRows(pageRows);
 		this.baseLink = baseLink;
 	}
-	public DefaultPageNavi(long curPage, int pageRows, String baseLink){
+	public DefaultPageNavi(long curPage, int pageRows, String baseLink) {
 		this.curPage = curPage;
 		setPageRows(pageRows);
 		this.baseLink = baseLink;
 	}
-	public DefaultPageNavi(String baseLink){
+	public DefaultPageNavi(String baseLink) {
 		this.curPage = 1; 
 		this.baseLink = baseLink; 
 	}
-	public static PageNavi parse(DataRow row){
-		if(null == row){
+	public static PageNavi parse(DataRow row) {
+		if(null == row) {
 			return null; 
 		} 
 		PageNavi navi = row.entity(DefaultPageNavi.class);
 		return navi; 
 	}
 
-	public PageNavi scope(long first, long last){
+	public PageNavi scope(long first, long last) {
 		setFirstRow(first);
 		setLastRow(last);
 		setCalType(1);
+		autoCount(false);
 		//setTotalRow(last-first+1);
 		return this;
 	}
-	public PageNavi limit(long offset, int rows){
+	public PageNavi limit(long offset, int rows) {
 		setFirstRow(offset);
 		setLastRow(offset + rows - 1);
 		setCalType(1);
+		autoCount(false);
 		return this;
 	}
 
-	public PageNavi autoCount(boolean auto){
+	public PageNavi autoCount(boolean auto) {
 		this.autoCount = auto;
 		return this;
 	}
-	public Boolean autoCount(){
+	public Boolean autoCount() {
 		return autoCount;
 	}
 	@Override
@@ -147,11 +149,11 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * 分页计算方式 
 	 * @param type	0-按页数 1-按开始结束记录数 
 	 */ 
-	public PageNavi setCalType(int type){
+	public PageNavi setCalType(int type) {
 		this.calType = type;
 		return this;
 	} 
-	public int getCalType(){
+	public int getCalType() {
 		return calType; 
 	} 
 	/** 
@@ -160,24 +162,24 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	public PageNavi calculate() {
 		long totalPage = (totalRow - 1) / pageRows + 1;
 		// 当前页是否超出总页数 
-		if(curPage > totalPage){
+		if(curPage > totalPage) {
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
-			if(null != config &&  config.VAR_LIMIT_SCOPE){
+			if(null != config &&  config.VAR_LIMIT_SCOPE) {
 				curPage = totalPage; // 超出范围 查最后一页
 			}
 		}
 
 		setTotalPage(totalPage);					// 总页数 
 		setDisplayPageFirst(NumberUtil.min(curPage, totalPage) - pageRange/2);				// 显示的第一页
-		if(displayPageFirst > totalPage - pageRange){
+		if(displayPageFirst > totalPage - pageRange) {
 			setDisplayPageFirst(totalPage - pageRange + 1); 
 		} 
-		if(displayPageFirst < 1){
+		if(displayPageFirst < 1) {
 			setDisplayPageFirst(1); 
 		} 
 		 
 		setDisplayPageLast(displayPageFirst + pageRange - 1);		// 显示的最后页 
-		if (displayPageLast > totalPage){
+		if (displayPageLast > totalPage) {
 			setDisplayPageLast(totalPage); 
 		}
 		return this;
@@ -187,8 +189,8 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * 第一行 
 	 * @return int
 	 */ 
-	public long getFirstRow(){
-		if(calType == 0){
+	public long getFirstRow() {
+		if(calType == 0) {
 			if(curPage <= 0) {
 				return 0; 
 			} 
@@ -201,8 +203,8 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * 最后一行 
 	 * @return int
 	 */ 
-	public long getLastRow(){
-		if(calType == 0){ //0-按页数 1-按开始结束数
+	public long getLastRow() {
+		if(calType == 0) { //0-按页数 1-按开始结束数
 			if(curPage == 0) {
 				return pageRows -1; 
 			} 
@@ -244,18 +246,18 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	} 
  
 	@SuppressWarnings({"unchecked","rawtypes" })
-	public PageNavi addParam(String key, Object value){
-		if(null == key || null == value){
+	public PageNavi addParam(String key, Object value) {
+		if(null == key || null == value) {
 			return this;
 		} 
-		if(null == this.params){
+		if(null == this.params) {
 			this.params = new HashMap<String, List<Object>>();
 		} 
 		List<Object> values = params.get(key); 
-		if(null == values){
+		if(null == values) {
 			values = new ArrayList<Object>(); 
 		} 
-		if(value instanceof Collection){
+		if(value instanceof Collection) {
 			values.addAll((Collection)value); 
 		}else{
 			values.add(value); 
@@ -263,19 +265,19 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		params.put(key, values);
 		return this;
 	} 
-	public Object getParams(String key){
+	public Object getParams(String key) {
 		Object result = null; 
-		if(null != params){
+		if(null != params) {
 			result = params.get(key); 
 		} 
 		return result; 
 	} 
 	@SuppressWarnings({"rawtypes" })
-	public Object getParam(String key){
+	public Object getParam(String key) {
 		Object result = null; 
-		if(null != params){
+		if(null != params) {
 			Object values = getParams(key); 
-			if(null != values && values instanceof List){
+			if(null != values && values instanceof List) {
 				result = ((List)values).get(0); 
 			}else{
 				result = values; 
@@ -283,25 +285,25 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		} 
 		return result; 
 	} 
-	public String getOrderText(boolean require){
+	public String getOrderText(boolean require) {
 		// return getOrderText(require, null);
 		return null; 
 	} 
-	public String getOrderText(boolean require, OrderStore store, String delimiter){
+	public String getOrderText(boolean require, OrderStore store, String delimiter) {
 		String result = ""; 
-		if(null == orders){
+		if(null == orders) {
 			orders = store; 
 		}else{
-			if(null != store){
-				for(Order order:store.getOrders()){
+			if(null != store) {
+				for(Order order:store.getOrders()) {
 					orders.order(order); 
 				} 
 			} 
 		} 
-		if(null != orders){
+		if(null != orders) {
 			result = orders.getRunText(delimiter);
 		} 
-		if(require && result.length() == 0){
+		if(require && result.length() == 0) {
 			result = "ORDER BY " +ConfigTable.DEFAULT_PRIMARY_KEY; 
 		} 
 		return result; 
@@ -313,19 +315,19 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * @return PageNavi
 	 */
 	@Override
-	public PageNavi order(Order order, boolean override){
-		if(null == orders){
+	public PageNavi order(Order order, boolean override) {
+		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order, override);
 		return this; 
 	}
 	@Override
-	public OrderStore getOrders(){
+	public OrderStore getOrders() {
 		return orders;
 	}
 	@Override
-	public PageNavi order(Order order){
+	public PageNavi order(Order order) {
 		return order(order, true);
 	}
 
@@ -337,27 +339,27 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * @return PageNavi
 	 */
 	@Override
-	public PageNavi order(String order, Order.TYPE type, boolean override){
+	public PageNavi order(String order, Order.TYPE type, boolean override) {
 		return order(new DefaultOrder(order, type), override);
 	}
 	@Override
-	public PageNavi order(String order, Order.TYPE type){
+	public PageNavi order(String order, Order.TYPE type) {
 		return order(order, type, true);
 	}
 	@Override
-	public PageNavi order(String order, String type, boolean override){
+	public PageNavi order(String order, String type, boolean override) {
 		return order(new DefaultOrder(order, type), override);
 	}
 	@Override
-	public PageNavi order(String order, String type){
+	public PageNavi order(String order, String type) {
 		return order(order, type, true);
 	}
 	@Override
-	public PageNavi order(String order, boolean override){
+	public PageNavi order(String order, boolean override) {
 		return order(new DefaultOrder(order), override);
 	}
 	@Override
-	public PageNavi order(String order){
+	public PageNavi order(String order) {
 		return order(order, true);
 	}
 
@@ -396,7 +398,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 */ 
 	@Override 
 	public PageNavi setPageRows(int pageRows) {
-		if(pageRows > 0){
+		if(pageRows > 0) {
 			this.pageRows = pageRows; 
 		} 
 		return this; 
@@ -456,7 +458,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		return this; 
 	} 
 	@Override 
-	public PageNavi setLazyPeriod(long ms){
+	public PageNavi setLazyPeriod(long ms) {
 		this.lazy = true; 
 		this.lazyPeriod = ms; 
 		return this; 
@@ -534,13 +536,13 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 *  @param method get/post
 	 * @return String
 	 */ 
-	public String html(String adapter, String method){
+	public String html(String adapter, String method) {
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
-		if(null == config){
+		if(null == config) {
 			config = new PageNaviConfig();
 		}
 		boolean get = false;
-		if("get".equalsIgnoreCase(method)){
+		if("get".equalsIgnoreCase(method)) {
 			get = true;
 		}
 		calculate(); 
@@ -551,13 +553,13 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		StringBuilder vol = new StringBuilder(); 
 		StringBuilder jump = new StringBuilder(); 
 		String configVarKey = ""; 
-		if(null == flag){
+		if(null == flag) {
 			flag = ""; 
 		}
 
-		if(get){
+		if(get) {
 			String params = null;
-			if(config.VAR_CLIENT_SET_VOL_ENABLE){
+			if(config.VAR_CLIENT_SET_VOL_ENABLE) {
 				params = config.KEY_PAGE_ROWS + "=" + pageRows;
 			}
 			if(null != params) {
@@ -572,17 +574,17 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		String totalPageFormat = NumberUtil.format(totalPage, "###,##0");
 		String curPageFormat = NumberUtil.format(curPage, "###,##0");
 
-		if("ajax".equals(adapter)){
+		if("ajax".equals(adapter)) {
 			configVarKey = config.KEY_ID_FLAG + flag;	// _anyline_navi_conf_0 
 		} 
-		if("html".equals(adapter)){
+		if("html".equals(adapter)) {
 			navi.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n"); 
 			navi.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n"); 
 		} 
-		if("html".equals(adapter)){
+		if("html".equals(adapter)) {
 			navi.append("<form class=\"form\" action=\"" + baseLink + "\" method=\"post\">\n"); 
 		} 
-		if("ajax".equals(adapter)){
+		if("ajax".equals(adapter)) {
 			navi.append("<div class=\"form\">\n"); 
 		}
 		// 当前页
@@ -592,11 +594,11 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		// 共多少条 
 		navi.append("<input type='hidden' id='hid_total_row_"+flag+"' name='"+config.KEY_TOTAL_ROW+"' class='anyline-navi-total-row' value='"+totalRow+"'/>\n");
 		// 每页显示多少条 
-		if(config.VAR_CLIENT_SET_VOL_ENABLE){
+		if(config.VAR_CLIENT_SET_VOL_ENABLE) {
 			navi.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='anyline-navi-page-rows-key' value='"+config.KEY_PAGE_ROWS+"'/>\n");
 			navi.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='anyline-navi-page-rows' value='"+pageRows+"'/>\n");
 		} 
-		if("ajax".equals(adapter)){
+		if("ajax".equals(adapter)) {
 			navi.append("<input type='hidden' class='"+config.KEY_ID_FLAG+"' value='" + flag + "'/>"); 
 		} 
 		navi.append(createHidParams(config)); 
@@ -605,43 +607,43 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		String statFormat = config.STYLE_STAT_FORMAT;  
 		statFormat = statFormat.replace("${totalRow}", totalRowFormat).replace("${curPage}", curPageFormat).replace("${totalPage}", totalPageFormat);
 		statFormat = statFormat.replace("${total-row}", totalRowFormat).replace("${cur-page}", curPageFormat).replace("${total-page}", totalPageFormat);
-		if(showStat){
+		if(showStat) {
 			stat.append(statFormat).append("\n"); 
 		} 
 		int range = config.VAR_PAGE_RANGE;
 		long fr = NumberUtil.max(1, curPage - range/2);
 		long to = fr + range - 1;
 		boolean match = false; 
-		if(totalPage > range && curPage>range/2){
+		if(totalPage > range && curPage>range/2) {
 			match = true; 
 		} 
-		if(match){
+		if(match) {
 			to = curPage + range/2; 
 		} 
-		if(totalPage - curPage < range/2){
+		if(totalPage - curPage < range/2) {
 			fr = totalPage - range; 
 		} 
 		fr = NumberUtil.max(fr, 1);
 		to = NumberUtil.min(to, totalPage);
 		 
-		if(type ==0){// 下标导航
+		if(type ==0) {// 下标导航
 			// 每页多少条 
-			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 				log.info("[vol set][enable:{}][vol:{}][sort:{}]", config.VAR_CLIENT_SET_VOL_ENABLE, pageRows, config.CONFIG_PAGE_VAL_SET_SORT);
 			} 
-			if(config.VAR_CLIENT_SET_VOL_ENABLE){
-				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){
+			if(config.VAR_CLIENT_SET_VOL_ENABLE) {
+				if(config.CONFIG_PAGE_VAL_SET_SORT == 2) {
 					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
 				}else{
 					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(",");
 					String clazz = config.VAR_PAGE_VOL_CLASS; 
-					if(BasicUtil.isEmpty(clazz)){
+					if(BasicUtil.isEmpty(clazz)) {
 						clazz = "navi-rows-set"; 
 					} 
 					vol.append("<select class='").append(clazz).append("' id='navi_val_set_").append(flag).append("' onchange='_navi_change_vol(").append(configVarKey).append(")'>"); 
-					for(String num:nums){
+					for(String num:nums) {
 						vol.append("<option value='").append(num).append("' id='navi_val_set_").append(flag).append("_item_").append(num).append("'"); 
-						if(pageRows == BasicUtil.parseInt(num, 0)){
+						if(pageRows == BasicUtil.parseInt(num, 0)) {
 							vol.append(" selected=\"selected\""); 
 						} 
 						vol.append(">").append(num).append(" 条/页</option>\n"); 
@@ -653,64 +655,64 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			 
 			// config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示第2页或倒数第2页时显示省略号)
 			// 1 .. 3 4 5 6 7 8 .. 10 
-			if(config.VAR_SHOW_INDEX_ELLIPSIS){
-				if(config.VAR_SHOW_BUTTON){
+			if(config.VAR_SHOW_INDEX_ELLIPSIS) {
+				if(config.VAR_SHOW_BUTTON) {
 					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1, 1), configVarKey);
 				} 
 				// 下标 
-				if(config.VAR_SHOW_INDEX){
-					if(fr<2){
+				if(config.VAR_SHOW_INDEX) {
+					if(fr<2) {
 						fr = 2; 
 					} 
-					if(to>totalPage-1){
+					if(to>totalPage-1) {
 						to = totalPage-1; 
 					} 
 					index.append("<div class='navi-num-border'>\n"); 
 					createPageTag(index, method, "navi-num-item","1", 1, configVarKey);
-					if(fr > 2){
+					if(fr > 2) {
 						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
-					for(long i=fr; i<=to; i++){
+					for(long i=fr; i<=to; i++) {
 						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
-					if(to < totalPage-1){
+					if(to < totalPage-1) {
 						createPageTag(index, method, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					} 
-					if(totalPage >1){//不是只有一页 
+					if(totalPage >1) {//不是只有一页
 						createPageTag(index, method, "navi-num-item", totalPage+"", totalPage, configVarKey);
 					} 
 					index.append("</div>\n"); 
 				} 
 				// 下一页 最后页 
-				if(config.VAR_SHOW_BUTTON){
+				if(config.VAR_SHOW_BUTTON) {
 					createPageTag(index, method, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 				} 
 			}else{
 				// 上一页  第一页 
-				if(config.VAR_SHOW_BUTTON){
+				if(config.VAR_SHOW_BUTTON) {
 					createPageTag(index, method, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
 					createPageTag(index, method, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1, 1), configVarKey);
 				} 
 				// 下标 
-				if(config.VAR_SHOW_INDEX){
+				if(config.VAR_SHOW_INDEX) {
 					index.append("<div class='navi-num-border'>\n"); 
-					for(long i=fr; i<=to; i++){
+					for(long i=fr; i<=to; i++) {
 						createPageTag(index, method, "navi-num-item", i + "", i, configVarKey);
 					} 
 					index.append("</div>\n"); 
 				} 
 				// 下一页 最后页 
-				if(config.VAR_SHOW_BUTTON){
+				if(config.VAR_SHOW_BUTTON) {
 					createPageTag(index, method, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 					createPageTag(index, method, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
 				} 
 			} 
 			// VOL位置:下标之后 
-//			if("page".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
+//			if("page".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)) {
 //				builder.append(vol); 
 //			} 
 			// 跳转到 
-			if(showJump){
+			if(showJump) {
 				jump.append(config.STYLE_LABEL_JUMP) 
 				.append("<input type='text' value='") 
 				.append(curPage) 
@@ -720,12 +722,12 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 				.append(config.STYLE_BUTTON_JUMP).append("</span>\n"); 
 			} 
 			// VOL位置:最后 
-//			if("last".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
+//			if("last".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)) {
 //				builder.append(vol); 
 //			} 
-		}else if(type == 1){
+		}else if(type == 1) {
 			// 加载更多
-			if(curPage+1 <= totalPage){
+			if(curPage+1 <= totalPage) {
 				createPageTag(index, method, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
 			}else{
 				index.append(config.STYLE_PAGE_OVER);
@@ -734,7 +736,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		 
 		 
 		String layout_html = config.VAR_COMPONENT_LAYOUT; 
-		if(null == layout_html){
+		if(null == layout_html) {
 			layout_html = "${navi-stat}${navi-index}${navi-vol}${navi-jump}";
 		} 
 		layout_html = layout_html.replace("${stat}", stat.toString());
@@ -749,10 +751,10 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		navi.append(layout_html); 
 		navi.append("</div>"); 
  
-		if("html".equals(adapter)){
+		if("html".equals(adapter)) {
 			navi.append("</form>\n"); 
 		} 
-		if("ajax".equals(adapter)){
+		if("ajax".equals(adapter)) {
 			navi.append("</div>\n"); 
 		} 
 		return navi.toString(); 
@@ -766,14 +768,14 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 * @param page 跳到第几页 
 	 * @param configFlag  configFlag
 	 */ 
-	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, long page, String configFlag){
+	private void createPageTag(StringBuilder builder, String method, String clazz, String tag, long page, String configFlag) {
 		boolean get = false;
-		if("get".equalsIgnoreCase(method)){
+		if("get".equalsIgnoreCase(method)) {
 			get = true;
 		}
 		builder.append("<span class ='").append(clazz); 
-		if(page == curPage && 0 == type){
-			if(clazz.contains("navi-num-item")){//下标 
+		if(page == curPage && 0 == type) {
+			if(clazz.contains("navi-num-item")) {//下标
 				builder.append(" navi-num-item-cur"); 
 			}else{//btn 
 				builder.append(" navi-disabled"); 
@@ -781,7 +783,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			builder.append("'"); 
 		}else{
 			builder.append("'"); 
-			if(page>0){
+			if(page>0) {
 				if(!get) {//post
 					builder.append(" onclick='_navi_go(").append(page);
 					if (BasicUtil.isNotEmpty(configFlag)) {
@@ -792,13 +794,13 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			} 
 		} 
 		builder.append(">");
-		if(get){//get
+		if(get) {//get
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
-			if(null == config){
+			if(null == config) {
 				config = new PageNaviConfig();
 			}
 			builder.append("<a href='").append(baseLink);
-			if(baseLink.contains("?")){
+			if(baseLink.contains("?")) {
 				builder.append("&");
 			}else{
 				builder.append("?");
@@ -810,11 +812,11 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		builder.append("</span>\n");
 	} 
 	// 创建隐藏参数 
-	private String createHidParams(PageNaviConfig config){
+	private String createHidParams(PageNaviConfig config) {
 		String html = ""; 
 		try{
-			if(null != params){
-				for(Iterator<String> itrKey=params.keySet().iterator(); itrKey.hasNext();){
+			if(null != params) {
+				for(Iterator<String> itrKey=params.keySet().iterator(); itrKey.hasNext();) {
 					String key = itrKey.next(); 
 					Object values = params.get(key); 
 					html += createHidParam(key, values);
@@ -822,7 +824,7 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 			} 
 			html += createHidParam(config.KEY_SHOW_STAT, showStat);
 			html += createHidParam(config.KEY_SHOW_JUMP, showJump);
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		} 
 		return html; 
@@ -830,12 +832,12 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 	 
 	public String createHidParam(String name, Object values) {
 		String html = ""; 
-		if(null == values){
+		if(null == values) {
 			html = "<input type='hidden' name='"+name+"' value=''>\n"; 
 		}else{
-			if(values instanceof Collection<?>){
+			if(values instanceof Collection<?>) {
 				Collection<?> list = (Collection<?>)values; 
-				for(Object obj:list){
+				for(Object obj:list) {
 					html += "<input type='hidden' name='"+name+"' value='"+obj+"'>\n"; 
 				} 
 			}else{
@@ -845,41 +847,41 @@ public class DefaultPageNavi implements PageNavi, Serializable, Cloneable {
 		return html; 
 	}
 	@Transient
-	public String getHtml(){
+	public String getHtml() {
 		return html("html","get");
 	}
 	@Transient
-	public String html(){
+	public String html() {
 		return html("html","get");
 	}
 	@Transient
-	public String html(String adapter){
+	public String html(String adapter) {
 		return html(adapter, "get");
 	}
 	@Transient
-	public String getForm(){
+	public String getForm() {
 		return html("html","post");
 	}
 	@Transient
-	public String form(){
+	public String form() {
 		return html("html","post");
 	}
 	@Transient
-	public String ajax(){
+	public String ajax() {
 		return html("ajax","post");
 	}
 
-	public PageNavi clone(){
+	public PageNavi clone() {
 		PageNavi clone = null;
 		try{
 			clone = (PageNavi)super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 			clone = new DefaultPageNavi();
 		}
 		return clone;
 	}
 
-	public DataRow map(boolean empty){
+	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
 		row.put("page", curPage);
 		row.put("vol", pageRows);

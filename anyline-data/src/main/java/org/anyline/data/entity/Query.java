@@ -69,7 +69,7 @@ public class Query {
      */
     protected List<Query> unions;
 
-    public static Query parse(String sql){
+    public static Query parse(String sql) {
         Query query = new Query();
         //SELECT * FROM USER WHERE ID = 1 AND CODE = 2
         //别名
@@ -85,11 +85,11 @@ public class Query {
         //SELECT ID, CODE FROM (SELECT * FROM USER) AS M UNION ALL SELECT ID, CODE FROM (SELECT * FROM CRM_USER)
         return query;
     }
-    public String toSQL(){
+    public String toSQL() {
         StringBuilder builder = new StringBuilder();
         return builder.toString();
     }
-    public String toJSON(){
+    public String toJSON() {
         StringBuilder builder = new StringBuilder();
         return builder.toString();
     }

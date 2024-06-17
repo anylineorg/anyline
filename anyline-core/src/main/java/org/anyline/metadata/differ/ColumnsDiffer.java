@@ -27,34 +27,34 @@ public class ColumnsDiffer implements MetadataDiffer{
     private LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Column> updates = new LinkedHashMap<>();
 
-    public static ColumnsDiffer compare(LinkedHashMap<String, Column> origins, LinkedHashMap<String, Column> dests){
+    public static ColumnsDiffer compare(LinkedHashMap<String, Column> origins, LinkedHashMap<String, Column> dests) {
         ColumnsDiffer differ = new ColumnsDiffer();
         LinkedHashMap<String, Column> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Column> drops = new LinkedHashMap<>();
         LinkedHashMap<String, Column> updates = new LinkedHashMap<>();
 
-        if(null == origins){
+        if(null == origins) {
             origins = new LinkedHashMap<>();
         }
-        if(null == dests){
+        if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        for(String key:origins.keySet()){
+        for(String key:origins.keySet()) {
             Column origin = origins.get(key);
             Column dest = dests.get(key);
-            if(null == dest){
+            if(null == dest) {
                 //新表不存在这一列
                 drops.put(key, origin);
             }else {
                 //不比较 catalog schema
-                if(!origin.equals(dest)){
+                if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
                     updates.put(key, origin);
                 }
             }
         }
-        for(String key:dests.keySet()){
-            if(!origins.containsKey(key)){
+        for(String key:dests.keySet()) {
+            if(!origins.containsKey(key)) {
                 adds.put(key, dests.get(key));
             }
         }
@@ -64,7 +64,7 @@ public class ColumnsDiffer implements MetadataDiffer{
         return differ;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
 

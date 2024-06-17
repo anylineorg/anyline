@@ -44,7 +44,7 @@ import java.util.*;
 public class NebulaDataSourceHolder extends DataSourceHolder {
 	private Logger log = LoggerFactory.getLogger(NebulaDataSourceHolder.class);
 
-	public NebulaDataSourceHolder(){
+	public NebulaDataSourceHolder() {
 		DataSourceHolderProxy.reg(DataSource.class, this);
 		DataSourceHolderProxy.reg(SessionPool.class, this);
 	}
@@ -108,18 +108,18 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 
 	public String reg(String key, String prefix) {
 		try {
-			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
+			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")) {
 				prefix += ".";
 			}
 			//nebula://localhost:39669/simple
 			String url = value(prefix, "url", String.class, null);
-			if(null == url || !url.contains("nebula")){
+			if(null == url || !url.contains("nebula")) {
 				//只注册nebula驱动
 				return null;
 			}
 			Map<String, Object> map = new HashMap<>();
 			String ds = inject(key, prefix, map, true);
-			if(null == ds){//创建数据源失败
+			if(null == ds) {//创建数据源失败
 				return null;
 			}
 			init(key, ds, false);
@@ -156,32 +156,32 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 
 	private String inject(String key, String prefix, Map<String, Object> params, boolean override) throws Exception {
 		Map<String, Object> cache = DataSourceHolder.params.get(key);
-		if(null == cache){
+		if(null == cache) {
 			cache = new HashMap<>();
 			DataSourceHolder.params.put(key, cache);
 		}
 		check(key, override);
 		String url =  value(params, "url", String.class, null);
-		if(BasicUtil.isEmpty(url)){
+		if(BasicUtil.isEmpty(url)) {
 			url = value(prefix, "url", String.class, null);
 		}
-		if(BasicUtil.isEmpty(url)){
+		if(BasicUtil.isEmpty(url)) {
 			return null;
 		}
 		String type = value(params, "type", String.class, null);
-		if(BasicUtil.isEmpty(type)){
+		if(BasicUtil.isEmpty(type)) {
 			type = value(prefix, "type", String.class, null);
 		}
 		String user = value(params, "user", String.class, null);
-		if(BasicUtil.isEmpty(user)){
+		if(BasicUtil.isEmpty(user)) {
 			user = value(prefix, "user", String.class, null);
 		}
 		String password = value(params, "password", String.class, null);
-		if(BasicUtil.isEmpty(password)){
+		if(BasicUtil.isEmpty(password)) {
 			password = value(prefix, "password", String.class, null);
 		}
 
-		if(!url.startsWith("nebula:")){
+		if(!url.startsWith("nebula:")) {
 			//只注册nebula驱动
 			return null;
 		}
@@ -198,7 +198,7 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 			String[] hosts = tmps[0].split(",");
 			String space = tmps[1];
 			List<HostAddress> list = new ArrayList<>();
-			for(String host:hosts){
+			for(String host:hosts) {
 				tmps = host.split(":");
 				String ip = tmps[0].replace("//","");
 				int port = BasicUtil.parseInt(tmps[1], 9669);
@@ -208,14 +208,14 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 			SessionPoolConfig config = new SessionPoolConfig(list, space, user, password);
 
 			Integer min = value(params, "minPoolSize,minSessionSize", Integer.class, null);
-			if(null == min){
+			if(null == min) {
 				min = value(prefix, "minPoolSize,minSessionSize", Integer.class, null);
 			}
 			if(null != min) {
 				config.setMinSessionSize(min);
 			}
 			Integer max = value(params, "maxPoolSize,maxSessionSize", Integer.class, null);
-			if(null == max){
+			if(null == max) {
 				max = value(prefix, "maxPoolSize,maxSessionSize", Integer.class, null);
 			}
 			if(null != max) {
@@ -223,14 +223,14 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 			}
 
 			Integer wait = value(params, "wait,waitTime", Integer.class, null);
-			if(null == wait){
+			if(null == wait) {
 				wait = value(prefix, "wait,waitTime", Integer.class, null);
 			}
 			if(null != wait) {
 				config.setWaitTime(wait);
 			}
 			Integer timeout = value(params, "timeout,connectionTimeout", Integer.class, null);
-			if(null == timeout){
+			if(null == timeout) {
 				timeout = value(prefix, "timeout,connectionTimeout", Integer.class, null);
 			}
 			if(null != timeout) {
@@ -294,26 +294,26 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 	 * @return boolean
 	 *//*
 
-	public boolean validate(String datasource){
+	public boolean validate(String datasource) {
 		return validate(RuntimeHolder.runtime(ds));
 	}
-	public boolean validate(){
+	public boolean validate() {
 		return validate(RuntimeHolder.runtime());
 	}
-	public boolean validate(DataRuntime runtime){
+	public boolean validate(DataRuntime runtime) {
 		SessionPool client = (SessionPool) runtime.getProcessor();
 		return validate(client);
 	}
 
-	public boolean validate(SessionPool client){
+	public boolean validate(SessionPool client) {
 		try{
 			return exeValidate(client);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return false;
 		}
 	}
 
-	public boolean exeValidate(SessionPool client){
+	public boolean exeValidate(SessionPool client) {
 		return client.isActive();
 	}
 
@@ -334,13 +334,13 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 	public void calldestroy(String datasource) {
 		exedestroy(datasource);
 	}
-	private void exedestroy(String datasource){
+	private void exedestroy(String datasource) {
 		NebulaRuntimeHolder.destroy(datasource);
 	}
-	public List<String> copy(){
+	public List<String> copy() {
 		return copy("default");
 	}
-	public List<String> copy(String datasource){
+	public List<String> copy(String datasource) {
 		DataRuntime runtime = RuntimeHolder.runtime(datasource);
 		return copy(runtime);
 	}
@@ -359,32 +359,32 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 	public List<String> callCopy(DataRuntime runtime) {
 		return exeCopy(runtime);
 	}
-	private List<String> exeCopy(DataRuntime runtime){
+	private List<String> exeCopy(DataRuntime runtime) {
 		List<String> list = new ArrayList<>();
 		//查看结果
 		AnylineService service = ServiceProxy.service(runtime.datasource());
 		LinkedHashMap<String, Database> databases = service.metadata().databases();
 		Map<String,Object> map = params.get(runtime.datasource());
-		if(null == map){
+		if(null == map) {
 			log.warn("不是从anyline创建的数据源获取不到数据源参数");
 			return list;
 		}
-		for(String database:databases.keySet()){
+		for(String database:databases.keySet()) {
 			Map<String, Object> copy_params = new HashMap<>();
 			BeanUtil.copy(copy_params, map);
 			String key = runtime.datasource() + "_" + database.toLowerCase();
-			if(RuntimeHolder.contains(key)){
+			if(RuntimeHolder.contains(key)) {
 				list.add(key);
 				continue;
 			}
 			HashSet<String> fields = DataSourceKeyMap.alias("url");
-			for(String field:fields){
+			for(String field:fields) {
 				String value = (String) copy_params.get(field);
-				if(null != value){
+				if(null != value) {
 					// jdbc:mysql://localhost:36932/db?
 					String head = value.split("\\?")[0];
 					String db = head.substring(head.lastIndexOf("/")+1);
-					if(db == null || db.equalsIgnoreCase(database)){
+					if(db == null || db.equalsIgnoreCase(database)) {
 						continue;
 					}
 					value = value.replace("/"+db, "/"+database);
@@ -397,7 +397,7 @@ public class NebulaDataSourceHolder extends DataSourceHolder {
 					RuntimeHolder.runtime(key).origin(runtime.getKey());
 					list.add(key);
 				}
-			}catch (Exception e){
+			}catch (Exception e) {
                 log.error("复制数据源 异常:", e);
 			}
 		}

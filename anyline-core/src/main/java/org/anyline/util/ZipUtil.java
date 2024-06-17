@@ -51,7 +51,7 @@ public class ZipUtil {
 	 * @param item 需要删除的条目(含目录)
 	 * @return boolean
 	 */
-	public static boolean remove(File zip, String item){
+	public static boolean remove(File zip, String item) {
 		Map properties = new HashMap<>();
 		properties.put("create", "false");
 		URI zip_disk = URI.create("jar:file:/"+zip.getAbsolutePath().replace("\\", "/"));
@@ -59,16 +59,16 @@ public class ZipUtil {
 			Path path = fs.getPath(item);
 			log.debug("[删除压缩文件条目][zip:{}][item:{}]", zip.getAbsolutePath(), path.toUri());
 			Files.delete(path);
-		}catch (Exception e){
+		}catch (Exception e) {
 			log.error("remove zip item exception:", e);
 			return false;
 		}
 		return true;
 	}
-	public static String read(File zip, String item, Charset charset){
+	public static String read(File zip, String item, Charset charset) {
 		InputStream in = null;
 		ZipFile _zip = null;
-		if(!zip.exists()){
+		if(!zip.exists()) {
 			log.error("[文件不存在][path:{}]", zip.getAbsolutePath());
 			return null;
 		}
@@ -78,12 +78,12 @@ public class ZipUtil {
 			in = _zip.getInputStream(_item);
 			String str = FileUtil.read(in, charset).toString();
 			return str;
-		}catch (Exception e){
+		}catch (Exception e) {
 			return null;
 		}finally {
 			try {
 				_zip.close();
-			}catch (Exception e){
+			}catch (Exception e) {
 				log.error("read zip exception:", e);
 			}
 		}
@@ -104,7 +104,7 @@ public class ZipUtil {
 			return null;
 		}
 	}
-	public static String read(File zip, String item, String charset){
+	public static String read(File zip, String item, String charset) {
 		return read(zip, item, Charset.forName(charset));
 	}
 
@@ -127,7 +127,7 @@ public class ZipUtil {
 	}
 
 	public static void replace(File src, String item, InputStream in, Charset charset) throws Exception {
-		if(!src.exists()){
+		if(!src.exists()) {
 			log.error("[文件不存在][path:{}]", src.getAbsolutePath());
 			return;
 		}
@@ -184,7 +184,7 @@ public class ZipUtil {
 				while (entry != null) {
 					String name = entry.getName();
 					boolean notInFiles = true;
-					for(String key:keys){
+					for(String key:keys) {
 						if (key.equals(name)) {
 							notInFiles = false;
 							break;
@@ -204,14 +204,14 @@ public class ZipUtil {
 			}else{//end 追加
 				zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
 			}
-			for(String key:keys){
+			for(String key:keys) {
 				File file = files.get(key);
 				if (!zip(file, key, zipout, dir)) {
 					result = false;
 				}
 			}
 
-			if(null !=comment){
+			if(null !=comment) {
 				zipout.setComment(comment);
 			}
 			zipout.close();
@@ -236,7 +236,7 @@ public class ZipUtil {
 	 */
 	public static boolean zip(Collection<File> files, File zip, String dir, String comment, boolean append) {
 		Map<String, File> map = new HashMap<String, File>();
-		for(File file:files){
+		for(File file:files) {
 			map.put(file.getName(), file);
 		}
 		return zip(map, zip, dir, comment, append);
@@ -248,10 +248,10 @@ public class ZipUtil {
 		return zip(files, zip, dir, comment, false);
 	}
 
-	public static boolean append(Collection<File> files, File zip, String dir, String comment){
+	public static boolean append(Collection<File> files, File zip, String dir, String comment) {
 		return zip(files, zip, dir, comment, true);
 	}
-	public static boolean append(Map<String, File> files, File zip, String dir, String comment){
+	public static boolean append(Map<String, File> files, File zip, String dir, String comment) {
 		return zip(files, zip, dir, comment, true);
 	}
 
@@ -312,11 +312,11 @@ public class ZipUtil {
 	}
 
 	public static boolean zip(File item, File zip) {
-		if(item.exists() && item.isDirectory()){
+		if(item.exists() && item.isDirectory()) {
 			String dir = item.getAbsolutePath();
 			List<File> files = FileUtil.getAllChildrenFile(item);
 			Map<String, File> map = new HashMap<String, File>();
-			for(File file: files){
+			for(File file: files) {
 				String path = file.getAbsolutePath();
 				String key = path.replace(dir, "");
 				map.put(key, file);
@@ -343,7 +343,7 @@ public class ZipUtil {
 	private static boolean zip(File item, String rename, ZipOutputStream zipout, String dir) {
 		try {
 			String path = item.getName();
-			if(BasicUtil.isNotEmpty(rename)){
+			if(BasicUtil.isNotEmpty(rename)) {
 				path = rename;
 			}
 			if (BasicUtil.isNotEmpty(dir)) {
@@ -484,7 +484,7 @@ public class ZipUtil {
 			if(null != zipFile) {
 				try {
 					zipFile.close();
-				}catch(Exception ignored){
+				}catch(Exception ignored) {
 				}
 			}
 		}
@@ -537,7 +537,7 @@ public class ZipUtil {
 	 * @param root root
 	 * @return list
 	 */
-	public static List<String> items(JarFile jar, String root){
+	public static List<String> items(JarFile jar, String root) {
 		List<String> items = new ArrayList<>();
 		for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements();) {
 			JarEntry entry = entries.nextElement();
@@ -555,13 +555,13 @@ public class ZipUtil {
 	 * @param inner 是否需要内部类
 	 * @return list
 	 */
-	public static List<String> classes(JarFile jar, String pack, boolean inner){
+	public static List<String> classes(JarFile jar, String pack, boolean inner) {
 		List<String> list = new ArrayList<>();
 		String root = pack.replace(".", "/");
 		List<String> items = items(jar, root);
-		for(String item:items){
-			if(item.endsWith("class")){
-				if(inner || !item.contains("$")){
+		for(String item:items) {
+			if(item.endsWith("class")) {
+				if(inner || !item.contains("$")) {
 					item = item.replace(".class", "").replace("/", ".");
                     try {
                         list.add(item);

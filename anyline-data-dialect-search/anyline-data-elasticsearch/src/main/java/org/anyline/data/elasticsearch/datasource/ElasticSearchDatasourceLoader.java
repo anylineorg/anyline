@@ -31,15 +31,15 @@ import java.util.List;
 public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
     public static Logger log = LoggerFactory.getLogger(ElasticSearchDataSourceLoader.class);
 
-    public List<String> load(){
+    public List<String> load() {
         List<String> list = new ArrayList<>();
         boolean loadDefault = true;
         RestClient client = worker.getBean(RestClient.class);
-        if(null != client){
+        if(null != client) {
             try {
                 ElasticSearchDataSourceHolder.reg("elasticsearch", client);
                 loadDefault = false;
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("注册数据源异常", e);
             }
         }
@@ -50,7 +50,7 @@ public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader impl
     }
 
     //加载配置文件
-    private List<String> load(String head, boolean loadDefault){
+    private List<String> load(String head, boolean loadDefault) {
         //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
@@ -63,11 +63,11 @@ public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader impl
         //多数据源
         // 读取配置文件获取更多数据源 anyline.datasource.list
         String prefixs = worker.string(null,head + ".list");
-        if(null == prefixs){
+        if(null == prefixs) {
             //anyline.datasource-list
             prefixs = worker.string(null, head + "-list");
         }
-        if(null != prefixs){
+        if(null != prefixs) {
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 try {
@@ -77,7 +77,7 @@ public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader impl
                     if(null != ds) {
                         list.add(ds);
                     }
-                }catch (Exception e){
+                }catch (Exception e) {
                     log.error("[注入数据源失败][type:ElasticSearch][key:{}][msg:{}]", prefix, e.toString());
                 }
             }

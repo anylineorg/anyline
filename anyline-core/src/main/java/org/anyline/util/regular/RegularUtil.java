@@ -46,21 +46,21 @@ public class RegularUtil {
 		regularList.put(Regular.MATCH_MODE.PREFIX, regularMatchPrefix);
 		regularList.put(Regular.MATCH_MODE.CONTAIN, regularContain);
 	}
-	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode){
+	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode) {
 		boolean result = false;
-		if(null == src || null == regx ){
+		if(null == src || null == regx ) {
 			return result;
 		}
 		regular = regularList.get(mode);
 		try{
 			result = regular.match(src, regx);
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.warn("[match(src, regx, mode) error][src:{}][regx:{}][mode:{}]", src, regx, mode);
 			e.printStackTrace();
 		}
 		return result;
 	}
-	public static boolean match(String src, String regx){
+	public static boolean match(String src, String regx) {
 		return match(src, regx, Regular.MATCH_MODE.CONTAIN);
 	}
 
@@ -96,10 +96,10 @@ public class RegularUtil {
 		result = regular.fetch(src, regx);
 		return result;
 	}
-	public static List<String> filter(List<String> src, String regx, Regular.MATCH_MODE mode, Regular.FILTER_TYPE type){
-		if(Regular.FILTER_TYPE.PICK == type){
+	public static List<String> filter(List<String> src, String regx, Regular.MATCH_MODE mode, Regular.FILTER_TYPE type) {
+		if(Regular.FILTER_TYPE.PICK == type) {
 			return pick(src, regx, mode);
-		}else if(Regular.FILTER_TYPE.WIPE == type){
+		}else if(Regular.FILTER_TYPE.WIPE == type) {
 			return wipe(src, regx, mode);
 		}else{
 			return new ArrayList<>();
@@ -113,7 +113,7 @@ public class RegularUtil {
 	 * @param mode  mode
 	 * @return List
 	 */
-	public static synchronized List<String> pick(List<String> src, String regx, Regular.MATCH_MODE mode){
+	public static synchronized List<String> pick(List<String> src, String regx, Regular.MATCH_MODE mode) {
 		regular = regularList.get(mode);
 		return regular.pick(src, regx);
 	}
@@ -125,7 +125,7 @@ public class RegularUtil {
 	 * @param mode  mode
 	 * @return List
 	 */
-	public static synchronized List<String> wipe(List<String> src, String regx, Regular.MATCH_MODE mode){
+	public static synchronized List<String> wipe(List<String> src, String regx, Regular.MATCH_MODE mode) {
 		regular = regularList.get(mode);
 		return regular.wipe(src, regx);
 	}
@@ -137,7 +137,7 @@ public class RegularUtil {
 	 * @param begin   有效开始位置
 	 * @return int
 	 */
-	public static int indexOf(String src, String regx, int begin){
+	public static int indexOf(String src, String regx, int begin) {
 		int idx = -1;
 		try{
 			PatternCompiler patternCompiler = new Perl5Compiler();
@@ -145,21 +145,21 @@ public class RegularUtil {
 			PatternMatcher matcher = new Perl5Matcher();
 			PatternMatcherInput input = new PatternMatcherInput(src);
 
-			while(matcher.contains(input, pattern)){
+			while(matcher.contains(input, pattern)) {
 				MatchResult matchResult = matcher.getMatch();
 				int tmp = matchResult.beginOffset(0);
-				if(tmp >= begin){//匹配位置从begin开始
+				if(tmp >= begin) {//匹配位置从begin开始
 					idx = tmp;
 					break;
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("[提取异常][src:{}][regx:{}]", src, regx);
 			e.printStackTrace();
 		}
 		return idx;
 	}
-	public static int indexOf(String src, String regx){
+	public static int indexOf(String src, String regx) {
 		return indexOf(src, regx, 0);
 	}
 
@@ -170,14 +170,14 @@ public class RegularUtil {
 	 * @param mode  mode
 	 * @return List
 	 */
-	public static List<String> regexpValue(String src, String regex, Regular.MATCH_MODE mode){
+	public static List<String> regexpValue(String src, String regex, Regular.MATCH_MODE mode) {
 		List<String> result = new ArrayList<>();
 		try{
 			List<List<String>> rs = fetchs(src, regex, mode);
-			for(List<String> row:rs){
+			for(List<String> row:rs) {
 				result.add(row.get(0));
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("[提取异常][src:{}][reg:{}][mode:{}]", src, regex, mode);
 			e.printStackTrace();
 		}
@@ -197,8 +197,8 @@ public class RegularUtil {
 	 * @param attribute 属性
 	 * @return String
 	 */
-	public static String removeTagWithBodyByAttribute(String src, String attribute){
-		if(null == src || null == attribute){
+	public static String removeTagWithBodyByAttribute(String src, String attribute) {
+		if(null == src || null == attribute) {
 			return src;
 		}
 		String reg = "";
@@ -223,8 +223,8 @@ public class RegularUtil {
 	 * @param value 值
 	 * @return String
 	 */
-	public static String removeTagWithBodyByAttributeValue(String src, String attribute, String value){
-		if(null == src || null == attribute || null == value){
+	public static String removeTagWithBodyByAttributeValue(String src, String attribute, String value) {
+		if(null == src || null == attribute || null == value) {
 			return src;
 		}
 		String reg ="";
@@ -243,12 +243,12 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagByAttributeValue(String src, String attribute, String value) throws Exception {
-		if(null == src || null == attribute || null == value){
+		if(null == src || null == attribute || null == value) {
 			return src;
 		}
 		//[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称]
 		List<List<String>> lists = getTagWithBodyByAttributeValue(src, attribute, value);
-		for(List<String> list:lists){
+		for(List<String> list:lists) {
 			String all = list.get(0);
 			String body = list.get(3);
 			src = src.replace(all, body);
@@ -263,12 +263,12 @@ public class RegularUtil {
 	 * @return String
 	 */
 	public static String removeTagByAttribute(String src, String attribute) throws Exception {
-		if(null == src || null == attribute){
+		if(null == src || null == attribute) {
 			return src;
 		}
 		List<List<String>> lists = getTagWithBodyByAttribute(src, attribute);
 		//[整个标签含标签体, 开始标签, 结束标签, 标签体, 标签名称]
-		for(List<String> list:lists){
+		for(List<String> list:lists) {
 			String all = list.get(0);
 			String body = list.get(3);
 			src = src.replace(all, body);
@@ -294,7 +294,7 @@ public class RegularUtil {
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		List<List<String>> list = regular.fetchs(src, reg);
 		int idx = 0;
-		for(List<String> tmp:list){
+		for(List<String> tmp:list) {
 			List<String> item = new ArrayList<>();
 			String start = tmp.get(0);
 			String all = null;
@@ -302,17 +302,17 @@ public class RegularUtil {
 			String end = null;
 			String name = tmp.get(4);
 			idx = src.indexOf(start, idx);
-			if(!start.endsWith("/>")){
+			if(!start.endsWith("/>")) {
 				end = "</" + name + ">";
 				int fr = idx+start.length();
 				int to = src.indexOf(end, idx+start.length());
 				if(to > fr) {
 					body = src.substring(fr, to);
-					if(body.contains(end)){
+					if(body.contains(end)) {
 						body = null;
 					}
 				}
-				if(null == body){
+				if(null == body) {
 					end = null;
 					all = start;
 				}else{
@@ -352,7 +352,7 @@ public class RegularUtil {
 		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	// 双标签
 		List<List<String>> list = regular.fetchs(src, reg);
 		int idx = 0;
-		for(List<String> tmp:list){
+		for(List<String> tmp:list) {
 			List<String> item = new ArrayList<>();
 			String all = tmp.get(0);
 			String name = tmp.get(1);
@@ -369,7 +369,7 @@ public class RegularUtil {
 
 		reg = "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";	// 单标签
 		list = regular.fetchs(src, reg);
-		for(List<String> tmp:list){
+		for(List<String> tmp:list) {
 			List<String> item = new ArrayList<>();
 			item.add(tmp.get(0));
 			item.add(tmp.get(0));
@@ -389,13 +389,13 @@ public class RegularUtil {
 	 * @return String
 	 */
 
-	public static String removeTagExcept(String src, String ...tags){
-		if(null == src || null == tags || tags.length == 0){
+	public static String removeTagExcept(String src, String ...tags) {
+		if(null == src || null == tags || tags.length == 0) {
 			return src;
 		}
 		int size = tags.length;
 		String reg = "(?i)<(?!(\\!"; // <!--不匹配注释
-		for(int i=0; i<size; i++){
+		for(int i=0; i<size; i++) {
 			reg += "|";
 			reg += "(/?\\s?" + tags[i] + "\\b)";
 		}
@@ -403,7 +403,7 @@ public class RegularUtil {
 		src = src.replaceAll(reg, "");
 		return src;
 	}
-	public static String removeHtmlTagExcept(String src, String ...tags){
+	public static String removeHtmlTagExcept(String src, String ...tags) {
 		return removeTagExcept(src, tags);
 	}
 
@@ -413,21 +413,21 @@ public class RegularUtil {
 	 * @param tags tags
 	 * @return String
 	 */
-	public static String removeTag(String src, String ...tags){
-		if(null == src){
+	public static String removeTag(String src, String ...tags) {
+		if(null == src) {
 			return src;
 		}
-		if(null == tags || tags.length==0){
+		if(null == tags || tags.length==0) {
 			src = src.replaceAll(Regular.PATTERN.HTML_TAG.getCode(), "");
 		}else{
-			for(String tag:tags){
+			for(String tag:tags) {
 				String reg = "(?i)<"+tag+"[^>]*>.*?|</"+tag+">";
 				src = src.replaceAll(reg, "");
 			}
 		}
 		return src;
 	}
-	public static String removeHtmlTag(String src, String ...tags){
+	public static String removeHtmlTag(String src, String ...tags) {
 		return removeTag(src, tags);
 	}
 
@@ -437,21 +437,21 @@ public class RegularUtil {
 	 * @param tags 标签, 如果不提供则删除所有标签
 	 * @return String
 	 */
-	public static String removeTagWithBody(String src, String ...tags){
-		if(null == src){
+	public static String removeTagWithBody(String src, String ...tags) {
+		if(null == src) {
 			return src;
 		}
-		if(null == tags || tags.length==0){
+		if(null == tags || tags.length==0) {
 			src = src.replaceAll(Regular.PATTERN.HTML_TAG_WITH_BODY.getCode(), "");
 		}else{
-			for(String tag:tags){
+			for(String tag:tags) {
 				String reg = "(?i)<"+tag+"[^>]*>[\\s\\S]*?</"+tag+">";
 				src = src.replaceAll(reg, "");
 			}
 		}
 		return src;
 	}
-	public static String removeHtmlTagWithBody(String src, String ...tags){
+	public static String removeHtmlTagWithBody(String src, String ...tags) {
 		return removeTagWithBody(src, tags);
 	}
 
@@ -460,15 +460,15 @@ public class RegularUtil {
 	 * @param src xml/html
 	 * @return String
 	 */
-	public static String removeEmptyTag(String src){
-		if(null == src){
+	public static String removeEmptyTag(String src) {
+		if(null == src) {
 			return src;
 		}
 		String reg = "(?i)(<(\\w+)[^<]*?>)\\s*(</\\2>)";
 		src = src.replaceAll(reg, "");
 		return src;
 	}
-	public static String removeHtmlEmptyTag(String src){
+	public static String removeHtmlEmptyTag(String src) {
 		return removeEmptyTag(src);
 	}
 
@@ -477,7 +477,7 @@ public class RegularUtil {
 	 * @param src  html
 	 * @return String
 	 */
-	public static String removeHtmlTagExceptSimple(String src){
+	public static String removeHtmlTagExceptSimple(String src) {
 		return removeHtmlTagExcept(src, "br","b","strong","u","i","pre","ul","li","p");
 	}
 
@@ -487,13 +487,13 @@ public class RegularUtil {
 	 * @param attributes 属性 如果不传则删除所有属性
 	 * @return String
 	 */
-	public static String removeAttribute(String src, String ... attributes){
-		if(null == src){
+	public static String removeAttribute(String src, String ... attributes) {
+		if(null == src) {
 			return src;
 		}
 		String reg = null;
-		if(null != attributes && attributes.length > 0){
-			for(String attribute:attributes){
+		if(null != attributes && attributes.length > 0) {
+			for(String attribute:attributes) {
 				reg = attribute + "\\s*=\\s*\"[\\s\\S]*\"";
 				src = src.replaceAll(reg, "");
 				reg = attribute + "\\s*=\\s*\'[\\s\\S]*\'";
@@ -524,7 +524,7 @@ public class RegularUtil {
 
 	public static String fetchUrl(String src) throws Exception {
 		List<String> urls = fetchUrls(src);
-		if(null != urls && urls.size()>0){
+		if(null != urls && urls.size()>0) {
 			return urls.get(0);
 		}
 		return null;
@@ -536,7 +536,7 @@ public class RegularUtil {
 	}
 	public static String fetchNumber(String src) throws Exception {
 		List<String> numbers = fetchNumbers(src);
-		if(null != numbers && numbers.size()>0){
+		if(null != numbers && numbers.size()>0) {
 			return numbers.get(0);
 		}
 		return null;
@@ -556,11 +556,11 @@ public class RegularUtil {
 	 */
 	public static List<List<String>> fetchPairedTag(String txt, String ... tags) throws Exception {
 		List<List<String>> result = new ArrayList<List<String>>();
-		if(null != tags && tags.length>0){
+		if(null != tags && tags.length>0) {
 			String tagNames = "";
 			int size = tags.length;
-			for(int i=0; i<size; i++){
-				if(i==0){
+			for(int i=0; i<size; i++) {
+				if(i==0) {
 					tagNames += tags[i];
 				}else{
 					tagNames += "|"+tags[i];
@@ -584,11 +584,11 @@ public class RegularUtil {
 	 */
 	public static List<List<String>> fetchSingleTag(String txt, String ... tags) throws Exception {
 		List<List<String>> result = new ArrayList<List<String>>();
-		if(null != tags && tags.length>0){
+		if(null != tags && tags.length>0) {
 			String tagNames = "";
 			int size = tags.length;
-			for(int i=0; i<size; i++){
-				if(i==0){
+			for(int i=0; i<size; i++) {
+				if(i==0) {
 					tagNames += tags[i];
 				}else{
 					tagNames += "|"+tags[i];
@@ -612,11 +612,11 @@ public class RegularUtil {
 	public static List<List<String>> fetchAllTag(String txt, String ... tags) throws Exception {
 		List<List<String>> result = new ArrayList<List<String>>();
 		List<List<String>> items = new ArrayList<List<String>>();
-		if(null != tags && tags.length>0){
+		if(null != tags && tags.length>0) {
 			String names = "";
 			int size = tags.length;
-			for(int i=0; i<size; i++){
-				if(i==0){
+			for(int i=0; i<size; i++) {
+				if(i==0) {
 					names += tags[i];
 				}else{
 					names += "|"+tags[i];
@@ -624,9 +624,9 @@ public class RegularUtil {
 			}
 			String regx = "(?i)((<(" + names + ")\\s[^<]*?>)([\\s\\S]*?)(</\\3>))|(<(" +names+")\\s[\\s\\S]*?>)";
 			items = fetchs(txt, regx);
-			for(List<String> item:items){
+			for(List<String> item:items) {
 				List<String> rtn = new ArrayList<>();
-				if(null == item.get(7)){
+				if(null == item.get(7)) {
 					// 双标签 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
 					rtn.add(item.get(0));
 					rtn.add(item.get(2));
@@ -655,12 +655,12 @@ public class RegularUtil {
 	 * @param attribute 属性
 	 * @return List
 	 */
-	public static List<List<String>> fetchAttributeList(String txt, String attribute){
+	public static List<List<String>> fetchAttributeList(String txt, String attribute) {
 		List<List<String>> result = new ArrayList<List<String>>();
 		try{
 			String regx = "(?i)(" + attribute + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
 			result = fetchs(txt, regx);
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -674,10 +674,10 @@ public class RegularUtil {
 	 * @param attribute 属性
 	 * @return List
 	 */
-	public static List<String> fetchAttribute(String txt, String attribute){
+	public static List<String> fetchAttribute(String txt, String attribute) {
 		List<String> result = new ArrayList<>();
 		List<List<String>> list = fetchAttributeList(txt, attribute);
-		if(list.size() >0){
+		if(list.size() >0) {
 			result = list.get(0);
 		}
 		return result;
@@ -689,11 +689,11 @@ public class RegularUtil {
 	 * @param attribute 属性名
 	 * @return List
 	 */
-	public static List<String> fetchAttributeValues(String txt, String attribute){
+	public static List<String> fetchAttributeValues(String txt, String attribute) {
 		List<String> result = new ArrayList<>();
 		List<List<String>> list = fetchAttributeList(txt, attribute);
-		for(List<String> attr: list){
-			if(attr.size() > 3 ){
+		for(List<String> attr: list) {
+			if(attr.size() > 3 ) {
 				result.add(attr.get(3));
 			}
 		}
@@ -706,15 +706,15 @@ public class RegularUtil {
 	 * @param attribute 属性名
 	 * @return String
 	 */
-	public static String fetchAttributeValue(String txt, String attribute){
+	public static String fetchAttributeValue(String txt, String attribute) {
 		List<String> values = fetchAttributeValues(txt, attribute);
-		if(values.size()>0){
+		if(values.size()>0) {
 			return values.get(0);
 		}else{
 			return null;
 		}
 	}
-	public static String cut(String text, String ... tags){
+	public static String cut(String text, String ... tags) {
 		return cut(text, false, tags);
 	}
 
@@ -725,8 +725,8 @@ public class RegularUtil {
 	 * @param contains 是否包含开始结束标签
 	 * @return String
 	 */
-	public static String cut(String text, boolean contains, String ... tags){
-		if(null == text || null == tags || tags.length < 2){
+	public static String cut(String text, boolean contains, String ... tags) {
+		if(null == text || null == tags || tags.length < 2) {
 			/*没有开始结束标志*/
 			return null;
 		}
@@ -736,28 +736,28 @@ public class RegularUtil {
 		String toTag = tags[tags.length-1];
 		int frLength = 0;
 		int toLength = 0;
-		for(int i=0; i<tags.length-1; i++){
+		for(int i=0; i<tags.length-1; i++) {
 			frTag = tags[i];
-			if(frTag.equalsIgnoreCase(TAG_BEGIN)){
+			if(frTag.equalsIgnoreCase(TAG_BEGIN)) {
 				_fr = 0;
 				frLength = 0;
 			}else{
-				if(i>0){
+				if(i>0) {
 					_fr= text.indexOf(frTag, _fr+tags[i-1].length());
 				}else{
 					_fr= text.indexOf(frTag, _fr);
 				}
-				if(_fr == -1){
+				if(_fr == -1) {
 					return null;
 				}
 				frLength = frTag.length();
 			}
 		}
-		if(frTag.equalsIgnoreCase(TAG_END)){
+		if(frTag.equalsIgnoreCase(TAG_END)) {
 			_to = text.length();
 
 		}else{
-			if(toTag.equalsIgnoreCase(TAG_END)){
+			if(toTag.equalsIgnoreCase(TAG_END)) {
 				_to = text.length();
 				toLength = 0;
 			}else{
@@ -769,7 +769,7 @@ public class RegularUtil {
 			return null;
 		}
 		String result = null;
-		if(contains){
+		if(contains) {
 			_fr = text.indexOf(tags[0]);
 			result = text.substring(_fr, _to+toLength);
 		}else{
@@ -778,26 +778,26 @@ public class RegularUtil {
 		return result;
 	}
 
-	public static List<String> cuts(String text, String ... tags){
+	public static List<String> cuts(String text, String ... tags) {
 		return cuts(text, false, tags);
 	}
-	public static List<String> cuts(String text, boolean contains, String ... tags){
+	public static List<String> cuts(String text, boolean contains, String ... tags) {
 		List<String> list = new ArrayList<>();
-		while(true){
+		while(true) {
 			String item = cut(text, contains, tags);
-			if(null == item){
+			if(null == item) {
 				break;
 			}else{
 				list.add(item);
 				int idx = 0;
 				// 计算新起点
-				for(int i=0; i<tags.length; i++){
-					if(idx>0){
+				for(int i=0; i<tags.length; i++) {
+					if(idx>0) {
 						idx += 1;
 					}
 					idx = text.indexOf(tags[i], idx);
 				}
-				if(idx <= 0){
+				if(idx <= 0) {
 					break;
 				}
 				text = text.substring(idx);
@@ -805,39 +805,39 @@ public class RegularUtil {
 		}
 		return list;
 	}
-	public static boolean isDate(String str){
-		if(str == null){
+	public static boolean isDate(String str) {
+		if(str == null) {
 			return false;
 		}
 		str = str.replace("/","-");
 		return regularMatch.match(str, Regular.PATTERN.DATE.getCode());
 	}
-	public static boolean isDateTime(String str){
-		if(null == str){
+	public static boolean isDateTime(String str) {
+		if(null == str) {
 			return false;
 		}
 		str = str.replace("/","-");
 		return regularMatch.match(str, Regular.PATTERN.DATE_TIME.getCode());
 	}
 
-	public static boolean isUrl(String src){
-		if(null == src){
+	public static boolean isUrl(String src) {
+		if(null == src) {
 			return false;
 		}
-		if(src.startsWith("http://") || src.startsWith("https://")){
+		if(src.startsWith("http://") || src.startsWith("https://")) {
 			return true;
 		}
-		if(src.startsWith("//")){
+		if(src.startsWith("//")) {
 			src = src.substring(2);
 			int index1 = src.indexOf("."); 	// 域名中的.
-			if(index1 == -1){
+			if(index1 == -1) {
 				return false;
 			}
 			int index2 = src.indexOf("/");	// url中的path分隔
-			if(index1 < index2){			// 没有在/之前出现的 有可能是文件名中的.
+			if(index1 < index2) {			// 没有在/之前出现的 有可能是文件名中的.
 				return true;
 			}
-			if(index2 == -1){				// 没有域名
+			if(index2 == -1) {				// 没有域名
 				return true;
 			}
 		}

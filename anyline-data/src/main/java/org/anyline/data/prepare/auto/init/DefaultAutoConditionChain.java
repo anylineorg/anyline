@@ -32,13 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultAutoConditionChain extends AbstractConditionChain implements ConditionChain {
-	public DefaultAutoConditionChain(){}
-	public DefaultAutoConditionChain(ConfigChain chain){
-		if(null == chain){
+	public DefaultAutoConditionChain() {}
+	public DefaultAutoConditionChain(ConfigChain chain) {
+		if(null == chain) {
 			return;
 		}
-		for(Config config:chain.getConfigs()){
-			if(config instanceof ConfigChain){
+		for(Config config:chain.getConfigs()) {
+			if(config instanceof ConfigChain) {
 				conditions.add(new DefaultAutoConditionChain((ConfigChain)config).setJoin(config.getJoin()));
 			}else{
 				conditions.add(new DefaultAutoCondition(config).setJoin(config.getJoin()));
@@ -47,22 +47,22 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 		this.integrality(chain.integrality());
 	}
 	@Override
-	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder){
+	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
 		runValues = new ArrayList<>();
 		int size = conditions.size();
 		int active = 0; //有效条件
-		if(size == 0){
+		if(size == 0) {
 			return ""; 
 		}
 		StringBuilder subBuilder = new StringBuilder();
 		String txt = "";
-		for(int i=0; i<size; i++){
+		for(int i=0; i<size; i++) {
 			Condition condition = conditions.get(i);
-			if(null == condition || condition.isVariableSlave()){
+			if(null == condition || condition.isVariableSlave()) {
 				continue;
 			}
 			txt = condition.getRunText(prefix, runtime, placeholder);
-			if(BasicUtil.isEmpty(txt)){
+			if(BasicUtil.isEmpty(txt)) {
 				continue;
 			}
 			active ++;
@@ -72,7 +72,7 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 					|| condition.isActive()
 					|| condition.getSwt() == Compare.EMPTY_VALUE_SWITCH.NULL
 					|| condition.getSwt() == Compare.EMPTY_VALUE_SWITCH.SRC
-			){
+			) {
 				// condition instanceof ConditionChain
 				//是否需要跟前面的条件 隔离，前面所有条件加到()中
 				/*if(condition.apart() && subBuilder.length() >1) {
@@ -81,15 +81,15 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 						subBuilder.insert(0, "(").append(")");
 					}
 				}*/
-				// if(i>0 /*&& !condition.isContainer()*/){
+				// if(i>0 /*&& !condition.isContainer()*/) {
 
-				if(joinSize>0){
+				if(joinSize>0) {
 					String chk = txt.toLowerCase().trim().replace("\n"," ").replace("\t"," ").trim();
-					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")){
+					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")) {
 						subBuilder.append(condition.getJoin());
 					}
 				}
-				if(subBuilder.length() > 0 && !txt.startsWith(" ") && !txt.startsWith("(")){
+				if(subBuilder.length() > 0 && !txt.startsWith(" ") && !txt.startsWith("(")) {
 					subBuilder.append(" ");
 				}
 
@@ -99,20 +99,20 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 			}
 		}
  
-		if(joinSize > 0){
+		if(joinSize > 0) {
 			StringBuilder builder = new StringBuilder();
 			//没有上一级 或者上一级中的已经添加了其他条件
-			if(!hasContainer() || getContainerJoinSize() > 0){
+			if(!hasContainer() || getContainerJoinSize() > 0) {
 				builder.append("\n").append(join).append(" ");
 			}else{
 				builder.append("\n\t");
 			}
 			String sub = subBuilder.toString().trim();
 			String chk = sub.toUpperCase().replaceAll("\\s"," ");
-			if(chk.startsWith("AND(") || chk.startsWith("AND ")){
+			if(chk.startsWith("AND(") || chk.startsWith("AND ")) {
 				sub = sub.substring(3).trim();
 			}
-			if(chk.startsWith("OR(") || chk.startsWith("OR ")){
+			if(chk.startsWith("OR(") || chk.startsWith("OR ")) {
 				sub = sub.substring(2).trim();
 			}
 			//子串有没有()
@@ -146,19 +146,19 @@ public class DefaultAutoConditionChain extends AbstractConditionChain implements
 		return this;
 	}
 
-	private int getContainerJoinSize(){
-		if(hasContainer()){
+	private int getContainerJoinSize() {
+		if(hasContainer()) {
 			return getContainer().getJoinSize(); 
 		}else{
 			return 0; 
 		} 
 	}
 
-	public String toString(){
+	public String toString() {
 		int size = conditions.size();
 		String txt = "[";
-		for(int i=0;i<size; i++){
-			if(i==0){
+		for(int i=0;i<size; i++) {
+			if(i==0) {
 				txt += conditions.get(i).toString();
 			}else{
 				txt += ","+conditions.get(i).toString();

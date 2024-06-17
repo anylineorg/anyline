@@ -27,7 +27,7 @@ public interface Downloader {
      * @param file 文件
      * @return 返回文件上传后地址
      */
-    default boolean download(String url, File file){
+    default boolean download(String url, File file) {
         return false;
     }
 }

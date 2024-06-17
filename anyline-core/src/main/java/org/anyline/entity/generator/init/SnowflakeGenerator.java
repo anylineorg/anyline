@@ -33,18 +33,18 @@ import java.util.List;
 public class SnowflakeGenerator implements PrimaryGenerator {
 	private static SnowflakeWorker worker = null;
 	@Override
-	public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other){
-		if(null == columns){
-			if(entity instanceof DataRow){
+	public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
+		if(null == columns) {
+			if(entity instanceof DataRow) {
 				columns = ((DataRow)entity).getPrimaryKeys();
 			}else{
 				columns = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
 			}
 		}
-		if(null == worker){
+		if(null == worker) {
 			worker = newInstance();
 		}
-		for(String column:columns){
+		for(String column:columns) {
 			if(null != BeanUtil.getFieldValue(entity, column)) {
 				continue;
 			}
@@ -54,18 +54,18 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 	}
 
 	@Override
-	public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other){
-		if(null == columns){
-			if(entity instanceof DataRow){
+	public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
+		if(null == columns) {
+			if(entity instanceof DataRow) {
 				columns = ((DataRow)entity).getPrimaryColumns();
 			}else{
 				columns = EntityAdapterProxy.primaryKeys(entity.getClass());
 			}
 		}
-		if(null == worker){
+		if(null == worker) {
 			worker = newInstance();
 		}
-		for(Column column:columns.values()){
+		for(Column column:columns.values()) {
 			if(null != BeanUtil.getFieldValue(entity, column.getName())) {
 				continue;
 			}
@@ -73,12 +73,12 @@ public class SnowflakeGenerator implements PrimaryGenerator {
 		}
 		return true;
 	}
-	public boolean create(Object entity, DatabaseType type, String table, String column, String other){
+	public boolean create(Object entity, DatabaseType type, String table, String column, String other) {
 		Long value = worker.next();
 		BeanUtil.setFieldValue(entity, column, value, true);
 		return true;
 	}
-	private SnowflakeWorker newInstance(){
+	private SnowflakeWorker newInstance() {
 		int workerId = ConfigTable.PRIMARY_GENERATOR_WORKER_ID;
 		return new SnowflakeWorker(workerId);
 	}

@@ -33,22 +33,22 @@ public class PostgisGeometryAdapter {
         6"MULTIPOLYGON",
         7"GEOMETRYCOLLECTION"
         */
-        if(null != input){
+        if(null != input) {
             Geometry geometry = input.getGeometry();
             int type = input.getGeoType();
-            if(type == 1){
+            if(type == 1) {
                 result = parsePoint((Point) geometry);
-            }else if(type == 2){
+            }else if(type == 2) {
                 result = parseLineString((LineString) geometry);
-            }else if(type == 3){
+            }else if(type == 3) {
                 result = parsePolygon((Polygon) geometry);
-            }else if(type == 4){
+            }else if(type == 4) {
                 result = parseMultiPoint((MultiPoint)geometry);
-            }else if(type == 5){
+            }else if(type == 5) {
                 result = parseMultiLineString((MultiLineString) geometry);
-            }else if(type == 6){
+            }else if(type == 6) {
                 result = parseMultiPolygon((MultiPolygon) geometry);
-            }else if(type == 7){
+            }else if(type == 7) {
                 result = parseGeometryCollection((GeometryCollection) geometry);
             }
         }
@@ -59,7 +59,7 @@ public class PostgisGeometryAdapter {
      * @param input PG原生point
      * @return Point
      */
-    public static Object parsePolygon(Polygon input){
+    public static Object parsePolygon(Polygon input) {
         return input;
     }
 
@@ -74,7 +74,7 @@ public class PostgisGeometryAdapter {
             result.srid(input.srid);
             result.x(input.x);
             result.y(input.y);
-        }catch (Exception e){
+        }catch (Exception e) {
             return input;
         }
         return result;
@@ -103,10 +103,10 @@ public class PostgisGeometryAdapter {
         try {
             result.srid(input.srid);
             Point[] points = input.getPoints();
-            for(Point point:points){
+            for(Point point:points) {
                 result.add(point.getX(), point.getY());
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             return input;
         }
         return result;

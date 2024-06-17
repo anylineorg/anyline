@@ -45,12 +45,12 @@ public class SimpleResultSetHandler implements ResultSetHandler {
      */
     private int vol;
 
-    public SimpleResultSetHandler(){}
-    public SimpleResultSetHandler(int size){
+    public SimpleResultSetHandler() {}
+    public SimpleResultSetHandler(int size) {
         this.size = size;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
     @Override
@@ -72,7 +72,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
             for (int i = 1; i <= vol; i++) {
                 keys.add(rsmd.getColumnLabel(i));
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("Read ResultSet 异常:", e);
         }
         return true;
@@ -98,7 +98,7 @@ public class SimpleResultSetHandler implements ResultSetHandler {
         }
         return null;
     }
-    public ResultSet result(){
+    public ResultSet result() {
         return result;
     }
     public void close() throws Exception{

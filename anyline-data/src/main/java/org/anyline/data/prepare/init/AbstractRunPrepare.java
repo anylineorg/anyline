@@ -61,14 +61,14 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	// 运行时参数值
 	protected Vector<Object> runValues;
 
-	public int getVersion(){
+	public int getVersion() {
 		return 0; 
 	} 
  
-	public AbstractRunPrepare(){
+	public AbstractRunPrepare() {
 	} 
-	protected void initRunValues(){
-		if(null == runValues){
+	protected void initRunValues() {
+		if(null == runValues) {
 			runValues = new Vector<Object>(); 
 		}else{
 			runValues.clear(); 
@@ -81,31 +81,31 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * @param order  order
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
-	public RunPrepare order(Order order){
-		if(null == orders){
+	public RunPrepare order(Order order) {
+		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
 		return this; 
 	} 
 	 
-	public RunPrepare order(String order){
-		if(null == orders){
+	public RunPrepare order(String order) {
+		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order); 
 		return this; 
 	}
-	public RunPrepare order(String col, Order.TYPE type){
-		if(null == orders){
+	public RunPrepare order(String col, Order.TYPE type) {
+		if(null == orders) {
 			orders = new DefaultOrderStore();
 		}
 		orders.order(col, type);
 		return this;
 	}
  
-	protected String getOrderText(String delimiter){
-		if(null != orders){
+	protected String getOrderText(String delimiter) {
+		if(null != orders) {
 			return orders.getRunText(delimiter);
 		} 
 		return ""; 
@@ -115,13 +115,13 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * @param group  group
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
-	public RunPrepare group(String group){
+	public RunPrepare group(String group) {
 		/*避免添加空条件*/ 
-		if(BasicUtil.isEmpty(group)){
+		if(BasicUtil.isEmpty(group)) {
 			return this; 
 		} 
 		 
-		if(null == groups){
+		if(null == groups) {
 			groups = new DefaultGroupStore();
 		} 
 		group = group.trim().toUpperCase(); 
@@ -129,7 +129,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		 
 		return this; 
 	}
-	public RunPrepare having(String having){
+	public RunPrepare having(String having) {
 		this.having = having;
 		return this;
 	}
@@ -138,11 +138,11 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * @param runValue  runValue
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	protected RunPrepare addRunValue(Object runValue){
-		if(null == runValues){
+	protected RunPrepare addRunValue(Object runValue) {
+		if(null == runValues) {
 			runValues = new Vector<>();
 		} 
-		if(runValue instanceof Collection){
+		if(runValue instanceof Collection) {
 			Collection collection = (Collection)runValue; 
 			runValues.addAll(collection); 
 		}else{
@@ -158,7 +158,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		return runValues; 
 	} 
 	 
-	public RunPrepare setConditionChain(ConditionChain chain){
+	public RunPrepare setConditionChain(ConditionChain chain) {
 		this.chain = chain; 
 		return this; 
 	} 
@@ -201,7 +201,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	}
 	public RunPrepare addCondition(String column, Object value) {
 		Compare compare = Compare.EQUAL;
-		if(value instanceof Collection){
+		if(value instanceof Collection) {
 			compare = Compare.IN;
 		}
 		return addCondition(compare, column, value);
@@ -212,17 +212,17 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		return this; 
 	} 
 	 
-	public void setPageNavi(PageNavi navi){
+	public void setPageNavi(PageNavi navi) {
 		this.navi = navi; 
 	} 
-	public PageNavi getPageNavi(){
+	public PageNavi getPageNavi() {
 		return navi; 
 	}
 
-	public GroupStore getGroups(){
+	public GroupStore getGroups() {
 		return groups;
 	}
-	public String getHaving(){
+	public String getHaving() {
 		return having;
 	}
 	public OrderStore getOrders() {
@@ -230,12 +230,12 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	} 
  
 	public void setOrders(OrderStore orders) {
-		if(null != orders){
+		if(null != orders) {
 			List<Order> list = orders.getOrders(); 
-			for(Order order:list){
+			for(Order order:list) {
 				this.order(order); 
 			} 
-			for(Order order:orders.getOrders()){				 
+			for(Order order:orders.getOrders()) {
 				orders.order(order); 
 			} 
 		}else{
@@ -243,36 +243,36 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		} 
 	} 
 	 
-	public ConditionChain getConditionChain(){
+	public ConditionChain getConditionChain() {
 		return this.chain; 
 	}
 	
 	
-	public RunPrepare addPrimaryKey(String ... primaryKeys){
-		if(null != primaryKeys){
+	public RunPrepare addPrimaryKey(String ... primaryKeys) {
+		if(null != primaryKeys) {
 			List<String> list = new ArrayList<>();
-			for(String pk:primaryKeys){
+			for(String pk:primaryKeys) {
 				list.add(pk);
 			}
 			return addPrimaryKey(list);
 		}
 		return this;
 	}
-	public RunPrepare addPrimaryKey(Collection<String> primaryKeys){
-		if(BasicUtil.isEmpty(primaryKeys)){
+	public RunPrepare addPrimaryKey(Collection<String> primaryKeys) {
+		if(BasicUtil.isEmpty(primaryKeys)) {
 			return this;
 		}
 		
 		/*没有处于容器中时, 设置自身主键*/
-		if(null == this.primaryKeys){
+		if(null == this.primaryKeys) {
 			this.primaryKeys = new ArrayList<>();
 		}
-		for(String item:primaryKeys){
-			if(BasicUtil.isEmpty(item)){
+		for(String item:primaryKeys) {
+			if(BasicUtil.isEmpty(item)) {
 				continue;
 			}
 			item = item.toUpperCase();
-			if(!this.primaryKeys.contains(item)){
+			if(!this.primaryKeys.contains(item)) {
 				this.primaryKeys.add(item);
 			}
 		}
@@ -285,23 +285,23 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * @param primaryKeys primaryKeys
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	public RunPrepare setPrimaryKey(String ... primaryKeys){
-		if(null != primaryKeys){
+	public RunPrepare setPrimaryKey(String ... primaryKeys) {
+		if(null != primaryKeys) {
 			List<String> list = new ArrayList<>();
-			for(String pk:primaryKeys){
+			for(String pk:primaryKeys) {
 				list.add(pk);
 			}
 			return setPrimaryKey(list);
 		}
 		return this;
 	}
-	public RunPrepare setPrimaryKey(Collection<String> primaryKeys){
-		if(BasicUtil.isEmpty(primaryKeys)){
+	public RunPrepare setPrimaryKey(Collection<String> primaryKeys) {
+		if(BasicUtil.isEmpty(primaryKeys)) {
 			return this;
 		}
 		
 		/*没有处于容器中时, 设置自身主键*/
-		if(null == this.primaryKeys){
+		if(null == this.primaryKeys) {
 			this.primaryKeys = new ArrayList<>();
 		}else{
 			this.primaryKeys.clear();
@@ -315,12 +315,12 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * 主键为空时且容器有主键时, 读取容器主键, 否则返回默认主键
 	 * @return List
 	 */
-	public List<String> getPrimaryKeys(){
+	public List<String> getPrimaryKeys() {
 		return primaryKeys;
 	}
-	public String getPrimaryKey(){
+	public String getPrimaryKey() {
 		List<String> keys = getPrimaryKeys();
-		if(null != keys && keys.size()>0){
+		if(null != keys && keys.size()>0) {
 			return keys.get(0); 
 		}
 		return null;
@@ -330,8 +330,8 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	 * 自身是否有主键
 	 * @return boolean
 	 */
-	public boolean hasPrimaryKeys(){
-		if(null != primaryKeys && primaryKeys.size()>0){
+	public boolean hasPrimaryKeys() {
+		if(null != primaryKeys && primaryKeys.size()>0) {
 			return true;
 		}else{
 			return false;
@@ -340,51 +340,51 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	
 	
 
-	public RunPrepare addFetchKey(String ... fetchKeys){
-		if(null != fetchKeys){
+	public RunPrepare addFetchKey(String ... fetchKeys) {
+		if(null != fetchKeys) {
 			List<String> list = new ArrayList<>();
-			for(String pk:fetchKeys){
+			for(String pk:fetchKeys) {
 				list.add(pk);
 			}
 			return addFetchKey(list);
 		}
 		return this;
 	}
-	public RunPrepare addFetchKey(Collection<String> fetchKeys){
-		if(BasicUtil.isEmpty(fetchKeys)){
+	public RunPrepare addFetchKey(Collection<String> fetchKeys) {
+		if(BasicUtil.isEmpty(fetchKeys)) {
 			return this;
 		}
 		
-		if(null == this.fetchKeys){
+		if(null == this.fetchKeys) {
 			this.fetchKeys = new ArrayList<>();
 		}
-		for(String item:fetchKeys){
-			if(BasicUtil.isEmpty(item)){
+		for(String item:fetchKeys) {
+			if(BasicUtil.isEmpty(item)) {
 				continue;
 			}
 			item = item.toUpperCase();
-			if(!this.fetchKeys.contains(item)){
+			if(!this.fetchKeys.contains(item)) {
 				this.fetchKeys.add(item);
 			}
 		}
 		return this;
 	}
-	public RunPrepare setFetchKey(String ... fetchKeys){
-		if(null != fetchKeys){
+	public RunPrepare setFetchKey(String ... fetchKeys) {
+		if(null != fetchKeys) {
 			List<String> list = new ArrayList<>();
-			for(String pk:fetchKeys){
+			for(String pk:fetchKeys) {
 				list.add(pk);
 			}
 			return setFetchKey(list);
 		}
 		return this;
 	}
-	public RunPrepare setFetchKey(Collection<String> fetchKeys){
-		if(BasicUtil.isEmpty(fetchKeys)){
+	public RunPrepare setFetchKey(Collection<String> fetchKeys) {
+		if(BasicUtil.isEmpty(fetchKeys)) {
 			return this;
 		}
 		
-		if(null == this.fetchKeys){
+		if(null == this.fetchKeys) {
 			this.fetchKeys = new ArrayList<>();
 		}else{
 			this.fetchKeys.clear();
@@ -393,29 +393,29 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		return this;
 	}
 
-	public List<String> getFetchKeys(){
+	public List<String> getFetchKeys() {
 		return fetchKeys;
 	}
 
-	public RunPrepare join(Join join){
+	public RunPrepare join(Join join) {
 		return this;
 	}
-	public RunPrepare join(Join.TYPE type, String table, String condition){
+	public RunPrepare join(Join.TYPE type, String table, String condition) {
 		return this;
 	}
-	public RunPrepare inner(String table, String condition){
+	public RunPrepare inner(String table, String condition) {
 		return this;
 	}
-	public RunPrepare left(String table, String condition){
+	public RunPrepare left(String table, String condition) {
 		return this;
 	}
-	public RunPrepare right(String table, String condition){
+	public RunPrepare right(String table, String condition) {
 		return this;
 	}
-	public RunPrepare full(String table, String condition){
+	public RunPrepare full(String table, String condition) {
 		return this;
 	}
-	public List<Join> getJoins(){
+	public List<Join> getJoins() {
 		return null;
 	}
 
@@ -480,7 +480,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 	@Override
 	public RunPrepare setQueryColumns(List<String> columns) {
 		this.columns = new LinkedHashMap<>();
-		for(String column:columns){
+		for(String column:columns) {
 			this.columns.put(column.toUpperCase(), new Column(column));
 		}
 		return this;
@@ -535,7 +535,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 		this.unionAll = all;
 		return this;
 	}@Override
-	public boolean isUnionAll(){
+	public boolean isUnionAll() {
 		return unionAll;
 	}
 	@Override
@@ -553,7 +553,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare union(List<RunPrepare> unions, boolean all) {
-		for(RunPrepare union:unions){
+		for(RunPrepare union:unions) {
 			union(union, all);
 		}
 		return this;
@@ -561,7 +561,7 @@ public abstract class AbstractRunPrepare implements RunPrepare{
 
 	@Override
 	public RunPrepare union(List<RunPrepare> unions) {
-		for(RunPrepare union:unions){
+		for(RunPrepare union:unions) {
 			union(union);
 		}
 		return this;

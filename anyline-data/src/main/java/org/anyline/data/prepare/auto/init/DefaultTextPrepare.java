@@ -25,12 +25,12 @@ import org.anyline.data.runtime.DataRuntime;
 
 public class DefaultTextPrepare extends DefaultAutoPrepare implements TextPrepare {
 	private String text; 
-	public DefaultTextPrepare(String text){
+	public DefaultTextPrepare(String text) {
 		super(); 
 		this.text = text; 
 		chain = new DefaultAutoConditionChain();
 	} 
-	public String getText(){
+	public String getText() {
 		return this.text; 
 	}
 

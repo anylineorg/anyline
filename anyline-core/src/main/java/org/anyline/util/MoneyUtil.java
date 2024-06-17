@@ -20,7 +20,7 @@
 package org.anyline.util;
  
 public class MoneyUtil {
-	public static String format(double n){
+	public static String format(double n) {
 		String fraction[] = {"角","分" };
 		String digit[] = {"零","壹","贰","叁","肆","伍","陆","柒","捌","玖" };
 		String unit[][] = {{"元","万","亿" }, {"","拾","佰","仟" } };

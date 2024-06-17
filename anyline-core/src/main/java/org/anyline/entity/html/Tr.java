@@ -57,10 +57,10 @@ public class Tr {
     public void setStyles(Map<String, String> styles) {
         this.styles = styles;
     }
-    public void addStyle(String key, String value){
+    public void addStyle(String key, String value) {
         styles.put(key, value);
     }
-    public Td getTd(int index){
+    public Td getTd(int index) {
         return tds.get(index);
     }
 
@@ -69,54 +69,54 @@ public class Tr {
      * @param begin index+offset
      * @return List
      */
-    public List<Td> getTdsByOffset(int begin){
+    public List<Td> getTdsByOffset(int begin) {
         List<Td> list = new ArrayList<>();
-        for(Td td:tds){
-            if(td.getOffset()+td.getColIndex() >= begin){
+        for(Td td:tds) {
+            if(td.getOffset()+td.getColIndex() >= begin) {
                 list.add(td);
             }
         }
         return list;
     }
-    public Tr setTd(int index, Td td){
+    public Tr setTd(int index, Td td) {
         String bg = styles.get("background-color");
-        if(null != bg){
+        if(null != bg) {
             td.getStyles().put("background-color", bg);
         }
         tds.add(index, td);
         return this;
     }
-    public Tr setHeight(int index, String height){
+    public Tr setHeight(int index, String height) {
         styles.put("height", height);
         return this;
     }
-    public Tr setHeight(int index, int height){
+    public Tr setHeight(int index, int height) {
         styles.put("height", height+widthUnit);
         return this;
     }
-    public Tr setHeight(int index, double height){
+    public Tr setHeight(int index, double height) {
         styles.put("height", height+widthUnit);
         return this;
     }
-    public Tr addTd(String ... tds){
-        if(null != tds){
-            for(String td:tds){
+    public Tr addTd(String ... tds) {
+        if(null != tds) {
+            for(String td:tds) {
                 this.addTd(new Td(td));
             }
         }
         return this;
     }
-    public Tr addTd(Td td){
+    public Tr addTd(Td td) {
         tds.add(td);
 
         String bg = styles.get("background-color");
-        if(null != bg){
+        if(null != bg) {
             td.getStyles().put("background-color", bg);
         }
         td.setTr(this);
         return this;
     }
-    public int index(){
+    public int index() {
         List<Tr> trs = table.getTrs();
         return trs.indexOf(this);
     }
@@ -138,7 +138,7 @@ public class Tr {
 
     public void setWidthUnit(String widthUnit) {
         this.widthUnit = widthUnit;
-        for(Td td:tds){
+        for(Td td:tds) {
             td.setWidthUnit(widthUnit);
         }
     }
@@ -146,39 +146,39 @@ public class Tr {
     public void setTable(Table table) {
         this.table = table;
     }
-    public void build(StringBuilder builder){
+    public void build(StringBuilder builder) {
         if(null == builder) {
             builder = new StringBuilder();
         }
         builder.append("<tr");
-        if(null != clazz){
+        if(null != clazz) {
             builder.append(" class='").append(clazz).append("'");
         }
         if (null != styles && !styles.isEmpty()) {
             builder.append(" style='");
-            for(String key:styles.keySet()){
+            for(String key:styles.keySet()) {
                 builder.append(key).append(":").append(styles.get(key)).append(";");
             }
             builder.append("'");
         }
         builder.append(">\n");
-        for(Td td:tds){
+        for(Td td:tds) {
             td.build(builder);
             builder.append("\n");
         }
         builder.append("</tr>");
     }
-    public String build(){
+    public String build() {
         StringBuilder builder = new StringBuilder();
         build(builder);
         return builder.toString();
     }
-    public Tr createCopy(boolean style, boolean content){
+    public Tr createCopy(boolean style, boolean content) {
         Tr copy = new Tr();
         copy.setWidthUnit(widthUnit);
         int offset = 0; // 已追加的偏移
-        for(Td td:tds){
-            for(int i= offset; i<td.getOffset(); i++){
+        for(Td td:tds) {
+            for(int i= offset; i<td.getOffset(); i++) {
                 copy.addTd(new Td());
                 offset++;
             }
@@ -195,7 +195,7 @@ public class Tr {
         return copy;
     }
 
-    public Tr createCopy(){
+    public Tr createCopy() {
         return createCopy(true, false);
     }
 }

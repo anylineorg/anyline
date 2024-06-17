@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.vastbase")
 public class VastbaseAdapter extends OpenGaussAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.Vastbase;
     }
     

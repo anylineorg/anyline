@@ -25,7 +25,7 @@ public class CamelAdapter implements KeyAdapter {
     private static KeyAdapter instance = new CamelAdapter();
     @Override
     public String key(String key) {
-        if(null != key){
+        if(null != key) {
             return BeanUtil.Camel(key);
         }
         return null;

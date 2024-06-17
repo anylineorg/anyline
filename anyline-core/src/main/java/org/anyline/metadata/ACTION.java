@@ -104,14 +104,14 @@ public interface ACTION {
         ;
         private final String title;
         private final CMD cmd;
-        DDL(CMD cmd, String title){
+        DDL(CMD cmd, String title) {
             this.cmd = cmd;
             this.title = title;
         }
         public CMD getCmd() {
             return cmd;
         }
-        public String getTitle(){
+        public String getTitle() {
             return this.title;
         }
     }
@@ -132,10 +132,10 @@ public interface ACTION {
         BREAK("中断主流程执行")
         ;
         private final String title;
-        SWITCH(String title){
+        SWITCH(String title) {
             this.title = title;
         }
-        public String getTitle(){
+        public String getTitle() {
             return this.title;
         }
     }

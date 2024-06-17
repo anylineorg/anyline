@@ -23,49 +23,49 @@ import java.util.List;
 
 public class MultiPoint extends Geometry{
     private List<Point> points = new ArrayList<>();
-    public MultiPoint(){
+    public MultiPoint() {
         type = 4;
     }
-    public MultiPoint(List<Point> points){
+    public MultiPoint(List<Point> points) {
         this();
         this.points = points;
     }
-    public MultiPoint add(Point point){
+    public MultiPoint add(Point point) {
         points.add(point);
         return this;
     }
 
-    public MultiPoint add(List<Point> points){
+    public MultiPoint add(List<Point> points) {
         if(null != points) {
             points.addAll(points);
         }
         return this;
     }
-    public MultiPoint add(double x, double y){
+    public MultiPoint add(double x, double y) {
         Point point = new Point(x, y);
         point.srid(srid);
         return add(point);
     }
-    public MultiPoint add(int x, int y){
+    public MultiPoint add(int x, int y) {
         return add(new Point(x, y));
     }
-    public MultiPoint clear(){
+    public MultiPoint clear() {
         //points.clear();
         points = new ArrayList<>();
         return this;
     }
-    public List<Point> points(){
+    public List<Point> points() {
         return points;
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(Point point:points){
-            if(!first){
+        for(Point point:points) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;
@@ -75,7 +75,7 @@ public class MultiPoint extends Geometry{
         return builder.toString();
     }
 
-    public String toString(){
+    public String toString() {
         return toString(true);
     }
     /**
@@ -86,7 +86,7 @@ public class MultiPoint extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
         if(tag) {
             builder.append(tag());
@@ -95,8 +95,8 @@ public class MultiPoint extends Geometry{
             builder.append("(");
         }
         boolean first = true;
-        for(Point point:points){
-            if(!first){
+        for(Point point:points) {
+            if(!first) {
                 builder.append(",");
             }
             first = false;
@@ -107,7 +107,7 @@ public class MultiPoint extends Geometry{
         }
         return builder.toString();
     }
-    public String sql(){
+    public String sql() {
         return sql(true, true);
     }
 

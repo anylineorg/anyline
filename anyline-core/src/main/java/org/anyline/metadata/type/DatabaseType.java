@@ -476,26 +476,26 @@ public enum DatabaseType implements Serializable {
         ZeroMQ              	("ZeroMQ"                           	,KEY_CASE.SRC	,0	,null	,""	,""),
         ZODB                	("ZODB"                             	,KEY_CASE.SRC	,795	,null	,""	,""),
         ;
-        DatabaseType(String title, KEY_CASE objectNameCase, int boost, String keywords, String driver, String url){
+        DatabaseType(String title, KEY_CASE objectNameCase, int boost, String keywords, String driver, String url) {
                 this.title = title;
                 this.driver = driver;
                 this.objectNameCase = objectNameCase;
                 this.url = url;
                 this.boost = boost;
-                if(null != keywords){
+                if(null != keywords) {
                         String[] ks = keywords.toLowerCase().split(",");
-                        for(String k:ks){
+                        for(String k:ks) {
                                 this.keywords.add(k.toLowerCase());
                         }
                 }
-                if(null != url){
+                if(null != url) {
                         //   jdbc:mysql://host:3306/db
                         int idx = url.indexOf(":", 6);
-                        if(idx > 0){
+                        if(idx > 0) {
                                 this.keywords.add(url.substring(0,idx+1).toLowerCase());
                         }
                 }
-                if(null != driver){
+                if(null != driver) {
                         this.keywords.add(driver.toLowerCase());
                 }
         }
@@ -506,22 +506,22 @@ public enum DatabaseType implements Serializable {
         private final String title;
         private final String driver;
         private final String url;
-        public int boost(){
+        public int boost() {
                 return boost;
         }
-        public List<String> keywords(){
+        public List<String> keywords() {
                 return keywords;
         }
-        public String driver(){
+        public String driver() {
                 return driver;
         }
-        public String url(){
+        public String url() {
                 return url;
         }
-        public String title(){
+        public String title() {
                 return title;
         }
-        public KEY_CASE nameCase(){
+        public KEY_CASE nameCase() {
                 return objectNameCase;
         }
 

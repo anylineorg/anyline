@@ -29,10 +29,10 @@ import java.security.NoSuchAlgorithmException;
 public class SHA1Util {
 	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class); 
 	private static MessageDigest digest = null; 
-	public static String sign(String src){
+	public static String sign(String src) {
 		String result = ""; 
 		try {
-			if(null == digest){
+			if(null == digest) {
 				digest = MessageDigest.getInstance("SHA-1"); 
 			} 
 			digest.update(src.getBytes()); 
@@ -49,7 +49,7 @@ public class SHA1Util {
 		} catch (NoSuchAlgorithmException e) {
 			log.error("sign exception:", e);
 		} 
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 			log.debug("[SHA1 SIGN][src:{}][sign:{}]", src, result);
 		} 
 		return result; 

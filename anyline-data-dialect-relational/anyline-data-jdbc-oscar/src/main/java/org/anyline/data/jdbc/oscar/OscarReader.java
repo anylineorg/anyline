@@ -22,15 +22,15 @@ import org.anyline.adapter.DataReader;
 
 public enum OscarReader {
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataReader reader(){
+    public DataReader reader() {
         return reader;
     }
     private final Object[] supports;
     private final DataReader reader;
-    OscarReader(Object[] supports, DataReader reader){
+    OscarReader(Object[] supports, DataReader reader) {
         this.supports = supports;
         this.reader = reader;
     }

@@ -65,11 +65,11 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		//${classpath} class path
 		//. 项目根目录
-		if(root.contains("{classpath}")){
+		if(root.contains("{classpath}")) {
 			root = root.replace("${classpath}", ConfigTable.getClassPath());
 			root = root.replace("{classpath}", ConfigTable.getClassPath());
 		}
-		if(root.contains("{libpath}")){
+		if(root.contains("{libpath}")) {
 			root = root.replace("${libpath}", ConfigTable.getLibPath());
 			root = root.replace("{libpath}", ConfigTable.getLibPath());
 		}
@@ -79,9 +79,9 @@ public class DefaultSQLStore extends SQLStore {
 		root = root.replace("\\\\", FileUtil.getFileSeparator());
 		String[] dirs = root.split(",");
 		for(String dir:dirs) {
-			if(dir.startsWith(".")){
+			if(dir.startsWith(".")) {
 				dir = FileUtil.merge(ConfigTable.getRoot(), dir.substring(1));
-			}else if (dir.startsWith("/WEB-INF")){
+			}else if (dir.startsWith("/WEB-INF")) {
 				dir = FileUtil.merge(ConfigTable.getWebRoot(), dir);
 			}
 			log.debug("[解析XML SQL][dir:{}]", dir);
@@ -92,14 +92,14 @@ public class DefaultSQLStore extends SQLStore {
 	private static synchronized void parse(String path) {
 		//windows \D:\ \target\anyline-simple-data-jdbc-xml-8.6.5.jar!\BOOT-INF\classes!\sql
 		//linux  /anyline-simple-data-jdbc-xml-8.7.1-SNAPSHOT.jar!/BOOT-INF/classes!/sql
-		if(path.contains("jar!")){
+		if(path.contains("jar!")) {
 			//jar内部
 			String separator = FileUtil.getFileSeparator();
 			String sub = path.substring(path.indexOf("jar!")+4).replace("!"+separator,separator) + separator;
 			sub = sub.toLowerCase();
  			//sub:  \BOOT-INF\classes!\sql\
 			sub = sub.replace("!","");
-			if(sub.startsWith(separator)){
+			if(sub.startsWith(separator)) {
 				sub = sub.substring(1);
 			}
 			sub = sub.replace("\\","/"); //子目录以/分隔(不区分操作系统)
@@ -107,7 +107,7 @@ public class DefaultSQLStore extends SQLStore {
 			try {
 				File file = new File(System.getProperty("java.class.path"));
 				parseJarFile(file, sub);
-			}catch (Exception e){
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		}else{
@@ -115,7 +115,7 @@ public class DefaultSQLStore extends SQLStore {
 		}
 	}
 
-	private static synchronized void parseJarFile(File file, String sub){
+	private static synchronized void parseJarFile(File file, String sub) {
 		//第一级jar
 		try {
 			FileInputStream fin = new FileInputStream(file);
@@ -125,24 +125,24 @@ public class DefaultSQLStore extends SQLStore {
 				//第一级jar中的文件 过滤出xml与下一级jar
 				// boot-inf/classes/mapper/hr/user.xml
 				String path1 = entry.getName().toLowerCase();
-				if(null != sub){
-					if(!path1.startsWith(sub)){
+				if(null != sub) {
+					if(!path1.startsWith(sub)) {
 						continue;
 					}
 				}
-				if(path1.endsWith(".xml")){
+				if(path1.endsWith(".xml")) {
 					FilterInputStream in = new FilterInputStream(jis) {
 						public void close() throws IOException {}
 					};
 					parseXML(prefix(null, path1), FileUtil.read(in).toString());
-				}else if(path1.endsWith(".jar")){
+				}else if(path1.endsWith(".jar")) {
 					//第二级jar
 					String name1 = FileUtil.getSimpleFileName(path1);
 					JarInputStream jis2 = new JarInputStream(jis);
 					ZipEntry entry2 = null;
 					while ((entry2 = jis2.getNextEntry()) != null) {
 						String path2 = entry2.getName();
-						if(path2.endsWith("xml")){
+						if(path2.endsWith("xml")) {
 							FilterInputStream in2 = new FilterInputStream(jis2) {
 								public void close() throws IOException {}
 							};
@@ -151,7 +151,7 @@ public class DefaultSQLStore extends SQLStore {
 					}
 				}
 			}
-		}catch (Exception e){
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -189,50 +189,50 @@ public class DefaultSQLStore extends SQLStore {
 	 * @param path path或二级jar中的条目name
 	 * @return String
 	 */
-	private static String prefix(String parent, String path){
+	private static String prefix(String parent, String path) {
 		String result = null;
 		String prefix = path;
 		if(null != root) {
 			String[] dirs = root.split(",");
-			for(String dir:dirs){
+			for(String dir:dirs) {
 				if(prefix.startsWith(dir)) {
 					prefix = prefix.replace(dir, "");
 				}
 			}
 		}
-		for(String cut:cuts){
+		for(String cut:cuts) {
 			//分隔符 不一定与操作系统一致
-			if(prefix.contains(cut + "/") || prefix.contains(cut + "\\")){
+			if(prefix.contains(cut + "/") || prefix.contains(cut + "\\")) {
 				prefix = prefix.substring(prefix.indexOf(cut) + cut.length()+1);
 			}
 		}
-		if(prefix.contains(".xml")){
+		if(prefix.contains(".xml")) {
 			prefix = prefix.substring(0, prefix.indexOf(".xml"));
 		}
 		prefix = prefix.replace("/",".")
 				.replace("\\",".")
 				.replace("src/main",".")
 				.replace("src\\main",".");
-		if(prefix.startsWith(".")){
+		if(prefix.startsWith(".")) {
 			prefix = prefix.substring(1);
 		}
 		result = prefix;
-		if(null != parent){
+		if(null != parent) {
 			result += "," + parent + "." + prefix;
 		}
 		return result;
 	}
-	private static List<RunPrepare> parseMyBatisXML(String prefix, Element root){
+	private static List<RunPrepare> parseMyBatisXML(String prefix, Element root) {
 		List<RunPrepare> result = new ArrayList<>();
 		List<Element> elements = root.elements();
-		for(Element element:elements){
+		for(Element element:elements) {
 			String elementName = element.getName();
 			if("sql".equalsIgnoreCase(elementName)
 					|| "select".equalsIgnoreCase(elementName)
 					|| "update".equalsIgnoreCase(elementName)
 					|| "insert".equalsIgnoreCase(elementName)
 					|| "delete".equalsIgnoreCase(elementName)
-			){
+			) {
 				String id = element.attributeValue("id");
 				String sqlText = element.getText().trim();
 				sqlText = RegularUtil.removeTag(sqlText);
@@ -249,7 +249,7 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		return result;
 	}
-	private static List<RunPrepare> parseXML(String prefix, Element root){
+	private static List<RunPrepare> parseXML(String prefix, Element root) {
 		List<RunPrepare> result = new ArrayList<>();
 
 		// 全局条件分组
@@ -301,17 +301,17 @@ public class DefaultSQLStore extends SQLStore {
 		}
 		Element root = document.getRootElement();
 		String rootName = root.getName();
-		if("mapper".equalsIgnoreCase(rootName)){
+		if("mapper".equalsIgnoreCase(rootName)) {
 			prepares = parseMyBatisXML(prefix, root);
 		}else{
 			prepares = parseXML(prefix, root);
 		}
-		for(RunPrepare prepare:prepares){
+		for(RunPrepare prepare:prepares) {
 			String[] prefixs = prefix.split(",");
 			for(String _prefix:prefixs) {
 				String sqlId = _prefix + ":" + prepare.getId();
 				prepare.setDest(sqlId);
-				if(sqls.containsKey(sqlId)){
+				if(sqls.containsKey(sqlId)) {
 					sqls.get(sqlId).setMultiple(true);
 					log.warn("[SQL Prepare 重名][调用时请注意添加前缀][id:{}]", sqlId);
 				}else {
@@ -327,14 +327,14 @@ public class DefaultSQLStore extends SQLStore {
 		String id = element.attributeValue("id");    // 查询条件id
 		Compare.EMPTY_VALUE_SWITCH swt = Compare.EMPTY_VALUE_SWITCH.IGNORE;
 		String _swt = element.attributeValue("switch");
-		if(BasicUtil.isNotEmpty(_swt)){
+		if(BasicUtil.isNotEmpty(_swt)) {
 			swt = Compare.EMPTY_VALUE_SWITCH.valueOf(_swt.toUpperCase());
 		}else {
 			boolean required = BasicUtil.parseBoolean(element.attributeValue("required"), false);
 			boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"), false);
-			if(strictRequired){
+			if(strictRequired) {
 				swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
-			}else if(required){
+			}else if(required) {
 				swt = Compare.EMPTY_VALUE_SWITCH.NULL;
 			}
 		}
@@ -419,7 +419,7 @@ public class DefaultSQLStore extends SQLStore {
 			if (null == prepare) {
 				log.error("[SQL提取失败][id:{}][所有可用sql:{}]", id, BeanUtil.concat(BeanUtil.getMapKeys(sqls)));
 			}else{
-				if(prepare.isMultiple()){
+				if(prepare.isMultiple()) {
 					log.error("[SQL提取失败][有多个重名SQL使用完整ID调用][id:{}]", id);
 				}
 			}

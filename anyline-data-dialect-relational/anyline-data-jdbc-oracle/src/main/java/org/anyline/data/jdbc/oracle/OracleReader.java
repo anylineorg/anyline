@@ -28,7 +28,7 @@ public enum OracleReader {
             if(value instanceof CLOB) {
                 try {
                     value = ((CLOB) value).stringValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -36,15 +36,15 @@ public enum OracleReader {
         }
     })
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataReader reader(){
+    public DataReader reader() {
         return reader;
     }
     private final Object[] supports;
     private final DataReader reader;
-    OracleReader(Object[] supports, DataReader reader){
+    OracleReader(Object[] supports, DataReader reader) {
         this.supports = supports;
         this.reader = reader;
     }

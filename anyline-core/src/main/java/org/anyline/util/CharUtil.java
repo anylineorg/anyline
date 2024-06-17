@@ -196,7 +196,7 @@ public class CharUtil {
 		for (int i = 0; i < chs.length(); i++) {
 			key = chs.substring(i, i + 1);
 			value = convert(key); 
-			if(first){
+			if(first) {
 				buffer.append(value.charAt(0)); 
 			}else{
 				buffer.append(value); 
@@ -210,7 +210,7 @@ public class CharUtil {
 	 * @param src src
 	 * @return String
 	 */
-	public static String toUpperCaseHeader(String src){
+	public static String toUpperCaseHeader(String src) {
 		char[] cs=src.toCharArray();
 		cs[0] = Character.toUpperCase(cs[0]);
 		return String.valueOf(cs);

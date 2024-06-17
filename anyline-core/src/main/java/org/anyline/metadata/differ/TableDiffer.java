@@ -33,23 +33,23 @@ public class TableDiffer implements MetadataDiffer {
     private IndexsDiffer indexsDiffer;
     //部分数据库的触发器 关联不到表
     private TriggersDiffer triggersDiffer;
-    public TableDiffer(){}
-    public TableDiffer(Table origin, Table dest){
+    public TableDiffer() {}
+    public TableDiffer(Table origin, Table dest) {
         this.origin = origin;
         this.dest = dest;
     }
-    public boolean isEmpty(){
-        if(null != columnsDiffer && !columnsDiffer.isEmpty()){
+    public boolean isEmpty() {
+        if(null != columnsDiffer && !columnsDiffer.isEmpty()) {
             return false;
         }
-        if(null != indexsDiffer && !indexsDiffer.isEmpty()){
+        if(null != indexsDiffer && !indexsDiffer.isEmpty()) {
             return false;
         }
         return true;
     }
 
-    public static TableDiffer compare(Table origin, Table dest){
-        if(null == dest){
+    public static TableDiffer compare(Table origin, Table dest) {
+        if(null == dest) {
             dest = new Table();
         }
 

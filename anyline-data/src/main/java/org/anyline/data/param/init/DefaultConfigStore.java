@@ -69,7 +69,7 @@ public class DefaultConfigStore implements ConfigStore {
 	protected Schema schema					= null					;
 	protected Table table					= null					;
 
-	public DataRow map(boolean empty){
+	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
 		DataRow columns = new OriginRow();
 		columns.put("query", this.columns);
@@ -83,7 +83,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		return row;
 	}
-	public String getRunText(DataRuntime runtime, boolean placeholder){
+	public String getRunText(DataRuntime runtime, boolean placeholder) {
 		return this.getConfigChain().createAutoConditionChain().getRunText(null, runtime, placeholder);
 	}
 	@Override
@@ -102,7 +102,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public String tableName() {
-		if(null != table){
+		if(null != table) {
 			return table.getName();
 		}
 		return null;
@@ -110,7 +110,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public String schemaName() {
-		if(null != schema){
+		if(null != schema) {
 			return schema.getName();
 		}
 		return null;
@@ -118,7 +118,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public String catalogName() {
-		if(null != catalog){
+		if(null != catalog) {
 			return catalog.getName();
 		}
 		return null;
@@ -194,7 +194,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore dest(String dest) {
 		this.dest = dest;
-		if(null != dest && !dest.contains(" ") && !dest.contains(":")){
+		if(null != dest && !dest.contains(" ") && !dest.contains(":")) {
 			table(dest);
 		}
 		return this;
@@ -211,7 +211,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore copyProperty(ConfigStore configs) {
-		if(null != configs){
+		if(null != configs) {
 			this.table = configs.table();
 			this.handler = configs.handler();
 			this.catalog = configs.catalog();
@@ -232,12 +232,12 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public ConfigStore keys(String ... keys) {
-		if(null == this.primaryKeys){
+		if(null == this.primaryKeys) {
 			this.primaryKeys = new ArrayList<>();
 		}else {
 			this.primaryKeys.clear();
 		}
-		for(String key:keys){
+		for(String key:keys) {
 			this.primaryKeys.add(key);
 		}
 		return this;
@@ -252,23 +252,23 @@ public class DefaultConfigStore implements ConfigStore {
 		return primaryKeys;
 	}
 
-	public DefaultConfigStore init(){
+	public DefaultConfigStore init() {
 		return new DefaultConfigStore();
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		String str = "";
-		if(null != chain){
+		if(null != chain) {
 			str += chain.toString();
 		}
-		if(null != navi){
+		if(null != navi) {
 			str += "." + navi.getFirstRow() + "." + navi.getLastRow() + "." + navi.getCurPage();
 		}
-		if(null != orders){
+		if(null != orders) {
 			str += "." + orders.getRunText("");
 		}
-		if(null != groups){
+		if(null != groups) {
 			str += "." + groups.getRunText("");
 		}
 		return str;
@@ -296,12 +296,12 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return Config
 	 */
 	@Override 
-	public Config parseConfig(String config){
-		if(null == config){
+	public Config parseConfig(String config) {
+		if(null == config) {
 			return null; 
 		} 
 		DefaultConfig conf = null;
-		if(config.contains("|")){
+		if(config.contains("|")) {
 			conf = new DefaultConfigChain(config);
 		}else{
 			conf = new DefaultConfig(config);
@@ -309,13 +309,13 @@ public class DefaultConfigStore implements ConfigStore {
 		return conf; 
 	}
 	@Override
-	public ConfigStore setPageNavi(PageNavi navi){
+	public ConfigStore setPageNavi(PageNavi navi) {
 		this.navi = navi;
 		return this;
 	}
 	@Override
-	public ConfigStore copyPageNavi(PageNavi navi){
-		if(null == this.navi){
+	public ConfigStore copyPageNavi(PageNavi navi) {
+		if(null == this.navi) {
 			this.navi = navi;
 		}else{
 			this.navi.setBaseLink(navi.getBaseLink());
@@ -332,10 +332,10 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
-	public DefaultConfigStore(String ... configs){
+	public DefaultConfigStore(String ... configs) {
 		configs = BasicUtil.compress(configs);
 		chain = new DefaultConfigChain();
-		for(String config:configs){
+		for(String config:configs) {
 			chain.addConfig(parseConfig(config));
 		}
 	}
@@ -345,44 +345,44 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param first 起
 	 * @param last 止
 	 */
-	public DefaultConfigStore(long first, long last){
+	public DefaultConfigStore(long first, long last) {
 		chain = new DefaultConfigChain();
 		scope(first, last);
 	}
-	public DefaultConfigStore(List<String> configs){
+	public DefaultConfigStore(List<String> configs) {
 		configs = BasicUtil.compress(configs);
 		chain = new DefaultConfigChain();
-		for(String config:configs){
+		for(String config:configs) {
 			chain.addConfig(parseConfig(config));
 		}
 	}
 	@Override
-	public Boolean override(){
+	public Boolean override() {
 		return override;
 	}
 	@Override
-	public List<String> overrideByColumns(){
+	public List<String> overrideByColumns() {
 		return overrideByColumns;
 	}
 	@Override
-	public Constraint overrideByConstraint(){
+	public Constraint overrideByConstraint() {
 		return overrideByConstraint;
 	}
 	@Override
-	public ConfigStore override(Boolean override, String ... columns){
+	public ConfigStore override(Boolean override, String ... columns) {
 		this.override = override;
-		if(null != columns){
-			if(null == overrideByColumns){
+		if(null != columns) {
+			if(null == overrideByColumns) {
 				overrideByColumns = new ArrayList<>();
 			}
-			for(String column:columns){
+			for(String column:columns) {
 				overrideByColumns.add(column);
 			}
 		}
 		return this;
 	}
 	@Override
-	public ConfigStore override(Boolean override, Constraint constraint){
+	public ConfigStore override(Boolean override, Constraint constraint) {
 		this.override = override;
 		overrideByConstraint = constraint;
 		return this;
@@ -416,7 +416,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param last 止
 	 * @return ConfigStore
 	 */
-	public ConfigStore scope(long first, long last){
+	public ConfigStore scope(long first, long last) {
 		if(null == navi) {
 			navi = new DefaultPageNavi();
 			navi.autoCount(false);
@@ -432,7 +432,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param rows 返回具体行数
 	 * @return ConfigStore
 	 */
-	public ConfigStore limit(long offset, int rows){
+	public ConfigStore limit(long offset, int rows) {
 		if(null == navi) {
 			navi = new DefaultPageNavi();
 			navi.autoCount(false);
@@ -445,16 +445,16 @@ public class DefaultConfigStore implements ConfigStore {
 
 
 	@Override
-	public ConfigStore autoCount(boolean auto){
-		if(null == navi){
+	public ConfigStore autoCount(boolean auto) {
+		if(null == navi) {
 			navi = new DefaultPageNavi();
 		}
 		navi.autoCount(auto);
 		return this;
 	}
 	@Override
-	public Boolean autoCount(){
-		if(null != navi){
+	public Boolean autoCount() {
+		if(null != navi) {
 			return navi.autoCount();
 		}
 		return null;
@@ -486,7 +486,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore add(Run run) {
-		if(null == runs){
+		if(null == runs) {
 			runs = new ArrayList<>();
 		}
 		runs.add(run);
@@ -499,7 +499,7 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param rows 每页rows行
 	 * @return ConfigStore
 	 */
-	public ConfigStore page(long page, int rows){
+	public ConfigStore page(long page, int rows) {
 		if(null == navi) {
 			navi = new DefaultPageNavi();
 		}
@@ -550,8 +550,8 @@ public class DefaultConfigStore implements ConfigStore {
 	public LinkedHashMap<String, Column> getPrimaryColumns() {
 		LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
 		List<String> pks = getPrimaryKeys();
-		if(null != pks){
-			for(String pk:pks){
+		if(null != pks) {
+			for(String pk:pks) {
 				Column column = new Column(pk);
 				columns.put(pk.toUpperCase(), column);
 			}
@@ -592,7 +592,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 	}
 	@Override
-	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text){
+	public ConfigStore and(EMPTY_VALUE_SWITCH swt, String text) {
 		Config conf = new DefaultConfig();
 		conf.setSwt(swt);
 		conf.setText(text);
@@ -603,13 +603,13 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 
-		if(null == compare){
+		if(null == compare) {
 			compare = Compare.AUTO;
 		}
 		int compareCode = compare.getCode();
 		if(null == prefix && null != var && var.contains(".")
 			&& !var.contains(">") // JSON_COLUMN>$.A
-		){
+		) {
 			prefix = var.substring(0, var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}
@@ -625,9 +625,9 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		//NULL NOT NULL
-		if(compare == Compare.NULL || compare == Compare.NOT_NULL){
+		if(compare == Compare.NULL || compare == Compare.NOT_NULL) {
 			String column = var;
-			if(BasicUtil.isNotEmpty(prefix)){
+			if(BasicUtil.isNotEmpty(prefix)) {
 				column = prefix + "." + var;
 			}
 			String txt = column + compare.formula();
@@ -642,7 +642,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 		List<Config> olds = new ArrayList<>();
 		Config conf = null;
-		if(overCondition){
+		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
 			if(olds.size()>0) {
 				conf = olds.get(0);
@@ -653,30 +653,30 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 
-		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
+		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62) {
 			List list = (List)value;
 			if (overValue) {
 				chain.removeConfig(olds);
 			}
-			if(compareCode == 60 || compareCode == 61){
+			if(compareCode == 60 || compareCode == 61) {
 				//FIND_IN_OR
 				boolean first = true;
-				for(Object item:list){
-					if(first){
+				for(Object item:list) {
+					if(first) {
 						and(swt, compare, prefix, var, item, false, false);
 						first = false;
 					}else {
 						or(compare, var, item);
 					}
 				}
-			}else if(compareCode == 62){
+			}else if(compareCode == 62) {
 				//FIND_IN_AND
-				for(Object item:list){
+				for(Object item:list) {
 					and(swt, compare, prefix, var, item, false, false);
 				}
 			}
 		}else{
-			if(null == conf){
+			if(null == conf) {
 				conf = new DefaultConfig();
 				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 				conf.setCompare(compare);
@@ -714,12 +714,12 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public ConfigStore and(ConfigStore configs, boolean apart) {
-		if(null == configs){
+		if(null == configs) {
 			return this;
 		}
 		ConfigChain list = null;
 		ConfigChain chains = configs.getConfigChain();
-		if(apart){
+		if(apart) {
 			list = new DefaultConfigChain();
 			list.addConfig(chain);
 		}else{
@@ -730,7 +730,7 @@ public class DefaultConfigStore implements ConfigStore {
 			list.addConfig(chains);
 		}else{
 			List<Config> items = chains.getConfigs();
-			for(Config item:items){
+			for(Config item:items) {
 				list.addConfig(item);
 			}
 		}
@@ -760,7 +760,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, String text){
+	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, String text) {
 		Config conf = new DefaultConfig();
 		conf.setText(text);
 		ConfigChain list = new DefaultConfigChain();
@@ -771,11 +771,11 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		if(null == compare){
+		if(null == compare) {
 			compare = Compare.AUTO;
 		}
 		int compareCode = compare.getCode();
-		if(null == prefix && var.contains(".")){
+		if(null == prefix && var.contains(".")) {
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}
@@ -791,9 +791,9 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		//NULL NOT NULL
-		if(compare == Compare.NULL || compare == Compare.NOT_NULL){
+		if(compare == Compare.NULL || compare == Compare.NOT_NULL) {
 			String column = var;
-			if(BasicUtil.isNotEmpty(prefix)){
+			if(BasicUtil.isNotEmpty(prefix)) {
 				column = prefix + "." + var;
 			}
 			String txt = column + compare.formula();
@@ -808,7 +808,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 		List<Config> olds = new ArrayList<>();
 		Config conf = null;
-		if(overCondition){
+		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
 			if(olds.size()>0) {
 				conf = olds.get(0);
@@ -819,31 +819,31 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		ConfigStore newStore = new DefaultConfigStore();
-		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
+		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62) {
 			//集合
 			List list = (List)value;
 			if (overValue) {
 				chain.removeConfig(olds);
 			}
-			if(compareCode == 60 || compareCode == 61){
+			if(compareCode == 60 || compareCode == 61) {
 				//FIND_IN_OR
 				boolean first = true;
-				for(Object item:list){
-					if(first){
+				for(Object item:list) {
+					if(first) {
 						newStore.and(swt, compare, prefix, var, item, false, false);
 						first = false;
 					}else {
 						newStore.or(compare, var, item);
 					}
 				}
-			}else if(compareCode == 62){
+			}else if(compareCode == 62) {
 				//FIND_IN_AND
-				for(Object item:list){
+				for(Object item:list) {
 					newStore.and(swt, compare, prefix, var, item, false, false);
 				}
 			}
 		}else{
-			if(null == conf){
+			if(null == conf) {
 				conf = new DefaultConfig();
 				conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 				conf.setCompare(compare);
@@ -881,10 +881,10 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public ConfigStore params(Object... values) {
-		if(null == this.values){
+		if(null == this.values) {
 			this.values = new ArrayList<>();
 		}
-		if(null != values){
+		if(null != values) {
             this.values.addAll(Arrays.asList(values));
 		}
 		return this;
@@ -892,7 +892,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore params(Collection values) {
-		if(null == this.values){
+		if(null == this.values) {
 			this.values = new ArrayList<>();
 		}
 		this.values.addAll(values);
@@ -906,11 +906,11 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public ConfigStore or(ConfigStore configs, boolean apart) {
-		if(null == configs){
+		if(null == configs) {
 			return this;
 		}
 		ConfigChain list = null;
-		if(apart){
+		if(apart) {
 			list = new DefaultConfigChain();
 			list.addConfig(chain);
 		}else{
@@ -931,7 +931,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String text){
+	public ConfigStore or(EMPTY_VALUE_SWITCH swt, String text) {
 		Config config = new DefaultConfig();
 		config.setText(text);
 		config.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
@@ -940,7 +940,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String text){
+	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, String text) {
 		ConfigChain list = new DefaultConfigChain();
 		list.addConfig(chain);
 		Config config = new DefaultConfig();
@@ -964,14 +964,14 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
 		List<Config> configs = chain.getConfigs();
-		if(null == prefix && var.contains(".")){
+		if(null == prefix && var.contains(".")) {
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}
 
 		List<Config> olds = new ArrayList<>();
 		Config conf = null;
-		if(overCondition){
+		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
 			if(olds.size()>0) {
 				conf = olds.get(0);
@@ -982,26 +982,26 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}
 		// 如果当前没有其他条件
-		if(configs.size()==0){
+		if(configs.size()==0) {
 			and(swt, compare, prefix, var, value, overCondition, overValue);
 		}else{
 			int compareCode = compare.getCode();
 			value = value(value);
-			if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
+			if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62) {
 				List list = (List)value;
 				if (overValue) {
 					chain.removeConfig(olds);
 				}
-				if(compareCode == 60 || compareCode == 61){
+				if(compareCode == 60 || compareCode == 61) {
 					//FIND_IN_OR
-					for(Object item:list){
+					for(Object item:list) {
 						or(swt, compare, prefix, var, item);
 					}
-				}else if(compareCode == 62){
+				}else if(compareCode == 62) {
 					//FIND_IN_AND
 					ConfigChain findChain = new DefaultConfigChain();
 					findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-					for(Object item:list){
+					for(Object item:list) {
 						conf = new DefaultConfig();
 						conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 						conf.setCompare(compare);
@@ -1014,8 +1014,8 @@ public class DefaultConfigStore implements ConfigStore {
 				}
 			}else{
 				//覆盖原条件(不要新加)
-				if(null != conf){
-					if(overValue){
+				if(null != conf) {
+					if(overValue) {
 						conf.setValue(value);
 					}else {
 						conf.addValue(value);
@@ -1025,10 +1025,10 @@ public class DefaultConfigStore implements ConfigStore {
 					Config last = configs.get(configs.size()-1);
 					configs.remove(last);
 
-					if(last instanceof ConfigChain){
+					if(last instanceof ConfigChain) {
 						ConfigChain lastChain = (ConfigChain)last;
 						List<Config> lastItems = lastChain.getConfigs();
-						for(Config lastItem:lastItems){
+						for(Config lastItem:lastItems) {
 							orChain.addConfig(lastItem);
 						}
 					}else{
@@ -1036,9 +1036,9 @@ public class DefaultConfigStore implements ConfigStore {
 					}
 					conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-					if(compare == Compare.NULL || compare == Compare.NOT_NULL){
+					if(compare == Compare.NULL || compare == Compare.NOT_NULL) {
 						String column = var;
-						if(BasicUtil.isNotEmpty(prefix)){
+						if(BasicUtil.isNotEmpty(prefix)) {
 							column = prefix + "." + var;
 						}
 						String txt = column + compare.formula();
@@ -1058,7 +1058,7 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	@Override
 	public ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue) {
-		if(null == prefix && var.contains(".")){
+		if(null == prefix && var.contains(".")) {
 			prefix = var.substring(0,var.indexOf("."));
 			var = var.substring(var.indexOf(".")+1);
 		}
@@ -1066,7 +1066,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 		List<Config> olds = new ArrayList<>();
 		Config conf = null;
-		if(overCondition){
+		if(overCondition) {
 			olds = chain.getConfigs(prefix, var, compare);
 			if(olds.size()>0) {
 				conf = olds.get(0);
@@ -1080,14 +1080,14 @@ public class DefaultConfigStore implements ConfigStore {
 		ConfigChain newChain = new DefaultConfigChain();
 		newChain.addConfig(chain);
 		value = value(value);
-		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62){
+		if(value instanceof List && ((List)value).size()>1 && compareCode >= 60 && compareCode <= 62) {
 			List list = (List)value;
 			if (overValue) {
 				chain.removeConfig(olds);
 			}
-			if(compareCode == 60 || compareCode == 61){
+			if(compareCode == 60 || compareCode == 61) {
 				//FIND_IN_OR
-				for(Object item:list){
+				for(Object item:list) {
 					conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 					conf.setPrefix(prefix);
@@ -1096,11 +1096,11 @@ public class DefaultConfigStore implements ConfigStore {
 					conf.setValue(item);
 					newChain.addConfig(conf);
 				}
-			}else if(compareCode == 62){
+			}else if(compareCode == 62) {
 				//FIND_IN_AND
 				ConfigChain findChain = new DefaultConfigChain();
 				findChain.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-				for(Object item:list){
+				for(Object item:list) {
 					conf = new DefaultConfig();
 					conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 					conf.setCompare(compare);
@@ -1113,7 +1113,7 @@ public class DefaultConfigStore implements ConfigStore {
 			}
 		}else {
 			if(null != conf) {
-				if(overValue){
+				if(overValue) {
 					conf.setValue(value);
 				}else{
 					conf.addValue(value);
@@ -1122,9 +1122,9 @@ public class DefaultConfigStore implements ConfigStore {
 				conf = new DefaultConfig();
 				conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 
-				if(compare == Compare.NULL || compare == Compare.NOT_NULL){
+				if(compare == Compare.NULL || compare == Compare.NOT_NULL) {
 					String column = var;
-					if(BasicUtil.isNotEmpty(prefix)){
+					if(BasicUtil.isNotEmpty(prefix)) {
 						column = prefix + "." + var;
 					}
 					String txt = column + compare.formula();
@@ -1144,15 +1144,15 @@ public class DefaultConfigStore implements ConfigStore {
 		return this;
 	}
 
-	private Object value(Object value){
-		if(value instanceof Object[]){
+	private Object value(Object value) {
+		if(value instanceof Object[]) {
 			value = BeanUtil.array2list((Object[])value);
 		}
-		if(value instanceof List){
+		if(value instanceof List) {
 			List list = (List)value;
-			if(list.size() == 0){
+			if(list.size() == 0) {
 				value = null;
-			}else if(list.size() ==1){
+			}else if(list.size() ==1) {
 				value = list.get(0);
 			}
 		}
@@ -1162,25 +1162,25 @@ public class DefaultConfigStore implements ConfigStore {
 	/** 
 	 * 把httpRequest中的参数存放到navi 
 	 */ 
-	protected void setNaviParam(){
-		if(null == chain || null == navi){
+	protected void setNaviParam() {
+		if(null == chain || null == navi) {
 			return; 
 		} 
 		 
 		List<Config> configs = chain.getConfigs(); 
-		for(Config config:configs){
-			if(null == config){
+		for(Config config:configs) {
+			if(null == config) {
 				continue;
 			} 
 			String key = config.getKey(); 
 			List<Object> values = new ArrayList<Object>(); 
 			List<Object> srcValues = config.getValues(); 
-			if(config.isKeyEncrypt()){
+			if(config.isKeyEncrypt()) {
 				key = DESUtil.encryptParamKey(key); 
 			} 
-			if(config.isValueEncrypt() && null != srcValues){
-				for(Object value:srcValues){
-					if(null != value){
+			if(config.isValueEncrypt() && null != srcValues) {
+				for(Object value:srcValues) {
+					if(null != value) {
 						value = DESUtil.encryptParamValue(value.toString()); 
 						values.add(value); 
 					} 
@@ -1192,45 +1192,45 @@ public class DefaultConfigStore implements ConfigStore {
 		} 
 	}
 	@Override
-	public ConfigChain getConfigChain(){
+	public ConfigChain getConfigChain() {
 		return chain;
 	}
 
 	@Override
-	public boolean isEmptyCondition(){
-		if(null != chain){
+	public boolean isEmptyCondition() {
+		if(null != chain) {
 			return chain.isEmpty();
 		}
 		return true;
 	}
 
 	@Override
-	public boolean isEmpty(){
-		if(null != handler){
+	public boolean isEmpty() {
+		if(null != handler) {
 			return false;
 		}
-		if(null !=chain && !chain.isEmpty()){
+		if(null !=chain && !chain.isEmpty()) {
 			return false;
 		}
-		if(null != navi){
+		if(null != navi) {
 			return false;
 		}
-		if(null != orders && !orders.isEmpty()){
+		if(null != orders && !orders.isEmpty()) {
 			return false;
 		}
-		if(null != groups && !groups.isEmpty()){
+		if(null != groups && !groups.isEmpty()) {
 			return false;
 		}
-		if(null != having){
+		if(null != having) {
 			return false;
 		}
-		if(null != columns && !columns.isEmpty()){
+		if(null != columns && !columns.isEmpty()) {
 			return false;
 		}
-		if(null != excludes && !excludes.isEmpty()){
+		if(null != excludes && !excludes.isEmpty()) {
 			return false;
 		}
-		if(null != values && !values.isEmpty()){
+		if(null != values && !values.isEmpty()) {
 			return false;
 		}
 		return true;
@@ -1242,53 +1242,53 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return ConfigStore
 	 */
 	@Override 
-	public ConfigStore order(Order order, boolean override){
-		if(null == orders){
+	public ConfigStore order(Order order, boolean override) {
+		if(null == orders) {
 			orders = new DefaultOrderStore();
 		} 
 		orders.order(order, override);
-		if(null != navi){
+		if(null != navi) {
 			navi.order(order.getColumn(), order.getType().getCode(), override);
 		}
 		return this; 
 	}
 	@Override
-	public ConfigStore order(Order order){
+	public ConfigStore order(Order order) {
 		return order(order, true);
 	}
 
 	@Override
-	public ConfigStore order(String column, Order.TYPE type, boolean override){
+	public ConfigStore order(String column, Order.TYPE type, boolean override) {
 		return order(new DefaultOrder(column,type), override);
 	}
 
 	@Override
-	public ConfigStore order(String column, Order.TYPE type){
+	public ConfigStore order(String column, Order.TYPE type) {
 		return order(column, type, true);
 	}
 
 	@Override
-	public ConfigStore order(String column, String type, boolean override){
+	public ConfigStore order(String column, String type, boolean override) {
 		return order(new DefaultOrder(column,type), override);
 	}
 
 	@Override
-	public ConfigStore order(String column, String type){
+	public ConfigStore order(String column, String type) {
 		return order(column, type, true);
 	}
 
 	@Override
-	public ConfigStore order(String order, boolean override){
+	public ConfigStore order(String order, boolean override) {
 		return order(new DefaultOrder(order), override);
 	}
 	@Override 
-	public ConfigStore order(String order){
+	public ConfigStore order(String order) {
 		return order(order, true);
 	} 
 	@Override 
 	public OrderStore getOrders() {
-		if(null == orders || orders.getOrders().isEmpty()){
-			if(null != navi){
+		if(null == orders || orders.getOrders().isEmpty()) {
+			if(null != navi) {
 				orders = navi.getOrders();
 			}
 		}
@@ -1305,8 +1305,8 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @return ConfigStore
 	 */
 	@Override 
-	public ConfigStore group(Group group){
-		if(null == groups){
+	public ConfigStore group(Group group) {
+		if(null == groups) {
 			groups = new DefaultGroupStore();
 		} 
 		groups.group(group); 
@@ -1314,7 +1314,7 @@ public class DefaultConfigStore implements ConfigStore {
 	} 
 
 	@Override 
-	public ConfigStore group(String column){
+	public ConfigStore group(String column) {
 		return group(new AbstractGroup(column));
 	} 
 	public GroupStore getGroups() {
@@ -1342,32 +1342,32 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public Config getConfig(String var){
+	public Config getConfig(String var) {
 		return chain.getConfig(null,var);
 	}
-	public ConfigStore removeConfig(String var){
+	public ConfigStore removeConfig(String var) {
 		Config config = getConfig(var);
 		return removeConfig(config);
 	}
 	@Override
-	public ConfigStore removeConfig(Config config){
+	public ConfigStore removeConfig(Config config) {
 		chain.removeConfig(config);
 		return this;
 	}
 	@Override
-	public List<Object> getConfigValues(String var){
+	public List<Object> getConfigValues(String var) {
 		Config config = chain.getConfig(null, var);
-		if(null != config){
+		if(null != config) {
 			return config.getValues();
 		}
 		return null;
 	}
 	@Override
-	public Object getConfigValue(String var){
+	public Object getConfigValue(String var) {
 		Config config = chain.getConfig(null,var);
-		if(null != config){
+		if(null != config) {
 			List<Object> values = config.getValues();
-			if(null != values && !values.isEmpty()){
+			if(null != values && !values.isEmpty()) {
 				return values.get(0);
 			}
 		}
@@ -1375,28 +1375,28 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	@Override
-	public Config getConfig(String var, Compare compare){
+	public Config getConfig(String var, Compare compare) {
 		return chain.getConfig(null,var,compare);
 	}
 	@Override
-	public ConfigStore removeConfig(String var, Compare compare){
+	public ConfigStore removeConfig(String var, Compare compare) {
 		Config config = getConfig(var, compare);
 		return removeConfig(config);
 	}
 	@Override
-	public List<Object> getConfigValues(String var, Compare compare){
+	public List<Object> getConfigValues(String var, Compare compare) {
 		Config config = chain.getConfig(null, var,compare);
-		if(null != config){
+		if(null != config) {
 			return config.getValues();
 		}
 		return null;
 	}
 	@Override
-	public Object getConfigValue(String var, Compare compare){
+	public Object getConfigValue(String var, Compare compare) {
 		Config config = chain.getConfig(null, var,compare);
-		if(null != config){
+		if(null != config) {
 			List<Object> values = config.getValues();
-			if(null != values && !values.isEmpty()){
+			if(null != values && !values.isEmpty()) {
 				return values.get(0);
 			}
 		}
@@ -1407,8 +1407,8 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param ms 缓存有效期(毫秒)
 	 * @return ConfigStore
 	 */
-	public ConfigStore setTotalLazy(long ms){
-		if(null != navi){
+	public ConfigStore setTotalLazy(long ms) {
+		if(null != navi) {
 			navi.setLazy(ms);
 		}
 		return this;
@@ -1417,12 +1417,12 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override 
 	public ConfigStore setValue(Map<String, Object> values) {
 		//this.values = values;
-		if(null == chain || null == values){
+		if(null == chain || null == values) {
 			return this; 
 		} 
 		List<Config> configs = chain.getConfigs(); 
-		for(Config config:configs){
-			if(null == config){
+		for(Config config:configs) {
+			if(null == config) {
 				continue;
 			} 
 			config.setValue(values); 
@@ -1436,38 +1436,38 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param columns 需要查询的列
 	 * @return ConfigStore
 	 */
-	public ConfigStore columns(String ... columns){
-		if(null != columns){
-			for(String column:columns){
+	public ConfigStore columns(String ... columns) {
+		if(null != columns) {
+			for(String column:columns) {
 				this.columns.add(column);
 			}
 		}
 		return this;
 	}
-	public ConfigStore columns(List<String> columns){
-		if(null != columns){
+	public ConfigStore columns(List<String> columns) {
+		if(null != columns) {
 			this.columns.addAll(columns);
 		}
 		return this;
 	}
-	public List<String> columns(){
+	public List<String> columns() {
 		return columns;
 	}
-	public ConfigStore excludes(String ... columns){
-		if(null != columns){
-			for(String column:columns){
+	public ConfigStore excludes(String ... columns) {
+		if(null != columns) {
+			for(String column:columns) {
 				this.excludes.add(column);
 			}
 		}
 		return this;
 	}
-	public ConfigStore excludes(List<String> columns){
-		if(null != columns){
+	public ConfigStore excludes(List<String> columns) {
+		if(null != columns) {
 			this.excludes.addAll(columns);
 		}
 		return this;
 	}
-	public List<String> excludes(){
+	public List<String> excludes() {
 		return excludes;
 	}
 
@@ -1476,11 +1476,11 @@ public class DefaultConfigStore implements ConfigStore {
 	 * @param cascade  是否开启
 	 * @return ConfigStore
 	 */
-	public ConfigStore cascade(boolean cascade){
+	public ConfigStore cascade(boolean cascade) {
 		this.cascade = cascade;
 		return this;
 	}
-	public boolean cascade(){
+	public boolean cascade() {
 		return this.cascade;
 	}
 
@@ -1488,10 +1488,10 @@ public class DefaultConfigStore implements ConfigStore {
 	 * 是否支持返回自增主键值
 	 * @return boolean
 	 */
-	public boolean supportKeyHolder(){
+	public boolean supportKeyHolder() {
 		return this.supportKeyHolder;
 	}
-	public ConfigStore supportKeyHolder(boolean support){
+	public ConfigStore supportKeyHolder(boolean support) {
 		this.supportKeyHolder = support;
 		return this;
 	}
@@ -1500,12 +1500,12 @@ public class DefaultConfigStore implements ConfigStore {
 	 * 自增主键值 keys
 	 * @return keys
 	 */
-	public List<String> keyHolders(){
+	public List<String> keyHolders() {
 		return this.keyHolders;
 	}
-	public ConfigStore keyHolders(String ... keys){
-		if(null != keys){
-			for(String key:keys){
+	public ConfigStore keyHolders(String ... keys) {
+		if(null != keys) {
+			for(String key:keys) {
 				keyHolders.add(key);
 			}
 		}
@@ -1514,9 +1514,9 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public boolean isValid() {
-		if(null != chain){
-			for(Config config:chain.getConfigs()){
-				if(config.getSwt() == EMPTY_VALUE_SWITCH.BREAK && config.isEmpty()){
+		if(null != chain) {
+			for(Config config:chain.getConfigs()) {
+				if(config.getSwt() == EMPTY_VALUE_SWITCH.BREAK && config.isEmpty()) {
 					return false;
 				}
 			}
@@ -1524,36 +1524,36 @@ public class DefaultConfigStore implements ConfigStore {
 		return true;
 	}
 
-	public ConfigStore condition(String join, Compare compare, String key, Object ... values){
-		if("or".equalsIgnoreCase(join)){
+	public ConfigStore condition(String join, Compare compare, String key, Object ... values) {
+		if("or".equalsIgnoreCase(join)) {
 			or(compare, key, values);
 		}else{
 			and(compare, key, values);
 		}
 		return this;
 	}
-	public ConfigStore condition(String join, String compare, String key, String value){
+	public ConfigStore condition(String join, String compare, String key, String value) {
 		return condition(join, compare(compare), key, value);
 	}
 
-	public static Compare compare(int code){
-		for(Compare compare:Compare.values()){
-			if(compare.getCode() == code){
+	public static Compare compare(int code) {
+		for(Compare compare:Compare.values()) {
+			if(compare.getCode() == code) {
 				return compare;
 			}
 		}
 		return Compare.EQUAL;
 	}
 	List<Object> statics = new ArrayList<>();
-	public ConfigStore addStaticValue(Object value){
-		if(value instanceof Collection){
+	public ConfigStore addStaticValue(Object value) {
+		if(value instanceof Collection) {
 			statics.addAll((Collection) value);
 		}else {
 			statics.add(value);
 		}
 		return this;
 	}
-	public List<Object> getStaticValues(){
+	public List<Object> getStaticValues() {
 		return statics;
 	}
 
@@ -1569,14 +1569,14 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 
 	protected Hashtable<String, Object> configs = new Hashtable<>();
-	public ConfigStore config(String key, Object value){
+	public ConfigStore config(String key, Object value) {
 		configs.put(key.toUpperCase(), value);
 		return this;
 	}
-	public Object config(String key){
+	public Object config(String key) {
 		Object value = null;
 		key = key.toUpperCase();
-		if(configs.containsKey(key)){
+		if(configs.containsKey(key)) {
 			value = configs.get(key);
 		}else{
 			value = ConfigTable.get(key);
@@ -1595,7 +1595,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public long getExecuteTime() {
-		if(this.executeTime == -1){
+		if(this.executeTime == -1) {
 			return this.lastExecuteTime;
 		}
 		return this.executeTime;
@@ -1618,7 +1618,7 @@ public class DefaultConfigStore implements ConfigStore {
 
 	@Override
 	public long getPackageTime() {
-		if(packageTime == -1){
+		if(packageTime == -1) {
 			return this.lastPackageTime;
 		}
 		return this.packageTime;
@@ -1634,18 +1634,18 @@ public class DefaultConfigStore implements ConfigStore {
 		return this.lastPackageTime;
 	}
 
-	public ConfigStore fetch(String ... keys){
+	public ConfigStore fetch(String ... keys) {
 		DefaultConfigStore result = new DefaultConfigStore();
 		result.setOrders(this.getOrders());
 		result.setGroups(this.getGroups());
 		result.setPageNavi(this.getPageNavi());
 		ConfigChain chain = new DefaultConfigChain();
 		List<Config> configs = getConfigChain().getConfigs();
-		for(Config config:configs){
-			if(null == config){
+		for(Config config:configs) {
+			if(null == config) {
 				continue;
 			}
-			if(BasicUtil.contains(keys, config.getPrefix())){
+			if(BasicUtil.contains(keys, config.getPrefix())) {
 				chain.addConfig((Config)config.clone());
 			}
 		}
@@ -1658,7 +1658,7 @@ public class DefaultConfigStore implements ConfigStore {
 		DefaultConfigStore clone = null;
 		try{
 			clone = (DefaultConfigStore)super.clone();
-		}catch (Exception ignored){
+		}catch (Exception ignored) {
 			clone = new DefaultConfigStore();
 		}
 		if(null != this.orders) {

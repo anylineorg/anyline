@@ -23,14 +23,14 @@ import java.util.List;
 
 public class Polygon extends Geometry{
     private List<Ring> rings = new ArrayList<>();
-    public Polygon add(Ring ring){
+    public Polygon add(Ring ring) {
         rings.add(ring);
         return this;
     }
-    public List<Ring> rings(){
+    public List<Ring> rings() {
         return rings;
     }
-    public Polygon(){
+    public Polygon() {
         type = 3;
     }
     public Polygon(List<Ring> rings) {
@@ -38,20 +38,20 @@ public class Polygon extends Geometry{
         this.rings = rings;
     }
 
-    public String toString(){
+    public String toString() {
         return toString(true);
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         //顺时针(外部环)
         boolean first = true;
-        for(Ring ring:rings){
-            if(ring.clockwise() == true){
-                if(!first){
+        for(Ring ring:rings) {
+            if(ring.clockwise() == true) {
+                if(!first) {
                     builder.append(",");
                 }
                 builder.append(ring.toString(false));
@@ -59,9 +59,9 @@ public class Polygon extends Geometry{
             }
         }
         //逆时针(内部环)(可选)
-        for(Ring ring:rings){
-            if(ring.clockwise() == false){
-                if(!first){
+        for(Ring ring:rings) {
+            if(ring.clockwise() == false) {
+                if(!first) {
                     builder.append(",");
                 }
                 builder.append(ring.toString(false));
@@ -81,19 +81,19 @@ public class Polygon extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
-        if(bracket){
+        if(bracket) {
             builder.append("(");
         }
 
         boolean first = true;
-        for(Ring ring:rings){
-            if(ring.clockwise() == true){
-                if(!first){
+        for(Ring ring:rings) {
+            if(ring.clockwise() == true) {
+                if(!first) {
                     builder.append(",");
                 }
                 builder.append(ring.sql(false, true));
@@ -101,21 +101,21 @@ public class Polygon extends Geometry{
             }
         }
         //逆时针(内部环)(可选)
-        for(Ring ring:rings){
-            if(ring.clockwise() == false){
-                if(!first){
+        for(Ring ring:rings) {
+            if(ring.clockwise() == false) {
+                if(!first) {
                     builder.append(",");
                 }
                 builder.append(ring.sql(false, true));
                 first = false;
             }
         }
-        if(bracket){
+        if(bracket) {
             builder.append(")");
         }
         return builder.toString();
     }
-    public String sql(){
+    public String sql() {
         return sql(true, true);
     }
 

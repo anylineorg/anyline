@@ -40,7 +40,7 @@ public class SolonAutoConfiguration {
             Class origin = convert.getOrigin();
             Class target = convert.getTarget();
             Map<Class, Convert> map = ConvertProxy.converts.get(origin);
-            if(null == map){
+            if(null == map) {
                 map = new Hashtable<>();
                 ConvertProxy.converts.put(origin, map);
             }
@@ -48,15 +48,15 @@ public class SolonAutoConfiguration {
 
             //设置Java数据类型对应的转换器
             DataType type = JavaTypeAdapter.types.get(origin);
-            if(null != type){
+            if(null != type) {
                 type.convert(convert);
             }
         }
         //是否禁用默认adapter
-        if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ){
-            for(String key:adapters.keySet()){
+        if(ConfigTable.IS_DISABLED_DEFAULT_ENTITY_ADAPTER ) {
+            for(String key:adapters.keySet()) {
                 EntityAdapter adapter = adapters.get(key);
-                if(adapter instanceof DefaultEntityAdapter){
+                if(adapter instanceof DefaultEntityAdapter) {
                     adapters.remove(key);
                 }
             }

@@ -25,13 +25,13 @@ public class SQLException extends RuntimeException{
 	protected Exception src;
 	protected String cmd;
 	protected List<Object> values;
-	public SQLException(){
+	public SQLException() {
 		super(); 
 	}
-	public SQLException(String title){
+	public SQLException(String title) {
 		super(title);
 	}
-	public SQLException(String title, Exception src){
+	public SQLException(String title, Exception src) {
 		super(title, src);
 		if(null != src) {
 			super.setStackTrace(src.getStackTrace());

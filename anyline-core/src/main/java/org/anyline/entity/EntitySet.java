@@ -53,76 +53,76 @@ public class EntitySet<T> implements Collection<T>, Serializable {
     private boolean isAsc = false;
     private boolean isDesc = false;
 
-    public EntitySet(){
+    public EntitySet() {
         createTime = System.currentTimeMillis();
     }
 
-    public EntitySet setMetadatas(LinkedHashMap metadatas){
+    public EntitySet setMetadatas(LinkedHashMap metadatas) {
         this.metadatas = metadatas;
         return this;
     }
-    public LinkedHashMap<String, Column> getMetadatas(){
+    public LinkedHashMap<String, Column> getMetadatas() {
         return metadatas;
     }
-    public Column getMetadata(String column){
-        if(null == metadatas){
+    public Column getMetadata(String column) {
+        if(null == metadatas) {
             return null;
         }
         return metadatas.get(column.toUpperCase());
     }
-    public String getMetadataTypeName(String column){
+    public String getMetadataTypeName(String column) {
         Column col = getMetadata(column);
-        if(null != col){
+        if(null != col) {
             return col.getTypeName();
         }
         return null;
     }
-    public Integer getMetadataType(String column){
+    public Integer getMetadataType(String column) {
         Column col = getMetadata(column);
-        if(null != col){
+        if(null != col) {
             return col.getType();
         }
         return null;
     }
-    public String getMetadataFullType(String column){
+    public String getMetadataFullType(String column) {
         Column col = getMetadata(column);
-        if(null != col){
+        if(null != col) {
             return col.getFullType();
         }
         return null;
     }
-    public String getMetadataClassName(String column){
+    public String getMetadataClassName(String column) {
         Column col = getMetadata(column);
-        if(null != col){
+        if(null != col) {
             return col.getClassName();
         }
         return null;
     }
-    public EntitySet<T> gets(String key, Object value){
+    public EntitySet<T> gets(String key, Object value) {
         EntitySet<T> result = new EntitySet<>();
-        for(T entity:datas){
+        for(T entity:datas) {
             Object v = BeanUtil.getFieldValue(entity, key);
-            if(null != v && v.equals(value)){
+            if(null != v && v.equals(value)) {
                 result.add(entity);
             }
         }
         return result;
     }
-    public EntitySet<T> gets(Field field, Object value){
+    public EntitySet<T> gets(Field field, Object value) {
         EntitySet<T> result = new EntitySet<>();
-        for(T entity:datas){
+        for(T entity:datas) {
             Object v = BeanUtil.getFieldValue(entity, field);
-            if(null != v && v.equals(value)){
+            if(null != v && v.equals(value)) {
                 result.add(entity);
             }
         }
         return result;
     }
-    public T get(int index){
+    public T get(int index) {
         return datas.get(index);
     }
 
-    public DataSet set(String ... keys){
+    public DataSet set(String ... keys) {
         return EntityAdapterProxy.set(this, keys);
     }
 

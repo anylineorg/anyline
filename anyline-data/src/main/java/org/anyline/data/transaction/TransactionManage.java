@@ -31,13 +31,13 @@ public interface TransactionManage {
     Logger log = LoggerFactory.getLogger(TransactionManage.class);
     Map<TransactionState, TransactionManage> records = new Hashtable<>();
     Map<String, TransactionManage> instances = new Hashtable<>();
-    static void reg(String datasource, TransactionManage instance){
+    static void reg(String datasource, TransactionManage instance) {
         instances.put(datasource, instance);
     }
-    static TransactionManage instance(TransactionState state){
+    static TransactionManage instance(TransactionState state) {
         return records.get(state);
     }
-    static TransactionManage instance(String datasource){
+    static TransactionManage instance(String datasource) {
         return instances.get(datasource);
     }
 

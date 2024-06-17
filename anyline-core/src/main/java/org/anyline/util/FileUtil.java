@@ -44,19 +44,19 @@ public class FileUtil {
 	 * @param paths paths
 	 * @return String
 	 */
-	public static String merge(String ... paths){
+	public static String merge(String ... paths) {
 		String result = null;
 		String separator = getFileSeparator();
-		if(null != paths){
-			for(String path:paths){
-				if(BasicUtil.isEmpty(path)){
+		if(null != paths) {
+			for(String path:paths) {
+				if(BasicUtil.isEmpty(path)) {
 					continue;
 				}
-				if(null == result){
+				if(null == result) {
 					result = path;
 				}else{
-					if(result.endsWith("/") || result.endsWith("\\")){
-						if(path.startsWith("/") || path.startsWith("\\")){
+					if(result.endsWith("/") || result.endsWith("\\")) {
+						if(path.startsWith("/") || path.startsWith("\\")) {
 							// "root/" + "/sub"
 							result += path.substring(1);
 						}else{
@@ -64,7 +64,7 @@ public class FileUtil {
 							result += path;
 						}
 					}else{
-						if(path.startsWith("/") || path.startsWith("\\")){
+						if(path.startsWith("/") || path.startsWith("\\")) {
 							// "root" + "/sub"
 							result += path;
 						}else{
@@ -82,7 +82,7 @@ public class FileUtil {
 	 * 目录分隔符
 	 * @return String
 	 */
-	public static String getFileSeparator(){
+	public static String getFileSeparator() {
 		return System.getProperty("file.separator");
 	}
 
@@ -92,25 +92,25 @@ public class FileUtil {
 	 * @return int
 	 */
 	@SuppressWarnings("rawtypes")
-	public static int getPathType(Class dest){
+	public static int getPathType(Class dest) {
 		int type = -1;
 		try{
 			String path = dest.getResource("").getPath();
-			if(path.contains(".jar!")){
+			if(path.contains(".jar!")) {
 				// jar 目录
 				type = 0;
 			}else{
 				// 其他目录
 				type = 1;
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			type = -1;
 		}
 		return type;
 	}
-	public static int getPathType(String path){
+	public static int getPathType(String path) {
 		int type = -1;
-		if(path.contains(".jar!")){
+		if(path.contains(".jar!")) {
 			// jar 目录
 			type = 0;
 		}else{
@@ -126,43 +126,43 @@ public class FileUtil {
 	 * @param encode  encode
 	 * @return StringBuffer
 	 */
-	public static StringBuffer read(InputStream input, Charset encode){
+	public static StringBuffer read(InputStream input, Charset encode) {
 		StringBuffer buffer = new StringBuffer();
-		if(null == input){
+		if(null == input) {
 			return buffer;
 		}
 		int BUFFER_SIZE = 1024 * 80;
 		BufferedInputStream in = null ;
          try  {
-        	 if(input.available() <=0){
+        	 if(input.available() <=0) {
         		 return buffer;
         	 }
-        	 if(BUFFER_SIZE>input.available()){
+        	 if(BUFFER_SIZE>input.available()) {
         		 BUFFER_SIZE = input.available();
         	 }
              in = new BufferedInputStream(input, BUFFER_SIZE);
              input.available();
              byte [] by = new byte [BUFFER_SIZE];
              int size = 0;
-             while ((size=in.read(by)) != -1 ){
-            	if(null == encode){
+             while ((size=in.read(by)) != -1 ) {
+            	if(null == encode) {
             		buffer.append(new String(by, 0, size));
             	}
             	else{
             		buffer.append(new String(by, 0, size, encode));
             	}
             }
-         }catch(Exception ex){
+         }catch(Exception ex) {
 			 log.error("read stream exception:", ex);
          } finally  {
                 try{
                 	if(null != in) {
                 		in.close();
                 	}
-                	if(null != input){
+                	if(null != input) {
                 		input.close();
                 	}
-                }catch(Exception e){
+                }catch(Exception e) {
 					log.error("close stream exception:", e);
                 }
         }
@@ -175,17 +175,17 @@ public class FileUtil {
 	 * @param input  input
 	 * @return StringBuffer
 	 */
-	public static StringBuffer read(InputStream input){
+	public static StringBuffer read(InputStream input) {
 		StringBuffer buffer = new StringBuffer();
 		int BUFFER_SIZE = 1024 * 8;
 
 		BufferedInputStream in = null ;
 		InputStreamReader reader = null;
 		try  {
-			if(input.available() <=0){
+			if(input.available() <=0) {
 				return buffer;
 			}
-			if(BUFFER_SIZE>input.available()){
+			if(BUFFER_SIZE>input.available()) {
 				BUFFER_SIZE = input.available();
 			}
 			in = new BufferedInputStream(input, BUFFER_SIZE);
@@ -193,30 +193,30 @@ public class FileUtil {
 			input.available();
 			char [] by = new char [BUFFER_SIZE];
 			int size = 0;
-			while ((size=reader.read(by)) != -1 ){
+			while ((size=reader.read(by)) != -1 ) {
 				buffer.append(new String(by, 0, size));
 			}
-		}catch(Exception ex){
+		}catch(Exception ex) {
 			log.error("read stream exception:", ex);
 		} finally  {
 			try{
 				if(null != in) {
 					in.close();
 				}
-				if(null != input){
+				if(null != input) {
 					input.close();
 				}
-				if(null != reader){
+				if(null != reader) {
 					reader.close();
 				}
-			}catch(Exception e){
+			}catch(Exception e) {
 				log.error("close stream exception:", e);
 			}
 		}
 
 		return buffer;
 	}
-	public static byte[] file2byte(File file){
+	public static byte[] file2byte(File file) {
 		byte[] buffer = null;
 		try{
 			FileInputStream fis = new FileInputStream(file);
@@ -230,37 +230,37 @@ public class FileUtil {
 			fis.close();
 			bos.close();
 			buffer = bos.toByteArray();
-		}catch (Exception e){
+		}catch (Exception e) {
 			log.error("file2byte exception:", e);
 		}
 		return buffer;
 	}
-	public static File byte2file(byte[] buf, File file){
+	public static File byte2file(byte[] buf, File file) {
 		BufferedOutputStream bos = null;
 		FileOutputStream fos = null;
 		try{
 			File dir = file.getParentFile();
-			if (!dir.exists() && dir.isDirectory()){
+			if (!dir.exists() && dir.isDirectory()) {
 				dir.mkdirs();
 			}
 			fos = new FileOutputStream(file);
 			bos = new BufferedOutputStream(fos);
 			bos.write(buf);
-		}catch (Exception e){
+		}catch (Exception e) {
 			log.error("byte2file exception:", e);
 		}
 		finally{
-			if (bos != null){
+			if (bos != null) {
 				try{
 					bos.close();
-				}catch (IOException e){
+				}catch (IOException e) {
 					log.error("byte2file exception:", e);
 				}
 			}
-			if (fos != null){
+			if (fos != null) {
 				try{
 					fos.close();
-				}catch (IOException e){
+				}catch (IOException e) {
 					log.error("byte2file exception:", e);
 				}
 			}
@@ -274,22 +274,22 @@ public class FileUtil {
 	 * @param encode  encode
 	 * @return StringBuffer
 	 */
-	public static StringBuffer read(File file, Charset encode){
+	public static StringBuffer read(File file, Charset encode) {
 		StringBuffer buffer = new StringBuffer();
-		if(null != file && file.exists()){
+		if(null != file && file.exists()) {
 			try{
-				if(file.getAbsolutePath().contains(".jar!")){
+				if(file.getAbsolutePath().contains(".jar!")) {
 					buffer = readJar(file.getAbsolutePath());
 				}else {
 					buffer = read(new FileInputStream(file), encode);
 				}
-			}catch(Exception e){
+			}catch(Exception e) {
 				log.error("read file exception:", e);
 			}
 		}
 		return buffer;
 	}
-	public static StringBuffer read(File file, String encode){
+	public static StringBuffer read(File file, String encode) {
 		return read(file, Charset.forName(encode));
 	}
 
@@ -304,12 +304,12 @@ public class FileUtil {
 		}
 		return builder;
 	}
-	public static StringBuffer read(File file){
+	public static StringBuffer read(File file) {
 		StringBuffer buffer = new StringBuffer();
-		if(null != file && file.exists()){
+		if(null != file && file.exists()) {
 			try{
 				buffer = read(new FileInputStream(file));
-			}catch(Exception e){
+			}catch(Exception e) {
 				log.error("read file exception:", e);
 			}
 		}
@@ -324,11 +324,11 @@ public class FileUtil {
 	 * @param append 是否追加
 	 */
 	public static void write(String content, File file, Charset encode, boolean append) {
-		if(null == file){
+		if(null == file) {
 			return;
 		}
 		File dir = file.getParentFile();
-		if(null != dir && !dir.exists()){
+		if(null != dir && !dir.exists()) {
 			dir.mkdirs();
 		}
 		FileOutputStream fos = null;
@@ -336,7 +336,7 @@ public class FileUtil {
 		try {
 			fos = new FileOutputStream(file, append);
 			osw = new OutputStreamWriter(fos, encode);
-			if(append){
+			if(append) {
 				osw.append(content);
 			}else{
 				osw.write(content);
@@ -349,7 +349,7 @@ public class FileUtil {
                 assert osw != null;
                 osw.close();
 				fos.close();
-			}catch(Exception e){
+			}catch(Exception e) {
 				log.error("close stream exception:", e);
 			}
 		}
@@ -372,8 +372,8 @@ public class FileUtil {
 		write(content, file, "UTF-8", false);
 	}
 
-	public static boolean write(InputStream is, File file){
-		if(null == file || null == is){
+	public static boolean write(InputStream is, File file) {
+		if(null == file || null == is) {
 			return false;
 		}
 		try {
@@ -386,15 +386,15 @@ public class FileUtil {
 			}
 			OutputStream os = new FileOutputStream(file);
 			return write(is, os, true);
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("write file exception:", e);
 			return false;
 		}
 	}
-	public static boolean write(InputStream is, OutputStream os){
+	public static boolean write(InputStream is, OutputStream os) {
 		return write(is, os, true);
 	}
-	public static boolean write(InputStream is, OutputStream os, boolean close){
+	public static boolean write(InputStream is, OutputStream os, boolean close) {
 		BufferedInputStream bis = new BufferedInputStream(is);
 		int len;
 		byte[] arr = new byte[1024];
@@ -403,19 +403,19 @@ public class FileUtil {
 				os.write(arr, 0, len);
 				os.flush();
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("write stream exception:", e);
 			return false;
 		}finally {
-			if(close){
+			if(close) {
 				try {
 					os.close();
-				}catch (Exception ignored){
+				}catch (Exception ignored) {
 
 				}
 				try {
 					is.close();
-				}catch (Exception gignored){
+				}catch (Exception gignored) {
 
 				}
 			}
@@ -430,43 +430,43 @@ public class FileUtil {
 	 * @param over 是否清空已存在的同名文件
 	 * @return boolean
 	 */
-	public static boolean create(String dir, String name, boolean over){
+	public static boolean create(String dir, String name, boolean over) {
 		String filePath = merge(dir, name);
 		return create(filePath, over);
 	}
-	public static boolean create(String file, boolean over){
+	public static boolean create(String file, boolean over) {
 		return create(new File(file), over);
 	}
-	public static boolean create(File file, boolean over){
-		if(null == file){
+	public static boolean create(File file, boolean over) {
+		if(null == file) {
 			return false;
 		}
 		try{
 			File dir = file.getParentFile();
-			if(null != dir && !dir.exists()){
+			if(null != dir && !dir.exists()) {
 				dir.mkdirs();
 			}
-			if(file.exists()){
-				if(over){
+			if(file.exists()) {
+				if(over) {
 					file.delete();
 				}else{
 					return true;
 				}
 			}
 			file.createNewFile();
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("create file exception:", e);
 		}
 		return true;
 	}
 
 	public static File createTempFile(File file) throws Exception {
-		if(!file.exists()){
+		if(!file.exists()) {
 			throw new Exception("文件不存在:"+file.getAbsolutePath());
 		}
 		File tempFile = File.createTempFile(file.getName(), null);
 		boolean renameOk = file.renameTo(tempFile);
-		if(!renameOk){
+		if(!renameOk) {
 			tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
 			renameOk = file.renameTo(tempFile);
 		}
@@ -486,7 +486,7 @@ public class FileUtil {
 	 * @param url  url
 	 * @return String
 	 */
-	public static String fetchPathByUrl(String url){
+	public static String fetchPathByUrl(String url) {
 		int to = url.indexOf("?");
 		if(to != -1)
 			url = url.substring(0, to);
@@ -498,11 +498,11 @@ public class FileUtil {
 	 * @param url  url
 	 * @return String
 	 */
-	public static String fetchDirByUrl(String url){
+	public static String fetchDirByUrl(String url) {
 		String dir = null;
-		if(url.endsWith("/")){
+		if(url.endsWith("/")) {
 			dir = url;
-		}else if(isHttpFile(url)){
+		}else if(isHttpFile(url)) {
 			int to = url.lastIndexOf("/");
 			dir = url.substring(0, to);
 		}else{
@@ -516,9 +516,9 @@ public class FileUtil {
 	 * @param path  path
 	 * @return boolean
 	 */
-	private static boolean isHttpFile(String path){
+	private static boolean isHttpFile(String path) {
 
-		if(path.endsWith("/")){
+		if(path.endsWith("/")) {
 			return false;
 		}
 		String head = "http://";
@@ -526,9 +526,9 @@ public class FileUtil {
 		int l1 = path.lastIndexOf("/");
 		int l2 = path.lastIndexOf(".");
 		// int l3 = path.length();
-		if(l1 == -1){
+		if(l1 == -1) {
 			return false;
-		}else if(l2>l1 && l2>fr){
+		}else if(l2>l1 && l2>fr) {
 			return true;
 		}
 		return false;
@@ -539,10 +539,10 @@ public class FileUtil {
 	 * @param url  url
 	 * @return String
 	 */
-	public static String getHostUrl(String url){
+	public static String getHostUrl(String url) {
 		url = url.replaceAll("http://","");
 		int idx = url.indexOf("/");
-		if(idx != -1){
+		if(idx != -1) {
 			url = url.substring(0, idx);
 		}
 		url = "http://"+url;
@@ -554,39 +554,39 @@ public class FileUtil {
 	 * @param file file
 	 * @return String
 	 */
-	public static String getSimpleFileName(File file){
+	public static String getSimpleFileName(File file) {
 		String name = null;
 		if(null == file) return null;
 		name = file.getName();
 		int idx = name.lastIndexOf(".");
-		if(idx != -1){
+		if(idx != -1) {
 			name = name.substring(0, idx);
 		}
 		return name;
 	}
 
-	public static String getSimpleFileName(String file){
+	public static String getSimpleFileName(String file) {
 		return getSimpleFileName(new File(file));
 	}
-	public static String getFileName(String file){
+	public static String getFileName(String file) {
 		return getFileName(new File(file));
 	}
-	public static String getFileName(File file){
+	public static String getFileName(File file) {
 		if(null != file)
 			return file.getName();
 		return null;
 	}
-	public static String getSuffixFileName(File file){
+	public static String getSuffixFileName(File file) {
 		String name = null;
 		if(null == file) return null;
 		name = file.getName();
 		int idx = name.lastIndexOf(".");
-		if(idx != -1){
+		if(idx != -1) {
 			name = name.substring(idx+1);
 		}
 		return name;
 	}
-	public static String getSuffixFileName(String file){
+	public static String getSuffixFileName(String file) {
 		return getSuffixFileName(new File(file));
 	}
 
@@ -596,30 +596,30 @@ public class FileUtil {
 	 * @param dest 目标文件(新文件)
 	 * @return boolean
 	 */
-	public static boolean copy(File src, File dest){
+	public static boolean copy(File src, File dest) {
 		boolean result = true;
-		if (src.isDirectory()){
-			if (!dest.exists()){
+		if (src.isDirectory()) {
+			if (!dest.exists()) {
 				result = dest.mkdirs();
 			}
 			String[] files = src.list();
-			for(int i = 0; i < files.length; i++){
+			for(int i = 0; i < files.length; i++) {
 				copy(new File(src, files[i]), new File(dest, files[i]));
 			}
 		} else{
-			if(!src.exists()){
+			if(!src.exists()) {
 				result = false;
 			}else{
 				File dir = dest.getParentFile();
-				if(null != dir && !dir.exists()){
+				if(null != dir && !dir.exists()) {
 					dir.mkdirs();
 				}
 				InputStream in = null;
 				OutputStream out = null;
 				try{
-					if(!dest.isDirectory()){
+					if(!dest.isDirectory()) {
 						File dirs = dest.getParentFile();
-						if(null != dir &&!dirs.exists()){
+						if(null != dir &&!dirs.exists()) {
 							dirs.mkdirs();
 						}
 					}else{
@@ -633,21 +633,21 @@ public class FileUtil {
 					while ((len = in.read(buf)) > 0) {
 						out.write(buf, 0, len);
 					}
-				}catch(Exception e){
+				}catch(Exception e) {
 					e.printStackTrace();
 					result = false;
 				}finally{
-					if(null != in){
+					if(null != in) {
 						try{
 							in.close();
-						}catch(Exception ex){
+						}catch(Exception ex) {
 							log.error(ex.getMessage());
 						}
 					}
-					if(null != out){
+					if(null != out) {
 						try{
 							out.close();
-						}catch(Exception ex){
+						}catch(Exception ex) {
 							log.error(ex.getMessage());
 						}
 					}
@@ -663,24 +663,24 @@ public class FileUtil {
 	 * @param subbfixs  subbfixs
 	 * @return List
 	 */
-	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){
+	public static List<File> getAllChildrenFile(File dir, String ...subbfixs) {
 		List<File> list = new ArrayList<File>();
-		if(dir.isFile()){
-			if(filterByType(dir, subbfixs)){
+		if(dir.isFile()) {
+			if(filterByType(dir, subbfixs)) {
 				list.add(dir);
 			}
 			return list;
 		}
 		File[] children = dir.listFiles();
-		if(null != children){
+		if(null != children) {
 			int size = children.length;
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				File child = children[i];
-				if(child.isHidden()){
+				if(child.isHidden()) {
 					continue;
 				}
-				if(child.isFile()){
-					if(filterByType(child, subbfixs)){
+				if(child.isFile()) {
+					if(filterByType(child, subbfixs)) {
 						list.add(child);
 					}
 				}else{
@@ -697,21 +697,21 @@ public class FileUtil {
 	 * @param dir  dir
 	 * @return List
 	 */
-	public static List<File> getAllChildrenDirectory(File dir){
+	public static List<File> getAllChildrenDirectory(File dir) {
 		List<File> list = new ArrayList<File>();
-		if(dir.isFile()){
+		if(dir.isFile()) {
 			return list;
 		}
 		File[] children = dir.listFiles();
-		if(null != children){
+		if(null != children) {
 			int size = children.length;
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				File child = children[i];
-				if(child.isHidden()){
+				if(child.isHidden()) {
 					continue;
 				}
-				if(child.isDirectory()){
-					if(null == child.listFiles() || child.listFiles().length == 0){
+				if(child.isDirectory()) {
+					if(null == child.listFiles() || child.listFiles().length == 0) {
 						list.add(child);
 					}else{
 						list.addAll(getAllChildrenDirectory(child));
@@ -728,11 +728,11 @@ public class FileUtil {
 	 * @param types  types
 	 * @return List
 	 */
-	public static List<File> getChildrenFile(File dir, String ...types){
+	public static List<File> getChildrenFile(File dir, String ...types) {
 		List<File> list = new ArrayList<File>();
 		File files[] = dir.listFiles();
-		if(null != files){
-			for(File file:files){
+		if(null != files) {
+			for(File file:files) {
 				if(file.isFile() && filterByType(file, types))
 					list.add(file);
 			}
@@ -746,20 +746,20 @@ public class FileUtil {
 	 * @param types  types
 	 * @return List
 	 */
-	public static List<File> getZipAllChildrenFile(File zip, String ...types){
+	public static List<File> getZipAllChildrenFile(File zip, String ...types) {
 		List<File> list = new ArrayList<File>();
 		ZipInputStream in = null;
 		try{
 			in = new ZipInputStream(new FileInputStream(zip));
 			ZipEntry entry = null;
-			while((entry=in.getNextEntry()) != null){
+			while((entry=in.getNextEntry()) != null) {
 				String path = zip.getAbsolutePath() + "!/" + entry.getName();
 				File file = new File(path);
-				if(filterByType(file, types)){
+				if(filterByType(file, types)) {
 					list.add(file);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace();
 		}finally{
 			try {
@@ -777,23 +777,23 @@ public class FileUtil {
 	 * @param types  types
 	 * @return boolean
 	 */
-	public static boolean filterByType(File file, String ... types){
-		if(null == file){
+	public static boolean filterByType(File file, String ... types) {
+		if(null == file) {
 			return false;
 		}
-		if(null == types || types.length == 0){
+		if(null == types || types.length == 0) {
 			return true;
 		}
-		for(String type:types){
+		for(String type:types) {
 			String fileName = file.getAbsolutePath().toUpperCase();
 			type = type.toUpperCase();
-			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){
+			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)) {
 				return true;
 			}
-			if(!type.startsWith(".")){
+			if(!type.startsWith(".")) {
 				type = "." + type;
 			}
-			if(fileName.endsWith(type)){
+			if(fileName.endsWith(type)) {
 				return true;
 			}
 		}
@@ -805,31 +805,31 @@ public class FileUtil {
 	 * @param fileName  fileName
 	 * @return String
 	 */
-	public static String parseSubName(String fileName){
+	public static String parseSubName(String fileName) {
 		String result = null;
 		if(null == fileName) return null;
 		int idx = fileName.lastIndexOf(".");
-		if(idx >0){
+		if(idx >0) {
 			result = fileName.substring(idx+1);
 		}
 		return result;
 	}
-	public static boolean exists(File file){
-		if(null == file){
+	public static boolean exists(File file) {
+		if(null == file) {
 			return false;
 		}
 		return file.exists();
 	}
-	public static boolean exists(String file){
+	public static boolean exists(String file) {
 		return exists(new File(file));
 	}
-	public static boolean isFile(File file){
-		if(null == file){
+	public static boolean isFile(File file) {
+		if(null == file) {
 			return false;
 		}
 		return file.isFile();
 	}
-	public static boolean isFile(String file){
+	public static boolean isFile(String file) {
 		return isFile(new File(file));
 	}
 
@@ -851,7 +851,7 @@ public class FileUtil {
         }
         return filetype;
     }
-	public static String getFileType(byte[] b){
+	public static String getFileType(byte[] b) {
         String hex = NumberUtil.byte2hex(b);
         Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
         while (entryiterator.hasNext()) {
@@ -869,13 +869,13 @@ public class FileUtil {
 	  * @return boolean
 	  */
 	public static boolean delete(File file) {
-		if(null == file){
+		if(null == file) {
 			return false;
 		}
 		boolean result = true;
 		if (file.isDirectory()) {
 			File[] children = file.listFiles();
-			if(null != children){
+			if(null != children) {
 				for (File child:children) {
 						delete(child);
 				}
@@ -895,14 +895,14 @@ public class FileUtil {
 	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件
 	 * @return int
 	 */
-	public static int lines(File file, String ... subbfixs){
+	public static int lines(File file, String ... subbfixs) {
 		int size = 0;
-		if(null == file || !file.exists()){
+		if(null == file || !file.exists()) {
 			return size;
 		}
-		if(file.isDirectory()){
+		if(file.isDirectory()) {
 			List<File> files = FileUtil.getAllChildrenFile(file, subbfixs);
-			for(File item:files){
+			for(File item:files) {
 				size += lines(item);
 			}
 		}
@@ -911,7 +911,7 @@ public class FileUtil {
 			lineNumberReader.skip(file.length());
             size += lineNumberReader.getLineNumber();
             lineNumberReader.close();
-        }catch(Exception e){
+        }catch(Exception e) {
 
         }
         return size;
@@ -938,7 +938,7 @@ public class FileUtil {
     * @param file file
     * @return String
     */
-	public static String md5(File file){
+	public static String md5(File file) {
 		return MD5Util.crypto(file);
 	}
     /**
@@ -963,7 +963,7 @@ public class FileUtil {
 		}
     	long fr = System.currentTimeMillis();
     	File dir = file.getParentFile();
-    	if(null != dir && !dir.exists()){
+    	if(null != dir && !dir.exists()) {
     		dir.mkdirs();
     	}
         BufferedInputStream bis = null;
@@ -983,14 +983,14 @@ public class FileUtil {
 				if(null != bos) {
 					bos.close();
 				}
-			}catch(Exception ignored){}
+			}catch(Exception ignored) {}
 			try{
 				if(null != bis) {
 					bis.close();
 				}
-			}catch(Exception ignored){}
+			}catch(Exception ignored) {}
 		}
-		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 			log.info("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 		}
         return true;
@@ -1011,11 +1011,11 @@ public class FileUtil {
 	 * @param finish 已完成
 	 * @return String
 	 */
-	public static String progress(long total, long finish){
+	public static String progress(long total, long finish) {
 		String title = "";
 		double rate = finish*100.00/total;
 		String rateTitle = NumberUtil.format(rate, "0.00");
-		if(finish>=total){
+		if(finish>=total) {
 			rateTitle = "100";
 		}
 		title = length(finish) + "/" + length(total) + "("+rateTitle+"%)";
@@ -1027,19 +1027,19 @@ public class FileUtil {
 	 * @param b b
 	 * @return String
 	 */
-	public static String length(long b){
+	public static String length(long b) {
 		String result = "";
-		if(b<1024){
+		if(b<1024) {
 			result = b+ "byte";
-		}else if(b<1024L*1024){
+		}else if(b<1024L*1024) {
 			result = NumberUtil.format(b/1024.00, "0.00") + "kb";
-		}else if(b<1024L*1024*1024){
+		}else if(b<1024L*1024*1024) {
 			result = NumberUtil.format(b/1024.00/1024, "0.00") + "mb";
-		}else if(b<1024L*1024*1024*1024){
+		}else if(b<1024L*1024*1024*1024) {
 			result = NumberUtil.format(b/1024.00/1024/1024, "0.00") + "gb";
-		}else if(b<1024L*1024*1024*1024*1024){
+		}else if(b<1024L*1024*1024*1024*1024) {
 			result = NumberUtil.format(b/1024.00/1024/1024/1024, "0.00") + "tb";
-		}else if(b<1024L*1024*1024*1024*1024*1024){
+		}else if(b<1024L*1024*1024*1024*1024*1024) {
 			result = NumberUtil.format(b/1024.00/1024/1024/1024/1024, "0.00") + "pb";
 		}
 		return result;
@@ -1050,19 +1050,19 @@ public class FileUtil {
 	 * @param dest 目标文件(新文件)
 	 * @param items items
 	 */
-	public static void merge(File dest, List<File> items){
+	public static void merge(File dest, List<File> items) {
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
         	File dir = dest.getParentFile();
-        	if(null != dir && !dir.exists()){
+        	if(null != dir && !dir.exists()) {
         		dir.mkdirs();
         	}
             os = new FileOutputStream(dest);
             byte[] bytes = new byte[1024];
             int length = 0;
-            for(File item:items){
-                if(!item.exists()){
+            for(File item:items) {
+                if(!item.exists()) {
                     continue;
                 }
                 long fr = System.currentTimeMillis();
@@ -1072,18 +1072,18 @@ public class FileUtil {
                 }
                 log.info("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
-        }catch (Exception e){
+        }catch (Exception e) {
         	e.printStackTrace();
         }finally{
         	try{
         		os.close();
-        	}catch(Exception e){
+        	}catch(Exception e) {
 
         	}
         }
     	try{
     		is.close();
-    	}catch(Exception e){
+    	}catch(Exception e) {
 
     	}
     }
@@ -1092,20 +1092,20 @@ public class FileUtil {
 	 * @param dest dst
 	 * @param dir dir
 	 */
-	public static void merge(File dest, File dir){
+	public static void merge(File dest, File dir) {
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
         	File root = dest.getParentFile();
-        	if(null != root && !root.exists()){
+        	if(null != root && !root.exists()) {
         		root.mkdirs();
         	}
             os = new FileOutputStream(dest);
             byte[] bytes = new byte[1024];
             int length = 0;
             List<File> items = getAllChildrenFile(dir);
-            for(File item:items){
-                if(!item.exists()){
+            for(File item:items) {
+                if(!item.exists()) {
                     continue;
                 }
                 long fr = System.currentTimeMillis();
@@ -1115,34 +1115,34 @@ public class FileUtil {
                 }
                 log.info("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dest.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
-        }catch (Exception e){
+        }catch (Exception e) {
         	e.printStackTrace();
         }finally{
         	try{
         		os.flush();
         		os.close();
-        	}catch(Exception e){
+        	}catch(Exception e) {
 
         	}
         	try{
         		is.close();
-        	}catch(Exception e){
+        	}catch(Exception e) {
 
         	}
         }
     	try{
     		is.close();
-    	}catch(Exception e){
+    	}catch(Exception e) {
 
     	}
     }
-	public static void replace(File file, Charset encode, String fr, String to){
+	public static void replace(File file, Charset encode, String fr, String to) {
 		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
 			String content = read(file, encode).toString().replace(fr, to);
 			write(content, file, encode);
 		}
 	}
-	public static void replace(File file, String fr, String to){
+	public static void replace(File file, String fr, String to) {
 		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
 			String content = read(file).toString().replace(fr, to);
 			write(content, file);
@@ -1164,7 +1164,7 @@ public class FileUtil {
 			input = fis.getChannel();
 			String fileName =  FileUtil.getSimpleFileName(file);
 			String subName = FileUtil.getSuffixFileName(file);
-			if(BasicUtil.isNotEmpty(subName)){
+			if(BasicUtil.isNotEmpty(subName)) {
 				subName = "."+subName;
 			}
 		    final long fileSize = input.size();
@@ -1200,7 +1200,7 @@ public class FileUtil {
 			        fos = new FileOutputStream(item);
 			        out = fos.getChannel();
 			        input.transferTo(startPosition, endPosition - startPosition, out);//通道传输文件数据
-		        }catch(Exception e){
+		        }catch(Exception e) {
 		        	e.printStackTrace();
 		        }finally{
 		        	try{

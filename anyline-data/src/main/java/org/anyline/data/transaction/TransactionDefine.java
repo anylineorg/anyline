@@ -199,7 +199,7 @@ public interface TransactionDefine {
         return null;
     }
     void setName(String name);
-    default MODE getMode(){
+    default MODE getMode() {
         return MODE.THREAD;
     }
     void setMode(MODE mode);

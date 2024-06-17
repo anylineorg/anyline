@@ -33,7 +33,7 @@ public interface AnyData<T> extends Serializable, Cloneable {
      * @param keys 需要转换的key,如果不提供则转换全部
      * @return this
      */
-    default T toLowerKey(String... keys){
+    default T toLowerKey(String... keys) {
         return toLowerKey(true, keys);
     }
     /**
@@ -49,7 +49,7 @@ public interface AnyData<T> extends Serializable, Cloneable {
      * @param keys 需要转换的key,如果不提供则转换全部
      * @return this
      */
-    default T toUpperKey(String... keys){
+    default T toUpperKey(String... keys) {
         return toUpperKey(true, keys);
     }
 

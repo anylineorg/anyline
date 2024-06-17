@@ -21,13 +21,13 @@ package org.anyline.exception;
  
 public class SQLQueryException extends SQLException{
 	private static final long serialVersionUID = 1L; 
-	public SQLQueryException(){
+	public SQLQueryException() {
 		super(); 
 	}
-	public SQLQueryException(String title){
+	public SQLQueryException(String title) {
 		super(title);
 	}
-	public SQLQueryException(String title, Exception src){
+	public SQLQueryException(String title, Exception src) {
 		super(title, src);
 	}
 } 

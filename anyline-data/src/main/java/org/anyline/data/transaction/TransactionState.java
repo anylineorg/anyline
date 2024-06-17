@@ -42,8 +42,8 @@ public interface TransactionState {
     default String getName() {
         return null;
     }
-    default void setName(String name){}
-    default TransactionDefine.MODE getMode(){
+    default void setName(String name) {}
+    default TransactionDefine.MODE getMode() {
         return TransactionDefine.MODE.THREAD;
     }
     void setMode(TransactionDefine.MODE mode);

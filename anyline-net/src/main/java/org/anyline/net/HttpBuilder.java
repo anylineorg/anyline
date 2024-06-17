@@ -68,11 +68,11 @@ public class HttpBuilder {
             mananger.setMaxTotal(100);
             mananger.setDefaultMaxPerRoute(20);
             this.client = HttpClients.custom().setConnectionManager(mananger).build();
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("build http client exception:", e);
         }
         client.setClient(this.client);
-        if(null != headers && !headers.isEmpty()){
+        if(null != headers && !headers.isEmpty()) {
             client.setHeaders(headers);
         }
         client.setEntity(entity);
@@ -96,10 +96,10 @@ public class HttpBuilder {
      * @param url url
      * @return HttpBuilder
      */
-    public static HttpBuilder parse(String url){
+    public static HttpBuilder parse(String url) {
         HttpBuilder builder = new HttpBuilder();
         builder.setUrl(url);
-        if(null != url){
+        if(null != url) {
             String base = null;
             String sub = null;
             int idx_session = url.indexOf(";");
@@ -115,12 +115,12 @@ public class HttpBuilder {
                 }
                 builder.setUrl(base);
             }
-            if(null != sub){
+            if(null != sub) {
                 String[] ps = sub.split("&");
-                for(String p:ps){
-                    if(p.contains("=")){
+                for(String p:ps) {
+                    if(p.contains("=")) {
                         String[] kv = p.split("=");
-                        if(kv.length == 2){
+                        if(kv.length == 2) {
                             builder.setParam(kv[0], kv[1]);
                         }
                     }
@@ -130,132 +130,132 @@ public class HttpBuilder {
         return builder;
     }
 
-    public static HttpBuilder init(){
+    public static HttpBuilder init() {
         return new HttpBuilder();
     }
-    public static HttpBuilder init(String url){
+    public static HttpBuilder init(String url) {
         return new HttpBuilder().setUrl(url);
     }
-    public static HttpBuilder init(CloseableHttpClient client, String url){
+    public static HttpBuilder init(CloseableHttpClient client, String url) {
         return new HttpBuilder().setClient(client).setUrl(url);
     }
-    public static HttpBuilder init(CloseableHttpClient client){
+    public static HttpBuilder init(CloseableHttpClient client) {
         return new HttpBuilder().setClient(client);
     }
-    public HttpBuilder setContentType(String type){
+    public HttpBuilder setContentType(String type) {
         headers.put("Content-Type", type);
         return this;
     }
-    public HttpBuilder setClient(CloseableHttpClient client){
+    public HttpBuilder setClient(CloseableHttpClient client) {
         this.client = client;
         return this;
     }
-    public HttpBuilder setHeaders(Map<String, String> headers){
+    public HttpBuilder setHeaders(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }
-    public HttpBuilder addHeader(String key, String value){
+    public HttpBuilder addHeader(String key, String value) {
         headers.put(key, value);
         return this;
     }
-    public HttpBuilder setUrl(String url){
+    public HttpBuilder setUrl(String url) {
         this.url = url;
         return this;
     }
-    public HttpBuilder setCharset(String charset){
+    public HttpBuilder setCharset(String charset) {
         this.charset = charset;
         return this;
     }
-    public HttpBuilder setEntity(HttpEntity entity){
+    public HttpBuilder setEntity(HttpEntity entity) {
         this.entity = entity;
         return this;
     }
-    public HttpBuilder clearHeader(){
+    public HttpBuilder clearHeader() {
         headers.clear();
         return this;
     }
-    public HttpBuilder setEntity(String entity){
+    public HttpBuilder setEntity(String entity) {
         try {
             this.entity = new StringEntity(entity, charset);
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("create string entity exception:", e);
         }
         return this;
     }
-    public HttpBuilder setEntity(Map<String, ?> map){
+    public HttpBuilder setEntity(Map<String, ?> map) {
         try {
             entity = new StringEntity(BeanUtil.map2json(map), charset);
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("create string entity exception:", e);
         }
         return this;
     }
-    public HttpBuilder setPairs(List<NameValuePair> pairs){
+    public HttpBuilder setPairs(List<NameValuePair> pairs) {
         this.pairs = pairs;
         return this;
     }
-    public HttpBuilder addPair(List<NameValuePair> pairs){
+    public HttpBuilder addPair(List<NameValuePair> pairs) {
         this.pairs = pairs;
         return this;
     }
-    public HttpBuilder addDownloadTask(DownloadTask task){
+    public HttpBuilder addDownloadTask(DownloadTask task) {
         this.task = task;
         return this;
     }
-    public HttpBuilder setUploadFiles(Map<String, Object> files){
+    public HttpBuilder setUploadFiles(Map<String, Object> files) {
         this.files = files;
         return this;
     }
-    public HttpBuilder addUploadFiles(String key, File file){
-        if(null == files){
+    public HttpBuilder addUploadFiles(String key, File file) {
+        if(null == files) {
             files = new HashMap<>();
         }
         files.put(key, file);
         return this;
     }
-    public HttpBuilder addUploadFiles(String key, byte[] file){
-        if(null == files){
+    public HttpBuilder addUploadFiles(String key, byte[] file) {
+        if(null == files) {
             files = new HashMap<>();
         }
         files.put(key, file);
         return this;
     }
-    public HttpBuilder setParams(Map<String, Object> params){
+    public HttpBuilder setParams(Map<String, Object> params) {
         this.params = params;
         return this;
     }
-    public HttpBuilder addParam(String key, String value){
+    public HttpBuilder addParam(String key, String value) {
         params.put(key, value);
         return this;
     }
-    public HttpBuilder setReturnType(String type){
+    public HttpBuilder setReturnType(String type) {
         this.returnType = type;
         return this;
     }
-    public HttpBuilder setUserAgent(String agent){
+    public HttpBuilder setUserAgent(String agent) {
         this.userAgent = agent;
         return this;
     }
-    public Object getParam(String key){
-        if(null != params){
+    public Object getParam(String key) {
+        if(null != params) {
             return params.get(key);
         }else{
             return null;
         }
     }
-    public HttpBuilder setParam(String key, Object value){
-        if(null == params){
+    public HttpBuilder setParam(String key, Object value) {
+        if(null == params) {
             params = new HashMap<>();
         }
         Object param = params.get(key);
-        if(null != param && null != value){
+        if(null != param && null != value) {
             List list = null;
-            if(param instanceof List){
+            if(param instanceof List) {
                 list = (List)param;
             }else{
                 list = new ArrayList();
             }
-            if(value instanceof List){
+            if(value instanceof List) {
                 list.addAll((List)value);
             }else{
                 list.add(value);

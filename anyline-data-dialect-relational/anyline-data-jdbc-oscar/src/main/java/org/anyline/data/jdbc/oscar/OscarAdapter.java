@@ -44,10 +44,10 @@ import java.util.Map;
 public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	
 	public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
-	public DatabaseType type(){
+	public DatabaseType type() {
 		return DatabaseType.oscar;
 	} 
-	public OscarAdapter(){
+	public OscarAdapter() {
 		super();
 		delimiterFr = "";
 		delimiterTo = "";
@@ -56,10 +56,10 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 			reg(alias);
 			alias(alias.name(), alias.standard());
 		}
-		for(OscarWriter writer: OscarWriter.values()){
+		for(OscarWriter writer: OscarWriter.values()) {
 			reg(writer.supports(), writer.writer());
 		}
-		for(OscarReader reader: OscarReader.values()){
+		for(OscarReader reader: OscarReader.values()) {
 			reg(reader.supports(), reader.reader());
 		}
 	}
@@ -126,7 +126,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
 
@@ -140,7 +140,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
 	}
 
@@ -154,7 +154,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		super.fillInsertContent(runtime, run, dest, set, configs, columns);
 	}
 
@@ -168,7 +168,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		super.fillInsertContent(runtime, run, dest, list, configs, columns);
 	}
 
@@ -197,7 +197,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
 		return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
 	}
 
@@ -207,7 +207,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String batchInsertSeparator(){
+	public String batchInsertSeparator() {
 		return ",";
 	}
 
@@ -217,7 +217,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean supportInsertPlaceholder(){
+	public boolean supportInsertPlaceholder() {
 		return true;
 	}
 
@@ -228,7 +228,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param value value
 	 */
 	@Override
-	protected void setPrimaryValue(Object obj, Object value){
+	protected void setPrimaryValue(Object obj, Object value) {
 		super.setPrimaryValue(obj, value);
 	}
 
@@ -242,7 +242,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		return super.createInsertRun(runtime, dest, obj, configs, columns);
 	}
 
@@ -256,7 +256,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
 		return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
@@ -282,7 +282,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
 		return super.insert(runtime, random, data, configs, run, pks);
 	}
 
@@ -326,7 +326,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.update(runtime, random, batch, dest, data, configs, columns);
 	}
 
@@ -354,19 +354,19 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
 		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
@@ -393,11 +393,11 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
 		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 
@@ -411,7 +411,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+	public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
 		return super.update(runtime, random, dest, data, configs, run);
 	}
 
@@ -443,24 +443,24 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+	public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
-	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
+	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
 		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected Boolean checkOverride(Object obj){
+	protected Boolean checkOverride(Object obj) {
 		return super.checkOverride(obj);
 	}
 	@Override
-	protected Map<String, Object> checkPv(Object obj){
+	protected Map<String, Object> checkPv(Object obj) {
 		return super.checkPv(obj);
 	}
 
@@ -471,11 +471,11 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return boolean
 	 */
 	@Override
-	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
 		return super.isMultipleValue(runtime, run, key);
 	}
 	@Override
-	protected boolean isMultipleValue(Column column){
+	protected boolean isMultipleValue(Column column) {
 		return super.isMultipleValue(column);
 	}
 
@@ -486,7 +486,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
@@ -526,7 +526,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.querys(runtime, random, prepare, configs, conditions);
 	}
 
@@ -539,7 +539,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
 		return super.querys(runtime, random, procedure, navi);
 	}
 
@@ -555,7 +555,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Entity
 	 */
 	@Override
-	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return super.selects(runtime, random, prepare, clazz, configs, conditions);
 	}
 
@@ -571,7 +571,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 *
 	 */
 	@Override
-	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
+	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
 		return super.select(runtime, random, clazz, table, configs, run);
 	}
 
@@ -587,7 +587,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 
@@ -600,7 +600,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.buildQueryRun(runtime, prepare, configs, conditions);
 	}
 
@@ -611,7 +611,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
 		return super.buildQuerySequence(runtime, next, names);
 	}
 
@@ -621,19 +621,19 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillQueryContent(DataRuntime runtime, Run run){
+	public void fillQueryContent(DataRuntime runtime, Run run) {
 		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+	protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
 		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, TextRun run){
+	protected void fillQueryContent(DataRuntime runtime, TextRun run) {
 		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, TableRun run){
+	protected void fillQueryContent(DataRuntime runtime, TableRun run) {
 		super.fillQueryContent(runtime, run);
 	}
 
@@ -716,7 +716,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
 		return super.maps(runtime, random, configs, run);
 	}
 
@@ -741,7 +741,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return DataRow 保存序列查询结果 以存储过程name作为key
 	 */
 	@Override
-	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
 		return super.sequence(runtime, random, next, names);
 	}
 
@@ -753,7 +753,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
 		return super.process(runtime, list);
 	}
 
@@ -777,7 +777,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.count(runtime, random, prepare, configs, conditions);
 	}
 
@@ -789,7 +789,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String mergeFinalTotal(DataRuntime runtime, Run run){
+	public String mergeFinalTotal(DataRuntime runtime, Run run) {
 		return super.mergeFinalTotal(runtime, run);
 	}
 
@@ -801,7 +801,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, Run run){
+	public long count(DataRuntime runtime, String random, Run run) {
 		return super.count(runtime, random, run);
 	}
 
@@ -822,11 +822,11 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.exists(runtime, random, prepare, configs, conditions);
 	}
 	@Override
-	public String mergeFinalExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run) {
 		return super.mergeFinalExists(runtime, run);
 	}
 
@@ -859,7 +859,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
 		return super.execute(runtime, random, batch, configs, prepare, values);
 	}
 
@@ -871,7 +871,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+	public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
 		return super.execute(runtime, random, procedure);
 	}
 
@@ -885,19 +885,19 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.buildExecuteRun(runtime, prepare, configs, conditions);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+	protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
 		super.fillExecuteContent(runtime, run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+	protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
 		super.fillExecuteContent(runtime, run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+	protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
 		super.fillExecuteContent(runtime, run);
 	}
 
@@ -908,7 +908,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillExecuteContent(DataRuntime runtime, Run run){
+	public void fillExecuteContent(DataRuntime runtime, Run run) {
 		super.fillExecuteContent(runtime, run);
 	}
 
@@ -954,7 +954,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values) {
 		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
@@ -969,7 +969,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+	public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
 		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
@@ -985,7 +985,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+	public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
 		return super.delete(runtime, random, table, configs, conditions);
 	}
 
@@ -997,7 +997,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 1表示成功执行
 	 */
 	@Override
-	public long truncate(DataRuntime runtime, String random, Table table){
+	public long truncate(DataRuntime runtime, String random, Table table) {
 		return super.truncate(runtime, random, table);
 	}
 
@@ -1011,7 +1011,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
 		return super.buildDeleteRun(runtime, dest, configs, obj, columns);
 	}
 
@@ -1025,12 +1025,12 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values){
+	public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
 		return super.buildDeleteRun(runtime, batch, table, configs, key, values);
 	}
 
 	@Override
-	public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+	public List<Run> buildTruncateRun(DataRuntime runtime, String table) {
 		return super.buildTruncateRun(runtime, table);
 	}
 
@@ -1068,7 +1068,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillDeleteRunContent(DataRuntime runtime, Run run){
+	public void fillDeleteRunContent(DataRuntime runtime, Run run) {
 		super.fillDeleteRunContent(runtime, run);
 	}
 
@@ -1081,7 +1081,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
 		return super.delete(runtime, random, configs, run);
 	}
 
@@ -1144,7 +1144,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return Database
 	 */
 	@Override
-	public Database database(DataRuntime runtime, String random){
+	public Database database(DataRuntime runtime, String random) {
 		return super.database(runtime, random);
 	}
 
@@ -1155,7 +1155,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param random 用来标记同一组命令
 	 * @return String
 	 */
-	public String product(DataRuntime runtime, String random){
+	public String product(DataRuntime runtime, String random) {
 		return super.product(runtime, random);
 	}
 
@@ -1166,7 +1166,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param random 用来标记同一组命令
 	 * @return String
 	 */
-	public String version(DataRuntime runtime, String random){
+	public String version(DataRuntime runtime, String random) {
 		return super.version(runtime, random);
 	}
 
@@ -1179,7 +1179,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
+	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
 		return super.databases(runtime, random, greedy, name);
 	}
 
@@ -1191,7 +1191,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
 		return super.databases(runtime, random, name);
 	}
 
@@ -1293,7 +1293,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
 		return super.product(runtime, index, create, product, set);
 	}
 
@@ -1307,7 +1307,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, boolean create, String product){
+	public String product(DataRuntime runtime, boolean create, String product) {
 		return super.product(runtime, create, product);
 	}
 
@@ -1322,7 +1322,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
 		return super.version(runtime, index, create, version, set);
 	}
 
@@ -1336,7 +1336,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, boolean create, String version){
+	public String version(DataRuntime runtime, boolean create, String version) {
 		return super.version(runtime, create, version);
 	}
 
@@ -1364,7 +1364,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
 		return super.catalogs(runtime, random, name);
 	}
 
@@ -1376,7 +1376,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
+	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
 		return super.catalogs(runtime, random, greedy, name);
 	}
 
@@ -1507,7 +1507,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
 		return super.schemas(runtime, random, catalog, name);
 	}
 
@@ -1520,7 +1520,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
+	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
 		return super.schemas(runtime, random, greedy, catalog, name);
 	}
 
@@ -1626,7 +1626,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
@@ -1639,12 +1639,12 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param schema schema
 	 */
 	@Override
-	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
 		super.tableMap(runtime, random, greedy, catalog, schema);
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.tables(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
@@ -1799,7 +1799,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
 		return super.ddl(runtime, random, table, init);
 	}
 
@@ -1826,7 +1826,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
@@ -1862,7 +1862,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return super.views(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
@@ -1926,7 +1926,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view){
+	public List<String> ddl(DataRuntime runtime, String random, View view) {
 		return super.ddl(runtime, random, view);
 	}
 
@@ -1953,7 +1953,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, view, ddls, set);
 	}
 	/* *****************************************************************************************************************
@@ -1989,7 +1989,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
@@ -2050,7 +2050,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
 		return super.ddl(runtime, random, table);
 	}
 
@@ -2077,7 +2077,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 	/* *****************************************************************************************************************
@@ -2111,7 +2111,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern){
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
 		return super.partitionTables(runtime, random, greedy, master, tags, pattern);
 	}
 
@@ -2217,7 +2217,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
 		return super.ddl(runtime, random, table);
 	}
 
@@ -2244,7 +2244,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 	/* *****************************************************************************************************************
@@ -2272,7 +2272,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
 		return super.columns(runtime, random, greedy, table, primary);
 	}
 
@@ -2289,7 +2289,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 
@@ -2372,7 +2372,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
@@ -2401,7 +2401,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) {
 		return super.init(runtime, index, meta, table, row);
 	}
 
@@ -2415,7 +2415,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return super.detail(runtime, index, meta, catalog, schema, row);
 	}
 
@@ -2426,7 +2426,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return ColumnMetadataAdapter
 	 */
 	@Override
-	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+	public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
 		return super.columnMetadataAdapter(runtime);
 	}
 
@@ -2439,7 +2439,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
 		return super.columnMetadataLengthRefer(runtime, meta);
 	}
 
@@ -2452,7 +2452,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
 		return super.columnMetadataPrecisionRefer(runtime, meta);
 	}
 
@@ -2465,7 +2465,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+	public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
 		return super.columnMetadataScaleRefer(runtime, meta);
 	}
 
@@ -2492,7 +2492,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T>  Tag
 	 */
 	@Override
-	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
+	public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
 		return super.tags(runtime, random, greedy, table);
 	}
 
@@ -2563,7 +2563,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return PrimaryKey
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
 		return super.primary(runtime, random, greedy, table);
 	}
 
@@ -2613,7 +2613,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return PrimaryMetadataAdapter
 	 */
 	@Override
-	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
+	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
 		return super.primaryMetadataAdapter(runtime);
 	}
 	/**
@@ -2648,7 +2648,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return PrimaryKey
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
 		return super.foreigns(runtime, random, greedy,table);
 	}
 
@@ -2705,7 +2705,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		return super.indexs(runtime, random, greedy, table, pattern);
 	}
 
@@ -2720,7 +2720,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
 		return super.indexs(runtime, random, table, pattern);
 	}
 
@@ -2733,7 +2733,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name){
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
 		return super.buildQueryIndexesRun(runtime, table, name);
 	}
 
@@ -2839,7 +2839,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return IndexMetadataAdapter
 	 */
 	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
 		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************
@@ -2866,7 +2866,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		return super.constraints(runtime, random, greedy, table, pattern);
 	}
 
@@ -2882,7 +2882,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern){
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
 		return super.constraints(runtime, random, table, column, pattern);
 	}
 
@@ -2956,7 +2956,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
 		return super.triggers(runtime, random, greedy, table, events);
 	}
 
@@ -2968,7 +2968,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
 		return super.buildQueryTriggersRun(runtime, table, events);
 	}
 
@@ -3021,7 +3021,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		return super.procedures(runtime, random, greedy, catalog, schema, pattern);
 	}
 
@@ -3037,7 +3037,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		return super.procedures(runtime, random, catalog, schema, pattern);
 	}
 
@@ -3108,7 +3108,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return ddl
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
 		return super.ddl(runtime, random, procedure);
 	}
 
@@ -3135,7 +3135,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, procedure, ddls, set);
 	}
 
@@ -3261,7 +3261,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return ddl
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Function meta){
+	public List<String> ddl(DataRuntime runtime, String random, Function meta) {
 		return super.ddl(runtime, random, meta);
 	}
 
@@ -3288,7 +3288,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, function, ddls, set);
 	}
 
@@ -3414,7 +3414,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return ddl
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+	public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
 		return super.ddl(runtime, random, meta);
 	}
 
@@ -3441,7 +3441,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, sequence, ddls, set);
 	}
 
@@ -3460,7 +3460,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name) {
 		return super.search(metas, catalog, schema, name);
 	}
 
@@ -3474,7 +3474,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
+	public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name) {
 		return super.schema(schemas, catalog, name);
 	}
 
@@ -3487,7 +3487,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Catalog> T catalog(List<T> catalogs, String name){
+	public <T extends Catalog> T catalog(List<T> catalogs, String name) {
 		return super.catalog(catalogs, name);
 	}
 
@@ -3500,7 +3500,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Database> T database(List<T> databases, String name){
+	public <T extends Database> T database(List<T> databases, String name) {
 		return super.database(databases, name);
 	}
 	/* *****************************************************************************************************************
@@ -3533,7 +3533,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
 		return super.execute(runtime, random, meta, action, run);
 	}
 	/* *****************************************************************************************************************
@@ -3747,7 +3747,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkTableExists(runtime, builder, exists);
 	}
 
@@ -3758,7 +3758,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param table 表
 	 */
 	@Override
-	public void checkPrimary(DataRuntime runtime, Table table){
+	public void checkPrimary(DataRuntime runtime, Table table) {
 		super.checkPrimary(runtime, table);
 	}
 
@@ -3771,7 +3771,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.primary(runtime, builder, meta);
 	}
 
@@ -3784,7 +3784,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.engine(runtime, builder, meta);
 	}
 
@@ -3797,7 +3797,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.body(runtime, builder, meta);
 	}
 
@@ -3810,7 +3810,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.columns(runtime, builder, meta);
 	}
 
@@ -3823,7 +3823,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.indexs(runtime, builder, meta);
 	}
 
@@ -3836,7 +3836,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.charset(runtime, builder, meta);
 	}
 
@@ -3849,7 +3849,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.comment(runtime, builder, meta);
 	}
 	
@@ -3862,7 +3862,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.keys(runtime, builder, meta);
 	}
 
@@ -3875,7 +3875,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.distribution(runtime, builder, meta);
 	}
 
@@ -3888,7 +3888,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.materialize(runtime, builder, meta);
 	}
 
@@ -3901,7 +3901,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.property(runtime, builder, meta);
 	}
 
@@ -4151,7 +4151,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkViewExists(runtime, builder, exists);
 	}
 
@@ -4164,7 +4164,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta) {
 		return super.comment(runtime, builder, meta);
 	}
 
@@ -4665,7 +4665,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String alterColumnKeyword(DataRuntime runtime){
+	public String alterColumnKeyword(DataRuntime runtime) {
 		return super.alterColumnKeyword(runtime);
 	}
 
@@ -4679,7 +4679,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.addColumnGuide(runtime, builder, meta);
 	}
 
@@ -4693,7 +4693,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.dropColumnGuide(runtime, builder, meta);
 	}
 
@@ -4771,7 +4771,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
 		return super.define(runtime, builder, meta, action);
 	}
 
@@ -4785,7 +4785,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkColumnExists(runtime, builder, exists);
 	}
 
@@ -4798,7 +4798,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.type(runtime, builder, meta);
 	}
 
@@ -4815,7 +4815,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
@@ -4828,7 +4828,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.aggregation(runtime, builder, meta);
 	}
 
@@ -4841,7 +4841,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
 		return super.nullable(runtime, builder, meta, action);
 	}
 
@@ -4854,7 +4854,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.charset(runtime, builder, meta);
 	}
 
@@ -4866,7 +4866,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.defaultValue(runtime, builder, meta);
 	}
 
@@ -4879,7 +4879,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.primary(runtime, builder, meta);
 	}
 
@@ -4892,7 +4892,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.unique(runtime, builder, meta);
 	}
 
@@ -4905,7 +4905,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.increment(runtime, builder, meta);
 	}
 
@@ -4918,7 +4918,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.onupdate(runtime, builder, meta);
 	}
 
@@ -4931,7 +4931,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.position(runtime, builder, meta);
 	}
 
@@ -4944,7 +4944,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.comment(runtime, builder, meta);
 	}
 
@@ -5148,7 +5148,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkTagExists(runtime, builder, exists);
 	}
 
@@ -5592,7 +5592,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
 		return super.type(runtime, builder, meta);
 	}
 
@@ -5605,7 +5605,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
 		return super.comment(runtime, builder, meta);
 	}
 	/* *****************************************************************************************************************
@@ -5861,7 +5861,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta){
+	public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
 		return super.each(runtime, builder, meta);
 	}
 
@@ -5993,7 +5993,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param parameter parameter
 	 */
 	@Override
-	public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter){
+	public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter) {
 		return super.parameter(runtime, builder, parameter);
 	}
 
@@ -6238,12 +6238,12 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 *  ***************************************************************************************************************/
 
 	@Override
-	public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
 		super.checkSchema(runtime, datasource,meta);
 	}
 
 	@Override
-	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+	public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
 		super.checkSchema(runtime, con, meta);
 	}
     /**
@@ -6253,7 +6253,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
      * @param <T> Metadata
      */
 	@Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
@@ -6268,7 +6268,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
@@ -6281,7 +6281,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 
@@ -6292,14 +6292,14 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String[]
 	 */
 	@Override
-	public String[] correctSchemaFromJDBC(String catalog, String schema){
+	public String[] correctSchemaFromJDBC(String catalog, String schema) {
 		return super.correctSchemaFromJDBC(catalog, schema);
 	}
 
-	public String insertHead(ConfigStore configs){
+	public String insertHead(ConfigStore configs) {
 		return super.insertHead(configs);
 	}
-	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.insertFoot(configs, columns);
 	}
 
@@ -6309,7 +6309,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
+	public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
 		return super.value(runtime, column, value);
 	}
 
@@ -6328,7 +6328,7 @@ public class OscarAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * 伪表
 	 * @return String
 	 */
-	protected String dummy(){
+	protected String dummy() {
 		return super.dummy();
 	}
 	/* *****************************************************************************************************************

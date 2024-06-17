@@ -29,18 +29,18 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.iotdb")
 public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
-	public DatabaseType type(){
+	public DatabaseType type() {
 		return DatabaseType.IoTDB;
 	}
 
 
 	private String delimiter;
 
-	public IoTDBAdapter(){
+	public IoTDBAdapter() {
 		super();
 		delimiterFr = "`";
 		delimiterTo = "`";
-		for (IoTDBTypeMetadataAlias alias: IoTDBTypeMetadataAlias.values()){
+		for (IoTDBTypeMetadataAlias alias: IoTDBTypeMetadataAlias.values()) {
 			reg(alias);
 			alias(alias.name(), alias.standard());
 		}
@@ -52,10 +52,10 @@ public class IoTDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 *
 	 * ****************************************************************************************************/
 	@Override
-	public String mergeFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run) {
 		return super.mergeFinalQuery(runtime, run);
 	}
-	public String keyword(Table table){
+	public String keyword(Table table) {
 		return "timeseries";
 	}
 }

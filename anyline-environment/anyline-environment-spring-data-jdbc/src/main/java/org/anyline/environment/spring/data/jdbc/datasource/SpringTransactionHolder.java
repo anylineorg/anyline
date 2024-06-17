@@ -28,9 +28,9 @@ public class SpringTransactionHolder {/*
      * @param definition 事务定义相关参数
      * @return TransactionStatus 回溯或提交时需要
      *//*
-    public static TransactionStatus start(String datasource, TransactionDefinition definition){
+    public static TransactionStatus start(String datasource, TransactionDefinition definition) {
         DataSourceTransactionManager dtm = null;
-        if(BasicUtil.isEmpty(datasource) || "default".equals(datasource) ||!ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
+        if(BasicUtil.isEmpty(datasource) || "default".equals(datasource) ||!ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
             dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
             datasource = "default";
         }else {
@@ -48,7 +48,7 @@ public class SpringTransactionHolder {/*
      * @return behavior 事务传播方式<br/>
      * 更多参数调用start(String datasource, TransactionDefine define)
      *//*
-    public static TransactionStatus start(String datasource, int behavior){
+    public static TransactionStatus start(String datasource, int behavior) {
         DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
         // 定义事务传播方式
         definition.setPropagationBehavior(behavior);
@@ -60,7 +60,7 @@ public class SpringTransactionHolder {/*
      * 	 * @param datasource 数据源
      * 更多参数调用start(String datasource, TransactionDefine define)
      *//*
-    public static TransactionStatus start(String datasource){
+    public static TransactionStatus start(String datasource) {
         return start(datasource, TransactionDefinition.PROPAGATION_REQUIRED);
     }
 
@@ -69,7 +69,7 @@ public class SpringTransactionHolder {/*
      * @param definition 事务定义相关参数
      * @return TransactionStatus 回溯或提交时需要
      *//*
-    public static TransactionStatus start(TransactionDefinition definition){
+    public static TransactionStatus start(TransactionDefinition definition) {
         return start(RuntimeHolder.runtime().getKey(), definition);
     }
 
@@ -79,7 +79,7 @@ public class SpringTransactionHolder {/*
      * 更多参数调用start(String datasource, TransactionDefine define)
      * @return TransactionStatus 回溯或提交时需要
      *//*
-    public static TransactionStatus start(int behavior){
+    public static TransactionStatus start(int behavior) {
         return start(RuntimeHolder.runtime().getKey(), behavior);
     }
 
@@ -87,7 +87,7 @@ public class SpringTransactionHolder {/*
      * 启动事务
      * @return TransactionStatus 回溯或提交时需要
      *//*
-    public static TransactionStatus start(){
+    public static TransactionStatus start() {
         return start(RuntimeHolder.runtime().getKey());
     }
 
@@ -95,10 +95,10 @@ public class SpringTransactionHolder {/*
      * 提交事务
      * @param status 启动事务时返回TransactionStatus
      *//*
-    public static void commit(TransactionStatus status){
+    public static void commit(TransactionStatus status) {
         String datasource = records.get(status);
         DataSourceTransactionManager dtm = null;
-        if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
+        if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
             dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
         }else {
             dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);
@@ -115,10 +115,10 @@ public class SpringTransactionHolder {/*
      * 回滚事务
      * @param status 启动事务时返回TransactionStatus
      *//*
-    public static void rollback(TransactionStatus status){
+    public static void rollback(TransactionStatus status) {
         String datasource = records.get(status);
         DataSourceTransactionManager dtm = null;
-        if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER){
+        if(BasicUtil.isEmpty(datasource) || !ConfigTable.IS_OPEN_TRANSACTION_MANAGER) {
             dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean("transactionManager");
         }else {
             dtm = (DataSourceTransactionManager) ConfigTable.environment().getBean(DataRuntime.ANYLINE_TRANSACTION_BEAN_PREFIX +  datasource);

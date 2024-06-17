@@ -77,14 +77,14 @@ public class LogUtil {
      * @param params params
      * @return String
      */
-    public static String param(List params){
+    public static String param(List params) {
         StringBuilder builder = new StringBuilder();
-        if(null != params && !params.isEmpty()){
+        if(null != params && !params.isEmpty()) {
             builder.append("\n");
             int idx = 0;
-            for(Object param:params){
+            for(Object param:params) {
                 builder.append("param").append(idx++).append("=").append(param);
-                if(null != param){
+                if(null != param) {
                     builder.append("(").append(ClassUtil.type(param)).append(")");
                 }
                 builder.append("\n");
@@ -112,12 +112,12 @@ public class LogUtil {
             }else{
                 return param(values);
             }
-        }else if(null != values){
+        }else if(null != values) {
             int idx = 0;
             builder.append("\n");
-            for(Object value:values){
+            for(Object value:values) {
                 builder.append("param").append(idx++).append("=").append(value);
-                if(null != value){
+                if(null != value) {
                     builder.append("(").append(ClassUtil.type(value)).append(")");
                 }
                 builder.append("\n");

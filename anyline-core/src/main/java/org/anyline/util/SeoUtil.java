@@ -39,51 +39,51 @@ public class SeoUtil {
 	 * 避免破坏原html标签 
 	 * 按星期更新数据 
 	 */ 
-	public static String insertKeyword(String src, List<String> keys){
+	public static String insertKeyword(String src, List<String> keys) {
 		List<Integer> idxList = new ArrayList<>();				// 关键词插入位置
 		Map<Integer, String> idxKeyMap = new HashMap<>();	// 关键词插入位置对应(位置:关键词)
  
 		int srcLen = src.length(); 
-		if(srcLen < MIN_BODY_LEN){
+		if(srcLen < MIN_BODY_LEN) {
 			return src; 
 		} 
 		// src = src.replace("<br/>", "\n");
 		int week = DateUtil.getWeekOfYear() + DateUtil.month() ;//第几个星期+月份 
 		int size = keys.size(); 
-		for(int i=0; i<size; i++){
+		for(int i=0; i<size; i++) {
 			String key = keys.get(i); 
-			if(null == key || key.trim().isEmpty()){
+			if(null == key || key.trim().isEmpty()) {
 				continue; 
 			} 
 			key = key.trim(); 
 			int bodyWordSize =srcLen/key.length();											// 单词个数(默认单词长度与关键词长度相同)
 			int existKeyCount = BasicUtil.charCount(src, key);						// 源文中已存在关键词个数
 			int insertKkeyCount = KEYWORDS_DENSITY * bodyWordSize / 100 - existKeyCount;	// 插入关键词个数
-			if(0 == insertKkeyCount){
+			if(0 == insertKkeyCount) {
 				continue; 
 			} 
 			int partLen = srcLen / insertKkeyCount;											// 每段字数
-			for(int j=1; j<=insertKkeyCount; j++){
+			for(int j=1; j<=insertKkeyCount; j++) {
 				int insertIdx = 0;	// 插入位置
-				if(j%2 == 0){
+				if(j%2 == 0) {
 					insertIdx = partLen * j + week * j; 
 				}else{
 					insertIdx = partLen * j - week * j; 
 				} 
 				 
 				insertIdx = insertIdx - i*20; // 错开不同的关键词 
-				if(i>0){
+				if(i>0) {
 					// 粗略抵消一部分因插入前一个关键词造成的全文长度变化
 					insertIdx = insertIdx - (i+1) * keys.get(i-1).length() - j*key.length(); 
 				} 
 				insertIdx = Math.abs(insertIdx);  
-				if(insertIdx > srcLen){
+				if(insertIdx > srcLen) {
 					insertIdx = insertIdx % srcLen; 
 				} 
 				 
 				idxList.add(insertIdx); 
 				idxKeyMap.put(insertIdx, key);
-				if(insertKkeyCount <= 1){
+				if(insertKkeyCount <= 1) {
 					// 内容长度不足, 避免关键词堆积
 					break;  
 				} 
@@ -99,9 +99,9 @@ public class SeoUtil {
 	 * @param idx  idx
 	 * @return int
 	 */ 
-	private static int getNearSignIdx(List<Integer> idxs, int idx){
-		for(int item: idxs){
-			if(Math.abs(item-idx) <= SEARCH_SING_SCOPE){
+	private static int getNearSignIdx(List<Integer> idxs, int idx) {
+		for(int item: idxs) {
+			if(Math.abs(item-idx) <= SEARCH_SING_SCOPE) {
 				return item; 
 			} 
 		} 
@@ -112,13 +112,13 @@ public class SeoUtil {
 	 * @param src  src
 	 * @return List
 	 */ 
-	private static List<Integer> getSingIdx(String src){
+	private static List<Integer> getSingIdx(String src) {
 		List<Integer> idxs = new ArrayList<Integer>();
 
 		String signTmpSrc = src.replaceAll("[, .;?!:'\", 。；？！：’”>]", SIGN_REPLACE_CHAR);
 		// String signTmpSrc = src.replaceAll("[\\pP‘’“”]", SIGN_REPLACE_CHAR);
 		int idx = -1; 
-		while((idx = signTmpSrc.indexOf(SIGN_REPLACE_CHAR, idx+1)) != -1){
+		while((idx = signTmpSrc.indexOf(SIGN_REPLACE_CHAR, idx+1)) != -1) {
 			idxs.add(0, idx);
 		} 
 		return idxs; 
@@ -130,21 +130,21 @@ public class SeoUtil {
 	 * @param idxKeyMap  idxKeyMap
 	 * @return String
 	 */ 
-	private static String insert(String src, List<Integer> idxList, Map<Integer, String> idxKeyMap){
+	private static String insert(String src, List<Integer> idxList, Map<Integer, String> idxKeyMap) {
 		List<Integer> signIdxList = getSingIdx(src);					// 标点位置
 		Collections.sort(idxList); 
 		int size = idxList.size(); 
 		// 从最后一个插入
-		for(int i=size-1; i>=0; i--){
+		for(int i=size-1; i>=0; i--) {
 			Integer idx = idxList.get(i); 
 			String key =  idxKeyMap.get(idx); 
 			int insertIdx = getNearSignIdx(signIdxList, idx);	// 附近标点位置
 			insertIdx = insertIdx + 1;//插入标点后一个位置 
-			if(!isNearExistKey(src, key, insertIdx)){//附近没有关键词执行插入并记数
+			if(!isNearExistKey(src, key, insertIdx)) {//附近没有关键词执行插入并记数
 				// 检查插入操作是否破坏了html标签
 				boolean isBreakTag = isBreakTag(src, insertIdx, key);
 				 
-				if(!isBreakTag){
+				if(!isBreakTag) {
 					src = src.substring(0, insertIdx) +"<b>" + key + "</b>" + src.substring(insertIdx); 
 				} 
 			} 
@@ -158,15 +158,15 @@ public class SeoUtil {
 	 * @param key  key
 	 * @return boolean
 	 */ 
-	private static boolean isBreakTag(String src, int idx, String key){
+	private static boolean isBreakTag(String src, int idx, String key) {
 		boolean isBreak = false; 
 		src = src.substring(0, idx) + key + src.substring(idx); 
 		int fr = idx - 100; 
 		int to = idx + key.length() + 100; 
-		if(fr < 0){
+		if(fr < 0) {
 			fr = 0; 
 		} 
-		if(to > src.length()){
+		if(to > src.length()) {
 			to = src.length(); 
 		} 
 		src = src.substring(fr, to); 
@@ -181,19 +181,19 @@ public class SeoUtil {
 	 * @param idx  idx
 	 * @return boolean
 	 */ 
-	private static boolean isNearExistKey(String src, String key, int idx){
+	private static boolean isNearExistKey(String src, String key, int idx) {
 		boolean keyExist = false;	//
 		int nearKeyIdx = src.indexOf(key, idx-key.length()-10);	// 最近关键词位置
-		if(nearKeyIdx != -1 && Math.abs(nearKeyIdx - idx) <= MIN_KEYWORDS_GAP){
+		if(nearKeyIdx != -1 && Math.abs(nearKeyIdx - idx) <= MIN_KEYWORDS_GAP) {
 			keyExist = true; 
 		}else{
 			idx = idx + key.length() + 10; 
-			if(idx >= src.length()){
+			if(idx >= src.length()) {
 				idx = src.length(); 
 			} 
 			String tmp = src.substring(0, idx); 
 			nearKeyIdx = tmp.lastIndexOf(key); 
-			if(nearKeyIdx != -1 && Math.abs(nearKeyIdx - idx) <= MIN_KEYWORDS_GAP){
+			if(nearKeyIdx != -1 && Math.abs(nearKeyIdx - idx) <= MIN_KEYWORDS_GAP) {
 				keyExist = true; 
 			} 
 		} 

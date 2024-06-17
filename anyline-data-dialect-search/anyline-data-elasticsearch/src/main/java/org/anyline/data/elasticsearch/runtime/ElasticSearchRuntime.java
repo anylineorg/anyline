@@ -31,7 +31,7 @@ public class ElasticSearchRuntime extends AbstractRuntime implements DataRuntime
 
     protected RestClient client;
 
-    public ElasticSearchRuntime(){
+    public ElasticSearchRuntime() {
         ConfigTable.DEFAULT_ELASTIC_SEARCH_ENTITY_CLASS = ElasticSearchDataRow.class;
     }
 
@@ -55,19 +55,19 @@ public class ElasticSearchRuntime extends AbstractRuntime implements DataRuntime
         return null;
     }
 
-    public ElasticSearchRuntime(String key, RestClient client, DriverAdapter adapter){
+    public ElasticSearchRuntime(String key, RestClient client, DriverAdapter adapter) {
         setKey(key);
         setProcessor(client);
         setAdapter(adapter);
     }
 
-    public RestClient client(){
+    public RestClient client() {
         return client;
     }
 
     public String getFeature(boolean connection) {
-        if(null == feature){
-            if(null != client){
+        if(null == feature) {
+            if(null != client) {
                 feature = client.getClass().getName();
             }
         }

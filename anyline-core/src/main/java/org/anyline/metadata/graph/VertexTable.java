@@ -28,22 +28,22 @@ import java.io.Serializable;
  */
 public class VertexTable extends GraphTable implements Serializable {
 
-    public VertexTable(){
+    public VertexTable() {
     }
-    public VertexTable(String name){
+    public VertexTable(String name) {
         super(name);
     }
 
-    public VertexTable(String schema, String table){
+    public VertexTable(String schema, String table) {
         super(schema, table);
     }
-    public VertexTable(Schema schema, String table){
+    public VertexTable(Schema schema, String table) {
         super(schema, table);
     }
-    public VertexTable(String catalog, String schema, String name){
+    public VertexTable(String catalog, String schema, String name) {
         super(catalog, schema, name);
     }
-    public VertexTable(Catalog catalog, Schema schema, String name){
+    public VertexTable(Catalog catalog, Schema schema, String name) {
         super(catalog, schema, name);
     }
 }

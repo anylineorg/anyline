@@ -54,18 +54,18 @@ public class DefaultDDListener implements DDListener {
      */
     @Override
     public ACTION.SWITCH afterAlterColumnException(DataRuntime runtime, String random, Table table, Column column, Exception exception) {
-         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
+         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0) {
             return ACTION.SWITCH.CONTINUE;
         }
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
-        if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == 1){
+        if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == 1) {
             exeAfterException(runtime, table, column, exception);
         }else{
             // 根据行数
             RunPrepare prepare = new DefaultTablePrepare();
             prepare.setDest(table.getName());
             long rows = runtime.getAdapter().count(runtime, random, prepare, null);
-            if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
+            if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION) {
                 swt = afterAlterColumnException(runtime, random, table, column, rows, exception);
             }else{
                 swt = exeAfterException(runtime, table, column, exception);
@@ -74,45 +74,45 @@ public class DefaultDDListener implements DDListener {
         return swt;
     }
 
-    public ACTION.SWITCH exeAfterException(DataRuntime runtime, Table table, Column column, Exception exception){
+    public ACTION.SWITCH exeAfterException(DataRuntime runtime, Table table, Column column, Exception exception) {
         DriverAdapter adapter = runtime.getAdapter();
          Column update = column.getUpdate();
         boolean isNum = adapter.isNumberColumn(runtime, update);
-        if(adapter.isCharColumn(runtime, column) && !adapter.isCharColumn(runtime, update)){
+        if(adapter.isCharColumn(runtime, column) && !adapter.isCharColumn(runtime, update)) {
             // 原来是String类型 修改成 boolean或number类型 失败
             int page = 1;
             int vol = 100;
             PageNavi navi = new DefaultPageNavi();
             navi.setPageRows(vol);
             LinkedHashMap<String, Column> pks = table.primarys();
-            if(pks.isEmpty()){
-                if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
+            if(pks.isEmpty()) {
+                if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)) {
                     // 没有主键
                     return ACTION.SWITCH.SKIP;
                 }
             }
             List<String> keys = new ArrayList<>();
-            for (Column pk:pks.values()){
+            for (Column pk:pks.values()) {
                 keys.add(pk.getName());
             }
 
-            while (true){
+            while (true) {
                 navi.setCurPage(page);
                 RunPrepare prepare = new DefaultTablePrepare();
                 prepare.setDest(table.getName());
                 ConfigStore configs = new DefaultConfigStore();
                 configs.setPageNavi(navi);
                 DataSet set = runtime.getAdapter().querys(runtime, null, prepare, configs);
-                if(set.isEmpty()){
+                if(set.isEmpty()) {
                     break;
                 }
                 set.setPrimaryKey(true, keys);
-                for(DataRow row:set){
+                for(DataRow row:set) {
                     String value = row.getString(column.getName()+ConfigTable.ALTER_COLUMN_TYPE_SUFFIX);
-                    if(null == value){
+                    if(null == value) {
                         value = row.getString(column.getName());
                     }
-                    if(null != value){
+                    if(null != value) {
                         Object convert = null;
                         if(isNum) {
                             value = char2number(value);
@@ -126,7 +126,7 @@ public class DefaultDDListener implements DDListener {
                         runtime.getAdapter().update(runtime, null, table.getName(), row, new DefaultConfigStore(), column.getName());
                     }
                 }
-                if(set.size() <  vol){
+                if(set.size() <  vol) {
                     break;
                 }
                 page ++;
@@ -134,11 +134,11 @@ public class DefaultDDListener implements DDListener {
         }
         return ACTION.SWITCH.CONTINUE;
     }
-    private String char2number(String value){
+    private String char2number(String value) {
         value = value.replaceAll("\\s","");
         try {
             value = RegularUtil.fetchNumber(value);
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return value;

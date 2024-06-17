@@ -33,14 +33,14 @@ import java.util.List;
 public class TimestampGenerator implements PrimaryGenerator {
     @Override
     public boolean create(Object entity, DatabaseType type, String table, List<String> columns, String other) {
-        if(null == columns){
-            if(entity instanceof DataRow){
+        if(null == columns) {
+            if(entity instanceof DataRow) {
                 columns = ((DataRow)entity).getPrimaryKeys();
             }else{
                 columns = EntityAdapterProxy.primaryKeys(entity.getClass(), true);
             }
         }
-        for(String column:columns){
+        for(String column:columns) {
             if(null != BeanUtil.getFieldValue(entity, column)) {
                 continue;
             }
@@ -50,14 +50,14 @@ public class TimestampGenerator implements PrimaryGenerator {
     }
     @Override
     public boolean create(Object entity, DatabaseType type, String table, LinkedHashMap<String, Column> columns, String other) {
-        if(null == columns){
-            if(entity instanceof DataRow){
+        if(null == columns) {
+            if(entity instanceof DataRow) {
                 columns = ((DataRow)entity).getPrimaryColumns();
             }else{
                 columns = EntityAdapterProxy.primaryKeys(entity.getClass());
             }
         }
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             if(null != BeanUtil.getFieldValue(entity, column.getName())) {
                 continue;
             }
@@ -67,7 +67,7 @@ public class TimestampGenerator implements PrimaryGenerator {
     }
     public boolean create(Object entity, DatabaseType type, String table, String column, String other) {
         String value = System.currentTimeMillis()+"";
-        if(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH > 0){
+        if(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH > 0) {
             value += BasicUtil.getRandomNumberString(ConfigTable.PRIMARY_GENERATOR_TIME_SUFFIX_LENGTH);
         }
         BeanUtil.setFieldValue(entity, column, value, true);

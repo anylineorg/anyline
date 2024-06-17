@@ -23,14 +23,14 @@ import org.anyline.data.runtime.DataRuntime;
 import java.util.ArrayList;
 
 public class SimpleRun extends TextRun implements Run {
-    public SimpleRun(DataRuntime runtime){
+    public SimpleRun(DataRuntime runtime) {
         this.runtime = runtime;
     }
-    public SimpleRun(DataRuntime runtime, StringBuilder builder){
+    public SimpleRun(DataRuntime runtime, StringBuilder builder) {
         this.runtime = runtime;
         this.builder = builder;
     }
-    public SimpleRun(DataRuntime runtime, String sql){
+    public SimpleRun(DataRuntime runtime, String sql) {
         this.runtime = runtime;
         this.builder.append(sql);
     }
@@ -45,7 +45,7 @@ public class SimpleRun extends TextRun implements Run {
     public SimpleRun addValue(Object value) {
         RunValue runValue = new RunValue();
         runValue.setValue(value);
-        if(null == values){
+        if(null == values) {
             values = new ArrayList<>();
         }
         values.add(runValue);

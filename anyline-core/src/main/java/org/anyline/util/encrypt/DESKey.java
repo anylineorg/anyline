@@ -31,24 +31,24 @@ public class DESKey {
 	private String prefixParamValue;
 
 	 
-	public String getKey(String type){
+	public String getKey(String type) {
 		String result = key; 
-		if("param".equalsIgnoreCase(type)){
+		if("param".equalsIgnoreCase(type)) {
 			result = keyParam; 
-		}else if("name".equalsIgnoreCase(type) || "key".equalsIgnoreCase(type)){
+		}else if("name".equalsIgnoreCase(type) || "key".equalsIgnoreCase(type)) {
 			result = keyParamName; 
-		}else if("value".equalsIgnoreCase(type)){
+		}else if("value".equalsIgnoreCase(type)) {
 			result = keyParamValue; 
 		} 
 		return result; 
 	} 
-	public String getPrefix(String type){
+	public String getPrefix(String type) {
 		String result = prefix; 
-		if("param".equalsIgnoreCase(type)){
+		if("param".equalsIgnoreCase(type)) {
 			result = prefixParam; 
-		}else if("name".equalsIgnoreCase(type) || "key".equalsIgnoreCase(type)){
+		}else if("name".equalsIgnoreCase(type) || "key".equalsIgnoreCase(type)) {
 			result = prefixParamName; 
-		}else if("value".equalsIgnoreCase(type)){
+		}else if("value".equalsIgnoreCase(type)) {
 			result = prefixParamValue; 
 		} 
 		return result; 

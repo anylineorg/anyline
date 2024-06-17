@@ -99,7 +99,7 @@ public class Parameter extends Metadata<Parameter> implements Serializable {
         this.length = length;
     }
 
-    public String toString(){
+    public String toString() {
         return "{value:"+value+", type:"+type+"}";
     }
 

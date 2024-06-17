@@ -42,22 +42,22 @@ import java.util.Map;
 public class MongoDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder {
 
     private static final MongoDataSourceHolder instance = new MongoDataSourceHolder();
-    public static MongoDataSourceHolder instance(){
+    public static MongoDataSourceHolder instance() {
         return instance;
     }
-    public MongoDataSourceHolder(){
+    public MongoDataSourceHolder() {
         DataSourceHolder.register("mongodb", this);
         DataSourceHolder.register(MongoClient.class, this);
         DataSourceHolder.register(MongoDatabase.class, this);
     }
     public String reg(String key, String prefix) {
         try {
-            if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
+            if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")) {
                 prefix += ".";
             }
             Map<String, Object> map = new HashMap<>();
             String url = value(prefix, "url", String.class, null);
-            if(BasicUtil.isEmpty(url)){
+            if(BasicUtil.isEmpty(url)) {
                 return null;
             }
 
@@ -109,7 +109,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
     public DataRuntime runtime(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
         DataRuntime runtime = null;
         MongoClient client = null;
-        if(datasource instanceof MongoClient){
+        if(datasource instanceof MongoClient) {
             client = (MongoClient)datasource;
             datasource = client.getDatabase(database);
         }
@@ -119,15 +119,15 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
                 //创建事务管理器
                 regTransactionManager(key, client, (MongoDatabase) datasource, true);
                 runtime = MongoRuntimeHolder.instance().reg(key, client, (MongoDatabase)datasource);
-                if(null == adapter && null != type){
+                if(null == adapter && null != type) {
                     adapter = DriverAdapterHolder.getAdapter(type);
                 }
-                if(null != adapter){
+                if(null != adapter) {
                     runtime.setAdapter(adapter);
                 }
             }else{
                 //上下文还没加载完先缓存起来，最后统一注册
-                if(!caches.containsKey(key) || override){
+                if(!caches.containsKey(key) || override) {
                     caches.put(key, datasource);
                 }
             }
@@ -160,21 +160,21 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
         String datasource_id = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         try {
             String url =  value(params, "url", String.class, null);
-            if(BasicUtil.isEmpty(url)){
+            if(BasicUtil.isEmpty(url)) {
                 url = value(prefix, "url", String.class, null);
             }
-            if(BasicUtil.isEmpty(url)){
+            if(BasicUtil.isEmpty(url)) {
                 return null;
             }
             String database = value(params, "database", String.class, null);
-            if(BasicUtil.isEmpty(database)){
+            if(BasicUtil.isEmpty(database)) {
                 database = value(prefix, "database", String.class, null);
             }
             //只解析Mongo系列
-            if(!url.toLowerCase().startsWith("mongodb:")){
+            if(!url.toLowerCase().startsWith("mongodb:")) {
                 return null;
             }
-            if(BasicUtil.isEmpty(database)){
+            if(BasicUtil.isEmpty(database)) {
                 log.error("[注入数据源失败][type:mongo][key:{}][msg:未设置database]", key);
                 return null;
             }

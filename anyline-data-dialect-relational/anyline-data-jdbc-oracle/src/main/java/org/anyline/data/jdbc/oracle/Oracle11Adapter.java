@@ -36,7 +36,7 @@ import java.util.List;
 @Component("anyline.data.jdbc.adapter.oracle11")
 public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
 
-    public String version(){
+    public String version() {
         return "11";
     }
 
@@ -59,17 +59,17 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
         if(chk) {
             String version = runtime.getVersion();
             //Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production With the Partitioning, OLAP, Data Mining and Real Application Testing options*//*
-            if(null != version ){
+            if(null != version ) {
                 version = RegularUtil.cut(version, "release","-");
-                if(null != version){
+                if(null != version) {
                     //11.2.0.1.0
                     version = version.split("\\.")[0];
                 }
-                if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+                if(ConfigTable.IS_LOG_ADAPTER_MATCH) {
                     log.debug("[adapter match][Oracle版本检测][result:{}][runtime version:{}][adapter:{}]", false, version, this.getClass());
                 }
                 double v = BasicUtil.parseDouble(version, 0d);
-                if(v < 12.0){
+                if(v < 12.0) {
                     return true;
                 }
             }
@@ -77,7 +77,7 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
         return false;
     }
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalQuery(DataRuntime runtime, Run run) {
         StringBuilder builder = new StringBuilder();
         String cols = run.getQueryColumn();
         PageNavi navi = run.getPageNavi();
@@ -86,14 +86,14 @@ public class Oracle11Adapter extends OracleAdapter implements JDBCAdapter {
         long first = 0;
         long last = 0;
         String order = "";
-        if(null != orders){
+        if(null != orders) {
             order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
         }
-        if(null != navi){
+        if(null != navi) {
             first = navi.getFirstRow();
             last = navi.getLastRow();
         }
-        if(null == navi){
+        if(null == navi) {
             builder.append(sql).append("\n").append(order);
         }else{
             // 分页

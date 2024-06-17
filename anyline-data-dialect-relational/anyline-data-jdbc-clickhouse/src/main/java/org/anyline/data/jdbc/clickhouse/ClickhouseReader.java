@@ -27,7 +27,7 @@ public enum ClickhouseReader {
             if(value instanceof com.clickhouse.data.value.UnsignedByte) {
                 try {
                     value = ((com.clickhouse.data.value.UnsignedByte) value).doubleValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -41,7 +41,7 @@ public enum ClickhouseReader {
             if(value instanceof com.clickhouse.data.value.UnsignedLong) {
                 try {
                     value = ((com.clickhouse.data.value.UnsignedLong) value).longValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -55,7 +55,7 @@ public enum ClickhouseReader {
             if(value instanceof com.clickhouse.data.value.UnsignedInteger) {
                 try {
                     value = ((com.clickhouse.data.value.UnsignedInteger) value).intValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -69,7 +69,7 @@ public enum ClickhouseReader {
             if(value instanceof com.clickhouse.data.value.UnsignedShort) {
                 try {
                     value = ((com.clickhouse.data.value.UnsignedShort) value).shortValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -83,7 +83,7 @@ public enum ClickhouseReader {
             if(value instanceof com.clickhouse.data.value.ClickHouseBigDecimalValue) {
                 try {
                     value = ((com.clickhouse.data.value.ClickHouseBigDecimalValue) value).getValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -97,7 +97,7 @@ public enum ClickhouseReader {
             if(value instanceof com.clickhouse.data.value.ClickHouseFloatValue) {
                 try {
                     value = ((com.clickhouse.data.value.ClickHouseFloatValue) value).getValue();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -105,15 +105,15 @@ public enum ClickhouseReader {
         }
     })
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataReader reader(){
+    public DataReader reader() {
         return reader;
     }
     private final Object[] supports;
     private final DataReader reader;
-    ClickhouseReader(Object[] supports, DataReader reader){
+    ClickhouseReader(Object[] supports, DataReader reader) {
         this.supports = supports;
         this.reader = reader;
     }

@@ -25,27 +25,27 @@ public class HttpCookie {
 	private String expires; 
 	private String path; 
 	private String domain;
-	public HttpCookie(){
+	public HttpCookie() {
 		
 	} 
-	public HttpCookie(String param){
+	public HttpCookie(String param) {
 		// endDate=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/; domain=.anyline.org
-		if(null == param){
+		if(null == param) {
 			return; 
 		} 
 		String params[] = param.split(";"); 
-		for(String p:params){
+		for(String p:params) {
 			String[] kv = p.split("="); 
-			if(kv.length < 2){
+			if(kv.length < 2) {
 				continue; 
 			} 
 			String k = kv[0].trim(); 
 			String v = kv[1].trim(); 
-			if("expires".equalsIgnoreCase(k)){
+			if("expires".equalsIgnoreCase(k)) {
 				this.setKey(v); 
-			}else if("path".equalsIgnoreCase(k)){
+			}else if("path".equalsIgnoreCase(k)) {
 				this.setPath(v); 
-			}else if("domain".equalsIgnoreCase(k)){
+			}else if("domain".equalsIgnoreCase(k)) {
 				this.setDomain(v); 
 			}else{
 				this.setKey(k); 

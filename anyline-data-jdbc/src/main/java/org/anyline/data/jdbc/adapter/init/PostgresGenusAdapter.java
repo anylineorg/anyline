@@ -41,7 +41,7 @@ import java.sql.Connection;
 import java.util.*;
 
 public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
-    public PostgresGenusAdapter(){
+    public PostgresGenusAdapter() {
         super();
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
@@ -58,7 +58,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
 
-        for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()){
+        for(PostgresGenusTypeMetadataAlias alias: PostgresGenusTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
@@ -82,12 +82,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         types.put(Metadata.TYPE.VIEW, "VIEW");
     }
     @Override
-    public String name(Type type){
+    public String name(Type type) {
         return types.get(type);
     }
 
     private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+    public ColumnMetadataAdapter defaultColumnMetadataAdapter() {
         ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
         adapter.setNameRefer("COLUMN_NAME");
         adapter.setCatalogRefer("TABLE_CATALOG");
@@ -163,7 +163,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -176,7 +176,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
     }
 
@@ -190,7 +190,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, columns);
     }
 
@@ -204,7 +204,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, list, configs, columns);
     }
 
@@ -233,7 +233,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
         return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
     }
 
@@ -243,7 +243,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String batchInsertSeparator(){
+    public String batchInsertSeparator() {
         return ",";
     }
 
@@ -253,7 +253,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean supportInsertPlaceholder(){
+    public boolean supportInsertPlaceholder() {
         return true;
     }
     /**
@@ -263,7 +263,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param value value
      */
     @Override
-    protected void setPrimaryValue(Object obj, Object value){
+    protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
     /**
@@ -276,7 +276,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.createInsertRun(runtime, dest, obj, configs, columns);
     }
 
@@ -290,7 +290,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
         return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
 
@@ -316,7 +316,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         return super.insert(runtime, random, data, configs, run, pks);
     }
 
@@ -362,7 +362,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -389,19 +389,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
     /**
@@ -427,11 +427,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
     @Override
-    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
     /**
@@ -444,7 +444,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         return super.update(runtime, random, dest, data, configs, run);
     }
 
@@ -476,24 +476,24 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.save(runtime, random, dest, data, configs, columns);
     }
 
     @Override
-    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
+    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected Boolean checkOverride(Object obj){
+    protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
     @Override
-    protected Map<String, Object> checkPv(Object obj){
+    protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
     }
 
@@ -504,11 +504,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
     @Override
-    protected boolean isMultipleValue(Column column){
+    protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
     /**
@@ -518,7 +518,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.checkMetadata(runtime, table, configs, columns);
     }
 
@@ -558,7 +558,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -571,7 +571,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         return super.querys(runtime, random, procedure, navi);
     }
 
@@ -587,7 +587,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Entity
      */
     @Override
-    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return super.selects(runtime, random, prepare, clazz, configs, conditions);
     }
 
@@ -603,7 +603,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *
      */
     @Override
-    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
+    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
         return super.select(runtime, random, clazz, table, configs, run);
     }
 
@@ -619,7 +619,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return maps 返回map集合
      */
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -631,7 +631,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildQueryRun(runtime, prepare, configs, conditions);
     }
 
@@ -642,10 +642,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
         List<Run> runs = new ArrayList<>();
         String key = "CURRVAL";
-        if(next){
+        if(next) {
             key = "NEXTVAL";
         }
         if(null != names && names.length>0) {
@@ -655,7 +655,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("SELECT ");
             boolean first = true;
             for (String name : names) {
-                if(!first){
+                if(!first) {
                     builder.append(",");
                 }
                 first = false;
@@ -671,19 +671,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, Run run){
+    public void fillQueryContent(DataRuntime runtime, Run run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
         super.fillQueryContent(runtime, run);
     }
     /**
@@ -761,7 +761,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return maps
      */
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
     /**
@@ -785,7 +785,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return DataRow 保存序列查询结果 以存储过程name作为key
      */
     @Override
-    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
         return super.sequence(runtime, random, next, names);
     }
 
@@ -797,7 +797,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return  maps
      */
     @Override
-    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
         return super.process(runtime, list);
     }
 
@@ -821,7 +821,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -832,7 +832,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalTotal(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run) {
         return super.mergeFinalTotal(runtime, run);
     }
 
@@ -844,7 +844,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, Run run){
+    public long count(DataRuntime runtime, String random, Run run) {
         return super.count(runtime, random, run);
     }
 
@@ -865,11 +865,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
     @Override
-    public String mergeFinalExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run) {
         return super.mergeFinalExists(runtime, run);
     }
 
@@ -902,7 +902,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
     /**
@@ -913,7 +913,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+    public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
     /**
@@ -926,19 +926,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+    protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
     }
 
@@ -949,7 +949,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run){
+    public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
     /**
@@ -994,7 +994,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> T
      */
     @Override
-    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values) {
         return super.deletes(runtime, random, batch, table, configs, key, values);
     }
 
@@ -1009,7 +1009,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
         return super.delete(runtime, random, dest, configs, obj, columns);
     }
 
@@ -1025,7 +1025,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
         return super.delete(runtime, random, table, configs, conditions);
     }
 
@@ -1037,7 +1037,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 1表示成功执行
      */
     @Override
-    public long truncate(DataRuntime runtime, String random, Table table){
+    public long truncate(DataRuntime runtime, String random, Table table) {
         return super.truncate(runtime, random, table);
     }
 
@@ -1051,7 +1051,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         return super.buildDeleteRun(runtime, dest, configs, obj, columns);
     }
 
@@ -1065,12 +1065,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values){
+    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
         return super.buildDeleteRun(runtime, batch, table, configs, key, values);
     }
 
     @Override
-    public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+    public List<Run> buildTruncateRun(DataRuntime runtime, String table) {
         return super.buildTruncateRun(runtime, table);
     }
 
@@ -1108,7 +1108,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run){
+    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
         super.fillDeleteRunContent(runtime, run);
     }
 
@@ -1121,7 +1121,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.delete(runtime, random, configs, run);
     }
 
@@ -1184,9 +1184,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Database
      */
     @Override
-    public Database database(DataRuntime runtime, String random){
+    public Database database(DataRuntime runtime, String random) {
         Catalog catalog = catalog(runtime, random);
-        if(null != catalog){
+        if(null != catalog) {
             return new Database(catalog.getName());
         }
         return super.database(runtime, random);
@@ -1198,7 +1198,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String product(DataRuntime runtime, String random){
+    public String product(DataRuntime runtime, String random) {
         return super.product(runtime, random);
     }
     /**
@@ -1208,7 +1208,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String version(DataRuntime runtime, String random){
+    public String version(DataRuntime runtime, String random) {
         return super.version(runtime, random);
     }
     /**
@@ -1220,7 +1220,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.databases(runtime, random, greedy, name);
     }
     /**
@@ -1231,7 +1231,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
         return super.databases(runtime, random, name);
     }
     /**
@@ -1250,7 +1250,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM PG_DATABASE WHERE DATISTEMPLATE=FALSE");
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" AND datname = '").append(name).append("'");
         }
         return runs;
@@ -1267,10 +1267,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == databases){
+        if(null == databases) {
             databases = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             Database database = new Database();
             database.setName(row.getString("DATNAME"));
             databases.put(database.getName().toUpperCase(), database);
@@ -1322,7 +1322,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
 		return super.product(runtime, index, create, product, set);
 	}
 
@@ -1336,7 +1336,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, boolean create, String product){
+	public String product(DataRuntime runtime, boolean create, String product) {
 		return super.product(runtime, create, product);
 	}
 
@@ -1351,7 +1351,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
 		return super.version(runtime, index, create, version, set);
 	}
 
@@ -1365,7 +1365,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, boolean create, String version){
+	public String version(DataRuntime runtime, boolean create, String version) {
 		return super.version(runtime, create, version);
 	}
     /* *****************************************************************************************************************
@@ -1391,7 +1391,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
         return super.catalogs(runtime, random, name);
     }
     /**
@@ -1402,7 +1402,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.catalogs(runtime, random, greedy, name);
     }
 
@@ -1545,7 +1545,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
         return super.schemas(runtime, random, catalog, name);
     }
     /**
@@ -1557,7 +1557,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
+    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
         return super.schemas(runtime, random, greedy, catalog, name);
     }
 
@@ -1662,7 +1662,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
     }
 
@@ -1675,12 +1675,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
         super.tableMap(runtime, random, greedy, catalog, schema);
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, catalog, schema, pattern, types, struct);
     }
 
@@ -1707,13 +1707,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE I.inhrelid IS NULL\n"); //GIS中没有f.relpartbound
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
         }
-        if((types & 2) != 2){
+        if((types & 2) != 2) {
             //不包含视图
             builder.append(" AND M.TABLE_TYPE != 'VIEW'");
         }
@@ -1732,13 +1732,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS F ON M.TABLE_NAME = F.relname AND N.oid = F.relnamespace\n");
         builder.append("LEFT JOIN pg_inherits AS I ON I.inhrelid = F.oid\n");//继承关系
         builder.append("WHERE (I.inhrelid IS NULL  OR F.relpartbound IS NULL)\n"); //过滤分区表(没有继承自其他表或 继承自其他表但是子表不是分区表)
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND M.table_schema = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND M.table_name LIKE '").append(pattern).append("'");
         }
-        if((types & 2) != 2){
+        if((types & 2) != 2) {
             //不包含视图
             builder.append(" AND M.TABLE_TYPE != 'VIEW'");
         }
@@ -1878,7 +1878,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
         return super.ddl(runtime, random, table, init);
     }
 
@@ -1905,7 +1905,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
 
@@ -1941,7 +1941,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.views(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -1964,15 +1964,15 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         String catalogName = null;
         String schemaName = null;
         builder.append("SELECT * FROM INFORMATION_SCHEMA.VIEWS WHERE 1=1 ");
-        if(BasicUtil.isNotEmpty(catalogName)){
+        if(BasicUtil.isNotEmpty(catalogName)) {
             builder.append(" AND TABLE_CATALOG = '").append(catalogName).append("'");
         }
 
-        if(BasicUtil.isNotEmpty(schemaName)){
+        if(BasicUtil.isNotEmpty(schemaName)) {
             builder.append(" AND TABLE_SCHEMA = '").append(schemaName).append("'");
         }
 
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND TABLE_NAME = '").append(pattern).append("'");
         }
         return runs;
@@ -2021,7 +2021,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, View view){
+    public List<String> ddl(DataRuntime runtime, String random, View view) {
         return super.ddl(runtime, random, view);
     }
 
@@ -2048,7 +2048,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, view, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2084,7 +2084,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2143,7 +2143,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+    public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
         return super.ddl(runtime, random, table);
     }
     /**
@@ -2168,7 +2168,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2202,7 +2202,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern){
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
         return super.partitionTables(runtime, random, greedy, master, tags, pattern);
     }
 
@@ -2244,10 +2244,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class AS FM ON FM.oid = I.inhparent AND N.oid = FM.relnamespace\n");//主表
         builder.append("WHERE FM.relname ='").append(master.getName()).append("'\n");
         String schema = master.getSchemaName();
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND M.table_schema = '").append(schema).append("'");
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" AND M.table_name LIKE '").append(name).append("'");
         }
 
@@ -2309,7 +2309,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
         return super.ddl(runtime, random, table);
     }
 
@@ -2336,7 +2336,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2364,7 +2364,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
         return super.columns(runtime, random, greedy, table, primary);
     }
 
@@ -2381,7 +2381,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
         return super.columns(runtime, random, greedy, catalog, schema, table);
     }
     /**
@@ -2399,7 +2399,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         String schema = null;
         String name = null;
         checkName(runtime, null, table);
-        if(null != table){
+        if(null != table) {
             name = table.getName();
             catalog = table.getCatalogName();
             schema = table.getSchemaName();
@@ -2407,7 +2407,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata){
+        if(metadata) {
             builder.append("SELECT * FROM ");
             name(runtime, builder, table);
             builder.append(" WHERE 1=0");
@@ -2418,10 +2418,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder.append("LEFT JOIN PG_ATTRIBUTE FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
             builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
             builder.append("WHERE 1 = 1\n");
-            if(BasicUtil.isNotEmpty(catalog)){
+            if(BasicUtil.isNotEmpty(catalog)) {
                 builder.append(" AND M.TABLE_CATALOG = '").append(catalog).append("'");
             }
-            if(!empty(schema)){
+            if(!empty(schema)) {
                 builder.append(" AND M.TABLE_SCHEMA = '").append(schema).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
@@ -2443,10 +2443,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
-        if(!tables.isEmpty()){
+        if(!tables.isEmpty()) {
             table = tables.get(0);
         }
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             catalog = table.getCatalog();
             schema = table.getSchema();
@@ -2461,10 +2461,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN PG_ATTRIBUTE  FA ON FA.ATTNAME = M.COLUMN_NAME AND FA.ATTRELID = FC.OID\n");
         builder.append("LEFT JOIN PG_DESCRIPTION FD ON FD.OBJOID = FC.OID AND FD.OBJSUBID = M.ORDINAL_POSITION\n");
         builder.append("WHERE 1 = 1\n");
-        if(!empty(catalog)){
+        if(!empty(catalog)) {
             builder.append(" AND M.TABLE_CATALOG = '").append(catalog.getName()).append("'");
         }
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND M.TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "M.TABLE_NAME", Table.names(tables));
@@ -2540,7 +2540,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables){
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
         return super.columns(runtime, random, greedy, catalog, schema, tables);
     }
 
@@ -2554,7 +2554,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) {
         return super.init(runtime, index, meta, table, row);
     }
 
@@ -2568,7 +2568,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
@@ -2579,7 +2579,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
         return defaultColumnMetadataAdapter;
     }
 
@@ -2591,7 +2591,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataAdapter(runtime, meta);
     }
 
@@ -2618,7 +2618,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Tag
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.tags(runtime, random, greedy, table);
     }
     /**
@@ -2687,7 +2687,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.primary(runtime, random, greedy, table);
     }
 
@@ -2712,7 +2712,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("LEFT JOIN pg_class ft ON m.conrelid = ft.oid \n");
         builder.append("WHERE ft.relname = '").append(table.getName()).append("'");
         Schema schema = table.getSchema();
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND ns.nspname = '").append(schema.getName()).append("'");
         }
         return runs;
@@ -2729,7 +2729,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-        if(set.size()>0){
+        if(set.size()>0) {
             DataRow row = set.getRow(0);
             primary = (T)new PrimaryKey();
             //conname 	    |contype	|conkey |  define
@@ -2737,7 +2737,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             primary.setName(row.getString("CONNAME"));
             String define = row.getString("DEFINE");
             String[] cols = RegularUtil.cut(define, "(",")").split(",");
-            for(String col:cols){
+            for(String col:cols) {
                 Column column = new Column(col.trim().replace("\"",""));
                 column.setTable(table);
                 primary.addColumn(column);
@@ -2766,7 +2766,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryMetadataAdapter
      */
     @Override
-    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
+    public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
         return super.primaryMetadataAdapter(runtime);
     }
 
@@ -2791,7 +2791,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.foreigns(runtime, random, greedy,table);
     }
     /**
@@ -2813,9 +2813,9 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU ON TC.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME\n");
         builder.append("JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE AS CCU ON CCU.CONSTRAINT_NAME = TC.CONSTRAINT_NAME\n");
         builder.append("WHERE TC.CONSTRAINT_TYPE = 'FOREIGN KEY'\n");
-        if(null != table){
+        if(null != table) {
             String name = table.getName();
-            if(BasicUtil.isNotEmpty(name)){
+            if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND TC.TABLE_NAME = '").append(name).append("'\n");
             }
         }
@@ -2834,13 +2834,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
-        if(null == foreigns){
+        if(null == foreigns) {
             foreigns = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("CONSTRAINT_NAME");
             T foreign = foreigns.get(name.toUpperCase());
-            if(null == foreign){
+            if(null == foreign) {
                 foreign = (T)new ForeignKey();
                 foreign.setName(name);
                 foreign.setTable(row.getString("TABLE_NAME"));
@@ -2882,7 +2882,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.indexs(runtime, random, greedy, table, pattern);
     }
     /**
@@ -2896,7 +2896,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
+    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
         return super.indexs(runtime, random, table, pattern);
     }
     /**
@@ -2908,7 +2908,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name){
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
         return super.buildQueryIndexesRun(runtime, table, name);
     }
 
@@ -3000,7 +3000,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.constraints(runtime, random, greedy, table, pattern);
     }
     /**
@@ -3015,7 +3015,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern){
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
         return super.constraints(runtime, random, table, column, pattern);
     }
 
@@ -3088,7 +3088,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return  LinkedHashMap
      * @param <T> Index
      */
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
         return super.triggers(runtime, random, greedy, table, events);
     }
     /**
@@ -3099,28 +3099,28 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param events 事件 INSERT|UPDATE|DELETE
      * @return sqls
      */
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             Schema schemae = table.getSchema();
             String name = table.getName();
-            if(BasicUtil.isNotEmpty(schemae)){
+            if(BasicUtil.isNotEmpty(schemae)) {
                 builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
             }
-            if(BasicUtil.isNotEmpty(name)){
+            if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
             }
         }
-        if(null != events && events.size()>0){
+        if(null != events && events.size()>0) {
             builder.append(" AND(");
             boolean first = true;
-            for(Trigger.EVENT event:events){
-                if(!first){
+            for(Trigger.EVENT event:events) {
+                if(!first) {
                     builder.append(" OR ");
                 }
                 builder.append("EVENT_MANIPULATION ='").append(event);
@@ -3142,13 +3142,13 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception {
-        if(null == triggers){
+        if(null == triggers) {
             triggers = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("TRIGGER_NAME");
             T trigger = triggers.get(name.toUpperCase());
-            if(null == trigger){
+            if(null == trigger) {
                 trigger = (T)new Trigger();
             }
             trigger.setName(name);
@@ -3157,7 +3157,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             tab.setCatalog(row.getString("TRIGGER_CATALOG("));
             trigger.setTable(tab);
             boolean each = false;
-            if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))){
+            if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))) {
                 each = true;
             }
             trigger.setEach(each);
@@ -3168,7 +3168,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 for(String event:events) {
                     trigger.addEvent(Trigger.EVENT.valueOf(event));
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("封装trigger 异常:", e);
             }
             trigger.setDefinition(row.getString("ACTION_STATEMENT"));
@@ -3212,7 +3212,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, greedy, catalog, schema, pattern);
     }
     /**
@@ -3227,7 +3227,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, catalog, schema, pattern);
     }
     /**
@@ -3295,7 +3295,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
     /**
@@ -3321,7 +3321,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, procedure, ddls, set);
     }
 
@@ -3406,10 +3406,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 .append("	LEFT JOIN PG_NAMESPACE N ON N.OID = P.PRONAMESPACE \n")
                 .append("WHERE P.PROKIND <> 'a' \n");
 
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND N.NSPNAME = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" AND P.PRONAME = '").append(name).append("'");
         }
         return runs;
@@ -3469,7 +3469,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Function meta){
+    public List<String> ddl(DataRuntime runtime, String random, Function meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3495,7 +3495,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, function, ddls, set);
     }
 
@@ -3510,7 +3510,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Function
      */
     @Override
-    public <T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+    public <T extends Function> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
         return super.init(runtime, index, meta, catalog, schema, row);
     }
     /**
@@ -3522,7 +3522,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return Function
      */
     @Override
-    public <T extends Function> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+    public <T extends Function> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
     /**
@@ -3532,7 +3532,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return FunctionMetadataAdapter
      */
     @Override
-    public FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime){
+    public FunctionMetadataAdapter functionMetadataAdapter(DataRuntime runtime) {
         FunctionMetadataAdapter adapter = new FunctionMetadataAdapter();
         adapter.setNameRefer("proname");
         adapter.setSchemaRefer("schema_name");
@@ -3608,20 +3608,20 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         String catalogName = null;
         String schemaName = null;
-        if(null != catalog){
+        if(null != catalog) {
             catalogName = catalog.getName();
         }
-        if(null != schema){
+        if(null != schema) {
             schemaName = schema.getName();
         }
         builder.append("SELECT * FROM INFORMATION_SCHEMA.SEQUENCES WHERE 1=1\n");
-        if(BasicUtil.isNotEmpty(catalogName)){
+        if(BasicUtil.isNotEmpty(catalogName)) {
             builder.append(" AND SEQUENCE_CATALOG = '").append(catalogName).append("'");
         }
-        if(BasicUtil.isNotEmpty(schemaName)){
+        if(BasicUtil.isNotEmpty(schemaName)) {
             builder.append(" AND SEQUENCE_SCHEMA = '").append(schemaName).append("'");
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" AND SEQUENCE_NAME = '").append(name).append("'");
         }
         return runs;
@@ -3640,10 +3640,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Sequence> List<T> sequences(DataRuntime runtime, int index, boolean create, List<T> sequences, DataSet set) throws Exception {
-        if(null == sequences){
+        if(null == sequences) {
             sequences = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = new Sequence(name);
             sequences.add((T)init(sequence, row));
@@ -3663,18 +3663,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Sequence> LinkedHashMap<String, T> sequences(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> sequences, DataSet set) throws Exception {
-        if(null == sequences){
+        if(null == sequences) {
             sequences = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("SEQUENCE_NAME");
             Sequence sequence = sequences.get(name.toUpperCase());
             sequences.put(name.toUpperCase(), (T)init(sequence, row));
         }
         return sequences;
     }
-    protected Sequence init(Sequence sequence, DataRow row){
-        if(null == sequence){
+    protected Sequence init(Sequence sequence, DataRow row) {
+        if(null == sequence) {
             sequence = new Sequence();
         }
         sequence.setName(row.getString("SEQUENCE_NAME"));
@@ -3713,7 +3713,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+    public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3739,7 +3739,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, sequence, ddls, set);
     }
 
@@ -3758,7 +3758,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name) {
         return super.search(metas, catalog, schema, name);
     }
 
@@ -3772,7 +3772,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
+    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name) {
         return super.schema(schemas, catalog, name);
     }
 
@@ -3785,7 +3785,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Catalog> T catalog(List<T> catalogs, String name){
+    public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
     /**
@@ -3797,7 +3797,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Database> T database(List<T> databases, String name){
+    public <T extends Database> T database(List<T> databases, String name) {
         return super.database(databases, name);
     }
     /* *****************************************************************************************************************
@@ -3823,7 +3823,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 是否支持DDL合并
      * @return boolean
      */
-    public boolean slice(){
+    public boolean slice() {
         return true;
     }
     /**
@@ -3836,7 +3836,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
@@ -4022,10 +4022,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildAppendColumnCommentRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        if(null != meta){
+        if(null != meta) {
             LinkedHashMap<String, Column> columns = meta.getColumns();
-            if(null != columns){
-                for(Column column:columns.values()){
+            if(null != columns) {
+                for(Column column:columns.values()) {
                     runs.addAll(buildChangeCommentRun(runtime, column));
                 }
             }
@@ -4078,7 +4078,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkTableExists(runtime, builder, exists);
     }
 
@@ -4089,7 +4089,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param table 表
      */
     @Override
-    public void checkPrimary(DataRuntime runtime, Table table){
+    public void checkPrimary(DataRuntime runtime, Table table) {
         super.checkPrimary(runtime, table);
     }
 
@@ -4102,18 +4102,18 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
         String name = null;
-        if(null != primary){
+        if(null != primary) {
             pks = primary.getColumns();
             name = primary.getName();
         }else{
             pks = meta.primarys();
             name = "pk_" + meta.getName();
         }
-        if(!pks.isEmpty()){
+        if(!pks.isEmpty()) {
             checkName(runtime, null, meta);
             builder.append(",CONSTRAINT ");
             delimiter(builder, name);
@@ -4135,7 +4135,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.charset(runtime, builder, meta);
     }
 
@@ -4148,7 +4148,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
         //单独添加备注
         return builder;
     }
@@ -4282,7 +4282,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             builder = new StringBuilder();
         }
         builder.append("CREATE");
-        if(meta.isMaterialize()){
+        if(meta.isMaterialize()) {
             builder.append(" MATERIALIZED");
         }
         builder.append(" VIEW ");
@@ -4377,7 +4377,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkViewExists(runtime, builder, exists);
     }
 
@@ -4390,7 +4390,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta) {
         return super.comment(runtime, builder, meta);
     }
 
@@ -4906,7 +4906,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append(" TYPE ");
         type(runtime, builder, update);
         String type = update.getTypeName();
-        if(type.contains("(")){
+        if(type.contains("(")) {
             type = type.substring(0,type.indexOf("("));
         }
         builder.append(" USING ");
@@ -4922,7 +4922,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String alterColumnKeyword(DataRuntime runtime){
+    public String alterColumnKeyword(DataRuntime runtime) {
         return super.alterColumnKeyword(runtime);
     }
 
@@ -4935,7 +4935,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.addColumnGuide(runtime, builder, meta);
     }
 
@@ -4948,7 +4948,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.dropColumnGuide(runtime, builder, meta);
     }
 
@@ -4969,14 +4969,14 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Object def = null;
-        if(null != meta.getUpdate()){
+        if(null != meta.getUpdate()) {
             def = meta.getUpdate().getDefaultValue();
         }else {
             def = meta.getDefaultValue();
         }
-        if(null != def){
+        if(null != def) {
             String str = def.toString();
-            if(str.contains("::")){
+            if(str.contains("::")) {
                 str = str.split("::")[0];
             }
             str = str.replace("'","");
@@ -4986,7 +4986,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         builder.append("ALTER TABLE ");
         name(runtime, builder, meta.getTable(true)).append(" ALTER COLUMN ");
         delimiter(builder, meta.getName());
-        if(null != def){
+        if(null != def) {
             builder.append(" SET DEFAULT '").append(def).append("'");
         }else{
             builder.append(" DROP DEFAULT");
@@ -5012,7 +5012,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         int nullable = meta.isNullable();
         int uNullable = meta.getUpdate().isNullable();
-        if(nullable != -1 && uNullable != -1){
+        if(nullable != -1 && uNullable != -1) {
             if(nullable != uNullable) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true)).append(" ALTER ");
@@ -5042,10 +5042,10 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         String comment = null;
         Column update = meta.getUpdate();
-        if(null != update){
+        if(null != update) {
             comment = update.getComment();
         }
-        if(BasicUtil.isEmpty(comment)){
+        if(BasicUtil.isEmpty(comment)) {
             comment = meta.getComment();
         }
         if(BasicUtil.isNotEmpty(comment)) {
@@ -5101,7 +5101,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.define(runtime, builder, meta, action);
     }
 
@@ -5115,7 +5115,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
     /**
@@ -5127,24 +5127,24 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
 
         String type = meta.getTypeName();
-        if(null == type){
+        if(null == type) {
             type ="";
         }
         type = type.toLowerCase();
         //创建并自增时 或 非自增改自增时 用serial 其他情况用int
         boolean serial = false;
-        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1){
+        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1) {
             serial = true;
         }else {
             Column update = meta.getUpdate();
-            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1){
+            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1) {
                 serial = true;
             }
         }
-        if(serial){
+        if(serial) {
             if ("int4".equals(type) || "int".equals(type) || "integer".equals(type)) {
                 meta.setType("SERIAL4");
             } else if ("int8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
@@ -5155,7 +5155,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             }else{
                 meta.setType("SERIAL8");
             }
-        }else if(type.equals("int") || type.contains("long") || type.contains("serial") || type.contains("short")){
+        }else if(type.equals("int") || type.contains("long") || type.contains("serial") || type.contains("short")) {
             if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type)) {
                 meta.setType("int4");
             } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
@@ -5180,7 +5180,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
         return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
     }
 
@@ -5193,7 +5193,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
     /**
@@ -5205,7 +5205,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
 
@@ -5217,7 +5217,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.defaultValue(runtime, builder, meta);
     }
 
@@ -5230,7 +5230,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.primary(runtime, builder, meta);
     }
 
@@ -5243,7 +5243,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
         return builder;
     }
     /**
@@ -5255,7 +5255,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.onupdate(runtime, builder, meta);
     }
 
@@ -5268,7 +5268,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.position(runtime, builder, meta);
     }
 
@@ -5281,7 +5281,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
         //单独生成备注
         return builder;
     }
@@ -5484,7 +5484,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkTagExists(runtime, builder, exists);
     }
 
@@ -5900,7 +5900,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(meta.isPrimary()){
+        if(meta.isPrimary()) {
             log.info("[主键索引,忽略删除][index:{}]", meta.getName());
         }else {
             builder.append("DROP INDEX ");
@@ -5930,7 +5930,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.type(runtime, builder, meta);
     }
     /**
@@ -5942,7 +5942,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.comment(runtime, builder, meta);
     }
     /* *****************************************************************************************************************
@@ -6195,7 +6195,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta){
+    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
         return super.each(runtime, builder, meta);
     }
 
@@ -6326,7 +6326,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param parameter parameter
      */
     @Override
-    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter){
+    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter) {
         return super.parameter(runtime, builder, parameter);
     }
 
@@ -6571,12 +6571,12 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      *  ***************************************************************************************************************/
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
         super.checkSchema(runtime, datasource,meta);
     }
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
         super.checkSchema(runtime, con, meta);
     }
     /**
@@ -6586,7 +6586,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Metadata
      */
 	@Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
@@ -6601,7 +6601,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
 
@@ -6614,7 +6614,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+	public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
 		correctSchemaFromJDBC(runtime, meta, catalog, schema, false, true);
 	}
 
@@ -6625,7 +6625,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
 	 * @return String[]
 	 */
 	@Override
-	public String[] correctSchemaFromJDBC(String catalog, String schema){
+	public String[] correctSchemaFromJDBC(String catalog, String schema) {
 		return super.correctSchemaFromJDBC(catalog, schema);
 	}
    
@@ -6638,7 +6638,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataLengthRefer(runtime, meta);
     }
 
@@ -6650,7 +6650,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
@@ -6662,22 +6662,22 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataScaleRefer(runtime, meta);
     }
-    public String insertHead(ConfigStore configs){
+    public String insertHead(ConfigStore configs) {
         return super.insertHead(configs);
     }
-    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = new StringBuilder();
         Boolean override = null;
-        if(null != configs){
+        if(null != configs) {
             override = configs.override();
         }
-        if(null != override){
+        if(null != override) {
             builder.append(" ON CONFLICT");
             Constraint constraint = configs.overrideByConstraint();
-            if(null != constraint){
+            if(null != constraint) {
                 //ON CONFLICT ON CONSTRAINT 约束
                 builder.append(" ON CONSTRAINT ");
                 delimiter(builder, constraint.getName());
@@ -6695,11 +6695,11 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
                 //ON CONFLICT ( id )
                 builder.append("(").append(BeanUtil.concat(bys)).append(")");
             }
-            if(override){
+            if(override) {
                 builder.append(" DO UPDATE SET ");
                 boolean first = true;
-                for(Column column:columns.values()){
-                    if(!first){
+                for(Column column:columns.values()) {
+                    if(!first) {
                         builder.append(",");
                     }
                     first = false;
@@ -6721,8 +6721,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME){
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
             return "now()";
         }
         return null;
@@ -6734,7 +6734,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String concat(DataRuntime runtime, String ... args){
+    public String concat(DataRuntime runtime, String ... args) {
         return concatOr(runtime, args);
     }
 
@@ -6742,7 +6742,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * 伪表
      * @return String
      */
-    protected String dummy(){
+    protected String dummy() {
         return super.dummy();
     }
 }

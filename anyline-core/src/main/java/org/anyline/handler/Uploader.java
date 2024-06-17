@@ -28,10 +28,10 @@ public interface Uploader {
      * @param file 文件
      * @return 返回文件上传后地址
      */
-    default String upload(String name, File file){
+    default String upload(String name, File file) {
         return null;
     }
-    default String upload(String name, InputStream is){
+    default String upload(String name, InputStream is) {
         return null;
     }
 }

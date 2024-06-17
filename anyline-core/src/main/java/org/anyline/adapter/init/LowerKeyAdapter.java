@@ -24,7 +24,7 @@ public class LowerKeyAdapter implements KeyAdapter {
     private static KeyAdapter instance = new LowerKeyAdapter();
     @Override
     public String key(String key) {
-        if(null != key){
+        if(null != key) {
             return key.toLowerCase();
         }
         return null;

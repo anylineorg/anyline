@@ -24,67 +24,67 @@ import java.util.Date;
 
 public class DateBuilder{
 	private Date date = new Date();
-	public DateBuilder(Date date){
+	public DateBuilder(Date date) {
 		this.date = date;
 	}
-	public DateBuilder(String date){
+	public DateBuilder(String date) {
 		try {
 			this.date = DateUtil.parse(date);
-		}catch (Exception e){
+		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public DateBuilder(String date, String format){
+	public DateBuilder(String date, String format) {
 		try {
 			this.date = DateUtil.parse(date, format);
-		}catch (Exception e){
+		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	public DateBuilder(){
+	public DateBuilder() {
 
 	}
-	public static DateBuilder init(){
+	public static DateBuilder init() {
 		return new DateBuilder();
 	}
-	public static DateBuilder init(String date){
+	public static DateBuilder init(String date) {
 		return new DateBuilder(date);
 	}
-	public static DateBuilder init(String date, String format){
+	public static DateBuilder init(String date, String format) {
 		return new DateBuilder(date, format);
 	}
-	public static DateBuilder init(Date date){
+	public static DateBuilder init(Date date) {
 		return new DateBuilder(date);
 	}
 
-	public Date getDate(){
+	public Date getDate() {
 		return date;
 	}
-	public Date date(){
+	public Date date() {
 		return date;
 	}
 
-	public DateBuilder addYear(int qty){
+	public DateBuilder addYear(int qty) {
 		date = DateUtil.addYear(date, qty);
 		return this;
 	}
-	public DateBuilder addMonth(int qty){
+	public DateBuilder addMonth(int qty) {
 		date = DateUtil.addMonth(date, qty);
 		return this;
 	}
-	public DateBuilder addDay(int qty){
+	public DateBuilder addDay(int qty) {
 		date = DateUtil.addDay(date, qty);
 		return this;
 	}
-	public DateBuilder addHour(int qty){
+	public DateBuilder addHour(int qty) {
 		date = DateUtil.addHour(date, qty);
 		return this;
 	}
-	public DateBuilder addMinute(int qty){
+	public DateBuilder addMinute(int qty) {
 		date = DateUtil.addMinute(date, qty);
 		return this;
 	}
-	public DateBuilder addSecond(int qty){
+	public DateBuilder addSecond(int qty) {
 		date = DateUtil.addSecond(date, qty);
 		return this;
 	}
@@ -97,22 +97,22 @@ public class DateBuilder{
 	public boolean before(String date) throws Exception {
 		return before(DateUtil.parse(date));
 	}
-	public boolean before(Date date){
+	public boolean before(Date date) {
 		return this.date.getTime() < date.getTime();
 	}
-	public boolean before(){
+	public boolean before() {
 		return this.date.getTime() < new Date().getTime();
 	}
-	public boolean after(Date date){
+	public boolean after(Date date) {
 		return this.date.getTime() > date.getTime();
 	}
-	public boolean after(){
+	public boolean after() {
 		return this.date.getTime() > new Date().getTime();
 	}
-	public boolean equal(Date date){
+	public boolean equal(Date date) {
 		return this.date.getTime() == date.getTime();
 	}
-	public boolean between(Date min, Date max){
+	public boolean between(Date min, Date max) {
 		Long time = date.getTime();
 		return time > min.getTime() && time <max.getTime();
 	}
@@ -124,13 +124,13 @@ public class DateBuilder{
 	 * 是否过期(在当前时间之前)
 	 * @return boolean
 	 */
-	public boolean expire(){
+	public boolean expire() {
 		return before();
 	}
-	public String format(String format){
+	public String format(String format) {
 		return DateUtil.format(date, format);
 	}
-	public String format(){
+	public String format() {
 		return format(DateUtil.FORMAT_DATE_TIME);
 	}
 

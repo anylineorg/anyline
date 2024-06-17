@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.mogdb")
 public class MogdbAdapter extends OpenGaussAdapter {
 	
-	public DatabaseType type(){
+	public DatabaseType type() {
 		return DatabaseType.MogDB;
 	}
 	

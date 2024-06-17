@@ -26,32 +26,32 @@ import org.anyline.util.BasicUtil;
 import java.util.List;
 
 public class ConfigBuilder {
-    public static ConfigStore build(String json){
+    public static ConfigStore build(String json) {
         DataRow row = DataRow.parseJson(KeyAdapter.KEY_CASE.UPPER, json);
         ConfigStore configs = parse(row);
         return configs;
     }
-    public static ConfigStore parse(DataRow row){
+    public static ConfigStore parse(DataRow row) {
         DefaultConfigStore configs = new DefaultConfigStore();
         DataRow conditions = row.getRow("conditions");
-        if(null != conditions){
+        if(null != conditions) {
             ConfigChain chain = parseConfigChain(conditions);
             configs.setChain(chain);
         }
         DataRow columns = row.getRow("columns");
-        if(null != columns){
+        if(null != columns) {
             List<String> query = (List<String>)columns.getList("query");
             configs.columns(query);
             List<String> excludes = (List<String>)columns.getList("exclude");
             configs.excludes(excludes);
         }
         DataRow navi = row.getRow("navi");
-        if(null != navi){
+        if(null != navi) {
             configs.setPageNavi(parseNavi(navi));
         }
         return configs;
     }
-    public static PageNavi parseNavi(DataRow row){
+    public static PageNavi parseNavi(DataRow row) {
         PageNavi navi = new DefaultPageNavi();
         navi.setCurPage(row.getInt("page", 1));
         navi.setPageRows(row.getInt("vol", PageNaviConfig.DEFAULT_VAR_PAGE_DEFAULT_VOL));
@@ -59,16 +59,16 @@ public class ConfigBuilder {
         navi.autoCount(row.getBoolean("auto_count", PageNaviConfig.IS_AUTO_COUNT));
         return navi;
     }
-    public static Config parseConfig(DataRow row){
+    public static Config parseConfig(DataRow row) {
         Config config = null;
         DataSet items = row.getSet("items");
-        if(null != items && !items.isEmpty()){
+        if(null != items && !items.isEmpty()) {
             config = parseConfigChain(row);
         }else {
             ParseResult parser = new ParseResult();
             parser.setVar(row.getString("var"));
             DataRow parse = row.getRow("parser");
-            if(null != parse){
+            if(null != parse) {
                 parser.setPrefix(parse.getString("prefix"));
                 parser.setVar(parse.getString("var"));
                 parser.setClazz(parse.getString("class"));
@@ -77,10 +77,10 @@ public class ConfigBuilder {
                 parser.setJoin(parse.getString("join"));
                 parser.setCompare(compare(parse.getInt("compare", Compare.EQUAL.getCode())));
                 String swt = parse.getString("swt");
-                if(BasicUtil.isNotEmpty(swt)){
+                if(BasicUtil.isNotEmpty(swt)) {
                     try {
                         parser.setSwt(Compare.EMPTY_VALUE_SWITCH.valueOf(swt));
-                    }catch (Exception ignored){}
+                    }catch (Exception ignored) {}
                 }
             }
             config = new DefaultConfig(parser);
@@ -94,25 +94,25 @@ public class ConfigBuilder {
         }
         return config;
     }
-    public static ConfigChain parseConfigChain(DataRow row){
+    public static ConfigChain parseConfigChain(DataRow row) {
         ConfigChain chain = null;
         chain = new DefaultConfigChain();
         chain.setJoin(row.getString("join"));
         chain.setText(row.getString("text"));
         DataSet items = row.getSet("items");
-        if(null != items){
-            for(DataRow item:items){
+        if(null != items) {
+            for(DataRow item:items) {
                 Config config = parseConfig(item);
-                if(null != config){
+                if(null != config) {
                     chain.addConfig(config);
                 }
             }
         }
         return chain;
     }
-    public static Compare compare(int code){
-        for(Compare compare:Compare.values()){
-            if(compare.getCode() == code){
+    public static Compare compare(int code) {
+        for(Compare compare:Compare.values()) {
+            if(compare.getCode() == code) {
                 return compare;
             }
         }

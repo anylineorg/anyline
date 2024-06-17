@@ -47,7 +47,7 @@ public class TableBuilder {
     private String emptyCellVerticalAlign = "";                         // 空单元格垂直对齐方式
     private String emptyCellHorizontalAlign = "";                       // 空单元格水平对齐方式
 
-    public static TableBuilder init(){
+    public static TableBuilder init() {
         TableBuilder builder = new TableBuilder();
         return builder;
     }
@@ -71,33 +71,33 @@ public class TableBuilder {
      * @param prevRow 上一行数据
      * @return boolean
      */
-    private boolean checkRefMerge(String field, int r, Object prevRow ){
+    private boolean checkRefMerge(String field, int r, Object prevRow ) {
         boolean merge = true;
         String[] refs = unionRefs.get(field);
         Object data = list[r];
-        if(null != refs){
+        if(null != refs) {
             for (String ref:refs) {
-                if(field.equals(ref)){// 如果误加了 参考自己 忽略
+                if(field.equals(ref)) {// 如果误加了 参考自己 忽略
                     continue;
                 }
                 int refIndex = fields.indexOf(ref);
                 Map<String, String> refCell = cells[r][refIndex];
-                if(null == refCell.get("checked")){
+                if(null == refCell.get("checked")) {
                     checkMerge(r, refIndex, ref);
                 }
                 String curRefValue = BeanUtil.parseRuntimeValue(data, ref);//当前行 参与列的值
-                if(null == curRefValue){
+                if(null == curRefValue) {
                     curRefValue =replaceEmpty;
                 }
-                if(ignoreUnionValues.indexOf(curRefValue) != -1){
+                if(ignoreUnionValues.indexOf(curRefValue) != -1) {
                     merge = false;
                     break;
                 }
                 String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
-                if(null == prevRefValue){
+                if(null == prevRefValue) {
                     prevRefValue = replaceEmpty;
                 }
-                if(!curRefValue.equals(prevRefValue)){
+                if(!curRefValue.equals(prevRefValue)) {
                     // 当前行参考列值  与上一行参考列值比较
                     merge = false;
                     break;
@@ -112,7 +112,7 @@ public class TableBuilder {
         }
         return merge;
     }
-    private void checkMerge(int r, int c, String field){
+    private void checkMerge(int r, int c, String field) {
 
         Map<String, String> map = cells[r][c];
         String value = map.get("value");
@@ -149,23 +149,23 @@ public class TableBuilder {
 
         map.put("rowspan", rowspan+ "");
     }
-    private void checkNum(int c, String field){
+    private void checkNum(int c, String field) {
         int rows = cells.length;
         int num = 1;
-        for(int r=0; r<rows; r++){
+        for(int r=0; r<rows; r++) {
             Map<String, String> cell = cells[r][c];
             cell.put("value", num+"");
             String ref = field.substring(field.indexOf("(")+1, field.length()-1);
             int refCol = fields.indexOf(ref);
             if(refCol != -1) {
                 Map<String, String> refCell = cells[r][refCol];
-                if(null != refCell){
+                if(null != refCell) {
                     int rowspan = BasicUtil.parseInt(refCell.get("rowspan"), 1);
                     if(rowspan > 1) {
                         cell.put("merge", "1");  // 合并
                         cell.put("rowspan", rowspan+"");
                         // 当前行以下rowspan-1行全部被合并
-                        for(int rr=r+1; rr<r+rowspan&&rr<rows; rr++){
+                        for(int rr=r+1; rr<r+rowspan&&rr<rows; rr++) {
                             Map<String, String> mergedCell = cells[rr][c];
                             mergedCell.put("merged", "1"); // 被合并
                         }
@@ -181,21 +181,21 @@ public class TableBuilder {
     // 向下求相同值
     Map<String, String>[][] cells = null;
     Object[] list = null;
-    public Table build(){
+    public Table build() {
         Table table = null;
         table = new Table();
-        if(BasicUtil.isNotEmpty(width)){
+        if(BasicUtil.isNotEmpty(width)) {
             table.setWidth(width);
         }
         parseUnion();
         table.setClazz(clazz);
         table.setHeader(header);
-        if(null != header){
+        if(null != header) {
             List<String> strs = RegularUtil.cuts(header, "<tr", ">", "</tr>");
-            for(String str:strs){
+            for(String str:strs) {
                 List<String> stds = RegularUtil.cuts(str, "<td", "</td>");
                 Tr tr = new Tr();
-                for(String std:stds){
+                for(String std:stds) {
                     Td td = new Td();
                     String text = RegularUtil.cut(std, ">", RegularUtil.TAG_END);
                     String style = RegularUtil.fetchAttributeValue(std, "style");
@@ -209,10 +209,10 @@ public class TableBuilder {
                 table.addTr(tr);
             }
         }
-        if(null != headers && headers.size() >0){
+        if(null != headers && headers.size() >0) {
             Tr tr = new Tr();
             int size = headers.size();
-            for(int i=0; i<size; i++){
+            for(int i=0; i<size; i++) {
                 String header = headers.get(i);
                 Td td = new Td();
                 td.setText(header);
@@ -223,30 +223,30 @@ public class TableBuilder {
             }
             table.addTr(tr);
         }
-        if(null != datas && null != fields){
+        if(null != datas && null != fields) {
             list = datas.toArray();
             int rsize = list.length;    // 行数
             int csize = fields.size();  // 列数
             cells = new HashMap[rsize][csize];
-            for(int r=0; r<rsize; r++){
+            for(int r=0; r<rsize; r++) {
                 Object data = list[r];
-                for(int c=0; c<csize; c++){
+                for(int c=0; c<csize; c++) {
                     Map<String, String> map = new HashMap<>();
                     String field = fields.get(c);
                     String value = null;
-                    if(field.equals("${num}")){
+                    if(field.equals("${num}")) {
                         value = (r+1)+"";
-                    }else if(field.contains("${num}")){
+                    }else if(field.contains("${num}")) {
                         value = field;
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
                     }
                     // 外键对应关系
                     Map<String, String> option = options.get(field);
-                    if(null != option && null != value){
+                    if(null != option && null != value) {
                         value = option.get(value);
                     }
-                    if(null == value){
+                    if(null == value) {
                         value = replaceEmpty;
                     }
                     map.put("value", value);
@@ -255,30 +255,30 @@ public class TableBuilder {
 
             }
             // 检测合并单元格
-            for(int r=0; r<rsize; r++){
-                for(int c=0; c<csize; c++){
+            for(int r=0; r<rsize; r++) {
+                for(int c=0; c<csize; c++) {
                     String field = fields.get(c);
                     checkMerge(r, c, field);
                 }
             }
             // 检测序号 {num}(DEPT_CODE)
-            for(int c=0; c<csize; c++){
+            for(int c=0; c<csize; c++) {
                 String field = fields.get(c);
-                if(field.contains("${num}")){
+                if(field.contains("${num}")) {
                     checkNum(c, field);
                 }
             }
 
-            for(int r=0; r<rsize; r++){
+            for(int r=0; r<rsize; r++) {
                 Object data = list[r];
                 Tr tr = new Tr();
-                for(int c=0; c<csize; c++){
+                for(int c=0; c<csize; c++) {
                     Map<String, String> map = cells[r][c];
                     String value = map.get("value");
                     String merge = map.get("merge");    // 合并其他行
                     String merged = map.get("merged");  // 被其他行合并
                     int rowspan = BasicUtil.parseInt(map.get("rowspan"), 1);
-                    if(!"1".equals(merged)){
+                    if(!"1".equals(merged)) {
                         Td td = new Td();
                         td.setText(value);
                         tr.addTd(td);
@@ -288,18 +288,18 @@ public class TableBuilder {
                         }
                         if (rowspan > 1) {
                             td.setRowspan(rowspan);
-                            if(BasicUtil.isNotEmpty(mergeCellHorizontalAlign)){
+                            if(BasicUtil.isNotEmpty(mergeCellHorizontalAlign)) {
                                 td.setAlign(mergeCellHorizontalAlign);
                             }
-                            if(BasicUtil.isNotEmpty(mergeCellVerticalAlign)){
+                            if(BasicUtil.isNotEmpty(mergeCellVerticalAlign)) {
                                 td.setVerticalAlign(mergeCellVerticalAlign);
                             }
                         }
-                        if(BasicUtil.isEmpty(value) || replaceEmpty.equals(value)){
-                            if(BasicUtil.isNotEmpty(emptyCellHorizontalAlign)){
+                        if(BasicUtil.isEmpty(value) || replaceEmpty.equals(value)) {
+                            if(BasicUtil.isNotEmpty(emptyCellHorizontalAlign)) {
                                 td.setAlign(emptyCellHorizontalAlign);
                             }
-                            if(BasicUtil.isNotEmpty(emptyCellVerticalAlign)){
+                            if(BasicUtil.isNotEmpty(emptyCellVerticalAlign)) {
                                 td.setVerticalAlign(emptyCellVerticalAlign);
                             }
                         }
@@ -313,12 +313,12 @@ public class TableBuilder {
         }
         // 需要检测变量如合计
         table.setFooter(footer);
-        if(null != footer){
+        if(null != footer) {
             List<String> strs = RegularUtil.cuts(footer, "<tr", ">", "</tr>");
-            for(String str:strs){
+            for(String str:strs) {
                 List<String> stds = RegularUtil.cuts(str, "<td", "</td>");
                 Tr tr = new Tr();
-                for(String std:stds){
+                for(String std:stds) {
                     Td td = new Td();
                     String text = RegularUtil.cut(std, ">", RegularUtil.TAG_END);
                     String style = RegularUtil.fetchAttributeValue(std, "style");
@@ -339,10 +339,10 @@ public class TableBuilder {
         table.offset();
         return table;
     }
-    private void parseUnion(){
+    private void parseUnion() {
         List<String> list = new ArrayList<>();
-        for(String union:unions){
-            if(union.contains("(")){
+        for(String union:unions) {
+            if(union.contains("(")) {
                 union = union.trim();
                 String[] refs = union.substring(union.indexOf("(")+1, union.length()-1).split(",");
                 union = union.substring(0, union.indexOf("("));
@@ -376,13 +376,13 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addHeaders(String ... headers) {
-        for(String header:headers){
+        for(String header:headers) {
             this.headers.add(header);
         }
         return this;
     }
     public TableBuilder addHeaders(List<String> headers) {
-        for(String header:headers){
+        for(String header:headers) {
             this.headers.add(header);
         }
         return this;
@@ -407,10 +407,10 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addConfigs(String ... configs) {
-        for(String config:configs){
+        for(String config:configs) {
             String head = config;
             String field = config;
-            if(config.contains(":")){
+            if(config.contains(":")) {
                 String[] tmps = config.split(":");
                 head = tmps[0];
                 field = tmps[1];
@@ -421,13 +421,13 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder addFields(String ... fields) {
-        for(String field:fields){
+        for(String field:fields) {
             this.fields.add(field);
         }
         return this;
     }
     public TableBuilder addFields(List<String> fields) {
-        for(String field:fields){
+        for(String field:fields) {
             this.fields.add(field);
         }
         return this;
@@ -443,7 +443,7 @@ public class TableBuilder {
     }
 
     public TableBuilder addUnions(String ... fields) {
-        if(null == unions){
+        if(null == unions) {
             unions = new ArrayList<>();
         }
         for(String field:fields) {
@@ -501,7 +501,7 @@ public class TableBuilder {
      */
     public TableBuilder setHorizontalAlign(String field, String align) {
         Map<String, String> style = styles.get(field);
-        if(null == style){
+        if(null == style) {
             style = new HashMap<>();
         }
         style.put("text-align", align);
@@ -536,7 +536,7 @@ public class TableBuilder {
      */
     public TableBuilder setVerticalAlign(String field, String align) {
         Map<String, String> style = styles.get(field);
-        if(null == style){
+        if(null == style) {
             style = new HashMap<>();
         }
         style.put("vertical-align", align);
@@ -564,11 +564,11 @@ public class TableBuilder {
      * @param width 宽度
      * @return TableBuilder
      */
-    public TableBuilder addConfig(String header, String field, String width){
+    public TableBuilder addConfig(String header, String field, String width) {
         headers.add(header);
         fields.add(field);
         Map<String, String> style = styles.get(field);
-        if(null == style){
+        if(null == style) {
             style = new HashMap<>();
             styles.put(field, style);
         }
@@ -582,7 +582,7 @@ public class TableBuilder {
      * @param width 宽度
      * @return TableBuilder
      */
-    public TableBuilder addConfig(String header, String field, int width){
+    public TableBuilder addConfig(String header, String field, int width) {
         return addConfig(header, field, width+widthUnit);
     }
     /**
@@ -591,7 +591,7 @@ public class TableBuilder {
      * @param field 属性
      * @return TableBuilder
      */
-    public TableBuilder addConfig(String header, String field){
+    public TableBuilder addConfig(String header, String field) {
         headers.add(header);
         fields.add(field);
         return this;
@@ -602,10 +602,10 @@ public class TableBuilder {
      * @param width 宽度
      * @return TableBuilder
      */
-    public TableBuilder setWidth(String field, String width){
+    public TableBuilder setWidth(String field, String width) {
 
         Map<String, String> style = styles.get(field);
-        if(null == style){
+        if(null == style) {
             style = new HashMap<>();
             styles.put(field, style);
         }
@@ -618,7 +618,7 @@ public class TableBuilder {
      * @param width 宽度
      * @return TableBuilder
      */
-    public TableBuilder setWidth(String width){
+    public TableBuilder setWidth(String width) {
         this.width = width;
         return this;
     }
@@ -642,9 +642,9 @@ public class TableBuilder {
      * @param values 不参合合并的值, 如空值
      * @return TableBuilder
      */
-    public TableBuilder addIgnoreUnionValue(String ... values){
-        if(null != values){
-            for(String value:values){
+    public TableBuilder addIgnoreUnionValue(String ... values) {
+        if(null != values) {
+            for(String value:values) {
                 ignoreUnionValues.add(value);
             }
         }
@@ -670,7 +670,7 @@ public class TableBuilder {
      * @return TableBuilder
      */
     public TableBuilder setCellBorder(boolean border) {
-        if(border){
+        if(border) {
             cellBorder = "1px solid auto";
         }else{
             cellBorder = "";
@@ -747,7 +747,7 @@ public class TableBuilder {
      * @param option 数据源
      * @return TableBuilder
      */
-    public TableBuilder setOptions(String field, Map<String, String> option){
+    public TableBuilder setOptions(String field, Map<String, String> option) {
         options.put(field, option);
         return this;
     }
@@ -757,9 +757,9 @@ public class TableBuilder {
      * @param option 数据源
      * @return TableBuilder
      */
-    public TableBuilder addOptions(String field, Map<String, String> option){
+    public TableBuilder addOptions(String field, Map<String, String> option) {
         Map<String, String> map = options.get(field);
-        if(null == map){
+        if(null == map) {
             map = option;
         }else {
             map.putAll(option);
@@ -774,11 +774,11 @@ public class TableBuilder {
      * @param kvs 数据源 k1, v1, k2, v2
      * @return TableBuilder
      */
-    public TableBuilder addOptions(String field, String ... kvs){
+    public TableBuilder addOptions(String field, String ... kvs) {
         Map<String, String> map = options.get(field);
-        if(null != kvs){
+        if(null != kvs) {
             Map<String, String> tmps = BeanUtil.array2map(kvs);
-            if(map == null){
+            if(map == null) {
                 map = tmps;
             }else{
                 map.putAll(tmps);
@@ -794,8 +794,8 @@ public class TableBuilder {
      * @param kvs 数据源 k1, v1, k2, v2
      * @return TableBuilder
      */
-    public TableBuilder setOptions(String field, String ... kvs){
-        if(null != kvs){
+    public TableBuilder setOptions(String field, String ... kvs) {
+        if(null != kvs) {
             Map<String, String> map = BeanUtil.array2map(kvs);
             options.put(field, map);
         }
@@ -810,7 +810,7 @@ public class TableBuilder {
      * @param text text属性
      * @return TableBuilder
      */
-    public TableBuilder setOptions(String field, Collection datas, String value, String text){
+    public TableBuilder setOptions(String field, Collection datas, String value, String text) {
         options.remove(field);
         addOptions(field, datas, value, text);
         return this;
@@ -824,20 +824,20 @@ public class TableBuilder {
      * @param text text属性
      * @return TableBuilder
      */
-    public TableBuilder addOptions(String field, Collection datas, String value, String text){
+    public TableBuilder addOptions(String field, Collection datas, String value, String text) {
         Map<String, String> map = options.get(field);
-        if(null == map){
+        if(null == map) {
             map = new HashMap<>();
         }
-        for(Object obj:datas){
+        for(Object obj:datas) {
             String v = null;
             String t = null;
             Object ov = BeanUtil.getFieldValue(obj, value);
             Object ot = BeanUtil.getFieldValue(obj, text);
-            if(null != ov){
+            if(null != ov) {
                 v = ov.toString();
             }
-            if(null != ot){
+            if(null != ot) {
                 t = ot.toString();
             }
             map.put(v, t);

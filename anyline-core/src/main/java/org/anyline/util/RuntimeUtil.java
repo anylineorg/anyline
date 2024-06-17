@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 public class RuntimeUtil {
 	private static Logger log = LoggerFactory.getLogger(RuntimeUtil.class); 
 	 
-	public static String run(String cmd, boolean wait){
+	public static String run(String cmd, boolean wait) {
 		String result = ""; 
 		Runtime runTime = Runtime.getRuntime(); 
         if (runTime == null) {
@@ -37,7 +37,7 @@ public class RuntimeUtil {
         } 
         try {
             Process ps = Runtime.getRuntime().exec(cmd);   
-            if(wait){
+            if(wait) {
             	ps.waitFor();   
             } 
             BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream()));   
@@ -54,7 +54,7 @@ public class RuntimeUtil {
         log.info("[runtime][cmd:"+cmd+"][result:"+result+"]");
 		return result; 
 	} 
-	public static String run(String cmd){
+	public static String run(String cmd) {
 		return run(cmd, true);
 	} 
 } 

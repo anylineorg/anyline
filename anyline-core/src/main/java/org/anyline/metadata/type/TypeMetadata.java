@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface TypeMetadata {
+    /**
+     * CATEGORY主要是对数据库中数据类型的归类主要用亚区分 length/precision/scale,如text类型不需要length而varchar类型需要
+     * CATEGORY_GROUP是对CATEGORY的进一步归类，更接近Java类型
+     */
     enum CATEGORY_GROUP{STRING, NUMBER, BOOLEAN, BYTES, DATETIME, COLLECTION, GEOMETRY, INTERVAL, OTHER, NONE}
     //要用来区分 length/precision
     //BLOB不需要长度 BYTES需要长度
@@ -64,32 +68,32 @@ public interface TypeMetadata {
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
         }
-        public CATEGORY_GROUP group(){
+        public CATEGORY_GROUP group() {
             return group;
         }
 
         public TypeMetadata.Config config() {
-            if(null == config){
+            if(null == config) {
                 config = new TypeMetadata.Config();
                 config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
             }
             return config;
         }
     }
-    default boolean equals(TypeMetadata metadata){
-        if(null == metadata){
+    default boolean equals(TypeMetadata metadata) {
+        if(null == metadata) {
             return false;
         }
-        if(this.getOrigin() == metadata){
+        if(this.getOrigin() == metadata) {
             return true;
         }
-        if(this == metadata){
+        if(this == metadata) {
             return true;
         }
-        if(this == metadata.getOrigin()){
+        if(this == metadata.getOrigin()) {
             return true;
         }
-        if(this.getOrigin() == metadata.getOrigin()){
+        if(this.getOrigin() == metadata.getOrigin()) {
             return true;
         }
         return false;
@@ -321,7 +325,7 @@ public interface TypeMetadata {
     CATEGORY getCategory();
     CATEGORY_GROUP getCategoryGroup();
     String getName();
-    default TypeMetadata getOrigin(){
+    default TypeMetadata getOrigin() {
         return this;
     }
     int ignoreLength();
@@ -331,7 +335,7 @@ public interface TypeMetadata {
     default String formula() {
         return null;
     }
-    default boolean isArray(){
+    default boolean isArray() {
         return false;
     }
     void setArray(boolean array);
@@ -356,21 +360,21 @@ public interface TypeMetadata {
     List<DatabaseType> databaseTypes();
 
     Object convert(Object value, Object def);
-    default Object convert(Object value, Class target){
+    default Object convert(Object value, Class target) {
         return convert(value, target, false);
     }
     Object convert(Object value, Class target, boolean array);
-    default Object convert(Object value, Class target, Object def){
+    default Object convert(Object value, Class target, Object def) {
         return convert(value, target, false, def);
     }
     Object convert(Object value, Class target, boolean array, Object def);
     Object convert(Object value, Object obj, Field field);
 
-    default Object read(Object value, Object def, Class clazz){
+    default Object read(Object value, Object def, Class clazz) {
         return read(value, def, clazz, false);
     }
     Object read(Object value, Object def, Class clazz, boolean array);
-    default Object write(Object value, Object def, boolean placeholder){
+    default Object write(Object value, Object def, boolean placeholder) {
         return write(value, def, false, placeholder);
     }
     Object write(Object value, Object def, boolean array, boolean placeholder);
@@ -411,8 +415,8 @@ public interface TypeMetadata {
          * 如果需要取多列以,分隔
          */
         private String[] scaleRefers;
-        public Config(){}
-        public Config(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+        public Config() {}
+        public Config(String meta, String formula, String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
             setMeta(meta);
             setFormula(formula);
             setLengthRefer(lengthRefer);
@@ -422,7 +426,7 @@ public interface TypeMetadata {
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
         }
-        public Config(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale){
+        public Config(String lengthRefer, String precisionRefer, String scaleRefer, int ignoreLength, int ignorePrecision, int ignoreScale) {
             setLengthRefer(lengthRefer);
             setScaleRefer(scaleRefer);
             setPrecisionRefer(precisionRefer);
@@ -430,13 +434,13 @@ public interface TypeMetadata {
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
         }
-        public Config(String lengthRefer, String precisionRefer, String scaleRefer){
+        public Config(String lengthRefer, String precisionRefer, String scaleRefer) {
             setLengthRefer(lengthRefer);
             setScaleRefer(scaleRefer);
             setPrecisionRefer(precisionRefer);
         }
 
-        public Config(int ignoreLength, int ignorePrecision, int ignoreScale){
+        public Config(int ignoreLength, int ignorePrecision, int ignoreScale) {
             this.ignoreLength = ignoreLength;
             this.ignorePrecision = ignorePrecision;
             this.ignoreScale = ignoreScale;
@@ -471,8 +475,8 @@ public interface TypeMetadata {
         public String[] getLengthRefers() {
             return lengthRefers;
         }
-        public String getLengthRefer(){
-            if(null != lengthRefers && lengthRefers.length > 0){
+        public String getLengthRefer() {
+            if(null != lengthRefers && lengthRefers.length > 0) {
                 return lengthRefers[0];
             }
             return null;
@@ -496,8 +500,8 @@ public interface TypeMetadata {
             return precisionRefers;
         }
 
-        public String getPrecisionRefer(){
-            if(null != precisionRefers && precisionRefers.length > 0){
+        public String getPrecisionRefer() {
+            if(null != precisionRefers && precisionRefers.length > 0) {
                 return precisionRefers[0];
             }
             return null;
@@ -519,8 +523,8 @@ public interface TypeMetadata {
             return scaleRefers;
         }
 
-        public String getScaleRefer(){
-            if(null != scaleRefers && scaleRefers.length > 0){
+        public String getScaleRefer() {
+            if(null != scaleRefers && scaleRefers.length > 0) {
                 return scaleRefers[0];
             }
             return null;
@@ -561,38 +565,38 @@ public interface TypeMetadata {
          * @param copy 复本
          * @return Config
          */
-        public Config merge(Config copy){
-            if(null != copy){
+        public Config merge(Config copy) {
+            if(null != copy) {
                 String meta = copy.getMeta();
                 String formula = copy.getFormula();
                 int ignoreLength = copy.ignoreLength();
                 int ignorePrecision = copy.ignorePrecision;
                 int ignoreScale = copy.ignoreScale();
-                if(BasicUtil.isNotEmpty(meta)){
+                if(BasicUtil.isNotEmpty(meta)) {
                     this.meta = meta;
                 }
-                if(BasicUtil.isNotEmpty(formula)){
+                if(BasicUtil.isNotEmpty(formula)) {
                     this.formula = formula;
                 }
-                if(-1 != ignoreLength){
+                if(-1 != ignoreLength) {
                     this.ignoreLength = ignoreLength;
                 }
-                if(-1 != ignorePrecision){
+                if(-1 != ignorePrecision) {
                     this.ignorePrecision = ignorePrecision;
                 }
-                if(-1 != ignoreScale){
+                if(-1 != ignoreScale) {
                     this.ignoreScale = ignoreScale;
                 }
                 String[] lengthRefers = copy.getLengthRefers();;
                 String[] precisionRefers = copy.getPrecisionRefers();
                 String[] scaleRefers = copy.getScaleRefers();
-                if(null != lengthRefers && lengthRefers.length > 0){
+                if(null != lengthRefers && lengthRefers.length > 0) {
                     this.lengthRefers = lengthRefers;
                 }
-                if(null != precisionRefers && precisionRefers.length > 0){
+                if(null != precisionRefers && precisionRefers.length > 0) {
                     this.precisionRefers = precisionRefers;
                 }
-                if(null != scaleRefers && scaleRefers.length > 0){
+                if(null != scaleRefers && scaleRefers.length > 0) {
                     this.scaleRefers = scaleRefers;
                 }
             }
@@ -608,19 +612,19 @@ public interface TypeMetadata {
      * @param spells 拼写兼容
      * @return TypeMetadata
      */
-    static TypeMetadata parse(DatabaseType database, Column meta, LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells){
-        if(null == meta){
+    static TypeMetadata parse(DatabaseType database, Column meta, LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells) {
+        if(null == meta) {
             return null;
         }
         boolean array = false;
         String originType = meta.getOriginType();
-        if(null == originType){
+        if(null == originType) {
             return null;
         }
         String typeName = originType;
         String up = typeName.toUpperCase();
         TypeMetadata typeMetadata = meta.getTypeMetadata();
-        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabase() == database){
+        if(null != typeMetadata && TypeMetadata.NONE != typeMetadata && meta.getParseLvl() >=2 && meta.getDatabase() == database) {
             return typeMetadata;
         }
         Integer length = meta.getLength();
@@ -682,15 +686,15 @@ public interface TypeMetadata {
         TIMESTAMP WITHOUT TIME ZONE
         */
 
-        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
             try{
                 //varchar(10)
                 //TIMESTAMP (6) WITH TIME ZONE
                 //INTERVAL YEAR(4) TO MONTH
                 //INTERVAL YEAR(4) TO MONTH(2)
                 List<List<String>> fetches = RegularUtil.fetchs(up, "\\((\\d+)\\)");
-                if(!fetches.isEmpty()){
-                    if(fetches.size() == 2){
+                if(!fetches.isEmpty()) {
+                    if(fetches.size() == 2) {
                         //INTERVAL YEAR(4) TO MONTH(2)
                         precision = BasicUtil.parseInt(fetches.get(0).get(1), null);
                         scale = BasicUtil.parseInt(fetches.get(1).get(1), null);
@@ -703,13 +707,13 @@ public interface TypeMetadata {
                         typeName = typeName.replace(items.get(0), ""); // TIMESTAMP (6) WITH TIME ZONE > TIMESTAMP WITH TIME ZONE
                         Integer num = BasicUtil.parseInt(items.get(1), null);
                         typeMetadata = parse(alias, spells, typeName);
-                        if(null != typeMetadata){
+                        if(null != typeMetadata) {
                             TypeMetadata.CATEGORY_GROUP group = typeMetadata.getCategoryGroup();
-                            if(group == TypeMetadata.CATEGORY_GROUP.NUMBER){
+                            if(group == TypeMetadata.CATEGORY_GROUP.NUMBER) {
                                 precision = num;
-                            }else if(group == TypeMetadata.CATEGORY_GROUP.DATETIME){
+                            }else if(group == TypeMetadata.CATEGORY_GROUP.DATETIME) {
                                 scale = num;
-                            }else if(group == CATEGORY_GROUP.INTERVAL){
+                            }else if(group == CATEGORY_GROUP.INTERVAL) {
                                 precision = num;
                             }else{
                                 length = num;
@@ -718,15 +722,15 @@ public interface TypeMetadata {
                     }
 
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
                 try{
                     //decimal(10,2)
                     List<List<String>> fetchs = RegularUtil.fetchs(up, "\\((\\d+)\\s*,\\s*(\\d)\\)");
-                    if(!fetchs.isEmpty()){
+                    if(!fetchs.isEmpty()) {
                         List<String> items = fetchs.get(0);
                         String full = items.get(0);//(6,2)
                         typeName = typeName.replace(full, "").trim(); // decimal(10,2) > decimal
@@ -734,11 +738,11 @@ public interface TypeMetadata {
                         scale = BasicUtil.parseInt(items.get(2), 0);
                         typeMetadata = parse(alias, spells, typeName);
                     }
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
         }
-        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata){
+        if(null == typeMetadata || TypeMetadata.NONE == typeMetadata) {
             //geometry(Polygon)
             //geometry(Polygon, 4326)
             if (typeName.contains("(")) {
@@ -784,20 +788,20 @@ public interface TypeMetadata {
         int ignorePrecision = MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
         int ignoreScale = MetadataAdapterHolder.ignoreScale(database, typeMetadata);
 
-        if(null != precision && precision > 0){
+        if(null != precision && precision > 0) {
             //指定了长度或有效位数
-            if(ignorePrecision != 1){
+            if(ignorePrecision != 1) {
                 //设置有效位数
                 meta.setPrecision(precision);
-            }else if(ignoreLength != 1){
+            }else if(ignoreLength != 1) {
                 //不需要有效位数再考虑长度
-                if(null == length || length <= 0){
+                if(null == length || length <= 0) {
                     length = precision;
                 }
             }
         }
-        if(null != scale && scale > -1){
-            if(ignoreScale != 1){
+        if(null != scale && scale > -1) {
+            if(ignoreScale != 1) {
                 meta.setScale(scale);
             }
         }
@@ -810,8 +814,8 @@ public interface TypeMetadata {
         meta.setDatabase(database);
         return typeMetadata;
     }
-    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name){
-        if(null == name){
+    static TypeMetadata parse(LinkedHashMap<String, TypeMetadata> alias, Map<String,String> spells, String name) {
+        if(null == name) {
             return null;
         }
         TypeMetadata type = null;
@@ -819,25 +823,25 @@ public interface TypeMetadata {
         if(null != alias) {
             type = alias.get(name);
         }
-        if(null == type){
+        if(null == type) {
             try {
                 type = StandardTypeMetadata.valueOf(name);
-            }catch (Exception ignored){}
+            }catch (Exception ignored) {}
         }
-        if(null == type && null != spells){//拼写兼容  下划线空格兼容
+        if(null == type && null != spells) {//拼写兼容  下划线空格兼容
             if(null != alias) {
                 type = alias.get(spells.get(name));
             }
-            if(null == type){
+            if(null == type) {
                 try {
                     type = StandardTypeMetadata.valueOf(spells.get(name));
-                }catch (Exception ignored){}
+                }catch (Exception ignored) {}
             }
         }
-        if(null == type){
+        if(null == type) {
             try {
                 type = StandardTypeMetadata.valueOf(name.replace(" ", "_"));
-            }catch (Exception ignored){}
+            }catch (Exception ignored) {}
         }
         return type;
     }

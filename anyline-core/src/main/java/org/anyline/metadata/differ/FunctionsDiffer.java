@@ -33,36 +33,36 @@ public class FunctionsDiffer implements MetadataDiffer {
     private List<Function> drops = new ArrayList<>();
     private List<Function> updates = new ArrayList<>();
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
-    public static FunctionsDiffer compare(LinkedHashMap<String, Function> origins, LinkedHashMap<String, Function> dests){
+    public static FunctionsDiffer compare(LinkedHashMap<String, Function> origins, LinkedHashMap<String, Function> dests) {
         FunctionsDiffer differ = new FunctionsDiffer();
         List<Function> adds = new ArrayList<>();
         List<Function> drops = new ArrayList<>();
         List<Function> updates = new ArrayList<>();
 
-        if(null != origins){
+        if(null != origins) {
             origins = new LinkedHashMap<>();
         }
-        if(null == dests){
+        if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        for(String key:origins.keySet()){
+        for(String key:origins.keySet()) {
             Function origin = origins.get(key);
             Function dest = dests.get(key);
-            if(null == dest){
+            if(null == dest) {
                 //新表不存在
                 drops.add(origins.get(origin));
             }else {
-                if(!origin.equals(dest)){
+                if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
                     updates.add(origin);
                 }
             }
         }
-        for(String key:dests.keySet()){
-            if(!origins.containsKey(key)){
+        for(String key:dests.keySet()) {
+            if(!origins.containsKey(key)) {
                 adds.add(dests.get(key));
             }
         }

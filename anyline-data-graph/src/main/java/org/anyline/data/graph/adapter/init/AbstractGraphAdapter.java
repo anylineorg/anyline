@@ -58,7 +58,7 @@ import java.util.*;
 
 public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
-	public AbstractGraphAdapter(){
+	public AbstractGraphAdapter() {
 		super();
 	}
 	@Override
@@ -85,7 +85,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		types.put(Metadata.TYPE.VIEW, "VIEW");
 	}
 	@Override
-	public String name(Type type){
+	public String name(Type type) {
 		return types.get(type);
 	}
 	/**
@@ -166,7 +166,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+	public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
 
@@ -180,18 +180,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		Run run = null;
-		if(null == obj){
+		if(null == obj) {
 			return null;
 		}
-		if(null == dest){
+		if(null == dest) {
 			dest = DataSourceUtil.parseDest(null, obj, configs);
 		}
 
-		if(obj instanceof Collection){
+		if(obj instanceof Collection) {
 			Collection list = (Collection) obj;
-			if(!list.isEmpty()){
+			if(!list.isEmpty()) {
 				run = createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
 			}
 			run.setRows(list.size());
@@ -213,7 +213,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		super.fillInsertContent(runtime, run, dest, set, configs, columns);
 	}
 
@@ -227,15 +227,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
 	 */
 	@Override
-	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		StringBuilder builder = run.getBuilder();
 		int batch = run.getBatch();
-		if(null == builder){
+		if(null == builder) {
 			builder = new StringBuilder();
 			run.setBuilder(builder);
 		}
 		checkName(runtime, null, dest);
-		if(list instanceof DataSet){
+		if(list instanceof DataSet) {
 			DataSet set = (DataSet) list;
 			this.fillInsertContent(runtime, run, dest, set, configs, columns);
 			return;
@@ -254,20 +254,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		builder.append(") VALUES ");
 		int dataSize = list.size();
 		int idx = 0;
-		if(batch > 1){
+		if(batch > 1) {
 			//批量执行
 			builder.append("(");
 			int size = columns.size();
 			run.setVol(size);
-			for(int i=0; i<size; i++){
-				if(i>0){
+			for(int i=0; i<size; i++) {
+				if(i>0) {
 					builder.append(",");
 				}
 				builder.append("?");
 			}
 			builder.append(")");
 		}
-		for(Object obj:list){
+		for(Object obj:list) {
             /*if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
                 if (row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
@@ -276,13 +276,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
                 insertValue(template, run, row, true, false, true, keys);
             }else{*/
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(columns));
-			if(!create && null != generator){
+			if(!create && null != generator) {
 				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
 			builder.append(insertValue(runtime, run, obj, true, true, false, true, columns));
 			//}
-			if(idx<dataSize-1 && batch <= 1){
+			if(idx<dataSize-1 && batch <= 1) {
 				//多行数据之间的分隔符
 				builder.append(batchInsertSeparator());
 			}
@@ -316,7 +316,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+	public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
 		return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
 	}
 
@@ -326,7 +326,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String batchInsertSeparator(){
+	public String batchInsertSeparator() {
 		return ",";
 	}
 
@@ -336,7 +336,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean supportInsertPlaceholder(){
+	public boolean supportInsertPlaceholder() {
 		return true;
 	}
 
@@ -347,7 +347,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param value value
 	 */
 	@Override
-	protected void setPrimaryValue(Object obj, Object value){
+	protected void setPrimaryValue(Object obj, Object value) {
 		super.setPrimaryValue(obj, value);
 	}
 
@@ -361,11 +361,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		Run run = new TableRun(runtime, dest);
 		// List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
-		if(BasicUtil.isEmpty(dest)){
+		if(BasicUtil.isEmpty(dest)) {
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
 
@@ -375,14 +375,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		int from = 1;
 		StringBuilder valuesBuilder = new StringBuilder();
 		DataRow row = null;
-		if(obj instanceof Map){
+		if(obj instanceof Map) {
 			if(!(obj instanceof DataRow)) {
 				obj = new DataRow((Map) obj);
 			}
 		}
-		if(obj instanceof DataRow){
+		if(obj instanceof DataRow) {
 			row = (DataRow)obj;
-			if(row.hasPrimaryKeys() && null != generator){
+			if(row.hasPrimaryKeys() && null != generator) {
 				generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 				//createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
 			}
@@ -390,7 +390,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			from = 2;
 			boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
 			LinkedHashMap<String, Column> pks = EntityAdapterProxy.primaryKeys(obj.getClass());
-			if(!create && null != generator){
+			if(!create && null != generator) {
 				generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
 				//createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
 			}
@@ -398,11 +398,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		run.setFrom(from);
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
-		if(null == cols || cols.size() == 0){
+		if(null == cols || cols.size() == 0) {
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
 		}
 		boolean replaceEmptyNull = false;
-		if(obj instanceof DataRow){
+		if(obj instanceof DataRow) {
 			row = (DataRow)obj;
 			replaceEmptyNull = row.isReplaceEmptyNull();
 		}else{
@@ -415,22 +415,22 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		valuesBuilder.append(") VALUES (");
 		List<String> insertColumns = new ArrayList<>();
 		boolean first = true;
-		for(Column column:cols.values()){
-			if(!first){
+		for(Column column:cols.values()) {
+			if(!first) {
 				builder.append(",");
 				valuesBuilder.append(",");
 			}
 			first = false;
 			String key = column.getName();
 			Object value = null;
-			if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
+			if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
 				value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
 			}else{
 				value = BeanUtil.getFieldValue(obj, key);
 			}
 
 			String str = null;
-			if(value instanceof String){
+			if(value instanceof String) {
 				str = (String)value;
 			}
 			delimiter(builder, key);
@@ -439,7 +439,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if (BasicUtil.checkEl(str)) {
 				value = str.substring(2, str.length()-1);
 				valuesBuilder.append(value);
-			}else if(value instanceof SQL_BUILD_IN_VALUE){
+			}else if(value instanceof SQL_BUILD_IN_VALUE) {
 				//内置函数值
 				value = value(runtime, null, (SQL_BUILD_IN_VALUE)value);
 				valuesBuilder.append(value);
@@ -449,7 +449,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 					valuesBuilder.append("?");
 					if ("NULL".equals(value)) {
 						value = null;
-					}else if("".equals(value) && replaceEmptyNull){
+					}else if("".equals(value) && replaceEmptyNull) {
 						value = null;
 					}
 					addRunValue(runtime, run, Compare.EQUAL, column, value);
@@ -477,20 +477,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+	protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
 		Run run = new TableRun(runtime, dest);
 		run.setBatch(batch);
-		if(null == list || list.isEmpty()){
+		if(null == list || list.isEmpty()) {
 			throw new org.anyline.exception.SQLException("空数据");
 		}
 		Object first = list.iterator().next();
 
-		if(BasicUtil.isEmpty(dest)){
+		if(BasicUtil.isEmpty(dest)) {
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
-		if(null == cols || cols.size() == 0){
+		if(null == cols || cols.size() == 0) {
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
 		}
 		run.setInsertColumns(cols);
@@ -522,32 +522,32 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
 		long cnt = 0;
 		int batch = run.getBatch();
 		String action = "insert";
-		if(batch > 1){
+		if(batch > 1) {
 			action = "batch insert";
 		}
-		if(!run.isValid()){
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)){
+		if(!run.isValid()) {
+			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 				log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
 			}
 			return -1;
 		}
 		String sql = run.getFinalInsert();
-		if(BasicUtil.isEmpty(sql)){
+		if(BasicUtil.isEmpty(sql)) {
 			log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
 			return -1;
 		}
-		if(null != configs){
+		if(null != configs) {
 			configs.add(run);
 		}
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		/*执行SQL*/
 		if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)){
+			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
 				log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), sql, values.size());
 			}else {
 				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
@@ -556,44 +556,44 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		long millis = -1;
 
 		boolean exe = true;
-		if(null != configs){
+		if(null != configs) {
 			exe = configs.execute();
 		}
-		if(!exe){
+		if(!exe) {
 			return -1;
 		}
 		try {
-			if(batch > 1){
+			if(batch > 1) {
 			}else {
 			}
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
-				if(millis > SLOW_SQL_MILLIS){
+			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+				if(millis > SLOW_SQL_MILLIS) {
 					slow = true;
 					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-					if(null != dmListener){
+					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, sql, values, null, true, cnt, millis);
 					}
 				}
 			}
 			if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
 				String qty = LogUtil.format(cnt, 34);
-				if(batch > 1){
+				if(batch > 1) {
 					qty = LogUtil.format("约"+cnt, 34);
 				}
 				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
 			}
 
-		}catch(Exception e){
+		}catch(Exception e) {
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 				e.printStackTrace();
 			}
-			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
+			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
 				log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
-			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
+			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
 				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
 				ex.setCmd(sql);
 				ex.setValues(values);
@@ -604,10 +604,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return cnt;
 	}
 
-	public String insertHead(ConfigStore configs){
+	public String insertHead(ConfigStore configs) {
 		return "INSERT INTO ";
 	}
-	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return "";
 	}
 	/* *****************************************************************************************************************
@@ -650,7 +650,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+	public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.update(runtime, random, batch, dest, data, configs, columns);
 	}
 
@@ -678,19 +678,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildUpdateRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
 	}
 
@@ -732,11 +732,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, List<String> columns) {
 		return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
 	}
 	@Override
-	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
 	}
 
@@ -750,34 +750,34 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run){
+	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
 		long result = 0;
-		if(!run.isValid()){
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)){
+		if(!run.isValid()) {
+			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
 			}
 			return -1;
 		}
 		String sql = null;
 		sql = run.getFinalUpdate();
-		if(BasicUtil.isEmpty(sql)){
+		if(BasicUtil.isEmpty(sql)) {
 			log.warn("[不具备更新条件][dest:{}]", dest);
 			return -1;
 		}
-		if(null != configs){
+		if(null != configs) {
 			configs.add(run);
 		}
 		List<Object> values = run.getValues();
 		int batch = run.getBatch();
 		String action = "update";
-		if(batch > 1){
+		if(batch > 1) {
 			action = "batch update";
 		}
 		long fr = System.currentTimeMillis();
 
 		/*执行SQL*/
 		if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
-			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)){
+			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
 				log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}else {
 				log.info("{}[action:update][table:{}]{}", random, run.getTable(), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
@@ -785,33 +785,33 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 
 		boolean exe = true;
-		if(null != configs){
+		if(null != configs) {
 			exe = configs.execute();
 		}
-		if(!exe){
+		if(!exe) {
 			return -1;
 		}
 		long millis = -1;
 		try{
 
-			if(batch > 1){
+			if(batch > 1) {
 			}else {
 			}
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
-				if(millis > SLOW_SQL_MILLIS){
+			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+				if(millis > SLOW_SQL_MILLIS) {
 					slow = true;
 					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-					if(null != dmListener){
+					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, sql, values, null, true, result, millis);
 					}
 				}
 			}
 			if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
 				String qty = result+"";
-				if(batch>1){
+				if(batch>1) {
 					qty = "约"+result;
 				}
 				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
@@ -863,24 +863,24 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+	public long save(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.save(runtime, random, dest, data, configs, columns);
 	}
 
 	@Override
-	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
+	protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
 		return super.saveCollection(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+	protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
 		return super.saveObject(runtime, random, dest, data, configs, columns);
 	}
 	@Override
-	protected Boolean checkOverride(Object obj){
+	protected Boolean checkOverride(Object obj) {
 		return super.checkOverride(obj);
 	}
 	@Override
-	protected Map<String, Object> checkPv(Object obj){
+	protected Map<String, Object> checkPv(Object obj) {
 		return super.checkPv(obj);
 	}
 
@@ -891,11 +891,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+	protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
 		return super.isMultipleValue(runtime, run, key);
 	}
 	@Override
-	protected boolean isMultipleValue(Column column){
+	protected boolean isMultipleValue(Column column) {
 		return super.isMultipleValue(column);
 	}
 
@@ -906,7 +906,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+	public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
 		return super.checkMetadata(runtime, table, configs, columns);
 	}
 
@@ -946,7 +946,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.querys(runtime, random, prepare, configs, conditions);
 	}
 
@@ -959,11 +959,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+	public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
 		DataSet set = null;
 		final List<Parameter> inputs = procedure.getInputs();
 		final List<Parameter> outputs = procedure.getOutputs();
-		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
+		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
 			log.info("{}[action:procedure][cmd:\n{}\n][input param:{}]\n[output param:{}]", random, procedure.getName(), LogUtil.param(inputs), LogUtil.param(outputs));
 		}
 		final String rdm = random;
@@ -971,14 +971,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		try{
 
 			ACTION.SWITCH swt = InterceptorProxy.prepareQuery(runtime, random, procedure, navi);
-			if(swt == ACTION.SWITCH.BREAK){
+			if(swt == ACTION.SWITCH.BREAK) {
 				return new DataSet();
 			}
 			swt = InterceptorProxy.beforeQuery(runtime, random, procedure, navi);
-			if(swt == ACTION.SWITCH.BREAK){
+			if(swt == ACTION.SWITCH.BREAK) {
 				return new DataSet();
 			}
-			if(null != dmListener){
+			if(null != dmListener) {
 				dmListener.beforeQuery(runtime, random, procedure);
 			}
 			final DataRuntime rt = runtime;
@@ -986,34 +986,34 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
-			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
-				if(millis > SLOW_SQL_MILLIS){
+			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL) {
+				if(millis > SLOW_SQL_MILLIS) {
 					log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n][input param:{}]\n[output param:{}]"
 							, random
 							, DateUtil.format(millis)
 							, procedure.getName()
 							, LogUtil.param(inputs)
 							, LogUtil.param(outputs));
-					if(null != dmListener){
+					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, procedure.getName(), inputs, outputs, true, set, millis);
 					}
 				}
 			}
-/*			if(null != queryInterceptor){
+/*			if(null != queryInterceptor) {
 				queryInterceptor.after(procedure, set, millis);
 			}*/
-			if(!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
+			if(!slow && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
 				log.info("{}[action:procedure][执行耗时:{}]", random, DateUtil.format(millis));
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}
-			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
 					log.error("{}[{}][action:procedure][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]"
 							, random
 							, LogUtil.format("存储过程查询异常:", 33)+e.toString()
@@ -1038,7 +1038,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Entity
 	 */
 	@Override
-	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+	public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
 		return super.selects(runtime, random, prepare, clazz, configs, conditions);
 	}
 
@@ -1054,7 +1054,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 *
 	 */
 	@Override
-	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
+	protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
 		return super.select(runtime, random, clazz, table, configs, run);
 	}
 
@@ -1070,7 +1070,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return maps 返回map集合
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.maps(runtime, random, prepare, configs, conditions);
 	}
 
@@ -1083,7 +1083,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.buildQueryRun(runtime, prepare, configs, conditions);
 	}
 
@@ -1094,7 +1094,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+	public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
 		return super.buildQuerySequence(runtime, next, names);
 	}
 
@@ -1104,27 +1104,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillQueryContent(DataRuntime runtime, Run run){
+	public void fillQueryContent(DataRuntime runtime, Run run) {
 		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+	protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
 		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, TextRun run){
+	protected void fillQueryContent(DataRuntime runtime, TextRun run) {
 		super.fillQueryContent(runtime, run);
 	}
 	@Override
-	protected void fillQueryContent(DataRuntime runtime, TableRun run){
+	protected void fillQueryContent(DataRuntime runtime, TableRun run) {
 		StringBuilder builder = run.getBuilder();
 		fillQueryContent(runtime, builder, run);
 		//UNION
 		List<Run> unions = run.getUnions();
-		if(null != unions){
-			for(Run union:unions){
+		if(null != unions) {
+			for(Run union:unions) {
 				builder.append("\n UNION ");
-				if(union.isUnionAll()){
+				if(union.isUnionAll()) {
 					builder.append(" ALL ");
 				}
 				builder.append("\n");
@@ -1134,32 +1134,32 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		run.appendOrderStore();
 		run.checkValid();
 	}
-	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run){
+	protected void fillQueryContent(DataRuntime runtime, StringBuilder builder, TableRun run) {
 		TablePrepare sql = (TablePrepare)run.getPrepare();
 		builder.append("SELECT ");
-		if(null != sql.getDistinct()){
+		if(null != sql.getDistinct()) {
 			builder.append(sql.getDistinct());
 		}
 		builder.append(BR_TAB);
 		LinkedHashMap<String,Column> columns = sql.getColumns();
-		if(null == columns || columns.isEmpty()){
+		if(null == columns || columns.isEmpty()) {
 			ConfigStore configs = run.getConfigs();
 			if(null != configs) {
 				List<String> cols = configs.columns();
 				columns = new LinkedHashMap<>();
-				for(String col:cols){
+				for(String col:cols) {
 					columns.put(col.toUpperCase(), new Column(col));
 				}
 			}
 		}
-		if(null != columns && !columns.isEmpty()){
+		if(null != columns && !columns.isEmpty()) {
 			// 指定查询列
 			boolean first = true;
-			for(Column column:columns.values()){
-				if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())){
+			for(Column column:columns.values()) {
+				if(BasicUtil.isEmpty(column) || BasicUtil.isEmpty(column.getName())) {
 					continue;
 				}
-				if(!first){
+				if(!first) {
 					builder.append(",");
 				}
 				first = false;
@@ -1169,16 +1169,16 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 					name = name.substring(2, name.length()-1);
 					builder.append(column);
 				}else{
-					if(name.contains("(") || name.contains(",")){
+					if(name.contains("(") || name.contains(",")) {
 						builder.append(name);
-					}else if(name.toUpperCase().contains(" AS ")){
+					}else if(name.toUpperCase().contains(" AS ")) {
 						int split = name.toUpperCase().indexOf(" AS ");
 						String tmp = name.substring(0, split).trim();
 						delimiter(builder, tmp);
 						builder.append(" ");
 						tmp = name.substring(split+4).trim();
 						delimiter(builder, tmp);
-					}else if("*".equals(name)){
+					}else if("*".equals(name)) {
 						builder.append("*");
 					}else{
 						delimiter(builder, name);
@@ -1195,7 +1195,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		builder.append("FROM").append(BR_TAB);
 		name(runtime, builder, table);
 		String alias = table.getAlias();
-		if(BasicUtil.isNotEmpty(alias)){
+		if(BasicUtil.isNotEmpty(alias)) {
 			builder.append(" ");
 			delimiter(builder, alias);
 		}
@@ -1207,7 +1207,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				Table joinTable = join.getTable();
 				String joinTableAlias = joinTable.getAlias();
 				name(runtime, builder, joinTable);
-				if(BasicUtil.isNotEmpty(joinTableAlias)){
+				if(BasicUtil.isNotEmpty(joinTableAlias)) {
 					builder.append("  ");
 					delimiter(builder, joinTableAlias);
 				}
@@ -1246,7 +1246,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
 		int code = compare.getCode();
-		if(code > 100){
+		if(code > 100) {
 			builder.append(" NOT");
 			code = code - 100;
 		}
@@ -1256,11 +1256,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		// NOT %A% 150
 		// NOT A%  151
 		// NOT %A  152
-		if(code == 50){
+		if(code == 50) {
 			builder.append(" LIKE ").append(concat(runtime, "'%'","?","'%'"));
-		}else if(code == 51){
+		}else if(code == 51) {
 			builder.append(" LIKE ").append(concat(runtime, "?","'%'"));
-		}else if(code == 52){
+		}else if(code == 52) {
 			builder.append(" LIKE ").append(concat(runtime, "'%'","?"));
 		}
 		RunValue run = new RunValue();
@@ -1295,16 +1295,16 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
-		if(compare == Compare.NOT_IN){
+		if(compare == Compare.NOT_IN) {
 			builder.append(" NOT");
 		}
 		builder.append(" IN (");
-		if(value instanceof Collection){
+		if(value instanceof Collection) {
 			Collection<Object> coll = (Collection)value;
 			int size = coll.size();
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				builder.append("?");
-				if(i < size-1){
+				if(i < size-1) {
 					builder.append(",");
 				}
 			}
@@ -1326,12 +1326,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public DataSet select(DataRuntime runtime, String random, boolean system, Table table, ConfigStore configs, Run run) {
-		if(run instanceof ProcedureRun){
+		if(run instanceof ProcedureRun) {
 			ProcedureRun pr = (ProcedureRun)run;
 			return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
 		}
 		String cmd = run.getFinalQuery();
-		if(BasicUtil.isEmpty(cmd)){
+		if(BasicUtil.isEmpty(cmd)) {
 			return new DataSet().setTable(table);
 		}
 		List<Object> values = run.getValues();
@@ -1346,17 +1346,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return maps
 	 */
 	@Override
-	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
 		List<Map<String, Object>> maps = null;
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
-		if(null != configs){
+		if(null != configs) {
 			configs.add(run);
 		}
 		String sql = run.getFinalQuery();
 		List<Object> values = run.getValues();
-		if(BasicUtil.isEmpty(sql)){
+		if(BasicUtil.isEmpty(sql)) {
 			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
 				throw new SQLQueryException("未指定命令");
 			}else{
@@ -1365,21 +1365,21 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			}
 		}
 		long fr = System.currentTimeMillis();
-		if(log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)){
+		if(log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 			log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
 		boolean exe = true;
-		if(null != configs){
+		if(null != configs) {
 			exe = configs.execute();
 		}
-		if(!exe){
+		if(!exe) {
 			return new ArrayList<>();
 		}
 		try{
 			StreamHandler _handler = null;
-			if(null != configs){
+			if(null != configs) {
 				DataHandler handler = configs.handler();
-				if(handler instanceof StreamHandler){
+				if(handler instanceof StreamHandler) {
 					_handler = (StreamHandler) handler;
 				}
 			}
@@ -1387,7 +1387,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			final boolean[] process = {false};
 			final StreamHandler handler = _handler;
 			final long[] mid = {System.currentTimeMillis()};
-			if(null != handler){
+			if(null != handler) {
 				boolean keep = handler.keep();
 				try {
 
@@ -1401,30 +1401,30 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 			}
 			boolean slow = false;
-			if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
-				if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)){
+			if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
+				if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)) {
 					slow = true;
 					log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-					if(null != dmListener){
+					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
 					}
 				}
 			}
-			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)){
+			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
 				log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(mid[0] - fr));
 			}
 			maps = process(runtime, maps);
-			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)){
+			if(!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
 				log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid[0]), count[0]);
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 				e.printStackTrace();
 			}
-			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
+			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
 				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
-			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)){
+			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
 				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
 				ex.setCmd(sql);
 				ex.setValues(values);
@@ -1447,21 +1447,21 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Map<String, Object> map = null;
 		String sql = run.getFinalExists();
 		List<Object> values = run.getValues();
-		if(null != configs){
+		if(null != configs) {
 			configs.add(run);
 		}
 		long fr = System.currentTimeMillis();
 		if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 			log.info("{}[action:select]{}", random, run.log(ACTION.DML.EXISTS, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 		}
-		/*if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)){
+		/*if(null != values && values.size()>0 && BasicUtil.isEmpty(true, values)) {
 			//>0:有占位 isEmpty:值为空
 		}else{*/
 		boolean exe = true;
-		if(null != configs){
+		if(null != configs) {
 			exe = configs.execute();
 		}
-		if(!exe){
+		if(!exe) {
 			return new HashMap<>();
 		}
 		try {
@@ -1481,11 +1481,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Long millis = System.currentTimeMillis() - fr;
 		boolean slow = false;
 		long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-		if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
-			if(millis > SLOW_SQL_MILLIS){
+		if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+			if(millis > SLOW_SQL_MILLIS) {
 				slow = true;
 				log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
-				if(null != dmListener){
+				if(null != dmListener) {
 					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
 				}
 			}
@@ -1505,12 +1505,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return DataRow 保存序列查询结果 以存储过程name作为key
 	 */
 	@Override
-	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+	public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
 		List<Run> runs = buildQuerySequence(runtime, next, names);
 		if (null != runs && !runs.isEmpty()) {
 			Run run = runs.get(0);
-			if(!run.isValid()){
-				if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
+			if(!run.isValid()) {
+				if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
 					log.warn("[valid:false][不具备执行条件][sequence:"+names);
 				}
 				return new DataRow();
@@ -1531,7 +1531,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return  maps
 	 */
 	@Override
-	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+	public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
 		return super.process(runtime, list);
 	}
 
@@ -1555,7 +1555,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.count(runtime, random, prepare, configs, conditions);
 	}
 
@@ -1567,21 +1567,21 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String mergeFinalTotal(DataRuntime runtime, Run run){
+	public String mergeFinalTotal(DataRuntime runtime, Run run) {
 		//select * from user
 		//select (select id from a) as a, id as b from (select * from suer) where a in (select a from b)
 		String base = run.getBuilder().toString();
 		StringBuilder builder = new StringBuilder();
 		boolean simple= false;
 		String upper = base.toUpperCase();
-		if(upper.split("FROM").length == 2){
+		if(upper.split("FROM").length == 2) {
 			//只有一个表
 			//没有聚合 去重
-			if(!upper.contains("DISTINCT") && !upper.contains("GROUP")){
+			if(!upper.contains("DISTINCT") && !upper.contains("GROUP")) {
 				simple = true;
 			}
 		}
-		if(simple){
+		if(simple) {
 			int idx = base.toUpperCase().indexOf("FROM");
 			builder.append("SELECT COUNT(*) AS CNT FROM ").append(base.substring(idx+5));
 		}else{
@@ -1600,7 +1600,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return long
 	 */
 	@Override
-	public long count(DataRuntime runtime, String random, Run run){
+	public long count(DataRuntime runtime, String random, Run run) {
 		long total = 0;
 		DataSet set = select(runtime, random, false, ACTION.DML.COUNT, null, null, run, run.getTotalQuery(), run.getValues());
 		total = set.toUpperKey().getInt(0, "CNT", 0);
@@ -1624,26 +1624,26 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		boolean result = false;
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		if (null != dmListener) {
 			swt = dmListener.prepareQuery(runtime, random, prepare, configs, conditions);
 		}
-		if(swt == ACTION.SWITCH.BREAK){
+		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		Run run = buildQueryRun(runtime, prepare, configs, conditions);
-		if(!run.isValid()){
-			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)){
+		if(!run.isValid()) {
+			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 				log.warn("[valid:false][不具备执行条件][RunPrepare:" + ConfigParser.createSQLSign(false, false, prepare.getTableName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + runtime.datasource() + "]");
 			}
 			return false;
 		}
-		if(null != dmListener){
+		if(null != dmListener) {
 			dmListener.beforeExists(runtime, random, run);
 		}
 		long fr = System.currentTimeMillis();
@@ -1654,13 +1654,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
 		}
 		Long millis = System.currentTimeMillis() - fr;
-		if(null != dmListener){
+		if(null != dmListener) {
 			dmListener.afterExists(runtime, random, run, true, result, millis);
 		}
 		return result;
 	}
 	@Override
-	public String mergeFinalExists(DataRuntime runtime, Run run){
+	public String mergeFinalExists(DataRuntime runtime, Run run) {
 		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND","WHERE ");
 		return sql;
@@ -1695,7 +1695,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 
 	@Override
-	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+	public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
 		return super.execute(runtime, random, batch, configs, prepare, values);
 	}
 
@@ -1707,7 +1707,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+	public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
 		boolean result = false;
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		boolean cmd_success = false;
@@ -1719,7 +1719,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 		// 带有返回值
 		int returnIndex = 0;
-		if(procedure.hasReturn()){
+		if(procedure.hasReturn()) {
 			sql += "? = ";
 			returnIndex = 1;
 		}
@@ -1727,15 +1727,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		final int sizeIn = inputs.size();
 		final int sizeOut = outputs.size();
 		final int size = sizeIn + sizeOut;
-		for(int i=0; i<size; i++){
+		for(int i=0; i<size; i++) {
 			sql += "?";
-			if(i < size-1){
+			if(i < size-1) {
 				sql += ",";
 			}
 		}
 		sql += ")}";
 
-		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()){
+		if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
 			log.info("{}[action:procedure][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, sql, LogUtil.param(inputs), LogUtil.param(outputs));
 		}
 		long millis= -1;
@@ -1748,10 +1748,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigTable.SLOW_SQL_MILLIS;
-			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL){
-				if(millis > SLOW_SQL_MILLIS){
+			if(SLOW_SQL_MILLIS > 0 && ConfigTable.IS_LOG_SLOW_SQL) {
+				if(millis > SLOW_SQL_MILLIS) {
 					log.warn("{}[slow cmd][action:procedure][执行耗时:{}][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(inputs), LogUtil.param(list));
-					if(null != dmListener){
+					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.PROCEDURE, null, sql, inputs, list, true, result, millis);
 					}
 				}
@@ -1763,17 +1763,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				log.info("{}[action:procedure][执行耗时:{}]\n[output param:{}]", random, DateUtil.format(millis), list);
 			}
 
-		}catch(Exception e){
+		}catch(Exception e) {
 			result = false;
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}
-			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(), e);
 				ex.setCmd(sql);
 				throw ex;
 			}else{
-				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
+				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
 					log.error("{}[{}][action:procedure][cmd:\n{}\n]\n[input param:{}]\n[output param:{}]", random, LogUtil.format("存储过程执行异常:", 33)+e.toString(), sql, LogUtil.param(inputs), LogUtil.param(outputs));
 				}
 			}
@@ -1791,19 +1791,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+	public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		return super.buildExecuteRun(runtime, prepare, configs, conditions);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+	protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
 		super.fillExecuteContent(runtime, run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+	protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
 		super.fillExecuteContent(runtime, run);
 	}
 	@Override
-	protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+	protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
 		super.fillExecuteContent(runtime, run);
 	}
 
@@ -1814,7 +1814,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillExecuteContent(DataRuntime runtime, Run run){
+	public void fillExecuteContent(DataRuntime runtime, Run run) {
 		super.fillExecuteContent(runtime, run);
 	}
 
@@ -1828,7 +1828,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
 		long result = -1;
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
 		String sql = run.getFinalExecute();
@@ -1836,59 +1836,59 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		long fr = System.currentTimeMillis();
 		int batch = run.getBatch();
 		String action = "execute";
-		if(batch > 1){
+		if(batch > 1) {
 			action = "batch execute";
 		}
-		if(log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)){
+		if(log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
 			if(batch >1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
 				log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
 			}else {
 				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 		}
-		if(null != configs){
+		if(null != configs) {
 			configs.add(run);
 		}
 		boolean exe = true;
-		if(null != configs){
+		if(null != configs) {
 			exe = configs.execute();
 		}
-		if(!exe){
+		if(!exe) {
 			return -1;
 		}
 		long millis = -1;
 		try{
 
-			if(batch>1){
+			if(batch>1) {
 			}else {
 			}
 			millis = System.currentTimeMillis() - fr;
 			boolean slow = false;
 			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)){
-				if(millis > SLOW_SQL_MILLIS){
+			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+				if(millis > SLOW_SQL_MILLIS) {
 					slow = true;
 					log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
-					if(null != dmListener){
+					if(null != dmListener) {
 						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
 					}
 				}
 			}
 			if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
 				String qty = ""+result;
-				if(batch>1){
+				if(batch>1) {
 					qty = "约"+result;
 				}
 				log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
 				e.printStackTrace();
 			}
-			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)){
+			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
 				log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
-			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)){
+			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
 				throw e;
 			}
 
@@ -1926,7 +1926,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> T
 	 */
 	@Override
-	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values){
+	public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, ConfigStore configs, String key, Collection<T> values) {
 		return super.deletes(runtime, random, batch, table, configs, key, values);
 	}
 
@@ -1941,7 +1941,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns){
+	public long delete(DataRuntime runtime, String random, Table dest, ConfigStore configs, Object obj, String... columns) {
 		return super.delete(runtime, random, dest, configs, obj, columns);
 	}
 
@@ -1957,7 +1957,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions){
+	public long delete(DataRuntime runtime, String random, Table table, ConfigStore configs, String... conditions) {
 		return super.delete(runtime, random, table, configs, conditions);
 	}
 
@@ -1969,7 +1969,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 1表示成功执行
 	 */
 	@Override
-	public long truncate(DataRuntime runtime, String random, Table table){
+	public long truncate(DataRuntime runtime, String random, Table table) {
 		return super.truncate(runtime, random, table);
 	}
 
@@ -1983,7 +1983,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+	public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
 		return super.buildDeleteRun(runtime, dest, configs, obj, columns);
 	}
 
@@ -1997,12 +1997,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values){
+	public Run buildDeleteRun(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
 		return super.buildDeleteRun(runtime, batch, table, configs, key, values);
 	}
 
 	@Override
-	public List<Run> buildTruncateRun(DataRuntime runtime, Table table){
+	public List<Run> buildTruncateRun(DataRuntime runtime, Table table) {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -2023,7 +2023,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, Table table, ConfigStore configs, String key, Object values) {
-		if(null == table || null == key || null == values){
+		if(null == table || null == key || null == values) {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
@@ -2032,17 +2032,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		name(runtime, builder, table);
 		builder.append(" WHERE ");
 
-		if(values instanceof Collection){
+		if(values instanceof Collection) {
 			Collection cons = (Collection)values;
 			delimiter(builder, key);
-			if(batch >1){
+			if(batch >1) {
 				builder.append(" = ?");
 				List<Object> list = null;
-				if(values instanceof List){
+				if(values instanceof List) {
 					list = (List<Object>) values;
 				}else{
 					list = new ArrayList<>();
-					for(Object item:cons){
+					for(Object item:cons) {
 						list.add(item);
 					}
 				}
@@ -2100,31 +2100,31 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		name(runtime, builder, table);
 		builder.append(" WHERE ");
 		List<String> keys = new ArrayList<>();
-		if(null != columns && columns.length>0){
-			for(String col:columns){
+		if(null != columns && columns.length>0) {
+			for(String col:columns) {
 				keys.add(col);
 			}
 		}else{
-			if(obj instanceof DataRow){
+			if(obj instanceof DataRow) {
 				keys = ((DataRow)obj).getPrimaryKeys();
 			}else{
 				keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
 			}
 		}
 		int size = keys.size();
-		if(size >0){
-			for(int i=0; i<size; i++){
-				if(i > 0){
+		if(size >0) {
+			for(int i=0; i<size; i++) {
+				if(i > 0) {
 					builder.append("\nAND ");
 				}
 				String key = keys.get(i);
 
 				delimiter(builder, key).append(" = ? ");
 				Object value = null;
-				if(obj instanceof DataRow){
+				if(obj instanceof DataRow) {
 					value = ((DataRow)obj).get(key);
 				}else{
-					if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+					if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
 						value = BeanUtil.getFieldValue(obj,EntityAdapterProxy.field(obj.getClass(), key));
 					}else{
 						value = BeanUtil.getFieldValue(obj, key);
@@ -2146,9 +2146,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
 	@Override
-	public void fillDeleteRunContent(DataRuntime runtime, Run run){
-		if(null != run){
-			if(run instanceof TableRun){
+	public void fillDeleteRunContent(DataRuntime runtime, Run run) {
+		if(null != run) {
+			if(run instanceof TableRun) {
 				TableRun r = (TableRun) run;
 				fillDeleteRunContent(runtime, r);
 			}
@@ -2159,13 +2159,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * delete[命令合成-子流程]<br/>
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 */
-	protected void fillDeleteRunContent(DataRuntime runtime, TableRun run){
+	protected void fillDeleteRunContent(DataRuntime runtime, TableRun run) {
 		AutoPrepare prepare =  (AutoPrepare)run.getPrepare();
 		StringBuilder builder = run.getBuilder();
 		builder.append("DELETE FROM ");
 		name(runtime, builder, run.getTable());
 		builder.append(BR);
-		if(BasicUtil.isNotEmpty(prepare.getAlias())){
+		if(BasicUtil.isNotEmpty(prepare.getAlias())) {
 			// builder.append(" AS ").append(sql.getAlias());
 			builder.append("  ").append(prepare.getAlias());
 		}
@@ -2176,7 +2176,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				Table joinTable = join.getTable();
 				String jionTableAlias = joinTable.getAlias();
 				name(runtime, builder, joinTable);
-				if(BasicUtil.isNotEmpty(jionTableAlias)){
+				if(BasicUtil.isNotEmpty(jionTableAlias)) {
 					builder.append("  ").append(jionTableAlias);
 				}
 				builder.append(" ON ").append(join.getCondition());
@@ -2202,7 +2202,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+	public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
 		return super.delete(runtime, random, configs, run);
 	}
 	/* *****************************************************************************************************************
@@ -2242,9 +2242,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Database
 	 */
 	@Override
-	public Database database(DataRuntime runtime, String random){
+	public Database database(DataRuntime runtime, String random) {
 		Catalog catalog = catalog(runtime, random);
-		if(null != catalog){
+		if(null != catalog) {
 			return new Database(catalog.getName());
 		}
 		return super.database(runtime, random);
@@ -2257,7 +2257,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @return String
 	 */
-	public String product(DataRuntime runtime, String random){
+	public String product(DataRuntime runtime, String random) {
 		return super.product(runtime, random);
 	}
 
@@ -2268,7 +2268,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @return String
 	 */
-	public String version(DataRuntime runtime, String random){
+	public String version(DataRuntime runtime, String random) {
 		return super.version(runtime, random);
 	}
 
@@ -2281,7 +2281,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
+	public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
 		return super.databases(runtime, random, greedy, name);
 	}
 
@@ -2293,7 +2293,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
+	public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
 		return super.databases(runtime, random, name);
 	}
 
@@ -2396,7 +2396,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+	public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
 		return super.product(runtime, index, create, product, set);
 	}
 
@@ -2410,7 +2410,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String product(DataRuntime runtime, boolean create, String product){
+	public String product(DataRuntime runtime, boolean create, String product) {
 		return product;
 	}
 
@@ -2425,7 +2425,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+	public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
 		return super.version(runtime, index, create, version, set);
 	}
 
@@ -2439,7 +2439,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public String version(DataRuntime runtime, boolean create, String version){
+	public String version(DataRuntime runtime, boolean create, String version) {
 		return version;
 	}
 	/* *****************************************************************************************************************
@@ -2466,7 +2466,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
+	public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
 		return super.catalogs(runtime, random, name);
 	}
 
@@ -2478,7 +2478,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
+	public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
 		return super.catalogs(runtime, random, greedy, name);
 	}
 
@@ -2583,7 +2583,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public Catalog catalog(DataRuntime runtime, boolean create, Catalog catalog) throws Exception {
-		if(null == catalog){
+		if(null == catalog) {
 			Table table = new Table();
 			checkSchema(runtime, table);
 			catalog = table.getCatalog();
@@ -2614,7 +2614,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
+	public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
 		return super.schemas(runtime, random, catalog, name);
 	}
 
@@ -2627,7 +2627,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return LinkedHashMap
 	 */
 	@Override
-	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
+	public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
 		return super.schemas(runtime, random, greedy, catalog, name);
 	}
 
@@ -2692,7 +2692,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public Schema schema(DataRuntime runtime, boolean create, Schema schema) throws Exception {
-		if(null == schema){
+		if(null == schema) {
 			Table table = new Table();
 			checkSchema(runtime, table);
 			schema = table.getSchema();
@@ -2711,17 +2711,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 如果区分不出来的抛出异常
 	 */
 	public <T extends Metadata> T checkName(DataRuntime runtime, String random, T meta) throws RuntimeException{
-		if(null == meta){
+		if(null == meta) {
 			return null;
 		}
 		String name = meta.getName();
-		if(null != name && name.contains(".")){
+		if(null != name && name.contains(".")) {
 			String[] ks = name.split("\\.");
-			if(ks.length == 3){
+			if(ks.length == 3) {
 				meta.setCatalog(ks[0]);
 				meta.setSchema(ks[1]);
 				meta.setName(ks[2]);
-			}else if(ks.length == 2){
+			}else if(ks.length == 2) {
 				meta.setSchema(ks[0]);
 				meta.setName(ks[1]);
 			}else{
@@ -2768,7 +2768,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
@@ -2781,12 +2781,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param schema schema
 	 */
 	@Override
-	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
 		super.tableMap(runtime, random, greedy, catalog, schema);
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.tables(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
@@ -2838,10 +2838,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables){
+		if(null == tables) {
 			tables = new LinkedHashMap<>();
 		}
-		for(DataRow row:set){
+		for(DataRow row:set) {
 			T table = null;
 			table = init(runtime, index, table, catalog, schema, row);
 			table = detail(runtime, index, table, catalog, schema, row);
@@ -2865,13 +2865,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Table> List<T> tables(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
-		if(null == tables){
+		if(null == tables) {
 			tables = new ArrayList<>();
 		}
-		for(DataRow row:set){
+		for(DataRow row:set) {
 			T table = null;
 			table = init(runtime, index, table, catalog, schema, row);
-			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())){
+			if(null == search(tables, table.getCatalog(), table.getSchema(), table.getName())) {
 				tables.add(table);
 			}
 			detail(runtime, index, table, catalog, schema, row);
@@ -2889,7 +2889,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+	public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
 		return super.ddl(runtime, random, table, init);
 	}
 
@@ -2916,7 +2916,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 
@@ -2932,7 +2932,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Table
 	 * @param <T> Table
 	 */
-	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends Table> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return meta;
 	}
 
@@ -2944,12 +2944,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param row 查询结果集
 	 * @return Table
 	 */
-	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends Table> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return meta;
 	}
-	protected void init(Table table, ResultSet set, Map<String,Integer> keys){
+	protected void init(Table table, ResultSet set, Map<String,Integer> keys) {
 	}
-	protected void init(View view, ResultSet set, Map<String, Integer> keys){
+	protected void init(View view, ResultSet set, Map<String, Integer> keys) {
 	}
 
 	/**
@@ -2960,7 +2960,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view){
+	public List<String> ddl(DataRuntime runtime, String random, View view) {
 		return super.ddl(runtime, random, view);
 	}
 
@@ -2987,7 +2987,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, view, ddls, set);
 	}
 
@@ -3029,11 +3029,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.vertexTables(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
@@ -3154,7 +3154,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends VertexTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return init(runtime, index, meta, catalog, schema, row);
 	}
 	/**
@@ -3167,7 +3167,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends VertexTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return detail(runtime, index, meta, catalog, schema, row);
 	}
 	/**
@@ -3180,7 +3180,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, VertexTable meta, boolean init){
+	public List<String> ddl(DataRuntime runtime, String random, VertexTable meta, boolean init) {
 		return super.ddl(runtime, random, meta, init);
 	}
 
@@ -3207,7 +3207,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, VertexTable meta, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, VertexTable meta, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, meta, ddls, set);
 	}
 
@@ -3249,11 +3249,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
 		return super.edgeTables(runtime, random, catalog, schema, pattern, types, struct);
 	}
 
@@ -3374,7 +3374,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends EdgeTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return super.init(runtime, index, meta, catalog, schema, row);
 	}
 	/**
@@ -3387,7 +3387,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends EdgeTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		return super.detail(runtime, index, meta, catalog, schema, row);
 	}
 	/**
@@ -3400,7 +3400,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init){
+	public List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init) {
 		return super.ddl(runtime, random, meta, init);
 	}
 
@@ -3427,7 +3427,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, meta, ddls, set);
 	}
 
@@ -3464,7 +3464,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
@@ -3525,7 +3525,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
 		return super.ddl(runtime, random, table);
 	}
 
@@ -3552,7 +3552,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 	/* *****************************************************************************************************************
@@ -3586,7 +3586,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern){
+	public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
 		return super.partitionTables(runtime, random, greedy, master, tags, pattern);
 	}
 
@@ -3692,7 +3692,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+	public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
 		return super.ddl(runtime, random, table);
 	}
 
@@ -3719,7 +3719,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, table, ddls, set);
 	}
 	/* *****************************************************************************************************************
@@ -3747,7 +3747,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T>  Column
 	 */
 	@Override
-	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
 		if (!greedy) {
 			checkSchema(runtime, table);
 		}
@@ -3755,7 +3755,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Schema schema = table.getSchema();
 
 		LinkedHashMap<String,T> columns = CacheProxy.columns(this, runtime.getKey(), table);
-		if(null != columns && !columns.isEmpty()){
+		if(null != columns && !columns.isEmpty()) {
 			return columns;
 		}
 		long fr = System.currentTimeMillis();
@@ -3785,7 +3785,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 					qty_total=columns.size();
 				}
 			} catch (Exception e) {
-				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE){
+				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}
 				if(primary) {
@@ -3801,20 +3801,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			if(ConfigTable.IS_METADATA_AUTO_CHECK_COLUMN_PRIMARY) {
 				if (null != columns || !columns.isEmpty()) {
 					boolean exists = false;
-					for(Column column:columns.values()){
-						if(column.isPrimaryKey() != -1){
+					for(Column column:columns.values()) {
+						if(column.isPrimaryKey() != -1) {
 							exists = true;
 							break;
 						}
 					}
-					if(!exists){
+					if(!exists) {
 						PrimaryKey pk = primary(runtime, random, false, table);
-						if(null != pk){
+						if(null != pk) {
 							LinkedHashMap<String,Column> pks = pk.getColumns();
-							if(null != pks){
-								for(String k:pks.keySet()){
+							if(null != pks) {
+								for(String k:pks.keySet()) {
 									Column column = columns.get(k);
-									if(null != column){
+									if(null != column) {
 										column.primary(true);
 									}
 								}
@@ -3823,7 +3823,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 					}
 				}
 			}
-		}catch (Exception e){
+		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
@@ -3836,17 +3836,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			columns = new LinkedHashMap<>();
 		}
 		int index = 0;
-		for(Column column:columns.values()){
+		for(Column column:columns.values()) {
 			if(null == column.getPosition() || -1 == column.getPosition()) {
 				column.setPosition(index++);
 			}
-			if(column.isAutoIncrement() != 1){
+			if(column.isAutoIncrement() != 1) {
 				column.autoIncrement(false);
 			}
-			if(column.isPrimaryKey() != 1){
+			if(column.isPrimaryKey() != 1) {
 				column.setPrimary(false);
 			}
-			if(null == column.getTable() && !greedy){
+			if(null == column.getTable() && !greedy) {
 				column.setTable(table);
 			}
 		}
@@ -3868,7 +3868,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
 		return super.columns(runtime, random, greedy, catalog, schema, table);
 	}
 
@@ -3914,10 +3914,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
-		if(null == columns){
+		if(null == columns) {
 			columns = new LinkedHashMap<>();
 		}
-		for(DataRow row:set){
+		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, table, row);
 			if(null != column) {
@@ -3929,13 +3929,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	}
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception {
-		if(null == columns){
+		if(null == columns) {
 			columns = new ArrayList<>();
 		}
-		for(DataRow row:set){
+		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, table, row);
-			if(null == column(column, columns)){
+			if(null == column(column, columns)) {
 				columns.add(column);
 			}
 			detail(runtime, index, column, null, null, row);
@@ -3958,24 +3958,24 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
-		if(null == columns){
+		if(null == columns) {
 			columns = new ArrayList<>();
 		}
 		Map<String,Table> tbls = new HashMap<>();
-		for(Table table:tables){
+		for(Table table:tables) {
 			tbls.put(table.getName().toUpperCase(), table);
 		}
-		for(DataRow row:set){
+		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, null, row);
-			if(null == column(column, columns)){
+			if(null == column(column, columns)) {
 				columns.add(column);
 			}
 			detail(runtime, index, column, null, null, row);
 			String tableName = column.getTableName();
-			if(null != tableName){
+			if(null != tableName) {
 				Table table = tbls.get(tableName.toUpperCase());
-				if(null != table){
+				if(null != table) {
 					table.addColumn(column);
 				}
 			}
@@ -3995,7 +3995,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables){
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
@@ -4006,8 +4006,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param table 表
 	 * @param row 查询结果集
 	 */
-	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
-		if(null == meta){
+	public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) {
+		if(null == meta) {
 			meta = (T)new Column();
 		}
 		return meta;
@@ -4022,7 +4022,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return Column
 	 * @param <T> Column
 	 */
-	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+	public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 
 		return meta;
 	}
@@ -4081,7 +4081,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return PrimaryKey
 	 */
 	@Override
-	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+	public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
 		return super.primary(runtime, random, greedy, table);
 	}
 
@@ -4109,21 +4109,21 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
 		PrimaryMetadataAdapter config = primaryMetadataAdapter(runtime);
-		for(DataRow row:set){
-			if(null == primary){
+		for(DataRow row:set) {
+			if(null == primary) {
 				primary = (T)new PrimaryKey();
 				primary.setName(row.getString(config.getNameRefers()));
-				if(null == table){
+				if(null == table) {
 					table = new Table(row.getString(config.getCatalogRefers()), row.getString(config.getSchemaRefers()), row.getString(config.getTableRefer()));
 				}
 				primary.setTable(table);
 			}
 			String col = row.getString(config.getColumnRefers());
-			if(BasicUtil.isEmpty(col)){
+			if(BasicUtil.isEmpty(col)) {
 				throw new Exception("主键相关列名异常,请检查buildQueryPrimaryRun与primaryMetadataColumn");
 			}
 			Column column = primary.getColumn(col);
-			if(null == column){
+			if(null == column) {
 				column = new Column(col);
 			}
 			column.setTable(table);
@@ -4158,7 +4158,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return PrimaryMetadataAdapter
 	 */
 	@Override
-	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime){
+	public PrimaryMetadataAdapter primaryMetadataAdapter(DataRuntime runtime) {
 		return new PrimaryMetadataAdapter();
 	}
 
@@ -4194,7 +4194,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return PrimaryKey
 	 */
 	@Override
-	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
+	public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
 		return super.foreigns(runtime, random, greedy,table);
 	}
 
@@ -4251,7 +4251,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		return super.indexs(runtime, random, greedy, table, pattern);
 	}
 
@@ -4266,7 +4266,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
+	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
 		return super.indexs(runtime, random, table, pattern);
 	}
 
@@ -4279,7 +4279,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return sqls
 	 */
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name){
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
 		return super.buildQueryIndexesRun(runtime, table, name);
 	}
 
@@ -4348,7 +4348,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
 		DataSource datasource = null;
 		Connection con = null;
-		if(null == indexs){
+		if(null == indexs) {
 			indexs = new LinkedHashMap<>();
 		}
 		return indexs;
@@ -4390,7 +4390,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return IndexMetadataAdapter
 	 */
 	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime){
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
 		IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
 		adapter.setNameRefer("Index Name");
 		adapter.setTableRefer("By Tag,By Edge");
@@ -4421,9 +4421,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+	public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		List<T> constraints = null;
-		if(null == table){
+		if(null == table) {
 			table = new Table();
 		}
 		if(null == random) {
@@ -4433,13 +4433,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			checkSchema(runtime, table);
 		}
 		List<Run> runs = buildQueryConstraintsRun(runtime, table, null, pattern);
-		if(null != runs){
+		if(null != runs) {
 			int idx = 0;
-			for(Run run:runs){
+			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
 					constraints = constraints(runtime, idx, true, table, constraints, set);
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
@@ -4462,9 +4462,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern){
+	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
 		LinkedHashMap<String, T> constraints = null;
-		if(null == table){
+		if(null == table) {
 			table = new Table();
 		}
 		if(null == random) {
@@ -4472,13 +4472,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		checkSchema(runtime, table);
 		List<Run> runs = buildQueryConstraintsRun(runtime, table, null, pattern);
-		if(null != runs){
+		if(null != runs) {
 			int idx = 0;
-			for(Run run:runs){
+			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
 					constraints = constraints(runtime, idx, true, table, column, constraints, set);
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
@@ -4507,18 +4507,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		String catalog = null;
 		String schema = null;
 		String tab = null;
-		if(null != table){
+		if(null != table) {
 			catalog = table.getCatalogName();
 			schema = table.getSchemaName();
 			tab = table.getName();
 		}
-		if(BasicUtil.isNotEmpty(catalog)){
+		if(BasicUtil.isNotEmpty(catalog)) {
 			builder.append(" AND CONSTRAINT_CATALOG = '").append(catalog).append("'");
 		}
-		if(!empty(schema)){
+		if(!empty(schema)) {
 			builder.append(" AND CONSTRAINT_SCHEMA = '").append(schema).append("'");
 		}
-		if(BasicUtil.isNotEmpty(tab)){
+		if(BasicUtil.isNotEmpty(tab)) {
 			builder.append(" AND TABLE_NAME = '").append(tab).append("'");
 		}
 		return runs;
@@ -4556,16 +4556,16 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, int index, boolean create, Table table, Column column, LinkedHashMap<String, T> constraints, DataSet set) throws Exception {
-		if(null == constraints){
+		if(null == constraints) {
 			constraints = new LinkedHashMap<>();
 		}
-		for(DataRow row:set){
+		for(DataRow row:set) {
 			String name = row.getString("CONSTRAINT_NAME");
-			if(null == name){
+			if(null == name) {
 				continue;
 			}
 			T constraint = constraints.get(name.toUpperCase());
-			if(null == constraint && create){
+			if(null == constraint && create) {
 				constraint = (T)new Constraint();
 				constraints.put(name.toUpperCase(), constraint);
 			};
@@ -4574,7 +4574,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			String schema = row.getString("CONSTRAINT_SCHEMA");
 			constraint.setCatalog(catalog);
 			constraint.setSchema(schema);
-			if(null == table){
+			if(null == table) {
 				table = new Table(catalog, schema, row.getString("TABLE_NAME"));
 			}
 			constraint.setTable(table);
@@ -4607,7 +4607,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+	public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
 		return super.triggers(runtime, random, greedy, table, events);
 	}
 
@@ -4619,7 +4619,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param events 事件 INSERT|UPDATE|DELETE
 	 * @return sqls
 	 */
-	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+	public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
 		return super.buildQueryTriggersRun(runtime, table, events);
 	}
 
@@ -4672,30 +4672,30 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		List<T> procedures = new ArrayList<>();
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
 
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
 				schema = tmp.getSchema();
 			}
 		}
 		List<Run> runs = buildQueryProceduresRun(runtime, catalog, schema, pattern);
-		if(null != runs){
+		if(null != runs) {
 			int idx = 0;
-			for(Run run:runs){
+			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
 					procedures = procedures(runtime, idx, true, procedures, set);
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
@@ -4718,30 +4718,30 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
+	public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		LinkedHashMap<String,T> procedures = new LinkedHashMap<>();
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
 
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
 				schema = tmp.getSchema();
 			}
 		}
 		List<Run> runs = buildQueryProceduresRun(runtime, catalog, schema, pattern);
-		if(null != runs){
+		if(null != runs) {
 			int idx = 0;
-			for(Run run:runs){
+			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
 					procedures = procedures(runtime, idx, true, procedures, set);
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
@@ -4819,7 +4819,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return ddl
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+	public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
 		return super.ddl(runtime, random, procedure);
 	}
 
@@ -4846,7 +4846,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, procedure, ddls, set);
 	}
 
@@ -4885,28 +4885,28 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public <T extends Function> List<T> functions(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
 		List<T> functions = new ArrayList<>();
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
 
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
 				schema = tmp.getSchema();
 			}
 		}
 		List<Run> runs = buildQueryFunctionsRun(runtime, catalog, schema, pattern);
-		if(null != runs){
+		if(null != runs) {
 			int idx = 0;
-			for(Run run:runs){
+			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
 					functions = functions(runtime, idx, true, functions, catalog, schema, set);
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
@@ -4931,27 +4931,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
 		LinkedHashMap<String,T> functions = new LinkedHashMap<>();
-		if(null == random){
+		if(null == random) {
 			random = random(runtime);
 		}
-		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ){
+		if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
 			Table tmp = new Table();
 			checkSchema(runtime, tmp);
-			if(null == catalog || BasicUtil.isEmpty(catalog.getName())){
+			if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
 				catalog = tmp.getCatalog();
 			}
-			if(null == schema || BasicUtil.isEmpty(schema.getName())){
+			if(null == schema || BasicUtil.isEmpty(schema.getName())) {
 				schema = tmp.getSchema();
 			}
 		}
 		List<Run> runs = buildQueryFunctionsRun(runtime, catalog, schema, pattern);
-		if(null != runs){
+		if(null != runs) {
 			int idx = 0;
-			for(Run run:runs){
+			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
 					functions = functions(runtime, idx, true, functions, catalog, schema, set);
-				}catch (Exception e){
+				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
@@ -5031,7 +5031,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return ddl
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Function meta){
+	public List<String> ddl(DataRuntime runtime, String random, Function meta) {
 		return super.ddl(runtime, random, meta);
 	}
 
@@ -5058,7 +5058,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, function, ddls, set);
 	}
 
@@ -5184,7 +5184,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return ddl
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+	public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
 		return super.ddl(runtime, random, meta);
 	}
 
@@ -5211,7 +5211,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+	public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
 		return super.ddl(runtime, index, sequence, ddls, set);
 	}
 
@@ -5230,7 +5230,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+	public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name) {
 		return super.search(metas, catalog, schema, name);
 	}
 
@@ -5244,7 +5244,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
+	public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name) {
 		return super.schema(schemas, catalog, name);
 	}
 
@@ -5257,7 +5257,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Catalog> T catalog(List<T> catalogs, String name){
+	public <T extends Catalog> T catalog(List<T> catalogs, String name) {
 		return super.catalog(catalogs, name);
 	}
 
@@ -5270,7 +5270,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Database> T database(List<T> databases, String name){
+	public <T extends Database> T database(List<T> databases, String name) {
 		return super.database(databases, name);
 	}
 	/* *****************************************************************************************************************
@@ -5303,8 +5303,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return boolean
 	 */
 	@Override
-	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
-		if(null == run){
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
+		if(null == run) {
 			return false;
 		}
 		boolean result = false;
@@ -5406,7 +5406,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String keyword(Metadata meta){
+	public String keyword(Metadata meta) {
 		return super.keyword(meta);
 	}
 
@@ -5574,9 +5574,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		builder.append(" IF ");
-		if(!exists){
+		if(!exists) {
 			builder.append("NOT ");
 		}
 		builder.append("EXISTS ");
@@ -5590,7 +5590,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param table 表
 	 */
 	@Override
-	public void checkPrimary(DataRuntime runtime, Table table){
+	public void checkPrimary(DataRuntime runtime, Table table) {
 		super.checkPrimary(runtime, table);
 	}
 
@@ -5603,25 +5603,25 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
 		PrimaryKey primary = meta.getPrimaryKey();
 		LinkedHashMap<String, Column> pks = null;
-		if(null != primary){
+		if(null != primary) {
 			pks = primary.getColumns();
 		}else{
 			pks = meta.primarys();
 		}
-		if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
+		if(!pks.isEmpty() && pks.size() >1) {//单列主键时在列名上设置
 			builder.append(",PRIMARY KEY (");
 			boolean first = true;
 			Column.sort(primary.getPositions(), pks);
-			for(Column pk:pks.values()){
-				if(!first){
+			for(Column pk:pks.values()) {
+				if(!first) {
 					builder.append(",");
 				}
 				delimiter(builder, pk.getName());
 				String order = pk.getOrder();
-				if(BasicUtil.isNotEmpty(order)){
+				if(BasicUtil.isNotEmpty(order)) {
 					builder.append(" ").append(order);
 				}
 				first = false;
@@ -5640,13 +5640,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder engine(DataRuntime runtime, StringBuilder builder, Table meta) {
 		String engine = meta.getEngine();
-		if(BasicUtil.isNotEmpty(engine)){
+		if(BasicUtil.isNotEmpty(engine)) {
 			builder.append("\nENGINE = ").append(engine);
 		}
 		String params = meta.getEngineParameters();
-		if(BasicUtil.isNotEmpty(params)){
+		if(BasicUtil.isNotEmpty(params)) {
 			builder.append(" ").append(params);
 		}
 		return builder;
@@ -5661,10 +5661,10 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder body(DataRuntime runtime, StringBuilder builder, Table meta) {
 		LinkedHashMap<String, Column> columns = meta.getColumns();
-		if(null == columns || columns.isEmpty()){
-			if(BasicUtil.isEmpty(meta.getInherit())){
+		if(null == columns || columns.isEmpty()) {
+			if(BasicUtil.isEmpty(meta.getInherit())) {
 				//继承表没有列也需要() CREATE TABLE IF NOT EXISTS simple.public.tab_c2() INHERITS(simple.public.tab_parent)
 				//分区表不需要 CREATE TABLE IF NOT EXISTS simple.public.LOG2 PARTITION OF simple.public.log_master FOR VALUES FROM (100) TO (199)
 				return builder;
@@ -5686,41 +5686,41 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder columns(DataRuntime runtime, StringBuilder builder, Table meta) {
 		LinkedHashMap columMap = meta.getColumns();
 		Collection<Column> columns = null;
 		PrimaryKey primary = meta.getPrimaryKey();
 		LinkedHashMap<String, Column> pks = null;
-		if(null != primary){
+		if(null != primary) {
 			pks = primary.getColumns();
 		}else{
 			pks = meta.primarys();
 			primary = new PrimaryKey();
 			primary.setTable(meta);
-			for (Column col:pks.values()){
+			for (Column col:pks.values()) {
 				primary.addColumn(col);
 			}
 			meta.setPrimaryKey(primary);
 		}
-		if(null == pks){
+		if(null == pks) {
 			pks = new LinkedHashMap<>();
 		}
-		if(null != columMap){
+		if(null != columMap) {
 			columns = columMap.values();
-			if(null != columns && !columns.isEmpty()){
+			if(null != columns && !columns.isEmpty()) {
 				//builder.append("(");
 				int idx = 0;
-				for(Column column:columns){
+				for(Column column:columns) {
 					TypeMetadata metadata = column.getTypeMetadata();
-					if(null == metadata){
+					if(null == metadata) {
 						metadata = typeMetadata(runtime, column);
 						column.setTypeMetadata(metadata);
 					}
-					if(pks.containsKey(column.getName().toUpperCase())){
+					if(pks.containsKey(column.getName().toUpperCase())) {
 						column.setNullable(false);
 					}
 					builder.append("\n\t");
-					if(idx > 0){
+					if(idx > 0) {
 						builder.append(",");
 					}
 					column.setAction(ACTION.DDL.COLUMN_ADD);
@@ -5747,7 +5747,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.indexs(runtime, builder, meta);
 	}
 
@@ -5760,7 +5760,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.charset(runtime, builder, meta);
 	}
 
@@ -5773,7 +5773,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.comment(runtime, builder, meta);
 	}
 	
@@ -5786,7 +5786,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder keys(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.keys(runtime, builder, meta);
 	}
 
@@ -5799,7 +5799,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder distribution(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.distribution(runtime, builder, meta);
 	}
 
@@ -5812,7 +5812,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta){
+	public StringBuilder materialize(DataRuntime runtime, StringBuilder builder, Table meta) {
 		return super.materialize(runtime, builder, meta);
 	}
 
@@ -5825,8 +5825,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta){
-		if(null != meta.getProperty()){
+	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Table meta) {
+		if(null != meta.getProperty()) {
 			builder.append(" ").append(meta.getProperty());
 		}
 		return builder;
@@ -5845,15 +5845,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public StringBuilder partitionBy(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
 		// PARTITION BY RANGE (code); #根据code值分区
 		Table.Partition partition = meta.getPartition();
-		if(null == partition){
+		if(null == partition) {
 			return builder;
 		}
 		//只有主表需要执行
-		if(null != meta.getMaster()){
+		if(null != meta.getMaster()) {
 			return builder;
 		}
 		Table.Partition.TYPE  type = partition.getType();
-		if(null == type){
+		if(null == type) {
 			return builder;
 		}
 		builder.append(" PARTITION BY ").append(type.name()).append("(");
@@ -5881,11 +5881,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		//CREATE TABLE emp_0 PARTITION OF emp FOR VALUES WITH (MODULUS 3,REMAINDER 0);
 		//CREATE TABLE hr_user_1 PARTITION OF hr_user FOR VALUES IN ('HR');
 		Table master = meta.getMaster();
-		if(null == master){
+		if(null == master) {
 			return builder;
 		}
 		builder.append(" PARTITION OF ");
-		if(null == master){
+		if(null == master) {
 			throw new SQLException("未提供 Master Table");
 		}
 		name(runtime, builder, master);
@@ -5904,49 +5904,49 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public StringBuilder partitionFor(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
 		Table master = meta.getMaster();
-		if(null == master){
+		if(null == master) {
 			//只有子表才需要执行
 			return builder;
 		}
 		Table.Partition partition = meta.getPartition();
 		Table.Partition.TYPE type = null;
-		if(null != partition){
+		if(null != partition) {
 			type = partition.getType();
 		}
-		if(null == type && null != master.getPartition()){
+		if(null == type && null != master.getPartition()) {
 			type = master.getPartition().getType();
 		}
-		if(null == type){
+		if(null == type) {
 			return builder;
 		}
 		builder.append(" FOR VALUES");
-		if(type == Table.Partition.TYPE.LIST){
+		if(type == Table.Partition.TYPE.LIST) {
 			List<Object> list = partition.getValues();
-			if(null == list){
+			if(null == list) {
 				throw new SQLException("未提供分区表枚举值(Partition.list)");
 			}
 			builder.append(" IN(");
 			boolean first = true;
-			for(Object item:list){
-				if(!first){
+			for(Object item:list) {
+				if(!first) {
 					builder.append(",");
 				}
 				first = false;
-				if(item instanceof Number){
+				if(item instanceof Number) {
 					builder.append(item);
 				}else{
 					builder.append("'").append(item).append("'");
 				}
 			}
 			builder.append(")");
-		}else if(type == Table.Partition.TYPE.RANGE){
+		}else if(type == Table.Partition.TYPE.RANGE) {
 			Object from = partition.getMin();
 			Object to = partition.getMax();
-			if(BasicUtil.isEmpty(from) || BasicUtil.isEmpty(to)){
+			if(BasicUtil.isEmpty(from) || BasicUtil.isEmpty(to)) {
 				throw new SQLException("未提供分区表范围值(Partition.from/to)");
 			}
 			builder.append(" FROM (");
-			if(from instanceof Number){
+			if(from instanceof Number) {
 				builder.append(from);
 			}else{
 				builder.append("'").append(from).append("'");
@@ -5954,15 +5954,15 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			builder.append(")");
 
 			builder.append(" TO (");
-			if(to instanceof Number){
+			if(to instanceof Number) {
 				builder.append(to);
 			}else{
 				builder.append("'").append(to).append("'");
 			}
 			builder.append(")");
-		}else if(type == Table.Partition.TYPE.HASH){
+		}else if(type == Table.Partition.TYPE.HASH) {
 			int modulus = partition.getModulus();
-			if(modulus == 0){
+			if(modulus == 0) {
 				throw new SQLException("未提供分区表MODULUS");
 			}
 			builder.append(" WITH(MODULUS ").append(modulus).append(",REMAINDER ").append(partition.getRemainder()).append(")");
@@ -5982,9 +5982,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public StringBuilder inherit(DataRuntime runtime, StringBuilder builder, Table meta) throws Exception {
 		//继承表CREATE TABLE simple.public.tab_1c1() INHERITS(simple.public.tab_parent)
-		if(BasicUtil.isNotEmpty(meta.getInherit())){
+		if(BasicUtil.isNotEmpty(meta.getInherit())) {
 			LinkedHashMap<String, Column> columns = meta.getColumns();
-			if(null == columns || columns.isEmpty()){
+			if(null == columns || columns.isEmpty()) {
 				// TODO body中已实现
 				//继承关系中 子表如果没有新添加的列 需要空()
 				//builder.append("()");
@@ -6212,9 +6212,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		builder.append(" IF ");
-		if(!exists){
+		if(!exists) {
 			builder.append("NOT ");
 		}
 		builder.append("EXISTS ");
@@ -6230,7 +6230,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta) {
 		return super.comment(runtime, builder, meta);
 	}
 
@@ -6665,7 +6665,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			name(runtime, builder, table);
 		}
 		// Column update = column.getUpdate();
-		// if(null == update){
+		// if(null == update) {
 		// 添加列
 		//builder.append(" ADD ").append(column.getKeyword()).append(" ");
 		addColumnGuide(runtime, builder, meta);
@@ -6693,31 +6693,31 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Column update = meta.getUpdate();
-		if(null != update){
-			if(null == update.getTable(false)){
+		if(null != update) {
+			if(null == update.getTable(false)) {
 				update.setTable(meta.getTable(false));
 			}
 			// 修改列名
 			String name = meta.getName();
 			String uname = update.getName();
-			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)){
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)) {
 				runs.addAll(buildRenameRun(runtime, meta));
 			}
 			// 修改数据类型
 			String type = type(runtime, null, meta).toString();
 			String utype = type(runtime, null, update).toString();
 			boolean exe = false;
-			if(!BasicUtil.equalsIgnoreCase(type, utype)){
+			if(!BasicUtil.equalsIgnoreCase(type, utype)) {
 				List<Run> list = buildChangeTypeRun(runtime, meta);
-				if(null != list){
+				if(null != list) {
 					runs.addAll(list);
 					exe = true;
 				}
 			}else{
 				//数据类型没变但长度变了
-				if(meta.getPrecision() != update.getPrecision() || meta.getScale() != update.getScale()){
+				if(meta.getPrecision() != update.getPrecision() || meta.getScale() != update.getScale()) {
 					List<Run> list = buildChangeTypeRun(runtime, meta);
-					if(null != list){
+					if(null != list) {
 						runs.addAll(list);
 						exe = true;
 					}
@@ -6726,27 +6726,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			// 修改默认值
 			Object def = meta.getDefaultValue();
 			Object udef = update.getDefaultValue();
-			if(!BasicUtil.equalsIgnoreCase(def, udef)){
+			if(!BasicUtil.equalsIgnoreCase(def, udef)) {
 				List<Run> defs = buildChangeDefaultRun(runtime, meta);
-				if(null != defs){
+				if(null != defs) {
 					runs.addAll(defs);
 				}
 			}
 			// 修改非空限制
 			int nullable = meta.isNullable();
 			int unullable = update.isNullable();
-			if(nullable != unullable){
+			if(nullable != unullable) {
 				List<Run> nulls = buildChangeNullableRun(runtime, meta);
-				if(null != nulls){
+				if(null != nulls) {
 					runs.addAll(nulls);
 				}
 			}
 			// 修改备注
 			String comment = meta.getComment();
 			String ucomment = update.getComment();
-			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
+			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)) {
 				List<Run> cmts = buildChangeCommentRun(runtime, meta);
-				if(null != cmts){
+				if(null != cmts) {
 					runs.addAll(cmts);
 				}
 			}
@@ -6772,7 +6772,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
-		if(meta instanceof Tag){
+		if(meta instanceof Tag) {
 			Tag tag = (Tag)meta;
 			return buildDropRun(runtime, tag);
 		}
@@ -6836,7 +6836,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public String alterColumnKeyword(DataRuntime runtime){
+	public String alterColumnKeyword(DataRuntime runtime) {
 		return super.alterColumnKeyword(runtime);
 	}
 
@@ -6850,7 +6850,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
 		builder.append(" ADD ").append(meta.getKeyword()).append(" ");
 		return builder;
 	}
@@ -6865,7 +6865,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
 		builder.append(" DROP ").append(meta.getKeyword()).append(" ");
 		return builder;
 	}
@@ -6944,7 +6944,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+	public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
 		return super.define(runtime, builder, meta, action);
 	}
 
@@ -6958,7 +6958,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkColumnExists(runtime, builder, exists);
 	}
 
@@ -6971,8 +6971,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
-		if(null == builder){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
+		if(null == builder) {
 			builder = new StringBuilder();
 		}
 		int ignoreLength = -1;
@@ -6980,8 +6980,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		int ignoreScale = -1;
 		String typeName = meta.getTypeName();
 		TypeMetadata type = typeMetadata(runtime, meta);
-		if(null != type){
-			if(!type.support()){
+		if(null != type) {
+			if(!type.support()) {
 				throw new RuntimeException("数据类型不支持:"+meta.getName() + " " + typeName);
 			}
 			typeName = type.getName();
@@ -7003,7 +7003,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder aggregation(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.aggregation(runtime, builder, meta);
 	}
 
@@ -7020,7 +7020,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
 		return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
 	}
 
@@ -7033,7 +7033,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+	public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
 		return super.nullable(runtime, builder, meta, action);
 	}
 
@@ -7046,7 +7046,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.charset(runtime, builder, meta);
 	}
 
@@ -7058,7 +7058,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.defaultValue(runtime, builder, meta);
 	}
 
@@ -7071,7 +7071,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.primary(runtime, builder, meta);
 	}
 
@@ -7084,7 +7084,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.unique(runtime, builder, meta);
 	}
 
@@ -7097,7 +7097,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.increment(runtime, builder, meta);
 	}
 
@@ -7110,7 +7110,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.onupdate(runtime, builder, meta);
 	}
 
@@ -7123,7 +7123,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.position(runtime, builder, meta);
 	}
 
@@ -7136,7 +7136,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
 		return super.comment(runtime, builder, meta);
 	}
 
@@ -7245,7 +7245,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		builder.append("ALTER ").append(keyword(table)).append(" ");
 		name(runtime, builder, table);
 		// Tag update = tag.getUpdate();
-		// if(null == update){
+		// if(null == update) {
 		// 添加标签
 		builder.append(" ADD TAG ");
 		delimiter(builder, meta.getName()).append(" ");
@@ -7266,27 +7266,27 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Tag update = meta.getUpdate();
-		if(null != update){
+		if(null != update) {
 			// 修改标签名
 			String name = meta.getName();
 			String uname = update.getName();
-			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)){
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)) {
 				runs.addAll(buildRenameRun(runtime, meta));
 			}
 			meta.setName(uname);
 			// 修改数据类型
 			String type = type(runtime, null, meta).toString();
 			String utype = type(runtime, null, update).toString();
-			if(!BasicUtil.equalsIgnoreCase(type, utype)){
+			if(!BasicUtil.equalsIgnoreCase(type, utype)) {
 				List<Run> list = buildChangeTypeRun(runtime, meta);
-				if(null != list){
+				if(null != list) {
 					runs.addAll(list);
 				}
 			}else{
 				//数据类型没变但长度变了
-				if(meta.getPrecision() != update.getPrecision() || meta.getScale() != update.getScale()){
+				if(meta.getPrecision() != update.getPrecision() || meta.getScale() != update.getScale()) {
 					List<Run> list = buildChangeTypeRun(runtime, meta);
-					if(null != list){
+					if(null != list) {
 						runs.addAll(list);
 					}
 				}
@@ -7294,19 +7294,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			// 修改默认值
 			Object def = meta.getDefaultValue();
 			Object udef = update.getDefaultValue();
-			if(!BasicUtil.equalsIgnoreCase(def, udef)){
+			if(!BasicUtil.equalsIgnoreCase(def, udef)) {
 				runs.addAll(buildChangeDefaultRun(runtime, meta));
 			}
 			// 修改非空限制
 			int nullable = meta.isNullable();
 			int unullable = update.isNullable();
-			if(nullable != unullable){
+			if(nullable != unullable) {
 				runs.addAll(buildChangeNullableRun(runtime, meta));
 			}
 			// 修改备注
 			String comment = meta.getComment();
 			String ucomment = update.getComment();
-			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
+			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)) {
 				runs.addAll(buildChangeCommentRun(runtime, meta));
 			}
 		}
@@ -7421,7 +7421,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkTagExists(runtime, builder, exists);
 	}
 
@@ -7548,7 +7548,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		List<Run> runs = new ArrayList<>();
 		if(null != meta) {//没有新主键的就不执行了
 			Table table = null;
-			if(null != meta){
+			if(null != meta) {
 				table = meta.getTable();
 			}else{
 				table = origin.getTable();
@@ -7724,7 +7724,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, meta.getTable(true));
 			builder.append(" ADD");
-			if(BasicUtil.isNotEmpty(meta.getName())){
+			if(BasicUtil.isNotEmpty(meta.getName())) {
 				builder.append(" CONSTRAINT ").append(meta.getName());
 			}
 			builder.append(" FOREIGN KEY (");
@@ -7732,8 +7732,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			builder.append(")");
 			builder.append(" REFERENCES ").append(meta.getReference().getName()).append("(");
 			boolean first = true;
-			for(Column column:columns.values()){
-				if(!first){
+			for(Column column:columns.values()) {
+				if(!first) {
 					builder.append(",");
 				}
 				name(runtime, builder, column.getReference());
@@ -7900,7 +7900,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, Index meta) throws Exception {
 		String name = meta.getName();
-		if(BasicUtil.isEmpty(name)){
+		if(BasicUtil.isEmpty(name)) {
 			name = "index_"+BasicUtil.getRandomString(10);
 		}
 		List<Run> runs = new ArrayList<>();
@@ -7908,11 +7908,11 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		builder.append("CREATE");
-		if(meta.isUnique()){
+		if(meta.isUnique()) {
 			builder.append(" UNIQUE");
-		}else if(meta.isFulltext()){
+		}else if(meta.isFulltext()) {
 			builder.append(" FULLTEXT");
-		}else if(meta.isSpatial()){
+		}else if(meta.isSpatial()) {
 			builder.append(" SPATIAL");
 		}
 		builder.append(" ").append(keyword(meta)).append(" ");
@@ -7926,13 +7926,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		LinkedHashMap<String, Column> columns = meta.getColumns();
 		//排序
 		Column.sort(meta.getPositions(), columns);
-		for(Column column:columns.values()){
-			if(qty>0){
+		for(Column column:columns.values()) {
+			if(qty>0) {
 				builder.append(",");
 			}
 			delimiter(builder, column.getName());
 			Order.TYPE order = meta.getOrder(column.getName());
-			if(BasicUtil.isNotEmpty(order)){
+			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);
 			}
 			qty ++;
@@ -7955,7 +7955,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	public List<Run> buildAlterRun(DataRuntime runtime, Index meta) throws Exception {
 		List<Run> runs = buildDropRun(runtime, meta);
 		Index update = (Index)meta.getUpdate();
-		if(null != update){
+		if(null != update) {
 			runs.addAll(buildAddRun(runtime, update));
 		}else {
 			runs.addAll(buildAddRun(runtime, meta));
@@ -7977,7 +7977,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		runs.add(run);
 		StringBuilder builder = run.getBuilder();
 		Table table = meta.getTable(true);
-		if(meta.isPrimary()){
+		if(meta.isPrimary()) {
 			builder.append("ALTER TABLE ");
 			name(runtime, builder, table);
 			builder.append(" DROP CONSTRAINT ").append(meta.getName());
@@ -8013,7 +8013,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
 		return super.type(runtime, builder, meta);
 	}
 
@@ -8026,7 +8026,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta){
+	public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
 		return super.comment(runtime, builder, meta);
 	}
 
@@ -8040,7 +8040,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder checkIndexExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+	public StringBuilder checkIndexExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
 		return super.checkIndexExists(runtime, builder, exists);
 	}
 	/* *****************************************************************************************************************
@@ -8135,7 +8135,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public List<Run> buildAddRun(DataRuntime runtime, Constraint meta) throws Exception {
 		String name = meta.getName();
-		if(BasicUtil.isEmpty(name)){
+		if(BasicUtil.isEmpty(name)) {
 			name = "constraint_"+BasicUtil.getRandomString(10);
 		}
 		List<Run> runs = new ArrayList<>();
@@ -8146,20 +8146,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Table table = meta.getTable(true);
 		name(runtime, builder, table);
 		builder.append(" ADD CONSTRAINT ").append(name);
-		if(meta.isUnique()){
+		if(meta.isUnique()) {
 			builder.append(" UNIQUE");
 		}
 		builder.append("(");
 		boolean first = true;
 		Collection<Column> cols = meta.getColumns().values();
-		for(Column column:cols){
-			if(!first){
+		for(Column column:cols) {
+			if(!first) {
 				builder.append(",");
 			}
 			first = false;
 			delimiter(builder, column.getName());
 			String order = column.getOrder();
-			if(BasicUtil.isNotEmpty(order)){
+			if(BasicUtil.isNotEmpty(order)) {
 				builder.append(" ").append(order);
 			}
 		}
@@ -8301,8 +8301,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		builder.append(" ").append(meta.getTime().sql()).append(" ");
 		List<Trigger.EVENT> events = meta.getEvents();
 		boolean first = true;
-		for(Trigger.EVENT event:events){
-			if(!first){
+		for(Trigger.EVENT event:events) {
+			if(!first) {
 				builder.append(" OR ");
 			}
 			builder.append(event);
@@ -8388,8 +8388,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta){
-		if(meta.isEach()){
+	public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
+		if(meta.isEach()) {
 			builder.append(" FOR EACH ROW ");
 		}else{
 			builder.append(" FOR EACH STATEMENT ");
@@ -8659,12 +8659,12 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return runs;
 	}
 
-	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values){
+	protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String sql, List<Object> values) {
 
 		return new DataSet();
 	}
-	public <T extends Column> T column(T column, List<T> columns){
-		for(T item:columns){
+	public <T extends Column> T column(T column, List<T> columns) {
+		for(T item:columns) {
 			if (item.getIdentity().equals(column.getIdentity())) {
 				return item;
 			}
@@ -8685,19 +8685,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param columns          需要插入的列
 	 * @param child          是否在子查询中，子查询中不要用序列
 	 */
-	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns){
+	protected String insertValue(DataRuntime runtime, Run run, Object obj, boolean child, boolean placeholder, boolean alias, boolean scope, LinkedHashMap<String,Column> columns) {
 		int batch = run.getBatch();
 		StringBuilder builder = new StringBuilder();
 		if(scope && batch<=1) {
 			builder.append("(");
 		}
 		int from = 1;
-		if(obj instanceof DataRow){
+		if(obj instanceof DataRow) {
 			from = 1;
 		}
 		run.setFrom(from);
 		boolean first = true;
-		for(Column column:columns.values()){
+		for(Column column:columns.values()) {
 			boolean place = placeholder;
 			boolean src = false; //直接拼接 如${now()} ${序列}
 			String key = column.getName();
@@ -8706,32 +8706,32 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			}
 			first = false;
 			Object value = null;
-			if(obj instanceof DataRow){
+			if(obj instanceof DataRow) {
 				value = BeanUtil.getFieldValue(obj, key);
-			}else if(obj instanceof Map){
+			}else if(obj instanceof Map) {
 				value = ((Map)obj).get(key);
 			}else{
 				value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
 			}
-			if(value != null){
-				if(value instanceof SQL_BUILD_IN_VALUE){
+			if(value != null) {
+				if(value instanceof SQL_BUILD_IN_VALUE) {
 					place = false;
-				}else if(value instanceof String){
+				}else if(value instanceof String) {
 					String str = (String)value;
-					//if(str.startsWith("${") && str.endsWith("}")){
-					if(BasicUtil.checkEl(str)){
+					//if(str.startsWith("${") && str.endsWith("}")) {
+					if(BasicUtil.checkEl(str)) {
 						src = true;
 						place = false;
 						value = str.substring(2, str.length()-1);
 						if (child && str.toUpperCase().contains(".NEXTVAL")) {
 							value = null;
 						}
-					}else if("NULL".equals(str)){
+					}else if("NULL".equals(str)) {
 						value = null;
 					}
 				}
 			}
-			if(src){
+			if(src) {
 				builder.append(value);
 			}else {
 				if (batch <= 1) {
@@ -8747,7 +8747,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				}
 			}
 
-			if(alias && batch<=1){
+			if(alias && batch<=1) {
 				builder.append(" AS ");
 				delimiter(builder, key);
 			}
@@ -8773,7 +8773,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 伪表
 	 * @return String
 	 */
-	protected String dummy(){
+	protected String dummy() {
 		return "dual";
 	}
 	/* *****************************************************************************************************************
@@ -8792,18 +8792,18 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	protected String pageLimit(DataRuntime runtime, Run run) {
 		String sql = run.getBaseQuery();
 		String cols = run.getQueryColumn();
-		if(!"*".equals(cols)){
+		if(!"*".equals(cols)) {
 			String reg = "(?i)^select[\\s\\S]+from";
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
 		}
 		OrderStore orders = run.getOrderStore();
-		if(null != orders){
+		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr() + getDelimiterTo());
 		}
 		PageNavi navi = run.getPageNavi();
-		if(null != navi){
+		if(null != navi) {
 			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-			if(limit < 0){
+			if(limit < 0) {
 				limit = 0;
 			}
 			sql += " LIMIT " + navi.getFirstRow() + "," + limit;
@@ -8818,21 +8818,21 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	protected String pageLimitOffset(DataRuntime runtime, Run run){
+	protected String pageLimitOffset(DataRuntime runtime, Run run) {
 		String sql = run.getBaseQuery();
 		String cols = run.getQueryColumn();
-		if(!"*".equals(cols)){
+		if(!"*".equals(cols)) {
 			String reg = "(?i)^select[\\s\\S]+from";
 			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
 		}
 		OrderStore orders = run.getOrderStore();
-		if(null != orders){
+		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
 		PageNavi navi = run.getPageNavi();
-		if(null != navi){
+		if(null != navi) {
 			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-			if(limit < 0){
+			if(limit < 0) {
 				limit = 0;
 			}
 			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow();
@@ -8847,7 +8847,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	protected String pageRowNum(DataRuntime runtime, Run run){
+	protected String pageRowNum(DataRuntime runtime, Run run) {
 		StringBuilder builder = new StringBuilder();
 		String cols = run.getQueryColumn();
 		PageNavi navi = run.getPageNavi();
@@ -8856,14 +8856,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		long first = 0;
 		long last = 0;
 		String order = "";
-		if(null != orders){
+		if(null != orders) {
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
-		if(null != navi){
+		if(null != navi) {
 			first = navi.getFirstRow();
 			last = navi.getLastRow();
 		}
-		if(null == navi){
+		if(null == navi) {
 			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
@@ -8894,13 +8894,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		OrderStore orders = run.getOrderStore();
 		long first = 0;
 		String order = "";
-		if(null != orders){
+		if(null != orders) {
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
-		if(null != navi){
+		if(null != navi) {
 			first = navi.getFirstRow();
 		}
-		if(null == navi){
+		if(null == navi) {
 			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
@@ -8916,21 +8916,21 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	protected String pageSkip(DataRuntime runtime, Run run){
+	protected String pageSkip(DataRuntime runtime, Run run) {
 		String sql = run.getBaseQuery();
 		String cols = run.getQueryColumn();
-		if(!"*".equals(cols)){
+		if(!"*".equals(cols)) {
 			String reg = "(?i)^select[\\s\\S]+from";
 			sql = sql.replaceAll(reg,"SELECT " + cols + " FROM ");
 		}
 		OrderStore orders = run.getOrderStore();
-		if(null != orders){
+		if(null != orders) {
 			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
 		PageNavi navi = run.getPageNavi();
-		if(null != navi){
+		if(null != navi) {
 			long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-			if(limit < 0){
+			if(limit < 0) {
 				limit = 0;
 			}
 			String sub = sql.substring(sql.toUpperCase().indexOf("SELECT") + 6);
@@ -8945,7 +8945,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	protected String pageTop(DataRuntime runtime, Run run){
+	protected String pageTop(DataRuntime runtime, Run run) {
 		StringBuilder builder = new StringBuilder();
 		String cols = run.getQueryColumn();
 		PageNavi navi = run.getPageNavi();
@@ -8954,26 +8954,26 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		long first = 0;
 		long last = 0;
 		String order = "";
-		if(null != orders){
+		if(null != orders) {
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
-		if(null != navi){
+		if(null != navi) {
 			first = navi.getFirstRow();
 			last = navi.getLastRow();
 		}
-		if(first == 0 && null != navi){
+		if(first == 0 && null != navi) {
 			// top
 			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
 			builder.append(sql).append("\n) AS _TAB_O \n");
 			builder.append(order);
 			return builder.toString();
 		}
-		if(null == navi){
+		if(null == navi) {
 			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
 			long rows = navi.getPageRows();
-			if(rows * navi.getCurPage() > navi.getTotalRow()){
+			if(rows * navi.getCurPage() > navi.getTotalRow()) {
 				// 最后一页不足10条
 				rows = navi.getTotalRow() % navi.getPageRows();
 			}
@@ -8997,7 +8997,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return String
 	 */
-	protected String pageRowNumber(DataRuntime runtime, Run run){
+	protected String pageRowNumber(DataRuntime runtime, Run run) {
 
 		StringBuilder builder = new StringBuilder();
 		String cols = run.getQueryColumn();
@@ -9007,26 +9007,26 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		long first = 0;
 		long last = 0;
 		String order = "";
-		if(null != orders){
+		if(null != orders) {
 			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
-		if(null != navi){
+		if(null != navi) {
 			first = navi.getFirstRow();
 			last = navi.getLastRow();
 		}
-		if(first == 0 && null != navi){
+		if(first == 0 && null != navi) {
 			// top
 			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
 			builder.append(sql).append("\n) AS _TAB_O \n");
 			builder.append(order);
 			return builder.toString();
 		}
-		if(null == navi){
+		if(null == navi) {
 			builder.append(sql).append("\n").append(order);
 		}else{
 			// 分页
 			// 2005 及以上
-			if(BasicUtil.isEmpty(order)){
+			if(BasicUtil.isEmpty(order)) {
 				order = "ORDER BY "+ ConfigTable.DEFAULT_PRIMARY_KEY;
 			}
 			builder.append("SELECT "+cols+" FROM( \n");
@@ -9041,14 +9041,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return builder.toString();
 	}
 
-	protected String concatFun(DataRuntime runtime, String ... args){
+	protected String concatFun(DataRuntime runtime, String ... args) {
 		String result = "";
-		if(null != args && args.length > 0){
+		if(null != args && args.length > 0) {
 			result = "concat(";
 			int size = args.length;
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				String arg = args[i];
-				if(i>0){
+				if(i>0) {
 					result += ",";
 				}
 				result += arg;
@@ -9058,13 +9058,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return result;
 	}
 
-	protected String concatOr(DataRuntime runtime, String ... args){
+	protected String concatOr(DataRuntime runtime, String ... args) {
 		String result = "";
-		if(null != args && args.length > 0){
+		if(null != args && args.length > 0) {
 			int size = args.length;
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				String arg = args[i];
-				if(i>0){
+				if(i>0) {
 					result += " || ";
 				}
 				result += arg;
@@ -9072,13 +9072,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		return result;
 	}
-	protected String concatAdd(DataRuntime runtime, String ... args){
+	protected String concatAdd(DataRuntime runtime, String ... args) {
 		String result = "";
-		if(null != args && args.length > 0){
+		if(null != args && args.length > 0) {
 			int size = args.length;
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				String arg = args[i];
-				if(i>0){
+				if(i>0) {
 					result += " + ";
 				}
 				result += arg;
@@ -9086,13 +9086,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		return result;
 	}
-	protected String concatAnd(DataRuntime runtime, String ... args){
+	protected String concatAnd(DataRuntime runtime, String ... args) {
 		String result = "";
-		if(null != args && args.length > 0){
+		if(null != args && args.length > 0) {
 			int size = args.length;
-			for(int i=0; i<size; i++){
+			for(int i=0; i<size; i++) {
 				String arg = args[i];
-				if(i>0){
+				if(i>0) {
 					result += " & ";
 				}
 				result += arg;
@@ -9100,22 +9100,22 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		return result;
 	}
-	private void queryTimeout(Statement statement, ConfigStore configs){
+	private void queryTimeout(Statement statement, ConfigStore configs) {
 		int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);
-		if(timeout > 0){
+		if(timeout > 0) {
 			try {
 				statement.setQueryTimeout(timeout);
-			}catch (Exception e){
+			}catch (Exception e) {
 				log.warn("设置超时时间异常:{}", e);
 			}
 		}
 	}
-	private void updateTimeout(Statement statement, ConfigStore configs){
+	private void updateTimeout(Statement statement, ConfigStore configs) {
 		int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);
-		if(timeout > 0){
+		if(timeout > 0) {
 			try {
 				statement.setQueryTimeout(timeout);
-			}catch (Exception e){
+			}catch (Exception e) {
 				log.warn("设置超时时间异常:{}", e);
 			}
 		}

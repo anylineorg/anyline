@@ -59,7 +59,7 @@ public class DefaultJDBCWorker implements DriverWorker {
      * @return Class
      */
     @Override
-    public Class<? extends DriverAdapter> supportAdapterType(){
+    public Class<? extends DriverAdapter> supportAdapterType() {
         return JDBCAdapter.class;
     }
 
@@ -78,7 +78,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             if(null == con) {
                 con = datasource.getConnection();
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("连接 异常:", e);
         }
         return con;
@@ -88,7 +88,7 @@ public class DefaultJDBCWorker implements DriverWorker {
     public void releaseConnection(DriverAdapter adapter, DataRuntime runtime, Connection connection, DataSource datasource) {
         try {
             if(ThreadConnectionHolder.contains(datasource, connection)
-            || ApplicationConnectionHolder.contains(datasource, connection)){
+            || ApplicationConnectionHolder.contains(datasource, connection)) {
                 //有事务不要关闭，在事务管理器中关闭
                 return;
             }
@@ -100,15 +100,15 @@ public class DefaultJDBCWorker implements DriverWorker {
 
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, DataSource ds, T meta) {
-        if(null == meta || null != meta.getCheckSchemaTime()){
+        if(null == meta || null != meta.getCheckSchemaTime()) {
             return;
         }
         String catalog = meta.getCatalogName();
-        if(null== catalog){
+        if(null== catalog) {
             catalog = runtime.getCatalog();
         }
         String schema = meta.getSchemaName();
-        if(null == schema){
+        if(null == schema) {
             schema = runtime.getSchema();
         }
 
@@ -130,14 +130,14 @@ public class DefaultJDBCWorker implements DriverWorker {
         }
     }
 
-    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta){
-        if(null != meta){
+    public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, T meta) {
+        if(null != meta) {
             String catalog = meta.getCatalogName();
-            if(null== catalog){
+            if(null== catalog) {
                 catalog = runtime.getCatalog();
             }
             String schema = meta.getSchemaName();
-            if(null == schema){
+            if(null == schema) {
                 schema = runtime.getSchema();
             }
 
@@ -152,15 +152,15 @@ public class DefaultJDBCWorker implements DriverWorker {
 
     @Override
     public <T extends Metadata> void checkSchema(DriverAdapter adapter, DataRuntime runtime, Connection con, T meta) {
-        if(null == meta){
+        if(null == meta) {
             return;
         }
         String catalog = meta.getCatalogName();
-        if(null== catalog){
+        if(null== catalog) {
             catalog = runtime.getCatalog();
         }
         String schema = meta.getSchemaName();
-        if(null == schema){
+        if(null == schema) {
             schema = runtime.getSchema();
         }
 
@@ -188,7 +188,7 @@ public class DefaultJDBCWorker implements DriverWorker {
         }
     }
 
-    private DataSource datasource(DataRuntime runtime){
+    private DataSource datasource(DataRuntime runtime) {
         return (DataSource) runtime.getProcessor();
     }
 
@@ -205,14 +205,14 @@ public class DefaultJDBCWorker implements DriverWorker {
         }
         set.setMetadata(metadatas);
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return set;
         }
 
         StreamHandler _handler = null;
-        if(null != configs){
+        if(null != configs) {
             DataHandler handler = configs.handler();
-            if(handler instanceof StreamHandler){
+            if(handler instanceof StreamHandler) {
                 _handler = (StreamHandler) handler;
             }
         }
@@ -239,8 +239,8 @@ public class DefaultJDBCWorker implements DriverWorker {
                 }
             }
             rs = ps.executeQuery();
-            if(null != handler){
-                if(keep && handler instanceof ResultSetHandler){
+            if(null != handler) {
+                if(keep && handler instanceof ResultSetHandler) {
                     ConnectionHandler ch = new SimpleConnectionHandler(datasource, con, ps, rs);
                     ch.setWorker(this);
                     handler.handler(ch);
@@ -249,7 +249,7 @@ public class DefaultJDBCWorker implements DriverWorker {
                     while (rs.next()) {
                         count[0] ++;
                         boolean next = JDBCUtil.stream(adapter, handler, rs, configs, true, runtime, null);
-                        if(!next){
+                        if(!next) {
                             break;
                         }
                     }
@@ -274,7 +274,7 @@ public class DefaultJDBCWorker implements DriverWorker {
         }
         //end stream handler
 
-        if(!process[0]){
+        if(!process[0]) {
             mid[0] = System.currentTimeMillis();
         }
         configs.setLastPackageTime(System.currentTimeMillis() - mid[0]);
@@ -297,7 +297,7 @@ public class DefaultJDBCWorker implements DriverWorker {
         final String rdm = random;
         final DataRuntime rt = runtime;
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return new DataSet();
         }
         Connection conn = getConnection(adapter, runtime, datasource);
@@ -305,26 +305,26 @@ public class DefaultJDBCWorker implements DriverWorker {
         final int sizeIn = inputs.size();
         final int sizeOut = outputs.size();
         final int size = sizeIn + sizeOut;
-        for(int i=0; i<size; i++){
+        for(int i=0; i<size; i++) {
             sql += "?";
-            if(i < size-1){
+            if(i < size-1) {
                 sql += ",";
             }
         }
         sql += ")}";
 
         CallableStatement cs = conn.prepareCall(sql);
-        for(int i=1; i<=sizeIn; i++){
+        for(int i=1; i<=sizeIn; i++) {
             Parameter param = inputs.get(i-1);
             Object value = param.getValue();
-            if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+            if(null == value || "NULL".equalsIgnoreCase(value.toString())) {
                 value = null;
             }
             cs.setObject(i, value, param.getType());
         }
-        for(int i=1; i<=sizeOut; i++){
+        for(int i=1; i<=sizeOut; i++) {
             Parameter param = outputs.get(i-1);
-            if(null == param.getValue()){
+            if(null == param.getValue()) {
                 cs.registerOutParameter(i+sizeIn, param.getType());
             }else{
                 cs.setObject(i, param.getValue(), param.getType());
@@ -337,9 +337,9 @@ public class DefaultJDBCWorker implements DriverWorker {
         DataSet set = new DataSet();
         ResultSetMetaData rsmd = rs.getMetaData();
         int cols = rsmd.getColumnCount();
-        for(int i=1; i<=cols; i++){
+        for(int i=1; i<=cols; i++) {
             String name = rsmd.getColumnLabel(i);
-            if(null == name){
+            if(null == name) {
                 name = rsmd.getColumnName(i);
             }
             set.addHead(name);
@@ -348,36 +348,36 @@ public class DefaultJDBCWorker implements DriverWorker {
         int index = 0;
         long first = -1;
         long last = -1;
-        if(null != navi){
+        if(null != navi) {
             first = navi.getFirstRow();
             last = navi.getLastRow();
         }
-        while(rs.next()){
-            if(first ==-1 || (index >= first && index <= last)){
+        while(rs.next()) {
+            if(first ==-1 || (index >= first && index <= last)) {
                 DataRow row = new DataRow();
-                for(int i=1; i<=cols; i++){
+                for(int i=1; i<=cols; i++) {
                     row.put(false, rsmd.getColumnLabel(i), rs.getObject(i));
                 }
                 set.addRow(row);
             }
             index ++;
-            if(first != -1){
-                if(index > last){
+            if(first != -1) {
+                if(index > last) {
                     break;
                 }
-                if(first ==0 && last==0){// 只取一行
+                if(first ==0 && last==0) {// 只取一行
                     break;
                 }
             }
         }
-        if(null != navi){
+        if(null != navi) {
             navi.setTotalRow(index);
             set.setNavi(navi);
             navi.setDataSize(set.size());
         }
 
         set.setDatalink(rt.datasource());
-        if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()){
+        if(ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
             log.info("{}[封装耗时:{}][封装行数:{}]", rdm, DateUtil.format(System.currentTimeMillis() - mid), set.size());
         }
         return set;
@@ -396,13 +396,13 @@ public class DefaultJDBCWorker implements DriverWorker {
         String sql = run.getFinalQuery();
         List<Object> values = run.getValues();
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return maps;
         }
         StreamHandler _handler = null;
-        if(null != configs){
+        if(null != configs) {
             DataHandler handler = configs.handler();
-            if(handler instanceof StreamHandler){
+            if(handler instanceof StreamHandler) {
                 _handler = (StreamHandler) handler;
             }
         }
@@ -470,19 +470,19 @@ public class DefaultJDBCWorker implements DriverWorker {
             count[0] = maps.size();
 
         boolean slow = false;
-        if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
-            if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)){
+        if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
+            if(mid[0]-fr > ConfigStore.SLOW_SQL_MILLIS(configs)) {
                 slow = true;
                 log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(mid[0]-fr), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                if(null != adapter.getDMListener()){
+                if(null != adapter.getDMListener()) {
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, maps, mid[0]-fr);
                 }
             }
         }
-        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
+        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
             log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(mid[0] - fr));
         }
-        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
+        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
             log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - mid[0]), count[0]);
         }
         return maps;
@@ -501,7 +501,7 @@ public class DefaultJDBCWorker implements DriverWorker {
         String sql = run.getFinalExists();
         List<Object> values = run.getValues();
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return new HashMap<>();
         }
 
@@ -543,19 +543,19 @@ public class DefaultJDBCWorker implements DriverWorker {
         long time = System.currentTimeMillis() - fr;
         fr = System.currentTimeMillis();
         boolean slow = false;
-        if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0){
-            if(time > ConfigStore.SLOW_SQL_MILLIS(configs)){
+        if(ConfigStore.SLOW_SQL_MILLIS(configs) > 0) {
+            if(time > ConfigStore.SLOW_SQL_MILLIS(configs)) {
                 slow = true;
                 log.warn("{}[slow cmd][action:select][执行耗时:{}]{}", random, DateUtil.format(time), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                if(null != adapter.getDMListener()){
+                if(null != adapter.getDMListener()) {
                     adapter.getDMListener().slow(runtime, random, ACTION.DML.SELECT, null, sql, values, null, true, map, time);
                 }
             }
         }
-        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
+        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
             log.info("{}[action:select][执行耗时:{}]", random, DateUtil.format(time));
         }
-        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)){
+        if(!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
             log.info("{}[action:select][封装耗时:{}][封装行数:{}]", random, DateUtil.format(System.currentTimeMillis() - fr), 1);
         }
         return map;
@@ -564,20 +564,20 @@ public class DefaultJDBCWorker implements DriverWorker {
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
         long cnt = -1;
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return -1;
         }
         Connection con = getConnection(adapter, runtime, datasource);
         String cmd = run.getFinalInsert();
         int batch = run.getBatch();
         List<Object> values = run.getValues();
-        if(batch > 1){
+        if(batch > 1) {
             cnt = batch(adapter, runtime, datasource, cmd, batch, run.getVol(), values);
         }else {
             boolean keyHolder = adapter.supportKeyHolder(runtime, configs);
             PreparedStatement ps = null;
             //是否支持返回自增值
-            if(keyHolder){
+            if(keyHolder) {
                 //需要返回自增
                 if (null != pks && pks.length > 0) {
                     //返回多个值
@@ -619,42 +619,42 @@ public class DefaultJDBCWorker implements DriverWorker {
      * @param rs  ResultSet
      * @return boolean
      */
-    public boolean identity(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, ResultSet rs, String generatedKey){
+    public boolean identity(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, ResultSet rs, String generatedKey) {
         try {
-            if(null == rs){
+            if(null == rs) {
                 return false;
             }
-            if(!adapter.supportKeyHolder(runtime, configs)){
+            if(!adapter.supportKeyHolder(runtime, configs)) {
                 return false;
             }
             Map<String, Integer> ks = JDBCUtil.keys(rs);
             List<Map<String,Object>> pvs = new ArrayList<>();
-            while (rs.next()){
+            while (rs.next()) {
                 Map<String, Object> pv = new HashMap<>();
-                for(String k:ks.keySet()){
+                for(String k:ks.keySet()) {
                     Integer idx = ks.get(k);
                     pv.put(k, rs.getObject(idx));
                 }
                 pvs.add(pv);
             }
             //如果没有generatedKey取结果集中第一列 列名
-            if(null == generatedKey && !pvs.isEmpty()){
+            if(null == generatedKey && !pvs.isEmpty()) {
                 Map<String,Object> key = pvs.get(0);
                 generatedKey = key.keySet().iterator().next();
             }
-            if(data instanceof Collection){
+            if(data instanceof Collection) {
                 //批量插入
                 List<Object> ids = new ArrayList<>();
                 Collection list = (Collection) data;
                 //检测是否有主键值
-                for(Object item:list){
-                    if(BasicUtil.isNotEmpty(true, EntityAdapter.getPrimaryValue(item))){
+                for(Object item:list) {
+                    if(BasicUtil.isNotEmpty(true, EntityAdapter.getPrimaryValue(item))) {
                         //已经有主键值了
                         return true;
                     }
                     break;
                 }
-                if(BasicUtil.isEmpty(generatedKey)){
+                if(BasicUtil.isEmpty(generatedKey)) {
                     return false;
                 }
                 int i = 0;
@@ -687,7 +687,7 @@ public class DefaultJDBCWorker implements DriverWorker {
                 }
             }else{
                 if(!pvs.isEmpty()) {
-                    if(BasicUtil.isEmpty(true, EntityAdapter.getPrimaryValue(data))){
+                    if(BasicUtil.isEmpty(true, EntityAdapter.getPrimaryValue(data))) {
                         Object id = pvs.get(0).get(generatedKey);
                         EntityAdapter.setPrimaryValue(data, id);
                         if (ConfigStore.IS_LOG_SQL(configs) && log.isWarnEnabled()) {
@@ -696,7 +696,7 @@ public class DefaultJDBCWorker implements DriverWorker {
                     }
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                 log.error("identity 异常:", e);
             }
@@ -707,10 +707,10 @@ public class DefaultJDBCWorker implements DriverWorker {
         }
         return true;
     }
-    public long batch(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, String sql, int batch, int vol, List<Object> values){
+    public long batch(DriverAdapter adapter, DataRuntime runtime, DataSource datasource, String sql, int batch, int vol, List<Object> values) {
         int size = values.size(); //一共多少参数
         int line = size/vol; //一共多少行
-        if(null == datasource){
+        if(null == datasource) {
             return line;
         }
         Connection con = getConnection(adapter, runtime, datasource);
@@ -721,7 +721,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             con.setAutoCommit(false);
             ps = con.prepareStatement(sql);
             for (int r = 1; r <= line; r++) {
-                for(int c=1; c<=vol; c++){
+                for(int c=1; c<=vol; c++) {
                     ps.setObject(c, values.get(vol*r+c-1));
                 }
                 //1."攒"sql
@@ -734,7 +734,7 @@ public class DefaultJDBCWorker implements DriverWorker {
 
             }
             con.commit();
-        }catch (Exception e){
+        }catch (Exception e) {
 
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
@@ -745,14 +745,14 @@ public class DefaultJDBCWorker implements DriverWorker {
     public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception {
         long result = 0;
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return -1;
         }
         String cmd = run.getFinalUpdate();
         List<Object> values = run.getValues();
         int batch = run.getBatch();
 
-        if(batch > 1){
+        if(batch > 1) {
             result = batch(adapter, runtime, datasource, cmd, batch, run.getVol(), values);
         }else {
             Connection con = getConnection(adapter, runtime, datasource);
@@ -783,7 +783,7 @@ public class DefaultJDBCWorker implements DriverWorker {
     public List<Object> execute(DriverAdapter adapter, DataRuntime runtime, String random, Procedure procedure, String sql, List<Parameter> inputs, List<Parameter> outputs) throws Exception{
         List<Object> list = new ArrayList<>();
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return list;
         }
         Connection con = getConnection(adapter, runtime, datasource);
@@ -838,13 +838,13 @@ public class DefaultJDBCWorker implements DriverWorker {
     public long execute(DriverAdapter adapter, DataRuntime runtime, String random, ConfigStore configs, Run run) throws Exception{
         long result = -1;
         DataSource datasource = datasource(runtime);
-        if(null == datasource){
+        if(null == datasource) {
             return -1;
         }
         int batch = run.getBatch();
         String sql = run.getFinalExecute();
         List<Object> values = run.getValues();
-        if(batch>1){
+        if(batch>1) {
             result = batch(adapter, runtime, datasource, sql, batch, run.getVol(), values);
         }else {
             Connection con = getConnection(adapter, runtime, datasource);
@@ -872,14 +872,14 @@ public class DefaultJDBCWorker implements DriverWorker {
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */
-    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment){
+    public LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         LinkedHashMap<String, Column> columns = null;
         DataSource datasource = datasource(runtime);
         String sql = run.getFinalQuery(false);
         if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
             log.info("{}[action:metadata][cmd:\n{}\n]", random, sql);
         }
-        if(null == datasource){
+        if(null == datasource) {
             return new LinkedHashMap<>();
         }
         Connection con = getConnection(adapter, runtime, datasource);
@@ -888,7 +888,7 @@ public class DefaultJDBCWorker implements DriverWorker {
             ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();/*
             columns = adapter.columns(adapter, runtime, true, null, null, rs);*/
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("metadata 异常:", e);
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
@@ -905,17 +905,17 @@ public class DefaultJDBCWorker implements DriverWorker {
      * @return product
      * @throws Exception 异常
      */
-    public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product){
+    public String product(DriverAdapter adapter, DataRuntime runtime, boolean create, String product) {
         DataSource datasource = null;
         Connection con = null;
         try {
             datasource = datasource(runtime);
-            if(null == datasource){
+            if(null == datasource) {
                 return null;
             }
             con = getConnection(adapter, runtime, datasource);
             product = con.getMetaData().getDatabaseProductName();
-        }catch (Exception e){
+        }catch (Exception e) {
             log.warn("[check product][fail:{}]", e.toString());
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
@@ -932,17 +932,17 @@ public class DefaultJDBCWorker implements DriverWorker {
      * @return version
      * @throws Exception 异常
      */
-    public String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version){
+    public String version(DriverAdapter adapter, DataRuntime runtime, boolean create, String version) {
         Connection con = null;
         DataSource datasource = null;
         try {
             datasource = datasource(runtime);
-            if(null == datasource){
+            if(null == datasource) {
                 return null;
             }
             con = getConnection(adapter, runtime, datasource);
             version = con.getMetaData().getDatabaseProductVersion();
-        }catch (Exception e){
+        }catch (Exception e) {
             log.warn("[check version][fail:{}]", e.toString());
         }finally {
             releaseConnection(adapter, runtime, con, datasource);
@@ -968,17 +968,17 @@ public class DefaultJDBCWorker implements DriverWorker {
         Connection con = null;
         try{
             datasource = datasource(runtime);
-            if(null == datasource){
+            if(null == datasource) {
                 return null;
             }
             con = getConnection(adapter, runtime, datasource);
             DatabaseMetaData dbmd = con.getMetaData();
             String catalogName = null;
             String schemaName = null;
-            if(null != catalog){
+            if(null != catalog) {
                 catalogName = catalog.getName();
             }
-            if(null != schema){
+            if(null != schema) {
                 schemaName = schema.getName();
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
@@ -1009,17 +1009,17 @@ public class DefaultJDBCWorker implements DriverWorker {
         Connection con = null;
         try{
             datasource = datasource(runtime);
-            if(null == datasource){
+            if(null == datasource) {
                 return null;
             }
             con = getConnection(adapter, runtime, datasource);
             DatabaseMetaData dbmd = con.getMetaData();
             String catalogName = null;
             String schemaName = null;
-            if(null != catalog){
+            if(null != catalog) {
                 catalogName = catalog.getName();
             }
-            if(null != schema){
+            if(null != schema) {
                 schemaName = schema.getName();
             }
 
@@ -1051,7 +1051,7 @@ public class DefaultJDBCWorker implements DriverWorker {
         Connection con = null;
         try{
             datasource = datasource(runtime);
-            if(null == datasource){
+            if(null == datasource) {
                 return null;
             }
             con = getConnection(adapter, runtime, datasource);
@@ -1059,10 +1059,10 @@ public class DefaultJDBCWorker implements DriverWorker {
 
             String catalogName = null;
             String schemaName = null;
-            if(null != catalog){
+            if(null != catalog) {
                 catalogName = catalog.getName();
             }
-            if(null != schema){
+            if(null != schema) {
                 schemaName = schema.getName();
             }
             String[] tmp = adapter.correctSchemaFromJDBC(catalogName, schemaName);
@@ -1150,7 +1150,7 @@ public class DefaultJDBCWorker implements DriverWorker {
     public <T extends Index> LinkedHashMap<String, T> indexs(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
         DataSource ds = null;
         Connection con = null;
-        if(null == indexs){
+        if(null == indexs) {
             indexs = new LinkedHashMap<>();
         }
         ds = datasource(runtime);
@@ -1164,12 +1164,12 @@ public class DefaultJDBCWorker implements DriverWorker {
             LinkedHashMap<String, Column> columns = null;
             while (set.next()) {
                 String name = JDBCUtil.string(keys, "INDEX_NAME", set);
-                if(null == name){
+                if(null == name) {
                     continue;
                 }
                 T index = indexs.get(name.toUpperCase());
-                if(null == index){
-                    if(create){
+                if(null == index) {
+                    if(create) {
                         index = (T)new Index();
                         indexs.put(name.toUpperCase(), index);
                     }else{
@@ -1181,17 +1181,17 @@ public class DefaultJDBCWorker implements DriverWorker {
                     String catalog = BasicUtil.evl(JDBCUtil.string(keys, "TABLE_CATALOG", set), JDBCUtil.string(keys, "TABLE_CAT", set));
                     String schema = BasicUtil.evl(JDBCUtil.string(keys, "TABLE_SCHEMA", set), JDBCUtil.string(keys, "TABLE_SCHEM", set));
                     adapter.correctSchemaFromJDBC(runtime, index, catalog, schema);
-                    if(!adapter.equals(table.getCatalog(), index.getCatalog()) || !adapter.equals(table.getSchema(), index.getSchema())){
+                    if(!adapter.equals(table.getCatalog(), index.getCatalog()) || !adapter.equals(table.getSchema(), index.getSchema())) {
                         continue;
                     }
                     index.setTable(JDBCUtil.string(keys, "TABLE_NAME", set));
                     indexs.put(name.toUpperCase(), index);
                     columns = new LinkedHashMap<>();
                     index.setColumns(columns);
-                    if(name.equalsIgnoreCase("PRIMARY")){
+                    if(name.equalsIgnoreCase("PRIMARY")) {
                         index.setCluster(true);
                         index.setPrimary(true);
-                    }else if(name.equalsIgnoreCase("PK_"+table.getName())){
+                    }else if(name.equalsIgnoreCase("PK_"+table.getName())) {
                         index.setCluster(true);
                         index.setPrimary(true);
                     }
@@ -1201,14 +1201,14 @@ public class DefaultJDBCWorker implements DriverWorker {
                 String columnName = JDBCUtil.string(keys, "COLUMN_NAME", set);
                 Column col = table.getColumn(columnName.toUpperCase());
                 Column column = null;
-                if(null != col){
+                if(null != col) {
                     column = (Column) col.clone();
                 }else{
                     column = new Column();
                     column.setName(columnName);
                 }
                 String order = JDBCUtil.string(keys, "ASC_OR_DESC", set);
-                if(null != order && order.startsWith("D")){
+                if(null != order && order.startsWith("D")) {
                     order = "DESC";
                 }else{
                     order = "ASC";

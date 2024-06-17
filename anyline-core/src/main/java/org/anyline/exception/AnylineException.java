@@ -25,43 +25,43 @@ public class AnylineException extends RuntimeException{
     private String title;
     private String content;
 
-    public AnylineException(){
+    public AnylineException() {
         super();
     }
-    public AnylineException(int status, String code, String title, String content){
+    public AnylineException(int status, String code, String title, String content) {
         super(title);
         this.status = status;
         this.code = code;
         this.title = title;
         this.content = content;
     }
-    public AnylineException(String code, String title, String content){
+    public AnylineException(String code, String title, String content) {
         super(title);
         this.code = code;
         this.title = title;
         this.content = content;
     }
-    public AnylineException(int status, String code, String title){
+    public AnylineException(int status, String code, String title) {
         super(title);
         this.status = status;
         this.code = code;
         this.title = title;
     }
-    public AnylineException(String code, String title){
+    public AnylineException(String code, String title) {
         super(title);
         this.code = code;
         this.title = title;
     }
-    public AnylineException(int status, String code){
+    public AnylineException(int status, String code) {
         super(code);
         this.status = status;
         this.code = code;
     }
-    public AnylineException(String code){
+    public AnylineException(String code) {
         super(code);
         this.code = code;
     }
-    public AnylineException(int status){
+    public AnylineException(int status) {
         this.status = status;
     }
     public Exception getSrc() {

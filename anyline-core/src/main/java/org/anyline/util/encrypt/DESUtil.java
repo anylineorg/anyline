@@ -52,26 +52,26 @@ public class DESUtil {
 	 * 频繁加密解密时, 使用单例模式, 减少new耗时 
 	 * @return DESUtil
 	 */ 
-	public static DESUtil getInstance(){
+	public static DESUtil getInstance() {
 		DESUtil instance = instances.get(DEFAULT_SECRET_KEY); 
 		try{
 			instance = new DESUtil();
 			instances.put(DEFAULT_SECRET_KEY, instance); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			 log.warn("[des instance][result:fail][msg:{}]", e.toString());
 		} 
 		return instance; 
 	} 
-	public static DESUtil getInstance(String key){
-		if(null == key || key.trim().equals("")){
+	public static DESUtil getInstance(String key) {
+		if(null == key || key.trim().equals("")) {
 			key = DEFAULT_SECRET_KEY; 
 		} 
 		DESUtil instance = instances.get(key); 
-		if(null == instance){
+		if(null == instance) {
 			try{
 				instance = new DESUtil(key);
 				instances.put(key, instance); 
-			}catch(Exception e){
+			}catch(Exception e) {
 				log.error("create instance exception:", e);
 			} 
 		} 
@@ -106,7 +106,7 @@ public class DESUtil {
 		return encryptCipher.doFinal(bytes);
 	} 
 	public String encrypt(String str) throws BadPaddingException, IllegalBlockSizeException{
-		if(null == str || ignores.contains(str)){
+		if(null == str || ignores.contains(str)) {
 			return str;
 		}
 		str = salt + str; 
@@ -151,7 +151,7 @@ public class DESUtil {
 	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
 	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
-		if(null == str || ignores.contains(str)){
+		if(null == str || ignores.contains(str)) {
 			return str;
 		}
 		String result = "";
@@ -168,10 +168,10 @@ public class DESUtil {
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
 	public static void encrypt(Collection<?> list, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
-		if(null == keys || null == list){
+		if(null == keys || null == list) {
 			return; 
 		} 
-		for(Object obj:list){
+		for(Object obj:list) {
 			encrypt(obj, keys); 
 		} 
 	} 
@@ -184,19 +184,19 @@ public class DESUtil {
 	 */ 
 	@SuppressWarnings({"rawtypes","unchecked" })
 	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException{
-		if(null == keys || null == obj){
+		if(null == keys || null == obj) {
 			return; 
 		} 
-		for(String key: keys){
-			if(obj instanceof Map){
+		for(String key: keys) {
+			if(obj instanceof Map) {
 				Map map = (Map)obj; 
 				Object value = map.get(key); 
-				if(null != value){
+				if(null != value) {
 					map.put(key, DESUtil.getInstance().encrypt(value.toString())); 
 				} 
 			}else{
 				Object value = BeanUtil.getFieldValue(obj, key);
-				if(null != value){
+				if(null != value) {
 					value = DESUtil.getInstance().encrypt(value.toString()); 
 					BeanUtil.setFieldValue(obj, key, value); 
 				} 
@@ -226,9 +226,9 @@ public class DESUtil {
 		deskeys = new HashMap<String, DESKey>();
 		try {
 			String ignoreList = ConfigTable.getString("DES_IGNORE");
-			if(null != ignoreList){
+			if(null != ignoreList) {
 				String[] tmps = ignoreList.split(",");
-				for(String tmp:tmps){
+				for(String tmp:tmps) {
 					ignores.add(tmp);
 				}
 			}
@@ -386,7 +386,7 @@ public class DESUtil {
 	 */
 	private static String encryptByType(String src, String type, boolean mix) {
 		String result = null;
-		if(null == src || ignores.contains(src)){
+		if(null == src || ignores.contains(src)) {
 			return src;
 		}
 		if (isEncrypt(src, type)) {
@@ -702,7 +702,7 @@ public class DESUtil {
 		for (String k : ks) {
 			Object v = map.get(k); 
 			if (null == v || v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){
+				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)) {
 					String key = encryptByType(k, DESUtil.ENCRYPT_TYPE_KEY, mix); 
 					map.remove(k); 
 					map.put(key, v); 

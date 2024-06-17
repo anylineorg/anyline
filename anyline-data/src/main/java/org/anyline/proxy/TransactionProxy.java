@@ -36,7 +36,7 @@ public class TransactionProxy {
      */
     public static TransactionState start(String datasource, TransactionDefine define) throws SQLException {
         TransactionManage manage = TransactionManage.instance(datasource);
-        if(null == manage){
+        if(null == manage) {
             throw new NullPointerException("未创建相关数据源("+datasource+")事务管理器");
         }
         return manage.start(define);
@@ -50,7 +50,7 @@ public class TransactionProxy {
      */
     public static TransactionState start(String datasource, int behavior) throws SQLException {
         TransactionManage manage = TransactionManage.instance(datasource);
-        if(null == manage){
+        if(null == manage) {
             // 每个数据源都会注册默认的事务管理器，应该不会到这里
             throw new NullPointerException("未创建相关数据源("+datasource+")事务管理器");
         }
@@ -99,7 +99,7 @@ public class TransactionProxy {
      */
     public static void commit(TransactionState state) throws SQLException {
         TransactionManage manage = TransactionManage.instance(state);
-        if(null == manage){
+        if(null == manage) {
             throw new SQLTransientException("事务提交失败，不存在事务信息");
         }
         manage.commit(state);
@@ -111,7 +111,7 @@ public class TransactionProxy {
      */
     public static void rollback(TransactionState state) throws SQLException {
         TransactionManage manage = TransactionManage.instance(state);
-        if(null == manage){
+        if(null == manage) {
             throw new SQLTransactionRollbackException("事务回滚失败，不存在事务信息");
         }
         manage.rollback(state);

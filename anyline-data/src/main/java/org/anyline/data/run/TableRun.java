@@ -31,14 +31,14 @@ import java.util.List;
 
 public class TableRun extends AbstractRun implements Run {
 
-	public TableRun(DataRuntime runtime, String table){
+	public TableRun(DataRuntime runtime, String table) {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
 		this.table = new Table(table);
 		this.runtime = runtime;
 	}
-	public TableRun(DataRuntime runtime, Table table){
+	public TableRun(DataRuntime runtime, Table table) {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
@@ -46,51 +46,51 @@ public class TableRun extends AbstractRun implements Run {
 		this.runtime = runtime;
 	}
 
-	private void parseDataSource(){
+	private void parseDataSource() {
 		String table = getTableName();
 		if(null != prepare) {
 			table = prepare.getTableName();
 		}
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
-		if(table.contains(".")){
+		if(table.contains(".")) {
 
 		} else{
-			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())){
+			if(null != prepare && BasicUtil.isNotEmpty(prepare.getSchema())) {
 				schema = prepare.getSchema();
 			}
 		}
 	} 
-	public void init(){
+	public void init() {
 		super.init(); 
 		parseDataSource(); 
-		if(null != configs){
+		if(null != configs) {
 			ConditionChain chain = configs.getConfigChain().createAutoConditionChain();
-			if(null != chain){
-				//for(Condition condition:chain.getConditions()){
+			if(null != chain) {
+				//for(Condition condition:chain.getConditions()) {
 				//	addCondition(condition);
 				//}
 				addCondition(chain);
 			} 
 			OrderStore orderStore = configs.getOrders();
-			if(null != orderStore){
+			if(null != orderStore) {
 				List<Order> orders = orderStore.getOrders(); 
-				if(null != orders){
-					for(Order order:orders){
+				if(null != orders) {
+					for(Order order:orders) {
 						this.orderStore.order(order); 
 					} 
 				} 
 			} 
 			PageNavi navi = configs.getPageNavi();
-			if(navi != null){
+			if(navi != null) {
 				this.pageNavi = navi; 
 			} 
 		}
 	}
 
-	public void appendOrderStore(){
+	public void appendOrderStore() {
 		 
 	}
-	public void appendGroup(StringBuilder builder){
+	public void appendGroup(StringBuilder builder) {
 		if(null != configs) {
 			if (null == groupStore) {
 				groupStore = configs.getGroups();
@@ -100,29 +100,29 @@ public class TableRun extends AbstractRun implements Run {
 			}
 		}
 
-		if(null != groupStore){
+		if(null != groupStore) {
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		}
-		if(BasicUtil.isNotEmpty(having)){
-			if(having.trim().toUpperCase().startsWith("HAVING")){
+		if(BasicUtil.isNotEmpty(having)) {
+			if(having.trim().toUpperCase().startsWith("HAVING")) {
 				builder.append(having);
 			}else {
 				builder.append(" HAVING ").append(having);
 			}
 		} 
 	}
-	public void appendGroup(){
+	public void appendGroup() {
 		appendGroup(builder);
 	}
 
-	public boolean checkValid(){
-		if(!valid){
+	public boolean checkValid() {
+		if(!valid) {
 			return false;
 		}
-		if(null != conditionChain && !conditionChain.isValid()){
+		if(null != conditionChain && !conditionChain.isValid()) {
 			this.valid = false;
 		}
-		if(null != configs && !configs.isValid()){
+		if(null != configs && !configs.isValid()) {
 			this.valid = false;
 		}
 		return valid;
@@ -133,24 +133,24 @@ public class TableRun extends AbstractRun implements Run {
 	 * @param first 是否首位条件 如果是需要加where
 	 * @param placeholder 是否需要占位符
 	 */
-	public void appendCondition(StringBuilder builder, DriverAdapter adapter, boolean first, boolean placeholder){
-		if(null == conditionChain){
+	public void appendCondition(StringBuilder builder, DriverAdapter adapter, boolean first, boolean placeholder) {
+		if(null == conditionChain) {
 			return; 
 		}
 		String alias = null;
-		if(null != prepare){
+		if(null != prepare) {
 			alias = prepare.getAlias();
 		}
 		String condition = conditionChain.getRunText(alias, runtime, placeholder);
-		if(!condition.isEmpty()){
+		if(!condition.isEmpty()) {
 			emptyCondition = false;
-			if(first){
+			if(first) {
 				builder.append("\n").append(adapter.conditionHead()).append(" ");
 				condition = condition.trim();
 				String up = condition.toUpperCase();
-				if(up.startsWith("AND ") || up.startsWith("AND(")){
+				if(up.startsWith("AND ") || up.startsWith("AND(")) {
 					condition = condition.substring(3);
-				}else if(up.startsWith("OR ") || up.startsWith("OR(")){
+				}else if(up.startsWith("OR ") || up.startsWith("OR(")) {
 					condition = condition.substring(2);
 				}
 			}
@@ -160,12 +160,12 @@ public class TableRun extends AbstractRun implements Run {
 		addValues(values);
 	}
 
-	public void appendCondition(DriverAdapter adapter, boolean first, boolean placeholder){
+	public void appendCondition(DriverAdapter adapter, boolean first, boolean placeholder) {
 		appendCondition(builder, adapter, first, placeholder);
 	}
 	public void setConfigs(ConfigStore configs) {
 		this.configs = configs;
-		if(null != configs){
+		if(null != configs) {
 			this.pageNavi = configs.getPageNavi();
 		} 
 	}
@@ -177,7 +177,7 @@ public class TableRun extends AbstractRun implements Run {
 
 	@Override
 	public String getTableName() {
-		if(null != table){
+		if(null != table) {
 			return table.getName();
 		}
 		return null;
@@ -185,7 +185,7 @@ public class TableRun extends AbstractRun implements Run {
 
 	@Override
 	public String getCatalogName() {
-		if(null != catalog){
+		if(null != catalog) {
 			return catalog.getName();
 		}
 		return null;
@@ -193,7 +193,7 @@ public class TableRun extends AbstractRun implements Run {
 
 	@Override
 	public String getSchemaName() {
-		if(null != schema){
+		if(null != schema) {
 			return schema.getName();
 		}
 		return null;

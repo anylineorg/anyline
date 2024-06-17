@@ -40,12 +40,12 @@ public class DomUtil {
      * @param tags 标签名(不含namespace)
      * @return Element
      */
-    public static Element element(Element root, List<String> tags){
+    public static Element element(Element root, List<String> tags) {
         Element result = null;
         Iterator<Element> it = root.elementIterator();
-        while(it.hasNext() && null == result){
+        while(it.hasNext() && null == result) {
             Element e= it.next();
-            if (tags.contains(e.getName())){
+            if (tags.contains(e.getName())) {
                 result = e;
                 break;
             }else{
@@ -60,7 +60,7 @@ public class DomUtil {
      * @param tags 标签名(不含namespace)
      * @return Element
      */
-    public static Element element(Element root, String tags){
+    public static Element element(Element root, String tags) {
         return element(root, BeanUtil.array2list(tags.split(",")));
     }
     /**
@@ -70,12 +70,12 @@ public class DomUtil {
      * @param recursion 递归查询子类
      * @return List
      */
-    public static List<Element> elements(Element root, List<String> tags, boolean recursion){
+    public static List<Element> elements(Element root, List<String> tags, boolean recursion) {
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
-        while(it.hasNext()){
+        while(it.hasNext()) {
             Element e= it.next();
-            if (tags.contains(e.getName())){
+            if (tags.contains(e.getName())) {
                 list.add(e);
             }
             if(recursion) {
@@ -86,13 +86,13 @@ public class DomUtil {
         return list;
     }
 
-    public static List<Element> elements(Element root, String tags, boolean recursion){
+    public static List<Element> elements(Element root, String tags, boolean recursion) {
         return elements(root, BeanUtil.array2list(tags.split(",")), recursion);
     }
-    public static List<Element> elements(Element root, List<String> tags){
+    public static List<Element> elements(Element root, List<String> tags) {
         return elements(root, tags, true);
     }
-    public static List<Element> elements(Element root, String tags){
+    public static List<Element> elements(Element root, String tags) {
         return elements(root, tags, true);
     }
     /**
@@ -103,12 +103,12 @@ public class DomUtil {
      * @param value 属性值
      * @return Element
      */
-    public static Element element(Element root, List<String> tags, String attribute, String value){
+    public static Element element(Element root, List<String> tags, String attribute, String value) {
         Element result = null;
         Iterator<Element> it = root.elementIterator();
-        while(it.hasNext() && null == result){
+        while(it.hasNext() && null == result) {
             Element e= it.next();
-            if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))){
+            if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))) {
                 result = e;
                 break;
             }else{
@@ -118,7 +118,7 @@ public class DomUtil {
         return result;
     }
 
-    public static Element element(Element root, String tags, String attribute, String value){
+    public static Element element(Element root, String tags, String attribute, String value) {
         return element(root, BeanUtil.array2list(tags.split(",")), attribute, value);
     }
     /**
@@ -129,12 +129,12 @@ public class DomUtil {
      * @param value 属性值
      * @return List
      */
-    public static List<Element> elements(Element root, List<String> tags, String attribute, String value){
+    public static List<Element> elements(Element root, List<String> tags, String attribute, String value) {
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
-        while(it.hasNext()){
+        while(it.hasNext()) {
             Element e= it.next();
-            if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))){
+            if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))) {
                 list.add(e);
             }
             List<Element> items = elements(e, tags, attribute, value);
@@ -143,7 +143,7 @@ public class DomUtil {
         return list;
     }
 
-    public static List<Element> elements(Element root, String tags, String attribute, String value){
+    public static List<Element> elements(Element root, String tags, String attribute, String value) {
         return elements(root, BeanUtil.array2list(tags.split(",")), attribute, value);
     }
     /**
@@ -153,12 +153,12 @@ public class DomUtil {
      * @param value 属性值
      * @return Element
      */
-    public static Element element(Element root, String attribute, String value){
+    public static Element element(Element root, String attribute, String value) {
         Element result = null;
         Iterator<Element> it = root.elementIterator();
-        while(it.hasNext() && null == result){
+        while(it.hasNext() && null == result) {
             Element e= it.next();
-            if (value.equals(e.attributeValue(attribute))){
+            if (value.equals(e.attributeValue(attribute))) {
                 result = e;
                 break;
             }else{
@@ -174,12 +174,12 @@ public class DomUtil {
      * @param value 属性值
      * @return List
      */
-    public static List<Element> elements(Element root, String attribute, String value){
+    public static List<Element> elements(Element root, String attribute, String value) {
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
-        while(it.hasNext()){
+        while(it.hasNext()) {
             Element e= it.next();
-            if (value.equals(e.attributeValue(attribute))){
+            if (value.equals(e.attributeValue(attribute))) {
                 list.add(e);
             }
             List<Element> items = elements(e, attribute, value);
@@ -188,17 +188,17 @@ public class DomUtil {
         return list;
     }
 
-    public static String format(String xml){
+    public static String format(String xml) {
         String result = null;
         XMLWriter writer = null;
         try {
             Document document = DocumentHelper.parseText(xml);
             result = format(document);
-        }catch (Exception ignored){
+        }catch (Exception ignored) {
         }
         return result;
     }
-    public static String format(Document document){
+    public static String format(Document document) {
         String result = null;
         XMLWriter writer = null;
         try {
@@ -208,7 +208,7 @@ public class DomUtil {
             writer.write(document);
             writer.flush();
             result = stringWriter.getBuffer().toString();
-        }catch (Exception ignored){
+        }catch (Exception ignored) {
         }finally {
             if (writer != null) {
                 try {
@@ -219,7 +219,7 @@ public class DomUtil {
         }
         return result;
     }
-    public static String format(Node note){
+    public static String format(Node note) {
         String result = null;
         XMLWriter writer = null;
         try {
@@ -229,7 +229,7 @@ public class DomUtil {
             writer.write(note);
             writer.flush();
             result = stringWriter.getBuffer().toString();
-        }catch (Exception ignored){
+        }catch (Exception ignored) {
         }finally {
             if (writer != null) {
                 try {
@@ -247,11 +247,11 @@ public class DomUtil {
      * @param tag 过滤标签
      * @return List
      */
-    public static List<Element> afters(Element element, String tag){
+    public static List<Element> afters(Element element, String tag) {
         List<Element> list = new ArrayList<>();
         List<Element> elements = element.getParent().elements();
         int index = elements.indexOf(element);
-        for(int i=index+1; i<elements.size(); i++){
+        for(int i=index+1; i<elements.size(); i++) {
             Element item = elements.get(i);
             if(item.getName().equalsIgnoreCase(tag)) {
                 list.add(item);
@@ -265,11 +265,11 @@ public class DomUtil {
      * @param tag 过滤标签
      * @return List
      */
-    public static List<Element> befores(Element element, String tag){
+    public static List<Element> befores(Element element, String tag) {
         List<Element> list = new ArrayList<>();
         List<Element> elements = element.getParent().elements();
         int index = elements.indexOf(element);
-        for(int i=elements.size()-1; i>index; i--){
+        for(int i=elements.size()-1; i>index; i--) {
             Element item = elements.get(i);
             if(item.getName().equalsIgnoreCase(tag)) {
                 list.add(item);
@@ -285,13 +285,13 @@ public class DomUtil {
      * @param tags 过滤
      * @return List
      */
-    public static List<Element> betweens(Element start, Element end, String ... tags){
+    public static List<Element> betweens(Element start, Element end, String ... tags) {
         List<Element> list = new ArrayList<>();
         List<Element> elements = start.getParent().elements();
         int fr = elements.indexOf(start);
         int to = elements.indexOf(end);
         int index = elements.indexOf(start);
-        for(int i=fr+1; i<to; i++){
+        for(int i=fr+1; i<to; i++) {
             Element item = elements.get(i);
             if(null == tags || tags.length ==0 || BasicUtil.contains(tags, item.getName())) {
                 list.add(item);
@@ -305,9 +305,9 @@ public class DomUtil {
      * @param parent parent
      * @param removes removes
      */
-    public static void remove(Element parent, List<Element> removes){
+    public static void remove(Element parent, List<Element> removes) {
         List<Element> elements = parent.elements();
-        for(Element remove:removes){
+        for(Element remove:removes) {
             elements.remove(remove);
         }
     }

@@ -36,7 +36,7 @@ import java.util.Map;
 public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements EnvironmentWorker, Plugin {
     private static AppContext context;
     private static SolonProps props;
-    public SolonEnvironmentWorker(){}
+    public SolonEnvironmentWorker() {}
     @Override
     public void start(AppContext context) throws Throwable {
         log.debug("solon environment start");
@@ -50,12 +50,12 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
         });
     }
 
-    public SolonEnvironmentWorker(AppContext context){
+    public SolonEnvironmentWorker(AppContext context) {
         SolonEnvironmentWorker.context = context;
         props = Solon.cfg();
     }
 
-    public static void setContext(AppContext context){
+    public static void setContext(AppContext context) {
         SolonEnvironmentWorker.context = context;
         props = Solon.cfg();
         DefaultEnvironmentWorker.start();
@@ -89,7 +89,7 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
     @Override
     public <T> T getBean(String name, Class<T> clazz) {
         Object bean = context.getBean(name);
-        if(null != bean && ClassUtil.isInSub(bean.getClass(), clazz)){
+        if(null != bean && ClassUtil.isInSub(bean.getClass(), clazz)) {
             return (T) bean;
         }
         return null;
@@ -101,21 +101,21 @@ public class SolonEnvironmentWorker extends DefaultEnvironmentWorker implements 
     }
 
 
-    public boolean regBean(String name, Object bean){
+    public boolean regBean(String name, Object bean) {
         return reg(name, bean);
     }
-    public boolean regBean(String name, BeanDefine bean){
+    public boolean regBean(String name, BeanDefine bean) {
         return reg(name, bean);
     }
-    public boolean reg(String name, Object bean){
+    public boolean reg(String name, Object bean) {
         Object type = bean;
-        if(bean instanceof BeanDefine){
+        if(bean instanceof BeanDefine) {
             BeanDefine define = (BeanDefine)bean;
-            if(name.endsWith("default")){
+            if(name.endsWith("default")) {
                 define.setPrimary(true);
             }
             context.wrap(name, instance(null, define));
-        }else if(bean instanceof Class){
+        }else if(bean instanceof Class) {
             Class clazz = (Class) bean;
             context.beanMake(clazz);
         }else {

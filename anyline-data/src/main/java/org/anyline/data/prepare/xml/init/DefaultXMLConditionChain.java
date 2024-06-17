@@ -32,33 +32,33 @@ import java.util.List;
 public class DefaultXMLConditionChain extends AbstractConditionChain implements ConditionChain{
 
 	@Override
-	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder){
+	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
-		if(null != conditions){
-			for(Condition condition: conditions){
-				if(null == condition){
+		if(null != conditions) {
+			for(Condition condition: conditions) {
+				if(null == condition) {
 					continue;
 				}
 				String txt = ""; 
-				if(condition.getVariableType() == VARIABLE_PLACEHOLDER_TYPE_NONE){
+				if(condition.getVariableType() == VARIABLE_PLACEHOLDER_TYPE_NONE) {
 					txt = condition.getRunText(prefix, runtime, placeholder);
-				}else if(condition.isActive()){
+				}else if(condition.isActive()) {
 					txt = condition.getRunText(prefix, runtime, placeholder);
 					List<RunValue> values = condition.getRunValues();
-					if(BasicUtil.isEmpty(true, values)){
+					if(BasicUtil.isEmpty(true, values)) {
 						String reg = "=\\s*\\?";
-						if(RegularUtil.match(txt, reg)){
+						if(RegularUtil.match(txt, reg)) {
 							txt = txt.replaceAll(reg, " IS NULL ");
 						}
 					}else{
 						addRunValue(values);
 					}
 				}
-				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition){
+				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition) {
 					txt = condition.getJoin() + txt;
 				}
-				if(condition.isActive()){
+				if(condition.isActive()) {
 					builder.append("\n\t");
 					builder.append(txt.trim());
 				}
@@ -73,13 +73,13 @@ public class DefaultXMLConditionChain extends AbstractConditionChain implements 
 		return this;
 	}
 
-	public void setValue(String name, Object value){
-		if(null != conditions){
-			for(Condition con:conditions){
-				if(null == con){
+	public void setValue(String name, Object value) {
+		if(null != conditions) {
+			for(Condition con:conditions) {
+				if(null == con) {
 					continue;
 				} 
-				if(con.getId().equalsIgnoreCase(name)){
+				if(con.getId().equalsIgnoreCase(name)) {
 					con.setValue(name, value); 
 					break; 
 				} 
@@ -90,14 +90,14 @@ public class DefaultXMLConditionChain extends AbstractConditionChain implements 
 	 * 拼接查询条件 
 	 * @param builder  builder
 	 */ 
-//	protected void appendCondition(StringBuilder builder){
-//		if(null == chain){
+//	protected void appendCondition(StringBuilder builder) {
+//		if(null == chain) {
 //			return; 
 //		} 
-//		for(Condition condition: chain.getConditions()){
-//			if(condition.getVariableType() == 2){
+//		for(Condition condition: chain.getConditions()) {
+//			if(condition.getVariableType() == 2) {
 //				builder.append(condition.getRunText()); 
-//			}else if(condition.isActive()){
+//			}else if(condition.isActive()) {
 //				builder.append(BR_TAB); 
 //				builder.append(condition.getRunText()); 
 //				addRunValue(condition.getRunValues()); 

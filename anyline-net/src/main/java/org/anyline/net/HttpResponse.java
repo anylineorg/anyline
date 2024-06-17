@@ -53,16 +53,16 @@ public class HttpResponse {
 		this.contentType = contentType; 
 		try{
 			fileType = contentType.split(";")[0]; 
-		}catch(Exception e){
+		}catch(Exception e) {
 			fileType = "text/html"; 
 			log.error("setContentType$parse content type({})", contentType);
 		} 
 		try{
 			String tmps[] = contentType.split("="); 
-			if(tmps.length>1){
+			if(tmps.length>1) {
 				encode = tmps[1].trim(); 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			encode =null; 
 		} 
 		 
@@ -72,13 +72,13 @@ public class HttpResponse {
 	 * @param contentType  contentType
 	 * @return String
 	 */ 
-	public static String parseHttpFileExtend(String contentType){
+	public static String parseHttpFileExtend(String contentType) {
 		String fileType = null; 
 		try{
 			fileType = contentType.split(";")[0]; 
 			fileType = fileType.toLowerCase(); 
 			fileType = FileUtil.httpFileExtend.get(FileUtil.httpFileType.indexOf(fileType)); 
-		}catch(Exception e){
+		}catch(Exception e) {
 			fileType = ""; 
 		} 
 		return fileType; 
@@ -120,22 +120,22 @@ public class HttpResponse {
 	public void setCookies(Map<String, HttpCookie> cookies) {
 		this.cookies = cookies;
 	}
-	public HttpCookie getCookie(String key){
+	public HttpCookie getCookie(String key) {
 		return cookies.get(key);
 	}
-	public void setCookie(HttpCookie cookie){
-		if(null != cookie){
+	public void setCookie(HttpCookie cookie) {
+		if(null != cookie) {
 			cookies.put(cookie.getKey(), cookie);
 		}
 	}
-	public String getCookieValue(String key){
+	public String getCookieValue(String key) {
 		HttpCookie cookie = getCookie(key);
-		if(null != cookie){
+		if(null != cookie) {
 			return cookie.getValue();
 		}
 		return null;
 	}
-	public String getHeader(String key){
+	public String getHeader(String key) {
 		return headers.get(key);
 	}
 

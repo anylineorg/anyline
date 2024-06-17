@@ -53,7 +53,7 @@ public class ConfigParser {
 		try {
 			String keyPath = ConfigTable.getString("DES_KEY_FILE");
 
-			if(BasicUtil.isNotEmpty(keyPath)){
+			if(BasicUtil.isNotEmpty(keyPath)) {
 				if (keyPath.contains("${classpath}")) {
 					keyPath = keyPath.replace("${classpath}", ConfigTable.getClassPath());
 				} else if (keyPath.startsWith("/")) {
@@ -121,15 +121,15 @@ public class ConfigParser {
 	 * 	             +date.dateFr:dateFr | date
 	 * @return ParseResult
 	 */
-	private static ParseResult parseInit(String config){
+	private static ParseResult parseInit(String config) {
 		ParseResult result = new ParseResult();
 		String prefix = null;
 		String var = config;
 		String key = config;
 		Compare.EMPTY_VALUE_SWITCH swt = Compare.EMPTY_VALUE_SWITCH.IGNORE;
-		if(key.contains(":")){
+		if(key.contains(":")) {
 			var = config.substring(0,config.indexOf(":"));
-			if(key.contains("|")){
+			if(key.contains("|")) {
 				String[] tmp = key.split("\\|");
 				ParseResult or = new ParseResult();
 				or.setKey(tmp[1]);
@@ -140,21 +140,21 @@ public class ConfigParser {
 				key = config.substring(config.indexOf(":")+1,config.length());
 			}
 		}
-		if(var.startsWith("+")){
+		if(var.startsWith("+")) {
 			// 必须参数
 			//required = true;
 			swt = Compare.EMPTY_VALUE_SWITCH.NULL;
 			var = var.substring(1,var.length());
-			if(ConfigTable.getBoolean("CONDITION_VALUE_STRICT")){
+			if(ConfigTable.getBoolean("CONDITION_VALUE_STRICT")) {
 				swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
 			}
 		}
-		if(var.startsWith("+")){
+		if(var.startsWith("+")) {
 			// 必须参数
 			swt = Compare.EMPTY_VALUE_SWITCH.BREAK;
 			var = var.substring(1,var.length());
 		}
-		if(var.contains(".")){
+		if(var.contains(".")) {
 			// XML中自定义参数时,同时指定param.id及变量名condition_id.param_id
 			// Table中同时指定表名(表别名).列名 table.column
 			prefix = var.substring(0,var.indexOf("."));
@@ -172,17 +172,17 @@ public class ConfigParser {
 	 * @param result  result
 	 * @return ParseResult
 	 */
-	private static ParseResult parseClassMethod(ParseResult result){
+	private static ParseResult parseClassMethod(ParseResult result) {
 		String config = result.getKey();
 		String className = null;
 		String methodName = null;
 		String regx = "^([a-z]+[0-9a-zA-Z_]*(\\.[a-z]+[0-9a-zA-Z_]*)*\\.?[A-Z]+[0-9a-zA-Z_]*\\.?)?[a-z]+\\S+\\(\\S+\\)$";
-		if(RegularUtil.match(config, regx, Regular.MATCH_MODE.MATCH)){
+		if(RegularUtil.match(config, regx, Regular.MATCH_MODE.MATCH)) {
 			// 有预处理方法
 
 			// 解析class.method
 			String classMethod = config.substring(0,config.indexOf("("));
-			if(classMethod.contains(".")){
+			if(classMethod.contains(".")) {
 				// 有特定类
 				className = classMethod.substring(0,classMethod.lastIndexOf("."));
 				methodName = classMethod.substring(classMethod.lastIndexOf(".")+1,classMethod.length());
@@ -191,10 +191,10 @@ public class ConfigParser {
 				methodName = classMethod;
 			}
 			config = config.substring(config.indexOf("(")+1,config.indexOf(")"));
-			if(config.contains(",")){
+			if(config.contains(",")) {
 				String[] tmps = config.split(",");
 				int len = tmps.length;
-				for(int i=1; i<len; i++){
+				for(int i=1; i<len; i++) {
 					String arg = tmps[i];
 					arg = arg.replace("'","").replace("\"","");
 					result.addArg(arg);
@@ -214,7 +214,7 @@ public class ConfigParser {
 	 * @param isKey true:parseConfig参数 false:query参数
 	 * @return ParseResult
 	 */
-	private static ParseResult parseCompare(ParseResult result, boolean isKey){
+	private static ParseResult parseCompare(ParseResult result, boolean isKey) {
 		String key = result.getKey();
 		String var = result.getVar();
 		if (key.startsWith(">=")) {
@@ -236,12 +236,12 @@ public class ConfigParser {
 			// [1,2,3]或[1,2,3]:[1,2,3]
 			// id:[id:cd:{[1,2,3]}]
 			result.setCompare(Compare.IN);
-			if(key.startsWith("!")){
+			if(key.startsWith("!")) {
 				result.setCompare(Compare.NOT_IN);
 			}
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE);
-			if(isKey){
-				if(key.startsWith("!")){
+			if(isKey) {
+				if(key.startsWith("!")) {
 					key = key.substring(2, key.length() - 1);
 				}else {
 					key = key.substring(1, key.length() - 1);
@@ -263,7 +263,7 @@ public class ConfigParser {
 			result.setCompare(Compare.EQUAL);
 		}
 		result.setKey(key);
-		if(var.startsWith("[") && var.endsWith("]")){
+		if(var.startsWith("[") && var.endsWith("]")) {
 			result.setCompare(Compare.FIND_IN_SET);
 			var = var.substring(1, var.length()-1);
 			result.setVar(var);
@@ -276,14 +276,14 @@ public class ConfigParser {
 	 * @param result  result
 	 * @return ParseResult
 	 */
-	private static ParseResult parseDef(ParseResult result){
+	private static ParseResult parseDef(ParseResult result) {
 		String key = result.getKey();
-		if(key.contains(":") && !DateUtil.isDate(key)){
+		if(key.contains(":") && !DateUtil.isDate(key)) {
 			String[] tmp = key.split(":");
 			result.setKey(tmp[0]);
 			int size = tmp.length;
-			for(int i=1; i<size; i++){
-				if(BasicUtil.isEmpty(tmp[i])){
+			for(int i=1; i<size; i++) {
+				if(BasicUtil.isEmpty(tmp[i])) {
 					continue;
 				}
 				ParseResult def = new ParseResult();
@@ -294,9 +294,9 @@ public class ConfigParser {
 		}
 		return result;
 	}
-	private static ParseResult parseOr(ParseResult result){
+	private static ParseResult parseOr(ParseResult result) {
 		String key = result.getKey();
-		if(key.indexOf("|") != -1){
+		if(key.indexOf("|") != -1) {
 			String[] tmp = key.split("\\|");
 			ParseResult or = new ParseResult();
 			or.setKey(tmp[1]);
@@ -311,25 +311,25 @@ public class ConfigParser {
 	 * @param result  result
 	 * @return ParseResult
 	 */
-	private static ParseResult parseEncrypt(ParseResult result){
+	private static ParseResult parseEncrypt(ParseResult result) {
 		Map<String,Object> map = parseEncrypt(result.getKey());
 		result.setKey((String)map.get("SRC"));
 		result.setKeyEncrypt((Boolean)map.get("KEY_ENCRYPT"));
 		result.setValueEncrypt((Boolean)map.get("VALUE_ENCRYPT"));
 		return result;
 	}
-	private static Map<String,Object> parseEncrypt(String key){
+	private static Map<String,Object> parseEncrypt(String key) {
 		Map<String,Object> result = new HashMap<String,Object>();
 		boolean isKeyEncrypt = false;
 		boolean isValueEncrypt = false;
-		if(null != key){
-			if(key.endsWith("+") || key.endsWith("-")){
+		if(null != key) {
+			if(key.endsWith("+") || key.endsWith("-")) {
 				String paramEncrypt = key.substring(key.length()-2,key.length()-1);
 				String valueEncrypt = key.substring(key.length()-1);
-				if("+".equals(paramEncrypt)){
+				if("+".equals(paramEncrypt)) {
 					isKeyEncrypt = true;
 				}
-				if("+".equals(valueEncrypt)){
+				if("+".equals(valueEncrypt)) {
 					isValueEncrypt = true;
 				}
 				key = key.replace("+","").replace("-","");
@@ -340,20 +340,20 @@ public class ConfigParser {
 		result.put("VALUE_ENCRYPT", isValueEncrypt);
 		return result;
 	}
-	public static Object getValue(Map<String,Object> values, ParseResult parser){
+	public static Object getValue(Map<String,Object> values, ParseResult parser) {
 		List<Object> list = getValues(values, parser);
-		if(null != list && list.size()>0){
+		if(null != list && list.size()>0) {
 			return list.get(0);
 		}
 		return null;
 	}
-	public static String parseVar(Map<String, Object> values, ParseResult parser){
+	public static String parseVar(Map<String, Object> values, ParseResult parser) {
 		String var = parser.getVar().trim();
-		//if(var.startsWith("${") && var.endsWith("}")){
-		if(BasicUtil.checkEl(var)){
+		//if(var.startsWith("${") && var.endsWith("}")) {
+		if(BasicUtil.checkEl(var)) {
 			var = var.substring(2, var.length()-1);
 			Object varv = values.get(var);
-			if(null == varv){
+			if(null == varv) {
 				log.warn("[动态key解析失败][key:{}]", var);
 				return null;
 			}
@@ -363,9 +363,9 @@ public class ConfigParser {
 		return var;
 	}
 	@SuppressWarnings({"rawtypes","unchecked" })
-	public static List<Object> getValues(Map<String,Object> values, ParseResult parser){
+	public static List<Object> getValues(Map<String,Object> values, ParseResult parser) {
 		List<Object> list = new ArrayList<Object>();
-		if(null == parser){
+		if(null == parser) {
 			return list;
 		}
 		try{
@@ -378,33 +378,33 @@ public class ConfigParser {
 			boolean isKeyEncrypt = parser.isKeyEncrypt();
 			boolean isValueEncrypt = parser.isValueEncrypt();
 
-			if(null != methodName){
+			if(null != methodName) {
 				Class clazz = null;
-				if(null == className){
+				if(null == className) {
 					clazz = DefaultPrepare.class;
 				}else{
 					clazz = Class.forName(className);
 				}
 				Method method = clazz.getMethod(methodName, String.class);
-				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
+				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType) {
 					Object v = getRuntimeValue(values,key,isKeyEncrypt, isValueEncrypt);
 					v = method.invoke(clazz, v);
 					list.add(v);
 				}else{
 					List<Object> vs = getRuntimeValues(values, key,isKeyEncrypt, isValueEncrypt);
-					for(Object v:vs){
+					for(Object v:vs) {
 						if(null != v) {
 							v = method.invoke(clazz, v);
-							if(null != v){
-								if(v instanceof Collection){
+							if(null != v) {
+								if(v instanceof Collection) {
 									Collection tmps = (Collection) v;
-									for(Object item:tmps){
+									for(Object item:tmps) {
 										list.add(item);
 									}
 								}
-								if(v instanceof Object[]){
+								if(v instanceof Object[]) {
 									Object[] tmps = (Object[]) v;
-									for(Object tmp:tmps){
+									for(Object tmp:tmps) {
 										list.add(tmp);
 									}
 								}else{
@@ -420,19 +420,19 @@ public class ConfigParser {
 					}
 				}
 			}else{
-				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
+				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType) {
 					Object v = getRuntimeValue(values,key,isKeyEncrypt, isValueEncrypt);
 					list.add(v);
 				}else{
 					list = getRuntimeValues(values, key,isKeyEncrypt, isValueEncrypt);
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("get values exception:", e);
 		}
-		if(BasicUtil.isEmpty(true, list)){
+		if(BasicUtil.isEmpty(true, list)) {
 			List<Object> defs = getDefValues(values, parser);
-			if(defs.size()>0){
+			if(defs.size()>0) {
 				list = defs;
 			}
 		}
@@ -445,54 +445,54 @@ public class ConfigParser {
 	 * @param parser  parser
 	 * @return List
 	 */
-	private static List<Object> getDefValues(Map<String,Object> values, ParseResult parser){
+	private static List<Object> getDefValues(Map<String,Object> values, ParseResult parser) {
 		List<Object> result = new ArrayList<Object>();
 		List<ParseResult> defs = parser.getDefs();
-		if(null != defs){
-			for(ParseResult def:defs){
+		if(null != defs) {
+			for(ParseResult def:defs) {
 				result = new ArrayList<Object>();
 				String key = def.getKey();
-				//if(key.startsWith("${") && key.endsWith("}")){
-				if(BasicUtil.checkEl(key)){
+				//if(key.startsWith("${") && key.endsWith("}")) {
+				if(BasicUtil.checkEl(key)) {
 					// col:value
 					key = key.substring(2, key.length()-1);
-					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
+					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()) {
 						result = parseArrayValue(key);
 					}else{
-						if(BasicUtil.isNotEmpty(key)){
+						if(BasicUtil.isNotEmpty(key)) {
 							result.add(key);
 						}
 					}
 				}else{
 					// col:key
-					if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()){//单值
+					if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()) {//单值
 						Object v = getRuntimeValue(values,key,def.isKeyEncrypt(), def.isValueEncrypt());
-						if(BasicUtil.isNotEmpty(v)){
+						if(BasicUtil.isNotEmpty(v)) {
 							result.add(v);
 						}
 					}else{//多值
 						result = getRuntimeValues(values, key,def.isKeyEncrypt(), def.isValueEncrypt());
 					}
 				}
-				// if(!result.isEmpty()){
-				if(!BasicUtil.isEmpty(true, result)){
+				// if(!result.isEmpty()) {
+				if(!BasicUtil.isEmpty(true, result)) {
 					break;
 				}
 			}
 		}
 		return result;
 	}
-	public static List<Object> getValues(ParseResult parser){
+	public static List<Object> getValues(ParseResult parser) {
 		List<Object> result = new ArrayList<Object>();
 		String value = parser.getKey();
-		if(BasicUtil.isNotEmpty(value)){
-			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
+		if(BasicUtil.isNotEmpty(value)) {
+			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()) {
 				result = parseArrayValue(value);
 			}else{
 				result.add(parser.getKey());
 			}
 		}
-		if(BasicUtil.isEmpty(true, result)){
+		if(BasicUtil.isEmpty(true, result)) {
 			result = getDefValues(parser);
 		}
 		return result;
@@ -502,14 +502,14 @@ public class ConfigParser {
 	 * 解析,分隔的参数值(主要来自http参数)
 	 * @return list
 	 */
-	public static List<Object> parseArrayValue(String value){
+	public static List<Object> parseArrayValue(String value) {
 		List<Object> result = new ArrayList<>();
-		if(value.startsWith("[") && value.endsWith("]")){
+		if(value.startsWith("[") && value.endsWith("]")) {
 			value = value.substring(1, value.length()-1);
 		}
 		String[] values = value.split(",");
-		for(String tmp:values){
-			if(BasicUtil.isNotEmpty(tmp)){
+		for(String tmp:values) {
+			if(BasicUtil.isNotEmpty(tmp)) {
 				result.add(tmp);
 			}
 		}
@@ -520,20 +520,20 @@ public class ConfigParser {
 	 * @param parser  parser
 	 * @return List
 	 */
-	private static List<Object> getDefValues(ParseResult parser){
+	private static List<Object> getDefValues(ParseResult parser) {
 		List<Object> result = new ArrayList<Object>();
 		List<ParseResult> defs = parser.getDefs();
-		if(null != defs){
-			for(ParseResult def:defs){
+		if(null != defs) {
+			for(ParseResult def:defs) {
 				String key = def.getKey();
-				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()){
+				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULTIPLE == parser.getParamFetchType()) {
 					result = parseArrayValue(key);
 				}else{
-					if(BasicUtil.isNotEmpty(key)){
+					if(BasicUtil.isNotEmpty(key)) {
 						result.add(key);
 					}
 				}
-				if(!result.isEmpty()){
+				if(!result.isEmpty()) {
 					break;
 				}
 			}
@@ -550,38 +550,38 @@ public class ConfigParser {
 	 * @param conditions  conditions
 	 * @return String
 	 */
-	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
+	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions) {
 		conditions = BasicUtil.compress(conditions);
 		String result = src+"|";
-		if(null != store){
+		if(null != store) {
 			ConfigChain chain = store.getConfigChain();
-			if(null != chain){
+			if(null != chain) {
 				List<Config> configs = chain.getConfigs();
-				if(null != configs){
-					for(Config config:configs){
+				if(null != configs) {
+					for(Config config:configs) {
 						List<Object> values = config.getValues();
-						if(null != values){
+						if(null != values) {
 							result += config.toString() + "|";
 						}
 					}
 				}
 			}
 			PageNavi navi = store.getPageNavi();
-			if(page && null != navi){
+			if(page && null != navi) {
 				result += "page=" + navi.getCurPage()+"|first=" + navi.getFirstRow() + "|last="+navi.getLastRow()+"|";
 			}
-			if(order){
+			if(order) {
 				OrderStore orders = store.getOrders();
-				if(null != orders){
+				if(null != orders) {
 					result += orders.getRunText("").toUpperCase() +"|";
 				}
 			}
 		}
-		if(null != conditions){
-			for(String condition:conditions){
-				if(BasicUtil.isNotEmpty(condition)){
-					if(condition.trim().toUpperCase().startsWith("ORDER")){
-						if(order){
+		if(null != conditions) {
+			for(String condition:conditions) {
+				if(BasicUtil.isNotEmpty(condition)) {
+					if(condition.trim().toUpperCase().startsWith("ORDER")) {
+						if(order) {
 							result += condition.toUpperCase() + "|";
 						}
 					}else{
@@ -683,7 +683,7 @@ public class ConfigParser {
 		if (null == src) {
 			return null;
 		}
-		if(isEncrypt(src, type)){
+		if(isEncrypt(src, type)) {
 			return src;
 		}
 		DESUtil des = DESUtil.getInstance(defaultDesKey.getKey(type));
@@ -691,7 +691,7 @@ public class ConfigParser {
 			result = des.encrypt(src);
 			result = insertDESVersion(result);
 			String pre = defaultDesKey.getPrefix(type);
-			if(mix && ENCRYPT_TYPE_VALUE.equals(type)){
+			if(mix && ENCRYPT_TYPE_VALUE.equals(type)) {
 				// 随机URL 避免QQ等工具报警 每次生成不同URL 扰乱爬虫追溯
 				String rand = "v"+BasicUtil.getRandomNumberString(5)+"v";
 				pre = rand+pre;
@@ -702,7 +702,7 @@ public class ConfigParser {
 		}
 		return result;
 	}
-	public static String encryptByType(String src, String type){
+	public static String encryptByType(String src, String type) {
 		return encryptByType(src, type, false);
 	}
 
@@ -719,7 +719,7 @@ public class ConfigParser {
 		}
 		return encryptByType(src, ENCRYPT_TYPE_VALUE, mix);
 	}
-	public static String encryptValue(String src){
+	public static String encryptValue(String src) {
 		return encryptValue(src, false);
 	}
 
@@ -729,17 +729,17 @@ public class ConfigParser {
 	 * @param type type
 	 * @return boolean
 	 */
-	public static boolean isEncrypt(String src, String type){
-		if(null == src){
+	public static boolean isEncrypt(String src, String type) {
+		if(null == src) {
 			return false;
 		}
 		try{
 			String value = decrypt(src, type);
-			if(null != value){
+			if(null != value) {
 				return true;
 			}
 			return false;
-		}catch(Exception e){
+		}catch(Exception e) {
 			return false;
 		}
 	}
@@ -783,10 +783,10 @@ public class ConfigParser {
 	 * @return String
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
-		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
 			log.info("[decrypt][start][src:{}][type:{}]", src, type);
 		}
-		if(null != src && DESUtil.ignores.contains(src)){
+		if(null != src && DESUtil.ignores.contains(src)) {
 			return src;
 		}
 		String result = src;
@@ -794,10 +794,10 @@ public class ConfigParser {
 			return null;
 		}
 		// 删除随机URL混淆码
-		if(ENCRYPT_TYPE_VALUE.equals(type)){
-			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)){
+		if(ENCRYPT_TYPE_VALUE.equals(type)) {
+			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)) {
 				result = result.substring(7);
-				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
 					log.info("[decrypt][删除混淆码][result:{}]",result);
 				}
 			}
@@ -813,7 +813,7 @@ public class ConfigParser {
 				return null;
 			}
 			result = result.substring(sub);
-			if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+			if(ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
 				log.info("[decrypt][删除前缀][result:{}]",result);
 			}
 			// 解析版本
@@ -837,7 +837,7 @@ public class ConfigParser {
 			log.error("decrypt exception:", e);
 			result = null;
 		}
-		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
 			log.info("[decrypt][end][result:{}]",result);
 		}
 		return result;
@@ -868,23 +868,23 @@ public class ConfigParser {
 		}
 		String param = url.substring(url.indexOf("?") + 1);
 		try {
-			if(union){
+			if(union) {
 				param = encryptRequestParam(param);
 			}else{
 				String params[] = param.split("&");
 				param = "";
-				for(String p:params){
+				for(String p:params) {
 					String kv[] = p.split("=");
-					if(kv.length == 2){
+					if(kv.length == 2) {
 						String k = kv[0];
-						if(encryptKey){
+						if(encryptKey) {
 							k = encryptKey(k);
 						}
 						String v = kv[1];
-						if(encryptValue){
+						if(encryptValue) {
 							v = encryptValue(v);
 						}
-						if(!"".equals(params)){
+						if(!"".equals(params)) {
 							param += "&";
 						}
 						param += k + "=" + v;
@@ -982,7 +982,7 @@ public class ConfigParser {
 //	private static void decryptParam(Map<String,Object> values) {
 //		Map<String, List<String>> fullMap = new HashMap<String, List<String>>();
 //		Map<String, List<String>> partMap = new HashMap<String, List<String>>();
-//		for (Map.Entry<String, Object> entry : values.entrySet()){
+//		for (Map.Entry<String, Object> entry : values.entrySet()) {
 //			String k = entry.getKey();
 //			Object obj = entry.getValue();
 //			List<String> list = partMap.get(k);
@@ -991,9 +991,9 @@ public class ConfigParser {
 //				partMap.put(k, list);
 //			}
 //			if (null != obj) {
-//				if(obj instanceof Collection){
+//				if(obj instanceof Collection) {
 //					Collection cols = (Collection)obj;
-//					for(Object col:cols){
+//					for(Object col:cols) {
 //						list.add(filterIllegalChar(col.toString().trim()));
 //					}
 //				}else{
@@ -1021,8 +1021,8 @@ public class ConfigParser {
 		if (null == values || null == key) {
 			return null;
 		}
-		//if(key.startsWith("${") && key.endsWith("}")){
-		if(BasicUtil.checkEl(key)){
+		//if(key.startsWith("${") && key.endsWith("}")) {
+		if(BasicUtil.checkEl(key)) {
 			result.add(key.substring(2, key.length()-1));
 		}else{
 			if (keyEncrypt) {
@@ -1031,7 +1031,7 @@ public class ConfigParser {
 			} else {
 				// key未加密
 				Object obj = values.get(key);
-				if(null != obj){
+				if(null != obj) {
 					if (obj instanceof Collection) {
 						//集合
 						Collection cols = (Collection)obj;
@@ -1094,7 +1094,7 @@ public class ConfigParser {
 	public static Object getRuntimeValue(Map<String,Object> values, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
 		List<Object> list = getRuntimeValues(values, key, keyEncrypt, valueEncrypt);
-		if(null != list && list.size()>0){
+		if(null != list && list.size()>0) {
 			result = (String)list.get(0);
 		}
 		return result;
@@ -1118,22 +1118,22 @@ public class ConfigParser {
 		if (null == src) {
 			return src;
 		}
-		if(src instanceof String){
+		if(src instanceof String) {
 			src = XssUtil.strip(src.toString());
-		}else if(src instanceof Map){
+		}else if(src instanceof Map) {
 			Map map = (Map)src;
 			List<String> keys = BeanUtil.getMapKeys(map);
-			for(String key:keys){
+			for(String key:keys) {
 				map.put(key,filterIllegalChar(map.get(key)));
 			}
-		}else if(src instanceof Collection){
+		}else if(src instanceof Collection) {
 			Collection cols = (Collection)src;
 			for (Object value : cols) {
 				value = filterIllegalChar(value);
 			}
-		}else if(ClassUtil.isWrapClass(src.getClass())){
+		}else if(ClassUtil.isWrapClass(src.getClass())) {
 			List<String> keys = ClassUtil.getFieldsName(src.getClass());
-			for(String key:keys){
+			for(String key:keys) {
 				Object value = BeanUtil.getFieldValue(src, key);
 				BeanUtil.setFieldValue(src, key, filterIllegalChar(value));
 			}

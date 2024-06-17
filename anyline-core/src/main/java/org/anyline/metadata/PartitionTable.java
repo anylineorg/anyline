@@ -22,15 +22,15 @@ import java.io.Serializable;
 
 public class PartitionTable extends Table<PartitionTable> implements Serializable {
 
-    public PartitionTable(){
+    public PartitionTable() {
     }
-    public PartitionTable(String name){
+    public PartitionTable(String name) {
         this(null, name);
     }
-    public PartitionTable(Schema schema, String table){
+    public PartitionTable(Schema schema, String table) {
         this(null, schema, table);
     }
-    public PartitionTable(Catalog catalog, Schema schema, String name){
+    public PartitionTable(Catalog catalog, Schema schema, String name) {
         this();
         this.catalog = catalog;
         this.schema = schema;
@@ -41,7 +41,7 @@ public class PartitionTable extends Table<PartitionTable> implements Serializabl
         return this.keyword;
     }
 
-    public String toString(){
+    public String toString() {
         return this.keyword+":"+name;
     }
 }

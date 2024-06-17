@@ -36,7 +36,7 @@ public class DefaultVariable implements Variable {
 	public static final int VAR_TYPE_KEY_REPLACE	= 2;		// 字符替换 CD=':CD' 
 	public static final int VAR_TYPE_REPLACE		= 3;		// 字符替换 CD=::CD 
 	 
-	public String toString(){
+	public String toString() {
 		String str = "";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("key", this.getKey());
@@ -62,12 +62,12 @@ public class DefaultVariable implements Variable {
 		DefaultVariable clone = null;
 		try{
 			clone =(DefaultVariable) super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 			clone = new DefaultVariable();
 		}
-		if(null != values){
+		if(null != values) {
 			List<Object> cValues = new ArrayList<Object>(); 
-			for(Object value:values){
+			for(Object value:values) {
 				Object tmp = value; 
 				cValues.add(tmp); 
 			} 
@@ -77,8 +77,8 @@ public class DefaultVariable implements Variable {
 		return clone; 
 	} 
 	 
-	public void init(){
-		if(null != values){
+	public void init() {
+		if(null != values) {
 			values.clear(); 
 		}
 		setValue = false;
@@ -89,8 +89,8 @@ public class DefaultVariable implements Variable {
 	public void setCompare(Compare compare) {
 		this.compare = compare; 
 	} 
-	public void addValue(Object value){
-		if(null == values){
+	public void addValue(Object value) {
+		if(null == values) {
 			values = new ArrayList<Object>(); 
 		} 
 		values.add(value);
@@ -111,15 +111,15 @@ public class DefaultVariable implements Variable {
 	}
 	@SuppressWarnings({"unchecked","rawtypes" })
 	public void setValue(boolean chkNull, Object value) {
-		if(null == value && chkNull){
+		if(null == value && chkNull) {
 			return;
 		}
-		if(null == values){
+		if(null == values) {
 			values = new ArrayList<Object>();
 		}else {
 			values.clear();
 		}
-		if(value instanceof Collection){
+		if(value instanceof Collection) {
 			values.addAll((Collection)value);
 		}else{
 			values.add(value);
@@ -175,13 +175,13 @@ public class DefaultVariable implements Variable {
 					.replace("}","");
 			}
 			if (null == keyPrefix) {
-				if(fullKey.startsWith("#{")){
+				if(fullKey.startsWith("#{")) {
 					setKeyPrefix("#");
-				}else if(fullKey.startsWith("${")){
+				}else if(fullKey.startsWith("${")) {
 					setKeyPrefix("$");
-				}if(fullKey.startsWith("::")){
+				}if(fullKey.startsWith("::")) {
 					setKeyPrefix("::");
-				}if(fullKey.startsWith(":")){
+				}if(fullKey.startsWith(":")) {
 					setKeyPrefix(":");
 				}
 			}

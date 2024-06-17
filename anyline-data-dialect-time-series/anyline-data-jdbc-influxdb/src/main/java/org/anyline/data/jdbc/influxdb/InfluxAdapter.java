@@ -38,10 +38,10 @@ import java.util.Map;
 @Component("anyline.data.jdbc.adapter.influxdb")
 public class InfluxAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	
-	public DatabaseType type(){
+	public DatabaseType type() {
 		return DatabaseType.InfluxDB;
 	} 
-	public InfluxAdapter(){
+	public InfluxAdapter() {
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 	}
@@ -54,11 +54,11 @@ public class InfluxAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String mergeFinalQuery(DataRuntime runtime, Run run){
+	public String mergeFinalQuery(DataRuntime runtime, Run run) {
 		return super.pageLimitOffset(runtime, run);
 	}
 
-	public String concat(DataRuntime runtime, String ... args){
+	public String concat(DataRuntime runtime, String ... args) {
 		return concatOr(runtime, args);
 	}
 
@@ -71,12 +71,12 @@ public class InfluxAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		Run run = null;
-		if(null != obj){
+		if(null != obj) {
 			StringBuilder builder = new StringBuilder();
 			run = new TableRun(runtime, dest);
-			if(obj instanceof DataRow){
+			if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
 				LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
 				// insert al, tag1=value1 qty=1, name=5
@@ -84,21 +84,21 @@ public class InfluxAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 				name(runtime, builder, dest);
 				builder.append(" ");
 				Map<String, Object> tags = row.getTags();
-				for(String tag:tags.keySet()){
+				for(String tag:tags.keySet()) {
 					builder.append(",").append(tag).append("=").append(tags.get(tag));
 				}
 				int qty = 0;
-				for(Column column:cols.values()){
+				for(Column column:cols.values()) {
 					String col = column.getName();
 					Object value = row.get(col);
-					if(null == value){
+					if(null == value) {
 						continue;
 					}
 					if(qty>0) {
 						builder.append(",");
 					}
 					builder.append(col).append("=");
-					if(BasicUtil.isNumber(value) || BasicUtil.isBoolean(value)){
+					if(BasicUtil.isNumber(value) || BasicUtil.isBoolean(value)) {
 						builder.append(value);
 					}else{
 						builder.append("\"").append(value).append("\"");

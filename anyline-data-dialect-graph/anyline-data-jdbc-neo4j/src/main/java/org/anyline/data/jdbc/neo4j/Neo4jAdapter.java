@@ -52,10 +52,10 @@ import java.util.*;
 @Component("anyline.data.jdbc.adapter.neo4j")
 public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.Neo4j;
     }
-    public Neo4jAdapter(){
+    public Neo4jAdapter() {
         delimiterFr = "`";
         delimiterTo = "`";
     }
@@ -98,7 +98,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns){
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, List<String> columns) {
         return super.buildInsertRun(runtime, batch, dest, obj, columns);
     }
 
@@ -112,28 +112,28 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
         builder.append("CREATE ");
 
         int dataSize = set.size();
-        for(int i=0; i<dataSize; i++){
+        for(int i=0; i<dataSize; i++) {
             DataRow row = set.getRow(i);
-            if(null == row){
+            if(null == row) {
                 continue;
             }
             insertValue("e"+i, run, dest, row, columns);
-            if(i<dataSize-1){
+            if(i<dataSize-1) {
                 builder.append(",");
             }
         }
         builder.append(" RETURN ");
-        for(int i=0; i<dataSize; i++){
-            if(i>0){
+        for(int i=0; i<dataSize; i++) {
+            if(i>0) {
                 builder.append(",");
             }
             builder.append(" ID(e").append(i).append(") AS __ID").append(i);
@@ -150,13 +150,13 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
-        if(list instanceof DataSet){
+        if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
             this.fillInsertContent(runtime, run, dest, set, columns);
             return;
@@ -164,16 +164,16 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         builder.append("CREATE ");
         int dataSize = list.size();
         int idx = 0;
-        for(Object obj:list){
+        for(Object obj:list) {
             insertValue("e"+idx, run, dest, obj, columns);
-            if(idx<dataSize-1){
+            if(idx<dataSize-1) {
                 builder.append(",");
             }
             idx ++;
         }
         builder.append(" RETURN ");
-        for(int i=0; i<dataSize; i++){
-            if(i>0){
+        for(int i=0; i<dataSize; i++) {
+            if(i>0) {
                 builder.append(",");
             }
             builder.append(" ID(e").append(i).append(") AS __ID").append(i);
@@ -189,26 +189,26 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
-        if(BasicUtil.isEmpty(dest)){
+        if(BasicUtil.isEmpty(dest)) {
             throw new SQLException("未指定表");
         }
         // CREATE (emp:Employee{id:123, name:"zh"})
 
         PrimaryGenerator generator = checkPrimaryGenerator(this.type(), dest.getName());
         DataRow row = null;
-        if(obj instanceof DataRow){
+        if(obj instanceof DataRow) {
             row = (DataRow)obj;
-            if(row.hasPrimaryKeys() && null != generator){
+            if(row.hasPrimaryKeys() && null != generator) {
                 generator.create(row, this.type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), row.getPrimaryKeys(), null);
             }
         }else{
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, columns);
-            if(!create && null != generator){
+            if(!create && null != generator) {
                 generator.create(obj, this.type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), columns, null);
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
@@ -233,16 +233,16 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
         Run run = new TableRun(runtime, dest);
-        if(null == list || list.isEmpty()){
+        if(null == list || list.isEmpty()) {
             throw new SQLException("空数据");
         }
         Object first = null;
-        if(list instanceof DataSet){
+        if(list instanceof DataSet) {
             DataSet set = (DataSet)list;
             first = set.getRow(0);
-            if(BasicUtil.isEmpty(dest)){
+            if(BasicUtil.isEmpty(dest)) {
                 dest = configs.table();
             }
         }else{
@@ -251,7 +251,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 dest = EntityAdapterProxy.table(first.getClass());
             }
         }
-        if(BasicUtil.isEmpty(dest)){
+        if(BasicUtil.isEmpty(dest)) {
             throw new SQLException("未指定表");
         }
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
@@ -266,41 +266,41 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @param obj Entity或DataRow
      * @param columns 需要插入的列
      */
-    protected void insertValue(String alias, Run run, Table dest, Object obj, LinkedHashMap<String, Column> columns){
+    protected void insertValue(String alias, Run run, Table dest, Object obj, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
 
         // CREATE (e:Employee{id:123, name:"zh"})
         builder.append("(");
-        if(BasicUtil.isNotEmpty(alias)){
+        if(BasicUtil.isNotEmpty(alias)) {
             builder.append(alias);
         }
         builder.append(":").append(dest.getName());
         builder.append("{");
         List<String> insertColumns = new ArrayList<>();
         boolean first = true;
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
-            if(!first){
+            if(!first) {
                 builder.append(",");
             }
             first = false;
             Object value = null;
-            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
+            if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                 value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
             }else{
                 value = BeanUtil.getFieldValue(obj, key);
             }
             delimiter(builder, key).append(":");
-            //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
-            if(BasicUtil.checkEl(value+"")){
+            //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+            if(BasicUtil.checkEl(value+"")) {
                 String str = value.toString();
                 value = str.substring(2, str.length()-1);
-                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
-                if(BasicUtil.checkEl(value+"")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+                if(BasicUtil.checkEl(value+"")) {
                     builder.append("?");
                     insertColumns.add(key);
                     run.addValues(Compare.EQUAL, column, value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
@@ -310,7 +310,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             }else{
                 builder.append("?");
                 insertColumns.add(key);
-                if("NULL".equals(value)){
+                if("NULL".equals(value)) {
                     // values.add(null);
                     run.addValues(Compare.EQUAL, column, null, ConfigTable.IS_AUTO_SPLIT_ARRAY);
                 }else{
@@ -337,18 +337,18 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         DataSource datasource = null;
         Connection con = null;
 
-        if(!run.isValid()){
-            if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()){
+        if(!run.isValid()) {
+            if(ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
                 log.warn("[valid:false][不具备执行条件][dest:"+run.getTable()+"]");
             }
             return -1;
         }
         String sql = run.getFinalInsert();
-        if(BasicUtil.isEmpty(sql)){
+        if(BasicUtil.isEmpty(sql)) {
             log.warn("[不具备执行条件][dest:{}]", run.getTable());
             return -1;
         }
-        if(null != configs){
+        if(null != configs) {
             configs.add(run);
         }
         List<Object> values = run.getValues();
@@ -370,11 +370,11 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             }
             ResultSet rs = ps.executeQuery();
 
-            if(data instanceof Collection){
+            if(data instanceof Collection) {
                 List<Object> ids = new ArrayList<>();
                 Collection list = (Collection) data;
                 if(rs.next()) {
-                    for(Object item:list){
+                    for(Object item:list) {
                         Object id = rs.getObject("__ID"+ cnt);
                         ids.add(id);
                         setPrimaryValue(item, id);
@@ -383,24 +383,24 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 }
                 log.info("{}[exe insert][生成主键:{}]", random, ids);
             }else{
-                if(rs.next()){
+                if(rs.next()) {
                     cnt ++;
                     Object id = rs.getObject("__ID0");
                     setPrimaryValue(data, id);
                     log.info("{}[exe insert][生成主键:{}]", random, id);
                 }
             }
-        }catch(Exception e){
+        }catch(Exception e) {
             if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
                 log.error("insert exception:", e);
             }
-            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
                 SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
                 ex.setCmd(sql);
                 ex.setValues(values);
                 throw ex;
             }else{
-                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR){
+                if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
                     log.error("{}[{}][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("插入异常:", 33)+e.toString(), sql, LogUtil.param(run.getInsertColumns(), values));
                 }
             }
@@ -430,7 +430,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      */
     @Override
     public String mergeFinalQuery(DataRuntime runtime, Run run) {
-        if(!(run instanceof TableRun)){
+        if(!(run instanceof TableRun)) {
             return run.getBaseQuery();
         }
         StringBuilder builder = new StringBuilder();
@@ -439,33 +439,33 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         String cols = run.getQueryColumn();
         String alias = run.getPrepare().getAlias();
         OrderStore orders = run.getOrderStore();
-        if(null != orders){
+        if(null != orders) {
             builder.append(orders.getRunText(getDelimiterFr()+getDelimiterTo()));
         }
         builder.append(" RETURN ");
         LinkedHashMap<String, Column> columns = prepare.getColumns();
-        if(null != columns && columns.size()>0){
+        if(null != columns && columns.size()>0) {
             // 指定查询列
             boolean first = true;
-            for(Column column:columns.values()){
-                if(BasicUtil.isEmpty(column)){
+            for(Column column:columns.values()) {
+                if(BasicUtil.isEmpty(column)) {
                     continue;
                 }
 
-                if(!first){
+                if(!first) {
                     builder.append(",");
                 }
                 first = false;
                 String name = column.getName();
-                if(BasicUtil.checkEl(name)){
+                if(BasicUtil.checkEl(name)) {
                     name = name.substring(2, name.length()-1);
                     builder.append(name);
                 }else{
-                    if(name.contains("(") || name.contains(",")){
+                    if(name.contains("(") || name.contains(",")) {
                         builder.append(name);
-                    }else if(name.toUpperCase().contains(" AS ")){
+                    }else if(name.toUpperCase().contains(" AS ")) {
                         builder.append(name);
-                    }else if("*".equals(name)){
+                    }else if("*".equals(name)) {
                         builder.append("*");
                     }else{
                         delimiter(builder, alias+"."+name);
@@ -480,9 +480,9 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         }
         builder.append(", ID(").append(alias).append(") AS __ID");
         PageNavi navi = run.getPageNavi();
-        if(null != navi){
+        if(null != navi) {
             long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-            if(limit < 0){
+            if(limit < 0) {
                 limit = 0;
             }
             builder.append(" SKIP ").append(navi.getFirstRow()).append(" LIMIT ").append(limit);
@@ -502,12 +502,12 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder){
-        if(compare == Compare.LIKE){
+    public RunValue createConditionLike(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+        if(compare == Compare.LIKE) {
             builder.append(" CONTAINS ?");
-        }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH){
+        }else if(compare == Compare.LIKE_PREFIX || compare == Compare.START_WITH) {
             builder.append(" STARTS WITH ?");
-        }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH){
+        }else if(compare == Compare.LIKE_SUFFIX || compare == Compare.END_WITH) {
             builder.append(" ENDS WITH ?");
         }
         RunValue run = new RunValue();
@@ -528,17 +528,17 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder){
-        if(compare== Compare.NOT_IN){
+    public StringBuilder createConditionIn(DataRuntime runtime, StringBuilder builder, Compare compare, Object value, boolean placeholder) {
+        if(compare== Compare.NOT_IN) {
             builder.append(" NOT");
         }
         builder.append(" IN [");
-        if(value instanceof Collection){
+        if(value instanceof Collection) {
             Collection<Object> coll = (Collection)value;
             int size = coll.size();
-            for(int i=0; i<size; i++){
+            for(int i=0; i<size; i++) {
                 builder.append("?");
-                if(i < size-1){
+                if(i < size-1) {
                     builder.append(",");
                 }
             }
@@ -560,19 +560,19 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return List
      */
     @Override
-    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
         List<Map<String, Object>> result = list;
-        if(null != list && !list.isEmpty()){
+        if(null != list && !list.isEmpty()) {
             Map<String, Object> map = list.get(0);
             Set<String> keys = map.keySet();
             String id_key = "__ID";
             boolean mapHashIdKey = BasicUtil.containsString(true, true, keys, "__ID");
             if((2 == keys.size() && keys.contains(id_key)
                     || keys.size() == 1
-            )){
+            )) {
                 String key = null;
-                for(String k:keys){
-                    if(!id_key.equalsIgnoreCase(k)){
+                for(String k:keys) {
+                    if(!id_key.equalsIgnoreCase(k)) {
                         key = k;
                         break;
                     }
@@ -582,7 +582,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                     result = new ArrayList<>();
                     for (Map<String, Object> item : list) {
                         Map<String, Object> value = (Map<String, Object>)item.get(key);
-                        if(mapHashIdKey){//MAP中有__ID
+                        if(mapHashIdKey) {//MAP中有__ID
                             value.put("id", item.get(id_key));
                         }
                         result.add(value);
@@ -597,67 +597,67 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
     }
     /**
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
-    protected void fillQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare = run.getPrepare();
         List<Variable> variables = run.getVariables();
         String result = prepare.getText();
-        if(null != variables){
-            for(Variable var:variables){
-                if(null == var){
+        if(null != variables) {
+            for(Variable var:variables) {
+                if(null == var) {
                     continue;
                 }
-                if(var.getType() == Variable.VAR_TYPE_REPLACE){
+                if(var.getType() == Variable.VAR_TYPE_REPLACE) {
                     // CD = ::CD
                     Object varValue = var.getValues();
                     String value = null;
-                    if(BasicUtil.isNotEmpty(varValue)){
+                    if(BasicUtil.isNotEmpty(varValue)) {
                         value = varValue.toString();
                     }
-                    if(null != value){
+                    if(null != value) {
                         result = result.replace("::"+var.getKey(), value);
                     }else{
                         result = result.replace("::"+var.getKey(), "NULL");
                     }
                 }
             }
-            for(Variable var:variables){
-                if(null == var){
+            for(Variable var:variables) {
+                if(null == var) {
                     continue;
                 }
-                if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
+                if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
                     // CD = ':CD'
                     List<Object> varValues = var.getValues();
                     String value = null;
-                    if(BasicUtil.isNotEmpty(true, varValues)){
+                    if(BasicUtil.isNotEmpty(true, varValues)) {
                         value = (String)varValues.get(0);
                     }
-                    if(null != value){
+                    if(null != value) {
                         result = result.replace(":"+var.getKey(), value);
                     }else{
                         result = result.replace(":"+var.getKey(), "");
                     }
                 }
             }
-            for(Variable var:variables){
-                if(null == var){
+            for(Variable var:variables) {
+                if(null == var) {
                     continue;
                 }
-                if(var.getType() == Variable.VAR_TYPE_KEY){
+                if(var.getType() == Variable.VAR_TYPE_KEY) {
                     // CD = :CD
                     List<Object> varValues = var.getValues();
-                    if(BasicUtil.isNotEmpty(true, varValues)){
-                        if(var.getCompare()== Compare.IN){
+                    if(BasicUtil.isNotEmpty(true, varValues)) {
+                        if(var.getCompare()== Compare.IN) {
                             // 多个值IN
                             String replaceSrc = ":"+var.getKey();
                             String replaceDst = "";
-                            for(Object tmp:varValues){
+                            for(Object tmp:varValues) {
                                 run.addValues(var.getKey(), tmp);
                                 replaceDst += " ?";
                             }
@@ -672,15 +672,15 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 }
             }
             // 添加其他变量值
-            for(Variable var:variables){
-                if(null == var){
+            for(Variable var:variables) {
+                if(null == var) {
                     continue;
                 }
                 // CD = ?
-                if(var.getType() == Variable.VAR_TYPE_INDEX){
+                if(var.getType() == Variable.VAR_TYPE_INDEX) {
                     List<Object> varValues = var.getValues();
                     String value = null;
-                    if(BasicUtil.isNotEmpty(true, varValues)){
+                    if(BasicUtil.isNotEmpty(true, varValues)) {
                         value = (String)varValues.get(0);
                     }
                     run.addValues(var.getKey(), value);
@@ -698,11 +698,11 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * 生成基础查询主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
-    protected void fillQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
         StringBuilder builder = run.getBuilder();
         RunPrepare prepare =  run.getPrepare();
         String alias = prepare.getAlias();
-        if(BasicUtil.isEmpty(alias)){
+        if(BasicUtil.isEmpty(alias)) {
             alias = "e";
             prepare.setAlias(alias);
         }
@@ -715,27 +715,27 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         builder.append(") ");
         /*
         List<String> columns = sql.getColumns();
-        if(null != columns && columns.size()>0){
+        if(null != columns && columns.size()>0) {
             // 指定查询列
             int size = columns.size();
-            for(int i=0; i<size; i++){
+            for(int i=0; i<size; i++) {
                 String column = columns.get(i);
-                if(BasicUtil.isEmpty(column)){
+                if(BasicUtil.isEmpty(column)) {
                     continue;
                 }
-                if(column.startsWith("${") && column.endsWith("}")){
+                if(column.startsWith("${") && column.endsWith("}")) {
                     column = column.substring(2, column.length()-1);
                     builder.append(column);
                 }else{
-                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
+                    if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")) {
                         builder.append(column);
-                    }else if("*".equals(column)){
+                    }else if("*".equals(column)) {
                         builder.append("*");
                     }else{
                         SQLUtil.delimiter(runtime, builder, column, delimiterFr, delimiterTo);
                     }
                 }
-                if(i<size-1){
+                if(i<size-1) {
                     builder.append(",");
                 }
             }
@@ -750,7 +750,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             for (Join join:joins) {
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
                 delimiter(builder, join.getName());
-                if(BasicUtil.isNotEmpty(join.getAlias())){
+                if(BasicUtil.isNotEmpty(join.getAlias())) {
                     // builder.append(" AS ").append(join.getAlias());
                     builder.append("  ").append(join.getAlias());
                 }
@@ -780,7 +780,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalTotal(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run) {
         String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") AS CNT";
         return sql;
     }
@@ -791,7 +791,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * String mergeFinalExists(DataRuntime runtime, Run run)
      ******************************************************************************************************************/
     @Override
-    public String mergeFinalExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run) {
         String sql = run.getBaseQuery() + " RETURN COUNT("+run.getPrepare().getAlias()+") > 0  AS IS_EXISTS";
         return sql;
     }
@@ -805,26 +805,26 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
      * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
      ******************************************************************************************************************/
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = run.getBuilder();
         // List<Object> values = new ArrayList<Object>();
         LinkedHashMap<String, Column> keys = new LinkedHashMap<>();
         LinkedHashMap<String, Column> primaryKeys = new LinkedHashMap<>();
-        if(null != columns && columns.size() >0 ){
+        if(null != columns && columns.size() >0 ) {
             keys = columns;
         }else{
             keys.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE));
         }
-        if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+        if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
             primaryKeys.putAll(EntityAdapterProxy.primaryKeys(obj.getClass()));
         }else{
             primaryKeys = new LinkedHashMap<>();
             primaryKeys.put(Neo4jRow.DEFAULT_PRIMARY_KEY, new Column(Neo4jRow.DEFAULT_PRIMARY_KEY));
         }
         // 不更新主键 除非显示指定
-        for(String pk:primaryKeys.keySet()){
+        for(String pk:primaryKeys.keySet()) {
             if(!columns.containsKey(pk)) {
                 keys.remove(pk);
             }
@@ -836,32 +836,32 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
-        if(!keys.isEmpty()){
+        if(!keys.isEmpty()) {
             builder.append("UPDATE ").append(dest.getName());
             builder.append(" SET").append(JDBCAdapter.BR_TAB);
             boolean start = true;
-            for(Column column:keys.values()){
-                if(!start){
+            for(Column column:keys.values()) {
+                if(!start) {
                     builder.append(",");
                 }
                 start = false;
                 String key = column.getName();
                 Object value = null;
-                if(EntityAdapterProxy.hasAdapter(obj.getClass())){
+                if(EntityAdapterProxy.hasAdapter(obj.getClass())) {
                     Field field = EntityAdapterProxy.field(obj.getClass(), key);
                     value = BeanUtil.getFieldValue(obj, field);
                 }else {
                     value = BeanUtil.getFieldValue(obj, key);
                 }
-                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
-                if(BasicUtil.checkEl(value+"")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+                if(BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
 
                     delimiter(builder, key).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
                 }else{
                     delimiter(builder, key).append(" = ?").append(JDBCAdapter.BR_TAB);
-                    if("NULL".equals(value)){
+                    if("NULL".equals(value)) {
                         value = null;
                     }
                     updateColumns.add(key);
@@ -883,19 +883,19 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         TableRun run = new TableRun(runtime, dest);
         StringBuilder builder = new StringBuilder();
         // List<Object> values = new ArrayList<Object>();
         /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
-        if(primaryKeys.size() == 0){
+        if(primaryKeys.size() == 0) {
             throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 
         // 不更新主键 除非显示指定
-        for(String pk:primaryKeys){
+        for(String pk:primaryKeys) {
             if(!columns.containsKey(pk.toUpperCase())) {
                 cols.remove(pk.toUpperCase());
             }
@@ -908,25 +908,25 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         List<String> updateColumns = new ArrayList<>();
         /*构造SQL*/
 
-        if(!cols.isEmpty()){
+        if(!cols.isEmpty()) {
             builder.append("UPDATE ").append(dest.getName());
             builder.append(" SET").append(JDBCAdapter.BR_TAB);
             boolean first = true;
-            for(Column column:cols.values()){
+            for(Column column:cols.values()) {
                 String key = column.getName();
                 Object value = row.get(key);
-                if(!first){
+                if(!first) {
                     builder.append(",");
                 }
                 first = false;
-                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")){
-                if(BasicUtil.checkEl(value+"")){
+                //if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}")) {
+                if(BasicUtil.checkEl(value+"")) {
                     String str = value.toString();
                     value = str.substring(2, str.length()-1);
                     delimiter(builder, key).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
                 }else{
                     delimiter(builder, key).append(" = ?").append(JDBCAdapter.BR_TAB);
-                    if("NULL".equals(value)){
+                    if("NULL".equals(value)) {
                         value = null;
                     }
                     updateColumns.add(key);
@@ -952,13 +952,13 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return null;
     }
 
-    public void fillDeleteRunContent(DataRuntime runtime, TableRun run){
+    public void fillDeleteRunContent(DataRuntime runtime, TableRun run) {
         RunPrepare prepare =   run.getPrepare();
         StringBuilder builder = run.getBuilder();
         builder.append("DELETE FROM ");
         name(runtime, builder, run.getTable());
         builder.append(JDBCAdapter.BR);
-        if(BasicUtil.isNotEmpty(prepare.getAlias())){
+        if(BasicUtil.isNotEmpty(prepare.getAlias())) {
             builder.append("  ").append(prepare.getAlias());
         }
         List<Join> joins = prepare.getJoins();
@@ -967,7 +967,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 builder.append(JDBCAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
                 Table table = join.getTable();
                 delimiter(builder, table.getName());
-                if(BasicUtil.isNotEmpty(table.getAlias())){
+                if(BasicUtil.isNotEmpty(table.getAlias())) {
                     builder.append("  ").append(table.getAlias());
                 }
                 builder.append(" ON ").append(join.getCondition());
@@ -984,21 +984,21 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.checkValid();
     }
     @Override
-    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values){
-        if(null == table || null == key || null == values){
+    public Run buildDeleteRunFromTable(DataRuntime runtime, int batch, String table, ConfigStore configs,String key, Object values) {
+        if(null == table || null == key || null == values) {
             return null;
         }
         StringBuilder builder = new StringBuilder();
         TableRun run = new TableRun(runtime, table);
         builder.append("DELETE FROM ").append(table).append(" WHERE ");
-        if(values instanceof Collection){
+        if(values instanceof Collection) {
             Collection cons = (Collection)values;
             delimiter(builder, key);
-            if(cons.size() > 1){
+            if(cons.size() > 1) {
                 builder.append(" IN(");
                 int idx = 0;
-                for(Object obj:cons){
-                    if(idx > 0){
+                for(Object obj:cons) {
+                    if(idx > 0) {
                         builder.append(",");
                     }
                     // builder.append("'").append(obj).append("'");
@@ -1006,8 +1006,8 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                     idx ++;
                 }
                 builder.append(")");
-            }else if(cons.size() == 1){
-                for(Object obj:cons){
+            }else if(cons.size() == 1) {
+                for(Object obj:cons) {
                     builder.append("=?");
                 }
             }else{
@@ -1023,39 +1023,39 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         return run;
     }
     @Override
-    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+    public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         StringBuilder builder = new StringBuilder();
         builder.append("MATCH (d");
-         if(null != dest){
+         if(null != dest) {
             builder.append(":").append(dest.getName());
         }
         builder.append(")");
         builder.append(" WHERE ");
         List<String> keys = new ArrayList<>();
-        if(null != columns && columns.length>0){
-            for(String col:columns){
+        if(null != columns && columns.length>0) {
+            for(String col:columns) {
                 keys.add(col);
             }
         }else{
-            if(obj instanceof DataRow){
+            if(obj instanceof DataRow) {
                 keys = ((DataRow)obj).getPrimaryKeys();
             }else{
                 keys.addAll(EntityAdapterProxy.primaryKeys(obj.getClass()).keySet());
             }
         }
         int size = keys.size();
-        if(size >0){
-            for(int i=0; i<size; i++){
-                if(i > 0){
+        if(size >0) {
+            for(int i=0; i<size; i++) {
+                if(i > 0) {
                     builder.append("\nAND ");
                 }
                 String key = keys.get(i);
 
                 delimiter(builder, "d."+key).append(" = ? ");
                 Object value = null;
-                if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())){
+                if(!(obj instanceof Map) && EntityAdapterProxy.hasAdapter(obj.getClass())) {
                     value = BeanUtil.getFieldValue(obj, EntityAdapterProxy.field(obj.getClass(), key));
                 }else{
                     value = BeanUtil.getFieldValue(obj, key);

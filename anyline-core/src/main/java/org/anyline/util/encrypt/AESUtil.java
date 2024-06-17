@@ -39,8 +39,8 @@ public class AESUtil {
 	private static Logger log = LoggerFactory.getLogger(AESUtil.class); 
 	private static final String KEY = "AES";
 	public static enum CIPHER{
-		PKCS5			{public String getCode(){return "AES/ECB/PKCS5Padding";}},
-		PKCS7			{public String getCode(){return "AES/CBC/PKCS7Padding";}};
+		PKCS5			{public String getCode() {return "AES/ECB/PKCS5Padding";}},
+		PKCS7			{public String getCode() {return "AES/CBC/PKCS7Padding";}};
 		public abstract String getCode();
 	};
 	/** 
@@ -81,7 +81,7 @@ public class AESUtil {
 			// 实例化
 			Cipher cipherInstance = Cipher.getInstance(cipher.getCode());
 			// 使用密钥初始化, 设置为解密模式
-			if(BasicUtil.isNotEmpty(vector)){
+			if(BasicUtil.isNotEmpty(vector)) {
 				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(KEY);
 				algorithmParameters.init(new IvParameterSpec(Base64Util.decode(vector)));
 				Key key = new SecretKeySpec(Base64Util.decode(password), KEY);

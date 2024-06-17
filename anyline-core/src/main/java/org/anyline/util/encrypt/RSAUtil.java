@@ -65,7 +65,7 @@ public class RSAUtil {
 	 * @param key 密钥
 	 * @return String
 	 */
-	public static String base64(Key key){
+	public static String base64(Key key) {
 		String base64 = null;
 		base64 = Base64.encodeBase64URLSafeString(key.getEncoded());
 		return base64;
@@ -113,7 +113,7 @@ public class RSAUtil {
 	public static String encrypt(String data, PublicKey key) throws Exception {
 		try {
 			RSAPublicKey publicKey = null;
-			if(key instanceof RSAPublicKey){
+			if(key instanceof RSAPublicKey) {
 				publicKey = (RSAPublicKey) key;
 			}else{
 				throw new Exception("请提供RRSAPublicKey");
@@ -194,7 +194,7 @@ public class RSAUtil {
 	public static String decrypt(String data, RSAPublicKey key) throws Exception {
 		try {
 			RSAPublicKey publicKey = null;
-			if(key instanceof RSAPublicKey){
+			if(key instanceof RSAPublicKey) {
 				publicKey = (RSAPublicKey) key;
 			}else{
 				throw new Exception("请提供RRSAPublicKey");

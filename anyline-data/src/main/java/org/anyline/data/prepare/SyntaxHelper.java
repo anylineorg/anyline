@@ -44,16 +44,16 @@ public class SyntaxHelper {
 	 * @param afterChar  afterChar
 	 * @return Variable
 	 */ 
-	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){
+	public static Variable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar) {
 		int varType = -1;
-		if(null != prefix && null != fullKey){
-			if(prefix.endsWith(":") && fullKey.startsWith(":")){
+		if(null != prefix && null != fullKey) {
+			if(prefix.endsWith(":") && fullKey.startsWith(":")) {
 				//IN(::IDS) > IN(:, :IDS
 				prefix = prefix.substring(0, prefix.length()-1);
 				fullKey = ":"+fullKey;
 			}
 		}
-		if(BasicUtil.isNotEmpty(prefix)){
+		if(BasicUtil.isNotEmpty(prefix)) {
 			//CODE = 'A:1' prefix = "A"
 			//CODE = 'IN:1' prefix = "IN"
 			//如果遇到以上情况 应该用#{}${}占位
@@ -64,48 +64,48 @@ public class SyntaxHelper {
 					&& !fullKey.startsWith("::")
 					&& prefix.matches(".*[a-zA-Z0-9]$")
 					&& !")".equals(afterChar)
-			){
+			) {
 				return null;
 			}*/
 		}
 		Compare compare = Compare.EQUAL;
-		if(null == afterChar){
+		if(null == afterChar) {
 			afterChar = ""; 
 		} 
 		Variable var = new DefaultVariable();
 		 
-		if(fullKey.startsWith("$") || fullKey.startsWith("::")){
+		if(fullKey.startsWith("$") || fullKey.startsWith("::")) {
 			// AND CD = ${CD}  
 			// AND CD = ::CD 
 			varType = Variable.VAR_TYPE_REPLACE;
-		}else if(fullKey.startsWith("#")){
+		}else if(fullKey.startsWith("#")) {
 			// AND CD = #{CD}
-			if("'".equals(afterChar)){
+			if("'".equals(afterChar)) {
 				// AND CD = '#{CD}'
 				varType = Variable.VAR_TYPE_KEY_REPLACE;
 			}else {
 				varType = Variable.VAR_TYPE_KEY;
 			}
-		}else if("'".equals(afterChar)){
+		}else if("'".equals(afterChar)) {
 			// AND CD = '#{CD}'
 			// AND CD = '${CD}'
 			// AND CD = ':CD' 
 			varType = Variable.VAR_TYPE_KEY_REPLACE;
-		}else if(prefix.endsWith("%") || afterChar.startsWith("%")){
+		}else if(prefix.endsWith("%") || afterChar.startsWith("%")) {
 			// AND CD LIKE '%{CD}%' 
 			// AND CD LIKE '%:CD%' 
 			varType = Variable.VAR_TYPE_KEY;
-			if(prefix.endsWith("%") && afterChar.startsWith("%")){
+			if(prefix.endsWith("%") && afterChar.startsWith("%")) {
 				compare = Compare.LIKE;
-			}else if(prefix.endsWith("%")){
+			}else if(prefix.endsWith("%")) {
 				compare = Compare.LIKE_PREFIX;
-			}else if(afterChar.startsWith("%")){
+			}else if(afterChar.startsWith("%")) {
 				compare = Compare.LIKE_SUFFIX;
 			} 
 		}else{
 			varType = Variable.VAR_TYPE_KEY;
 		}
-		if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
+		if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")) {
 			//  AND CD IN(#{CD})  AND CD IN(${CD}) AND CD IN(:CD)
 			compare = Compare.IN;
 		}
@@ -115,20 +115,20 @@ public class SyntaxHelper {
 		var.setCompare(compare); 
 		return var; 
 	} 
-	public static Compare parseCompare(int code){
+	public static Compare parseCompare(int code) {
 		for (Compare type : Compare.values()) {
-			if(type.getCode() == code){
+			if(type.getCode() == code) {
 				return type; 
 			} 
         } 
 		return null; 
 	} 
-	public static Compare parseCompare(String code){
-		if(BasicUtil.isEmpty(code)){
+	public static Compare parseCompare(String code) {
+		if(BasicUtil.isEmpty(code)) {
 			return null; 
 		} 
 		for (Compare type : Compare.values()) {
-			if(code.equals(type.getCode()+"")){
+			if(code.equals(type.getCode()+"")) {
 				return type; 
 			} 
         } 

@@ -35,46 +35,46 @@ public class TableBuilder {
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>(); //需要查询的列
     private List<Join> joins = new ArrayList<>();//关联表
 
-    public static TableBuilder init(){
+    public static TableBuilder init() {
         TableBuilder builder = new TableBuilder();
         return builder;
     }
-    public static TableBuilder init(String table){
-        TableBuilder builder = new TableBuilder();
-        builder.setTable(table);
-        return builder;
-    }
-    public static TableBuilder init(Table table){
+    public static TableBuilder init(String table) {
         TableBuilder builder = new TableBuilder();
         builder.setTable(table);
         return builder;
     }
-    public static TableBuilder init(String table, String columns){
+    public static TableBuilder init(Table table) {
+        TableBuilder builder = new TableBuilder();
+        builder.setTable(table);
+        return builder;
+    }
+    public static TableBuilder init(String table, String columns) {
         TableBuilder builder = new TableBuilder();
         builder.setTable(table);
         builder.addColumns(columns);
         return builder;
     }
 
-    public TableBuilder setDataSource(String datasoruce){
+    public TableBuilder setDataSource(String datasoruce) {
         this.datasource = datasoruce;
         return this;
     }
-    public TableBuilder setTable(String table){
+    public TableBuilder setTable(String table) {
         this.table = new Table(table);
         return this;
     }
-    public TableBuilder setTable(Table table){
+    public TableBuilder setTable(Table table) {
         this.table = table;
         return this;
     }
-    public TableBuilder addColumn(String column){
-        if(!columns.containsKey(column.toUpperCase())){
+    public TableBuilder addColumn(String column) {
+        if(!columns.containsKey(column.toUpperCase())) {
             columns.put(column.toUpperCase(), new Column(column));
         }
         return this;
     }
-    public TableBuilder addColumns(String ... columns){
+    public TableBuilder addColumns(String ... columns) {
         if(null != columns) {
             for (String column:columns) {
                 addColumn(column);
@@ -82,11 +82,11 @@ public class TableBuilder {
         }
         return this;
     }
-    public RunPrepare build(){
+    public RunPrepare build() {
         DefaultTablePrepare prepare = new DefaultTablePrepare();
         prepare.setDest(datasource);
         prepare.setTable(table);
-        for(Join join:joins){
+        for(Join join:joins) {
             prepare.join(join);
         }
         for(Column col: columns.values()) {
@@ -95,46 +95,46 @@ public class TableBuilder {
         return prepare;
     }
 
-    public TableBuilder join(Join join){
+    public TableBuilder join(Join join) {
         joins.add(join);
         return this;
     }
-    public TableBuilder join(Join.TYPE type, String table, String condition){
+    public TableBuilder join(Join.TYPE type, String table, String condition) {
         return join(type, new Table(table), condition);
     }
-    public TableBuilder join(Join.TYPE type, Table table, String condition){
+    public TableBuilder join(Join.TYPE type, Table table, String condition) {
         Join join = new Join();
         join.setTable(table);
         join.setType(type);
         join.setCondition(condition);
         return join(join);
     }
-    public Table getTable(){
+    public Table getTable() {
         return table;
     }
-    public TableBuilder inner(Table table, String condition){
+    public TableBuilder inner(Table table, String condition) {
         return join(Join.TYPE.INNER, table.getFullName(), condition);
     }
-    public TableBuilder inner(String table, String condition){
+    public TableBuilder inner(String table, String condition) {
         return join(Join.TYPE.INNER, table, condition);
     }
-    public TableBuilder left(String table, String condition){
+    public TableBuilder left(String table, String condition) {
         return join(Join.TYPE.LEFT, table, condition);
     }
-    public TableBuilder left(Table table, String condition){
+    public TableBuilder left(Table table, String condition) {
         return join(Join.TYPE.LEFT, table, condition);
     }
-    public TableBuilder right(String table, String condition){
+    public TableBuilder right(String table, String condition) {
         return join(Join.TYPE.RIGHT, table, condition);
     }
-    public TableBuilder right(Table table, String condition){
+    public TableBuilder right(Table table, String condition) {
         return join(Join.TYPE.RIGHT, table, condition);
     }
-    public TableBuilder full(String table, String condition){
+    public TableBuilder full(String table, String condition) {
         return join(Join.TYPE.FULL, table, condition);
     }
 
-    public TableBuilder full(Table table, String condition){
+    public TableBuilder full(Table table, String condition) {
         return join(Join.TYPE.FULL, table, condition);
     }
 

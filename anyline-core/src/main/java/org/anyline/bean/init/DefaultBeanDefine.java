@@ -26,18 +26,18 @@ import java.util.LinkedHashMap;
 
 public class DefaultBeanDefine implements BeanDefine {
     private static Logger log = LoggerFactory.getLogger(DefaultBeanDefine.class);
-    public DefaultBeanDefine(){}
-    public DefaultBeanDefine(Class type){
+    public DefaultBeanDefine() {}
+    public DefaultBeanDefine(Class type) {
         this.type = type;
     }
-    public DefaultBeanDefine(String type){
+    public DefaultBeanDefine(String type) {
         this.typeName = type;
     }
-    public DefaultBeanDefine(Class type, boolean lazy){
+    public DefaultBeanDefine(Class type, boolean lazy) {
         this.type = type;
         this.lazy = lazy;
     }
-    public DefaultBeanDefine(String type, boolean lazy){
+    public DefaultBeanDefine(String type, boolean lazy) {
         this.typeName = type.trim();
         this.lazy = lazy;
     }
@@ -48,7 +48,7 @@ public class DefaultBeanDefine implements BeanDefine {
     private LinkedHashMap<String, Object> values = new LinkedHashMap();
 
     public String getTypeName() {
-        if(null == typeName && null != type){
+        if(null == typeName && null != type) {
             typeName = type.getName();
         }
         return typeName;
@@ -60,10 +60,10 @@ public class DefaultBeanDefine implements BeanDefine {
 
     @Override
     public Class getType() {
-        if(null == type && null != typeName){
+        if(null == type && null != typeName) {
             try {
                 type = Class.forName(typeName);
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("类型异常", e);
             }
         }

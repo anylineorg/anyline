@@ -98,7 +98,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public Run setRuntime(DataRuntime runtime){
+	public Run setRuntime(DataRuntime runtime) {
 		this.runtime = runtime;
 		return this;
 	}
@@ -125,13 +125,13 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public void init(){
+	public void init() {
 		if(null != runtime) {
 			this.delimiterFr = runtime.getAdapter().getDelimiterFr();
 			this.delimiterTo = runtime.getAdapter().getDelimiterTo();
 		}
 
-		if(null != configs){
+		if(null != configs) {
 			setPageNavi(configs.getPageNavi());
 			/*OrderStore orderStore = configStore.getOrders();
 			List<Order> orders = null;
@@ -147,7 +147,7 @@ public abstract class AbstractRun implements Run {
 		 
 	}
 	@Override
-	public Table getTable(){
+	public Table getTable() {
 		return table;
 	}
 
@@ -155,11 +155,11 @@ public abstract class AbstractRun implements Run {
 	public Catalog getCatalog() {
 		return catalog;
 	}
-	public void setCatalog(Catalog catalog){
+	public void setCatalog(Catalog catalog) {
 		this.catalog = catalog;
 	}
 	public void setCatalog(String catalog) {
-		if(BasicUtil.isNotEmpty(catalog)){
+		if(BasicUtil.isNotEmpty(catalog)) {
 			this.catalog = new Catalog(catalog);
 		}else{
 			this.catalog = null;
@@ -170,11 +170,11 @@ public abstract class AbstractRun implements Run {
 	public Schema getSchema() {
 		return schema;
 	}
-	public void setSchema(Schema schema){
+	public void setSchema(Schema schema) {
 		this.schema = schema;
 	}
 	public void setSchema(String schema) {
-		if(BasicUtil.isNotEmpty(schema)){
+		if(BasicUtil.isNotEmpty(schema)) {
 			this.schema = new Schema(schema);
 		}else{
 			this.schema = null;
@@ -182,13 +182,13 @@ public abstract class AbstractRun implements Run {
 	}
 
 	public void setTable(String table) {
-		if(BasicUtil.isNotEmpty(table)){
+		if(BasicUtil.isNotEmpty(table)) {
 			this.table = new Table(table);
 		}else{
 			this.table = null;
 		}
 	}
-	public void setTable(Table table){
+	public void setTable(Table table) {
 		this.table = table;
 	}
 
@@ -198,18 +198,18 @@ public abstract class AbstractRun implements Run {
 		String catalogName = getCatalogName();
 		String schemaName = getSchemaName();
 		String tableName = getTableName();
-		if(BasicUtil.isNotEmpty(catalogName)){
+		if(BasicUtil.isNotEmpty(catalogName)) {
 			dest = catalogName;
 		}
-		if(BasicUtil.isNotEmpty(schemaName)){
-			if(null == dest){
+		if(BasicUtil.isNotEmpty(schemaName)) {
+			if(null == dest) {
 				dest = schemaName;
 			}else{
 				dest += "." + schemaName;
 			}
 		}
-		if(BasicUtil.isNotEmpty(tableName)){
-			if(null == dest){
+		if(BasicUtil.isNotEmpty(tableName)) {
+			if(null == dest) {
 				dest = tableName;
 			}else{
 				dest += "." + tableName;
@@ -218,28 +218,28 @@ public abstract class AbstractRun implements Run {
 		return dest;
 	}
 	@Override
-	public Run group(String group){
+	public Run group(String group) {
 		/*避免添加空条件*/ 
-		if(BasicUtil.isEmpty(group)){
+		if(BasicUtil.isEmpty(group)) {
 			return this; 
 		} 
 		 
-		if(null == groupStore){
+		if(null == groupStore) {
 			groupStore = new DefaultGroupStore();
 		} 
  
 		group = group.trim().toUpperCase(); 
 
 		/*添加新分组条件*/ 
-		if(!groupStore.getGroups().contains(group)){
+		if(!groupStore.getGroups().contains(group)) {
 			groupStore.group(group); 
 		} 
 		 
 		return this; 
 	}
 	@Override
-	public Run order(String order){
-		if(null == orderStore){
+	public Run order(String order) {
+		if(null == orderStore) {
 			orderStore = new DefaultOrderStore();
 		} 
 		orderStore.order(order); 
@@ -258,18 +258,18 @@ public abstract class AbstractRun implements Run {
 			setGroupStore(groups);
 		}
 		OrderStore orders = prepare.getOrders();
-		if(null != orders){
+		if(null != orders) {
 			setOrderStore(orders);
 		}
 		String having = prepare.getHaving();
-		if(null != having){
+		if(null != having) {
 			this.having = having;
 		}
 		return this; 
 	}
 	@Override
 	public List<RunValue> getRunValues() {
-		if(null != batchValues){
+		if(null != batchValues) {
 			return batchValues;
 		}
 		return values;
@@ -277,12 +277,12 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public List<Object> getValues() {
 		List<Object> list = new ArrayList<>();
-		if(null != batchValues){
-			for(RunValue value:batchValues){
+		if(null != batchValues) {
+			for(RunValue value:batchValues) {
 				list.add(value.getValue());
 			}
-		}else  if(null != values){
-			for(RunValue value:values){
+		}else  if(null != values) {
+			for(RunValue value:values) {
 				list.add(value.getValue());
 			}
 		}
@@ -296,11 +296,11 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public void addValues(String key, Collection<Object> values) {
-		if(null != values){
-			if(null == this.values){
+		if(null != values) {
+			if(null == this.values) {
 				this.values = new ArrayList<>();
 			}
-			for(Object value:values){
+			for(Object value:values) {
 				this.values.add(new RunValue(key, value));
 			}
 		}
@@ -316,82 +316,82 @@ public abstract class AbstractRun implements Run {
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
 	@Override
-	public RunValue addValues(Compare compare, Column column, Object obj, boolean split){
+	public RunValue addValues(Compare compare, Column column, Object obj, boolean split) {
 		RunValue rv = null;
-		if(null != obj){
+		if(null != obj) {
 			// from:1-DataRow 2-Entity
-			if(split && (null == column || !column.isArray()) && getFrom() != 2){
+			if(split && (null == column || !column.isArray()) && getFrom() != 2) {
 				/**/
 				boolean json = false;
-				if(null != column){
+				if(null != column) {
 					String type = column.getTypeName();
-					if(null != type){
-						if(type.toUpperCase().contains("JSON") || type.toUpperCase().contains("BSON")){
+					if(null != type) {
+						if(type.toUpperCase().contains("JSON") || type.toUpperCase().contains("BSON")) {
 							json = true;
 						}
 					}
 				}
 				if(obj.getClass().isArray()) {
-					if(obj instanceof Object[] && !json){
+					if(obj instanceof Object[] && !json) {
 						Object[] list = (Object[]) obj;
-						for(Object item:list){
+						for(Object item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof double[] && !json){
+					}else if(obj instanceof double[] && !json) {
 						double[] list = (double[]) obj;
-						for(double item:list){
+						for(double item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof long[] && !json){
+					}else if(obj instanceof long[] && !json) {
 						long[] list = (long[]) obj;
-						for(long item:list){
+						for(long item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof int[] && !json){
+					}else if(obj instanceof int[] && !json) {
 						int[] list = (int[]) obj;
-						for(int item:list){
+						for(int item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof float[] && !json){
+					}else if(obj instanceof float[] && !json) {
 						float[] list = (float[]) obj;
-						for(float item:list){
+						for(float item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof short[] && !json){
+					}else if(obj instanceof short[] && !json) {
 						short[] list = (short[]) obj;
-						for(short item:list){
+						for(short item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
-					}else if(obj instanceof Object[] && !json){
+					}else if(obj instanceof Object[] && !json) {
 						Object[] list = (Object[]) obj;
-						for(Object item:list){
+						for(Object item:list) {
 							rv = new RunValue(column, item);
 							addValues(rv);
-							if(Compare.EQUAL == compare){
+							if(Compare.EQUAL == compare) {
 								break;
 							}
 						}
@@ -400,12 +400,12 @@ public abstract class AbstractRun implements Run {
 						rv = new RunValue(column, obj);
 						addValues(rv);
 					}
-				}else if(obj instanceof Collection && !json){
+				}else if(obj instanceof Collection && !json) {
 					Collection list = (Collection)obj;
-					for(Object item:list){
+					for(Object item:list) {
 						rv = new RunValue(column, item);
 						addValues(rv);
-						if(Compare.EQUAL == compare){
+						if(Compare.EQUAL == compare) {
 							break;
 						}
 					}
@@ -432,20 +432,20 @@ public abstract class AbstractRun implements Run {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@SuppressWarnings({"rawtypes","unchecked" })
-	public Run addValues(RunValue run){
-		if(null == values){
+	public Run addValues(RunValue run) {
+		if(null == values) {
 			values = new ArrayList<>();
 		}
 		values.add(run);
 		return this;
 	}
-	public Run addValues(List<RunValue> values){
-		for(RunValue value:values){
+	public Run addValues(List<RunValue> values) {
+		for(RunValue value:values) {
 			addValues(value);
 		}
 		return this;
 	}
-	public Run setRunValues(List<RunValue> values){
+	public Run setRunValues(List<RunValue> values) {
 		this.values = values;
 		return this;
 	}
@@ -464,57 +464,57 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public void setConfigStore(ConfigStore configs) {
 		this.configs = configs;
-		if(null != configs){
+		if(null != configs) {
 			GroupStore groups = configs.getGroups();
-			if(null != groups){
-				if(groupStore == null){
+			if(null != groups) {
+				if(groupStore == null) {
 					groupStore = new DefaultGroupStore();
 				}
 				List<Group> list = groups.getGroups();
-				for(Group group:list){
+				for(Group group:list) {
 					groupStore.group(group);
 				}
 			}
 			String having = configs.getHaving();
-			if(BasicUtil.isNotEmpty(having)){
+			if(BasicUtil.isNotEmpty(having)) {
 				this.having = having;
 			}
 			OrderStore orders = configs.getOrders();
-			if(null != orders){
+			if(null != orders) {
 				this.orderStore = orders;
 			}
 		}
 	}
 	@Override
 	public void addConfigStore(ConfigStore configs) {
-		if(null == this.configs){
+		if(null == this.configs) {
 			this.configs = configs;
 		}else{
-			if(null != configs){
+			if(null != configs) {
 				this.configs.and(configs);
 				GroupStore groups = configs.getGroups();
-				if(null != groups){
-					if(groupStore == null){
+				if(null != groups) {
+					if(groupStore == null) {
 						groupStore = new DefaultGroupStore();
 					}
 					List<Group> list = groups.getGroups();
-					for(Group group:list){
+					for(Group group:list) {
 						groupStore.group(group);
 					}
 					this.configs.setGroups(groupStore);
 				}
 				String having = configs.getHaving();
-				if(BasicUtil.isNotEmpty(having)){
+				if(BasicUtil.isNotEmpty(having)) {
 					this.having = having;
 					this.configs.having(having);
 				}
 				PageNavi navi = configs.getPageNavi();
-				if(null != navi){
+				if(null != navi) {
 					this.pageNavi = navi;
 					this.configs.setPageNavi(navi);
 				}
 				OrderStore orders = configs.getOrders();
-				if(null != orders){
+				if(null != orders) {
 					this.orderStore = orders;
 					this.configs.setOrders(orders);
 				}
@@ -538,7 +538,7 @@ public abstract class AbstractRun implements Run {
 	public void setGroupStore(GroupStore groupStore) {
 		this.groupStore = groupStore; 
 	}
-	public void setHaving(String having){
+	public void setHaving(String having) {
 		this.having = having;
 	}
 
@@ -564,8 +564,8 @@ public abstract class AbstractRun implements Run {
 	} 
 	@Override 
 	public void setOrders(String[] orders) {
-		if(null != orders){
-			for(String order:orders){
+		if(null != orders) {
+			for(String order:orders) {
 				order(order); 
 			} 
 		} 
@@ -573,10 +573,10 @@ public abstract class AbstractRun implements Run {
 	@Override 
 	public String getFinalQuery(boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalQuery(runtime, this);
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
@@ -585,22 +585,22 @@ public abstract class AbstractRun implements Run {
 	@Override 
 	public String getTotalQuery(boolean placeholder) {
 		String text = runtime.getAdapter().mergeFinalTotal(runtime, this);
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
 		return text;
 	}
 	@Override
-	public String getFinalExists(boolean placeholder){
+	public String getFinalExists(boolean placeholder) {
 		String text =  runtime.getAdapter().mergeFinalExists(runtime, this);
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
@@ -609,32 +609,32 @@ public abstract class AbstractRun implements Run {
 	@Override 
 	public String getBaseQuery(boolean placeholder) {
 		String text = builder.toString();
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		return text;
 	}
 	@Override
-	public Run addOrders(OrderStore orderStore){
-		if(null == orderStore){
+	public Run addOrders(OrderStore orderStore) {
+		if(null == orderStore) {
 			return this; 
 		} 
 		List<Order> orders = orderStore.getOrders(); 
-		if(null == orders){
+		if(null == orders) {
 			return this; 
 		} 
-		for(Order order:orders){
+		for(Order order:orders) {
 			this.orderStore.order(order); 
 		} 
 		return this; 
 	}
 	@Override
-	public Run addOrder(Order order){
+	public Run addOrder(Order order) {
 		this.orderStore.order(order); 
 		return this; 
 	}
-	public Run addValue(RunValue value){
-		if(null == values){
+	public Run addValue(RunValue value) {
+		if(null == values) {
 			values = new ArrayList<>();
 		}
 		values.add(value);
@@ -642,7 +642,7 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public Run setConditionChain(ConditionChain chain){
+	public Run setConditionChain(ConditionChain chain) {
 		this.conditionChain = chain; 
 		return this; 
 	}
@@ -665,12 +665,12 @@ public abstract class AbstractRun implements Run {
 	 * @param compare 比较方式
 	 */
 	@Override
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value) {
 		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
-		if(null == conditionChain){
+		if(null == conditionChain) {
 			conditionChain = new DefaultAutoConditionChain();
 		}
-		if(condition.isActive()){
+		if(condition.isActive()) {
 			conditionChain.addCondition(condition);
 		}else{
 			if(swt == EMPTY_VALUE_SWITCH.BREAK) {
@@ -681,16 +681,16 @@ public abstract class AbstractRun implements Run {
 	}
 	@Override
 	public Run addCondition(Condition condition) {
-		if(null != conditionChain){
+		if(null != conditionChain) {
 			conditionChain.addCondition(condition); 
 		} 
 		return this; 
 	}
 
 	@Override
-	public Condition getCondition(String name){
-		for(Condition con:conditionChain.getConditions()){
-			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)){
+	public Condition getCondition(String name) {
+		for(Condition con:conditionChain.getConditions()) {
+			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)) {
 				return con;
 			}
 		}
@@ -698,10 +698,10 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public List<Condition> getConditions(String name){
+	public List<Condition> getConditions(String name) {
 		List<Condition> list = new ArrayList<>();
-		for(Condition con:conditionChain.getConditions()){
-			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)){
+		for(Condition con:conditionChain.getConditions()) {
+			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)) {
 				list.add(con);
 			}
 		}
@@ -709,44 +709,44 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public String getFinalDelete(boolean placeholder){
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+	public String getFinalDelete(boolean placeholder) {
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		String text = builder.toString();
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
 		return text;
 	}
 	@Override
-	public String getFinalInsert(boolean placeholder){
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+	public String getFinalInsert(boolean placeholder) {
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		String text = builder.toString();
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
 		return text;
 	}
 	@Override
-	public String getFinalUpdate(boolean placeholder){
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+	public String getFinalUpdate(boolean placeholder) {
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		String text = builder.toString();
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
 		return text;
 	}
 
-	public Run addVariable(Variable var){
-		if(null == variables){
+	public Run addVariable(Variable var) {
+		if(null == variables) {
 			variables = new ArrayList<Variable>();
 		} 
 		variables.add(var); 
@@ -754,25 +754,25 @@ public abstract class AbstractRun implements Run {
 	} 
 
 	@Override
-	public String getFinalExecute(boolean placeholder){
+	public String getFinalExecute(boolean placeholder) {
 		String text = builder.toString();
-		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN) {
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
-		if(!placeholder){
+		if(!placeholder) {
 			text = replace(text);
 		}
 		text = format(text);
-		if(!supportBr()){
+		if(!supportBr()) {
 			text = text.replace("\r\n"," ").replace("\n"," ");
 		}
 		return text;
 	}
 
-	public boolean supportBr(){
+	public boolean supportBr() {
 		return supportBr;
 	}
-	public void supportBr(boolean support){
+	public void supportBr(boolean support) {
 		this.supportBr = support;
 	}
 
@@ -786,8 +786,8 @@ public abstract class AbstractRun implements Run {
 		this.swt = swt;
 	}
 	@Override
-	public boolean isValid(){
-		if(!valid){
+	public boolean isValid() {
+		if(!valid) {
 			return false;
 		}
 		valid = checkValid();
@@ -800,11 +800,11 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public void setBuilder(StringBuilder builder){
+	public void setBuilder(StringBuilder builder) {
 		this.builder = builder;
 	}
 	@Override
-	public StringBuilder getBuilder(){
+	public StringBuilder getBuilder() {
 		return this.builder;
 	}
 
@@ -816,8 +816,8 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public List<String> getInsertColumns() {
 		List<String> keys = new ArrayList<>();
-		if(null != insertColumns){
-			for(Column column:insertColumns.values()){
+		if(null != insertColumns) {
+			for(Column column:insertColumns.values()) {
 				keys.add(column.getName());
 			}
 		}
@@ -826,11 +826,11 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public Run setInsertColumns(List<String> columns) {
-		if(null != columns){
-			if(null == insertColumns){
+		if(null != columns) {
+			if(null == insertColumns) {
 				insertColumns = new LinkedHashMap<>();
 			}
-			for(String column:columns){
+			for(String column:columns) {
 				insertColumns.put(column.toUpperCase(), new Column(column));
 			}
 		}
@@ -850,8 +850,8 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public List<String> getUpdateColumns() {
 		List<String> keys = new ArrayList<>();
-		if(null != updateColumns){
-			for(Column column:updateColumns.values()){
+		if(null != updateColumns) {
+			for(Column column:updateColumns.values()) {
 				keys.add(column.getName());
 			}
 		}
@@ -860,11 +860,11 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public Run setUpdateColumns(List<String> columns) {
-		if(null != columns){
-			if(null == updateColumns){
+		if(null != columns) {
+			if(null == updateColumns) {
 				updateColumns = new LinkedHashMap<>();
 			}
-			for(String column:columns){
+			for(String column:columns) {
 				updateColumns.put(column.toUpperCase(), new Column(column));
 			}
 		}
@@ -884,66 +884,66 @@ public abstract class AbstractRun implements Run {
 	@Override
 	public Run addCondition(String ... conditions) {
 		/*添加查询条件*/
-		if(null != conditions){
-			for(String condition:conditions){
-				if(null == condition){
+		if(null != conditions) {
+			for(String condition:conditions) {
+				if(null == condition) {
 					continue;
 				}
 				condition = condition.trim();
 				String up = condition.toUpperCase().replaceAll("\\s+"," ").trim();
 
-				if(up.startsWith("ORDER BY")){
+				if(up.startsWith("ORDER BY")) {
 					// 排序条件
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
 					String orders[] = orderStr.split(",");
-					for(String item:orders){
+					for(String item:orders) {
 						order(item);
-						if(null != configs){
+						if(null != configs) {
 							configs.order(item);
 						}
-						if(null != this.orderStore){
+						if(null != this.orderStore) {
 							this.orderStore.order(item);
 						}
 					}
 					continue;
-				}else if(up.startsWith("GROUP BY")){
+				}else if(up.startsWith("GROUP BY")) {
 					// 分组条件
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
 					String groups[] = groupStr.split(",");
-					for(String item:groups){
-						if(null == groupStore){
+					for(String item:groups) {
+						if(null == groupStore) {
 							groupStore = new DefaultGroupStore();
 						}
 						groupStore.group(item);
 					}
 					continue;
-				}else if(up.startsWith("HAVING")){
+				}else if(up.startsWith("HAVING")) {
 					// 分组过滤
 					String haveStr = condition.substring(up.indexOf("HAVING") + "HAVING".length()).trim();
 					this.having = haveStr;
 					continue;
 				}
-//				if(up.contains(" OR ") && !(condition.startsWith("(") && condition.endsWith(")"))){
+//				if(up.contains(" OR ") && !(condition.startsWith("(") && condition.endsWith(")"))) {
 //					condition = "(" + condition + ")";
 //				}
 
-				//if(condition.startsWith("${") && condition.endsWith("}")){
-				if(BasicUtil.checkEl(condition)){
+				//if(condition.startsWith("${") && condition.endsWith("}")) {
+				if(BasicUtil.checkEl(condition)) {
 					// 原生SQL  不处理
 					Condition con = new DefaultAutoCondition(condition.substring(2, condition.length()-1));
 					addCondition(con);
 					continue;
 				}
 
-				if(condition.contains(":")){
+				if(condition.contains(":")) {
 					// :符号是否表示时间
 					boolean isTime = false;
 					int idx = condition.indexOf(":");
 					// ''之内
-					if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){
+					if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0) {
 						isTime = true;
 					}
-					if(!isTime){
+					if(!isTime) {
 						// 需要解析的SQL
 						ParseResult parser = ConfigParser.parse(condition, false);
 						Object value = ConfigParser.getValues(parser);
@@ -958,35 +958,35 @@ public abstract class AbstractRun implements Run {
 		}
 		return this;
 	}
-	protected static boolean endWithWhere(String txt){
+	protected static boolean endWithWhere(String txt) {
 		txt = txt.replaceAll("\\s"," ")
 				.replaceAll("'[\\S\\s]*?'","{}")
 				.replaceAll("\\([^\\(\\)]+?\\)","{}")
 				.replaceAll("\\([^\\(\\)]+?\\)","{}")
 				.replaceAll("\\([^\\(\\)]+?\\)","{}")
 				.toUpperCase();
-		if(txt.contains("UNION")){
+		if(txt.contains("UNION")) {
 			boolean result = false;
 			int fr = 0;
-			while((fr = txt.indexOf("WHERE")) > 0){
+			while((fr = txt.indexOf("WHERE")) > 0) {
 				txt = txt.substring(fr+5);
-				if(txt.indexOf("UNION") > 0){
+				if(txt.indexOf("UNION") > 0) {
 					continue;
 				}
 				try{
 					int bSize = 0;//左括号数据
-					if(txt.contains(")")){
+					if(txt.contains(")")) {
 						bSize = RegularUtil.fetch(txt, "\\)").size();
 					}
 					int eSize = 0;//右括号数量
-					if(txt.contains("(")){
+					if(txt.contains("(")) {
 						eSize = RegularUtil.fetch(txt, "\\(").size();
 					}
-					if(bSize == eSize){
+					if(bSize == eSize) {
 						result = true;
 						break;
 					}
-				}catch(Exception e){
+				}catch(Exception e) {
 					log.error("check where exception:", e);
 				}
 			}
@@ -1000,39 +1000,39 @@ public abstract class AbstractRun implements Run {
 		this.variables = variables;
 	}
 
-	public boolean isSetValue(String condition, String variable){
+	public boolean isSetValue(String condition, String variable) {
 		Condition con = getCondition(condition);
-		if(null == con){
+		if(null == con) {
 			Variable var = con.getVariable(variable);
-			if(null != var){
+			if(null != var) {
 				return var.isSetValue();
 			}
 		}
 		return false;
 	}
-	public boolean isSetValue(String variable){
+	public boolean isSetValue(String variable) {
 		Variable var = getVariable(variable);
-		if(null != var){
+		if(null != var) {
 			return var.isSetValue();
 		}
 		return false;
 	}
 
 	public Variable getVariable(String var) {
-		if(null == variables || null == var){
+		if(null == variables || null == var) {
 			return null;
 		}
-		for(Variable variable:variables){
-			if(null == variable){
+		for(Variable variable:variables) {
+			if(null == variable) {
 				continue;
 			}
-			if(var.equalsIgnoreCase(variable.getKey())){
+			if(var.equalsIgnoreCase(variable.getKey())) {
 				return variable;
 			}
 		}
 		return null;
 	}
-	public List<Variable> getVariables(){
+	public List<Variable> getVariables() {
 		return variables;
 	}
 
@@ -1127,11 +1127,11 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public String action(){
+	public String action() {
 		return action;
 	}
 	@Override
-	public void action(String action){
+	public void action(String action) {
 		this.action = action;
 	}
 
@@ -1145,14 +1145,14 @@ public abstract class AbstractRun implements Run {
 	 * @return String
 	 */
 	@Override
-	public String getQueryColumn(){
+	public String getQueryColumn() {
 		String result = "*";
-		if(null != prepare){
+		if(null != prepare) {
 			List<String> cols = prepare.getFetchKeys();
-			if(null != cols && cols.size()>0){
+			if(null != cols && cols.size()>0) {
 				result = null;
-				for(String col:cols){
-					if(null == result){
+				for(String col:cols) {
+					if(null == result) {
 
 						result = SQLUtil.delimiter(col, runtime.getAdapter().getDelimiterFr(), runtime.getAdapter().getDelimiterTo());
 					}else{
@@ -1169,23 +1169,23 @@ public abstract class AbstractRun implements Run {
 	 * @param sql sql
 	 * @return String
 	 */
-	protected String replace(String sql){
+	protected String replace(String sql) {
 		String result=sql;
-		if(null != values){
-			for(RunValue rv:values){
+		if(null != values) {
+			for(RunValue rv:values) {
 				Object value = rv.getValue();
 				Column column = rv.getColumn();
 				TypeMetadata columnType = null;
-				if(null != column){
+				if(null != column) {
 					columnType = column.getTypeMetadata();
 				}
 				int index = result.indexOf("?");
 				String replacement = null;
-				if(null == value){
+				if(null == value) {
 					value = "NULL";
 				}
 				DriverAdapter adapter = adapter();
-				if(null != adapter){
+				if(null != adapter) {
 					replacement = adapter.write(runtime, column, value, false)+"";
 				}else {
 					if (BasicUtil.isNumber(value) || "NULL".equalsIgnoreCase(value.toString())) {
@@ -1200,7 +1200,7 @@ public abstract class AbstractRun implements Run {
 		}
 		return result;
 	}
-	private String format(String sql){
+	private String format(String sql) {
 		if(null != sql) {
 			sql = sql.replaceAll("\n ","\n\t")
 					.replaceAll("\n\t\n","\n")
@@ -1210,29 +1210,29 @@ public abstract class AbstractRun implements Run {
 		}
 		return sql;
 	}
-	public String log(ACTION.DML action, boolean placeholder){
+	public String log(ACTION.DML action, boolean placeholder) {
 		StringBuilder builder = new StringBuilder();
 		List<String> keys = null;
 		builder.append("[cmd:\n");
-		if(action == ACTION.DML.SELECT){
+		if(action == ACTION.DML.SELECT) {
 			builder.append(getFinalQuery(placeholder));
-		}else if(action == ACTION.DML.COUNT){
+		}else if(action == ACTION.DML.COUNT) {
 			builder.append(getTotalQuery(placeholder));
-		}else if(action == ACTION.DML.UPDATE){
+		}else if(action == ACTION.DML.UPDATE) {
 			keys = getUpdateColumns();
 			builder.append(getFinalUpdate(placeholder));
-		}else if(action == ACTION.DML.INSERT){
+		}else if(action == ACTION.DML.INSERT) {
 			keys = getInsertColumns();
 			builder.append(getFinalInsert(placeholder));
-		}else if(action == ACTION.DML.EXECUTE){
+		}else if(action == ACTION.DML.EXECUTE) {
 			builder.append(getFinalExecute(placeholder));
-		}else if(action == ACTION.DML.DELETE){
+		}else if(action == ACTION.DML.DELETE) {
 			builder.append(getFinalDelete(placeholder));
-		}else if(action == ACTION.DML.EXISTS){
+		}else if(action == ACTION.DML.EXISTS) {
 			builder.append(getFinalExists(placeholder));
 		}
 		builder.append("\n]");
-		if(placeholder){
+		if(placeholder) {
 			List<Object> values = getValues();
 			if(null!= values && !values.isEmpty()) {
 				builder.append("\n[param:");
@@ -1245,7 +1245,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public String getTableName() {
-		if(null != table){
+		if(null != table) {
 			return table.getName();
 		}
 		return null;
@@ -1253,7 +1253,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public String getCatalogName() {
-		if(null != catalog){
+		if(null != catalog) {
 			return catalog.getName();
 		}
 		return null;
@@ -1261,7 +1261,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public String getSchemaName() {
-		if(null != schema){
+		if(null != schema) {
 			return schema.getName();
 		}
 		return null;
@@ -1276,7 +1276,7 @@ public abstract class AbstractRun implements Run {
 		this.unionAll = all;
 		return this;
 	}@Override
-	public boolean isUnionAll(){
+	public boolean isUnionAll() {
 		return unionAll;
 	}
 	@Override
@@ -1294,7 +1294,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public Run union(List<Run> unions, boolean all) {
-		for(Run union:unions){
+		for(Run union:unions) {
 			union(union, all);
 		}
 		return this;
@@ -1302,7 +1302,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public Run union(List<Run> unions) {
-		for(Run union:unions){
+		for(Run union:unions) {
 			union(union);
 		}
 		return this;
@@ -1313,42 +1313,42 @@ public abstract class AbstractRun implements Run {
 		return unions;
 	}
 
-	public Run join(Join join){
+	public Run join(Join join) {
 		joins.add(join);
 		return this;
 	}
-	public Run join(Join.TYPE type, Table table, String condition){
+	public Run join(Join.TYPE type, Table table, String condition) {
 		Join join = new Join();
 		join.setTable(table);
 		join.setType(type);
 		join.setCondition(condition);
 		return join(join);
 	}
-	public Run join(Join.TYPE type, String table, String condition){
+	public Run join(Join.TYPE type, String table, String condition) {
 		return join(type, new Table(table), condition);
 	}
-	public Run inner(String table, String condition){
+	public Run inner(String table, String condition) {
 		return join(Join.TYPE.INNER, table, condition);
 	}
-	public Run inner(Table table, String condition){
+	public Run inner(Table table, String condition) {
 		return join(Join.TYPE.INNER, table, condition);
 	}
-	public Run left(String table, String condition){
+	public Run left(String table, String condition) {
 		return join(Join.TYPE.LEFT, table, condition);
 	}
-	public Run left(Table table, String condition){
+	public Run left(Table table, String condition) {
 		return join(Join.TYPE.LEFT, table, condition);
 	}
-	public Run right(String table, String condition){
+	public Run right(String table, String condition) {
 		return join(Join.TYPE.RIGHT, table, condition);
 	}
-	public Run right(Table table, String condition){
+	public Run right(Table table, String condition) {
 		return join(Join.TYPE.RIGHT, table, condition);
 	}
-	public Run full(String table, String condition){
+	public Run full(String table, String condition) {
 		return join(Join.TYPE.FULL, table, condition);
 	}
-	public Run full(Table table, String condition){
+	public Run full(Table table, String condition) {
 		return join(Join.TYPE.FULL, table, condition);
 	}
 }

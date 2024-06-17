@@ -23,14 +23,14 @@ import java.io.Serializable;
 
 public class Catalog extends Metadata<Catalog> implements Serializable {
     protected String keyword = "CATALOG"           ;
-    public Catalog(){
+    public Catalog() {
 
     }
-    public Catalog(String name){
+    public Catalog(String name) {
         this.name = name;
     }
-    public boolean isEmpty(){
-        if(null == name || name.trim().isEmpty()){
+    public boolean isEmpty() {
+        if(null == name || name.trim().isEmpty()) {
             return true;
         }
         return false;
@@ -39,11 +39,11 @@ public class Catalog extends Metadata<Catalog> implements Serializable {
     public String getKeyword() {
         return this.keyword;
     }
-    public boolean equals(Catalog catalog){
+    public boolean equals(Catalog catalog) {
         return equals(catalog, true);
     }
-    public boolean equals(Catalog catalog, boolean ignoreCase){
-        if(null == catalog){
+    public boolean equals(Catalog catalog, boolean ignoreCase) {
+        if(null == catalog) {
             return false;
         }
         return BasicUtil.equals(this.name, catalog.getName(), ignoreCase);

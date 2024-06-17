@@ -56,10 +56,10 @@ public class ParseResult {
 	private String join = Condition.CONDITION_JOIN_TYPE_AND			; // 连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; // request取值方式
 
-	public DataRow map(){
+	public DataRow map() {
 		return map(false);
 	}
-	public DataRow map(boolean empty){
+	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
 		if(empty || BasicUtil.isNotEmpty(prefix)) {
 			row.put("prefix", prefix);
@@ -84,16 +84,16 @@ public class ParseResult {
 		row.put("swt", swt);
 		return row;
 	}
-	public String json(){
+	public String json() {
 		return json(false);
 	}
-	public String json(boolean empty){
+	public String json(boolean empty) {
 		return map(empty).json();
 	}
-	public List<ParseResult> getDefs(){
+	public List<ParseResult> getDefs() {
 		return defs; 
 	} 
-	public void addDef(ParseResult def){
+	public void addDef(ParseResult def) {
 		defs.add(def); 
 	} 
 	 
@@ -113,7 +113,7 @@ public class ParseResult {
 		return key; 
 	} 
 	public void setKey(String key) {
-		if(null != key){
+		if(null != key) {
 			key = key.trim();
 		}
 		this.key = key; 
@@ -122,7 +122,7 @@ public class ParseResult {
 		return var;
 	} 
 	public void setVar(String var) {
-		if(null != var){
+		if(null != var) {
 			var = var.trim();
 		}
 		this.var = var;
@@ -167,10 +167,10 @@ public class ParseResult {
 		return prefix;
 	} 
 	public void setPrefix(String prefix) {
-		if(null != prefix){
-			if(prefix.startsWith("++")){
+		if(null != prefix) {
+			if(prefix.startsWith("++")) {
 				setSwt(EMPTY_VALUE_SWITCH.BREAK);
-			}else if(prefix.startsWith("+")){
+			}else if(prefix.startsWith("+")) {
 				setSwt(EMPTY_VALUE_SWITCH.NULL);
 			}
 			prefix = prefix.replace("+","");
@@ -184,7 +184,7 @@ public class ParseResult {
 		this.join = join; 
 	}  
 
-	public ParseResult addArg(String arg){
+	public ParseResult addArg(String arg) {
 		args.add(arg);
 		return this;
 	}
@@ -203,8 +203,8 @@ public class ParseResult {
 	public void setSwt(EMPTY_VALUE_SWITCH swt) {
 		this.swt = swt;
 	}
-	public boolean isRequired(){
-		if(swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){
+	public boolean isRequired() {
+		if(swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC) {
 			return true;
 		}
 		return false;

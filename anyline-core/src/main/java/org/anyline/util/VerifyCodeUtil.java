@@ -114,22 +114,22 @@ public class VerifyCodeUtil {
 		outputImage(w, h, os, codes[0]);
 		return codes[1];
 	}
-	private static String[] createFormula(){
+	private static String[] createFormula() {
 		String[] types = new String[]{"加", "减", "乘", "除"};
 		int d1 = BasicUtil.getRandomNumber(1, 9);
 		int d2 = BasicUtil.getRandomNumber(1, 9);
 		int type = d1%4;
-		if(d1 < d2 && type==1){
+		if(d1 < d2 && type==1) {
 			type = 0;
 		}
-		if(d1%d2 !=0 && type==3){
+		if(d1%d2 !=0 && type==3) {
 			type = 2;
 		}
 		String str = d1 + types[type] + d2;
 		int cal = d1 + d2;
-		if(type ==1){
+		if(type ==1) {
 			cal = d1 - d2;
-		}else if(type ==2){
+		}else if(type ==2) {
 			cal = d1 * d2;
 		}
         return new String[]{str, cal+""};
@@ -161,10 +161,10 @@ public class VerifyCodeUtil {
 			throw e; 
 		}
 	}
-	public static BufferedImage createImage(String code, int w, int h){
+	public static BufferedImage createImage(String code, int w, int h) {
 		return createImage(code, w, h, true);
 	} 
-	public static BufferedImage createImage(String code, int w, int h, boolean trouble){
+	public static BufferedImage createImage(String code, int w, int h, boolean trouble) {
 		int verifySize = code.length(); 
 		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Random rand = new Random(); 
@@ -187,7 +187,7 @@ public class VerifyCodeUtil {
 		g2.setColor(c);// 设置背景色 
 		g2.fillRect(0, 2, w, h - 4);
 
-		if(trouble){//干扰线
+		if(trouble) {//干扰线
 			shear(g2, w, h, c);
 		}
 		g2.setColor(getRandColor(100, 160));
@@ -197,7 +197,7 @@ public class VerifyCodeUtil {
 		char[] chars = code.toCharArray();
 		for (int i = 0; i < verifySize; i++) {
 			g2.setColor(getRandColor(0, 160));
-			if(trouble){//倾斜
+			if(trouble) {//倾斜
 				AffineTransform affine = new AffineTransform();
 				affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), (w / verifySize) * i + fontSize / 2, h / 2);
 				g2.setTransform(affine);
@@ -206,7 +206,7 @@ public class VerifyCodeUtil {
 		}
 
 		
-		if(trouble){
+		if(trouble) {
 			// 绘制干扰线
 			Random random = new Random(); 
 			g2.setColor(getRandColor(160, 200));// 设置线条的颜色

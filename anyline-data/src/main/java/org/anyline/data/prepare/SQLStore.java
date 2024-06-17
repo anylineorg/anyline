@@ -20,8 +20,8 @@ package org.anyline.data.prepare;
 
 public abstract class SQLStore{
  
-	public static void loadSQL(){} 
+	public static void loadSQL() {}
  
 	public static synchronized SQLStore getInstance() {return null; } 
-	public static RunPrepare parseSQL(String id){return null;}
+	public static RunPrepare parseSQL(String id) {return null;}
 }

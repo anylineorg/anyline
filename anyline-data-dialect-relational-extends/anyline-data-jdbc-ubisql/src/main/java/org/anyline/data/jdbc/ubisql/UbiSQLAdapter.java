@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.ubisql")
 public class UbiSQLAdapter extends TiDBAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.UbiSQL;
     }
     

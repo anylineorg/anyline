@@ -39,7 +39,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public static Map<Integer, String> column_types = new HashMap<>();
     public static boolean IS_GET_SEQUENCE_VALUE_BEFORE_INSERT = false;
 
-    public InformixGenusAdapter(){
+    public InformixGenusAdapter() {
         super();
 
     }
@@ -145,7 +145,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -158,7 +158,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
     }
 
@@ -179,14 +179,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        if(null == set || set.isEmpty()){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(null == set || set.isEmpty()) {
             return;
         }
         StringBuilder builder = run.getBuilder();
         DataRow first = set.getRow(0);
         Map<String, String> seqs = new HashMap<>();
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
             Object value = first.getStringNvl(key);
             if(value instanceof String) {
@@ -207,18 +207,18 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
         LinkedHashMap<String, Column> pks = null;
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-        if(null != generator){
+        if(null != generator) {
             pks = first.getPrimaryColumns();
             columns.putAll(pks);
         }
         boolean head = true;
-        for(DataRow row:set){
+        for(DataRow row:set) {
             builder.append("INSERT INTO ");
             name(runtime, builder, dest).append(" (");
             boolean start = true;
-            for(Column column:columns.values()){
+            for(Column column:columns.values()) {
                 String key = column.getName();
-                if(!start){
+                if(!start) {
                     builder.append(",");
                 }
                 start = false;
@@ -226,8 +226,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             }
             builder.append(")");
 
-            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-                if(null != generator){
+            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
+                if(null != generator) {
                     generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
                 }
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
@@ -248,16 +248,16 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
-        if(null == list || list.isEmpty()){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+        if(null == list || list.isEmpty()) {
             return;
         }
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
-        if(list instanceof DataSet){
+        if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
             this.fillInsertContent(runtime, run, dest, set, columns);
             return;
@@ -265,7 +265,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
         Object first = list.iterator().next();
         Map<String, String> seqs = new HashMap<>();
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
             Object value = BeanUtil.getFieldValue(first, key);
             if(value instanceof String) {
@@ -295,9 +295,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append("INSERT INTO ");
         name(runtime, builder, dest).append(" (");
         boolean start = true;
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
-            if(!start){
+            if(!start) {
                 builder.append(",");
             }
             start = false;
@@ -306,14 +306,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append(") \n");
         builder.append("SELECT ");
         start = true;
-        for(Column column:columns.values()){
+        for(Column column:columns.values()) {
             String key = column.getName();
             String seq = seqs.get(key);
-            if(!start){
+            if(!start) {
                 builder.append(",");
             }
             start = false;
-            if(null != seq){
+            if(null != seq) {
                 builder.append(seq);
             }else{
                 builder.append("M.").append(key);
@@ -321,11 +321,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             builder.append(" AS ").append(key);
         }
         builder.append("\nFROM( ");
-        for(String seq:seqs.keySet()){
+        for(String seq:seqs.keySet()) {
             columns.remove(seq.toUpperCase());
         }
         int row = 0;
-        for(Object obj:list){
+        for(Object obj:list) {
 			/*if(obj instanceof DataRow) {
 				DataRow row = (DataRow)obj;
 				if (row.hasPrimaryKeys() && null != primaryGenerator && BasicUtil.isEmpty(row.getPrimaryValue())) {
@@ -337,13 +337,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 				}
 			}else{*/
             boolean create = EntityAdapterProxy.createPrimaryValue(obj, Column.names(pks));
-            if(!create && null != generator){
+            if(!create && null != generator) {
                 generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), Column.names(pks), null);
                 //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
             }
             //}
 
-            if(row > 0){
+            if(row > 0) {
                 builder.append("\n\tUNION ALL");
             }
             builder.append("\n\tSELECT ");
@@ -379,7 +379,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
         return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
     }
 
@@ -389,7 +389,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String batchInsertSeparator(){
+    public String batchInsertSeparator() {
         return ",";
     }
 
@@ -399,7 +399,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean supportInsertPlaceholder(){
+    public boolean supportInsertPlaceholder() {
         return true;
     }
     /**
@@ -409,7 +409,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param value value
      */
     @Override
-    protected void setPrimaryValue(Object obj, Object value){
+    protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
     /**
@@ -422,7 +422,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.createInsertRun(runtime, dest, obj, configs, columns);
     }
 
@@ -436,7 +436,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
         return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
 
@@ -462,7 +462,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         return super.insert(runtime, random, data, configs, run, pks);
     }
 
@@ -506,7 +506,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -533,19 +533,19 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns){
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String,Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
     /**
@@ -571,11 +571,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
     @Override
-    public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String,Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
     /**
@@ -588,7 +588,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         return super.update(runtime, random, dest, data, configs, run);
     }
 
@@ -620,24 +620,24 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.save(runtime, random, dest, data, configs, columns);
     }
 
     @Override
-    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
+    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected Boolean checkOverride(Object obj){
+    protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
     @Override
-    protected Map<String,Object> checkPv(Object obj){
+    protected Map<String,Object> checkPv(Object obj) {
         return super.checkPv(obj);
     }
 
@@ -648,11 +648,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
     @Override
-    protected boolean isMultipleValue(Column column){
+    protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
     /**
@@ -662,7 +662,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.checkMetadata(runtime, table, configs, columns);
     }
 
@@ -702,7 +702,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -715,7 +715,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         return super.querys(runtime, random, procedure, navi);
     }
 
@@ -731,7 +731,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Entity
      */
     @Override
-    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return super.selects(runtime, random, prepare, clazz, configs, conditions);
     }
 
@@ -747,7 +747,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      *
      */
     @Override
-    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
+    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
         return super.select(runtime, random, clazz, table, configs, run);
     }
 
@@ -763,7 +763,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return maps 返回map集合
      */
     @Override
-    public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public List<Map<String,Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -775,7 +775,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildQueryRun(runtime, prepare, configs, conditions);
     }
 
@@ -786,7 +786,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
         return super.buildQuerySequence(runtime, next, names);
     }
 
@@ -796,19 +796,19 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, Run run){
+    public void fillQueryContent(DataRuntime runtime, Run run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
         super.fillQueryContent(runtime, run);
     }
     /**
@@ -886,7 +886,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return maps
      */
     @Override
-    public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public List<Map<String,Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
     /**
@@ -910,7 +910,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return DataRow 保存序列查询结果 以存储过程name作为key
      */
     @Override
-    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
         return super.sequence(runtime, random, next, names);
     }
 
@@ -922,7 +922,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return  maps
      */
     @Override
-    public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list){
+    public List<Map<String,Object>> process(DataRuntime runtime, List<Map<String,Object>> list) {
         return super.process(runtime, list);
     }
 
@@ -946,7 +946,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -957,7 +957,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalTotal(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run) {
         return super.mergeFinalTotal(runtime, run);
     }
 
@@ -969,7 +969,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, Run run){
+    public long count(DataRuntime runtime, String random, Run run) {
         return super.count(runtime, random, run);
     }
 
@@ -990,11 +990,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
     @Override
-    public String mergeFinalExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run) {
         String sql = "SELECT 1 AS IS_EXISTS FROM DUAL WHERE  EXISTS(" + run.getBuilder().toString() + ")";
         sql = compressCondition(runtime, sql);
         return sql;
@@ -1029,7 +1029,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
     /**
@@ -1040,7 +1040,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+    public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
     /**
@@ -1053,19 +1053,19 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+    protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
     }
 
@@ -1076,7 +1076,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run){
+    public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
     /**
@@ -1121,7 +1121,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> T
      */
     @Override
-    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values) {
         return super.deletes(runtime, random, batch, table, configs, key, values);
     }
 
@@ -1136,7 +1136,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
         return super.delete(runtime, random, dest, configs, obj, columns);
     }
 
@@ -1152,7 +1152,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
         return super.delete(runtime, random, table, configs, conditions);
     }
 
@@ -1164,7 +1164,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 1表示成功执行
      */
     @Override
-    public long truncate(DataRuntime runtime, String random, Table table){
+    public long truncate(DataRuntime runtime, String random, Table table) {
         return super.truncate(runtime, random, table);
     }
 
@@ -1178,7 +1178,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         return super.buildDeleteRun(runtime, dest, configs, obj, columns);
     }
 
@@ -1192,12 +1192,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values){
+    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
         return super.buildDeleteRun(runtime, batch, table, configs, key, values);
     }
 
     @Override
-    public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+    public List<Run> buildTruncateRun(DataRuntime runtime, String table) {
         return super.buildTruncateRun(runtime, table);
     }
 
@@ -1235,7 +1235,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run){
+    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
         super.fillDeleteRunContent(runtime, run);
     }
 
@@ -1248,7 +1248,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.delete(runtime, random, configs, run);
     }
 
@@ -1311,7 +1311,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Database
      */
     @Override
-    public Database database(DataRuntime runtime, String random){
+    public Database database(DataRuntime runtime, String random) {
         return super.database(runtime, random);
     }
     /**
@@ -1321,7 +1321,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String product(DataRuntime runtime, String random){
+    public String product(DataRuntime runtime, String random) {
         return super.product(runtime, random);
     }
     /**
@@ -1331,7 +1331,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String version(DataRuntime runtime, String random){
+    public String version(DataRuntime runtime, String random) {
         return super.version(runtime, random);
     }
     /**
@@ -1343,7 +1343,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.databases(runtime, random, greedy, name);
     }
     /**
@@ -1354,7 +1354,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
         return super.databases(runtime, random, name);
     }
 
@@ -1451,7 +1451,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
         return super.product(runtime, index, create, product, set);
     }
     /**
@@ -1464,7 +1464,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, boolean create, String product){
+    public String product(DataRuntime runtime, boolean create, String product) {
         return super.product(runtime, create, product);
     }
     /**
@@ -1478,7 +1478,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
         return super.version(runtime, index, create, version, set);
     }
     /**
@@ -1491,7 +1491,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, boolean create, String version){
+    public String version(DataRuntime runtime, boolean create, String version) {
         return super.version(runtime, create, version);
     }
 
@@ -1519,7 +1519,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
         return super.catalogs(runtime, random, name);
     }
     /**
@@ -1530,7 +1530,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.catalogs(runtime, random, greedy, name);
     }
 
@@ -1656,7 +1656,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
         return super.schemas(runtime, random, catalog, name);
     }
     /**
@@ -1668,7 +1668,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
+    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
         return super.schemas(runtime, random, greedy, catalog, name);
     }
 
@@ -1772,7 +1772,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
     }
 
@@ -1785,12 +1785,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
         super.tableMap(runtime, random, greedy, catalog, schema);
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, catalog, schema, pattern, types, struct);
     }
 
@@ -1950,7 +1950,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
         return super.ddl(runtime, random, table, init);
     }
 
@@ -1977,7 +1977,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
 
@@ -2013,7 +2013,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.views(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2075,7 +2075,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, View view){
+    public List<String> ddl(DataRuntime runtime, String random, View view) {
         return super.ddl(runtime, random, view);
     }
 
@@ -2102,7 +2102,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, view, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2138,7 +2138,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2197,7 +2197,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+    public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
         return super.ddl(runtime, random, table);
     }
     /**
@@ -2222,7 +2222,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2256,7 +2256,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern){
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
         return super.partitionTables(runtime, random, greedy, master, tags, pattern);
     }
 
@@ -2344,7 +2344,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
         return super.ddl(runtime, random, table);
     }
 
@@ -2371,7 +2371,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2399,7 +2399,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
         return super.columns(runtime, random, greedy, table, primary);
     }
 
@@ -2416,7 +2416,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
         return super.columns(runtime, random, greedy, catalog, schema, table);
     }
     /**
@@ -2433,7 +2433,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         Catalog catalog = null;
         Schema schema = null;
         String name = null;
-        if(null != table){
+        if(null != table) {
             name = table.getName();
             catalog = table.getCatalog();
             schema = table.getSchema();
@@ -2441,16 +2441,16 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata){
+        if(metadata) {
             builder.append("SELECT * FROM ");
             name(runtime, builder, table);
             builder.append(" WHERE 1=0");
         }else{
             builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
             builder.append("WHERE 1 = 1\n");
-            if(BasicUtil.isNotEmpty(catalog)){
+            if(BasicUtil.isNotEmpty(catalog)) {
             }
-            if(!empty(schema)){
+            if(!empty(schema)) {
                 builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
@@ -2473,10 +2473,10 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
-        if(!tables.isEmpty()){
+        if(!tables.isEmpty()) {
             table = tables.get(0);
         }
-        if(null != table){
+        if(null != table) {
             catalog = table.getCatalog();
             schema = table.getSchema();
         }
@@ -2486,9 +2486,9 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
 
         builder.append("SELECT M.*,F.TABNAME FROM SYSCOLUMNS AS M LEFT JOIN SYSTABLES AS F ON M.TABID = F.TABID\n");
         builder.append("WHERE 1 = 1\n");
-        if(BasicUtil.isNotEmpty(catalog)){
+        if(BasicUtil.isNotEmpty(catalog)) {
         }
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND F.OWNER = '").append(schema.getName()).append("'");
         }
         in(runtime, builder, "F.TABNAME", Table.names(tables));
@@ -2510,13 +2510,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> columns, DataSet set) throws Exception {
-        if(null == columns){
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("COLUMN_NAME","COLNAME");
             T column = columns.get(name.toUpperCase());
-            if(null == column){
+            if(null == column) {
                 column = (T)new Column();
             }
             column.setName(name);
@@ -2527,10 +2527,10 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     }
     @Override
     public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Table table, List<T> columns, DataSet set) throws Exception {
-        if(null == columns){
+        if(null == columns) {
             columns = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("COLNAME");
             T tmp = (T)new Column();
             tmp.setName(name);
@@ -2556,17 +2556,17 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return Column
      * @param <T> Column
      */
-    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 
         if(null == meta.getPosition()) {
             try {
                 meta.setPosition(row.getInt("COLNO"));
-            }catch (Exception ignored){}
+            }catch (Exception ignored) {}
         }
         String type = null;
         Integer coltype = row.getInt("COLTYPE", null);
-        if(null != coltype){
-            if(coltype >= 256){
+        if(null != coltype) {
+            if(coltype >= 256) {
                 coltype -= 256;
                 meta.nullable(false);
             }
@@ -2577,7 +2577,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         meta.setLength(len);
         meta.setPrecision(len);
         //DECIMAL 或 money
-        if(coltype == 8 || coltype == 5){
+        if(coltype == 8 || coltype == 5) {
             int precision = len/256;
             int scale = len%256;
             meta.setPrecision(precision, scale);
@@ -2633,7 +2633,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Tag
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.tags(runtime, random, greedy, table);
     }
     /**
@@ -2702,7 +2702,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.primary(runtime, random, greedy, table);
     }
 
@@ -2727,7 +2727,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append("WHERE  C.CONSTRTYPE = 'P'\n");
         builder.append("AND T.TABNAME = '").append(table.getName()).append("'\n");
         Schema schema = table.getSchema();
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND T.OWNER = '").append(schema.getName()).append("'");
         }
         return runs;
@@ -2744,15 +2744,15 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
-        for(DataRow row:set){
-            if(null == primary){
+        for(DataRow row:set) {
+            if(null == primary) {
                 primary = (T)new PrimaryKey();
                 primary.setName(row.getString("CONSTRAINT_NAME"));
                 primary.setTable(table);
             }
             String col = row.getString("COLUMN_NAME");
             Column column = primary.getColumn(col);
-            if(null == column){
+            if(null == column) {
                 column = new Column(col);
             }
             column.setTable(table);
@@ -2782,7 +2782,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.foreigns(runtime, random, greedy,table);
     }
     /**
@@ -2837,7 +2837,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.indexs(runtime, random, greedy, table, pattern);
     }
     /**
@@ -2851,7 +2851,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
+    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
         return super.indexs(runtime, random, table, pattern);
     }
     /**
@@ -2863,7 +2863,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name){
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
         return super.buildQueryIndexesRun(runtime, table, name);
     }
 
@@ -2955,7 +2955,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.constraints(runtime, random, greedy, table, pattern);
     }
     /**
@@ -2970,7 +2970,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern){
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
         return super.constraints(runtime, random, table, column, pattern);
     }
 
@@ -3043,7 +3043,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return  LinkedHashMap
      * @param <T> Index
      */
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
         return super.triggers(runtime, random, greedy, table, events);
     }
     /**
@@ -3054,7 +3054,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param events 事件 INSERT|UPDATE|DELETE
      * @return sqls
      */
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
         return super.buildQueryTriggersRun(runtime, table, events);
     }
     /**
@@ -3106,7 +3106,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, greedy, catalog, schema, pattern);
     }
     /**
@@ -3121,7 +3121,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, catalog, schema, pattern);
     }
     /**
@@ -3189,7 +3189,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
     /**
@@ -3215,7 +3215,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, procedure, ddls, set);
     }
 
@@ -3338,7 +3338,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Function meta){
+    public List<String> ddl(DataRuntime runtime, String random, Function meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3364,7 +3364,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, function, ddls, set);
     }
 
@@ -3487,7 +3487,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+    public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3513,7 +3513,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, sequence, ddls, set);
     }
 
@@ -3532,7 +3532,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name) {
         return super.search(metas, catalog, schema, name);
     }
 
@@ -3546,7 +3546,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
+    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name) {
         return super.schema(schemas, catalog, name);
     }
 
@@ -3559,7 +3559,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Catalog> T catalog(List<T> catalogs, String name){
+    public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
     /**
@@ -3571,7 +3571,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Database> T database(List<T> databases, String name){
+    public <T extends Database> T database(List<T> databases, String name) {
         return super.database(databases, name);
     }
     /* *****************************************************************************************************************
@@ -3604,7 +3604,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
@@ -3817,7 +3817,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkTableExists(runtime, builder, exists);
     }
 
@@ -3828,7 +3828,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param table 表
      */
     @Override
-    public void checkPrimary(DataRuntime runtime, Table table){
+    public void checkPrimary(DataRuntime runtime, Table table) {
         super.checkPrimary(runtime, table);
     }
 
@@ -3841,26 +3841,26 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
-        if(null != primary){
+        if(null != primary) {
             pks = primary.getColumns();
         }else{
             pks = meta.primarys();
         }
-        if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
+        if(!pks.isEmpty() && pks.size() >1) {//单列主键时在列名上设置
             builder.append(",PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
-            for(Column pk:pks.values()){
-                if(!first){
+            for(Column pk:pks.values()) {
+                if(!first) {
                     builder.append(",");
                 }
                 first = false;
                 delimiter(builder, pk.getName());
                 String order = pk.getOrder();
-                if(null != order){
+                if(null != order) {
                     builder.append(" ").append(order);
                 }
             }
@@ -3878,7 +3878,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.indexs(runtime, builder, meta);
     }
     /**
@@ -3890,7 +3890,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
         return super.charset(runtime, builder, meta);
     }
 
@@ -3903,7 +3903,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
         //单独添加备注
         return builder;
     }
@@ -4124,7 +4124,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkViewExists(runtime, builder, exists);
     }
 
@@ -4137,7 +4137,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta) {
         return super.comment(runtime, builder, meta);
     }
 
@@ -4633,7 +4633,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         builder.append(" MODIFY ");
         delimiter(builder, meta.getName());
         String type = update.getTypeName();
-        if(type.contains("(")){
+        if(type.contains("(")) {
             type = type.substring(0,type.indexOf("("));
         }
         builder.append(" ").append(type);
@@ -4647,7 +4647,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String alterColumnKeyword(DataRuntime runtime){
+    public String alterColumnKeyword(DataRuntime runtime) {
         return super.alterColumnKeyword(runtime);
     }
 
@@ -4661,7 +4661,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         builder.append(" ADD ");
         return builder;
     }
@@ -4676,7 +4676,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         builder.append(" DROP ");
         return builder;
     }
@@ -4755,7 +4755,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.define(runtime, builder, meta, action);
     }
 
@@ -4769,7 +4769,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
     /**
@@ -4781,24 +4781,24 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
 
         String type = meta.getTypeName();
-        if(null == type){
+        if(null == type) {
             type ="";
         }
         type = type.toLowerCase();
         //创建并自增时 或 非自增改自增时 用serial 其他情况用int
         boolean serial = false;
-        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1){
+        if(ACTION.DDL.COLUMN_ADD == meta.getAction() && meta.isAutoIncrement() == 1) {
             serial = true;
         }else {
             Column update = meta.getUpdate();
-            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1){
+            if(null != update && update.isAutoIncrement() !=1 && meta.isAutoIncrement() == 1) {
                 serial = true;
             }
         }
-        if(serial){
+        if(serial) {
             if ("int4".equals(type) || "int".equals(type) || "integer".equals(type) || "int2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
                 meta.setType("SERIAL");
             } else if ("int8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
@@ -4806,7 +4806,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             }else{
                 meta.setType("SERIAL8");
             }
-        }else if(type.contains("int") || type.contains("long") || type.contains("serial") || type.contains("short")){
+        }else if(type.contains("int") || type.contains("long") || type.contains("serial") || type.contains("short")) {
             if ("serial4".equals(type) || "int".equals(type) || "integer".equals(type) || "serial2".equals(type) || "smallint".equals(type) || "short".equals(type)) {
                 meta.setType("INT");
             } else if ("serial8".equals(type) || "long".equals(type) || "bigint".equals(type)) {
@@ -4829,13 +4829,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
-        if(null == builder){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
+        if(null == builder) {
             builder = new StringBuilder();
         }
-        if("datetime".equalsIgnoreCase(type)){
+        if("datetime".equalsIgnoreCase(type)) {
             String dateScale = meta.getDateScale();
-            if(null == dateScale){
+            if(null == dateScale) {
                 dateScale = "FRACTION";
             }
             builder.append(type).append(" YEAR TO ").append(dateScale);
@@ -4855,7 +4855,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
     /**
@@ -4867,7 +4867,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.charset(runtime, builder, meta);
     }
 
@@ -4879,7 +4879,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.defaultValue(runtime, builder, meta);
     }
 
@@ -4892,7 +4892,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.primary(runtime, builder, meta);
     }
 
@@ -4905,7 +4905,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
         return builder;
     }
     /**
@@ -4917,7 +4917,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.onupdate(runtime, builder, meta);
     }
 
@@ -4930,7 +4930,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.position(runtime, builder, meta);
     }
 
@@ -4943,7 +4943,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
         //单独生成备注
         return builder;
     }
@@ -5146,7 +5146,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkTagExists(runtime, builder, exists);
     }
 
@@ -5268,7 +5268,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             Column.sort(meta.getPositions(), columns);
             delimiter(builder, Column.names(columns));
             builder.append(")");
-            if(BasicUtil.isNotEmpty(meta.getName())){
+            if(BasicUtil.isNotEmpty(meta.getName())) {
                 builder.append(" CONSTRAINT ").append(meta.getName());
             }
         }
@@ -5598,7 +5598,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.type(runtime, builder, meta);
     }
     /**
@@ -5610,7 +5610,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
         return super.comment(runtime, builder, meta);
     }
     /* *****************************************************************************************************************
@@ -5863,7 +5863,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta){
+    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
         return super.each(runtime, builder, meta);
     }
 
@@ -5994,7 +5994,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param parameter parameter
      */
     @Override
-    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter){
+    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter) {
         return super.parameter(runtime, builder, parameter);
     }
 
@@ -6239,12 +6239,12 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      *  ***************************************************************************************************************/
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, DataSource datasource, T meta) {
         super.checkSchema(runtime, datasource,meta);
     }
 
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, Connection con, T meta) {
         super.checkSchema(runtime, con, meta);
     }
     /**
@@ -6254,7 +6254,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Metadata
      */
     @Override
-    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta){
+    public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
         super.checkSchema(runtime, meta);
     }
 
@@ -6269,11 +6269,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Metadata
      */
     @Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema, overrideRuntime, overrideMeta);
     }
     @Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema) {
         super.correctSchemaFromJDBC(runtime, meta, catalog, schema);
     }
     /**
@@ -6283,7 +6283,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String[]
      */
     @Override
-    public String[] correctSchemaFromJDBC(String catalog, String schema){
+    public String[] correctSchemaFromJDBC(String catalog, String schema) {
         return super.correctSchemaFromJDBC(catalog, schema);
     }
     
@@ -6296,7 +6296,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataLengthRefer(runtime, meta);
     }
 
@@ -6308,7 +6308,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
@@ -6320,13 +6320,13 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataScaleRefer(runtime, meta);
     }
-    public String insertHead(ConfigStore configs){
+    public String insertHead(ConfigStore configs) {
         return super.insertHead(configs);
     }
-    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.insertFoot(configs, columns);
     }
 
@@ -6336,7 +6336,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
         if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME
                 || value == SQL_BUILD_IN_VALUE.CURRENT_DATE
                 || value == SQL_BUILD_IN_VALUE.CURRENT_TIME
@@ -6377,7 +6377,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * 伪表
      * @return String
      */
-    protected String dummy(){
+    protected String dummy() {
         return super.dummy();
     }
     /* *****************************************************************************************************************
@@ -6386,14 +6386,14 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      *
      *  ***************************************************************************************************************/
 
-    protected boolean createPrimaryValue(DataRuntime runtime, Collection list, String seq){
+    protected boolean createPrimaryValue(DataRuntime runtime, Collection list, String seq) {
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT ").append(seq).append(" AS ID FROM(\n");
         int size = list.size();
-        for(int i=0; i<size; i++){
+        for(int i=0; i<size; i++) {
             builder.append("SELECT NULL FROM DUAL\n");
-            if(i<size-1){
+            if(i<size-1) {
                 builder.append("UNION ALL\n");
             }
         }
@@ -6401,11 +6401,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         try{
             List<Map<String, Object>> maps = worker.maps(this, runtime, null, null, run);
             int i=0;
-            for(Object obj:list){
+            for(Object obj:list) {
                 Object value = maps.get(i++).get("ID");
                 setPrimaryValue(obj, value);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("生成主键值 异常:", e);
         }
         return true;

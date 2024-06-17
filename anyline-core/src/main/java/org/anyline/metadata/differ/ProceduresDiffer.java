@@ -30,36 +30,36 @@ public class ProceduresDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Procedure> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Procedure> updates = new LinkedHashMap<>();
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
-    public static ProceduresDiffer compare(LinkedHashMap<String, Procedure> origins, LinkedHashMap<String, Procedure> dests){
+    public static ProceduresDiffer compare(LinkedHashMap<String, Procedure> origins, LinkedHashMap<String, Procedure> dests) {
         ProceduresDiffer differ = new ProceduresDiffer();
         LinkedHashMap<String, Procedure> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Procedure> drops = new LinkedHashMap<>();
         LinkedHashMap<String, Procedure> updates = new LinkedHashMap<>();
 
-        if(null != origins){
+        if(null != origins) {
             origins = new LinkedHashMap<>();
         }
-        if(null == dests){
+        if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        for(String key:origins.keySet()){
+        for(String key:origins.keySet()) {
             Procedure origin = origins.get(key);
             Procedure dest = dests.get(key);
-            if(null == dest){
+            if(null == dest) {
                 //新表不存在
                 drops.put(key, origins.get(origin));
             }else {
-                if(!origin.equals(dest)){
+                if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
                     updates.put(key, origin);
                 }
             }
         }
-        for(String key:dests.keySet()){
-            if(!origins.containsKey(key)){
+        for(String key:dests.keySet()) {
+            if(!origins.containsKey(key)) {
                 adds.put(key, dests.get(key));
             }
         }

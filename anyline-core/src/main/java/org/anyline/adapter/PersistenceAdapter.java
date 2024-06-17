@@ -46,19 +46,19 @@ public class PersistenceAdapter {
         join.joinColumn = ClassUtil.parseAnnotationFieldValue(field, "OneToMany.mappedBy");
         join.dependencyClass = ClassUtil.getComponentClass(field);
         join.joinField = ClassUtil.getField(join.dependencyClass, join.joinColumn);
-        if(null == join.joinField){
+        if(null == join.joinField) {
             //提供的是列名
             join.joinField = EntityAdapterProxy.field(join.dependencyClass, join.joinColumn);
         }
         //检测joinField对应的列表
-        if(null != join.joinField){
+        if(null != join.joinField) {
             Column column = EntityAdapterProxy.column(join.dependencyClass, join.joinField);
-            if(null != column){
+            if(null != column) {
                 join.joinColumn = column.getName();
             }
         }
         Table table = EntityAdapterProxy.table(join.dependencyClass);
-        if(null != table){
+        if(null != table) {
             join.dependencyTable = table.getName();
         }
         return join;
@@ -102,13 +102,13 @@ public class PersistenceAdapter {
             }
         }
         join.itemClass = ClassUtil.getComponentClass(field);	//Department
-        if(!ClassUtil.isPrimitiveClass(join.itemClass) && String.class != join.itemClass){
+        if(!ClassUtil.isPrimitiveClass(join.itemClass) && String.class != join.itemClass) {
             //List<Department> departments;
             Table table = EntityAdapterProxy.table(join.itemClass);
-            if(null != table){
+            if(null != table) {
                 join.dependencyTable = table.getName();
                 Column col = EntityAdapterProxy.primaryKey(join.itemClass);
-                if(null != col){
+                if(null != col) {
                     join.dependencyPk = col.getName();
                 }
             }

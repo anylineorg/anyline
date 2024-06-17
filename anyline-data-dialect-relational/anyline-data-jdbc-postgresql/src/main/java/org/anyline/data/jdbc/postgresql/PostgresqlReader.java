@@ -96,7 +96,7 @@ public enum PostgresqlReader {
                 PgArray array = (PgArray) value;
                 try {
                     value = array.getArray();
-                }catch (Exception e){
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -104,15 +104,15 @@ public enum PostgresqlReader {
         }
     }),
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataReader reader(){
+    public DataReader reader() {
         return reader;
     }
     private final Object[] supports;
     private final DataReader reader;
-    PostgresqlReader(Object[] supports, DataReader reader){
+    PostgresqlReader(Object[] supports, DataReader reader) {
         this.supports = supports;
         this.reader = reader;
     }

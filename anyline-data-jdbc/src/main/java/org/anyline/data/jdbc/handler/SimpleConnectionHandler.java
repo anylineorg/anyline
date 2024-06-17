@@ -41,10 +41,10 @@ public class SimpleConnectionHandler implements ConnectionHandler {
     private Connection connection;
     private Statement statement;
     private ResultSet result;
-    public SimpleConnectionHandler(){
+    public SimpleConnectionHandler() {
 
     }
-    public SimpleConnectionHandler(DataSource datasource, Connection connection, Statement statement, ResultSet result){
+    public SimpleConnectionHandler(DataSource datasource, Connection connection, Statement statement, ResultSet result) {
         this.datasource = datasource;
         this.connection = connection;
         this.statement = statement;
@@ -85,13 +85,13 @@ public class SimpleConnectionHandler implements ConnectionHandler {
 
     @Override
     public boolean close()  throws Exception{
-        if(null != result && !result.isClosed()){
+        if(null != result && !result.isClosed()) {
             result.close();
         }
-        if(null != statement && !statement.isClosed()){
+        if(null != statement && !statement.isClosed()) {
             statement.close();
         }
-        if(null != connection){
+        if(null != connection) {
             worker.releaseConnection(null, null, connection, datasource);
         }
         return false;

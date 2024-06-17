@@ -38,11 +38,11 @@ public class TextUtil {
             // 将两个字符串中的中文字符以及出现的总数封装到, AlgorithmMap中
             for (int i = 0; i < doc1.length(); i++) {
                 char d1 = doc1.charAt(i);
-                if(isHanZi(d1)){//标点和数字不处理
+                if(isHanZi(d1)) {//标点和数字不处理
                     int charIndex = getGB2312Id(d1);//保存字符对应的GB2312编码
-                    if(charIndex != -1){
+                    if(charIndex != -1) {
                         int[] fq = AlgorithmMap.get(charIndex);
-                        if(fq != null && fq.length == 2){
+                        if(fq != null && fq.length == 2) {
                             fq[0]++;//已有该字符, 加1
                         }else {
                             fq = new int[2];
@@ -56,11 +56,11 @@ public class TextUtil {
 
             for (int i = 0; i < doc2.length(); i++) {
                 char d2 = doc2.charAt(i);
-                if(isHanZi(d2)){
+                if(isHanZi(d2)) {
                     int charIndex = getGB2312Id(d2);
-                    if(charIndex != -1){
+                    if(charIndex != -1) {
                         int[] fq = AlgorithmMap.get(charIndex);
-                        if(fq != null && fq.length == 2){
+                        if(fq != null && fq.length == 2) {
                             fq[1]++;
                         }else {
                             fq = new int[2];
@@ -76,7 +76,7 @@ public class TextUtil {
             double sqdoc1 = 0;
             double sqdoc2 = 0;
             double denominator = 0; 
-            while(iterator.hasNext()){
+            while(iterator.hasNext()) {
                 int[] c = AlgorithmMap.get(iterator.next());
                 denominator += c[0]*c[1];
                 sqdoc1 += c[0]*c[0];
@@ -99,9 +99,9 @@ public class TextUtil {
             boolean isNum = str.matches("[0-9]+"); 
             return isNum;
         }*/
-        /*if(Character.isLetterOrDigit(ch)){
+        /*if(Character.isLetterOrDigit(ch)) {
             String str = "" + ch;
-            if (str.matches("[0-9a-zA-Z\\u4e00-\\u9fa5]+")){//非乱码
+            if (str.matches("[0-9a-zA-Z\\u4e00-\\u9fa5]+")) {//非乱码
                 return true;
             }else return false;
         }else return false;*/

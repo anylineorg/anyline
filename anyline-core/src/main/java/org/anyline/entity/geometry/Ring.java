@@ -24,21 +24,21 @@ import java.util.List;
 public class Ring extends Geometry{
     private Boolean clockwise = false; //是否顺时针
     private List<Point> points = new ArrayList<>();
-    public Ring add(Point point){
+    public Ring add(Point point) {
         points.add(point);
         return this;
     }
 
-    public Ring add(double x, double y){
+    public Ring add(double x, double y) {
         return add(new Point(x, y));
     }
-    public Ring add(int x, int y){
+    public Ring add(int x, int y) {
         return add(new Point(x, y));
     }
-    public List<Point> points(){
+    public List<Point> points() {
         return points;
     }
-    public Ring(){}
+    public Ring() {}
     public Ring(List<Point> points) {
         this.points = points;
     }
@@ -59,18 +59,18 @@ public class Ring extends Geometry{
         this.points = points;
     }
 
-    public String toString(){
+    public String toString() {
         return toString(true);
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(Point point:points){
-            if(!first){
+        for(Point point:points) {
+            if(!first) {
                 builder.append(",");
             }
             builder.append(point.toString(false));
@@ -88,29 +88,29 @@ public class Ring extends Geometry{
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
-        if(bracket){
+        if(bracket) {
             builder.append("(");
         }
 
         boolean first = true;
-        for(Point point:points){
-            if(!first){
+        for(Point point:points) {
+            if(!first) {
                 builder.append(",");
             }
             builder.append(point.sql(false, false));
             first = false;
         }
-        if(bracket){
+        if(bracket) {
             builder.append(")");
         }
         return builder.toString();
     }
-    public String sql(){
+    public String sql() {
         return sql(true, true);
     }
 }

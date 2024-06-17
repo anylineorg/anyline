@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.uxdb")
 public class UxdbAdapter extends PostgresGenusAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.UXDB;
     }
     

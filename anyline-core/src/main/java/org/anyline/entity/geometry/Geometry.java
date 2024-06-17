@@ -33,7 +33,7 @@ public abstract class Geometry {
         GeometryCollection(GeometryCollection.class);
 
         private Class clazz;
-        Type(Class clazz){
+        Type(Class clazz) {
              this.clazz = clazz;
         }
     }
@@ -78,7 +78,7 @@ public abstract class Geometry {
     }
 
     public String tag() {
-        if(null == tag){
+        if(null == tag) {
             return this.getClass().getSimpleName();
         }
         return tag;

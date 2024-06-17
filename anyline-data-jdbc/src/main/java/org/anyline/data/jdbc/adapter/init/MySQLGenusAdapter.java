@@ -35,7 +35,7 @@ import org.anyline.util.regular.RegularUtil;
 import java.util.*;
 
 public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
-    public MySQLGenusAdapter(){
+    public MySQLGenusAdapter() {
         super();
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 0, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
@@ -52,7 +52,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.GEOMETRY, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
         MetadataAdapterHolder.reg(type(), TypeMetadata.CATEGORY.OTHER, new TypeMetadata.Config("CHARACTER_MAXIMUM_LENGTH", null, null, 1, 1, 1));
 
-        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()){
+        for(MySQLGenusTypeMetadataAlias alias:MySQLGenusTypeMetadataAlias.values()) {
             reg(alias);
             alias(alias.name(), alias.standard());
         }
@@ -76,12 +76,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         types.put(Metadata.TYPE.VIEW, "VIEW");
     }
     @Override
-    public String name(Type type){
+    public String name(Type type) {
         return types.get(type);
     }
 
     private ColumnMetadataAdapter defaultColumnMetadataAdapter = defaultColumnMetadataAdapter();
-    public ColumnMetadataAdapter defaultColumnMetadataAdapter(){
+    public ColumnMetadataAdapter defaultColumnMetadataAdapter() {
         ColumnMetadataAdapter adapter = new ColumnMetadataAdapter();
         adapter.setNameRefer("COLUMN_NAME");
         adapter.setCatalogRefer("");//忽略
@@ -156,7 +156,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
+    public long insert(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -169,7 +169,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildInsertRun(runtime, batch, dest, obj, configs, columns);
     }
 
@@ -183,7 +183,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, set, configs, columns);
     }
 
@@ -197,7 +197,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param columns 需要插入的列，如果不指定则根据data或configs获取注意会受到ConfigTable中是否插入更新空值的几个配置项影响
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         super.fillInsertContent(runtime, run, dest, list, configs, columns);
     }
 
@@ -226,7 +226,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch){
+    public LinkedHashMap<String, Column> confirmInsertColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns, boolean batch) {
         return super.confirmInsertColumns(runtime, dest, obj, configs, columns, batch);
     }
 
@@ -236,7 +236,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String batchInsertSeparator(){
+    public String batchInsertSeparator() {
         return ",";
     }
 
@@ -246,7 +246,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean supportInsertPlaceholder(){
+    public boolean supportInsertPlaceholder() {
         return true;
     }
     /**
@@ -256,7 +256,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param value value
      */
     @Override
-    protected void setPrimaryValue(Object obj, Object value){
+    protected void setPrimaryValue(Object obj, Object value) {
         super.setPrimaryValue(obj, value);
     }
     /**
@@ -269,7 +269,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns){
+    protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.createInsertRun(runtime, dest, obj, configs, columns);
     }
 
@@ -283,7 +283,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns){
+    protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
         return super.createInsertRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
 
@@ -309,7 +309,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks){
+    public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
         return super.insert(runtime, random, data, configs, run, pks);
     }
 
@@ -355,7 +355,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
     /**
@@ -382,19 +382,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public Run buildUpdateRun(DataRuntime runtime, int batch, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.buildUpdateRun(runtime, batch, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromEntity(runtime, dest, obj, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromDataRow(runtime, dest, row, configs, columns);
     }
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
     /**
@@ -420,11 +420,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, row, configs, columns);
     }
     @Override
-    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns){
+    public LinkedHashMap<String, Column> confirmUpdateColumns(DataRuntime runtime, String dest, Object obj, ConfigStore configs, List<String> columns) {
         return super.confirmUpdateColumns(runtime, dest, obj, configs, columns);
     }
     /**
@@ -437,7 +437,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run){
+    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
         return super.update(runtime, random, dest, data, configs, run);
     }
 
@@ -469,24 +469,24 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long save(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, List<String> columns) {
         return super.save(runtime, random, dest, data, configs, columns);
     }
 
     @Override
-    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns){
+    protected long saveCollection(DataRuntime runtime, String random, Table dest, Collection<?> data, ConfigStore configs, List<String> columns) {
         return super.saveCollection(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns){
+    protected long saveObject(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, List<String> columns) {
         return super.saveObject(runtime, random, dest, data, configs, columns);
     }
     @Override
-    protected Boolean checkOverride(Object obj){
+    protected Boolean checkOverride(Object obj) {
         return super.checkOverride(obj);
     }
     @Override
-    protected Map<String, Object> checkPv(Object obj){
+    protected Map<String, Object> checkPv(Object obj) {
         return super.checkPv(obj);
     }
 
@@ -497,11 +497,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key){
+    protected boolean isMultipleValue(DataRuntime runtime, TableRun run, String key) {
         return super.isMultipleValue(runtime, run, key);
     }
     @Override
-    protected boolean isMultipleValue(Column column){
+    protected boolean isMultipleValue(Column column) {
         return super.isMultipleValue(column);
     }
     /**
@@ -511,7 +511,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public LinkedHashMap<String, Column> checkMetadata(DataRuntime runtime, Table table, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.checkMetadata(runtime, table, configs, columns);
     }
 
@@ -551,7 +551,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public DataSet querys(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.querys(runtime, random, prepare, configs, conditions);
     }
 
@@ -564,7 +564,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return DataSet
      */
     @Override
-    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi){
+    public DataSet querys(DataRuntime runtime, String random, Procedure procedure, PageNavi navi) {
         return super.querys(runtime, random, procedure, navi);
     }
 
@@ -580,7 +580,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Entity
      */
     @Override
-    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions){
+    public <T> EntitySet<T> selects(DataRuntime runtime, String random, RunPrepare prepare, Class<T> clazz, ConfigStore configs, String ... conditions) {
         return super.selects(runtime, random, prepare, clazz, configs, conditions);
     }
 
@@ -596,7 +596,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      *
      */
     @Override
-    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run){
+    protected <T> EntitySet<T> select(DataRuntime runtime, String random, Class<T> clazz, Table table, ConfigStore configs, Run run) {
         return super.select(runtime, random, clazz, table, configs, run);
     }
 
@@ -612,7 +612,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return maps 返回map集合
      */
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.maps(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -624,7 +624,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildQueryRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildQueryRun(runtime, prepare, configs, conditions);
     }
 
@@ -635,7 +635,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names){
+    public List<Run> buildQuerySequence(DataRuntime runtime, boolean next, String ... names) {
         return super.buildQuerySequence(runtime, next, names);
     }
 
@@ -645,19 +645,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillQueryContent(DataRuntime runtime, Run run){
+    public void fillQueryContent(DataRuntime runtime, Run run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, XMLRun run){
+    protected void fillQueryContent(DataRuntime runtime, XMLRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TextRun run){
+    protected void fillQueryContent(DataRuntime runtime, TextRun run) {
         super.fillQueryContent(runtime, run);
     }
     @Override
-    protected void fillQueryContent(DataRuntime runtime, TableRun run){
+    protected void fillQueryContent(DataRuntime runtime, TableRun run) {
         super.fillQueryContent(runtime, run);
     }
     /**
@@ -699,27 +699,27 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public Object createConditionFindInSet(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) throws NotSupportException {
         List<Object> values = new ArrayList<>();
-        if(null != value){
-            if(value instanceof Collection){
+        if(null != value) {
+            if(value instanceof Collection) {
                 Collection cols = (Collection) value;
-                for(Object col:cols){
+                for(Object col:cols) {
                     values.add(col);
                 }
-            }else if(value instanceof Object[]){
+            }else if(value instanceof Object[]) {
                 Object[] array = (Object[]) value;
-                for(Object obj:array){
+                for(Object obj:array) {
                     values.add(obj);
                 }
             }else{
                 values.add(value);
             }
         }
-        if(values.size() > 1){
+        if(values.size() > 1) {
             builder.append("(");
         }
         boolean first = true;
-        for(Object v:values){
-            if(!first){
+        for(Object v:values) {
+            if(!first) {
                 builder.append(" OR ");
             }
             if(placeholder) {
@@ -729,7 +729,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             }
             first = false;
         }
-        if(values.size() > 1){
+        if(values.size() > 1) {
             builder.append(")");
         }
         return value;
@@ -749,32 +749,32 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Object createConditionJsonContains(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
         //json_contains(JSON_COLUMN,'"VIP"','$.name')
         String key = null;
-        if(column.contains(">")){
+        if(column.contains(">")) {
             String[] ks = column.split(">");
             column = ks[0];
             key = ks[1];
         }
         builder.append("JSON_CONTAINS(").append(column).append(", ");
-        if(placeholder){
+        if(placeholder) {
             builder.append("?");
         }
-        if(BasicUtil.isNotEmpty(key)){
+        if(BasicUtil.isNotEmpty(key)) {
             builder.append(",'").append(key).append("'");
         }
         builder.append(")");
-        if(value instanceof Collection){
+        if(value instanceof Collection) {
             Collection list = ((Collection)value);
-            if(!list.isEmpty()){
+            if(!list.isEmpty()) {
                 value = list.iterator().next();
             }
         }
-        if(BasicUtil.isNumber(value)){
+        if(BasicUtil.isNumber(value)) {
             value = value.toString();
         }else{
             String str = value.toString();
-            if(str.startsWith("${") && str.endsWith("}")){
+            if(str.startsWith("${") && str.endsWith("}")) {
                 str = str.substring(2, str.length()-1);
-            }else if(!str.startsWith("\"")){
+            }else if(!str.startsWith("\"")) {
                 str = "\""+str+"\"";
             }
             value = str;
@@ -796,19 +796,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Object createConditionJsonContainsPath(DataRuntime runtime, StringBuilder builder, String column, Compare compare, Object value, boolean placeholder) {
         //JSON_CONTAINS_PATH(JSON_COLUMN, 'all', '$.A', '$.D')
         String scope = "one";
-        if(compare.getCode() == 76){
+        if(compare.getCode() == 76) {
             scope = "all";
         }
         Collection<Object> values = new ArrayList<>();
-        if(value instanceof Collection){
+        if(value instanceof Collection) {
             values = (Collection<Object>) value;
         }else{
             values.add(value);
         }
         builder.append("JSON_CONTAINS_PATH(").append(column).append(", '").append(scope).append("'");
-        for(Object v:values){
+        for(Object v:values) {
             builder.append(", ");
-            if(placeholder){
+            if(placeholder) {
                 builder.append("?");
             }else{
                 builder.append("'").append(v).append("'");
@@ -853,7 +853,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return maps
      */
     @Override
-    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.maps(runtime, random, configs, run);
     }
     /**
@@ -877,7 +877,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return DataRow 保存序列查询结果 以存储过程name作为key
      */
     @Override
-    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names){
+    public DataRow sequence(DataRuntime runtime, String random, boolean next, String ... names) {
         return super.sequence(runtime, random, next, names);
     }
 
@@ -889,7 +889,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return  maps
      */
     @Override
-    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list){
+    public List<Map<String, Object>> process(DataRuntime runtime, List<Map<String, Object>> list) {
         return super.process(runtime, list);
     }
 
@@ -913,7 +913,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public long count(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.count(runtime, random, prepare, configs, conditions);
     }
     /**
@@ -924,7 +924,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalTotal(DataRuntime runtime, Run run){
+    public String mergeFinalTotal(DataRuntime runtime, Run run) {
         return super.mergeFinalTotal(runtime, run);
     }
 
@@ -936,7 +936,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return long
      */
     @Override
-    public long count(DataRuntime runtime, String random, Run run){
+    public long count(DataRuntime runtime, String random, Run run) {
         return super.count(runtime, random, run);
     }
 
@@ -957,11 +957,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public boolean exists(DataRuntime runtime, String random, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.exists(runtime, random, prepare, configs, conditions);
     }
     @Override
-    public String mergeFinalExists(DataRuntime runtime, Run run){
+    public String mergeFinalExists(DataRuntime runtime, Run run) {
         return super.mergeFinalExists(runtime, run);
     }
 
@@ -994,7 +994,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     }
 
     @Override
-    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values){
+    public long execute(DataRuntime runtime, String random, int batch, ConfigStore configs, RunPrepare prepare, Collection<Object> values) {
         return super.execute(runtime, random, batch, configs, prepare, values);
     }
     /**
@@ -1005,7 +1005,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Procedure procedure){
+    public boolean execute(DataRuntime runtime, String random, Procedure procedure) {
         return super.execute(runtime, random, procedure);
     }
     /**
@@ -1018,19 +1018,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions){
+    public Run buildExecuteRun(DataRuntime runtime, RunPrepare prepare, ConfigStore configs, String ... conditions) {
         return super.buildExecuteRun(runtime, prepare, configs, conditions);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, XMLRun run){
+    protected void fillExecuteContent(DataRuntime runtime, XMLRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TextRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TextRun run) {
         super.fillExecuteContent(runtime, run);
     }
     @Override
-    protected void fillExecuteContent(DataRuntime runtime, TableRun run){
+    protected void fillExecuteContent(DataRuntime runtime, TableRun run) {
         super.fillExecuteContent(runtime, run);
     }
 
@@ -1041,7 +1041,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillExecuteContent(DataRuntime runtime, Run run){
+    public void fillExecuteContent(DataRuntime runtime, Run run) {
         super.fillExecuteContent(runtime, run);
     }
     /**
@@ -1086,7 +1086,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> T
      */
     @Override
-    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values){
+    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, ConfigStore configs, String key, Collection<T> values) {
         return super.deletes(runtime, random, batch, table, configs, key, values);
     }
 
@@ -1101,7 +1101,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns){
+    public long delete(DataRuntime runtime, String random, String dest, ConfigStore configs, Object obj, String... columns) {
         return super.delete(runtime, random, dest, configs, obj, columns);
     }
 
@@ -1117,7 +1117,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions){
+    public long delete(DataRuntime runtime, String random, String table, ConfigStore configs, String... conditions) {
         return super.delete(runtime, random, table, configs, conditions);
     }
 
@@ -1129,7 +1129,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 1表示成功执行
      */
     @Override
-    public long truncate(DataRuntime runtime, String random, Table table){
+    public long truncate(DataRuntime runtime, String random, Table table) {
         return super.truncate(runtime, random, table);
     }
 
@@ -1143,7 +1143,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
+    public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns) {
         return super.buildDeleteRun(runtime, dest, configs, obj, columns);
     }
 
@@ -1157,12 +1157,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
      */
     @Override
-    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values){
+    public Run buildDeleteRun(DataRuntime runtime, int batch, String table, ConfigStore configs, String key, Object values) {
         return super.buildDeleteRun(runtime, batch, table, configs, key, values);
     }
 
     @Override
-    public List<Run> buildTruncateRun(DataRuntime runtime, String table){
+    public List<Run> buildTruncateRun(DataRuntime runtime, String table) {
         return super.buildTruncateRun(runtime, table);
     }
 
@@ -1200,7 +1200,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
      */
     @Override
-    public void fillDeleteRunContent(DataRuntime runtime, Run run){
+    public void fillDeleteRunContent(DataRuntime runtime, Run run) {
         super.fillDeleteRunContent(runtime, run);
     }
 
@@ -1213,7 +1213,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return 影响行数
      */
     @Override
-    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run){
+    public long delete(DataRuntime runtime, String random, ConfigStore configs, Run run) {
         return super.delete(runtime, random, configs, run);
     }
 
@@ -1261,9 +1261,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return Database
      */
     @Override
-    public Database database(DataRuntime runtime, String random){
+    public Database database(DataRuntime runtime, String random) {
         Schema schema = schema(runtime, random);
-        if(null != schema){
+        if(null != schema) {
             return new Database(schema.getName());
         }
         return super.database(runtime, random);
@@ -1275,7 +1275,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String product(DataRuntime runtime, String random){
+    public String product(DataRuntime runtime, String random) {
         return super.product(runtime, random);
     }
     /**
@@ -1285,7 +1285,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param random 用来标记同一组命令
      * @return String
      */
-    public String version(DataRuntime runtime, String random){
+    public String version(DataRuntime runtime, String random) {
         return super.version(runtime, random);
     }
     /**
@@ -1297,7 +1297,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Database> databases(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.databases(runtime, random, greedy, name);
     }
     /**
@@ -1308,7 +1308,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Database> databases(DataRuntime runtime, String random, String name) {
         return super.databases(runtime, random, name);
     }
     /**
@@ -1328,7 +1328,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SHOW DATABASES");
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" LIKE '").append(name).append("'");
         }
         return runs;
@@ -1345,10 +1345,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public LinkedHashMap<String, Database> databases(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Database> databases, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == databases){
+        if(null == databases) {
             databases = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             Database database = new Database();
             database.setName(row.getString("DATABASE"));
             databases.put(database.getName().toUpperCase(), database);
@@ -1408,7 +1408,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set){
+    public String product(DataRuntime runtime, int index, boolean create, String product, DataSet set) {
         return super.product(runtime, index, create, product, set);
     }
     /**
@@ -1421,7 +1421,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String product(DataRuntime runtime, boolean create, String product){
+    public String product(DataRuntime runtime, boolean create, String product) {
         return super.product(runtime, create, product);
     }
     /**
@@ -1435,7 +1435,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set){
+    public String version(DataRuntime runtime, int index, boolean create, String version, DataSet set) {
         return super.version(runtime, index, create, version, set);
     }
     /**
@@ -1448,7 +1448,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public String version(DataRuntime runtime, boolean create, String version){
+    public String version(DataRuntime runtime, boolean create, String version) {
         return super.version(runtime, create, version);
     }
     /* *****************************************************************************************************************
@@ -1474,7 +1474,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name){
+    public LinkedHashMap<String, Catalog> catalogs(DataRuntime runtime, String random, String name) {
         return super.catalogs(runtime, random, name);
     }
     /**
@@ -1485,7 +1485,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name){
+    public List<Catalog> catalogs(DataRuntime runtime, String random, boolean greedy, String name) {
         return super.catalogs(runtime, random, greedy, name);
     }
 
@@ -1628,7 +1628,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name){
+    public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, String random, Catalog catalog, String name) {
         return super.schemas(runtime, random, catalog, name);
     }
     /**
@@ -1640,7 +1640,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return LinkedHashMap
      */
     @Override
-    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name){
+    public List<Schema> schemas(DataRuntime runtime, String random, boolean greedy, Catalog catalog, String name) {
         return super.schemas(runtime, random, greedy, catalog, name);
     }
 
@@ -1660,7 +1660,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SHOW SCHEMAS");
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" LIKE '").append(name).append("'");
         }
         return runs;
@@ -1678,10 +1678,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public LinkedHashMap<String, Schema> schemas(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, Schema> schemas, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == schemas){
+        if(null == schemas) {
             schemas = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             Schema meta = new Schema();
             meta.setName(row.getString("DATABASE"));
             schemas.put(meta.getName().toUpperCase(), meta);
@@ -1761,7 +1761,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
     }
 
@@ -1774,12 +1774,12 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema){
+    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
         super.tableMap(runtime, random, greedy, catalog, schema);
     }
 
     @Override
-    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+    public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
         return super.tables(runtime, random, catalog, schema, pattern, types, struct);
     }
 
@@ -1803,21 +1803,21 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
         builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
         // 8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
-		/*if(BasicUtil.isNotEmpty(catalog)){
+		/*if(BasicUtil.isNotEmpty(catalog)) {
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog.getName()).append("'");
 		}*/
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
         }
         List<String> tps = names(Table.types(types));
-        if(null != tps && !tps.isEmpty()){;
+        if(null != tps && !tps.isEmpty()) {;
             builder.append(" AND TABLE_TYPE IN(");
             boolean first = true;
-            for(String tmp:tps){
-                if(!first){
+            for(String tmp:tps) {
+                if(!first) {
                     builder.append(",");
                 }
                 builder.append("'").append(tmp).append("'");
@@ -1967,7 +1967,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init){
+    public List<String> ddl(DataRuntime runtime, String random, Table table, boolean init) {
         return super.ddl(runtime, random, table, init);
     }
 
@@ -2000,11 +2000,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set){
-        if(null == ddls){
+    public List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set) {
+        if(null == ddls) {
             ddls = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             ddls.add(row.getString("CREATE TABLE"));
         }
 
@@ -2051,7 +2051,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.views(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2074,13 +2074,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
         builder.append("SELECT * FROM information_schema.VIEWS WHERE 1=1 ");
         // 8.0版本中 这个视图中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
-		/*if(BasicUtil.isNotEmpty(catalog)){
+		/*if(BasicUtil.isNotEmpty(catalog)) {
 			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
 		}*/
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND TABLE_NAME LIKE '").append(objectName(runtime, pattern)).append("'");
         }
         return runs;
@@ -2101,13 +2101,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == views){
+        if(null == views) {
             views = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("TABLE_NAME");
             T view = views.get(name.toUpperCase());
-            if(null == view){
+            if(null == view) {
                 view = (T)new View();
             }
             //String catalogName = row.getString("TABLE_CATALOG");
@@ -2145,7 +2145,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, View view){
+    public List<String> ddl(DataRuntime runtime, String random, View view) {
         return super.ddl(runtime, random, view);
     }
 
@@ -2178,11 +2178,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set){
-        if(null == ddls){
+    public List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set) {
+        if(null == ddls) {
             ddls = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             ddls.add(row.getString("CREATE VIEW"));
         }
 
@@ -2221,7 +2221,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
         return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
     }
     /**
@@ -2280,7 +2280,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, MasterTable table){
+    public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
         return super.ddl(runtime, random, table);
     }
     /**
@@ -2305,7 +2305,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2339,7 +2339,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> MasterTable
      */
     @Override
-    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern){
+    public <T extends PartitionTable> LinkedHashMap<String,T> partitionTables(DataRuntime runtime, String random, boolean greedy, MasterTable master, Map<String, Object> tags, String pattern) {
         return super.partitionTables(runtime, random, greedy, master, tags, pattern);
     }
 
@@ -2427,7 +2427,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table){
+    public List<String> ddl(DataRuntime runtime, String random, PartitionTable table) {
         return super.ddl(runtime, random, table);
     }
 
@@ -2454,7 +2454,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, PartitionTable table, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, table, ddls, set);
     }
     /* *****************************************************************************************************************
@@ -2482,7 +2482,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Column
      */
     @Override
-    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary){
+    public <T extends Column> LinkedHashMap<String, T> columns(DataRuntime runtime, String random, boolean greedy, Table table, boolean primary) {
         return super.columns(runtime, random, greedy, table, primary);
     }
 
@@ -2499,7 +2499,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table){
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Table table) {
         return super.columns(runtime, random, greedy, catalog, schema, table);
     }
     /**
@@ -2515,7 +2515,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         Schema schema = null;
         String name = null;
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             name = table.getName();
             schema = table.getSchema();
@@ -2523,16 +2523,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        if(metadata){
+        if(metadata) {
             builder.append("SELECT * FROM ");
             name(runtime, builder, table);
             builder.append(" WHERE 1=0");
         }else{
             builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
-			/*if(BasicUtil.isNotEmpty(catalog)){
+			/*if(BasicUtil.isNotEmpty(catalog)) {
 				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
 			}*/
-            if(!empty(schema)){
+            if(!empty(schema)) {
                 builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
             }
             if(BasicUtil.isNotEmpty(name)) {
@@ -2555,10 +2555,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
-        if(!tables.isEmpty()){
+        if(!tables.isEmpty()) {
             table = tables.get(0);
         }
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             schema = table.getSchema();
         }
@@ -2566,10 +2566,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=1 ");
-        /*if(BasicUtil.isNotEmpty(catalog)){
+        /*if(BasicUtil.isNotEmpty(catalog)) {
             builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
         }*/
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND TABLE_SCHEMA = '").append(schema.getName()).append("'");
         }
         List<String> names = Table.names(tables);
@@ -2627,7 +2627,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row){
+    public <T extends Column> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) {
         return super.init(runtime, index, meta, table, row);
     }
 
@@ -2641,7 +2641,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Column
      */
     @Override
-    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row){
+    public <T extends Column> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
         return super.detail(runtime, index, meta, catalog, schema, row);
     }
 
@@ -2652,7 +2652,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime){
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime) {
         return defaultColumnMetadataAdapter;
     }
 
@@ -2664,7 +2664,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ColumnMetadataAdapter
      */
     @Override
-    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta){
+    public ColumnMetadataAdapter columnMetadataAdapter(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataAdapter(runtime, meta);
     }
 
@@ -2691,7 +2691,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T>  Tag
      */
     @Override
-    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends Tag> LinkedHashMap<String, T> tags(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.tags(runtime, random, greedy, table);
     }
     /**
@@ -2760,7 +2760,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table){
+    public PrimaryKey primary(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.primary(runtime, random, greedy, table);
     }
 
@@ -2795,9 +2795,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends PrimaryKey> T init(DataRuntime runtime, int index, T primary, Table table, DataSet set) throws Exception {
         set = set.getRows("Key_name","PRIMARY");
-        if(!set.isEmpty()){
+        if(!set.isEmpty()) {
             primary = (T)new PrimaryKey();
-            for(DataRow row:set){
+            for(DataRow row:set) {
                 primary.setName(row.getString("Key_name"));
                 Column column = new Column(row.getString("Column_name"));
                 primary.addColumn(column);
@@ -2827,7 +2827,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return PrimaryKey
      */
     @Override
-    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table){
+    public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, String random, boolean greedy, Table table) {
         return super.foreigns(runtime, random, greedy,table);
     }
     /**
@@ -2844,10 +2844,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where REFERENCED_TABLE_NAME IS NOT NULL\n");
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             String name = table.getName();
-            if(BasicUtil.isNotEmpty(name)){
+            if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND TABLE_NAME = '").append(name).append("'\n");
             }
         }
@@ -2866,13 +2866,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(DataRuntime runtime, int index, Table table, LinkedHashMap<String, T> foreigns, DataSet set) throws Exception {
-        if(null == foreigns){
+        if(null == foreigns) {
             foreigns = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("CONSTRAINT_NAME");
             T foreign = foreigns.get(name.toUpperCase());
-            if(null == foreign){
+            if(null == foreign) {
                 foreign = (T)new ForeignKey();
                 foreign.setName(name);
                 foreign.setTable(row.getString("TABLE_NAME"));
@@ -2914,7 +2914,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.indexs(runtime, random, greedy, table, pattern);
     }
     /**
@@ -2928,7 +2928,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern){
+    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
         return super.indexs(runtime, random, table, pattern);
     }
     /**
@@ -2940,7 +2940,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name){
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2956,7 +2956,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");
             }
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append("AND INDEX_NAME='").append(name).append("'\n");
         }
         builder.append("ORDER BY SEQ_IN_INDEX");
@@ -2977,16 +2977,16 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-        if(null == indexs){
+        if(null == indexs) {
             indexs = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("INDEX_NAME");
-            if(null == name){
+            if(null == name) {
                 continue;
             }
             T idx = indexs.get(name.toUpperCase());
-            if(null == idx && create){
+            if(null == idx && create) {
                 idx = (T)new Index();
                 indexs.put(name.toUpperCase(), idx);
                 Table tab = new Table(row.getString("TABLE_NAME"));
@@ -2994,10 +2994,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 idx.setTable(tab);
             };
             idx.setName(name);
-            if(name.equals("PRIMARY")){
+            if(name.equals("PRIMARY")) {
                 idx.setPrimary(true);
             }
-            if("0".equals(row.getString("NON_UNIQUE"))){
+            if("0".equals(row.getString("NON_UNIQUE"))) {
                 idx.setUnique(true);
             }
             idx.setComment(row.getString("INDEX_COMMENT"));
@@ -3005,7 +3005,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
             String col = row.getString("COLUMN_NAME");
             Column column = idx.getColumn(col);
-            if(null == column){
+            if(null == column) {
                 idx.addColumn(col, null, row.getInt("SEQ_IN_INDEX", 0));
             }
         }
@@ -3025,17 +3025,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-        if(null == indexs){
+        if(null == indexs) {
             indexs = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("INDEX_NAME");
-            if(null == name){
+            if(null == name) {
                 continue;
             }
             String schema = row.getString("TABLE_SCHEMA");
             T idx = search(indexs, null, schema, name);
-            if(null == idx && create){
+            if(null == idx && create) {
                 idx = (T)new Index();
                 indexs.add(idx);
                 Table tab = new Table(row.getString("TABLE_NAME"));
@@ -3043,10 +3043,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 idx.setTable(tab);
             };
             idx.setName(name);
-            if(name.equals("PRIMARY")){
+            if(name.equals("PRIMARY")) {
                 idx.setPrimary(true);
             }
-            if("0".equals(row.getString("NON_UNIQUE"))){
+            if("0".equals(row.getString("NON_UNIQUE"))) {
                 idx.setUnique(true);
             }
             idx.setComment(row.getString("INDEX_COMMENT"));
@@ -3054,7 +3054,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
             String col = row.getString("COLUMN_NAME");
             Column column = idx.getColumn(col);
-            if(null == column){
+            if(null == column) {
                 idx.addColumn(col, null, row.getInt("SEQ_IN_INDEX", 0));
             }
         }
@@ -3116,7 +3116,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern){
+    public <T extends Constraint> List<T> constraints(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
         return super.constraints(runtime, random, greedy, table, pattern);
     }
     /**
@@ -3131,7 +3131,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern){
+    public <T extends Constraint> LinkedHashMap<String, T> constraints(DataRuntime runtime, String random, Table table, Column column, String pattern) {
         return super.constraints(runtime, random, table, column, pattern);
     }
 
@@ -3206,7 +3206,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return  LinkedHashMap
      * @param <T> Index
      */
-    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events){
+    public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, String random, boolean greedy, Table table, List<Trigger.EVENT> events) {
         return super.triggers(runtime, random, greedy, table, events);
     }
     /**
@@ -3217,28 +3217,28 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param events 事件 INSERT|UPDATE|DELETE
      * @return sqls
      */
-    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events){
+    public List<Run> buildQueryTriggersRun(DataRuntime runtime, Table table, List<Trigger.EVENT> events) {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE 1=1");
-        if(null != table){
+        if(null != table) {
             checkName(runtime, null, table);
             Schema schemae = table.getSchema();
             String name = table.getName();
-            if(BasicUtil.isNotEmpty(schemae)){
+            if(BasicUtil.isNotEmpty(schemae)) {
                 builder.append(" AND TRIGGER_SCHEMA = '").append(schemae).append("'");
             }
-            if(BasicUtil.isNotEmpty(name)){
+            if(BasicUtil.isNotEmpty(name)) {
                 builder.append(" AND EVENT_OBJECT_TABLE = '").append(name).append("'");
             }
         }
-        if(null != events && events.size()>0){
+        if(null != events && events.size()>0) {
             builder.append(" AND(");
             boolean first = true;
-            for(Trigger.EVENT event:events){
-                if(!first){
+            for(Trigger.EVENT event:events) {
+                if(!first) {
                     builder.append(" OR ");
                 }
                 builder.append("EVENT_MANIPULATION ='").append(event);
@@ -3260,13 +3260,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     public <T extends Trigger> LinkedHashMap<String, T> triggers(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> triggers, DataSet set) throws Exception {
-        if(null == triggers){
+        if(null == triggers) {
             triggers = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             String name = row.getString("TRIGGER_NAME");
             T trigger = triggers.get(name.toUpperCase());
-            if(null == trigger){
+            if(null == trigger) {
                 trigger = (T)new Trigger();
             }
             trigger.setName(name);
@@ -3274,7 +3274,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             tab.setSchema(row.getString("TRIGGER_SCHEMA"));
             trigger.setTable(tab);
             boolean each = false;
-            if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))){
+            if("ROW".equalsIgnoreCase(row.getString("ACTION_ORIENTATION"))) {
                 each = true;
             }
             trigger.setEach(each);
@@ -3285,7 +3285,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
                 for(String event:events) {
                     trigger.addEvent(Trigger.EVENT.valueOf(event));
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.error("封装trigger 异常:", e);
             }
             trigger.setDefinition(row.getString("ACTION_STATEMENT"));
@@ -3329,7 +3329,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> List<T> procedures(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, greedy, catalog, schema, pattern);
     }
     /**
@@ -3344,7 +3344,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Index
      */
     @Override
-    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern){
+    public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern) {
         return super.procedures(runtime, random, catalog, schema, pattern);
     }
     /**
@@ -3363,10 +3363,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'");
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(pattern)){
+        if(BasicUtil.isNotEmpty(pattern)) {
             builder.append(" AND ROUTINE_NAME LIKE '").append(pattern).append("'");
         }
         return runs;
@@ -3384,10 +3384,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Procedure> LinkedHashMap<String, T> procedures(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> procedures, DataSet set) throws Exception {
-        if(null == procedures){
+        if(null == procedures) {
             procedures = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             T procedure = (T)new Procedure();
             procedure.setSchema(row.getString("ROUTINE_SCHEMA"));
             procedure.setName(row.getString("ROUTINE_NAME"));
@@ -3433,7 +3433,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure){
+    public List<String> ddl(DataRuntime runtime, String random, Procedure procedure) {
         return super.ddl(runtime, random, procedure);
     }
     /**
@@ -3465,11 +3465,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set){
-        if(null == ddls){
+    public List<String> ddl(DataRuntime runtime, int index, Procedure procedure, List<String> ddls, DataSet set) {
+        if(null == ddls) {
             ddls = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             ddls.add(row.getString("Create Procedure"));
         }
 
@@ -3543,10 +3543,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         builder.append("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'");
-        if(!empty(schema)){
+        if(!empty(schema)) {
             builder.append(" AND ROUTINE_SCHEMA = '").append(schema.getName()).append("'");
         }
-        if(BasicUtil.isNotEmpty(name)){
+        if(BasicUtil.isNotEmpty(name)) {
             builder.append(" AND ROUTINE_NAME = '").append(name).append("'");
         }
         return runs;
@@ -3580,10 +3580,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Function> LinkedHashMap<String, T> functions(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> functions, Catalog catalog, Schema schema, DataSet set) throws Exception {
-        if(null == functions){
+        if(null == functions) {
             functions = new LinkedHashMap<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             T function = (T)new Function();
             function.setSchema(row.getString("ROUTINE_SCHEMA"));
             function.setName(row.getString("ROUTINE_NAME"));
@@ -3616,7 +3616,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Function meta){
+    public List<String> ddl(DataRuntime runtime, String random, Function meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3648,11 +3648,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set){
-        if(null == ddls){
+    public List<String> ddl(DataRuntime runtime, int index, Function function, List<String> ddls, DataSet set) {
+        if(null == ddls) {
             ddls = new ArrayList<>();
         }
-        for(DataRow row:set){
+        for(DataRow row:set) {
             ddls.add(row.getString("Create Function"));
         }
 
@@ -3778,7 +3778,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return ddl
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, String random, Sequence meta){
+    public List<String> ddl(DataRuntime runtime, String random, Sequence meta) {
         return super.ddl(runtime, random, meta);
     }
 
@@ -3804,7 +3804,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set){
+    public List<String> ddl(DataRuntime runtime, int index, Sequence sequence, List<String> ddls, DataSet set) {
         return super.ddl(runtime, index, sequence, ddls, set);
     }
 
@@ -3823,7 +3823,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name){
+    public <T extends Metadata> T search(List<T> metas, Catalog catalog, Schema schema, String name) {
         return super.search(metas, catalog, schema, name);
     }
 
@@ -3837,7 +3837,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name){
+    public <T extends Schema> T schema(List<T> schemas, Catalog catalog, String name) {
         return super.schema(schemas, catalog, name);
     }
 
@@ -3850,7 +3850,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Catalog> T catalog(List<T> catalogs, String name){
+    public <T extends Catalog> T catalog(List<T> catalogs, String name) {
         return super.catalog(catalogs, name);
     }
     /**
@@ -3862,7 +3862,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> Table
      */
     @Override
-    public <T extends Database> T database(List<T> databases, String name){
+    public <T extends Database> T database(List<T> databases, String name) {
         return super.database(databases, name);
     }
     /* *****************************************************************************************************************
@@ -3889,7 +3889,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * 是否支持DDL合并
      * @return boolean
      */
-    public boolean slice(){
+    public boolean slice() {
         return true;
     }
     /**
@@ -3902,7 +3902,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return boolean
      */
     @Override
-    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run){
+    public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run) {
         return super.execute(runtime, random, meta, action, run);
     }
     /* *****************************************************************************************************************
@@ -3953,21 +3953,21 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 
     @Override
     public boolean alter(DataRuntime runtime, Table meta) throws Exception {
-        if(meta.isSort()){
+        if(meta.isSort()) {
             sort(meta.getColumns());
         }
         Table update = (Table)meta.getUpdate();
-        if(null != update){
-            if(update.isSort()){
+        if(null != update) {
+            if(update.isSort()) {
                 sort(update.getColumns());
             }
         }
         return super.alter(runtime, meta);
     }
-    protected void sort(LinkedHashMap<String, Column> columns){
+    protected void sort(LinkedHashMap<String, Column> columns) {
         String prefix = null;
-        for(Column column:columns.values()){
-            if(null == prefix){
+        for(Column column:columns.values()) {
+            if(null == prefix) {
                 column.setPosition(0);
             }else{
                 column.setAfter(prefix);
@@ -4067,25 +4067,25 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             builder.append("ALTER ").append(keyword(meta)).append(" ");
             name(runtime, builder, meta);
             List<Run> slices = new ArrayList<>();
-            for(Column column:columns){
+            for(Column column:columns) {
                 ACTION.DDL action = column.getAction();
-                if(action == ACTION.DDL.COLUMN_ADD){
+                if(action == ACTION.DDL.COLUMN_ADD) {
                     slices.addAll(buildAddRun(runtime, column, true));
-                }else if(action == ACTION.DDL.COLUMN_ALTER){
+                }else if(action == ACTION.DDL.COLUMN_ALTER) {
                     slices.addAll(buildAlterRun(runtime, column, true));
-                }else if(action == ACTION.DDL.COLUMN_DROP){
+                }else if(action == ACTION.DDL.COLUMN_DROP) {
                     slices.addAll(buildDropRun(runtime, column, true));
                 }
             }
             boolean first = true;
-            for(Run slice:slices){
-                if(BasicUtil.isNotEmpty(slice)){
+            for(Run slice:slices) {
+                if(BasicUtil.isNotEmpty(slice)) {
                     String line = slice.getFinalUpdate().trim();
-                    if(BasicUtil.isEmpty(line)){
+                    if(BasicUtil.isEmpty(line)) {
                         continue;
                     }
                     builder.append("\n");
-                    if(!first){
+                    if(!first) {
                         builder.append(",");
                     }
                     first = false;
@@ -4145,7 +4145,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         /*String comment = meta.getComment();
-        if(BasicUtil.isEmpty(comment)){
+        if(BasicUtil.isEmpty(comment)) {
             return runs;
         }
         Run run = new SimpleRun(runtime);
@@ -4181,7 +4181,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = meta.getComment();
-        if(BasicUtil.isEmpty(comment)){
+        if(BasicUtil.isEmpty(comment)) {
             return runs;
         }
         Run run = new SimpleRun(runtime);
@@ -4203,7 +4203,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTableExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkTableExists(runtime, builder, exists);
     }
 
@@ -4214,7 +4214,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param table 表
      */
     @Override
-    public void checkPrimary(DataRuntime runtime, Table table){
+    public void checkPrimary(DataRuntime runtime, Table table) {
         super.checkPrimary(runtime, table);
     }
 
@@ -4227,26 +4227,26 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Table meta) {
         PrimaryKey primary = meta.getPrimaryKey();
         LinkedHashMap<String, Column> pks = null;
-        if(null != primary){
+        if(null != primary) {
             pks = primary.getColumns();
         }else{
             pks = meta.primarys();
         }
-        if(!pks.isEmpty() && pks.size() >1){//单列主键时在列名上设置
+        if(!pks.isEmpty() && pks.size() >1) {//单列主键时在列名上设置
             builder.append(",PRIMARY KEY (");
             boolean first = true;
             Column.sort(primary.getPositions(), pks);
-            for(Column pk:pks.values()){
-                if(!first){
+            for(Column pk:pks.values()) {
+                if(!first) {
                     builder.append(",");
                 }
                 first = false;
                 delimiter(builder, pk.getName());
                 String order = pk.getOrder();
-                if(BasicUtil.isNotEmpty(order)){
+                if(BasicUtil.isNotEmpty(order)) {
                     builder.append(" ").append(order);
                 }
             }
@@ -4264,13 +4264,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Table meta) {
         String charset = meta.getCharset();
         String collate = meta.getCollate();
-        if(BasicUtil.isNotEmpty(charset)){
+        if(BasicUtil.isNotEmpty(charset)) {
             builder.append(" CHARSET = ").append(charset);
         }
-        if(BasicUtil.isNotEmpty(collate)){
+        if(BasicUtil.isNotEmpty(collate)) {
             builder.append(" COLLATE = ").append(collate);
         }
         return builder;
@@ -4285,10 +4285,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta){
-        if(null != meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Table meta) {
+        if(null != meta) {
             String comment = meta.getComment();
-            if(BasicUtil.isNotEmpty(comment)){
+            if(BasicUtil.isNotEmpty(comment)) {
                 builder.append("\nCOMMENT '").append(comment).append("'");
             }
         }
@@ -4491,7 +4491,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkViewExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkViewExists(runtime, builder, exists);
     }
 
@@ -4504,7 +4504,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, View meta) {
         return super.comment(runtime, builder, meta);
     }
 
@@ -4935,7 +4935,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             name(runtime, builder, table);
         }
         Column update = meta.getUpdate();
-        if(null == update){
+        if(null == update) {
             // 添加列
             addColumnGuide(runtime, builder, meta);
             delimiter(builder, meta.getName()).append(" ");
@@ -4985,11 +4985,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             name(runtime, builder, table);
         }
         Column update = meta.getUpdate();
-        if(null == update){
+        if(null == update) {
             update = meta;
         }
         boolean rename = meta.isRename();
-        if(rename){
+        if(rename) {
             builder.append(" CHANGE ");
         }else{
             builder.append(" MODIFY ");
@@ -5057,7 +5057,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String alterColumnKeyword(DataRuntime runtime){
+    public String alterColumnKeyword(DataRuntime runtime) {
         return "ALTER COLUMN ";
     }
 
@@ -5070,7 +5070,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder addColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.addColumnGuide(runtime, builder, meta);
     }
 
@@ -5083,7 +5083,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder dropColumnGuide(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.dropColumnGuide(runtime, builder, meta);
     }
 
@@ -5168,7 +5168,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder define(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.define(runtime, builder, meta, action);
     }
 
@@ -5182,7 +5182,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkColumnExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return super.checkColumnExists(runtime, builder, exists);
     }
     /**
@@ -5194,7 +5194,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.type(runtime, builder, meta);
     }
     /**
@@ -5209,7 +5209,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Column meta, String type, int ignoreLength, int ignorePrecision, int ignoreScale) {
         return super.type(runtime, builder, meta, type, ignoreLength, ignorePrecision, ignoreScale);
     }
 
@@ -5222,7 +5222,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action){
+    public StringBuilder nullable(DataRuntime runtime, StringBuilder builder, Column meta, ACTION.DDL action) {
         return super.nullable(runtime, builder, meta, action);
     }
     /**
@@ -5234,7 +5234,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder charset(DataRuntime runtime, StringBuilder builder, Column meta) {
         // CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
         String typeName = meta.getTypeName();
         if(null != typeName && typeName.toLowerCase().contains("char")) {
@@ -5258,7 +5258,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder defaultValue(DataRuntime runtime, StringBuilder builder, Column meta) {
         return super.defaultValue(runtime, builder, meta);
     }
 
@@ -5271,17 +5271,17 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta){
-        if(null != meta && meta.isPrimaryKey() == 1){
+    public StringBuilder primary(DataRuntime runtime, StringBuilder builder, Column meta) {
+        if(null != meta && meta.isPrimaryKey() == 1) {
             Table table = meta.getTable();
             int size = table.getPrimaryKeySize();
             //如果是修改状态 并且 列名没变 并且 主键没变 则忽略
-            if(meta.getAction() == ACTION.DDL.COLUMN_ALTER){
-                if(!meta.isRename()){
+            if(meta.getAction() == ACTION.DDL.COLUMN_ALTER) {
+                if(!meta.isRename()) {
                     return builder;
                 }
             }
-            if(size ==1){//单键时 在列名上设置
+            if(size ==1) {//单键时 在列名上设置
                 builder.append(" PRIMARY KEY");
             }
         }
@@ -5297,9 +5297,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta){
-        if(meta.isPrimaryKey() != 1){
-            if(meta.isUnique() == 1){
+    public StringBuilder unique(DataRuntime runtime, StringBuilder builder, Column meta) {
+        if(meta.isPrimaryKey() != 1) {
+            if(meta.isUnique() == 1) {
                 builder.append(" UNIQUE");
             }
         }
@@ -5314,8 +5314,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta){
-        if(meta.isAutoIncrement() == 1){
+    public StringBuilder increment(DataRuntime runtime, StringBuilder builder, Column meta) {
+        if(meta.isAutoIncrement() == 1) {
             builder.append(" AUTO_INCREMENT");
         }
         return builder;
@@ -5329,8 +5329,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta){
-        if(meta.isOnUpdate() == 1){
+    public StringBuilder onupdate(DataRuntime runtime, StringBuilder builder, Column meta) {
+        if(meta.isOnUpdate() == 1) {
             builder.append(" ON UPDATE CURRENT_TIMESTAMP");
         }
         return builder;
@@ -5345,19 +5345,19 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder position(DataRuntime runtime, StringBuilder builder, Column meta) {
         Integer position = meta.getPosition();
         String after = meta.getAfter();
         String before = meta.getBefore();
-        if(BasicUtil.isEmpty(before) && BasicUtil.isEmpty(after)){
-           if(null != position && 0 == position){
+        if(BasicUtil.isEmpty(before) && BasicUtil.isEmpty(after)) {
+           if(null != position && 0 == position) {
                builder.append(" FIRST");
            }
         }else{
-            if(BasicUtil.isNotEmpty(after)){
+            if(BasicUtil.isNotEmpty(after)) {
                 builder.append(" AFTER ");
                 delimiter(builder, after);
-            }else if(BasicUtil.isNotEmpty(before)){
+            }else if(BasicUtil.isNotEmpty(before)) {
                 builder.append(" BEFORE ");
                 delimiter(builder, before);
             }
@@ -5374,9 +5374,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Column meta) {
         String comment = meta.getComment();
-        if(BasicUtil.isNotEmpty(comment)){
+        if(BasicUtil.isNotEmpty(comment)) {
             builder.append(" COMMENT '").append(comment).append("'");
         }
         return builder;
@@ -5580,7 +5580,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists){
+    public StringBuilder checkTagExists(DataRuntime runtime, StringBuilder builder, boolean exists) {
         return builder;
     }
 
@@ -5929,7 +5929,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public boolean alter(DataRuntime runtime, Table table, Index meta) throws Exception {
         Map<String, Index> origins = indexs(runtime, null, table, meta.getName());
-        if(!origins.isEmpty()){
+        if(!origins.isEmpty()) {
             drop(runtime, meta);
         }
         return add(runtime, meta);
@@ -6000,7 +6000,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         StringBuilder builder = run.getBuilder();
         builder.append("ALTER TABLE ");
         name(runtime, builder, meta.getTable(true));
-        if(meta.isPrimary()){
+        if(meta.isPrimary()) {
             builder.append(" DROP PRIMARY KEY");
         }else {
             builder.append(" DROP INDEX ").append(meta.getName());
@@ -6029,9 +6029,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
         String type = meta.getType();
-        if(BasicUtil.isNotEmpty(type)){
+        if(BasicUtil.isNotEmpty(type)) {
             builder.append("USING ").append(type).append(" ");
         }
         return builder;
@@ -6045,9 +6045,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta){
+    public StringBuilder comment(DataRuntime runtime, StringBuilder builder, Index meta) {
         String comment = meta.getComment();
-        if(BasicUtil.isNotEmpty(comment)){
+        if(BasicUtil.isNotEmpty(comment)) {
             builder.append(" COMMENT '").append(comment).append("'");
         };
         return builder;
@@ -6302,7 +6302,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return StringBuilder
      */
     @Override
-    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta){
+    public StringBuilder each(DataRuntime runtime, StringBuilder builder, Trigger meta) {
         return super.each(runtime, builder, meta);
     }
 
@@ -6434,7 +6434,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @param parameter parameter
      */
     @Override
-    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter){
+    public StringBuilder parameter(DataRuntime runtime, StringBuilder builder, Parameter parameter) {
         return super.parameter(runtime, builder, parameter);
     }
 
@@ -6690,7 +6690,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
 	 * @param <T> Metadata
 	 */
 	@Override
-    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta){
+    public <T extends Metadata> void correctSchemaFromJDBC(DataRuntime runtime, T meta, String catalog, String schema, boolean overrideRuntime, boolean overrideMeta) {
         if(overrideMeta || empty(meta.getSchema())) {
             meta.setSchema(catalog);
         }
@@ -6702,26 +6702,26 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String[]
      */
     @Override
-    public String[] correctSchemaFromJDBC(String catalog, String schema){
+    public String[] correctSchemaFromJDBC(String catalog, String schema) {
         return new String[]{schema, null};
     }
-    public String insertHead(ConfigStore configs){
+    public String insertHead(ConfigStore configs) {
 
         Boolean override = null;
-        if(null != configs){
+        if(null != configs) {
             override = configs.override();
         }
-        if(null == override){
+        if(null == override) {
             return "INSERT INTO ";
         }else{
-            if(override){
+            if(override) {
                 return "REPLACE INTO ";
             }else{
                 return "INSERT IGNORE INTO ";
             }
         }
     }
-    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public String insertFoot(ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return "";
     }
    
@@ -6734,7 +6734,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataLengthRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataLengthRefer(runtime, meta);
     }
 
@@ -6746,7 +6746,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataPrecisionRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataPrecisionRefer(runtime, meta);
     }
 
@@ -6758,23 +6758,23 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta){
+    public String columnMetadataScaleRefer(DataRuntime runtime, TypeMetadata meta) {
         return super.columnMetadataScaleRefer(runtime, meta);
     }
    
 
     @Override
-    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value){
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME){
+    public String value(DataRuntime runtime, Column column, SQL_BUILD_IN_VALUE value) {
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATETIME) {
             return "now()";
         }
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE){
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_DATE) {
             return "curdate()";
         }
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME) {
             return "curtime()";
         }
-        if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP){
+        if(value == SQL_BUILD_IN_VALUE.CURRENT_TIMESTAMP) {
             return "now()";
         }
         return null;
@@ -6787,14 +6787,14 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public String concat(DataRuntime runtime, String ... args){
+    public String concat(DataRuntime runtime, String ... args) {
         return super.concatFun(runtime, args);
     }
     /**
      * 伪表
      * @return String
      */
-    protected String dummy(){
+    protected String dummy() {
         return super.dummy();
     }
 

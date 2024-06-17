@@ -93,15 +93,15 @@ public enum PostgisWriter {
         }
     })
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataWriter writer(){
+    public DataWriter writer() {
         return writer;
     }
     private final Object[] supports;
     private final DataWriter writer;
-    PostgisWriter(Object[] supports, DataWriter writer){
+    PostgisWriter(Object[] supports, DataWriter writer) {
         this.supports = supports;
         this.writer = writer;
     }

@@ -27,8 +27,8 @@ public class Database extends Metadata<Database> implements Serializable {
     protected String filePath                     ; // 文件位置
     protected String logPath                      ; // 日志位置
     protected String user                         ; // 所属用户
-    public Database(){}
-    public Database(String name){
+    public Database() {}
+    public Database(String name) {
         setName(name);
     }
     public String getCharset() {
@@ -47,7 +47,7 @@ public class Database extends Metadata<Database> implements Serializable {
         this.collate = collate;
     }
 
-    public String toString(){
+    public String toString() {
         return name;
     }
 

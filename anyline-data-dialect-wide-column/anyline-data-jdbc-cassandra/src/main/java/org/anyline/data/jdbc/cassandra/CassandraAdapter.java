@@ -40,7 +40,7 @@ import java.util.List;
 @Component("anyline.data.jdbc.adapter.cassandra")
 public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.Cassandra;
     }
 
@@ -54,7 +54,7 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
 
     }
 
-    public CassandraAdapter(){
+    public CassandraAdapter() {
         delimiterFr = "";
         delimiterTo = "";
     }
@@ -67,21 +67,21 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
      *
      * ****************************************************************************************************/
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalQuery(DataRuntime runtime, Run run) {
         String sql = run.getBaseQuery();
         String cols = run.getQueryColumn();
-        if(!"*".equals(cols)){
+        if(!"*".equals(cols)) {
             String reg = "(?i)^select[\\s\\S]+from";
             sql = sql.replaceAll(reg, "SELECT "+cols+" FROM ");
         }
         OrderStore orders = run.getOrderStore();
-        if(null != orders){
+        if(null != orders) {
             sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
         }
         PageNavi navi = run.getPageNavi();
-        if(null != navi){
+        if(null != navi) {
             long limit = navi.getLastRow() - navi.getFirstRow() + 1;
-            if(limit < 0){
+            if(limit < 0) {
                 limit = 0;
             }
             sql += " LIMIT " + navi.getFirstRow() + "," + limit;
@@ -100,7 +100,7 @@ public class CassandraAdapter extends AbstractJDBCAdapter implements JDBCAdapter
         return null;
     }
 
-    public String concat(DataRuntime runtime, String ... args){
+    public String concat(DataRuntime runtime, String ... args) {
         return concatFun(runtime, args);
     }
 

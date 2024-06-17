@@ -44,7 +44,7 @@ public interface DataRuntime {
      * @return String
      */
     String getFeature(boolean connection) ;
-    default String getFeature(){
+    default String getFeature() {
         return getFeature(false);
     }
 

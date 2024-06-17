@@ -440,8 +440,8 @@ public class IDCardUtil {
 		} 
 		return a; 
 	} 
-	public static String getBirthday(String idcard){
-		if(!validate(idcard)){
+	public static String getBirthday(String idcard) {
+		if(!validate(idcard)) {
 			return ""; 
 		} 
 		String result = ""; 
@@ -451,13 +451,13 @@ public class IDCardUtil {
 		result = idcard.substring(6, 14);
 		try {
 			result = DateUtil.format(result, "yyyy-MM-dd");
-		}catch (Exception ignored){
+		}catch (Exception ignored) {
 		}
 		return result; 
 	} 
 	 
-	public static String getProvinceCode(String idcard){
-		if(!validate(idcard)){
+	public static String getProvinceCode(String idcard) {
+		if(!validate(idcard)) {
 			return ""; 
 		} 
 		String result = ""; 
@@ -467,19 +467,19 @@ public class IDCardUtil {
 		result = idcard.substring(0, 2);
 		return result; 
 	} 
-	public static String getProvince(String idcard){
+	public static String getProvince(String idcard) {
 		String result = getProvinceCode(idcard); 
-		if(BasicUtil.isEmpty(result)){
+		if(BasicUtil.isEmpty(result)) {
 			return ""; 
 		} 
 		result = CODE_NM.get(result); 
-		if(BasicUtil.isEmpty(result)){
+		if(BasicUtil.isEmpty(result)) {
 			result = ""; 
 		} 
 		return result; 
 	} 
-	public static String getSexCode(String idcard){
-		if(!validate(idcard)){
+	public static String getSexCode(String idcard) {
+		if(!validate(idcard)) {
 			return ""; 
 		} 
 		String result = ""; 
@@ -494,25 +494,25 @@ public class IDCardUtil {
         } 
 		return result; 
 	} 
-	public static String getSex(String idcard){
+	public static String getSex(String idcard) {
 		String result = getSexCode(idcard); 
-		if(BasicUtil.isEmpty(result)){
+		if(BasicUtil.isEmpty(result)) {
 			return ""; 
 		} 
-		if("1".equals(result)){
+		if("1".equals(result)) {
 			result = "男"; 
 		}else{
 			result = "女"; 
 		} 
 		return result; 
 	} 
-	public static int getAge(String idcard){
+	public static int getAge(String idcard) {
 		int age = -1; 
 		String birthday = getBirthday(idcard); 
-		if(BasicUtil.isNotEmpty(birthday)){
+		if(BasicUtil.isNotEmpty(birthday)) {
 			try {
 				age = (int) DateUtil.diff(Calendar.YEAR, birthday);
-			}catch (Exception e){
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		} 

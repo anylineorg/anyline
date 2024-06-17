@@ -45,7 +45,7 @@ public interface OrderStore extends Cloneable, Serializable{
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围
 	 */
-	default void filter(LinkedHashMap<String, Column> metadatas){
+	default void filter(LinkedHashMap<String, Column> metadatas) {
 		List<Order> orders = getOrders();
 		if (null != orders) {
 			int size = orders.size();

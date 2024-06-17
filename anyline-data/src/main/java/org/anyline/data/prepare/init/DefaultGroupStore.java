@@ -34,15 +34,15 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 	public DefaultGroupStore() {
 		groups = new ArrayList<Group>(); 
 	} 
-	public List<Group> getGroups(){
+	public List<Group> getGroups() {
 		return groups; 
 	} 
 	public void group(Group group) {
-		if(null == group){
+		if(null == group) {
 			return; 
 		} 
 		Group tmp = getGroup(group.getColumn()); 
-		if(null == tmp){
+		if(null == tmp) {
 			groups.add(group); 
 		} 
 	} 
@@ -66,13 +66,13 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 		} 
 	} 
  
-	public Group getGroup(String group){
-		if(null == group){
+	public Group getGroup(String group) {
+		if(null == group) {
 			return null; 
 		} 
-		if(null != groups){
-			for(Group o:groups){
-				if(null != o && group.equalsIgnoreCase(o.getColumn())){
+		if(null != groups) {
+			for(Group o:groups) {
+				if(null != o && group.equalsIgnoreCase(o.getColumn())) {
 					return o; 
 				} 
 			} 
@@ -80,42 +80,42 @@ public class DefaultGroupStore implements GroupStore, Serializable {
 		return null; 
 	} 
  
-	public void clear(){
+	public void clear() {
 		groups.clear(); 
 	} 
 	@Override 
 	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
-		if(null != groups && !groups.isEmpty()){
+		if(null != groups && !groups.isEmpty()) {
 			builder.append(" GROUP BY "); 
-			for(int i=0; i<groups.size(); i++){
+			for(int i=0; i<groups.size(); i++) {
 				Group group = groups.get(i);
-				if(null == group){
+				if(null == group) {
 					continue;
 				}
 				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
-				if(i<groups.size()-1){
+				if(i<groups.size()-1) {
 					builder.append(",");
 				} 
 			} 
 		} 
 		return builder.toString(); 
 	}
-	public boolean isEmpty(){
-		if(null != groups){
+	public boolean isEmpty() {
+		if(null != groups) {
 			return groups.isEmpty();
 		}
 		return true;
 	}
-	public GroupStore clone(){
+	public GroupStore clone() {
 		DefaultGroupStore clone = null;
 		try{
 			clone = (DefaultGroupStore)super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 			clone = new DefaultGroupStore();
 		}
-		if(null != groups){
-			for(Group group:groups){
+		if(null != groups) {
+			for(Group group:groups) {
 				clone.group(group.clone());
 			}
 		}

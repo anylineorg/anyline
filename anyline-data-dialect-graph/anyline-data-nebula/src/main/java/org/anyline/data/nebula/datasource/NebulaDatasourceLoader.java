@@ -33,7 +33,7 @@ public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements 
     public static Logger log = LoggerFactory.getLogger(NebulaDataSourceLoader.class);
 
     @Override
-    public List<String> load(){
+    public List<String> load() {
         List<String> list = new ArrayList<>();
         boolean loadDefault = !DataSourceHolder.contains("default");
         list.addAll(load("spring.datasource", loadDefault));
@@ -43,7 +43,7 @@ public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements 
     }
 
     //加载配置文件
-    private List<String> load(String head, boolean loadDefault){
+    private List<String> load(String head, boolean loadDefault) {
         //加载成功的前缀 crm, sso
         List<String> list = new ArrayList<>();
         if(loadDefault) {
@@ -56,11 +56,11 @@ public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements 
         //多数据源
         // 读取配置文件获取更多数据源 anyline.datasource.list
         String prefixs = worker.string(null, head + ".list");
-        if(null == prefixs){
+        if(null == prefixs) {
             //anyline.datasource-list
             prefixs = worker.string(null,head + "-list");
         }
-        if(null != prefixs){
+        if(null != prefixs) {
             for (String prefix : prefixs.split(",")) {
                 // 多个数据源
                 try {
@@ -70,7 +70,7 @@ public class NebulaDataSourceLoader extends AbstractDataSourceLoader implements 
                     if(null != ds) {
                         list.add(ds);
                     }
-                }catch (Exception e){
+                }catch (Exception e) {
                     log.error("[注入数据源失败][type:nebula][key:{}][msg:{}]", prefix, e.toString());
                 }
             }

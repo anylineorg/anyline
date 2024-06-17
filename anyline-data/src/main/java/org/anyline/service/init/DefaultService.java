@@ -21,7 +21,6 @@ package org.anyline.service.init;
 import org.anyline.annotation.Autowired;
 import org.anyline.annotation.Component;
 import org.anyline.cache.CacheElement;
-import org.anyline.cache.CacheProvider;
 import org.anyline.dao.AnylineDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.cache.CacheUtil;
@@ -92,12 +91,19 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataSet querys(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).querys(ps[1], configs, obj, conditions);
         }
         dest = BasicUtil.compress(dest);
         conditions = BasicUtil.compress(conditions);
-        configs = append(configs, obj);
+        if(obj instanceof PageNavi){
+            if(null == configs){
+                configs = new DefaultConfigStore();
+                configs.setPageNavi((PageNavi) obj);
+            }
+        }else {
+            configs = append(configs, obj);
+        }
         return queryFromDao(dest, configs, conditions);
     }
 
@@ -126,14 +132,14 @@ public class DefaultService<E> implements AnylineService<E> {
         conditions = BasicUtil.compress(conditions);
         try {
             configs = append(configs, obj);
-            if(null != prepare.getRuntime()){
+            if(null != prepare.getRuntime()) {
                 maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
             }else {
                 maps = dao.maps(prepare, configs, conditions);
             }
         } catch (Exception e) {
             maps = new ArrayList<Map<String, Object>>();
-            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
                 throw e;
             }
         }
@@ -142,7 +148,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public List<Map<String, Object>> maps(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).maps(ps[1], configs, obj, conditions);
         }
         List<Map<String, Object>> maps = null;
@@ -151,14 +157,14 @@ public class DefaultService<E> implements AnylineService<E> {
         try {
             RunPrepare prepare = createRunPrepare(dest);
             configs = append(configs, obj);
-            if(null != prepare.getRuntime()){
+            if(null != prepare.getRuntime()) {
                 maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
             }else {
                 maps = dao.maps(prepare, configs, conditions);
             }
         } catch (Exception e) {
             maps = new ArrayList<Map<String, Object>>();
-            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
                 throw e;
             }
         }
@@ -168,7 +174,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public List<Map<String, Object>> maps(Table dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).maps(ps[1], configs, obj, conditions);
         }
         List<Map<String, Object>> maps = null;
@@ -176,14 +182,14 @@ public class DefaultService<E> implements AnylineService<E> {
         try {
             RunPrepare prepare = createRunPrepare(dest);
             configs = append(configs, obj);
-            if(null != prepare.getRuntime()){
+            if(null != prepare.getRuntime()) {
                 maps = ServiceProxy.service(prepare.getRuntime()).getDao().maps(prepare, configs, conditions);
             }else {
                 maps = dao.maps(prepare, configs, conditions);
             }
         } catch (Exception e) {
             maps = new ArrayList<Map<String, Object>>();
-            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
                 throw e;
             }
         }
@@ -193,7 +199,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataSet caches(String cache, String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
         }
         DataSet set = null;
@@ -214,7 +220,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public DataSet caches(String cache, Table dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).caches(cache, ps[1], configs, obj, conditions);
         }
         DataSet set = null;
@@ -418,7 +424,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public <T> EntitySet<T> selects(String dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).selects(ps[1], clazz, configs, entity, conditions);
         }
         return queryFromDao(dest, clazz, append(configs, entity), conditions);
@@ -427,7 +433,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public <T> EntitySet<T> selects(Table dest, Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).selects(ps[1], clazz, configs, entity, conditions);
         }
         return queryFromDao(dest, clazz, append(configs, entity), conditions);
@@ -721,7 +727,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public boolean exists(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).exists(ps[1], configs, obj, conditions);
         }
         boolean result = false;
@@ -739,7 +745,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public boolean exists(Table dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).exists(ps[1], configs, obj, conditions);
         }
         boolean result = false;
@@ -807,7 +813,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long count(String dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).count(ps[1], configs, obj, conditions);
         }
         long count = -1;
@@ -816,7 +822,7 @@ public class DefaultService<E> implements AnylineService<E> {
             dest = BasicUtil.compress(dest);
             conditions = BasicUtil.compress(conditions);
             RunPrepare prepare = createRunPrepare(dest);
-            if(null != prepare.getRuntime()){
+            if(null != prepare.getRuntime()) {
                 count = ServiceProxy.service(prepare.getRuntime()).getDao().count(prepare, append(configs, obj), conditions);
             }else {
                 count = dao.count(prepare, append(configs, obj), conditions);
@@ -831,14 +837,14 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long count(Table dest, ConfigStore configs, Object obj, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).count(ps[1], configs, obj, conditions);
         }
         long count = -1;
         try {
             conditions = BasicUtil.compress(conditions);
             RunPrepare prepare = createRunPrepare(dest);
-            if(null != prepare.getRuntime()){
+            if(null != prepare.getRuntime()) {
                 count = ServiceProxy.service(prepare.getRuntime()).getDao().count(prepare, append(configs, obj), conditions);
             }else {
                 count = dao.count(prepare, append(configs, obj), conditions);
@@ -865,7 +871,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long insert(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).insert(batch, ps[1], data, configs, columns);
         }
         return dao.insert(batch, dest, data, configs, columns);
@@ -874,12 +880,35 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long insert(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).insert(batch, dest, data, configs, columns);
         }
         return dao.insert(batch, dest, data, configs, columns);
     }
 
+    @Override
+    public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]) {
+            return ServiceProxy.service(ps[0]).insert(dest, prepare, configs);
+        }
+        String name = dest.getName();
+        if(name.contains("(")){
+            String[] cols = name.substring(name.indexOf("(")+1, name.lastIndexOf(")")).split(",");
+            if(null == configs){
+                configs = new DefaultConfigStore();
+                configs.columns(cols);
+            }
+            dest.setName(name.substring(0, name.indexOf("(")));
+        }
+        if(null != columns && columns.length > 0){
+            if(null == configs){
+                configs = new DefaultConfigStore();
+                configs.columns(columns);
+            }
+        }
+        return dao.insert(dest, prepare, configs);
+    }
     /* *****************************************************************************************************************
      * 													UPDATE
      ******************************************************************************************************************/
@@ -898,11 +927,11 @@ public class DefaultService<E> implements AnylineService<E> {
      */
     @Override
     public long update(int batch, String dest, Object data, ConfigStore configs, List<String> columns) {
-        if(!checkCondition(data, configs)){
+        if(!checkCondition(data, configs)) {
             return -1;
         }
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).update(batch, ps[1], data, configs, columns);
         }
         return dao.update(batch, dest, data, configs, columns);
@@ -910,11 +939,11 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long update(int batch, Table dest, Object data, ConfigStore configs, List<String> columns) {
-        if(!checkCondition(data, configs)){
+        if(!checkCondition(data, configs)) {
             return -1;
         }
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).update(batch, dest, data, configs, columns);
         }
         return dao.update(batch, dest, data, configs, columns);
@@ -926,13 +955,13 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param configs ConfigStore
      * @return boolean 返回false表示没有过滤条件 应该中断执行
      */
-    protected boolean checkCondition(Object data, ConfigStore configs, String ... conditions){
-        if(null != configs){
-            if(!configs.isEmptyCondition()){
+    protected boolean checkCondition(Object data, ConfigStore configs, String ... conditions) {
+        if(null != configs) {
+            if(!configs.isEmptyCondition()) {
                 return true;
             }
         }
-        if(null != conditions && conditions.length > 0){
+        if(null != conditions && conditions.length > 0) {
             return true;
         }
         if(null != data) {
@@ -941,10 +970,10 @@ public class DefaultService<E> implements AnylineService<E> {
                 if (BasicUtil.isNotEmpty(row.getPrimaryValue())) {
                     return true;
                 }
-            }else if(data instanceof Collection){
+            }else if(data instanceof Collection) {
                 return true;
             }else{
-                if(!EntityAdapterProxy.primaryValue(data).isEmpty()){
+                if(!EntityAdapterProxy.primaryValue(data).isEmpty()) {
                     return true;
                 }
             }
@@ -953,10 +982,10 @@ public class DefaultService<E> implements AnylineService<E> {
         return false;
     }
 
-    protected boolean checkCondition(Object data){
+    protected boolean checkCondition(Object data) {
         return checkCondition(data, null);
     }
-    protected boolean checkCondition(ConfigStore configs, String ... conditions){
+    protected boolean checkCondition(ConfigStore configs, String ... conditions) {
         return checkCondition(null, configs, conditions);
     }
     /* *****************************************************************************************************************
@@ -989,21 +1018,21 @@ public class DefaultService<E> implements AnylineService<E> {
             return 0;
         }
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).save(batch, dest, data, configs, columns);
         }
-        if(data instanceof DataSet){
+        if(data instanceof DataSet) {
             DataSet set = (DataSet) data;
             long cnt = 0;
             DataSet inserts = new DataSet();
             DataSet updates = new DataSet();
-            for(DataRow row:set){
+            for(DataRow row:set) {
                 Boolean override = row.getOverride();
                 if(null != override) {
                     //如果设置了override需要到数据库中实际检测
                     boolean exists = exists(dest, row);
-                    if(exists){
-                        if(!override){//忽略
+                    if(exists) {
+                        if(!override) {//忽略
 
                         }else{//覆盖(更新)
                             updates.add(row);
@@ -1019,10 +1048,10 @@ public class DefaultService<E> implements AnylineService<E> {
                     }
                 }
             }
-            if(!inserts.isEmpty()){
+            if(!inserts.isEmpty()) {
                 cnt += insert(batch, dest, inserts, configs, columns);
             }
-            if(!updates.isEmpty()){
+            if(!updates.isEmpty()) {
                 cnt += update(batch, dest, updates, configs, columns);
             }
             return cnt;
@@ -1032,16 +1061,16 @@ public class DefaultService<E> implements AnylineService<E> {
             List<Object> inserts = new ArrayList<>();
             List<Object> updates = new ArrayList<>();
             for (Object obj : objs) {
-                if(BeanUtil.checkIsNew(obj)){
+                if(BeanUtil.checkIsNew(obj)) {
                     inserts.add(obj);
                 }else{
                     updates.add(obj);
                 }
             }
-            if(!inserts.isEmpty()){
+            if(!inserts.isEmpty()) {
                 cnt += insert(batch, dest, inserts, configs, columns);
             }
-            if(!updates.isEmpty()){
+            if(!updates.isEmpty()) {
                 cnt += update(batch, dest, updates, configs, columns);
             }
             return cnt;
@@ -1094,7 +1123,7 @@ public class DefaultService<E> implements AnylineService<E> {
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
-            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION){
+            if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
                 throw e;
             }
         }
@@ -1113,14 +1142,14 @@ public class DefaultService<E> implements AnylineService<E> {
         return null;
     }
 
-    public long execute(int batch, String sql, Collection<Object> values){
+    public long execute(int batch, String sql, Collection<Object> values) {
         RunPrepare prepare = createRunPrepare(sql);
         if (null == prepare) {
             return -1;
         }
         return dao.execute(batch, prepare, values);
     }
-    public long execute(int batch, int vol, String sql, Collection<Object> values){
+    public long execute(int batch, int vol, String sql, Collection<Object> values) {
         RunPrepare prepare = createRunPrepare(sql);
         if (null == prepare) {
             return -1;
@@ -1130,7 +1159,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long execute(String src, ConfigStore configs, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(src);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).execute(ps[1], configs, conditions);
         }
         long result = -1;
@@ -1169,11 +1198,11 @@ public class DefaultService<E> implements AnylineService<E> {
 
     @Override
     public long delete(Table dest, DataRow row, String... columns) {
-        if(!checkCondition(row)){
+        if(!checkCondition(row)) {
             return -1;
         }
         String[] ps = DataSourceUtil.parseRuntime(dest);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).delete(ps[1], row, columns);
         }
         return dao.delete(dest, row, columns);
@@ -1184,7 +1213,7 @@ public class DefaultService<E> implements AnylineService<E> {
         if (null == obj) {
             return 0;
         }
-        if(!checkCondition(obj)){
+        if(!checkCondition(obj)) {
             return -1;
         }
         Table dest = null;
@@ -1212,12 +1241,12 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long delete(String table, String... kvs) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).delete(ps[1], kvs);
         }
         DataRow row = DataRow.parseArray(kvs);
         row.setPrimaryKey(row.keys());
-        if(!checkCondition(row)){
+        if(!checkCondition(row)) {
             return -1;
         }
         return dao.delete(table, row);
@@ -1226,12 +1255,12 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long delete(Table table, String... kvs) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).delete(ps[1], kvs);
         }
         DataRow row = DataRow.parseArray(kvs);
         row.setPrimaryKey(row.keys());
-        if(!checkCondition(row)){
+        if(!checkCondition(row)) {
             return -1;
         }
         return dao.delete(table, row);
@@ -1241,22 +1270,22 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public <T> long deletes(int batch, String table, String key, Collection<T> values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
-        if(batch >1){
+        if(batch >1) {
             long qty = 0;
             List<T> list = new ArrayList<>();
             int vol = 0;
-            for(T value:values){
+            for(T value:values) {
                 list.add(value);
                 vol ++;
-                if(vol >= batch){
+                if(vol >= batch) {
                     qty += dao.deletes(0, table, key, values);
                     list.clear();
                 }
             }
-            if(!list.isEmpty()){
+            if(!list.isEmpty()) {
                 qty += dao.deletes(0, table, key, values);
             }
             return qty;
@@ -1268,22 +1297,22 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public <T> long deletes(int batch, Table table, String key, Collection<T> values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
-        if(batch >1){
+        if(batch >1) {
             long qty = 0;
             List<T> list = new ArrayList<>();
             int vol = 0;
-            for(T value:values){
+            for(T value:values) {
                 list.add(value);
                 vol ++;
-                if(vol >= batch){
+                if(vol >= batch) {
                     qty += dao.deletes(0, table, key, values);
                     list.clear();
                 }
             }
-            if(!list.isEmpty()){
+            if(!list.isEmpty()) {
                 qty += dao.deletes(0, table, key, values);
             }
             return qty;
@@ -1296,7 +1325,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public <T> long deletes(int batch, String table, String key, T... values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
         return dao.deletes(batch, table, key, values);
@@ -1305,7 +1334,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public <T> long deletes(int batch, Table table, String key, T... values) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).deletes(batch, ps[1], key, values);
         }
         return dao.deletes(batch, table, key, values);
@@ -1315,10 +1344,10 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long delete(String table, ConfigStore configs, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).delete(ps[1], configs, conditions);
         }
-        if(!checkCondition(configs, conditions)){
+        if(!checkCondition(configs, conditions)) {
             return -1;
         }
         return dao.delete(table, configs, conditions);
@@ -1327,10 +1356,10 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long delete(Table table, ConfigStore configs, String... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).delete(ps[1], configs, conditions);
         }
-        if(!checkCondition(configs, conditions)){
+        if(!checkCondition(configs, conditions)) {
             return -1;
         }
         return dao.delete(table, configs, conditions);
@@ -1340,7 +1369,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long truncate(String table) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).truncate(ps[1]);
         }
         return dao.truncate(table);
@@ -1349,7 +1378,7 @@ public class DefaultService<E> implements AnylineService<E> {
     @Override
     public long truncate(Table table) {
         String[] ps = DataSourceUtil.parseRuntime(table);
-        if(null != ps[0]){
+        if(null != ps[0]) {
             return ServiceProxy.service(ps[0]).truncate(ps[1]);
         }
         return dao.truncate(table);
@@ -1475,7 +1504,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return sqls
      */
     @Override
-    public List<Run> ddls(MetadataDiffer differ){
+    public List<Run> ddls(MetadataDiffer differ) {
         return dao.ddls(differ);
     }
     /**
@@ -1484,7 +1513,7 @@ public class DefaultService<E> implements AnylineService<E> {
      * @return sqls
      */
     @Override
-    public List<Run> ddls(List<MetadataDiffer> differs){
+    public List<Run> ddls(List<MetadataDiffer> differs) {
         return dao.ddls(differs);
     }
     /**
@@ -1525,7 +1554,7 @@ public class DefaultService<E> implements AnylineService<E> {
         List<String> pks = new ArrayList<>();
         // 文本sql
         //if (src.startsWith("${") && src.endsWith("}")) {
-        if(BasicUtil.checkEl(src)){
+        if(BasicUtil.checkEl(src)) {
             if (ConfigTable.isSQLDebug()) {
                 log.debug("[解析SQL类型] [类型:{JAVA定义}] [src:{}]", src);
             }
@@ -1673,31 +1702,31 @@ public class DefaultService<E> implements AnylineService<E> {
      * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件
      * @return LinkedHashMap
      */
-    public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition){
-        if(condition){
+    public LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition) {
+        if(condition) {
             String up = sql.toUpperCase().replace("\n"," ").replace("\t","");
             String key = " WHERE ";
             boolean split = false;
-            if(up.contains(key)){
+            if(up.contains(key)) {
                 int idx = sql.lastIndexOf(key);
                 sql = sql.substring(0, idx) + " WHERE 1=0 AND " + sql.substring(idx + key.length());
                 split = true;
             }else{
                 key = " GROUP ";
-                if(up.contains(key)){
+                if(up.contains(key)) {
                     int idx = sql.lastIndexOf(key);
                     sql = sql.substring(0, idx) + " WHERE 1=0 GROUP " + sql.substring(idx + key.length());
                     split = true;
                 }else{
                     key = " ORDER ";
-                    if(up.contains(key)){
+                    if(up.contains(key)) {
                         int idx = sql.lastIndexOf(key);
                         sql = sql.substring(0, idx) + " WHERE 1=0 ORDER " + sql.substring(idx + key.length());
                         split = true;
                     }
                 }
             }
-            if(!split){
+            if(!split) {
                 sql = sql + " WHERE 1=0";
             }
         }
@@ -1851,7 +1880,7 @@ public class DefaultService<E> implements AnylineService<E> {
          * @return String
          */
         @Override
-        public String product(){
+        public String product() {
             return dao.product();
         }
         @Override
@@ -1930,7 +1959,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().tables(greedy, catalog, schema, ps[1], types, struct);
             }
             return dao.tables(greedy, catalog, schema, name, types, struct);
@@ -1938,13 +1967,13 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().tables(catalog, schema, ps[1], types, struct);
             }
             return dao.tables(catalog, schema, name, types, struct);
         }
 
-        private void struct(Table table, int struct){
+        private void struct(Table table, int struct) {
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = table.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
@@ -1957,7 +1986,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
             if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = table.getPrimaryKey();
-                if(null == pk){
+                if(null == pk) {
                     pk = primary(table);
                     if (null != pk) {
                         for (Column col : pk.getColumns().values()) {
@@ -2018,7 +2047,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(Table table, boolean init) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(table, init);
             }
@@ -2050,7 +2079,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends VertexTable>  List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().vertexTables(greedy, catalog, schema, ps[1], types, struct);
             }
             return dao.vertexTables(greedy, catalog, schema, name, types, struct);
@@ -2058,13 +2087,13 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends VertexTable>  LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().vertexTables(catalog, schema, ps[1], types, struct);
             }
             return dao.vertexTables(catalog, schema, name, types, struct);
         }
 
-        private void struct(VertexTable vertexTable, int struct){
+        private void struct(VertexTable vertexTable, int struct) {
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = vertexTable.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
@@ -2077,7 +2106,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
             if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = vertexTable.getPrimaryKey();
-                if(null == pk){
+                if(null == pk) {
                     pk = primary(vertexTable);
                     if (null != pk) {
                         for (Column col : pk.getColumns().values()) {
@@ -2138,7 +2167,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(VertexTable meta, boolean init) {
             String[] ps = DataSourceUtil.parseRuntime(meta);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 meta.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(meta, init);
             }
@@ -2170,7 +2199,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends EdgeTable>  List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().edgeTables(greedy, catalog, schema, ps[1], types, struct);
             }
             return dao.edgeTables(greedy, catalog, schema, name, types, struct);
@@ -2178,13 +2207,13 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends EdgeTable>  LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, int struct) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().edgeTables(catalog, schema, ps[1], types, struct);
             }
             return dao.edgeTables(catalog, schema, name, types, struct);
         }
 
-        private void struct(EdgeTable edgeTable, int struct){
+        private void struct(EdgeTable edgeTable, int struct) {
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = edgeTable.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
@@ -2197,7 +2226,7 @@ public class DefaultService<E> implements AnylineService<E> {
 
             if(Metadata.check(struct, Metadata.TYPE.PRIMARY)) {
                 PrimaryKey pk = edgeTable.getPrimaryKey();
-                if(null == pk){
+                if(null == pk) {
                     pk = primary(edgeTable);
                     if (null != pk) {
                         for (Column col : pk.getColumns().values()) {
@@ -2258,7 +2287,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(EdgeTable meta, boolean init) {
             String[] ps = DataSourceUtil.parseRuntime(meta);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 meta.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(meta, init);
             }
@@ -2291,7 +2320,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1], types);
             }
             return dao.views(greedy, catalog, schema, name, types);
@@ -2300,7 +2329,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends View> LinkedHashMap<String, T> views(Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1], types);
             }
             return dao.views(false, catalog, schema, name, types);
@@ -2323,7 +2352,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(View view) {
             String[] ps = DataSourceUtil.parseRuntime(view.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 view.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(view);
             }
@@ -2346,7 +2375,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public boolean exists(boolean greedy, MasterTable table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().exists(greedy, table);
             }
@@ -2357,7 +2386,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends MasterTable> LinkedHashMap<String, T> masterTables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().masterTables(greedy, catalog, schema, ps[1], types);
             }
             return dao.masterTables(greedy, catalog, schema, name, types);
@@ -2379,7 +2408,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(MasterTable table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(table);
             }
@@ -2415,7 +2444,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, Map<String, Object> tags) {
             String[] ps = DataSourceUtil.parseRuntime(master.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 master.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().partitionTables(greedy, master, tags);
             }
@@ -2425,7 +2454,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(boolean greedy, MasterTable master, Map<String, Object> tags, String name) {
             String[] ps = DataSourceUtil.parseRuntime(master.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 master.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().partitionTables(greedy, master, tags, name);
             }
@@ -2435,7 +2464,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(Catalog catalog, Schema schema, String master, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().partitionTables(catalog, schema, master, name);
             }
             return dao.partitionTables(false, catalog, schema, master, name);
@@ -2464,7 +2493,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master, Map<String, Object> tags) {
             String[] ps = DataSourceUtil.parseRuntime(master.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 master.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().partitionTables(master, tags);
             }
@@ -2474,7 +2503,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends PartitionTable> LinkedHashMap<String, T> partitionTables(MasterTable master, Map<String, Object> tags, String name) {
             String[] ps = DataSourceUtil.parseRuntime(master.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 master.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().partitionTables(master, tags, name);
             }
@@ -2497,7 +2526,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(PartitionTable table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(table);
             }
@@ -2527,9 +2556,9 @@ public class DefaultService<E> implements AnylineService<E> {
                   columns = table.getColumns();
                 }else{
                     table = column.getTable(true);
-                    if(null == table){
+                    if(null == table) {
                         String tableName = column.getTableName(true);
-                        if(BasicUtil.isNotEmpty(tableName)){
+                        if(BasicUtil.isNotEmpty(tableName)) {
                             table = new Table(column.getCatalog(), column.getSchema(), tableName);
                         }
                     }
@@ -2539,7 +2568,7 @@ public class DefaultService<E> implements AnylineService<E> {
                         columns = columns(greedy, table);
                     }
                 }
-                if (null != columns && columns.containsKey(name)){
+                if (null != columns && columns.containsKey(name)) {
                     return true;
                 }
             } catch (Exception e) {
@@ -2549,13 +2578,13 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema){
+        public <T extends Column> List<T> columns(boolean greedy, Catalog catalog, Schema schema) {
            return dao.columns(greedy, catalog, schema);
         }
         @Override
         public <T extends Column> LinkedHashMap<String, T> columns(boolean greedy, Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().columns(greedy, table);
             }
@@ -2585,7 +2614,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Tag> LinkedHashMap<String, T> tags(boolean greedy, Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().tags(greedy, table);
             }
@@ -2603,7 +2632,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public PrimaryKey primary(boolean greedy, Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().primary(table);
             }
@@ -2623,7 +2652,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public PrimaryKey primary(Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().primary(table);
             }
@@ -2646,7 +2675,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends ForeignKey> LinkedHashMap<String, T> foreigns(boolean greedy, Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().foreigns( greedy, table);
             }
@@ -2654,16 +2683,16 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         @Override
         public ForeignKey foreign(boolean greedy, Table table, List<String> columns) {
-            if(null == columns || columns.isEmpty()){
+            if(null == columns || columns.isEmpty()) {
                 return null;
             }
             LinkedHashMap<String, ForeignKey> foreigns = foreigns(greedy, table);
              Collections.sort(columns);
             String id = BeanUtil.concat(columns).toUpperCase();
-            for(ForeignKey foreign:foreigns.values()){
+            for(ForeignKey foreign:foreigns.values()) {
                 List<String> fcols = Column.names(foreign.getColumns());
                 Collections.sort(fcols);
-                if(id.equals(BeanUtil.concat(fcols).toUpperCase())){
+                if(id.equals(BeanUtil.concat(fcols).toUpperCase())) {
                     return foreign;
                 }
             }
@@ -2684,7 +2713,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Index> List<T> indexs(boolean greedy, Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().indexs(greedy, table);
             }
@@ -2694,7 +2723,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Index> LinkedHashMap<String, T> indexs(Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().indexs(table);
             }
@@ -2704,7 +2733,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Index index(boolean greedy, Table table, String name) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().index(greedy, table, name);
             }
@@ -2727,7 +2756,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Constraint> List<T> constraints(boolean greedy, Table table, String name) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().constraints(greedy, table, name);
             }
@@ -2737,7 +2766,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Constraint> LinkedHashMap<String, T> constraints(Table table, String name) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().constraints(table, name);
             }
@@ -2752,7 +2781,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Constraint constraint(boolean greedy, Table table, String name) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().constraint(greedy, table, name);
             }
@@ -2770,7 +2799,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Trigger> LinkedHashMap<String, T> triggers(boolean greedy, Table table, List<Trigger.EVENT> events) {
             String[] ps = DataSourceUtil.parseRuntime(table);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 table.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().triggers(greedy, table, events);
             }
@@ -2780,7 +2809,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Trigger trigger(boolean greedy, Catalog catalog, Schema schema, String name) {
             LinkedHashMap<String, Trigger> triggers = triggers(greedy, new Table(catalog, schema, null), null);
-            if(null != triggers){
+            if(null != triggers) {
                 return triggers.get(name.toUpperCase());
             }
             return null;
@@ -2792,7 +2821,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Procedure> List<T> procedures(boolean greedy, Catalog catalog, Schema schema, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().procedures(greedy, catalog, schema, ps[0]);
             }
             return dao.procedures(greedy, catalog, schema, name);
@@ -2800,7 +2829,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Procedure> LinkedHashMap<String, T> procedures(Catalog catalog, Schema schema, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().procedures(catalog, schema, ps[0]);
             }
             return dao.procedures(catalog, schema, name);
@@ -2808,7 +2837,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Procedure procedure(boolean greedy, Catalog catalog, Schema schema, String name) {
             List<Procedure> procedures = procedures(greedy, catalog, schema, name);
-            if(null != procedures && !procedures.isEmpty()){
+            if(null != procedures && !procedures.isEmpty()) {
                 return procedures.get(0);
             }
             return null;
@@ -2817,7 +2846,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(Procedure procedure) {
             String[] ps = DataSourceUtil.parseRuntime(procedure.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 procedure.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(procedure);
             }
@@ -2830,7 +2859,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Function> List<T> functions(boolean greedy, Catalog catalog, Schema schema, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().functions(greedy, catalog, schema, ps[0]);
             }
             return dao.functions(greedy, catalog, schema, name);
@@ -2838,7 +2867,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Function> LinkedHashMap<String, T> functions(Catalog catalog, Schema schema, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().functions(catalog, schema, ps[0]);
             }
             return dao.functions(catalog, schema, name);
@@ -2846,7 +2875,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Function function(boolean greedy, Catalog catalog, Schema schema, String name) {
             List<Function> functions = functions(greedy, catalog, schema, name);
-            if(null != functions && !functions.isEmpty()){
+            if(null != functions && !functions.isEmpty()) {
                 return functions.get(0);
             }
             return null;
@@ -2854,7 +2883,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(Function function) {
             String[] ps = DataSourceUtil.parseRuntime(function.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 function.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(function);
             }
@@ -2867,7 +2896,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Sequence> List<T> sequences(boolean greedy, Catalog catalog, Schema schema, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().sequences(greedy, catalog, schema, ps[0]);
             }
             return dao.sequences(greedy, catalog, schema, name);
@@ -2875,7 +2904,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public <T extends Sequence> LinkedHashMap<String, T> sequences(Catalog catalog, Schema schema, String name) {
             String[] ps = DataSourceUtil.parseRuntime(name);
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().sequences(catalog, schema, ps[0]);
             }
             return dao.sequences(catalog, schema, name);
@@ -2883,7 +2912,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public Sequence sequence(boolean greedy, Catalog catalog, Schema schema, String name) {
             List<Sequence> sequences = sequences(greedy, catalog, schema, name);
-            if(null != sequences && !sequences.isEmpty()){
+            if(null != sequences && !sequences.isEmpty()) {
                 return sequences.get(0);
             }
             return null;
@@ -2891,7 +2920,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public List<String> ddl(Sequence sequence) {
             String[] ps = DataSourceUtil.parseRuntime(sequence.getName());
-            if(null != ps[0]){
+            if(null != ps[0]) {
                 sequence.setName(ps[1]);
                 return ServiceProxy.service(ps[0]).metadata().ddl(sequence);
             }
@@ -2959,17 +2988,17 @@ public class DefaultService<E> implements AnylineService<E> {
             sort(table);
             return dao.create(table);
         }
-        protected void sort(Table table){
+        protected void sort(Table table) {
             LinkedHashMap<String, Column> columns = table.getColumns();
             boolean sort = false;
-            for(Column column:columns.values()){
+            for(Column column:columns.values()) {
                 //只要有一个带 位置属性的列就排序
-                if(null != column.getPosition()){
+                if(null != column.getPosition()) {
                     sort = true;
                     break;
                 }
             }
-            if(sort){
+            if(sort) {
                 table.sort();
             }
         }

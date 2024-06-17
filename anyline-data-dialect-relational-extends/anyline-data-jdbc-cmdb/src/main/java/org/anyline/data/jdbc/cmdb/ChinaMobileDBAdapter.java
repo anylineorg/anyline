@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.cmdb")
 public class ChinaMobileDBAdapter extends OpenGaussAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.ChinaMobileDB;
     }
     

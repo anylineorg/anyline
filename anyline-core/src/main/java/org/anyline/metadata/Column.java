@@ -41,30 +41,30 @@ public class Column extends Metadata<Column> implements Serializable {
         BITMAP_UNION            ("BITMAP_UNION"  		, "BIMTAP 类型的列的聚合方式，");//进行位图的并集聚合
         final String code;
         final String name;
-        Aggregation(String code, String name){
+        Aggregation(String code, String name) {
             this.code = code;
             this.name = name;
         }
-        public String getName(){
+        public String getName() {
             return name;
         }
-        public String getCode(){
+        public String getCode() {
             return code;
         }
     }
-    public static <T extends Column>  void sort(Map<String, T> columns){
+    public static <T extends Column>  void sort(Map<String, T> columns) {
         sort(columns, false);
     }
-    public static <T extends Column>  void sort(Map<String, T> columns, boolean nullFirst){
+    public static <T extends Column>  void sort(Map<String, T> columns, boolean nullFirst) {
         List<T> list = new ArrayList<>();
         list.addAll(columns.values());
         sort(list, nullFirst);
         columns.clear();
-        for(T column:list){
+        for(T column:list) {
             columns.put(column.getName().toUpperCase(), column);
         }
     }
-    public static <T extends Column>  void sort(List<T> columns){
+    public static <T extends Column>  void sort(List<T> columns) {
         sort(columns, false);
     }
 
@@ -74,13 +74,13 @@ public class Column extends Metadata<Column> implements Serializable {
      * @param nullFirst 未设置过位置(setPosition)的列是否排在最前面
      * @param <T> Column
      */
-    public static <T extends Column>  void sort(List<T> columns, boolean nullFirst){
+    public static <T extends Column>  void sort(List<T> columns, boolean nullFirst) {
         Collections.sort(columns, new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
                 Integer p1 = o1.getPosition();
                 Integer p2 = o2.getPosition();
-                if(p1 == p2){
+                if(p1 == p2) {
                     return 0;
                 }
                 if(nullFirst) {
@@ -164,38 +164,38 @@ public class Column extends Metadata<Column> implements Serializable {
     protected boolean defaultCurrentDateTime = false;
     protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
 
-    public Column(){
+    public Column() {
     }
-    public Column(Table table, String name, String type){
+    public Column(Table table, String name, String type) {
         setTable(table);
         setName(name);
         setType(type);
     }
-    public Column(String name){
+    public Column(String name) {
         setName(name);
     }
-    public Column(Schema schema, String table, String name){
+    public Column(Schema schema, String table, String name) {
         this(null, schema, table, name);
     }
-    public Column(Catalog catalog, Schema schema, String table, String name){
+    public Column(Catalog catalog, Schema schema, String table, String name) {
         setCatalog(catalog);
         setSchema(schema);
         setName(name);
         setTable(table);
     }
-    public Column(String name, String type, int precision, int scale){
+    public Column(String name, String type, int precision, int scale) {
         this.name = name;
         setType(type);
         this.precision = precision;
         this.scale = scale;
     }
 
-    public Column(String name, String type, int precision){
+    public Column(String name, String type, int precision) {
         this.name = name;
         setType(type);
         this.precision = precision;
     }
-    public Column(Table table, String name, String type, int precision, int scale){
+    public Column(Table table, String name, String type, int precision, int scale) {
         setTable(table);
         this.name = name;
         setType(type);
@@ -203,19 +203,19 @@ public class Column extends Metadata<Column> implements Serializable {
         this.scale = scale;
     }
 
-    public Column(Table table, String name, String type, int precision){
+    public Column(Table table, String name, String type, int precision) {
         setTable(table);
         this.name = name;
         setType(type);
         this.precision = precision;
     }
 
-    public Column(String name, String type){
+    public Column(String name, String type) {
         this.name = name;
         setType(type);
     }
 
-    public Column drop(){
+    public Column drop() {
         this.action = ACTION.DDL.COLUMN_DROP;
         return super.drop();
     }
@@ -233,7 +233,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getDateScale() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getDateScale();
         }
         return dateScale;
@@ -256,7 +256,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Column setDateScale(String dateScale) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setDateScale(dateScale);
             return this;
         }
@@ -273,14 +273,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getClassName() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getClassName();
         }
         return className;
     }
 
     public Column setClassName(String className) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setClassName(className);
             return this;
         }
@@ -289,14 +289,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getChildTypeName() {
-        if(getmap && null != childTypeName){
+        if(getmap && null != childTypeName) {
             return update.getChildTypeName();
         }
         return childTypeName;
     }
 
     public Column setChildTypeName(String childTypeName) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setChildTypeName(childTypeName);
             return this;
         }
@@ -305,17 +305,17 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public TypeMetadata getChildTypeMetadata() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.childTypeMetadata;
         }
-        if(array && null != childTypeMetadata){
+        if(array && null != childTypeMetadata) {
             childTypeMetadata.setArray(array);
         }
         return childTypeMetadata;
     }
 
     public Column setChildTypeMetadata(TypeMetadata childTypeMetadata) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setChildTypeMetadata(childTypeMetadata);
             return this;
         }
@@ -324,14 +324,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getDisplaySize() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getDisplaySize();
         }
         return displaySize;
     }
 
     public Column setDisplaySize(Integer displaySize) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setDisplaySize(displaySize);
             return this;
         }
@@ -340,7 +340,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getOriginType() {
-        if(null == originType){
+        if(null == originType) {
             return typeName;
         }
         return originType;
@@ -351,7 +351,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getType() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getType();
         }
         return type;
@@ -363,7 +363,7 @@ public class Column extends Metadata<Column> implements Serializable {
      * @return Column
      */
     public Column setType(Integer type) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setType(type);
             return this;
         }
@@ -379,7 +379,7 @@ public class Column extends Metadata<Column> implements Serializable {
      * @return Column
      */
     public Column setType(String type) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setType(type);
             return this;
         }
@@ -387,11 +387,11 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getTypeName() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getTypeName();
         }
-        if(null == typeName){
-            if(null != typeMetadata && typeMetadata != TypeMetadata.ILLEGAL && typeMetadata != TypeMetadata.NONE){
+        if(null == typeName) {
+            if(null != typeMetadata && typeMetadata != TypeMetadata.ILLEGAL && typeMetadata != TypeMetadata.NONE) {
                 typeName = typeMetadata.getName();
             }
         }
@@ -399,14 +399,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getJdbcType() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.jdbcType;
         }
         return jdbcType;
     }
 
     public Column setJdbcType(String jdbcType) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setJdbcType(jdbcType);
             return this;
         }
@@ -423,11 +423,11 @@ public class Column extends Metadata<Column> implements Serializable {
      * @return Column
      */
     public Column setTypeName(String typeName, boolean parse) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTypeName(typeName, parse);
             return this;
         }
-        if(null == this.typeName || !this.typeName.equalsIgnoreCase(typeName)){
+        if(null == this.typeName || !this.typeName.equalsIgnoreCase(typeName)) {
             //修改数据类型的重置解析状态
             parseLvl = 0;
         }
@@ -439,8 +439,8 @@ public class Column extends Metadata<Column> implements Serializable {
         //fullType = null;
         return this;
     }
-    public Column parseType(int lvl){
-        if(lvl <= parseLvl){
+    public Column parseType(int lvl) {
+        if(lvl <= parseLvl) {
             return this;
         }
         TypeMetadata.parse(DatabaseType.NONE, this, null, null);
@@ -459,24 +459,24 @@ public class Column extends Metadata<Column> implements Serializable {
         this.fullType = fullType;
         return this;
     }
-    public String getFullType(){
+    public String getFullType() {
         return getFullType(database);
     }
 
-    public String getFullType(DatabaseType database){
+    public String getFullType(DatabaseType database) {
         return getFullType(database, null);
     }
-    public String getFullType(DatabaseType database, TypeMetadata.Config config){
-        if(getmap && null != update){
+    public String getFullType(DatabaseType database, TypeMetadata.Config config) {
+        if(getmap && null != update) {
             return update.getFullType(database);
         }
-        if(null != fullType && this.database == database){
+        if(null != fullType && this.database == database) {
             return fullType;
         }
         int ignoreLength = -1;
         int ignorePrecision = -1;
         int ignoreScale = -1;
-        if(null != config){
+        if(null != config) {
             ignoreLength = config.ignoreLength();
             ignorePrecision = config.ignorePrecision();
             ignoreScale = config.ignoreScale();
@@ -488,7 +488,7 @@ public class Column extends Metadata<Column> implements Serializable {
         String result = null;
         String type = null;
         String formula = null;
-        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL){
+        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL) {
             type = typeMetadata.getName();
             formula = typeMetadata.formula();
         }else{
@@ -498,32 +498,32 @@ public class Column extends Metadata<Column> implements Serializable {
         boolean appendPrecision = false;
         boolean appendScale = false;
 
-        if(ignoreLength != 1){
-            if(null == length){
+        if(ignoreLength != 1) {
+            if(null == length) {
                 //null表示没有设置过,有可能用的precision,复制precision值
                 // -1也表示设置过了不要再用length覆盖
-                if(null != precision && precision != -1){
+                if(null != precision && precision != -1) {
                     length = precision;
                 }
             }
-            if(null != length){
-                if(length > 0 || length == -2){ //-2:max
+            if(null != length) {
+                if(length > 0 || length == -2) { //-2:max
                     appendLength = true;
                 }
             }
         }
-        if(ignorePrecision != 1){
-            if(null == precision){
+        if(ignorePrecision != 1) {
+            if(null == precision) {
                 //null表示没有设置过,有可能用的length,复制length
                 // -1也表示设置过了不要再用length覆盖
-                if(null != length && length != -1){
+                if(null != length && length != -1) {
                     precision = length;
                 }
             }
-            if(null != precision){
-                if(precision > 0){
-                    if(ignorePrecision == 3){
-                        if(null != scale && scale > 0){
+            if(null != precision) {
+                if(precision > 0) {
+                    if(ignorePrecision == 3) {
+                        if(null != scale && scale > 0) {
                             appendPrecision = true;
                         }else{
                             appendPrecision = false;
@@ -534,11 +534,11 @@ public class Column extends Metadata<Column> implements Serializable {
                 }
             }
         }
-        if(ignoreScale != 1){
-            if(null != scale){
-                if(scale > 0){
-                    if(ignoreScale == 3){
-                        if(null != precision && precision > 0){
+        if(ignoreScale != 1) {
+            if(null != scale) {
+                if(scale > 0) {
+                    if(ignoreScale == 3) {
+                        if(null != precision && precision > 0) {
                             appendScale = true;
                         }else{
                             appendScale = false;
@@ -550,13 +550,13 @@ public class Column extends Metadata<Column> implements Serializable {
             }
         }
 
-        if(BasicUtil.isNotEmpty(formula)){
+        if(BasicUtil.isNotEmpty(formula)) {
             result = formula;
             result = result.replace("{L}", length+"");
             result = result.replace("{P}", precision+"");
             result = result.replace("{S}", scale+"");
             result = result.replace("(null)","");
-        }else if(null != type){
+        }else if(null != type) {
             StringBuilder builder = new StringBuilder();
             if(type.contains("{")) {
                 result = type;
@@ -614,11 +614,11 @@ public class Column extends Metadata<Column> implements Serializable {
      * 精确长度 根据数据类型返回precision或length
      * @return Integer
      */
-    public Integer getPrecisionLength(){
-        if(null != precisionLength && precisionLength != -1){
+    public Integer getPrecisionLength() {
+        if(null != precisionLength && precisionLength != -1) {
             return precisionLength;
         }
-        if(null != precision && precision != -1){
+        if(null != precision && precision != -1) {
             precisionLength = precision;
         }else{
             precisionLength = length;
@@ -626,20 +626,20 @@ public class Column extends Metadata<Column> implements Serializable {
         return precisionLength;
     }
     public Integer getLength() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getLength();
         }
-        if(null != length && length != -1){
+        if(null != length && length != -1) {
             return length;
         }
         return precision;
     }
     public Column setLength(Integer length) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setLength(length);
             return this;
         }
-        if(ignoreLength == 1){
+        if(ignoreLength == 1) {
             this.precision = length;
         }else {
             this.length = length;
@@ -649,21 +649,21 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getPrecision() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getPrecision();
         }
-        if(null != precision && precision != -1){
+        if(null != precision && precision != -1) {
             return precision;
         }
         return length;
     }
 
     public Column setPrecision(Integer precision) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setPrecision(precision);
             return this;
         }
-        if(ignorePrecision == 1){
+        if(ignorePrecision == 1) {
             this.length = precision;
         }else {
             this.precision = precision;
@@ -672,7 +672,7 @@ public class Column extends Metadata<Column> implements Serializable {
         return this;
     }
     public Column setPrecision(Integer precision, Integer scale) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setPrecision(precision, scale);
             return this;
         }
@@ -683,14 +683,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Object getValue() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.value;
         }
         return value;
     }
 
     public Column setValue(Object value) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setValue(value);
             return this;
         }
@@ -699,14 +699,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isCaseSensitive() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.caseSensitive;
         }
         return caseSensitive;
     }
 
     public Column setCaseSensitive(int caseSensitive) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCaseSensitive(caseSensitive);
             return this;
         }
@@ -717,7 +717,7 @@ public class Column extends Metadata<Column> implements Serializable {
         return setCaseSensitive(caseSensitive);
     }
     public Column caseSensitive(Boolean caseSensitive) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.caseSensitive(caseSensitive);
             return this;
         }
@@ -732,14 +732,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isCurrency() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.currency;
         }
         return currency;
     }
 
     public Column setCurrency(int currency) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCurrency(currency);
             return this;
         }
@@ -753,12 +753,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return currency(currency);
     }
     public Column currency(Boolean currency) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.currency(currency);
             return this;
         }
-        if(null != currency){
-            if(currency){
+        if(null != currency) {
+            if(currency) {
                 this.currency = 1;
             }else{
                 this.currency = 0;
@@ -768,14 +768,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isSigned() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.signed;
         }
         return signed;
     }
 
     public Column setSigned(int signed) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setSigned(signed);
             return this;
         }
@@ -786,12 +786,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return setSigned(signed);
     }
     public Column setSigned(Boolean signed) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setSigned(signed);
             return this;
         }
-        if(null != signed){
-            if(signed){
+        if(null != signed) {
+            if(signed) {
                 this.signed = 1;
             }else{
                 this.signed = 0;
@@ -801,14 +801,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Aggregation getAggregation() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.aggregation;
         }
         return aggregation;
     }
 
     public Column setAggregation(Aggregation aggregation) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setAggregation(aggregation);
             return this;
         }
@@ -817,14 +817,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getScale() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getScale();
         }
         return scale;
     }
 
     public Column setScale(Integer scale) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setScale(scale);
             return this;
         }
@@ -834,14 +834,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isNullable() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.nullable;
         }
         return nullable;
     }
 
     public Column setNullable(int nullable) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setNullable(nullable);
             return this;
         }
@@ -855,12 +855,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return nullable(nullable);
     }
     public Column nullable(Boolean nullable) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.nullable(nullable);
             return this;
         }
-        if(null != nullable){
-            if(nullable){
+        if(null != nullable) {
+            if(nullable) {
                 this.nullable = 1;
             }else{
                 this.nullable = 0;
@@ -870,19 +870,19 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isAutoIncrement() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.autoIncrement;
         }
         return autoIncrement;
     }
 
     public Column setAutoIncrement(int autoIncrement) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setAutoIncrement(autoIncrement);
             return this;
         }
         this.autoIncrement = autoIncrement;
-        if(autoIncrement == 1){
+        if(autoIncrement == 1) {
             nullable(false);
         }
         //fullType = null;
@@ -897,12 +897,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return autoIncrement(autoIncrement);
     }
     public Column autoIncrement(Boolean autoIncrement) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.autoIncrement(autoIncrement);
             return this;
         }
         if(null != autoIncrement) {
-            if(autoIncrement){
+            if(autoIncrement) {
                 this.autoIncrement = 1;
                 nullable(false);
             }else{
@@ -919,7 +919,7 @@ public class Column extends Metadata<Column> implements Serializable {
      * @return  Column
      */
     public Column setAutoIncrement(int seed, int step) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setAutoIncrement(seed, step);
             return this;
         }
@@ -930,14 +930,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isUnique() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.unique;
         }
         return unique;
     }
 
     public Column setUnique(int unique) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setUnique(unique);
             return this;
         }
@@ -952,12 +952,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return unique(unique);
     }
     public Column unique(Boolean unique) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.unique(unique);
             return this;
         }
         if(null != unique) {
-            if(unique){
+            if(unique) {
                 this.unique = 1;
             }else{
                 this.unique = 0;
@@ -968,14 +968,14 @@ public class Column extends Metadata<Column> implements Serializable {
 
 
     public int isPrimaryKey() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.primary;
         }
         return primary;
     }
 
     public Column setPrimary(int primary) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setPrimary(primary);
             return this;
         }
@@ -992,12 +992,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return primary(primary);
     }
     public Column primary(Boolean primary) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.primary(primary);
             return this;
         }
-        if(null != primary){
-            if(primary){
+        if(null != primary) {
+            if(primary) {
                 this.primary = 1 ;
                 nullable(false);
             }else{
@@ -1008,14 +1008,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isGenerated() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.generated;
         }
         return generated;
     }
 
     public Column setGenerated(int generated) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setGenerated(generated);
             return this;
         }
@@ -1029,12 +1029,12 @@ public class Column extends Metadata<Column> implements Serializable {
         return generated(generated);
     }
     public Column generated(Boolean generated) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.generated(generated);
             return this;
         }
-        if(null != generated){
-            if(generated){
+        if(null != generated) {
+            if(generated) {
                 this.generated = 1;
             }else{
                 this.generated = 0;
@@ -1044,44 +1044,44 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Object getDefaultValue() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.defaultValue;
         }
         return defaultValue;
     }
 
     public Column setDefaultValue(Object defaultValue) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setDefaultValue(defaultValue);
             return this;
         }
         this.defaultValue = defaultValue;
         return this;
     }
-    public Column setDefaultCurrentDateTime(boolean currentDateTime){
-        if(setmap && null != update){
+    public Column setDefaultCurrentDateTime(boolean currentDateTime) {
+        if(setmap && null != update) {
             update.setDefaultCurrentDateTime(currentDateTime);
             return this;
         }
         this.defaultCurrentDateTime = currentDateTime;
         return this;
     }
-    public Column setDefaultCurrentDateTime(){
+    public Column setDefaultCurrentDateTime() {
         return setDefaultCurrentDateTime(true);
     }
-    public boolean isDefaultCurrentDateTime(){
+    public boolean isDefaultCurrentDateTime() {
         return this.defaultCurrentDateTime;
     }
 
     public String getDefaultConstraint() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.defaultConstraint;
         }
         return defaultConstraint;
     }
 
     public Column setDefaultConstraint(String defaultConstraint) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setDefaultConstraint(defaultConstraint);
             return this;
         }
@@ -1090,21 +1090,21 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getPosition() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.position;
         }
         return position;
     }
 
     public String getOrder() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.order;
         }
         return order;
     }
 
     public Column setOrder(String order) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setOrder(order);
             return this;
         }
@@ -1113,7 +1113,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Column setPosition(Integer position) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setPosition(position);
             return this;
         }
@@ -1122,21 +1122,21 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getAfter() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.after;
         }
         return after;
     }
 
     public Integer getIncrementSeed() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.incrementSeed;
         }
         return incrementSeed;
     }
 
     public Column setIncrementSeed(Integer incrementSeed) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setIncrementSeed(incrementSeed);
             return this;
         }
@@ -1145,14 +1145,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getIncrementStep() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.incrementStep;
         }
         return incrementStep;
     }
 
     public Column setIncrementStep(Integer incrementStep) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setIncrementStep(incrementStep);
             return this;
         }
@@ -1161,7 +1161,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public int isOnUpdate() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.onUpdate;
         }
         return onUpdate;
@@ -1178,7 +1178,7 @@ public class Column extends Metadata<Column> implements Serializable {
         return onUpdate(onUpdate);
     }
     public Column onUpdate(boolean onUpdate) {
-        if(onUpdate){
+        if(onUpdate) {
             this.onUpdate = 1;
         }else{
             this.onUpdate = -1;
@@ -1187,7 +1187,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Column setAfter(String after) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setAfter(after);
             return this;
         }
@@ -1196,14 +1196,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getOriginName() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.originName;
         }
         return originName;
     }
 
     public Column setOriginName(String originName) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setOriginName(originName);
             return this;
         }
@@ -1212,21 +1212,21 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getBefore() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.before;
         }
         return before;
     }
 
     public String getCharset() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.charset;
         }
         return charset;
     }
 
     public Column setCharset(String charset) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCharset(charset);
             return this;
         }
@@ -1235,14 +1235,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public String getCollate() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.collate;
         }
         return collate;
     }
 
     public Column setCollate(String collate) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCollate(collate);
             return this;
         }
@@ -1250,7 +1250,7 @@ public class Column extends Metadata<Column> implements Serializable {
         return this;
     }
     public Column setBefore(String before) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setBefore(before);
             return this;
         }
@@ -1262,7 +1262,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
     
     public boolean equals(Column column, boolean ignoreCase) {
-        if(null == column){
+        if(null == column) {
             return false;
         }
         if (!BasicUtil.equals(name, column.getName(), ignoreCase)) {
@@ -1271,10 +1271,10 @@ public class Column extends Metadata<Column> implements Serializable {
         TypeMetadata columnTypeMetadata = column.getTypeMetadata();
         TypeMetadata origin = null;
         TypeMetadata columnOrigin = null;
-        if(null != typeMetadata){
+        if(null != typeMetadata) {
             origin = typeMetadata.getOrigin();
         }
-        if(null != columnTypeMetadata){
+        if(null != columnTypeMetadata) {
             columnOrigin = columnTypeMetadata.getOrigin();
         }
 
@@ -1282,7 +1282,7 @@ public class Column extends Metadata<Column> implements Serializable {
                 && !BasicUtil.equals(typeMetadata, columnOrigin, ignoreCase)
                 && !BasicUtil.equals(origin, columnTypeMetadata, ignoreCase)
                 && !BasicUtil.equals(origin, columnOrigin, ignoreCase)
-        ){
+        ) {
             return false;
         }
         if(null == typeMetadata || TypeMetadata.NONE == typeMetadata || 0 == typeMetadata.ignoreLength()) {
@@ -1300,42 +1300,42 @@ public class Column extends Metadata<Column> implements Serializable {
                 return false;
             }
         }
-        if(!BasicUtil.equals(getDefaultValue(), column.getDefaultValue())){
+        if(!BasicUtil.equals(getDefaultValue(), column.getDefaultValue())) {
             return false;
         }
-        if(!BasicUtil.equals(getComment(), column.getComment())){
+        if(!BasicUtil.equals(getComment(), column.getComment())) {
             return false;
         }
-        if(!BasicUtil.equals(isNullable(), column.isNullable())){
+        if(!BasicUtil.equals(isNullable(), column.isNullable())) {
             return false;
         }
-        if(!BasicUtil.equals(isAutoIncrement(), column.isAutoIncrement())){
+        if(!BasicUtil.equals(isAutoIncrement(), column.isAutoIncrement())) {
             return false;
         }
-        if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)){
+        if(!BasicUtil.equals(getCharset(), column.getCharset(), ignoreCase)) {
             return false;
         }
-        if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())){
+        if(!BasicUtil.equals(isPrimaryKey(), column.isPrimaryKey())) {
             return false;
         }
-        /*if(!BasicUtil.equals(getPosition(), column.getPosition())){
+        /*if(!BasicUtil.equals(getPosition(), column.getPosition())) {
             return false;
         }*/
         return true;
     }
     
     public TypeMetadata getTypeMetadata() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.typeMetadata;
         }
-        if(array && null != typeMetadata){
+        if(array && null != typeMetadata) {
             typeMetadata.setArray(array);
         }
         return typeMetadata;
     }
 
-    public TypeMetadata.CATEGORY getTypeCategory(){
-        if(null != typeMetadata){
+    public TypeMetadata.CATEGORY getTypeCategory() {
+        if(null != typeMetadata) {
             return typeMetadata.getCategory();
         }
         return TypeMetadata.CATEGORY.NONE;
@@ -1368,7 +1368,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Column setTypeMetadata(TypeMetadata typeMetadata) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setTypeMetadata(typeMetadata);
             return this;
         }
@@ -1377,15 +1377,15 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Column setNewName(String newName, boolean setmap, boolean getmap) {
-        if(null == update){
+        if(null == update) {
             update(setmap, getmap);
         }
         update.setName(newName);
         Table table = getTable();
-        if(null != table){
+        if(null != table) {
             //修改主键列名
             LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
-            if(null != pks && pks.containsKey(this.getName().toUpperCase())){
+            if(null != pks && pks.containsKey(this.getName().toUpperCase())) {
                 pks.remove(this.getName().toUpperCase());
                 pks.put(newName.toUpperCase(), update);
             }
@@ -1394,7 +1394,7 @@ public class Column extends Metadata<Column> implements Serializable {
     }
     
     public JavaType getJavaType() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.javaType;
         }
         return javaType;
@@ -1402,7 +1402,7 @@ public class Column extends Metadata<Column> implements Serializable {
 
     
     public Column setJavaType(JavaType javaType) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setJavaType(javaType);
             return this;
         }
@@ -1411,14 +1411,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Integer getSrid() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.srid;
         }
         return srid;
     }
 
     public Column setSrid(Integer srid) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setSrid(srid);
             return this;
         }
@@ -1427,14 +1427,14 @@ public class Column extends Metadata<Column> implements Serializable {
     }
 
     public Column getReference() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.reference;
         }
         return reference;
     }
 
     public Column setReference(Column reference) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setReference(reference);
             return this;
         }
@@ -1471,7 +1471,7 @@ public class Column extends Metadata<Column> implements Serializable {
     public void ignoreScale(int ignoreScale) {
         this.ignoreScale = ignoreScale;
     }
-    public int ignoreScale(DatabaseType database){
+    public int ignoreScale(DatabaseType database) {
         if(null != typeMetadata) {
             return MetadataAdapterHolder.ignoreScale(database, typeMetadata);
         }else{
@@ -1484,16 +1484,16 @@ public class Column extends Metadata<Column> implements Serializable {
      * 精确判断通过adapter
      * @return boolean
      */
-    public int ignoreLength(){
-        if(-1 != ignoreLength){
+    public int ignoreLength() {
+        if(-1 != ignoreLength) {
             return ignoreLength;
         }
-        if(null != typeMetadata){
+        if(null != typeMetadata) {
             return typeMetadata.ignoreLength();
         }
         return ignoreLength;
     }
-    public int ignoreLength(DatabaseType database){
+    public int ignoreLength(DatabaseType database) {
         if(null != typeMetadata) {
             return MetadataAdapterHolder.ignoreLength(database, typeMetadata);
         }else{
@@ -1506,17 +1506,17 @@ public class Column extends Metadata<Column> implements Serializable {
      * 精确判断通过adapter
      * @return boolean
      */
-    public int ignorePrecision(){
-        if(-1 != ignorePrecision){
+    public int ignorePrecision() {
+        if(-1 != ignorePrecision) {
             return ignorePrecision;
         }
-        if(null != typeMetadata){
+        if(null != typeMetadata) {
             return typeMetadata.ignorePrecision();
         }
         return ignorePrecision;
     }
 
-    public int ignorePrecision(DatabaseType database){
+    public int ignorePrecision(DatabaseType database) {
         if(null != typeMetadata) {
             return MetadataAdapterHolder.ignorePrecision(database, typeMetadata);
         }else{
@@ -1537,20 +1537,20 @@ public class Column extends Metadata<Column> implements Serializable {
      * 精确判断通过adapter
      * @return boolean
      */
-    public int ignoreScale(){
-        if(-1 != ignoreScale){
+    public int ignoreScale() {
+        if(-1 != ignoreScale) {
             return ignoreScale;
         }
-        if(null != typeMetadata){
+        if(null != typeMetadata) {
             return typeMetadata.ignoreScale();
         }
         return ignoreScale;
     }
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(name).append(" ");
         builder.append(getFullType());
-        if(BasicUtil.isNotEmpty(defaultValue)){
+        if(BasicUtil.isNotEmpty(defaultValue)) {
             builder.append(" default ").append(defaultValue);
         }
         return builder.toString();

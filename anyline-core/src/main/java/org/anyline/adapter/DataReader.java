@@ -30,7 +30,7 @@ public interface DataReader {
      * 支持的类型符合这些类型的 在读取之后 由当前reader转换
      * @return class ColumnType StringColumnType
      */
-    default Object[] supports(){
+    default Object[] supports() {
         return null;
     }
 }

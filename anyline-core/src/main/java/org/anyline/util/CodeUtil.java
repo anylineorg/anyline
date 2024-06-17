@@ -169,7 +169,7 @@ public class CodeUtil {
 		if (BasicUtil.isEmpty(url)) {
 			return ""; 
 		}
-		if(len >= 0 && len<url.length()){
+		if(len >= 0 && len<url.length()) {
 			url = url.substring(0, len);
 		}
 		String result = ""; 
@@ -203,7 +203,7 @@ public class CodeUtil {
 		String result = url; 
 		try {
 			int idx = url.indexOf("?"); 
-			if(idx != -1){
+			if(idx != -1) {
 				String param = url.substring(idx+1); 
 				url = url.substring(0, idx+1);
 				param = java.net.URLEncoder.encode(param, encode);

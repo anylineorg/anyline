@@ -33,18 +33,18 @@ public class DataSourceKeyMap {
         reg("validationTimeout","validationTimeoutMs","validation-timeout","validation-timeout-ms");
         reg("transactionIsolationName","transactionIsolation","transaction-isolation-name","transaction-isolation");
     }
-    public static HashSet<String> alias(String key){
+    public static HashSet<String> alias(String key) {
         return maps.get(key);
     }
-    public static void reg(String ... keys){
-        for(String key:keys){
+    public static void reg(String ... keys) {
+        for(String key:keys) {
             HashSet<String> list = maps.get(key);
-            if(null == list){
+            if(null == list) {
                 list = new HashSet<>();
                 maps.put(key, list);
             }
-            for (String item:keys){
-                if(!key.equals(item) && !list.contains(item)){
+            for (String item:keys) {
+                if(!key.equals(item) && !list.contains(item)) {
                     list.add(item);
                 }
             }

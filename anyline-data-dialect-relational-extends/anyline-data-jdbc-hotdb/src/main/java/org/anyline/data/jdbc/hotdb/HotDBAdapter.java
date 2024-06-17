@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.hotdb")
 public class HotDBAdapter extends MySQLAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.HotDB;
     }
     

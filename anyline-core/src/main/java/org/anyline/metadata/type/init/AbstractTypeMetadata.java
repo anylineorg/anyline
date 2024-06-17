@@ -38,11 +38,11 @@ public class AbstractTypeMetadata implements TypeMetadata {
     private int ignorePrecision;
     private int ignoreScale;
     private TypeMetadata.Config config;
-    public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    public AbstractTypeMetadata(CATEGORY category, String name, Class transfer, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
         this.name = name;
-        if(null != dbs){
-            for (DatabaseType db:dbs){
+        if(null != dbs) {
+            for (DatabaseType db:dbs) {
                 this.dbs.add(db);
             }
         }
@@ -52,11 +52,11 @@ public class AbstractTypeMetadata implements TypeMetadata {
         this.ignorePrecision = ignorePrecision;
         this.ignoreScale = ignoreScale;
     }
-    public AbstractTypeMetadata(CATEGORY category, String name, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs){
+    public AbstractTypeMetadata(CATEGORY category, String name, Class compatible, int ignoreLength, int ignorePrecision, int ignoreScale, DatabaseType ... dbs) {
         this.category = category;
         this.name = name;
-        if(null != dbs){
-            for (DatabaseType db:dbs){
+        if(null != dbs) {
+            for (DatabaseType db:dbs) {
                 this.dbs.add(db);
             }
         }
@@ -67,29 +67,29 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public Object convert(Object value, Object def){
+    public Object convert(Object value, Object def) {
         return convert(value, null, def);
     }
 
     @Override
-    public Object convert(Object value, Class target){
+    public Object convert(Object value, Class target) {
         Object def = null;
         return convert(value, target, def);
     }
 
     @Override
-    public Object convert(Object value, Class target, boolean array){
+    public Object convert(Object value, Class target, boolean array) {
         Object def = null;
         return convert(value, target, array, def);
     }
 
     @Override
     public Object convert(Object value, Class target, boolean array, Object def) {
-        if(null == target){
+        if(null == target) {
             target = compatible;
         }
-        if(null != value){
-            if(value.getClass() == target){
+        if(null != value) {
+            if(value.getClass() == target) {
                 return value;
             }
             if(null != transfer) {
@@ -111,10 +111,10 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
     @Override
     public Object read(Object value, Object def, Class clazz, boolean array) {
-        if(null == clazz){
+        if(null == clazz) {
             clazz = transfer;
         }
-        if(null == clazz){
+        if(null == clazz) {
             clazz = compatible;
         }
         value = ConvertProxy.convert(value, clazz, array, def);
@@ -127,16 +127,16 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
     @Override
     public Object write(Object value, Object def, boolean array, boolean placeholder) {
-        if(null != value){
-            if(value.getClass() != compatible){
+        if(null != value) {
+            if(value.getClass() != compatible) {
                 if(null != transfer) {
                     value = ConvertProxy.convert(value, transfer, array, def);
                 }
                 value = ConvertProxy.convert(value, compatible, array, def);
             }
         }
-        if(null != value){
-            if(!BasicUtil.isNumber(value)){
+        if(null != value) {
+            if(!BasicUtil.isNumber(value)) {
                 value = "'" + value + "'";
             }
         }
@@ -159,7 +159,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
     }
     @Override
     public CATEGORY_GROUP getCategoryGroup() {
-        if(null != category){
+        if(null != category) {
             return category.group();
         }
         return CATEGORY_GROUP.NONE;
@@ -206,7 +206,7 @@ public class AbstractTypeMetadata implements TypeMetadata {
 
     @Override
     public TypeMetadata.Config config() {
-        if(null == config){
+        if(null == config) {
             config = new TypeMetadata.Config();
             config.setIgnoreLength(ignoreLength).setIgnorePrecision(ignorePrecision).setIgnoreScale(ignoreScale);
         }

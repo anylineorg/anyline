@@ -23,20 +23,20 @@ import java.util.List;
 
 public class LineString extends Geometry {
     private List<Point> points = new ArrayList<>();
-    public LineString add(Point point){
+    public LineString add(Point point) {
         points.add(point);
         return this;
     }
-    public LineString add(double x, double y){
+    public LineString add(double x, double y) {
         return add(new Point(x, y));
     }
-    public LineString add(int x, int y){
+    public LineString add(int x, int y) {
         return add(new Point(x, y));
     }
-    public List<Point> points(){
+    public List<Point> points() {
         return points;
     }
-    public LineString(){
+    public LineString() {
         type = 2;
     }
     public LineString(List<Point> points) {
@@ -44,18 +44,18 @@ public class LineString extends Geometry {
         this.points = points;
     }
 
-    public String toString(){
+    public String toString() {
         return toString(true);
     }
-    public String toString(boolean tag){
+    public String toString(boolean tag) {
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
         builder.append("(");
         boolean first = true;
-        for(Point point:points){
-            if(!first){
+        for(Point point:points) {
+            if(!first) {
                 builder.append(",");
             }
             builder.append(point.toString(false));
@@ -73,29 +73,29 @@ public class LineString extends Geometry {
      * @param bracket 是否包含()
      * @return String
      */
-    public String sql(boolean tag, boolean bracket){
+    public String sql(boolean tag, boolean bracket) {
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
-        if(bracket){
+        if(bracket) {
             builder.append("(");
         }
 
         boolean first = true;
-        for(Point point:points){
-            if(!first){
+        for(Point point:points) {
+            if(!first) {
                 builder.append(",");
             }
             builder.append(point.sql(false, false));
             first = false;
         }
-        if(bracket){
+        if(bracket) {
             builder.append(")");
         }
         return builder.toString();
     }
-    public String sql(){
+    public String sql() {
         return sql(true, true);
     }
 

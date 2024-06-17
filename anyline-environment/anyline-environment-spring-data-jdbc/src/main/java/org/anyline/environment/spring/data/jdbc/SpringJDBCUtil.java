@@ -47,18 +47,18 @@ public class SpringJDBCUtil {
      */
 
     public static <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, Table table, SqlRowSet set) throws Exception {
-        if(null == columns){
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
         SqlRowSetMetaData rsm = set.getMetaData();
         for (int i = 1; i <= rsm.getColumnCount(); i++) {
             String name = rsm.getColumnName(i);
-            if(BasicUtil.isEmpty(name)){
+            if(BasicUtil.isEmpty(name)) {
                 continue;
             }
             T column = columns.get(name.toUpperCase());
-            if(null == column){
-                if(create){
+            if(null == column) {
+                if(create) {
                     column = (T)column(adapter, runtime, column, rsm, i);
                     if(BasicUtil.isEmpty(column.getName())) {
                         column.setName(name);
@@ -82,7 +82,7 @@ public class SpringJDBCUtil {
      * @return Column
      */
     
-    public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, SqlRowSetMetaData rsm, int index){
+    public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, SqlRowSetMetaData rsm, int index) {
         if(null == column) {
             column = new Column();
             String catalog = null;

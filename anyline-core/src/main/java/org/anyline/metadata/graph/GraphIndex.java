@@ -23,16 +23,16 @@ import org.anyline.metadata.Table;
 
 public class GraphIndex extends Index {
 
-    public GraphIndex(){
+    public GraphIndex() {
         super();
     }
-    public GraphIndex(String name){
+    public GraphIndex(String name) {
         super(name);
     }
-    public GraphIndex(Table table, String name, boolean unique){
+    public GraphIndex(Table table, String name, boolean unique) {
         super(table, name, unique);
     }
-    public GraphIndex(Table table, String name){
+    public GraphIndex(Table table, String name) {
         super(table, name);
     }
 }

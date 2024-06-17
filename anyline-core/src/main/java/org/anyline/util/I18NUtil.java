@@ -39,34 +39,34 @@ public class I18NUtil {
 	static{
 		init(); 
 	} 
-	private static void init(){
+	private static void init() {
 		String dir = ConfigTable.getString("I18N_MESSAGE_DIR");
-		if(null == dir){
+		if(null == dir) {
 			return;
 		}
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(), dir), "xml");
 		messages = new Hashtable<String, Map<String, String>>();
 		SAXReader reader = new SAXReader(); 
-		for(File file:files){
+		for(File file:files) {
 			try {
 				Document document = reader.read(file); 
 				Element root = document.getRootElement(); 
-				for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
+				for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();) {
 					Element propertyElement = itrProperty.next(); 
 					String key = propertyElement.attributeValue("key"); 
-					for(Iterator<Element> itrItem=propertyElement.elementIterator("item"); itrItem.hasNext();){
+					for(Iterator<Element> itrItem=propertyElement.elementIterator("item"); itrItem.hasNext();) {
 						Element itemElement = itrItem.next(); 
 						String lang = itemElement.attributeValue("lang"); 
 						String value = itemElement.getTextTrim(); 
 						Map<String, String> map = messages.get(lang);
-						if(null == map){
+						if(null == map) {
 							map = new Hashtable<String, String>();
 							messages.put(lang, map);
 						} 
 						map.put(key, value);
 					} 
 				} 
-			} catch(Exception e){
+			} catch(Exception e) {
 				log.error("parse dom exception:", e);
 			} 
 		} 
@@ -77,10 +77,10 @@ public class I18NUtil {
 	 * @param key   key
 	 * @return String
 	 */ 
-	public static String get(String lang, String key){
+	public static String get(String lang, String key) {
 		Map<String, String> map = messages.get(lang);
 		String value = null;
-		if(null != map){
+		if(null != map) {
 			value = map.get(key);
 		} 
 		return value; 

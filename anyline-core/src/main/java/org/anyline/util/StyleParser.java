@@ -102,9 +102,9 @@ public class StyleParser {
                                 || "border-insideH".equalsIgnoreCase(k)
                                 || "border-tl2br".equalsIgnoreCase(k)
                                 || "border-tr2bl".equalsIgnoreCase(k)
-                        ){
+                        ) {
                             v = v.replace("solid", "single");
-                            if("none".equalsIgnoreCase(v)){
+                            if("none".equalsIgnoreCase(v)) {
                                 styles.put(k, v);
                                 removeBorder(k, styles);
                             }else {
@@ -169,14 +169,14 @@ public class StyleParser {
         }
         return styles;
     }
-    public static Map<String, String> inherit(Map<String, String> src, Map<String, String> parent){
-        if(null == src){
+    public static Map<String, String> inherit(Map<String, String> src, Map<String, String> parent) {
+        if(null == src) {
             src = new HashMap<>();
         }
 
-        if(null != parent){
-            for(String k: parent.keySet()){
-                if(src.containsKey(k)){
+        if(null != parent) {
+            for(String k: parent.keySet()) {
+                if(src.containsKey(k)) {
                    continue;
                 }
                 if(k.contains("font") || k.contains("align") || k.contains("list-style") || k.contains("speak")
@@ -215,7 +215,7 @@ public class StyleParser {
 
         return src;
     }
-    public static Map<String, String> removeBorder(String side, Map<String, String> styles){
+    public static Map<String, String> removeBorder(String side, Map<String, String> styles) {
         side = side.replace("border-", "");
         styles.remove("border-"+side+"-width");
         styles.remove("border-"+side+"-style");
@@ -223,7 +223,7 @@ public class StyleParser {
         styles.put("border-"+side, "none");
         return styles;
     }
-    public static Map<String, String> removeBorder(Map<String, String> styles){
+    public static Map<String, String> removeBorder(Map<String, String> styles) {
         removeBorder("top", styles);
         removeBorder("right", styles);
         removeBorder("bottom", styles);
@@ -236,11 +236,11 @@ public class StyleParser {
         return join(src, copy, false);
     }
     public static Map<String, String> join(Map<String, String> src, Map<String, String> copy, boolean over) {
-        if(null == src){
+        if(null == src) {
             src = new HashMap<>();
         }
 
-        if(null == copy){
+        if(null == copy) {
             copy = new HashMap<>();
         }
 
@@ -269,11 +269,11 @@ public class StyleParser {
         return src;
     }
 
-    public static Map<String, String> parse(Map<String, String> src, String txt, boolean over){
+    public static Map<String, String> parse(Map<String, String> src, String txt, boolean over) {
         Map<String, String> copy = StyleParser.parse(txt);
         return join(src, copy, over);
     }
-    public static Map<String, String> parse(Map<String, String> src, String txt){
+    public static Map<String, String> parse(Map<String, String> src, String txt) {
         return parse(src, txt, false);
     }
 }

@@ -24,27 +24,27 @@ import org.anyline.metadata.graph.VertexTable;
 
 public class Tag extends VertexTable {
     protected String keyword = "TAG"            ;
-    public Tag(){
+    public Tag() {
     }
-    public Tag(String name){
+    public Tag(String name) {
         super(name);
     }
 
-    public Tag(String schema, String table){
+    public Tag(String schema, String table) {
         super(schema, table);
     }
-    public Tag(Schema schema, String table){
+    public Tag(Schema schema, String table) {
         super(schema, table);
     }
-    public Tag(String catalog, String schema, String name){
+    public Tag(String catalog, String schema, String name) {
         super(catalog, schema, name);
     }
-    public Tag(Catalog catalog, Schema schema, String name){
+    public Tag(Catalog catalog, Schema schema, String name) {
         super(catalog, schema, name);
     }
 
     @Override
-    public String getKeyword(){
+    public String getKeyword() {
         return keyword;
     }
 }

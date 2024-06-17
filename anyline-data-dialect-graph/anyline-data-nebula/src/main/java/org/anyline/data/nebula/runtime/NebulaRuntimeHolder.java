@@ -42,7 +42,7 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
 
     private static Map<String, SessionPool> temporary = new HashMap<>();
 
-    public NebulaRuntimeHolder(){
+    public NebulaRuntimeHolder() {
         RuntimeHolderProxy.reg(SessionPool.class, this);
     }
 
@@ -69,10 +69,10 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
 
     private static DataRuntime exeTemporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         NebulaRuntime runtime = new NebulaRuntime();
-        if(null == adapter){
+        if(null == adapter) {
             adapter = worker.getBean(NebulaAdapter.class);
         }
-        if(datasource instanceof SessionPool){
+        if(datasource instanceof SessionPool) {
             String key = "temporary_es";
             temporary.remove(key);
             //DriverAdapterHolder.remove(key);
@@ -95,7 +95,7 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
      * @param key 数据源前缀
      *//*
 
-    public static void reg(String key){
+    public static void reg(String key) {
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         SessionPool client = worker.getBean(datasource_key, SessionPool.class);
         reg(key, client, null);
@@ -109,13 +109,13 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
      * @param adapter adapter 可以为空 第一次执行时补齐
      *//*
 
-    public static NebulaRuntime reg(String datasource, SessionPool client, DriverAdapter adapter){
+    public static NebulaRuntime reg(String datasource, SessionPool client, DriverAdapter adapter) {
         log.info("[create nebula runtime][key:{}]", datasource);
-        if(null == adapter){
+        if(null == adapter) {
             adapter = worker.getBean(NebulaAdapter.class);
         }
         NebulaRuntime runtime = new NebulaRuntime(datasource, client, adapter);
-        if(runtimes.containsKey(datasource)){
+        if(runtimes.containsKey(datasource)) {
             destroy(datasource);
         }
         runtimes.put(datasource, runtime);
@@ -138,10 +138,10 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
 
     }
 
-    public static void destroy(String key){
+    public static void destroy(String key) {
         exedestroy(key);
     }
-    private static void exedestroy(String key){
+    private static void exedestroy(String key) {
         try {
             runtimes.remove(key);
             destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
@@ -151,10 +151,10 @@ public class NebulaRuntimeHolder extends RuntimeHolder {
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销
             Map<String, DataRuntime> runtimes = runtimes(key);
-            for(String item:runtimes.keySet()){
+            for(String item:runtimes.keySet()) {
                 destroy(item);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
                 log.error("注销数据源 异常:", e);
         }
     }

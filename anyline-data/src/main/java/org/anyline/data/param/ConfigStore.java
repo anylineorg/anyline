@@ -46,13 +46,13 @@ public interface ConfigStore extends Cloneable{
 	 * @return DataRow
 	 */
 	DataRow map(boolean empty);
-	default DataRow map(){
+	default DataRow map() {
 		return map(false);
 	}
-	default String json(boolean empty){
+	default String json(boolean empty) {
 		return map(empty).json();
 	}
-	default String json(){
+	default String json() {
 		return json(false);
 	}
 	String getRunText(DataRuntime runtime, boolean placeholder);
@@ -157,7 +157,7 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore limit(long offset, int rows);
-	default ConfigStore limit(int rows){
+	default ConfigStore limit(int rows) {
 		return limit(0, rows);
 	}
 
@@ -269,10 +269,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合 如果是集合生成IN条件
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value) {
 		return and(swt, var, value, false, false);
 	}
-	default ConfigStore and(String var, Object value){
+	default ConfigStore and(String var, Object value) {
 		return and(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
 
@@ -286,10 +286,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, compare(value), id, var, value, overCondition, overValue);
 	}
-	default ConfigStore and(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.NONE, id, var, value, overCondition, overValue);
 	}
 
@@ -302,10 +302,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, (String)null, var, value, overCondition, overValue);
 	}
-	default ConfigStore and(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
 
@@ -316,7 +316,7 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, String text);
-	default ConfigStore and(String text){
+	default ConfigStore and(String text) {
 		return and(EMPTY_VALUE_SWITCH.NONE, text);
 	}
 
@@ -328,10 +328,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param compare 匹配方式
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		return and(swt, compare, var, value, false, false);
 	}
-	default ConfigStore and(Compare compare, String var, Object value){
+	default ConfigStore and(Compare compare, String var, Object value) {
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
 
@@ -344,10 +344,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param compare 匹配方式
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
 		return and(swt, compare, id, var, value, false, false);
 	}
-	default ConfigStore and(Compare compare, String id, String var, Object value){
+	default ConfigStore and(Compare compare, String id, String var, Object value) {
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
 	}
 
@@ -361,10 +361,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
 	}
 
@@ -380,7 +380,7 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value, boolean overCondition, boolean overValue);
-	default ConfigStore and(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore and(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
 	}
 
@@ -394,23 +394,23 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
 		return and(swt, id, var, value, false, false);
 	}
-	default ConfigStore and(String id, String var, Object value){
+	default ConfigStore and(String id, String var, Object value) {
 		return and(EMPTY_VALUE_SWITCH.NONE, id, var, value);
 	}
 
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values) {
 		return and(swt, compare, col, BeanUtil.array2list(values));
 	}
-	default ConfigStore and(Compare compare, String col, Object ... values){
+	default ConfigStore and(Compare compare, String col, Object ... values) {
 		return and(EMPTY_VALUE_SWITCH.NONE, compare, col, BeanUtil.array2list(values));
 	}
-	default ConfigStore and(String var, Object ... values){
+	default ConfigStore and(String var, Object ... values) {
 		return and(EMPTY_VALUE_SWITCH.NONE, var, values);
 	}
-	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object ... values){
+	default ConfigStore and(EMPTY_VALUE_SWITCH swt, String var, Object ... values) {
 		return and(swt, Compare.IN, var, BeanUtil.array2list(values));
 	}
 
@@ -430,7 +430,7 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore and(ConfigStore config, boolean apart);
-	default ConfigStore and(ConfigStore config){
+	default ConfigStore and(ConfigStore config) {
 		return and(config, false);
 	}
 
@@ -444,10 +444,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合 如果是集合生成IN条件
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object value){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object value) {
 		return ands(swt, var, value, false, false);
 	}
-	default ConfigStore ands(String var, Object value){
+	default ConfigStore ands(String var, Object value) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
 
@@ -461,10 +461,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(swt, compare(value), id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ands(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, id, var, value, overCondition, overValue);
 	}
 
@@ -477,10 +477,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(swt, (String)null, var, value, overCondition, overValue);
 	}
-	default ConfigStore ands(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
 
@@ -491,7 +491,7 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore ands(EMPTY_VALUE_SWITCH swt, String text);
-	default ConfigStore ands(String text){
+	default ConfigStore ands(String text) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, text);
 	}
 
@@ -504,10 +504,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param compare 匹配方式
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		return ands(swt, compare, var, value, false, false);
 	}
-	default ConfigStore ands(Compare compare, String var, Object value){
+	default ConfigStore ands(Compare compare, String var, Object value) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
 
@@ -520,10 +520,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param compare 匹配方式
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
 		return ands(swt, compare, id, var, value, false, false);
 	}
-	default ConfigStore ands(Compare compare, String id, String var, Object value){
+	default ConfigStore ands(Compare compare, String id, String var, Object value) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
 	}
 
@@ -537,10 +537,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(swt, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore ands(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, var, value, overCondition, overValue);
 	}
 
@@ -556,7 +556,7 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
-	default ConfigStore ands(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ands(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
 	}
 
@@ -570,489 +570,489 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
 		return ands(swt, id, var, value, false, false);
 	}
-	default ConfigStore ands(String id, String var, Object value){
+	default ConfigStore ands(String id, String var, Object value) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, id, var, value);
 	}
 
-	default ConfigStore ands(ConfigStore config){
+	default ConfigStore ands(ConfigStore config) {
 		return and(config, true);
 	}
 
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, Compare compare, String col, Object ... values) {
 		return ands(swt, compare, col, BeanUtil.array2list(values));
 	}
-	default ConfigStore ands(Compare compare, String col, Object ... values){
+	default ConfigStore ands(Compare compare, String col, Object ... values) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, compare, col, BeanUtil.array2list(values));
 	}
-	default ConfigStore ands(String var, Object ... values){
+	default ConfigStore ands(String var, Object ... values) {
 		return ands(EMPTY_VALUE_SWITCH.NONE, var, values);
 	}
-	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object ... values){
+	default ConfigStore ands(EMPTY_VALUE_SWITCH swt, String var, Object ... values) {
 		return ands(swt, Compare.IN, var, BeanUtil.array2list(values));
 	}
 
-	default ConfigStore eq(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore eq(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore eq(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore eq(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, var, value, overCondition, overValue);
 	}
-	default ConfigStore eq(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore eq(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(id, var, value, overCondition, overValue);
 	}
-	default ConfigStore eq(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore eq(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(var, value, overCondition, overValue);
 	}
-	default ConfigStore eq(String var, Object value){
+	default ConfigStore eq(String var, Object value) {
 		return and(var, value);
 	}
 
-	default ConfigStore gt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore gt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.GREAT, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore gt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore gt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.GREAT, var, value, overCondition, overValue);
 	}
-	default ConfigStore gt(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore gt(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.GREAT, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore gt(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore gt(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.GREAT, var, value, overCondition, overValue);
 	}
-	default ConfigStore gt(String var, Object value){
+	default ConfigStore gt(String var, Object value) {
 		return and(Compare.GREAT, var, value);
 	}
 
-	default ConfigStore ge(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ge(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.GREAT_EQUAL, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ge(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ge(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.GREAT_EQUAL, var, value, overCondition, overValue);
 	}
-	default ConfigStore ge(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ge(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.GREAT_EQUAL, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ge(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ge(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.GREAT_EQUAL, var, value, overCondition, overValue);
 	}
-	default ConfigStore ge(String var, Object value){
+	default ConfigStore ge(String var, Object value) {
 		return and(Compare.GREAT_EQUAL, var, value);
 	}
-	default ConfigStore lt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore lt(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.LESS, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore lt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore lt(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.LESS, var, value, overCondition, overValue);
 	}
-	default ConfigStore lt(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore lt(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.LESS, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore lt(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore lt(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.LESS, var, value, overCondition, overValue);
 	}
-	default ConfigStore lt(String var, Object value){
+	default ConfigStore lt(String var, Object value) {
 		return and(Compare.LESS, var, value);
 	}
 
-	default ConfigStore le(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore le(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.LESS_EQUAL, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore le(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore le(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.LESS_EQUAL, var, value, overCondition, overValue);
 	}
-	default ConfigStore le(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore le(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.LESS_EQUAL, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore le(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore le(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.LESS_EQUAL, var, value, overCondition, overValue);
 	}
-	default ConfigStore le(String var, Object value){
+	default ConfigStore le(String var, Object value) {
 		return and(Compare.LESS_EQUAL, var, value);
 	}
-	default ConfigStore in(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore in(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.IN, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore in(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore in(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.IN, var, value, overCondition, overValue);
 	}
-	default ConfigStore in(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore in(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.IN, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore in(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore in(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.IN, var, value, overCondition, overValue);
 	}
-	default ConfigStore in(String var, Object value){
+	default ConfigStore in(String var, Object value) {
 		return and(Compare.IN, var, value);
 	}
 
-	default ConfigStore likes(String value){
+	default ConfigStore likes(String value) {
 		return likes(EMPTY_VALUE_SWITCH.IGNORE, value);
 	}
-	default ConfigStore likes(EMPTY_VALUE_SWITCH swt, String value){
+	default ConfigStore likes(EMPTY_VALUE_SWITCH swt, String value) {
 		return and(swt, Compare.LIKES, null, value);
 	}
-	default ConfigStore like(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore like(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.LIKE, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore like(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore like(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.LIKE, var, value, overCondition, overValue);
 	}
-	default ConfigStore like(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore like(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.LIKE, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore like(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore like(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.LIKE, var, value, overCondition, overValue);
 	}
-	default ConfigStore like(String var, Object value){
+	default ConfigStore like(String var, Object value) {
 		return and(Compare.LIKE, var, value);
 	}
 
-	default ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likePrefix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore likePrefix(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likePrefix(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.START_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore likePrefix(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likePrefix(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.START_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore likePrefix(String var, Object value){
+	default ConfigStore likePrefix(String var, Object value) {
 		return and(Compare.START_WITH, var, value);
 	}
 
-	default ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore startWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.START_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore startWith(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore startWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.START_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore startWith(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore startWith(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.START_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore startWith(String var, Object value){
+	default ConfigStore startWith(String var, Object value) {
 		return and(Compare.START_WITH, var, value);
 	}
 
-	default ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.END_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likeSuffix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.END_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore likeSuffix(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likeSuffix(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.END_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore likeSuffix(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore likeSuffix(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.END_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore likeSuffix(String var, Object value){
+	default ConfigStore likeSuffix(String var, Object value) {
 		return and(Compare.END_WITH, var, value);
 	}
 
-	default ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.END_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore endWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.END_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore endWith(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore endWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.END_WITH, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore endWith(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore endWith(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.END_WITH, var, value, overCondition, overValue);
 	}
-	default ConfigStore endWith(String var, Object value){
+	default ConfigStore endWith(String var, Object value) {
 		return and(Compare.END_WITH, var, value);
 	}
 
 
-	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.REGEX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore regex(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.REGEX, var, value, overCondition, overValue);
 	}
-	default ConfigStore regex(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore regex(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.REGEX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore regex(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore regex(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.REGEX, var, value, overCondition, overValue);
 	}
-	default ConfigStore regex(String var, Object value){
+	default ConfigStore regex(String var, Object value) {
 		return and(Compare.REGEX, var, value);
 	}
 
 
-	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSet(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.FIND_IN_SET, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSet(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSet(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.FIND_IN_SET, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSet(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSet(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.FIND_IN_SET, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSet(String var, Object value){
+	default ConfigStore findInSet(String var, Object value) {
 		return and(Compare.FIND_IN_SET, var, value);
 	}
 
-	default ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(swt, Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(swt, Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetOr(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetOr(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(Compare.FIND_IN_SET_OR, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetOr(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetOr(String var, Object value, boolean overCondition, boolean overValue) {
 		return or(Compare.FIND_IN_SET_OR, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetOr(String var, Object value){
+	default ConfigStore findInSetOr(String var, Object value) {
 		return or(Compare.FIND_IN_SET_OR, var, value);
 	}
 
-	default ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.FIND_IN_SET_AND, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.FIND_IN_SET_AND, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetAnd(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetAnd(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.FIND_IN_SET_AND, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetAnd(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore findInSetAnd(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.FIND_IN_SET_AND, var, value, overCondition, overValue);
 	}
-	default ConfigStore findInSetAnd(String var, Object value){
+	default ConfigStore findInSetAnd(String var, Object value) {
 		return and(Compare.FIND_IN_SET_AND, var, value);
 	}
 
-	default ConfigStore jsonContains(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContains(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContains(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContains(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContains(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContains(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.JSON_CONTAINS, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContains(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContains(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.JSON_CONTAINS, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContains(String var, Object value){
+	default ConfigStore jsonContains(String var, Object value) {
 		return and(Compare.JSON_CONTAINS, var, value);
 	}
 
-	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS_PATH_OR, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathOr(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS_PATH_OR, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathOr(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathOr(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.JSON_CONTAINS_PATH_OR, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathOr(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathOr(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.JSON_CONTAINS_PATH_OR, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathOr(String var, Object value){
+	default ConfigStore jsonContainsPathOr(String var, Object value) {
 		return and(Compare.JSON_CONTAINS_PATH_OR, var, value);
 	}
 
-	default ConfigStore jsonContainsPathAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathAnd(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS_PATH_AND, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathAnd(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.JSON_CONTAINS_PATH_AND, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathAnd(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathAnd(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.JSON_CONTAINS_PATH_AND, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathAnd(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore jsonContainsPathAnd(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.JSON_CONTAINS_PATH_AND, var, value, overCondition, overValue);
 	}
-	default ConfigStore jsonContainsPathAnd(String var, Object value){
+	default ConfigStore jsonContainsPathAnd(String var, Object value) {
 		return and(Compare.JSON_CONTAINS_PATH_AND, var, value);
 	}
 
-	default ConfigStore between(EMPTY_VALUE_SWITCH swt, String id, String var, Object min, Object max, boolean overCondition, boolean overValue){
+	default ConfigStore between(EMPTY_VALUE_SWITCH swt, String id, String var, Object min, Object max, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.BETWEEN, id, var, Arrays.asList(min,max), overCondition, overValue);
 	}
-	default ConfigStore between(EMPTY_VALUE_SWITCH swt, String var, Object min, Object max, boolean overCondition, boolean overValue){
+	default ConfigStore between(EMPTY_VALUE_SWITCH swt, String var, Object min, Object max, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.BETWEEN, var, Arrays.asList(min,max), overCondition, overValue);
 	}
-	default ConfigStore between(String id, String var, Object min, Object max, boolean overCondition, boolean overValue){
+	default ConfigStore between(String id, String var, Object min, Object max, boolean overCondition, boolean overValue) {
 		return and(Compare.BETWEEN, id, var, Arrays.asList(min,max), overCondition, overValue);
 	}
-	default ConfigStore between(String var, Object min, Object max, boolean overCondition, boolean overValue){
+	default ConfigStore between(String var, Object min, Object max, boolean overCondition, boolean overValue) {
 		return and(Compare.BETWEEN, var, Arrays.asList(min,max), overCondition, overValue);
 	}
-	default ConfigStore between(String var, Object min, Object max){
+	default ConfigStore between(String var, Object min, Object max) {
 		return and(Compare.BETWEEN, var, Arrays.asList(min,max));
 	}
 
 
-	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_EQUAL, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ne(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_EQUAL, var, value, overCondition, overValue);
 	}
-	default ConfigStore ne(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ne(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_EQUAL, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ne(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ne(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_EQUAL, var, value, overCondition, overValue);
 	}
-	default ConfigStore ne(String var, Object value){
+	default ConfigStore ne(String var, Object value) {
 		return and(Compare.NOT_EQUAL, var, value);
 	}
 
-	default ConfigStore isNull(String id, String var, boolean overCondition){
+	default ConfigStore isNull(String id, String var, boolean overCondition) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, id, var, null, overCondition, false);
 	}
-	default ConfigStore isNull(String var, boolean overCondition){
+	default ConfigStore isNull(String var, boolean overCondition) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, var, null, overCondition, false);
 	}
-	default ConfigStore isNull(String var, boolean overCondition, boolean overValue){
+	default ConfigStore isNull(String var, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, var, null, overCondition, overValue);
 	}
-	default ConfigStore isNull(String var){
+	default ConfigStore isNull(String var) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NULL, var);
 	}
 
-	default ConfigStore notNull(String id, String var, boolean overCondition){
+	default ConfigStore notNull(String id, String var, boolean overCondition) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, id, var, null, overCondition, false);
 	}
-	default ConfigStore notNull(String var, boolean overCondition){
+	default ConfigStore notNull(String var, boolean overCondition) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, false);
 	}
-	default ConfigStore notNull(String var, boolean overCondition, boolean overValue){
+	default ConfigStore notNull(String var, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, overValue);
 	}
-	default ConfigStore notNull(String var){
+	default ConfigStore notNull(String var) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var);
 	}
 
-	default ConfigStore isNotNull(String id, String var, boolean overCondition){
+	default ConfigStore isNotNull(String id, String var, boolean overCondition) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, id, var, null, overCondition, false);
 	}
-	default ConfigStore isNotNull(String var, boolean overCondition){
+	default ConfigStore isNotNull(String var, boolean overCondition) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, false);
 	}
-	default ConfigStore isNotNull(String var, boolean overCondition, boolean overValue){
+	default ConfigStore isNotNull(String var, boolean overCondition, boolean overValue) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var, null, overCondition, overValue);
 	}
-	default ConfigStore isNotNull(String var){
+	default ConfigStore isNotNull(String var) {
 		return and(EMPTY_VALUE_SWITCH.SRC, Compare.NOT_NULL, var);
 	}
 
-	default ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_IN, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notIn(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_IN, var, value, overCondition, overValue);
 	}
-	default ConfigStore notIn(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notIn(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_IN, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notIn(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notIn(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_IN, var, value, overCondition, overValue);
 	}
-	default ConfigStore notIn(String var, Object value){
+	default ConfigStore notIn(String var, Object value) {
 		return and(Compare.NOT_IN, var, value);
 	}
 
-	default ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLike(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLike(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLike(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLike(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLike(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLike(String var, Object value){
+	default ConfigStore notLike(String var, Object value) {
 		return and(Compare.NOT_LIKE, var, value);
 	}
 
-	default ConfigStore notLikePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikePrefix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikePrefix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikePrefix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikePrefix(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikePrefix(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikePrefix(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikePrefix(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikePrefix(String var, Object value){
+	default ConfigStore notLikePrefix(String var, Object value) {
 		return and(Compare.NOT_LIKE_PREFIX, var, value);
 	}
 
-	default ConfigStore notStartWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notStartWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notStartWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notStartWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notStartWith(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notStartWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_PREFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notStartWith(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notStartWith(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_PREFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notStartWith(String var, Object value){
+	default ConfigStore notStartWith(String var, Object value) {
 		return and(Compare.NOT_LIKE_PREFIX, var, value);
 	}
 
-	default ConfigStore notLikeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikeSuffix(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikeSuffix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikeSuffix(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikeSuffix(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikeSuffix(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikeSuffix(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notLikeSuffix(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notLikeSuffix(String var, Object value){
+	default ConfigStore notLikeSuffix(String var, Object value) {
 		return and(Compare.NOT_LIKE_SUFFIX, var, value);
 	}
 
-	default ConfigStore notEndWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notEndWith(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notEndWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notEndWith(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(swt, Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notEndWith(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notEndWith(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_SUFFIX, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore notEndWith(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore notEndWith(String var, Object value, boolean overCondition, boolean overValue) {
 		return and(Compare.NOT_LIKE_SUFFIX, var, value, overCondition, overValue);
 	}
-	default ConfigStore notEndWith(String var, Object value){
+	default ConfigStore notEndWith(String var, Object value) {
 		return and(Compare.NOT_LIKE_SUFFIX, var, value);
 	}
 
@@ -1064,10 +1064,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
+	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
 		return and(swt, Compare.NONE, id, var, value);
 	}
-	default ConfigStore param(String id, String var, Object value){
+	default ConfigStore param(String id, String var, Object value) {
 		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, id, var, value);
 	}
 
@@ -1079,16 +1079,16 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String var, Object value){
+	default ConfigStore param(EMPTY_VALUE_SWITCH swt, String var, Object value) {
 		return and(swt, Compare.NONE, var, value);
 	}
-	default ConfigStore param(String var, Object value){
+	default ConfigStore param(String var, Object value) {
 		return and(EMPTY_VALUE_SWITCH.NONE, Compare.NONE, var, value);
 	}
 
-	default ConfigStore param(Map<String, Object> params){
-		if(null != params){
-			for(String key:params.keySet()){
+	default ConfigStore param(Map<String, Object> params) {
+		if(null != params) {
+			for(String key:params.keySet()) {
 				param(key, params.get(key));
 			}
 		}
@@ -1119,38 +1119,38 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(swt, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
 		return or(swt, id, var, value, false, false);
 	}
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(swt, compare(value), id, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(String id, String var, Object value){
+	default ConfigStore or(String id, String var, Object value) {
 		return or(EMPTY_VALUE_SWITCH.NONE, id, var, value);
 	}
-	default ConfigStore or(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(EMPTY_VALUE_SWITCH.NONE, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
 		return or(swt, compare, id, var, value, false, false);
 	}
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		return or(swt, compare, null, var, value);
 	}
-	default ConfigStore or(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
 	}
 
-	default ConfigStore or(Compare compare, String id, String var, Object value){
+	default ConfigStore or(Compare compare, String id, String var, Object value) {
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
 	}
-	default ConfigStore or(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(Compare compare, String var, Object value){
+	default ConfigStore or(Compare compare, String var, Object value) {
 		return or(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
 
@@ -1164,16 +1164,16 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return or(swt, compare(value), null, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value){
+	default ConfigStore or(EMPTY_VALUE_SWITCH swt, String var, Object value) {
 		return or(swt, compare(value), var, value);
 	}
-	default ConfigStore or(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore or(String var, Object value, boolean overCondition, boolean overValue) {
 		return or(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
-	default ConfigStore or(String var, Object value){
+	default ConfigStore or(String var, Object value) {
 		return or(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
 
@@ -1186,21 +1186,21 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore or(ConfigStore config, boolean apart);
-	default ConfigStore or(ConfigStore config){
+	default ConfigStore or(ConfigStore config) {
 		return or(config, true);
 	}
 	ConfigStore or(Config config);
 	ConfigStore or(EMPTY_VALUE_SWITCH swt, String text);
-	default ConfigStore or(String text){
+	default ConfigStore or(String text) {
 		return or(EMPTY_VALUE_SWITCH.NONE, text);
 	}
 
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, String text);
-	default ConfigStore ors(String text){
+	default ConfigStore ors(String text) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, text);
 	}
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, Config config);
-	default ConfigStore ors(Config config){
+	default ConfigStore ors(Config config) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, config);
 	}
 
@@ -1216,37 +1216,37 @@ public interface ConfigStore extends Cloneable{
 	 * @return ConfigStore
 	 */
 	ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue);
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(swt, compare(value), id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
 		return ors(swt, compare(value), id, var, value, false, false);
 	}
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(swt, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
 		return ors(swt, compare, id, var, value, false, false);
 	}
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
 		return ors(swt, compare, null, var, value);
 	}
-	default ConfigStore ors(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(String id, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(String id, String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare(value), id, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(String id, String var, Object value){
+	default ConfigStore ors(String id, String var, Object value) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare(value), id, var, value);
 	}
-	default ConfigStore ors(Compare compare, String id, String var, Object value){
+	default ConfigStore ors(Compare compare, String id, String var, Object value) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, id, var, value);
 	}
-	default ConfigStore ors(Compare compare, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, null, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(Compare compare, String var, Object value){
+	default ConfigStore ors(Compare compare, String var, Object value) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, compare, var, value);
 	}
 
@@ -1260,30 +1260,30 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return ConfigStore
 	 */
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(swt, compare(value), null, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value){
+	default ConfigStore ors(EMPTY_VALUE_SWITCH swt, String var, Object value) {
 		return ors(swt, compare(value), var, value);
 	}
-	default ConfigStore ors(String var, Object value, boolean overCondition, boolean overValue){
+	default ConfigStore ors(String var, Object value, boolean overCondition, boolean overValue) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, var, value, overCondition, overValue);
 	}
-	default ConfigStore ors(String var, Object value){
+	default ConfigStore ors(String var, Object value) {
 		return ors(EMPTY_VALUE_SWITCH.NONE, var, value);
 	}
 
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, var, value);
 		}else{
 			return and(swt, var, value);
 		}
 	}
-	default ConfigStore condition(String join, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(var, value);
 		}else{
 			return and(var, value);
@@ -1300,19 +1300,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, id, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, id, var, value, overCondition, overValue);
 		}else{
 			return and(swt, id, var, value, overCondition, overValue);
 		}
 	}
-	default ConfigStore condition(String join, String id, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(id, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(id, var, value, overCondition, overValue);
 		}else{
 			return and(id, var, value, overCondition, overValue);
@@ -1328,19 +1328,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,如果不覆盖则与原来的值合成新的集合
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, var, value, overCondition, overValue);
 		}else{
 			return and(swt, var, value, overCondition, overValue);
 		}
 	}
-	default ConfigStore condition(String join, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(var, value, overCondition, overValue);
 		}else{
 			return and(var, value, overCondition, overValue);
@@ -1353,19 +1353,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param text 可以是一条原生的SQL查询条件
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String text){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String text) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, text);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, text);
 		}else{
 			return and(swt, text);
 		}
 	}
-	default ConfigStore condition(String join, String text){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, String text) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(text);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(text);
 		}else{
 			return and(text);
@@ -1380,19 +1380,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param compare 匹配方式
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, compare, var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, compare, var, value);
 		}else{
 			return and(swt, compare, var, value);
 		}
 	}
-	default ConfigStore condition(String join, Compare compare, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, Compare compare, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(compare, var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(compare, var, value);
 		}else{
 			return and(compare, var, value);
@@ -1408,19 +1408,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param compare 匹配方式
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, compare, id, var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, compare, id, var, value);
 		}else{
 			return and(swt, compare, id, var, value);
 		}
 	}
-	default ConfigStore condition(String join, Compare compare, String id, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, Compare compare, String id, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(compare, id, var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(compare, id, var, value);
 		}else{
 			return and(compare, id, var, value);
@@ -1437,19 +1437,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, compare, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, compare, var, value, overCondition, overValue);
 		}else{
 			return and(swt, compare, var, value, overCondition, overValue);
 		}
 	}
-	default ConfigStore condition(String join, Compare compare, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, Compare compare, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(compare, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(compare, var, value, overCondition, overValue);
 		}else{
 			return and(compare, var, value, overCondition, overValue);
@@ -1467,19 +1467,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param overValue		覆盖相同key并且相同运算符的条件时，是否覆盖条件值,true:删除析来的值 false:原来的值合成新的集合
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, compare, id, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, compare, id, var, value, overCondition, overValue);
 		}else{
 			return and(swt, compare, id, var, value, overCondition, overValue);
 		}
 	}
-	default ConfigStore condition(String join, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, Compare compare, String id, String var, Object value, boolean overCondition, boolean overValue) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(compare, id, var, value, overCondition, overValue);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(compare, id, var, value, overCondition, overValue);
 		}else{
 			return and(compare, id, var, value, overCondition, overValue);
@@ -1496,19 +1496,19 @@ public interface ConfigStore extends Cloneable{
 	 * @param value 值 可以是集合
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String id, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, EMPTY_VALUE_SWITCH swt, String id, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(swt, id, var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(swt, id, var, value);
 		}else{
 			return and(swt, id, var, value);
 		}
 	}
-	default ConfigStore condition(String join, String id, String var, Object value){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, String id, String var, Object value) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(id, var, value);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(id, var, value);
 		}else{
 			return and(id, var, value);
@@ -1520,10 +1520,10 @@ public interface ConfigStore extends Cloneable{
 	 * @param config 查询条件
 	 * @return default ConfigStore
 	 */
-	default ConfigStore condition(String join, Config config){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, Config config) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(config);
-		}else if("ors".equalsIgnoreCase(join)){
+		}else if("ors".equalsIgnoreCase(join)) {
 			return ors(config);
 		}else{
 			return and(config);
@@ -1539,27 +1539,27 @@ public interface ConfigStore extends Cloneable{
 	 *              false:不隔离,configs合并成原来的list中
 	 * @return ConfigStore
 	 */
-	default ConfigStore condition(String join, ConfigStore config, boolean apart){
-		if("or".equalsIgnoreCase(join)){
+	default ConfigStore condition(String join, ConfigStore config, boolean apart) {
+		if("or".equalsIgnoreCase(join)) {
 			return or(config, apart);
 		}else{
 			return and(config, apart);
 		}
 	}
-	default ConfigStore condition(String join, ConfigStore config){
+	default ConfigStore condition(String join, ConfigStore config) {
 		return condition(join, config, true);
 	}
-	default Compare compare(Object value){
+	default Compare compare(Object value) {
 		Compare compare = Compare.EQUAL;
-		if(null != value){
-			if(value instanceof Collection){
+		if(null != value) {
+			if(value instanceof Collection) {
 				Collection col = (Collection) value;
-				if(col.size()>1){
+				if(col.size()>1) {
 					compare = Compare.IN;
 				}
-			}else if(value instanceof Object[]){
+			}else if(value instanceof Object[]) {
 				Object[] array = (Object[])value;
-				if(array.length > 1){
+				if(array.length > 1) {
 					compare = Compare.IN;
 				}
 			}
@@ -1731,33 +1731,33 @@ public interface ConfigStore extends Cloneable{
 	void setLastPackageTime(long time);
 	long getLastPackageTime();
 
-	default boolean getBoolean(String key, boolean def){
+	default boolean getBoolean(String key, boolean def) {
 		Object value = config(key);
-		if(null == value){
+		if(null == value) {
 			return def;
 		}
 		return BasicUtil.parseBoolean(value, def);
 	}
-	default String getString(String key, String def){
+	default String getString(String key, String def) {
 		Object value = config(key);
-		if(null != value){
+		if(null != value) {
 			return value.toString();
 		}
 		return def;
 	}
-	default String getString(String key){
+	default String getString(String key) {
 		return getString(key, null);
 	}
-	default int getInt(String key, int def){
+	default int getInt(String key, int def) {
 		Object value = config(key);
-		if(null == value){
+		if(null == value) {
 			return def;
 		}
 		return BasicUtil.parseInt(value, def);
 	}
-	default long getLong(String key, long def){
+	default long getLong(String key, long def) {
 		Object value = config(key);
-		if(null == value){
+		if(null == value) {
 			return def;
 		}
 		return BasicUtil.parseLong(value, def);
@@ -1768,13 +1768,13 @@ public interface ConfigStore extends Cloneable{
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围
 	 */
-	default void filter(LinkedHashMap<String, Column> metadatas){
+	default void filter(LinkedHashMap<String, Column> metadatas) {
 		ConfigChain chain = getConfigChain();
-		if(null != chain){
+		if(null != chain) {
 			chain.filter(metadatas);
 		}
 		OrderStore orders = getOrders();
-		if(null != orders){
+		if(null != orders) {
 			orders.filter(metadatas);
 		}
 	}
@@ -1783,10 +1783,10 @@ public interface ConfigStore extends Cloneable{
 	 * 是否显示SQL
 	 * @return boolean
 	 */
-	default boolean IS_LOG_SQL(){
+	default boolean IS_LOG_SQL() {
 		return getBoolean("IS_LOG_SQL", ConfigTable.IS_LOG_SQL);
 	}
-	default ConfigStore IS_LOG_SQL(boolean value){
+	default ConfigStore IS_LOG_SQL(boolean value) {
 		return config("IS_LOG_SQL", value);
 	}
 
@@ -1794,10 +1794,10 @@ public interface ConfigStore extends Cloneable{
 	 * 是否显示慢SQL
 	 * @return boolean
 	 */
-	default boolean IS_LOG_SLOW_SQL(){
+	default boolean IS_LOG_SLOW_SQL() {
 		return getBoolean("IS_LOG_SLOW_SQL", ConfigTable.IS_LOG_SLOW_SQL);
 	}
-	default ConfigStore IS_LOG_SLOW_SQL(boolean value){
+	default ConfigStore IS_LOG_SLOW_SQL(boolean value) {
 		return config("IS_LOG_SLOW_SQL", value);
 	}
 
@@ -1805,10 +1805,10 @@ public interface ConfigStore extends Cloneable{
 	 * 异常时是否显示SQL
 	 * @return boolean
 	 */
-	default boolean IS_LOG_SQL_WHEN_ERROR(){
+	default boolean IS_LOG_SQL_WHEN_ERROR() {
 		return getBoolean("IS_LOG_SQL_WHEN_ERROR", ConfigTable.IS_LOG_SQL_WHEN_ERROR);
 	}
-	default ConfigStore IS_LOG_SQL_WHEN_ERROR(boolean value){
+	default ConfigStore IS_LOG_SQL_WHEN_ERROR(boolean value) {
 		return config("IS_LOG_SQL_WHEN_ERROR", value);
 	}
 
@@ -1816,10 +1816,10 @@ public interface ConfigStore extends Cloneable{
 	 * 是否输出异常堆栈日志
 	 * @return boolean
 	 */
-	default boolean IS_PRINT_EXCEPTION_STACK_TRACE(){
+	default boolean IS_PRINT_EXCEPTION_STACK_TRACE() {
 		return getBoolean("IS_PRINT_EXCEPTION_STACK_TRACE", ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE);
 	}
-	default ConfigStore IS_PRINT_EXCEPTION_STACK_TRACE(boolean value){
+	default ConfigStore IS_PRINT_EXCEPTION_STACK_TRACE(boolean value) {
 		return config("IS_PRINT_EXCEPTION_STACK_TRACE", value);
 	}
 
@@ -1827,13 +1827,13 @@ public interface ConfigStore extends Cloneable{
 	 * 是否显示SQL参数(占位符模式下有效)
 	 * @return boolean
 	 */
-	default boolean IS_LOG_SQL_PARAM(){
+	default boolean IS_LOG_SQL_PARAM() {
 		return getBoolean("IS_LOG_SQL_PARAM", ConfigTable.IS_LOG_SQL_PARAM);
 	}
-	default boolean IS_LOG_BATCH_SQL_PARAM(){
+	default boolean IS_LOG_BATCH_SQL_PARAM() {
 		return getBoolean("IS_LOG_BATCH_SQL_PARAM", ConfigTable.IS_LOG_BATCH_SQL_PARAM);
 	}
-	default ConfigStore IS_LOG_SQL_PARAM(boolean value){
+	default ConfigStore IS_LOG_SQL_PARAM(boolean value) {
 		return config("IS_LOG_SQL_PARAM", value);
 	}
 
@@ -1841,10 +1841,10 @@ public interface ConfigStore extends Cloneable{
 	 * 异常时是否显示SQL参数(占位符模式下有效)
 	 * @return boolean
 	 */
-	default boolean IS_LOG_SQL_PARAM_WHEN_ERROR(){
+	default boolean IS_LOG_SQL_PARAM_WHEN_ERROR() {
 		return getBoolean("IS_LOG_SQL_PARAM_WHEN_ERROR", ConfigTable.IS_LOG_SQL_PARAM_WHEN_ERROR);
 	}
-	default ConfigStore IS_LOG_SQL_PARAM_WHEN_ERROR(boolean value){
+	default ConfigStore IS_LOG_SQL_PARAM_WHEN_ERROR(boolean value) {
 		return config("IS_LOG_SQL_PARAM_WHEN_ERROR", value);
 	}
 
@@ -1852,10 +1852,10 @@ public interface ConfigStore extends Cloneable{
 	 * 是否显示SQL执行时间
 	 * @return boolean
 	 */
-	default boolean IS_LOG_SQL_TIME(){
+	default boolean IS_LOG_SQL_TIME() {
 		return getBoolean("IS_LOG_SQL_TIME", ConfigTable.IS_LOG_SQL_TIME);
 	}
-	default ConfigStore IS_LOG_SQL_TIME(boolean value){
+	default ConfigStore IS_LOG_SQL_TIME(boolean value) {
 		return config("IS_LOG_SQL_TIME", value);
 	}
 
@@ -1863,10 +1863,10 @@ public interface ConfigStore extends Cloneable{
 	 * 是否抛出查询异常
 	 * @return boolean
 	 */
-	default boolean IS_THROW_SQL_QUERY_EXCEPTION(){
+	default boolean IS_THROW_SQL_QUERY_EXCEPTION() {
 		return getBoolean("IS_THROW_SQL_QUERY_EXCEPTION", ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION);
 	}
-	default ConfigStore IS_THROW_SQL_QUERY_EXCEPTION(boolean value){
+	default ConfigStore IS_THROW_SQL_QUERY_EXCEPTION(boolean value) {
 		return config("IS_THROW_SQL_QUERY_EXCEPTION", value);
 	}
 
@@ -1874,10 +1874,10 @@ public interface ConfigStore extends Cloneable{
 	 * 是否抛出更新异常
 	 * @return boolean
 	 */
-	default boolean IS_THROW_SQL_UPDATE_EXCEPTION(){
+	default boolean IS_THROW_SQL_UPDATE_EXCEPTION() {
 		return getBoolean("IS_THROW_SQL_UPDATE_EXCEPTION", ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION);
 	}
-	default ConfigStore IS_THROW_SQL_UPDATE_EXCEPTION(boolean value){
+	default ConfigStore IS_THROW_SQL_UPDATE_EXCEPTION(boolean value) {
 		return config("IS_THROW_SQL_UPDATE_EXCEPTION", value);
 	}
 
@@ -1885,10 +1885,10 @@ public interface ConfigStore extends Cloneable{
 	 * SQL日志是否启用占位符
 	 * @return boolean
 	 */
-	default boolean IS_SQL_LOG_PLACEHOLDER(){
+	default boolean IS_SQL_LOG_PLACEHOLDER() {
 		return getBoolean("IS_SQL_LOG_PLACEHOLDER", ConfigTable.IS_SQL_LOG_PLACEHOLDER);
 	}
-	default ConfigStore IS_SQL_LOG_PLACEHOLDER(boolean value){
+	default ConfigStore IS_SQL_LOG_PLACEHOLDER(boolean value) {
 		return config("IS_SQL_LOG_PLACEHOLDER", value);
 	}
 
@@ -1896,10 +1896,10 @@ public interface ConfigStore extends Cloneable{
 	 * insert update 时是否自动检测表结构(删除表中不存在的属性)
 	 * @return boolean
 	 */
-	default boolean IS_AUTO_CHECK_METADATA(){
+	default boolean IS_AUTO_CHECK_METADATA() {
 		return getBoolean("IS_AUTO_CHECK_METADATA", ConfigTable.IS_AUTO_CHECK_METADATA);
 	}
-	default ConfigStore IS_AUTO_CHECK_METADATA(boolean value){
+	default ConfigStore IS_AUTO_CHECK_METADATA(boolean value) {
 		return config("IS_AUTO_CHECK_METADATA", value);
 	}
 
@@ -1907,10 +1907,10 @@ public interface ConfigStore extends Cloneable{
 	 * 查询返回空DataSet时，是否检测元数据信息
 	 * @return boolean
 	 */
-	default boolean IS_CHECK_EMPTY_SET_METADATA(){
+	default boolean IS_CHECK_EMPTY_SET_METADATA() {
 		return getBoolean("IS_CHECK_EMPTY_SET_METADATA", ConfigTable.IS_CHECK_EMPTY_SET_METADATA);
 	}
-	default ConfigStore IS_CHECK_EMPTY_SET_METADATA(boolean value){
+	default ConfigStore IS_CHECK_EMPTY_SET_METADATA(boolean value) {
 		return config("IS_CHECK_EMPTY_SET_METADATA", value);
 	}
 
@@ -1918,10 +1918,10 @@ public interface ConfigStore extends Cloneable{
 	 * 慢SQL判断标准(ms)
 	 * @return long
 	 */
-	default long SLOW_SQL_MILLIS(){
+	default long SLOW_SQL_MILLIS() {
 		return getLong("SLOW_SQL_MILLIS", ConfigTable.SLOW_SQL_MILLIS);
 	}
-	default ConfigStore SLOW_SQL_MILLIS(long value){
+	default ConfigStore SLOW_SQL_MILLIS(long value) {
 		return config("SLOW_SQL_MILLIS", value);
 	}
 
@@ -1929,10 +1929,10 @@ public interface ConfigStore extends Cloneable{
 	 * DataRow是否更新nul值的列(针对DataRow)
 	 * @return boolean
 	 */
-	default boolean IS_UPDATE_NULL_COLUMN(){
+	default boolean IS_UPDATE_NULL_COLUMN() {
 		return getBoolean("IS_UPDATE_NULL_COLUMN", ConfigTable.IS_UPDATE_NULL_COLUMN);
 	}
-	default ConfigStore IS_UPDATE_NULL_COLUMN(boolean value){
+	default ConfigStore IS_UPDATE_NULL_COLUMN(boolean value) {
 		return config("IS_UPDATE_NULL_COLUMN", value);
 	}
 
@@ -1940,10 +1940,10 @@ public interface ConfigStore extends Cloneable{
 	 * DataRow是否更新空值的列
 	 * @return boolean
 	 */
-	default boolean IS_UPDATE_EMPTY_COLUMN(){
+	default boolean IS_UPDATE_EMPTY_COLUMN() {
 		return getBoolean("IS_UPDATE_EMPTY_COLUMN", ConfigTable.IS_UPDATE_EMPTY_COLUMN);
 	}
-	default ConfigStore IS_UPDATE_EMPTY_COLUMN(boolean value){
+	default ConfigStore IS_UPDATE_EMPTY_COLUMN(boolean value) {
 		return config("IS_UPDATE_EMPTY_COLUMN", value);
 	}
 
@@ -1951,10 +1951,10 @@ public interface ConfigStore extends Cloneable{
 	 * DataRow是否插入nul值的列
 	 * @return boolean
 	 */
-	default boolean IS_INSERT_NULL_COLUMN(){
+	default boolean IS_INSERT_NULL_COLUMN() {
 		return getBoolean("IS_INSERT_NULL_COLUMN", ConfigTable.IS_INSERT_NULL_COLUMN);
 	}
-	default ConfigStore IS_INSERT_NULL_COLUMN(boolean value){
+	default ConfigStore IS_INSERT_NULL_COLUMN(boolean value) {
 		return config("IS_INSERT_NULL_COLUMN", value);
 	}
 
@@ -1962,10 +1962,10 @@ public interface ConfigStore extends Cloneable{
 	 * DataRow是否插入空值的列
 	 * @return boolean
 	 */
-	default boolean IS_INSERT_EMPTY_COLUMN(){
+	default boolean IS_INSERT_EMPTY_COLUMN() {
 		return getBoolean("IS_INSERT_EMPTY_COLUMN", ConfigTable.IS_INSERT_EMPTY_COLUMN);
 	}
-	default ConfigStore IS_INSERT_EMPTY_COLUMN(boolean value){
+	default ConfigStore IS_INSERT_EMPTY_COLUMN(boolean value) {
 		return config("IS_INSERT_EMPTY_COLUMN", value);
 	}
 
@@ -1973,10 +1973,10 @@ public interface ConfigStore extends Cloneable{
 	 * Entity是否更新nul值的属性(针对Entity)
 	 * @return boolean
 	 */
-	default boolean IS_UPDATE_NULL_FIELD(){
+	default boolean IS_UPDATE_NULL_FIELD() {
 		return getBoolean("IS_UPDATE_NULL_FIELD", ConfigTable.IS_UPDATE_NULL_FIELD);
 	}
-	default ConfigStore IS_UPDATE_NULL_FIELD(boolean value){
+	default ConfigStore IS_UPDATE_NULL_FIELD(boolean value) {
 		return config("IS_UPDATE_NULL_FIELD", value);
 	}
 
@@ -1984,10 +1984,10 @@ public interface ConfigStore extends Cloneable{
 	 * Entity是否更新空值的属性
 	 * @return boolean
 	 */
-	default boolean IS_UPDATE_EMPTY_FIELD(){
+	default boolean IS_UPDATE_EMPTY_FIELD() {
 		return getBoolean("IS_UPDATE_EMPTY_FIELD", ConfigTable.IS_UPDATE_EMPTY_FIELD);
 	}
-	default ConfigStore IS_UPDATE_EMPTY_FIELD(boolean value){
+	default ConfigStore IS_UPDATE_EMPTY_FIELD(boolean value) {
 		return config("IS_UPDATE_EMPTY_FIELD", value);
 	}
 
@@ -1995,10 +1995,10 @@ public interface ConfigStore extends Cloneable{
 	 * Entity是否更新nul值的属性
 	 * @return boolean
 	 */
-	default boolean IS_INSERT_NULL_FIELD(){
+	default boolean IS_INSERT_NULL_FIELD() {
 		return getBoolean("IS_INSERT_NULL_FIELD", ConfigTable.IS_INSERT_NULL_FIELD);
 	}
-	default ConfigStore IS_INSERT_NULL_FIELD(boolean value){
+	default ConfigStore IS_INSERT_NULL_FIELD(boolean value) {
 		return config("IS_INSERT_NULL_FIELD", value);
 	}
 
@@ -2006,61 +2006,61 @@ public interface ConfigStore extends Cloneable{
 	 * Entity是否更新空值的属性
 	 * @return boolean
 	 */
-	default boolean IS_INSERT_EMPTY_FIELD(){
+	default boolean IS_INSERT_EMPTY_FIELD() {
 		return getBoolean("IS_INSERT_EMPTY_FIELD", ConfigTable.IS_INSERT_EMPTY_FIELD);
 	}
-	default ConfigStore IS_INSERT_EMPTY_FIELD(boolean value){
+	default ConfigStore IS_INSERT_EMPTY_FIELD(boolean value) {
 		return config("IS_INSERT_EMPTY_FIELD", value);
 	}
-	default boolean IS_LOG_SQL_WARN(){
+	default boolean IS_LOG_SQL_WARN() {
 		return getBoolean("IS_LOG_SQL_WARN", ConfigTable.IS_LOG_SQL_WARN);
 	}
-	default ConfigStore IS_LOG_SQL_WARN(boolean value){
+	default ConfigStore IS_LOG_SQL_WARN(boolean value) {
 		return config("IS_LOG_SQL_WARN", value);
 	}
-	default boolean IS_REPLACE_EMPTY_NULL(){
+	default boolean IS_REPLACE_EMPTY_NULL() {
 		return getBoolean("IS_REPLACE_EMPTY_NULL", ConfigTable.IS_REPLACE_EMPTY_NULL);
 	}
-	default ConfigStore IS_REPLACE_EMPTY_NULL(boolean value){
+	default ConfigStore IS_REPLACE_EMPTY_NULL(boolean value) {
 		return config("IS_REPLACE_EMPTY_NULL", value);
 	}
 
-	default int SQL_QUERY_TIMEOUT(){
+	default int SQL_QUERY_TIMEOUT() {
 		return getInt("SQL_QUERY_TIMEOUT", ConfigTable.SQL_QUERY_TIMEOUT);
 	}
-	default ConfigStore SQL_QUERY_TIMEOUT(int s){
+	default ConfigStore SQL_QUERY_TIMEOUT(int s) {
 		return config("SQL_QUERY_TIMEOUT", s);
 	}
-	default int SQL_UPDATE_TIMEOUT(){
+	default int SQL_UPDATE_TIMEOUT() {
 		return getInt("SQL_UPDATE_TIMEOUT", ConfigTable.SQL_UPDATE_TIMEOUT);
 	}
 
-	default ConfigStore SQL_UPDATE_TIMEOUT(int s){
+	default ConfigStore SQL_UPDATE_TIMEOUT(int s) {
 		return config("SQL_UPDATE_TIMEOUT", s);
 	}
-	default ConfigStore IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(int s){
+	default ConfigStore IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(int s) {
 		return config("IGNORE_GRAPH_QUERY_RESULT_TOP_KEY", s);
 	}
-	default int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(){
+	default int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY() {
 		return getInt("IGNORE_GRAPH_QUERY_RESULT_TOP_KEY", ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY);
 	}
-	default ConfigStore IGNORE_GRAPH_QUERY_RESULT_TABLE(int s){
+	default ConfigStore IGNORE_GRAPH_QUERY_RESULT_TABLE(int s) {
 		return config("IGNORE_GRAPH_QUERY_RESULT_TABLE", s);
 	}
-	default int IGNORE_GRAPH_QUERY_RESULT_TABLE(){
+	default int IGNORE_GRAPH_QUERY_RESULT_TABLE() {
 		return getInt("IGNORE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE);
 	}
-	default ConfigStore MERGE_GRAPH_QUERY_RESULT_TABLE(int s){
+	default ConfigStore MERGE_GRAPH_QUERY_RESULT_TABLE(int s) {
 		return config("MERGE_GRAPH_QUERY_RESULT_TABLE", s);
 	}
-	default int MERGE_GRAPH_QUERY_RESULT_TABLE(){
+	default int MERGE_GRAPH_QUERY_RESULT_TABLE() {
 		return getInt("MERGE_GRAPH_QUERY_RESULT_TABLE", ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE);
 	}
 	/**
 	 * 关闭所有SQL日志
 	 * @return ConfigStore
 	 */
-	default ConfigStore closeAllSqlLog(){
+	default ConfigStore closeAllSqlLog() {
 		config("IS_LOG_SQL", false);
 		config("IS_LOG_SQL_PARAM", false);
 		config("IS_LOG_SQL_WHEN_ERROR", false);
@@ -2074,7 +2074,7 @@ public interface ConfigStore extends Cloneable{
 	 * 开启所有SQL日志
 	 * @return ConfigStore
 	 */
-	default ConfigStore openAllSqlLog(){
+	default ConfigStore openAllSqlLog() {
 		config("IS_LOG_SQL", true);
 		config("IS_LOG_SQL_PARAM", true);
 		config("IS_LOG_SQL_WHEN_ERROR", true);
@@ -2089,8 +2089,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_SQL(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SQL(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SQL();
 		}
 		return ConfigTable.IS_LOG_SQL;
@@ -2101,8 +2101,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_AUTO_CHECK_METADATA(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_AUTO_CHECK_METADATA(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_AUTO_CHECK_METADATA();
 		}
 		return ConfigTable.IS_AUTO_CHECK_METADATA;
@@ -2114,8 +2114,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_CHECK_EMPTY_SET_METADATA(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_CHECK_EMPTY_SET_METADATA(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_CHECK_EMPTY_SET_METADATA();
 		}
 		return ConfigTable.IS_CHECK_EMPTY_SET_METADATA;
@@ -2126,8 +2126,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_SLOW_SQL(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SLOW_SQL(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SLOW_SQL();
 		}
 		return ConfigTable.IS_LOG_SLOW_SQL;
@@ -2138,8 +2138,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_SQL_PARAM(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SQL_PARAM(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SQL_PARAM();
 		}
 		return ConfigTable.IS_LOG_SQL_PARAM;
@@ -2150,8 +2150,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_BATCH_SQL_PARAM(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_BATCH_SQL_PARAM(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_BATCH_SQL_PARAM();
 		}
 		return ConfigTable.IS_LOG_BATCH_SQL_PARAM;
@@ -2162,8 +2162,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_SQL_WHEN_ERROR(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SQL_WHEN_ERROR(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SQL_WHEN_ERROR();
 		}
 		return ConfigTable.IS_LOG_SQL_WHEN_ERROR;
@@ -2174,8 +2174,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_PRINT_EXCEPTION_STACK_TRACE(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_PRINT_EXCEPTION_STACK_TRACE(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_PRINT_EXCEPTION_STACK_TRACE();
 		}
 		return ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE;
@@ -2186,14 +2186,14 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_SQL_PARAM_WHEN_ERROR(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SQL_PARAM_WHEN_ERROR(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SQL_PARAM_WHEN_ERROR();
 		}
 		return ConfigTable.IS_LOG_SQL_PARAM_WHEN_ERROR;
 	}
-	static boolean IS_SQL_LOG_PLACEHOLDER(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_SQL_LOG_PLACEHOLDER(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_SQL_LOG_PLACEHOLDER();
 		}
 		return ConfigTable.IS_SQL_LOG_PLACEHOLDER;
@@ -2204,8 +2204,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_LOG_SQL_TIME(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SQL_TIME(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SQL_TIME();
 		}
 		return ConfigTable.IS_LOG_SQL_TIME;
@@ -2216,8 +2216,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return long
 	 */
-	static long SLOW_SQL_MILLIS(ConfigStore configs){
-		if(null != configs){
+	static long SLOW_SQL_MILLIS(ConfigStore configs) {
+		if(null != configs) {
 			return configs.SLOW_SQL_MILLIS();
 		}
 		return ConfigTable.SLOW_SQL_MILLIS;
@@ -2228,8 +2228,8 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_THROW_SQL_QUERY_EXCEPTION(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_THROW_SQL_QUERY_EXCEPTION(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_THROW_SQL_QUERY_EXCEPTION();
 		}
 		return ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION;
@@ -2240,103 +2240,103 @@ public interface ConfigStore extends Cloneable{
 	 * @param configs ConfigStore
 	 * @return boolean
 	 */
-	static boolean IS_THROW_SQL_UPDATE_EXCEPTION(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_THROW_SQL_UPDATE_EXCEPTION(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_THROW_SQL_UPDATE_EXCEPTION();
 		}
 		return ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION;
 	}
-	static boolean IS_UPDATE_NULL_COLUMN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_UPDATE_NULL_COLUMN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_UPDATE_NULL_COLUMN();
 		}
 		return ConfigTable.IS_UPDATE_NULL_COLUMN;
 	}
-	static boolean IS_UPDATE_EMPTY_COLUMN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_UPDATE_EMPTY_COLUMN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_UPDATE_EMPTY_COLUMN();
 		}
 		return ConfigTable.IS_UPDATE_EMPTY_COLUMN;
 	}
 
-	static boolean IS_UPDATE_NULL_FIELD(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_UPDATE_NULL_FIELD(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_UPDATE_NULL_FIELD();
 		}
 		return ConfigTable.IS_UPDATE_NULL_FIELD;
 	}
 
-	static boolean IS_UPDATE_EMPTY_FIELD(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_UPDATE_EMPTY_FIELD(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_UPDATE_EMPTY_FIELD();
 		}
 		return ConfigTable.IS_UPDATE_EMPTY_FIELD;
 	}
 
-	static boolean IS_INSERT_NULL_FIELD(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_INSERT_NULL_FIELD(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_INSERT_NULL_FIELD();
 		}
 		return ConfigTable.IS_INSERT_NULL_FIELD;
 	}
 
-	static boolean IS_INSERT_EMPTY_FIELD(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_INSERT_EMPTY_FIELD(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_INSERT_EMPTY_FIELD();
 		}
 		return ConfigTable.IS_INSERT_EMPTY_FIELD;
 	}
 
-	static boolean IS_INSERT_NULL_COLUMN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_INSERT_NULL_COLUMN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_INSERT_NULL_COLUMN();
 		}
 		return ConfigTable.IS_INSERT_NULL_COLUMN;
 	}
-	static boolean IS_INSERT_EMPTY_COLUMN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_INSERT_EMPTY_COLUMN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_INSERT_EMPTY_COLUMN();
 		}
 		return ConfigTable.IS_INSERT_EMPTY_COLUMN;
 	}
-	static boolean IS_LOG_SQL_WARN(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_LOG_SQL_WARN(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_LOG_SQL_WARN();
 		}
 		return ConfigTable.IS_LOG_SQL_WARN;
 	}
-	static boolean IS_REPLACE_EMPTY_NULL(ConfigStore configs){
-		if(null != configs){
+	static boolean IS_REPLACE_EMPTY_NULL(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IS_REPLACE_EMPTY_NULL();
 		}
 		return ConfigTable.IS_REPLACE_EMPTY_NULL;
 	}
-	static int SQL_QUERY_TIMEOUT(ConfigStore configs){
-		if(null != configs){
+	static int SQL_QUERY_TIMEOUT(ConfigStore configs) {
+		if(null != configs) {
 			return configs.SQL_QUERY_TIMEOUT();
 		}
 		return ConfigTable.SQL_QUERY_TIMEOUT;
 	}
-	static int SQL_UPDATE_TIMEOUT(ConfigStore configs){
-		if(null != configs){
+	static int SQL_UPDATE_TIMEOUT(ConfigStore configs) {
+		if(null != configs) {
 			return configs.SQL_UPDATE_TIMEOUT();
 		}
 		return ConfigTable.SQL_UPDATE_TIMEOUT;
 	}
-	static int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(ConfigStore configs){
-		if(null != configs){
+	static int IGNORE_GRAPH_QUERY_RESULT_TOP_KEY(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY();
 		}
 		return ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TOP_KEY;
 	}
-	static int IGNORE_GRAPH_QUERY_RESULT_TABLE(ConfigStore configs){
-		if(null != configs){
+	static int IGNORE_GRAPH_QUERY_RESULT_TABLE(ConfigStore configs) {
+		if(null != configs) {
 			return configs.IGNORE_GRAPH_QUERY_RESULT_TABLE();
 		}
 		return ConfigTable.IGNORE_GRAPH_QUERY_RESULT_TABLE;
 	}
-	static int MERGE_GRAPH_QUERY_RESULT_TABLE(ConfigStore configs){
-		if(null != configs){
+	static int MERGE_GRAPH_QUERY_RESULT_TABLE(ConfigStore configs) {
+		if(null != configs) {
 			return configs.MERGE_GRAPH_QUERY_RESULT_TABLE();
 		}
 		return ConfigTable.MERGE_GRAPH_QUERY_RESULT_TABLE;

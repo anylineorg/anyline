@@ -37,7 +37,7 @@ import java.util.List;
 public class TextRun extends AbstractRun implements Run {
 	private String text;
 
-	public TextRun(){
+	public TextRun() {
 		this.builder = new StringBuilder();
 		this.conditionChain = new DefaultAutoConditionChain();
 		this.orderStore = new DefaultOrderStore();
@@ -53,30 +53,30 @@ public class TextRun extends AbstractRun implements Run {
 	}
 
 
-public Run setPrepare(RunPrepare prepare){
+public Run setPrepare(RunPrepare prepare) {
 		this.prepare = prepare;
 		this.table = prepare.getTable();
 		parseText(); 
 		return this; 
 	}
-	public void init(){
+	public void init() {
 		super.init(); 
 		// 复制 RunPrepare 查询条件 
-		if(null != conditionChain){
+		if(null != conditionChain) {
 			List<Condition> conditions = conditionChain.getConditions(); 
-			if(null != conditions){
-				for(Condition condition:conditions){
-					if(null == condition){
+			if(null != conditions) {
+				for(Condition condition:conditions) {
+					if(null == condition) {
 						continue;
 					} 
 					AutoCondition con = (AutoCondition)condition;
 
 					//如果有对应的SQL体变量 设置当前con不作为查询条件拼接
 					List<Variable> vars = this.getVariables(con.getId());
-					if(!vars.isEmpty()){
+					if(!vars.isEmpty()) {
 						//用来给java/xml定义SQL中变量赋值, 本身并不拼接到最终SQL
 						con.setVariableSlave(true);
-						for(Variable var:vars){
+						for(Variable var:vars) {
 							var.setValue(false, con.getValues());
 						}
 					} else{
@@ -87,9 +87,9 @@ public Run setPrepare(RunPrepare prepare){
 			} 
 		}
 		//configStore解析与Table不一样, txt需要检测sql体中有没有需要赋值的占位符，所以不能全部用来生成新条件
-		if(null != configs){
+		if(null != configs) {
 			List<Config> confs = configs.getConfigChain().getConfigs();
-			for(Config conf:confs){
+			for(Config conf:confs) {
 				//是否覆盖相同var key的条件
 				boolean overCondition = conf.isOverCondition();
 				//是否相同var key的条件的value
@@ -128,19 +128,19 @@ public Run setPrepare(RunPrepare prepare){
 				if(compare != Compare.NONE) {
 					//如果没有对应的查询条件和SQL体变量，新加一个条件
 					//没有用过给其他参数赋值 则添加新条件
-					//if(!overCondition && !isUse){
-					if(!isUse){
+					//if(!overCondition && !isUse) {
+					if(!isUse) {
 						conditionChain.addCondition(conf.createAutoCondition(conditionChain));
 					}
 				}
 			}
 			//根据下标赋值
 			List<Object> values = configs.values();
-			if(null != values){
+			if(null != values) {
 				int i = 0;
 				int len = values.size();
-				for(Variable var:variables){
-					if(i < len){
+				for(Variable var:variables) {
+					if(i < len) {
 						var.setValue(values.get(i));
 						i++;
 					}else {
@@ -149,25 +149,25 @@ public Run setPrepare(RunPrepare prepare){
 				}
 			}
 			OrderStore orderStore = configs.getOrders();
-			if(null != orderStore){
+			if(null != orderStore) {
 				List<Order> orders = orderStore.getOrders(); 
-				if(null != orders){
-					for(Order order:orders){
+				if(null != orders) {
+					for(Order order:orders) {
 						addOrder(order); 
 					} 
 				} 
 			} 
 			PageNavi navi = configs.getPageNavi();
-			if(navi != null){
+			if(navi != null) {
 				this.pageNavi = navi; 
 			} 
 		}
 	} 
-	private void parseText(){
+	private void parseText() {
 		//放在adapter中解析 避免 MATCH (v:CRM_USER:HR_USER) RETURN v解析出占位符
 		/*
 		String text = prepare.getText();
-		if(null == text){
+		if(null == text) {
 			return;
 		}
 		try{
@@ -180,18 +180,18 @@ public Run setPrepare(RunPrepare prepare){
 			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
 			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
 			type = Variable.KEY_TYPE_SIGN_V2 ;
-			if(keys.size() == 0){
+			if(keys.size() == 0) {
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			}
-			if(BasicUtil.isNotEmpty(true, keys)){
+			if(BasicUtil.isNotEmpty(true, keys)) {
 				// AND CD = :CD
-				for(int i=0; i<keys.size();i++){
+				for(int i=0; i<keys.size();i++) {
 					List<String> keyItem = keys.get(i);
 
 					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-					if(null == var){
+					if(null == var) {
 						continue;
 					}
 					var.setSwt(EMPTY_VALUE_SWITCH.NULL);
@@ -200,8 +200,8 @@ public Run setPrepare(RunPrepare prepare){
 			}else{
 				// AND CD = ?
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?", Regular.MATCH_MODE.CONTAIN, 0);
-				if(BasicUtil.isNotEmpty(true, idxKeys)){
-					for(int i=0; i<idxKeys.size(); i++){
+				if(BasicUtil.isNotEmpty(true, idxKeys)) {
+					for(int i=0; i<idxKeys.size(); i++) {
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setSwt(EMPTY_VALUE_SWITCH.NULL);
@@ -209,23 +209,23 @@ public Run setPrepare(RunPrepare prepare){
 					}
 				}
 			}
-		}catch(Exception e){
+		}catch(Exception e) {
 		}*/
 	}
-	public boolean checkValid(){
-		if(!valid){
+	public boolean checkValid() {
+		if(!valid) {
 			return false;
 		}
-		if(null != conditionChain && !conditionChain.isValid()){
+		if(null != conditionChain && !conditionChain.isValid()) {
 			this.valid = false;
 		}
-		if(null != configs && !configs.isValid()){
+		if(null != configs && !configs.isValid()) {
 			this.valid = false;
 		}
 		return valid;
 	}
-	public void appendGroup(){
-		if(null != groupStore){
+	public void appendGroup() {
+		if(null != groupStore) {
 			builder.append(groupStore.getRunText(delimiterFr+delimiterTo));
 		} 
 	}
@@ -233,18 +233,18 @@ public Run setPrepare(RunPrepare prepare){
 	/** 
 	 * 拼接查询条件
 	 */
-	public void appendCondition(boolean placeholder){
-		if(null == conditionChain){
+	public void appendCondition(boolean placeholder) {
+		if(null == conditionChain) {
 			return; 
 		} 
 		List<Condition> cons = conditionChain.getConditions(); 
-		if(null == cons || cons.size()==0){
+		if(null == cons || cons.size()==0) {
 			return; 
 		} 
 		String txt = builder.toString();
 
 		String condition = conditionChain.getRunText(null, runtime, placeholder);
-		if(!condition.isEmpty()){
+		if(!condition.isEmpty()) {
 			emptyCondition = false;
 		}
 		boolean where = endWithWhere(txt);
@@ -262,7 +262,7 @@ public Run setPrepare(RunPrepare prepare){
 			builder.append(condition);
 		}
 
-		if(where){
+		if(where) {
 			emptyCondition = false;
 		}
 		addValues(conditionChain.getRunValues());
@@ -270,7 +270,7 @@ public Run setPrepare(RunPrepare prepare){
 	 
 	public void setConfigs(ConfigStore configs) {
 		this.configs = configs;
-		if(null != configs){
+		if(null != configs) {
 			this.pageNavi = configs.getPageNavi(); 
 			 
 		} 
@@ -279,22 +279,22 @@ public Run setPrepare(RunPrepare prepare){
 	@Override 
 	public Run setConditionValue(EMPTY_VALUE_SWITCH swt, Compare compare, String condition, String variable, Object value) {
 		/*不指定变量名时, 根据condition为SQL主体变量赋值*/ 
-		if(null != variables && BasicUtil.isEmpty(variable)){
-			for(Variable v:variables){
-				if(null == v){
+		if(null != variables && BasicUtil.isEmpty(variable)) {
+			for(Variable v:variables) {
+				if(null == v) {
 					continue;
 				} 
-				if(v.getKey().equalsIgnoreCase(condition)){
+				if(v.getKey().equalsIgnoreCase(condition)) {
 					v.setValue(value); 
 				} 
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){
+		if(null == condition) {
 			return this; 
 		} 
 		Condition con = getCondition(condition); 
-		if(null == con){
+		if(null == con) {
 			return this; 
 		} 
 		variable = BasicUtil.nvl(variable, condition).toString();
@@ -312,19 +312,19 @@ public Run setPrepare(RunPrepare prepare){
 	 * @return TextRun
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked" })
-	public TextRun addValues(String key, Object obj){
-		if(null == obj){
+	public TextRun addValues(String key, Object obj) {
+		if(null == obj) {
 			return this; 
 		} 
-		if(null == values){
+		if(null == values) {
 			values = new ArrayList<>();
 		}
-		if(null != obj && obj instanceof RunValue){
+		if(null != obj && obj instanceof RunValue) {
 			throw new RuntimeException("run value");
 		}
-		if(obj instanceof Collection){
+		if(obj instanceof Collection) {
 			Collection list = (Collection)obj;
-			for(Object item:list){
+			for(Object item:list) {
 				addValues(key, item);
 			}
 		}else{
@@ -333,20 +333,20 @@ public Run setPrepare(RunPrepare prepare){
 		return this; 
 	} 
 
-	public Run addOrders(OrderStore orderStore){
-		if(null == orderStore){
+	public Run addOrders(OrderStore orderStore) {
+		if(null == orderStore) {
 			return this; 
 		} 
 		List<Order> orders = orderStore.getOrders(); 
-		if(null == orders){
+		if(null == orders) {
 			return this; 
 		} 
-		for(Order order:orders){
+		for(Order order:orders) {
 			this.orderStore.order(order); 
 		} 
 		return this; 
 	} 
-	public Run addOrder(Order order){
+	public Run addOrder(Order order) {
 		this.orderStore.order(order); 
 		return this; 
 	} 
@@ -369,22 +369,22 @@ public Run setPrepare(RunPrepare prepare){
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	public Run addCondition(String condition, String variable, Object value) {
-		if(null != variables && BasicUtil.isEmpty(variable)){
-			for(Variable v:variables){
-				if(null == v){
+		if(null != variables && BasicUtil.isEmpty(variable)) {
+			for(Variable v:variables) {
+				if(null == v) {
 					continue;
 				} 
-				if(v.getKey().equalsIgnoreCase(condition)){
+				if(v.getKey().equalsIgnoreCase(condition)) {
 					v.setValue(value); 
 				} 
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){
+		if(null == condition) {
 			return this; 
 		} 
 		Condition con = getCondition(condition); 
-		if(null == con){
+		if(null == con) {
 			return this; 
 		} 
 		variable = BasicUtil.nvl(variable, condition).toString();
@@ -401,23 +401,23 @@ public Run setPrepare(RunPrepare prepare){
 	 * @param compare  比较方式
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */ 
-	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value){
+	public Run addCondition(EMPTY_VALUE_SWITCH swt, Compare compare, String prefix, String var, Object value) {
 		Condition condition = new DefaultAutoCondition(swt, compare, prefix, var, value);
-		if(null == conditionChain){
+		if(null == conditionChain) {
 			conditionChain = new DefaultAutoConditionChain();
 		} 
 		conditionChain.addCondition(condition); 
 		return this; 
 	}
-	public Variable getVariable(String key){
-		if(null == key || null == variables){
+	public Variable getVariable(String key) {
+		if(null == key || null == variables) {
 			return null;
 		}
-		for(Variable var:variables){
-			if(null == var){
+		for(Variable var:variables) {
+			if(null == var) {
 				continue;
 			}
-			if(key.equalsIgnoreCase(var.getKey())){
+			if(key.equalsIgnoreCase(var.getKey())) {
 				return var;
 			}
 		}
@@ -425,16 +425,16 @@ public Run setPrepare(RunPrepare prepare){
 	}
 
 
-	public List<Variable> getVariables(String key){
+	public List<Variable> getVariables(String key) {
 		List<Variable> list = new ArrayList<>();
-		if(null == key || null == variables){
+		if(null == key || null == variables) {
 			return list;
 		}
-		for(Variable var:variables){
-			if(null == var){
+		for(Variable var:variables) {
+			if(null == var) {
 				continue;
 			}
-			if(key.equalsIgnoreCase(var.getKey())){
+			if(key.equalsIgnoreCase(var.getKey())) {
 				list.add(var);
 			}
 		}

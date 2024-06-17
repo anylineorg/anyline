@@ -122,15 +122,15 @@ public enum PostgisReader {
         }
     }),
     ;
-    public Object[] supports(){
+    public Object[] supports() {
         return supports;
     }
-    public DataReader reader(){
+    public DataReader reader() {
         return reader;
     }
     private final Object[] supports;
     private final DataReader reader;
-    PostgisReader(Object[] supports, DataReader reader){
+    PostgisReader(Object[] supports, DataReader reader) {
         this.supports = supports;
         this.reader = reader;
     }

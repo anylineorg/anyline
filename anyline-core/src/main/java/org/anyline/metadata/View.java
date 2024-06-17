@@ -26,37 +26,37 @@ public class View extends Table<View> implements Serializable {
     public enum TYPE implements Type{
         NORMAL(2);
         public final int value;
-        TYPE(int value){
+        TYPE(int value) {
             this.value = value;
         }
-        public int value(){
+        public int value() {
             return value;
         }
     }
 
     private static Map<Integer, Type> types = new HashMap<>();
     static {
-        for(TYPE type: TYPE.values()){
+        for(TYPE type: TYPE.values()) {
             types.put(type.value, type);
         }
     }
-    public static Map<Integer, Type> types(){
+    public static Map<Integer, Type> types() {
         return types;
     }
 
     protected String keyword = "VIEW"            ;
     protected boolean materialize = false        ; //是否物化
 
-    public View(){
+    public View() {
         this(null);
     }
-    public View(String name){
+    public View(String name) {
         this(null, name);
     }
-    public View(Schema schema, String table){
+    public View(Schema schema, String table) {
         this(null, schema, table);
     }
-    public View(Catalog catalog, Schema schema, String name){
+    public View(Catalog catalog, Schema schema, String name) {
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
@@ -73,7 +73,7 @@ public class View extends Table<View> implements Serializable {
         this.materialize = materialize;
     }
 
-    public String toString(){
+    public String toString() {
         return this.keyword+":"+name;
     }
 

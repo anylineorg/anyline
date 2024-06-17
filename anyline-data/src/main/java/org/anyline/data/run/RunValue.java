@@ -27,9 +27,9 @@ public class RunValue {
 
     private boolean placeholder = true;
 
-    public RunValue(){}
-    public RunValue(Column column, Object value){
-        if(null == column){
+    public RunValue() {}
+    public RunValue(Column column, Object value) {
+        if(null == column) {
             this.key = "none";
         }else{
             this.key = column.getName();
@@ -37,7 +37,7 @@ public class RunValue {
         this.column = column;
         this.value = value;
     }
-    public RunValue(String key, Object value){
+    public RunValue(String key, Object value) {
         this.key = key;
         this.value = value;
     }

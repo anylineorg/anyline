@@ -30,36 +30,36 @@ public class ViewsDiffer implements MetadataDiffer {
     private LinkedHashMap<String, View> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, View> updates = new LinkedHashMap<>();
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return adds.isEmpty() && drops.isEmpty() && updates.isEmpty();
     }
-    public static ViewsDiffer compare(LinkedHashMap<String, View> origins, LinkedHashMap<String, View> dests){
+    public static ViewsDiffer compare(LinkedHashMap<String, View> origins, LinkedHashMap<String, View> dests) {
         ViewsDiffer differ = new ViewsDiffer();
         LinkedHashMap<String, View> adds = new LinkedHashMap<>();
         LinkedHashMap<String, View> drops = new LinkedHashMap<>();
         LinkedHashMap<String, View> updates = new LinkedHashMap<>();
 
-        if(null != origins){
+        if(null != origins) {
             origins = new LinkedHashMap<>();
         }
-        if(null == dests){
+        if(null == dests) {
             dests = new LinkedHashMap<>();
         }
-        for(String key:origins.keySet()){
+        for(String key:origins.keySet()) {
             View origin = origins.get(key);
             View dest = dests.get(key);
-            if(null == dest){
+            if(null == dest) {
                 //新表不存在
                 drops.put(key, origins.get(origin));
             }else {
-                if(!origin.equals(dest)){
+                if(!origin.equals(dest)) {
                     origin.setUpdate(dest, false, false);
                     updates.put(key, origin);
                 }
             }
         }
-        for(String key:dests.keySet()){
-            if(!origins.containsKey(key)){
+        for(String key:dests.keySet()) {
+            if(!origins.containsKey(key)) {
                 adds.put(key, dests.get(key));
             }
         }

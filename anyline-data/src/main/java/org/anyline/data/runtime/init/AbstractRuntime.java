@@ -138,10 +138,10 @@ public class AbstractRuntime implements DataRuntime {
     }
 
     public DriverAdapter getAdapter() {
-        if(null == adapter){
+        if(null == adapter) {
             String lockKey = (AbstractRuntime.class.getName() + "getAdapter" + key).intern();
             synchronized (lockKey) {
-                if(null == adapter){
+                if(null == adapter) {
                     String datasource = key;
                     adapter = DriverAdapterHolder.getAdapter(datasource, this);
                 }
@@ -162,7 +162,7 @@ public class AbstractRuntime implements DataRuntime {
     public void setAdapterKey(String adapter) {
         this.adapterKey = adapter;
     }
-    public String getAdapterKey(){
+    public String getAdapterKey() {
         return adapterKey;
     }
     @Override

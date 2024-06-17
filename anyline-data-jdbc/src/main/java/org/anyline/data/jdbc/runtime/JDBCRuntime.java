@@ -33,14 +33,14 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
     private static Logger log = LoggerFactory.getLogger(JDBCRuntime.class);
     protected DataSource processor;
 
-    public JDBCRuntime(String key, DataSource datasource, DriverAdapter adapter){
+    public JDBCRuntime(String key, DataSource datasource, DriverAdapter adapter) {
         setKey(key);
         setProcessor(datasource);
         setAdapter(adapter);
     }
-    public JDBCRuntime(){
+    public JDBCRuntime() {
     }
-    public DataSource getDataSource(){
+    public DataSource getDataSource() {
         return processor;
     }
 
@@ -53,7 +53,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
     }
 
     public String getFeature(boolean connection) {
-        if(null == feature){
+        if(null == feature) {
             if(connection || null == driver || null == url) {
                 if (null != processor) {
                     Connection con = null;
@@ -61,7 +61,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                         con = processor.getConnection();
                         DatabaseMetaData meta = con.getMetaData();
                         String url = meta.getURL();
-                        if(null == adapterKey){
+                        if(null == adapterKey) {
                             adapterKey = DataSourceUtil.parseAdapterKey(url);
                         }
                         feature = driver + "_" + meta.getDatabaseProductName().toLowerCase().replace(" ","") + "_" + url;
@@ -73,7 +73,7 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                     } finally {
                         try {
                             con.close();
-                        }catch (Exception e){
+                        }catch (Exception e) {
                             log.error("释放连接 异常:", e);
                         }
                     }
@@ -82,26 +82,26 @@ public class JDBCRuntime extends AbstractRuntime implements DataRuntime {
                 feature = driver + "_" + url;
             }
         }
-        if(null == adapterKey){
+        if(null == adapterKey) {
             adapterKey = DataSourceUtil.parseAdapterKey(feature);
         }
         return feature;
     }
 
     public String getVersion() {
-        if(null == version){
-            if(null != processor){
+        if(null == version) {
+            if(null != processor) {
                 Connection con = null;
                 try {
                     con = processor.getConnection();
                     DatabaseMetaData meta = con.getMetaData();
                     version = meta.getDatabaseProductVersion();
-                }catch (Exception e){
+                }catch (Exception e) {
                     log.error("获取数据源版本 异常:", e);
                 }finally {
                     try {
                         con.close();
-                    }catch (Exception e){
+                    }catch (Exception e) {
                         log.error("释放连接 异常:", e);
                     }
                 }

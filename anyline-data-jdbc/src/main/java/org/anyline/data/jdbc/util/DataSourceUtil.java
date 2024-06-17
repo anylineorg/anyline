@@ -49,7 +49,7 @@ public class DataSourceUtil {
     public static DataSource build(Map params) {
         try {
             String type = (String)params.get("pool");
-            if(BasicUtil.isEmpty(type)){
+            if(BasicUtil.isEmpty(type)) {
                 type = (String)params.get("type");
             }
             if (type == null) {
@@ -87,7 +87,7 @@ public class DataSourceUtil {
      * @return DataSource
      * @throws Exception 异常 Exception
      */
-    public static DataSource build( String pool, String driver, String url, String user, String password){
+    public static DataSource build( String pool, String driver, String url, String user, String password) {
         Map<String, String> param = new HashMap<String, String>();
         param.put("type", pool);
         param.put("driverClassName", driver);
@@ -105,7 +105,7 @@ public class DataSourceUtil {
      * @return DataSource
      * @throws Exception 异常 Exception
      */
-    public static DataSource build(DatabaseType type, String url, String user, String password){
+    public static DataSource build(DatabaseType type, String url, String user, String password) {
         return build(POOL_TYPE_DEFAULT, type.driver(), url, user, password);
     }
 

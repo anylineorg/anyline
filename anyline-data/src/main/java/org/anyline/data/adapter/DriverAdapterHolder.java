@@ -35,8 +35,8 @@ public class DriverAdapterHolder {
 	private static HashSet<DriverAdapter> adapters = new HashSet<>();
 	private static HashSet<DatabaseType> supports = new HashSet<>();
 	private static List<DriverAdapterHolder> utils = new ArrayList<>();
-	public DriverAdapterHolder(){}
-	public static void reg(DatabaseType type, DriverAdapter adapter){
+	public DriverAdapterHolder() {}
+	public static void reg(DatabaseType type, DriverAdapter adapter) {
 		user_adapters.put(type, adapter);
 	}
 
@@ -45,7 +45,7 @@ public class DriverAdapterHolder {
 	 * @param type 数据库类型
 	 * @return DriverAdapter
 	 */
-	public static DriverAdapter getAdapter(DatabaseType type){
+	public static DriverAdapter getAdapter(DatabaseType type) {
 		DriverAdapter adapter = user_adapters.get(type);
 		if(null == adapter) {
 			List<DriverAdapter> list = getAdapters(type);
@@ -55,28 +55,28 @@ public class DriverAdapterHolder {
 		}
 		return adapter;
 	}
-	public static List<DriverAdapter> getAdapters(DatabaseType type){
+	public static List<DriverAdapter> getAdapters(DatabaseType type) {
 		List<DriverAdapter> list = new ArrayList<>();
-		for(DriverAdapter adapter:adapters){
-			if(adapter.type() == type){
+		for(DriverAdapter adapter:adapters) {
+			if(adapter.type() == type) {
 				list.add(adapter);
 			}
 		}
 		return list;
 	}
-	public static List<DriverAdapter> getAdapters(){
+	public static List<DriverAdapter> getAdapters() {
 		List<DriverAdapter> list = new ArrayList<>();
 		list.addAll(adapters);
 		return list;
 	}
-	public static void setAdapters(Map<String, DriverAdapter> map){
-		if(null != map){
-			for (DriverAdapter adapter:map.values()){
+	public static void setAdapters(Map<String, DriverAdapter> map) {
+		if(null != map) {
+			for (DriverAdapter adapter:map.values()) {
 				adapters.add(adapter);
 			}
 		}
 	}
-	public static boolean support(DatabaseType type){
+	public static boolean support(DatabaseType type) {
 		return supports.contains(type);
 	}
 
@@ -88,24 +88,24 @@ public class DriverAdapterHolder {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return DriverAdapter
 	 */
-	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime){
+	public static DriverAdapter getAdapter(String datasource, DataRuntime runtime) {
 		//项目中只有一个适配器时直接返回
-		if(null != defaultAdapter){
+		if(null != defaultAdapter) {
 			return defaultAdapter;
 		}
-		if(adapters.size() == 1){
+		if(adapters.size() == 1) {
 			defaultAdapter = adapters.iterator().next();
 			return defaultAdapter;
-		}else if(adapters.size() == 2){
+		}else if(adapters.size() == 2) {
 			boolean common = false;
-			for (DriverAdapter adapter:adapters){
-				if(adapter.getClass().getName().toLowerCase().contains("common")){
+			for (DriverAdapter adapter:adapters) {
+				if(adapter.getClass().getName().toLowerCase().contains("common")) {
 					common = true;
 				}
 			}
-			if(common){
-				for (DriverAdapter adapter:adapters){
-					if(!adapter.getClass().getName().toLowerCase().contains("common")){
+			if(common) {
+				for (DriverAdapter adapter:adapters) {
+					if(!adapter.getClass().getName().toLowerCase().contains("common")) {
 						defaultAdapter = adapter;
 						return defaultAdapter;
 					}
@@ -115,15 +115,15 @@ public class DriverAdapterHolder {
 		DriverAdapter adapter = null;
 		try {
 			//执行两次匹配, 第一次失败后，会再匹配一次，第二次传入true
-			for (DriverAdapter item:adapters){
-				if(item.match(runtime, false)){
+			for (DriverAdapter item:adapters) {
+				if(item.match(runtime, false)) {
 					adapter = item;
 					break;
 				}
 			}
-			if(null == adapter){
-				for (DriverAdapter item:adapters){
-					if(item.match(runtime, true)){
+			if(null == adapter) {
+				for (DriverAdapter item:adapters) {
+					if(item.match(runtime, true)) {
 						adapter = item;
 						break;
 					}
@@ -132,7 +132,7 @@ public class DriverAdapterHolder {
 		} catch (Exception e) {
 			log.error("检测适配器 异常:", e);
 		}
-		if(null == adapter){
+		if(null == adapter) {
 			log.error("[检测数据库适配器][检测失败][可用适配器数量:{}][检测其他可用的适配器]", adapters.size());
 			throw new NotFoundAdapterException("检测数据库适配器失败");
 		}else{

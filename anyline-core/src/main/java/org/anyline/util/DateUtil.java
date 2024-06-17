@@ -48,10 +48,10 @@ public class DateUtil {
 	private static final Object calendarLock = new Object();
 	private static Map<String, ThreadLocal<Calendar>> calendars = new HashMap<String, ThreadLocal<Calendar>>();
 	private static Calendar getCalendar(TimeZone zone, Locale local) {
-		if(null == zone){
+		if(null == zone) {
 			zone = TimeZone.getTimeZone("Asia/Shanghai");
 		}
-		if(null == local){
+		if(null == local) {
 			local = Locale.CHINESE;
 		}
 		final TimeZone _zone = zone;
@@ -233,7 +233,7 @@ public class DateUtil {
 		return datetime.format(DateTimeFormatter.ofPattern(format, locale));
 	}
 	public static String format(Locale locale, ZoneId zone, Long date, String format) {
-		if (null == date || null == format){
+		if (null == date || null == format) {
 			return null;
 		}
 		return format(locale, zone, parse(date), format);
@@ -927,7 +927,7 @@ public class DateUtil {
 		}else{
 			formatter = DateTimeFormatter.ISO_LOCAL_TIME;
 		}
-		if(format.toUpperCase().contains("HH")){
+		if(format.toUpperCase().contains("HH")) {
 			if(format.toUpperCase().contains("D")) {
 				return parse(LocalDateTime.parse(date, formatter));
 			}else{
@@ -938,70 +938,70 @@ public class DateUtil {
 		}
 	}
 
-	public static Date parse(String date, String format, Date def){
+	public static Date parse(String date, String format, Date def) {
 		Date result = null;
 		try{
 			result = parse(date, format);
-		}catch (Exception e){
+		}catch (Exception e) {
 			result = def;
 		}
 		return result;
 	}
 
-	public static Date parse(Long value){
+	public static Date parse(Long value) {
 		Date date = new Date(value);
 		return date;
 	}
-	public static Date parse(java.sql.Date value){
+	public static Date parse(java.sql.Date value) {
 		Date date = new Date(value.getTime());
 		return date;
 	}
-	public static Date parse(java.sql.Time value){
+	public static Date parse(java.sql.Time value) {
 		Date date = new Date(value.getTime());
 		return date;
 	}
-	public static Date parse(LocalDate value){
+	public static Date parse(LocalDate value) {
 		Date date = Date.from(value.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
-	public static Date parse(LocalDateTime value){
+	public static Date parse(LocalDateTime value) {
 		Date date = Date.from(value.atZone(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
-	public static Date parse(ZonedDateTime value){
+	public static Date parse(ZonedDateTime value) {
 		return parse(value.toLocalDateTime());
 	}
-	public static Date parse(LocalTime value){
+	public static Date parse(LocalTime value) {
 		Date date = Date.from(value.atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant());
 		return date;
 	}
-	public static Date parse(Timestamp value){
+	public static Date parse(Timestamp value) {
 		Date date = new Date(value.getTime());
 		return date;
 	}
 	public static Date parse(Object value) throws RuntimeException{
 		Date date = null;
-		if(null != value){
-			if(value.getClass() == Date.class){
+		if(null != value) {
+			if(value.getClass() == Date.class) {
 				date = (Date)value;
-			}else if(value instanceof Timestamp){
+			}else if(value instanceof Timestamp) {
 				date = parse((Timestamp)value);
-			}else if(value instanceof java.sql.Date){
+			}else if(value instanceof java.sql.Date) {
 				date = parse((java.sql.Date)value);
-			}else if(value instanceof java.sql.Time){
+			}else if(value instanceof java.sql.Time) {
 				date = parse((java.sql.Time)value);
-			}else if(value instanceof Long){
+			}else if(value instanceof Long) {
 				date = parse((Long)value);
-			}else if(value instanceof LocalDate){
+			}else if(value instanceof LocalDate) {
 				date = parse((LocalDate)value);
-			}else if(value instanceof LocalTime){
+			}else if(value instanceof LocalTime) {
 				date = parse((LocalTime)value);
-			}else if(value instanceof LocalDateTime){
+			}else if(value instanceof LocalDateTime) {
 				date = parse((LocalDateTime)value);
-			}else if(value instanceof ZonedDateTime){
+			}else if(value instanceof ZonedDateTime) {
 				date = parse((ZonedDateTime)value);
-			}else if(value instanceof String){
-				if(BasicUtil.isNumber(value)){
+			}else if(value instanceof String) {
+				if(BasicUtil.isNumber(value)) {
 					Long timestamp = BasicUtil.parseLong(value, 0L);
 					date = parse(timestamp);
 				}else {
@@ -1012,20 +1012,20 @@ public class DateUtil {
 		return date;
 	}
 
-	public static Date parse(Object value, Date def){
+	public static Date parse(Object value, Date def) {
 		Date result = null;
 		try{
 			result = parse(value);
-		}catch (Exception e){
+		}catch (Exception e) {
 			result = def;
 		}
 		return result;
 	}
-	public static Date parse(String value, Date def){
+	public static Date parse(String value, Date def) {
 		Date result = null;
 		try{
 			result = parse(value);
-		}catch (Exception e){
+		}catch (Exception e) {
 			result = def;
 		}
 		return result;
@@ -1047,7 +1047,7 @@ public class DateUtil {
 				Regular.MATCH_MODE.MATCH)) {
 			return null;
 		}
-		if(str.contains("T")){
+		if(str.contains("T")) {
 			/*
 			 * ISO8601
 			 * "2020-12-19T16:22:50.000Z"
@@ -1110,7 +1110,7 @@ public class DateUtil {
 			if (BasicUtil.isNumber(value)) {
 				date = parse(Long.valueOf(value));
 			}
-		}catch (Exception e){
+		}catch (Exception e) {
 
 		}
 		return date;
@@ -1119,7 +1119,7 @@ public class DateUtil {
 	public static boolean isDate(String str) {
 		try {
 			return parse(str) != null;
-		}catch (Exception e){
+		}catch (Exception e) {
 			return false;
 		}
 	}
@@ -1272,12 +1272,12 @@ public class DateUtil {
 	 * @param to  to
 	 * @return List
 	 */
-	public static List<Date> getDays(Date fr, Date to){
+	public static List<Date> getDays(Date fr, Date to) {
 		List<Date> list = new ArrayList<Date>();
 		list.add(fr);
-		while(true){
+		while(true) {
 			fr = addDay(fr, 1);
-			if(diff(DATE_PART_DATE, fr, to) < 0){
+			if(diff(DATE_PART_DATE, fr, to) < 0) {
 				break;
 			}
 			list.add(fr);
@@ -1293,18 +1293,18 @@ public class DateUtil {
 	 */
 	public static List<String> getMonths(String fr, String to) {
 		List<String> list = new ArrayList<>();
-		if(fr.length() < 10){
+		if(fr.length() < 10) {
 			fr = fr + "-01";
 		}
-		if(to.length() < 10){
+		if(to.length() < 10) {
 			to = to + "-01";
 		}
 		Date ymd = parse(fr);
 		Date last = parse(to);
 		list.add(format(ymd, "yyyy-MM"));
-		while (true){
+		while (true) {
 			ymd = addMonth(ymd, 1);
-			if(diff(DATE_PART_MONTH, ymd, last) < 0){
+			if(diff(DATE_PART_MONTH, ymd, last) < 0) {
 				break;
 			}
 			list.add(format(ymd, "yyyy-MM"));
@@ -1317,39 +1317,39 @@ public class DateUtil {
 	}
 	public static List<Date> getDaysOfYear(String year) {
 		String ymd = year + "-01-01";
-		if(year.length()>4){
+		if(year.length()>4) {
 			ymd = year;
 		}
 		return getDaysOfYear(parse(ymd));
 	}
-	public static List<Date> getDaysOfYear(Date date){
+	public static List<Date> getDaysOfYear(Date date) {
 		List<Date> list = new ArrayList<Date>();
 		Date start = getFirstDayOfYear(date);
 		int qty = countDaysOfYear(date);
-		for(int i=0; i<qty; i++){
+		for(int i=0; i<qty; i++) {
 			list.add(addDay(start, i));
 		}
 		return list;
 	}
 	public static List<Date> getDaysOfMonth(String ym) {
 		String ymd = ym+"-01";
-		if(ym.length()>7){
+		if(ym.length()>7) {
 			ymd = ym;
 		}
 		return getDaysOfMonth(parse(ymd));
 	}
-	public static List<Date> getDaysOfMonth(Date ym){
+	public static List<Date> getDaysOfMonth(Date ym) {
 		List<Date> list = new ArrayList<Date>();
 		Date start = getFirstDayOfMonth(ym);
 		int qty = countDaysOfMonth(ym);
-		for(int i=0; i<qty; i++){
+		for(int i=0; i<qty; i++) {
 			Date date = addDay(start, i);
 			list.add(date);
 		}
 		return list;
 	}
 
-	public static List<Date> getDaysOfWeek(int year, int week){
+	public static List<Date> getDaysOfWeek(int year, int week) {
 		Calendar calendar = getCalendar();
 		List<Date> list = new ArrayList<Date>();
 		calendar.setTime(new Date());
@@ -1357,7 +1357,7 @@ public class DateUtil {
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
 		calendar.set(Calendar.DAY_OF_WEEK, 1);
 		Date start = getFirstDayOfNextWeek(calendar.getTime());
-		for(int i=0; i<7; i++){
+		for(int i=0; i<7; i++) {
 			Date date = addDay(start, i);
 			list.add(date);
 		}
@@ -1366,10 +1366,10 @@ public class DateUtil {
 	public static List<Date> getDaysOfWeek(String date) {
 		return getDaysOfWeek(parse(date));
 	}
-	public static List<Date> getDaysOfWeek(Date date){
+	public static List<Date> getDaysOfWeek(Date date) {
 		List<Date> list = new ArrayList<Date>();
 		Date start = getFirstDayOfWeek(date);
-		for(int i=0; i<7; i++){
+		for(int i=0; i<7; i++) {
 			list.add(addDay(start, i));
 		}
 		return list;
@@ -1378,9 +1378,9 @@ public class DateUtil {
 	public static List<String> getDays(String fr, String to) {
 		List<String> list = new ArrayList<>();
 		list.add(fr);
-		while(true){
+		while(true) {
 			fr = DateUtil.addDay(fr, 1);
-			if(DateUtil.diff(DATE_PART_DATE, fr, to) < 0){
+			if(DateUtil.diff(DATE_PART_DATE, fr, to) < 0) {
 				break;
 			}
 			list.add(fr);
@@ -1389,9 +1389,9 @@ public class DateUtil {
 	}
 	public static String max(String ... dates) {
 		String result = null;
-		if(null != dates){
-			for(String date:dates){
-				if(BasicUtil.isEmpty(result)){
+		if(null != dates) {
+			for(String date:dates) {
+				if(BasicUtil.isEmpty(result)) {
 					result = date;
 				}else {
 					if (BasicUtil.isNotEmpty(date) && diff(DATE_PART_SECOND, result, date) > 0) {
@@ -1404,9 +1404,9 @@ public class DateUtil {
 	}
 	public static String min(String ... dates) {
 		String result = null;
-		if(null != dates){
-			for(String date:dates){
-				if(BasicUtil.isEmpty(result)){
+		if(null != dates) {
+			for(String date:dates) {
+				if(BasicUtil.isEmpty(result)) {
 					result = date;
 				}else {
 					if (BasicUtil.isNotEmpty(date) && diff(DATE_PART_SECOND, result, date) < 0) {
@@ -1417,14 +1417,14 @@ public class DateUtil {
 		}
 		return result;
 	}
-	public static Date max(Date ... dates){
+	public static Date max(Date ... dates) {
 		Date result = null;
-		if(null != dates){
-			for(Date date:dates){
-				if(null == result){
+		if(null != dates) {
+			for(Date date:dates) {
+				if(null == result) {
 					result = date;
 				}else{
-					if(null != date && diff(DATE_PART_SECOND, result, date) > 0){
+					if(null != date && diff(DATE_PART_SECOND, result, date) > 0) {
 						result = date;
 					}
 				}
@@ -1432,14 +1432,14 @@ public class DateUtil {
 		}
 		return result;
 	}
-	public static Date min(Date ... dates){
+	public static Date min(Date ... dates) {
 		Date result = null;
-		if(null != dates){
-			for(Date date:dates){
-				if(null == result){
+		if(null != dates) {
+			for(Date date:dates) {
+				if(null == result) {
 					result = date;
 				}else{
-					if(null != date && diff(DATE_PART_SECOND, result, date) < 0){
+					if(null != date && diff(DATE_PART_SECOND, result, date) < 0) {
 						result = date;
 					}
 				}
@@ -1632,7 +1632,7 @@ public class DateUtil {
 	public static int dayOfMonth() {
 		return getDayOfMonth();
 	}
-	public static int getDayOfMonth(Date date){
+	public static int getDayOfMonth(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_MONTH);
@@ -1642,7 +1642,7 @@ public class DateUtil {
 		return getDayOfMonth(parse(date));
 	}
 
-	public static int getDayOfMonth(){
+	public static int getDayOfMonth() {
 		return getDayOfMonth(new Date());
 	}
 
@@ -1737,7 +1737,7 @@ public class DateUtil {
 		long _date2 = date2.getTime();
 		if (_date1 > _date2) {
 			return 1;
-		} else if(_date1 == _date2){
+		} else if(_date1 == _date2) {
 			return 0;
 		}else {
 			return -1;
@@ -1778,7 +1778,7 @@ public class DateUtil {
 		return isPm(new Date());
 	}
 
-	public static String conversion(double src){
+	public static String conversion(double src) {
 		return conversion((long)src);
 	}
 
@@ -1787,7 +1787,7 @@ public class DateUtil {
 	 * @param src 毫秒
 	 * @return String
 	 */
-	public static String conversion(long src){
+	public static String conversion(long src) {
 		String result = "";
 		long s = 0;
 		long m = 0;
@@ -1799,83 +1799,83 @@ public class DateUtil {
 		m = (src - d*24*60*60*1000 - h*60*60*1000) / 1000 /60;
 		s = (src - d*24*60*60*1000 - h*60*60*1000 - m*60*1000) / 1000;
 		ms = src %1000;
-		if(d>0){
+		if(d>0) {
 			result += d+"天";
 		}
 		if(h>0
 				|| (d>0 && (m+s+ms>0))
-		){
+		) {
 			result += h+"时";
 		}
 		if(m>0
 				|| (h>0 && (s+ms>0))
 				|| (d>0  && (s+ms>0))
-		){
+		) {
 			result += m+"分";
 		}
 		if(s>0
 				||(m>0&&ms>0)
 				||(h>0&&ms>0)
 				||(d>0&&ms>0)
-		){
-			if(ms==0){
+		) {
+			if(ms==0) {
 				result += s+"秒";
 			}else{
 				result += s+"."+BasicUtil.fillChar(ms+"", 3)+"秒";
 			}
 		}
-		if(src<1000){
-			if(ms>0){
+		if(src<1000) {
+			if(ms>0) {
 				result += ms+"毫秒";
 			}
 		}
-		if(src<=0){
+		if(src<=0) {
 			result = "0毫秒";
 		}
 		return result;
 	}
-	public static LocalDateTime localDateTime(Date date, ZoneId zone){
-		if(null == date){
+	public static LocalDateTime localDateTime(Date date, ZoneId zone) {
+		if(null == date) {
 			return null;
 		}
-		if(date instanceof java.sql.Date){
+		if(date instanceof java.sql.Date) {
 			date = parse(date);
 		}
 		return  date.toInstant().atZone(zone).toLocalDateTime();
 	}
-	public static OffsetDateTime offsetDateTime(Date date){
+	public static OffsetDateTime offsetDateTime(Date date) {
 		return OffsetDateTime.of(localDateTime(date), ZoneOffset.UTC);
 	}
-	public static LocalDateTime localDateTime(Date date){
+	public static LocalDateTime localDateTime(Date date) {
 		return localDateTime(date, ZoneId.systemDefault());
 	}
-	public static ZonedDateTime zonedDateTime(Date date){
+	public static ZonedDateTime zonedDateTime(Date date) {
 		ZoneId zone = ZoneId.systemDefault();
         return date.toInstant().atZone(zone);
 	}
-	public static LocalTime localTime(Date date, ZoneId zone){
-		if(null == date){
+	public static LocalTime localTime(Date date, ZoneId zone) {
+		if(null == date) {
 			return null;
 		}
-		if(date instanceof java.sql.Date){
+		if(date instanceof java.sql.Date) {
 			//因为不支持toInstant
 			date = parse(date);
 		}
 		return  date.toInstant().atZone(zone).toLocalTime();
 	}
-	public static LocalTime localTime(Date date){
+	public static LocalTime localTime(Date date) {
 		return localTime(date, ZoneId.systemDefault());
 	}
-	public static LocalDate localDate(Date date, ZoneId zone){
-		if(null == date){
+	public static LocalDate localDate(Date date, ZoneId zone) {
+		if(null == date) {
 			return null;
 		}
-		if(date instanceof java.sql.Date){
+		if(date instanceof java.sql.Date) {
 			date = parse(date);
 		}
 		return  date.toInstant().atZone(zone).toLocalDate();
 	}
-	public static LocalDate localDate(Date date){
+	public static LocalDate localDate(Date date) {
 		return localDate(date, ZoneId.systemDefault());
 	}
 
@@ -1898,43 +1898,43 @@ public class DateUtil {
 		return localDate(timestamp, ZoneId.systemDefault());
 	}
 
-	public static java.sql.Date sqlDate(Date date){
+	public static java.sql.Date sqlDate(Date date) {
 		java.sql.Date result = null;
-		if(null != date){
+		if(null != date) {
 			result = new java.sql.Date(date.getTime());
 		}
 		return result;
 	}
-	public static java.sql.Date sqlDate(Timestamp date){
+	public static java.sql.Date sqlDate(Timestamp date) {
 		java.sql.Date result = null;
-		if(null != date){
+		if(null != date) {
 			result = new java.sql.Date(date.getTime());
 		}
 		return result;
 	}
-	public static java.sql.Time sqlTime(Date date){
+	public static java.sql.Time sqlTime(Date date) {
 		java.sql.Time result = null;
-		if(null != date){
+		if(null != date) {
 			result = java.sql.Time.valueOf(format(date, "HH:mm:ss"));
 		}
 		return result;
 	}
-	public static java.sql.Timestamp sqlTimestamp(Date date){
+	public static java.sql.Timestamp sqlTimestamp(Date date) {
 		java.sql.Timestamp result = new Timestamp(date.getTime());
 		return result;
 	}
-	public static java.sql.Date sqlDate(LocalDate date){
+	public static java.sql.Date sqlDate(LocalDate date) {
 		java.sql.Date result = null;
-		if(null != date){
+		if(null != date) {
 			result = java.sql.Date.valueOf(date);
 		}
 		return result;
 	}
-	public static YearMonth yearMonth(Date date){
+	public static YearMonth yearMonth(Date date) {
 		YearMonth yearMonth = YearMonth.of(year(date), month(date));
 		return yearMonth;
 	}
-	public static String format(long ms){
+	public static String format(long ms) {
 		long hours = TimeUnit.MILLISECONDS.toHours(ms);
 		long minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60;
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60;

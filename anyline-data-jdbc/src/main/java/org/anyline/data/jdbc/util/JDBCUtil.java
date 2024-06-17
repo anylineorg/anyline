@@ -51,76 +51,76 @@ public class JDBCUtil {
      * @return Column
      */
     
-    public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSetMetaData rsm, int index){
-        if(null == column){
+    public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSetMetaData rsm, int index) {
+        if(null == column) {
             column = new Column();
         }
         String catalog = null;
         String schema = null;
         try{
             catalog = BasicUtil.evl(rsm.getCatalogName(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getCatalogName]");
         }
         try{
             schema = BasicUtil.evl(rsm.getSchemaName(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getSchemaName]");
         }
         adapter.correctSchemaFromJDBC(runtime, column, catalog, schema);
         try{
             column.setClassName(rsm.getColumnClassName(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnClassName]");
         }
         try{
             column.caseSensitive(rsm.isCaseSensitive(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:isCaseSensitive]");
         }
         try{
             column.currency(rsm.isCurrency(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:isCurrency]");
         }
         try{
             column.setOriginName(rsm.getColumnName(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnName]");
         }
         try{
             column.setName(rsm.getColumnLabel(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnLabel]");
         }
         try{
             column.setPrecision(rsm.getPrecision(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getPrecision]");
         }
         try{
             column.setScale(rsm.getScale(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getScale]");
         }
         try{
             column.setDisplaySize(rsm.getColumnDisplaySize(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnDisplaySize]");
         }
         try{
             column.setSigned(rsm.isSigned(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:isSigned]");
         }
         try{
             column.setTable(rsm.getTableName(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getTableName]");
         }
         try {
             column.setType(rsm.getColumnType(index));
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnType]");
         }
         try {
@@ -130,7 +130,7 @@ public class JDBCUtil {
             if(BasicUtil.isEmpty(column.getTypeName())) {
                 column.setTypeName(jdbcType);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             log.debug("[获取MetaData失败][驱动未实现:getColumnTypeName]");
         }
         adapter.typeMetadata(runtime, column);
@@ -153,40 +153,40 @@ public class JDBCUtil {
      */
     
     public static <T extends Column> LinkedHashMap<String, T> metadata(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> columns, DatabaseMetaData dbmd, Table table, String pattern) throws Exception {
-        if(null == columns){
+        if(null == columns) {
             columns = new LinkedHashMap<>();
         }
         Catalog catalog = table.getCatalog();
         Schema schema = table.getSchema();
-        if(BasicUtil.isEmpty(table.getName())){
+        if(BasicUtil.isEmpty(table.getName())) {
             return columns;
         }
         String catalogName = null;
         String schemaName = null;
-        if(null != catalog){
+        if(null != catalog) {
             catalogName = catalog.getName();
         }
-        if(null != schema){
+        if(null != schema) {
             schemaName = schema.getName();
         }
         ResultSet set = dbmd.getColumns(catalogName, schemaName, table.getName(), pattern);
         Map<String,Integer> keys = keys(set);
-        while (set.next()){
+        while (set.next()) {
             String name = set.getString("COLUMN_NAME");
-            if(null == name){
+            if(null == name) {
                 continue;
             }
             String columnCatalog = string(keys,"TABLE_CAT", set, null);
-            if(null != columnCatalog){
+            if(null != columnCatalog) {
                 columnCatalog = columnCatalog.trim();
             }
             String columnSchema = string(keys,"TABLE_SCHEM", set, null);
-            if(null != columnSchema){
+            if(null != columnSchema) {
                 columnSchema = columnSchema.trim();
             }
 
             T column = columns.get(name.toUpperCase());
-            if(null == column){
+            if(null == column) {
                 if(create) {
                     column = (T)new Column(name);
                     columns.put(name.toUpperCase(), column);
@@ -196,15 +196,15 @@ public class JDBCUtil {
             }
 
             adapter.correctSchemaFromJDBC(runtime, column, columnCatalog, columnSchema);
-            if(!BasicUtil.equalsIgnoreCase(catalog, column.getCatalogName())){
+            if(!BasicUtil.equalsIgnoreCase(catalog, column.getCatalogName())) {
                 continue;
             }
-            if(!BasicUtil.equalsIgnoreCase(schema, column.getSchemaName())){
+            if(!BasicUtil.equalsIgnoreCase(schema, column.getSchemaName())) {
                 continue;
             }
 
             String remark = string(keys, "REMARKS", set, column.getComment());
-            if("TAG".equals(remark)){
+            if("TAG".equals(remark)) {
                 column = (T)new Tag();
             }
             column.setComment(remark);
@@ -250,22 +250,22 @@ public class JDBCUtil {
      * @return Column
      */
     
-    public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSet rs){
-        if(null == column){
+    public static Column column(DriverAdapter adapter, DataRuntime runtime, Column column, ResultSet rs) {
+        if(null == column) {
             column = new Column();
         }
         try {
             Map<String,Integer> keys = keys(rs);
-            if(null == column.getName()){
+            if(null == column.getName()) {
                 column.setName(string(keys, "COLUMN_NAME", rs));
             }
-            if(null == column.getType()){
+            if(null == column.getType()) {
                 column.setType(BasicUtil.parseInt(string(keys, "DATA_TYPE", rs), null));
             }
-            if(null == column.getType()){
+            if(null == column.getType()) {
                 column.setType(BasicUtil.parseInt(string(keys, "SQL_DATA_TYPE", rs), null));
             }
-            if(null == column.getTypeName()){
+            if(null == column.getTypeName()) {
                 String jdbcType = string(keys, "TYPE_NAME", rs);
                 column.setJdbcType(jdbcType);
                 if(BasicUtil.isEmpty(column.getTypeName())) {
@@ -290,14 +290,14 @@ public class JDBCUtil {
             if(null == column.getComment()) {
                 column.setComment(string(keys, "REMARKS", rs));
             }
-            if(null == column.getPosition()){
+            if(null == column.getPosition()) {
                 column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
             }
             if (BasicUtil.isEmpty(column.getDefaultValue())) {
                 column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
             }
             adapter.typeMetadata(runtime, column);
-        }catch (Exception e){
+        }catch (Exception e) {
             log.error("create column exception:", e);
         }
         return column;
@@ -312,25 +312,25 @@ public class JDBCUtil {
      * @param rs jdbc返回结果
      * @return DataRow
      */
-    public static DataRow row(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs){
+    public static DataRow row(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) {
         DataRow row = null;
         KeyAdapter.KEY_CASE kc = null;
-        if(null != configs){
+        if(null != configs) {
             kc = configs.keyCase();
         }
-        if(null == kc){
-            if(!ConfigTable.IS_UPPER_KEY && !ConfigTable.IS_LOWER_KEY){
+        if(null == kc) {
+            if(!ConfigTable.IS_UPPER_KEY && !ConfigTable.IS_LOWER_KEY) {
                 kc = KeyAdapter.KEY_CASE.SRC;
             }
         }
         boolean upper = false;
-        if(KeyAdapter.KEY_CASE.SRC == kc){
+        if(KeyAdapter.KEY_CASE.SRC == kc) {
             row = new OriginRow();
-        }else if(KeyAdapter.KEY_CASE.PUT_UPPER == kc){
+        }else if(KeyAdapter.KEY_CASE.PUT_UPPER == kc) {
             //put时大写,DataRow按SRC处理
             upper = true;
             row = new DataRow(KeyAdapter.KEY_CASE.SRC);
-        }else if(null != kc){
+        }else if(null != kc) {
             row = new DataRow(kc);
         }else{
             row = new DataRow();
@@ -338,15 +338,15 @@ public class JDBCUtil {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int qty = rsmd.getColumnCount();
-            if(null != metadatas){
+            if(null != metadatas) {
                 //解析元数据，获取列名 如果是stream读取则跳过
                 if (!system && metadatas.isEmpty()) {
                     for (int i = 1; i <= qty; i++) {
                         String name = rsmd.getColumnLabel(i);
-                        if(null == name){
+                        if(null == name) {
                             name = rsmd.getColumnName(i);
                         }
-                        if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")){
+                        if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                             continue;
                         }
                         Column column = metadatas.get(name) ;
@@ -357,7 +357,7 @@ public class JDBCUtil {
             }
             for (int i = 1; i <= qty; i++) {
                 String name = rsmd.getColumnLabel(i);
-                if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")){
+                if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                     continue;
                 }
                 try {
@@ -372,7 +372,7 @@ public class JDBCUtil {
                         name = name.toUpperCase();
                     }
                     row.put(false, name, value);
-                }catch (Exception e){
+                }catch (Exception e) {
                     if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                         log.error("结果集封装 异常:", e);
                     }else{
@@ -381,7 +381,7 @@ public class JDBCUtil {
                 }
             }
             row.setMetadata(metadatas);
-        }catch (Exception e){
+        }catch (Exception e) {
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                 log.error("结果集封装 异常:", e);
             }else{
@@ -391,7 +391,7 @@ public class JDBCUtil {
         return row;
     }
 
-    public static LinkedHashMap<String, Object> map(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs){
+    public static LinkedHashMap<String, Object> map(DriverAdapter adapter, boolean system, DataRuntime runtime, LinkedHashMap<String, Column> metadatas, ConfigStore configs, ResultSet rs) {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -415,7 +415,7 @@ public class JDBCUtil {
             }
             for (int i = 1; i <= qty; i++) {
                 String name = rsmd.getColumnLabel(i);
-                if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")){
+                if(null == name || name.equalsIgnoreCase("PAGE_ROW_NUMBER_")) {
                     continue;
                 }
                 try {
@@ -425,7 +425,7 @@ public class JDBCUtil {
                         value = adapter.read(runtime, column, value, null);
                     }
                     map.put(name, value);
-                }catch (Exception e){
+                }catch (Exception e) {
                     if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                         log.error("结果储封装 异常:", e);
                     }else{
@@ -433,7 +433,7 @@ public class JDBCUtil {
                     }
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
                 log.error("结果储封装 异常:", e);
             }else{
@@ -469,7 +469,7 @@ public class JDBCUtil {
                     Map<String, Object> map = new HashMap<>();
                     for (int i = 1; i <= cols; i++) {
                         String name = rsmd.getColumnLabel(i);
-                        if(null == name){
+                        if(null == name) {
                             name = rsmd.getColumnName(i);
                         }
                         map.put(name, rs.getObject(i));
@@ -479,7 +479,7 @@ public class JDBCUtil {
                     }
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             return false;
         }
         return true;
@@ -494,7 +494,7 @@ public class JDBCUtil {
 	 */
     public static String string(Map<String, Integer> keys, String key, ResultSet set, String def) throws Exception {
         Object value = value(keys, key, set);
-        if(null != value){
+        if(null != value) {
             return value.toString();
         }
         return def;
@@ -504,30 +504,30 @@ public class JDBCUtil {
     }
     public static Integer integer(Map<String, Integer> keys, String key, ResultSet set, Integer def) throws Exception {
         Object value = value(keys, key, set);
-        if(null != value){
+        if(null != value) {
             return BasicUtil.parseInt(value, def);
         }
         return null;
     }
     public static Long longs(Map<String, Integer> keys, String key, ResultSet set, Long def) throws Exception {
         Object value = value(keys, key, set);
-        if(null != value){
+        if(null != value) {
             return BasicUtil.parseLong(value, def);
         }
         return null;
     }
     public static Boolean bool(Map<String, Integer> keys, String key, ResultSet set, Boolean def) throws Exception {
         Object value = value(keys, key, set);
-        if(null != value){
+        if(null != value) {
             return BasicUtil.parseBoolean(value, def);
         }
         return null;
     }
     public static Boolean bool(Map<String, Integer> keys, String key, ResultSet set, int def) throws Exception {
         Boolean defaultValue = null;
-        if(def == 0){
+        if(def == 0) {
             defaultValue = false;
-        }else if(def == 1){
+        }else if(def == 1) {
             defaultValue = true;
         }
         return bool(keys, key, set, defaultValue);
@@ -545,16 +545,16 @@ public class JDBCUtil {
     public static Object value(Map<String, Integer> keys, String key, ResultSet set, Object def) throws Exception {
         String[] ks = key.split(",");
         Object result = null;
-        for(String k:ks){
+        for(String k:ks) {
             Integer index = keys.get(k);
-            if(null != index && index >= 0){
+            if(null != index && index >= 0) {
                 try {
                     // db2 直接用 set.getObject(String) 可能发生 参数无效：未知列名 String
                     result =  set.getObject(index);
-                    if(null != result){
+                    if(null != result) {
                         return result;
                     }
-                }catch (Exception e){
+                }catch (Exception e) {
 
                 }
             }
@@ -566,7 +566,7 @@ public class JDBCUtil {
     }
 
     public static <T extends Table> LinkedHashMap<String, T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables, ResultSet set) throws Exception{
-        if(null == tables){
+        if(null == tables) {
             tables = new LinkedHashMap<>();
         }
         Map<String,Integer> keys = JDBCUtil.keys(set);
@@ -599,17 +599,17 @@ public class JDBCUtil {
     }
 
     public static <T extends Table> List<T> tables(DriverAdapter adapter, DataRuntime runtime, boolean create, List<T> tables, ResultSet set) throws Exception{
-        if(null == tables){
+        if(null == tables) {
             tables = new ArrayList<>();
         }
         Map<String,Integer> keys = keys(set);
         while(set.next()) {
             String tableName = string(keys, "TABLE_NAME", set);
 
-            if(BasicUtil.isEmpty(tableName)){
+            if(BasicUtil.isEmpty(tableName)) {
                 tableName = string(keys, "NAME", set);
             }
-            if(BasicUtil.isEmpty(tableName)){
+            if(BasicUtil.isEmpty(tableName)) {
                 continue;
             }
             String catalogName = BasicUtil.evl(string(keys, "TABLE_CATALOG", set), string(keys, "TABLE_CAT", set));
@@ -618,8 +618,8 @@ public class JDBCUtil {
             adapter.correctSchemaFromJDBC(runtime, chk, catalogName, schemaName);
             T table = adapter.search(tables, chk.getCatalog(), chk.getSchema(), tableName);
             boolean contains = true;
-            if(null == table){
-                if(create){
+            if(null == table) {
+                if(create) {
                     table = (T)new Table();
                     contains = false;
                 }else{
@@ -682,10 +682,10 @@ public class JDBCUtil {
     public static Map<String, Integer> keys(ResultSet set) throws Exception {
         ResultSetMetaData rsmd = set.getMetaData();
         Map<String, Integer> keys = new HashMap<>();
-        if(null != rsmd){
+        if(null != rsmd) {
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 String name = rsmd.getColumnLabel(i);
-                if(null == name){
+                if(null == name) {
                     name = rsmd.getColumnName(i);
                 }
                 keys.put(name.toUpperCase(), i);
@@ -694,63 +694,63 @@ public class JDBCUtil {
         return keys;
     }
 
-    public static void init(Table table, ResultSet set, Map<String,Integer> keys){
+    public static void init(Table table, ResultSet set, Map<String,Integer> keys) {
         try {
             table.setType(BasicUtil.evl(JDBCUtil.string(keys, "TABLE_TYPE", set), table.getType()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             table.setComment(BasicUtil.evl(JDBCUtil.string(keys, "REMARKS", set), table.getComment()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             table.setTypeCat(BasicUtil.evl(JDBCUtil.string(keys, "TYPE_CAT", set), table.getTypeCat()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             table.setTypeName(BasicUtil.evl(JDBCUtil.string(keys, "TYPE_NAME", set), table.getTypeName()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             table.setSelfReferencingColumn(BasicUtil.evl(JDBCUtil.string(keys, "SELF_REFERENCING_COL_NAME", set), table.getSelfReferencingColumn()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             table.setRefGeneration(BasicUtil.evl(JDBCUtil.string(keys, "REF_GENERATION", set), table.getRefGeneration()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
     }
 
-    public static void init(View view, ResultSet set, Map<String, Integer> keys){
+    public static void init(View view, ResultSet set, Map<String, Integer> keys) {
         try {
             view.setType(BasicUtil.evl(string(keys, "TABLE_TYPE", set), view.getType()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             view.setComment(BasicUtil.evl(string(keys, "REMARKS", set), view.getComment()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             view.setTypeCat(BasicUtil.evl(string(keys, "TYPE_CAT", set), view.getTypeCat()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             view.setTypeName(BasicUtil.evl(string(keys, "TYPE_NAME", set), view.getTypeName()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             view.setSelfReferencingColumn(BasicUtil.evl(string(keys, "SELF_REFERENCING_COL_NAME", set), view.getSelfReferencingColumn()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
         try {
             view.setRefGeneration(BasicUtil.evl(string(keys, "REF_GENERATION", set), view.getRefGeneration()));
-        }catch (Exception ignored){}
+        }catch (Exception ignored) {}
     }
-    public static void queryTimeout(Statement statement, ConfigStore configs){
+    public static void queryTimeout(Statement statement, ConfigStore configs) {
         int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);
-        if(timeout > 0){
+        if(timeout > 0) {
             try {
                 statement.setQueryTimeout(timeout);
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.warn("设置超时时间异常:{}", e.toString());
             }
         }
     }
-    public static void updateTimeout(Statement statement, ConfigStore configs){
+    public static void updateTimeout(Statement statement, ConfigStore configs) {
         int timeout = ConfigStore.SQL_QUERY_TIMEOUT(configs);
-        if(timeout > 0){
+        if(timeout > 0) {
             try {
                 statement.setQueryTimeout(timeout);
-            }catch (Exception e){
+            }catch (Exception e) {
                 log.warn("设置超时时间异常:{}", e.toString());
             }
         }

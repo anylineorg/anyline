@@ -31,20 +31,26 @@ import java.util.Collection;
 
 public class DataSourceUtil {
 
-    public static String[] parseRuntime(Metadata meta){
-        if(null != meta){
+    public static String[] parseRuntime(Metadata meta) {
+        if(null != meta) {
             return parseRuntime(meta.getName());
         }
         return new String[2];
     }
-    public static String[] parseRuntime(String src){
-        String result[] = new String[2];
+
+    /**
+     * &lt;ds&gt;.table
+     * @param src src
+     * @return string[]
+     */
+    public static String[] parseRuntime(String src) {
+        String[] result = new String[2];
         result[1] = src;
         String runtime = null;
-        if(null != src && src.startsWith("<")){
+        if(null != src && src.startsWith("<")) {
             int fr = src.indexOf("<");
             int to = src.indexOf(">");
-            if(fr != -1){
+            if(fr != -1) {
                 runtime = src.substring(fr+1, to);
                 src = src.substring(to+1);
                 result[0] = runtime;
@@ -60,23 +66,23 @@ public class DataSourceUtil {
      * @param src  src
      * @return String
      */
-    public static Table parseDest(String src, ConfigStore configs){
-        if(null == src){
+    public static Table parseDest(String src, ConfigStore configs) {
+        if(null == src) {
             return null;
         }
         Table result = new Table();
         //<sso>pw_user
-        if(src.startsWith("<")){
+        if(src.startsWith("<")) {
             int fr = src.indexOf("<");
             int to = src.indexOf(">");
-            if(fr != -1){
+            if(fr != -1) {
                 String datasource = src.substring(fr+1, to);
                 src = src.substring(to+1);
                 result.setDataSource(datasource);
             }
         }
         //pw_user<id, code>
-        if(src.endsWith(">")){
+        if(src.endsWith(">")) {
             int fr = src.lastIndexOf("<");
             if(fr != -1) {
                 String[] keys = src.substring(fr + 1, src.length() - 1).split(",");
@@ -84,35 +90,35 @@ public class DataSourceUtil {
                 result.setPrimaryKey(keys);
             }
         }
-        if(src.contains(" ")){
+        if(src.contains(" ")) {
             result.setText(src);
-        }else if(src.contains(":")){
+        }else if(src.contains(":")) {
             result.setId(src);
         }
         result.setName(src);
         return result;
     }
-    public static Table parseDest(String dest, Object obj, ConfigStore configs){
+    public static Table parseDest(String dest, Object obj, ConfigStore configs) {
         Table table = null;
         //有表的根据表解析
-        if(BasicUtil.isNotEmpty(dest) || null == obj){
+        if(BasicUtil.isNotEmpty(dest) || null == obj) {
             return parseDest(dest, configs);
         }
         //没有表的根据 对象解析
 
-        if(obj instanceof DataRow){
+        if(obj instanceof DataRow) {
             DataRow row = (DataRow)obj;
             table = parseDest(row.getDest(), configs);
-        }else if(obj instanceof DataSet){
+        }else if(obj instanceof DataSet) {
             DataSet set = (DataSet)obj;
-            if(set.size()>0){
+            if(set.size()>0) {
                 table = parseDest(set.getRow(0).getDest(), configs);
             }
         } else if (obj instanceof Collection) {
             Collection list = (Collection)obj;
-            if(!list.isEmpty()){
+            if(!list.isEmpty()) {
                 Object first = list.iterator().next();
-                if(first instanceof DataRow){
+                if(first instanceof DataRow) {
                     table = parseDest(((DataRow)first).getDest(), configs);
                 }else {
                     String tableName = EntityAdapterProxy.table(first.getClass(), true);
@@ -125,20 +131,20 @@ public class DataSourceUtil {
         return table;
     }
 
-    public static String parseAdapterKey(String url){
+    public static String parseAdapterKey(String url) {
         return parseParamValue(url, "adapter");
     }
-    public static String parseCatalog(String url){
+    public static String parseCatalog(String url) {
         return parseParamValue(url, "catalog");
     }
-    public static String parseSchema(String url){
+    public static String parseSchema(String url) {
         return parseParamValue(url, "schema");
     }
-    public static String parseParamValue(String url, String key){
+    public static String parseParamValue(String url, String key) {
         String value = null;
-        if(null != url && url.contains(key)){
+        if(null != url && url.contains(key)) {
             value = RegularUtil.cut(url, key+"=", "&");
-            if(BasicUtil.isEmpty(value)){
+            if(BasicUtil.isEmpty(value)) {
                 value = RegularUtil.cut(url, key+"=", RegularUtil.TAG_END);
             }
         }

@@ -62,41 +62,41 @@ public class DataSourceLoadListener implements LoadListener {
         Map<String, DataSourceLoader> loaders =ConfigTable.environment().getBeans(DataSourceLoader.class);
 
         //数据库操作适配器
-        if(null != adapters){
+        if(null != adapters) {
             DriverAdapterHolder.setAdapters(adapters);
-            for(DriverAdapter adapter:adapters.values()){
-                if(null != dmListener){
+            for(DriverAdapter adapter:adapters.values()) {
+                if(null != dmListener) {
                     adapter.setListener(dmListener);
                 }
-                if(null != ddListener){
+                if(null != ddListener) {
                     adapter.setListener(ddListener);
                 }
-                if(null != primaryGenerator){
+                if(null != primaryGenerator) {
                     adapter.setGenerator(primaryGenerator);
                 }
                 //anyline.data.jdbc.delimiter.db2
                 String delimiter = ConfigTable.getString("anyline.data.jdbc.delimiter."+adapter.type().name().toLowerCase());
-                if(null != delimiter){
+                if(null != delimiter) {
                     adapter.setDelimiter(delimiter);
                 }
             }
         }
-        if(null != loaders){
-            for(DataSourceLoader loader:loaders.values()){
+        if(null != loaders) {
+            for(DataSourceLoader loader:loaders.values()) {
                 loader.load();
             }
         }
-        if(null == adapters || adapters.isEmpty()){
+        if(null == adapters || adapters.isEmpty()) {
             adapters = ConfigTable.environment().getBeans(DriverAdapter.class);
         }
-        if(null == workers || workers.isEmpty()){
+        if(null == workers || workers.isEmpty()) {
             workers = ConfigTable.environment().getBeans(DriverWorker.class);
         }
-        if(null != workers && null != adapters){
-            for(DriverWorker worker:workers.values()){
+        if(null != workers && null != adapters) {
+            for(DriverWorker worker:workers.values()) {
                 Class clazz = worker.supportAdapterType();
-                for(DriverAdapter adapter:adapters.values()){
-                    if(ClassUtil.isInSub(adapter.getClass(), clazz)){
+                for(DriverAdapter adapter:adapters.values()) {
+                    if(ClassUtil.isInSub(adapter.getClass(), clazz)) {
                         DriverWorker origin = adapter.getWorker();
                         //没有设置过worker 或原来的优先级更低
                         if(null == origin || origin.priority() < worker.priority()) {
@@ -108,11 +108,11 @@ public class DataSourceLoadListener implements LoadListener {
         }
         if(ConfigTable.environment().containsBean("anyline.service.default")) {
             AnylineService service = ConfigTable.environment().getBean("anyline.service.default", AnylineService.class);
-            if(null != service){
+            if(null != service) {
                 ServiceProxy.init(service);
                 Map<String, AnylineService> services = ConfigTable.environment().getBeans(AnylineService.class);
-                for(AnylineService item:services.values()){
-                    if(null == item.getDao()){
+                for(AnylineService item:services.values()) {
+                    if(null == item.getDao()) {
                         item.setDao(service.getDao());
                     }
                 }

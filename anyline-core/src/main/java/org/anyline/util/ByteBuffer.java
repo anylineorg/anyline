@@ -26,15 +26,15 @@ public class ByteBuffer {
     private byte[] bytes;
     private int offset = 0;
     private byte endian = 0; //大端
-    public ByteBuffer(int endian){
+    public ByteBuffer(int endian) {
         this.endian = (byte) endian;
     }
-    public ByteBuffer(int length, int endian){
+    public ByteBuffer(int length, int endian) {
         bytes = new byte[length];
         this.endian = (byte) endian;
     }
-    public ByteBuffer put(byte[] bs){
-        if(null == bytes){
+    public ByteBuffer put(byte[] bs) {
+        if(null == bytes) {
             for (byte b : bs) {
                 list.add(b);
             }
@@ -45,66 +45,66 @@ public class ByteBuffer {
         }
         return this;
     }
-    public ByteBuffer put(byte b){
-        if(null == bytes){
+    public ByteBuffer put(byte b) {
+        if(null == bytes) {
             list.add(b);
         }else {
             bytes[offset++] = b;
         }
         return this;
     }
-    public ByteBuffer put(int b){
+    public ByteBuffer put(int b) {
         put(NumberUtil.int2bytes(b, endian==0));
         return this;
     }
-    public ByteBuffer put(short s){
+    public ByteBuffer put(short s) {
         put(NumberUtil.short2bytes(s, endian==0));
         return this;
     }
-    public ByteBuffer put(long b){
+    public ByteBuffer put(long b) {
         put(NumberUtil.long2bytes(b, endian==0));
         return this;
     }
-    public ByteBuffer put(double b){
+    public ByteBuffer put(double b) {
         put(NumberUtil.double2bytes(b));
         return this;
     }
-    public ByteBuffer offset(int offset){
+    public ByteBuffer offset(int offset) {
         this.offset = offset;
         return this;
     }
-    public ByteBuffer(byte[] bytes, int endian){
+    public ByteBuffer(byte[] bytes, int endian) {
         this.bytes = bytes;
     }
-    public ByteBuffer(byte[] bytes, int endian, int offset){
+    public ByteBuffer(byte[] bytes, int endian, int offset) {
         this.bytes = bytes;
         this.endian = (byte) endian;
         this.offset = offset;
     }
-    public byte readByte(){
+    public byte readByte() {
         byte result = bytes[offset];
         offset ++;
         return result;
     }
-    public int readInt(){
+    public int readInt() {
         int result = NumberUtil.byte2int(bytes, offset, 4, endian==0);
         offset += 4;
         return result;
     }
-    public double readDouble(){
+    public double readDouble() {
         double result = NumberUtil.byte2double(bytes, offset);
         offset += 8;
         return result;
     }
-    public ByteBuffer step(int count){
+    public ByteBuffer step(int count) {
         offset = offset + count;
         return this;
     }
-    public byte[] bytes(){
-        if(null == bytes){
+    public byte[] bytes() {
+        if(null == bytes) {
             byte[] bts = new byte[list.size()];
             int idx = 0;
-            for(byte b:list){
+            for(byte b:list) {
                 bts[idx++] = b;
             }
             return bts;
@@ -143,7 +143,7 @@ public class ByteBuffer {
     public void endian(int endian) {
         this.endian = (byte) endian;
     }
-    public ByteBuffer clear(){
+    public ByteBuffer clear() {
         list = new ArrayList();
         bytes = null;
         return this;

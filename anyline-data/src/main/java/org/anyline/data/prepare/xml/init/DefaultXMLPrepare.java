@@ -49,23 +49,23 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	private boolean strict = true;	// 严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<Variable> variables;
 	 
-	public DefaultXMLPrepare(){
+	public DefaultXMLPrepare() {
 		super(); 
 		chain = new DefaultXMLConditionChain();
 	} 
 	public RunPrepare init() {
-		if(null == variables){
+		if(null == variables) {
 			variables = new ArrayList<Variable>();
 		} 
-		for(Variable variable:variables){
-			if(null == variable){
+		for(Variable variable:variables) {
+			if(null == variable) {
 				continue;
 			} 
 			variable.init(); 
 		} 
-		if(null != chain){
-			for(Condition condition:chain.getConditions()){
-				if(null == condition){
+		if(null != chain) {
+			for(Condition condition:chain.getConditions()) {
+				if(null == condition) {
 					continue;
 				} 
 				condition.init(); 
@@ -77,14 +77,14 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		DefaultXMLPrepare clone = null;
 		try{
 			clone = (DefaultXMLPrepare)super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 			clone =new DefaultXMLPrepare();
 		}
 		clone.chain = chain.clone();
-		if(null != variables){
+		if(null != variables) {
 			List<Variable> cVariables = new ArrayList<>();
-			for(Variable var:variables){
-				if(null == var){
+			for(Variable var:variables) {
+				if(null == var) {
 					continue;
 				} 
 				cVariables.add(var.clone());
@@ -98,7 +98,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * @param text  text
 	 */ 
 	public RunPrepare setText(String text) {
-		if(null == text){
+		if(null == text) {
 			return this; 
 		} 
 		text = text.replaceAll("--.*","");//过滤注释
@@ -111,19 +111,19 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * 添加静态文本查询条件 
 	 */ 
 	public RunPrepare addCondition(String condition) {
-		if(BasicUtil.isEmpty(condition)){
+		if(BasicUtil.isEmpty(condition)) {
 			return this; 
 		} 
-		if(condition.contains(":")){
+		if(condition.contains(":")) {
 			ParseResult parser = ConfigParser.parse(condition,false);
 			 
 			String prefix = parser.getPrefix();
 			String var = null; 
 			Object value = ConfigParser.getValues(parser);//parser.getKey(); 
-			if(prefix.contains(".")){
+			if(prefix.contains(".")) {
 				String[] keys = prefix.split(".");
 				prefix = keys[0];
-				if(keys.length > 1){
+				if(keys.length > 1) {
 					var = keys[1]; 
 				} 
 			} 
@@ -134,7 +134,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	/** 
 	 * 解析 RunPrepare 主体文本
 	 */ 
-	private void parseText(){
+	private void parseText() {
 		if(null == text) {
 			return;
 		} 
@@ -146,17 +146,17 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
 			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
 			type = Variable.KEY_TYPE_SIGN_V2 ;
-			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT){
+			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT) {
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
 			} 
-			if(BasicUtil.isNotEmpty(true,keys)){
+			if(BasicUtil.isNotEmpty(true,keys)) {
 				// AND CD = :CD AND CD = {CD} AND CD = ${CD} AND CD = ${CD}
-				for(int i=0; i<keys.size();i++){
+				for(int i=0; i<keys.size();i++) {
 					List<String> keyItem = keys.get(i); 
 					Variable var = SyntaxHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
-					if(null == var){
+					if(null == var) {
 						continue;
 					}
 					var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
@@ -165,8 +165,8 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 			}else{
 				// AND CD = ? 
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)){
-					for(int i=0; i<idxKeys.size(); i++){
+				if(BasicUtil.isNotEmpty(true,idxKeys)) {
+					for(int i=0; i<idxKeys.size(); i++) {
 						Variable var = new DefaultVariable();
 						var.setType(Variable.VAR_TYPE_INDEX);
 						var.setSwt(Compare.EMPTY_VALUE_SWITCH.NULL);
@@ -174,7 +174,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 					} 
 				} 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		} 
 	} 
@@ -182,8 +182,8 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * 添加SQL主体变量 
 	 * @param var  var
 	 */ 
-	private void addVariable(Variable var){
-		if(null == variables){
+	private void addVariable(Variable var) {
+		if(null == variables) {
 			variables = new ArrayList<Variable>();
 		}
 		variables.add(var); 
@@ -204,33 +204,33 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * @param value 
 	 * 			值 
 	 */ 
-	public RunPrepare setConditionValue(String condition, String variable, Object value){
+	public RunPrepare setConditionValue(String condition, String variable, Object value) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
-		if(null != variables && BasicUtil.isEmpty(variable)){
-			for(Variable v:variables){
-				if(v.getKey().equalsIgnoreCase(condition)){
+		if(null != variables && BasicUtil.isEmpty(variable)) {
+			for(Variable v:variables) {
+				if(v.getKey().equalsIgnoreCase(condition)) {
 					v.setValue(value); 
 				} 
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){
+		if(null == condition) {
 			return this; 
 		} 
 		DefaultXMLCondition con = getCondition(condition);
-		if(null == con){
+		if(null == con) {
 			return this; 
 		} 
 		variable = BasicUtil.nvl(variable, condition).toString(); 
 		con.setValue(variable, value); 
 		return this; 
 	} 
-	private DefaultXMLCondition getCondition(String id){
-		if(null == chain){
+	private DefaultXMLCondition getCondition(String id) {
+		if(null == chain) {
 			return null; 
 		} 
-		for(Condition con:chain.getConditions()){
-			if(BasicUtil.equalsIgnoreCase(id, con.getId())){
+		for(Condition con:chain.getConditions()) {
+			if(BasicUtil.equalsIgnoreCase(id, con.getId())) {
 				return (DefaultXMLCondition)con;
 			} 
 		} 
@@ -241,8 +241,8 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * 														生成SQL 
 	 *  
 	 * ***********************************************************************************************************************************/ 
-//	public void appendCondition(StringBuilder builder, String delimiter){
-//		if(null == chain){
+//	public void appendCondition(StringBuilder builder, String delimiter) {
+//		if(null == chain) {
 //			return; 
 //		} 
 //		builder.append(chain.getRunText(delimiter));
@@ -251,7 +251,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 //	/** 
 //	 * 生成运行时SQL 
 //	 */ 
-//	public String getRunText(String delimiter){
+//	public String getRunText(String delimiter) {
 //		StringBuilder builder = new StringBuilder(); 
 //		builder.append(createRunText()); 
 //		appendCondition(builder, delimiter);
@@ -262,13 +262,13 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 //	 * 添加分组 
 //	 * @param builder  builder
 //	 */ 
-//	public void appendGroup(StringBuilder builder){
-//		if(null != groups && !groups.isEmpty()){
+//	public void appendGroup(StringBuilder builder) {
+//		if(null != groups && !groups.isEmpty()) {
 //			int size = groups.size(); 
 //			builder.append(" GROUP BY "); 
-//			for(int i=0; i<size; i++){
+//			for(int i=0; i<size; i++) {
 //				builder.append(groups.get(i)); 
-//				if(i<size-1){
+//				if(i<size-1) {
 //					builder.append(","); 
 //				} 
 //			} 
@@ -279,53 +279,53 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 	 * @param text  text
 	 * @return String
 	 */ 
-//	private String createRunText(){
+//	private String createRunText() {
 //		initRunValues(); 
 //		String result = text; 
 //		if(null == variables) {
 //			return result;
 //		} 
 // 
-//		for(Variable var:variables){
-//			if(var.getType() == Variable.VAR_TYPE_REPLACE){
+//		for(Variable var:variables) {
+//			if(var.getType() == Variable.VAR_TYPE_REPLACE) {
 //				// CD = ::CD 
 //				Object varValue = var.getValues(); 
 //				String value = null; 
-//				if(BasicUtil.isNotEmpty(varValue)){
+//				if(BasicUtil.isNotEmpty(varValue)) {
 //					value = varValue.toString(); 
 //				} 
-//				if(null != value){
+//				if(null != value) {
 //					result = result.replace("::"+var.getKey(), value); 
 //				}else{
 //					result = result.replace("::"+var.getKey(), "NULL"); 
 //				} 
 //			} 
 //		} 
-//		for(Variable var:variables){
-//			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
+//		for(Variable var:variables) {
+//			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
 //				// CD = ':CD' 
 //				List<Object> varValues = var.getValues(); 
 //				String value = null; 
-//				if(BasicUtil.isNotEmpty(true,varValues)){
+//				if(BasicUtil.isNotEmpty(true,varValues)) {
 //					value = (String)varValues.get(0); 
 //				} 
-//				if(null != value){
+//				if(null != value) {
 //					result = result.replace(":"+var.getKey(), value); 
 //				}else{
 //					result = result.replace(":"+var.getKey(), ""); 
 //				} 
 //			} 
 //		} 
-//		for(Variable var:variables){
-//			if(var.getType() == Variable.VAR_TYPE_KEY){
+//		for(Variable var:variables) {
+//			if(var.getType() == Variable.VAR_TYPE_KEY) {
 //				// CD = :CD 
 //				List<Object> varValues = var.getValues(); 
-//				if(BasicUtil.isNotEmpty(true, varValues)){
-//					if(var.getCompare() == Compare_IN){
+//				if(BasicUtil.isNotEmpty(true, varValues)) {
+//					if(var.getCompare() == Compare_IN) {
 //						// 多个值IN 
 //						String replaceSrc = ":"+var.getKey(); 
 //						String replaceDst = "";  
-//						for(Object tmp:varValues){
+//						for(Object tmp:varValues) {
 //							addRunValue(tmp); 
 //							replaceDst += " ?"; 
 //						} 
@@ -340,12 +340,12 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 //			} 
 //		} 
 //		// 添加其他变量值 
-//		for(Variable var:variables){
+//		for(Variable var:variables) {
 //			// CD = ? 
-//			if(var.getType() == Variable.VAR_TYPE_INDEX){
+//			if(var.getType() == Variable.VAR_TYPE_INDEX) {
 //				List<Object> varValues = var.getValues(); 
 //				String value = null; 
-//				if(BasicUtil.isNotEmpty(true, varValues)){
+//				if(BasicUtil.isNotEmpty(true, varValues)) {
 //					value = (String)varValues.get(0); 
 //				} 
 //				addRunValue(value); 
@@ -354,7 +354,7 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 //		return result; 
 //	} 
  
-	public RunPrepare setDest(String dest){
+	public RunPrepare setDest(String dest) {
 		this.id = dest;
 		return this; 
 	}
@@ -394,10 +394,10 @@ public class DefaultXMLPrepare extends AbstractRunPrepare implements XMLPrepare 
 		return null;
 	}
 
-	public String getDest(){
+	public String getDest() {
 		return id ; 
 	} 
-	public Schema getSchema(){
+	public Schema getSchema() {
 		return null; 
 	} 
 	@Override 

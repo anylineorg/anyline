@@ -46,30 +46,30 @@ public class Metadata<T extends Metadata> {
         DDL(16384)            // DDL
         ;
         public final int value;
-        TYPE(int value){
+        TYPE(int value) {
             this.value = value;
         }
-        public int value(){
+        public int value() {
             return value;
         }
     }
-    public static boolean check(int strut, Type type){
+    public static boolean check(int strut, Type type) {
         int tp = type.value();
         return ((strut & tp) == tp);
     }
     private static Map<Integer, Type> types = new HashMap<>();
     static {
-        for(TYPE type: TYPE.values()){
+        for(TYPE type: TYPE.values()) {
             types.put(type.value, type);
         }
     }
-    public static Map<Integer, Type> types(){
+    public static Map<Integer, Type> types() {
         return types;
     }
-    public static Type type(int type){
+    public static Type type(int type) {
         return types().get(type);
     }
-    public static List<Type> types(int types){
+    public static List<Type> types(int types) {
         List<Type> list = new ArrayList<>();
         int count = 0;
         while (types >= 1) {
@@ -77,12 +77,12 @@ public class Metadata<T extends Metadata> {
             types = (types - temp) / 2;
             if (temp == 1) {
                 Type t = null;
-                if (count == 0){
+                if (count == 0) {
                     t = type(1);
                 }else{
                     t = type((2 << (count - 1)));
                 }
-                if(null != t){
+                if(null != t) {
                     list.add(t);
                 }
             }
@@ -128,8 +128,8 @@ public class Metadata<T extends Metadata> {
         this.metadata = metadata;
     }
 
-    public String getIdentity(){
-        if(null == identity){
+    public String getIdentity() {
+        if(null == identity) {
             identity = BasicUtil.nvl(getCatalogName(), "") + "_" + BasicUtil.nvl(getSchemaName(), "") + "_" + BasicUtil.nvl(getTableName(false), "") + "_" + BasicUtil.nvl(getName(), "") ;
             identity = identity.toUpperCase();
             //identity = MD5Util.crypto(identity.toUpperCase());
@@ -137,10 +137,10 @@ public class Metadata<T extends Metadata> {
         return identity;
     }
 
-    public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas){
+    public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas) {
         return names(metas, false);
     }
-    public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas, boolean upper){
+    public static <T extends Metadata> List<String> names(LinkedHashMap<String, T> metas, boolean upper) {
         List<String> names = new ArrayList<>();
         if(null != metas) {
             for (T meta : metas.values()) {
@@ -154,10 +154,10 @@ public class Metadata<T extends Metadata> {
         return names;
     }
 
-    public static <T extends Metadata> List<String> names(List<T> metas){
+    public static <T extends Metadata> List<String> names(List<T> metas) {
         return names(metas, false);
     }
-    public static <T extends Metadata> List<String> names(List<T> metas, boolean upper){
+    public static <T extends Metadata> List<String> names(List<T> metas, boolean upper) {
         List<String> names = new ArrayList<>();
         if(null != metas) {
             for (T meta : metas) {
@@ -177,8 +177,8 @@ public class Metadata<T extends Metadata> {
      * @param columns 列
      * @param <T> T
      */
-    public static <T extends Metadata> void sort(LinkedHashMap<String, Integer> positions, LinkedHashMap<String, T> columns){
-        if(null == positions || positions.isEmpty()){
+    public static <T extends Metadata> void sort(LinkedHashMap<String, Integer> positions, LinkedHashMap<String, T> columns) {
+        if(null == positions || positions.isEmpty()) {
             return;
         }
         List<T> list = new ArrayList<>();
@@ -189,7 +189,7 @@ public class Metadata<T extends Metadata> {
             public int compare(T o1, T o2) {
                 Integer p1 = positions.get(o1.getName().toUpperCase());
                 Integer p2 = positions.get(o2.getName().toUpperCase());
-                if(p1 == p2){
+                if(p1 == p2) {
                     return 0;
                 }
                 if (null == p1) {
@@ -203,7 +203,7 @@ public class Metadata<T extends Metadata> {
         });
 
         columns.clear();
-        for(T column:list){
+        for(T column:list) {
             columns.put(column.getName().toUpperCase(), column);
         }
     }
@@ -227,14 +227,14 @@ public class Metadata<T extends Metadata> {
         return catalog;
     }
     public String getCatalogName() {
-        if(null == catalog){
+        if(null == catalog) {
             return null;
         }
         return catalog.getName();
     }
 
     public T setCatalog(String catalog) {
-        if(BasicUtil.isEmpty(catalog)){
+        if(BasicUtil.isEmpty(catalog)) {
             this.catalog = null;
         }else {
             this.catalog = new Catalog(catalog);
@@ -252,14 +252,14 @@ public class Metadata<T extends Metadata> {
     }
 
     public String getSchemaName() {
-        if(null == schema){
+        if(null == schema) {
             return null;
         }
         return schema.getName();
     }
 
     public T setSchema(String schema) {
-        if(null == schema){
+        if(null == schema) {
             this.schema = null;
         }else {
             this.schema = new Schema(schema);
@@ -284,7 +284,7 @@ public class Metadata<T extends Metadata> {
     }
 
     public T setCheckSchemaTime(Date checkSchemaTime) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.setCheckSchemaTime(checkSchemaTime);
             return (T)this;
         }
@@ -294,23 +294,23 @@ public class Metadata<T extends Metadata> {
     public String getName() {
         return name;
     }
-    public String getFullName(){
+    public String getFullName() {
         String dest = null;
         String catalogName = getCatalogName();
         String schemaName = getSchemaName();
         String tableName = name;
-        if(BasicUtil.isNotEmpty(catalogName)){
+        if(BasicUtil.isNotEmpty(catalogName)) {
             dest = catalogName;
         }
-        if(BasicUtil.isNotEmpty(schemaName)){
-            if(null == dest){
+        if(BasicUtil.isNotEmpty(schemaName)) {
+            if(null == dest) {
                 dest = schemaName;
             }else{
                 dest += "." + schemaName;
             }
         }
-        if(BasicUtil.isNotEmpty(tableName)){
-            if(null == dest){
+        if(BasicUtil.isNotEmpty(tableName)) {
+            if(null == dest) {
                 dest = tableName;
             }else{
                 dest += "." + tableName;
@@ -335,7 +335,7 @@ public class Metadata<T extends Metadata> {
     }
 
     public T setComment(String comment) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.comment = comment;
             return (T)this;
         }
@@ -344,7 +344,7 @@ public class Metadata<T extends Metadata> {
     }
 
     public String getComment() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.comment;
         }
         return comment;
@@ -386,12 +386,12 @@ public class Metadata<T extends Metadata> {
         return (T)this;
     }
 
-    public T setNewName(String newName){
+    public T setNewName(String newName) {
         return setNewName(newName, true, true);
     }
 
     public T setNewName(String newName, boolean setmap, boolean getmap) {
-        if(null == update){
+        if(null == update) {
             update(setmap, getmap);
         }
         update.setName(newName);
@@ -404,8 +404,8 @@ public class Metadata<T extends Metadata> {
      * @return table
      */
     public Table getTable(boolean update) {
-        if(update){
-            if(null != table && null != table.getUpdate()){
+        if(update) {
+            if(null != table && null != table.getUpdate()) {
                 return (Table) table.getUpdate();
             }
         }
@@ -422,7 +422,7 @@ public class Metadata<T extends Metadata> {
 
     public String getTableName(boolean update) {
         Table table = getTable(update);
-        if(null != table){
+        if(null != table) {
             return table.getName();
         }
         return null;
@@ -437,38 +437,38 @@ public class Metadata<T extends Metadata> {
     }
 
     public LinkedHashMap<String, Object> getProperty() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.getProperty();
         }
         return property;
     }
 
     public T setProperty(String key, Object value) {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return (T)update.setProperty(key, value);
         }
-        if(null == this.property){
+        if(null == this.property) {
             this.property = new LinkedHashMap<>();
         }
         this.property.put(key, value);
         return (T)this;
     }
     public T setProperty(LinkedHashMap<String, Object> property) {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return (T)update.setProperty(property);
         }
         this.property = property;
         return (T)this;
     }
     public String getDefinition() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return  update.definition;
         }
         return definition;
     }
 
     public T setDefinition(String definition) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.definition = definition;
             return (T)this;
         }
@@ -476,14 +476,14 @@ public class Metadata<T extends Metadata> {
         return (T)this;
     }
 
-    public boolean isRename(){
-        if(null != update){
+    public boolean isRename() {
+        if(null != update) {
             return !BasicUtil.equalsIgnoreCase(name, update.getName());
         }
         return false;
     }
     public String getDdl() {
-        if(null != ddls && ddls.size()>0){
+        if(null != ddls && ddls.size()>0) {
             return ddls.get(0);
         }
         return null;
@@ -497,7 +497,7 @@ public class Metadata<T extends Metadata> {
         this.ddls = ddl;
     }
     public void addDdl(String ddl) {
-        if(this.ddls == null){
+        if(this.ddls == null) {
             this.ddls = new ArrayList<>();
         }
         ddls.add(ddl);
@@ -513,19 +513,19 @@ public class Metadata<T extends Metadata> {
     }
 
     public String ddl() {
-        if(null != ddls && ddls.size()>0){
+        if(null != ddls && ddls.size()>0) {
             return ddls.get(0);
         }
         return null;
     }
     public String ddl(boolean init) {
-        if(null != ddls && ddls.size()>0){
+        if(null != ddls && ddls.size()>0) {
             return ddls.get(0);
         }
         return null;
     }
     public String getDdl(boolean init) {
-        if(null != ddls && ddls.size()>0){
+        if(null != ddls && ddls.size()>0) {
             return ddls.get(0);
         }
         return null;
@@ -572,10 +572,10 @@ public class Metadata<T extends Metadata> {
         }
         return (T)this;
     }
-    public T update(){
+    public T update() {
         return update(true, true);
     }
-    public T update(boolean setmap, boolean getmap){
+    public T update(boolean setmap, boolean getmap) {
         this.setmap = setmap;
         this.getmap = getmap;
         update = clone();
@@ -595,46 +595,46 @@ public class Metadata<T extends Metadata> {
                 clone.update = null;
                 clone.setmap = false;
                 clone.getmap = false;
-            }catch (Exception ex){}
+            }catch (Exception ex) {}
         }
         return clone;
     }
 
-    public static <T extends Metadata> T search(List<T> list, String catalog, String schema, String name){
-        for(T item:list){
+    public static <T extends Metadata> T search(List<T> list, String catalog, String schema, String name) {
+        for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
                     && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
                     && BasicUtil.equalsIgnoreCase(item.getName(), name)
-            ){
+            ) {
                 return item;
             }
         }
         return null;
     }
-    public static <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name){
-        for(T item:list){
+    public static <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name) {
+        for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
                     && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
                     && BasicUtil.equalsIgnoreCase(item.getName(), name)
-            ){
+            ) {
                 return item;
             }
         }
         return null;
     }
-    public static <T extends Metadata> T search(List<T> list, String catalog, String name){
-        for(T item:list){
-            if(BasicUtil.equalsIgnoreCase(item.getName(), name)){
-                if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)){
+    public static <T extends Metadata> T search(List<T> list, String catalog, String name) {
+        for(T item:list) {
+            if(BasicUtil.equalsIgnoreCase(item.getName(), name)) {
+                if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)) {
                     return item;
                 }
             }
         }
         return null;
     }
-    public static <T extends Metadata> T search(List<T> list, String name){
-        for(T item:list){
-            if(BasicUtil.equalsIgnoreCase(item.getName(), name)){
+    public static <T extends Metadata> T search(List<T> list, String name) {
+        for(T item:list) {
+            if(BasicUtil.equalsIgnoreCase(item.getName(), name)) {
                 return item;
             }
         }
@@ -657,10 +657,10 @@ public class Metadata<T extends Metadata> {
         this.text = text;
     }
 
-    public String getKeyword(){
+    public String getKeyword() {
         return "object";
     }
-    public String toString(){
+    public String toString() {
         return getKeyword() + ":" + getName();
     }
 }

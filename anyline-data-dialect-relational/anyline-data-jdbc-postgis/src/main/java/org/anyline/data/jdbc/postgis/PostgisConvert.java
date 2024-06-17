@@ -19,6 +19,6 @@
 package org.anyline.data.jdbc.postgis;
 
 public class PostgisConvert {
-    public static void reg(){
+    public static void reg() {
     }
 }

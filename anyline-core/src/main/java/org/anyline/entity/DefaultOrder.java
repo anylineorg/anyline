@@ -25,9 +25,9 @@ public class DefaultOrder implements Order{
 	private String column;									// 排序列 
 	private TYPE type = TYPE.ASC;		// 排序方式
 	 
-	public DefaultOrder(){}
-	public DefaultOrder(String str){
-		if(BasicUtil.isEmpty(str)){
+	public DefaultOrder() {}
+	public DefaultOrder(String str) {
+		if(BasicUtil.isEmpty(str)) {
 			return; 
 		} 
 		str = str.trim();
@@ -36,27 +36,27 @@ public class DefaultOrder implements Order{
 		// ID
 		// ID ASC
 		// ORDER BY CONVERT(id USING gbk) COLLATE gbk_chinese_ci DESC
-		if(up.endsWith(" ASC")){
+		if(up.endsWith(" ASC")) {
 			this.column = str.substring(0, str.length()-4);
 			typ = "ASC";
-		}else if(up.endsWith(" DESC")){
+		}else if(up.endsWith(" DESC")) {
 			this.column = str.substring(0, str.length()-5);
 			typ = "DESC";
 		} else {
 			this.column  = str;
 			typ = "ASC";
 		}
-		if(typ.equalsIgnoreCase("ASC")){
+		if(typ.equalsIgnoreCase("ASC")) {
 			this.type = TYPE.ASC;
 		}else{
 			this.type = TYPE.DESC;
 		} 
 	}
-	public DefaultOrder(String column, TYPE type){
+	public DefaultOrder(String column, TYPE type) {
 		setColumn(column);
 		setType(type);
 	}
-	public DefaultOrder(String column, String type){
+	public DefaultOrder(String column, String type) {
 		setColumn(column);
 		setType(type);
 	} 
@@ -64,7 +64,7 @@ public class DefaultOrder implements Order{
 		return column; 
 	} 
 	public void setColumn(String column) {
-		if(null != column){
+		if(null != column) {
 			this.column = column.trim(); 
 		} 
 	} 
@@ -78,7 +78,7 @@ public class DefaultOrder implements Order{
 		DefaultOrder clone = null;
 		try{
 			clone = (DefaultOrder) super.clone();
-		}catch (Exception ignored){
+		}catch (Exception ignored) {
 			clone = new DefaultOrder();
 		}
 		clone.type = this.type;
@@ -87,7 +87,7 @@ public class DefaultOrder implements Order{
 	}
 	@Override
 	public void setType(String type) {
-		if("DESC".equalsIgnoreCase(type)){
+		if("DESC".equalsIgnoreCase(type)) {
 			this.type = TYPE.DESC;
 		}else{
 			this.type = TYPE.ASC;

@@ -49,13 +49,13 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		DefaultXMLCondition clone = null;
 		try{
 			clone = (DefaultXMLCondition)super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 			clone = new DefaultXMLCondition();
 		}
-		if(null != variables){
+		if(null != variables) {
 			List<Variable> cVariables = new ArrayList<>();
-			for(Variable var:variables){
-				if(null == var){
+			for(Variable var:variables) {
+				if(null == var) {
 					continue;
 				} 
 				cVariables.add(var.clone());
@@ -65,26 +65,26 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		} 
 		return clone; 
 	} 
-	public DefaultXMLCondition(){
+	public DefaultXMLCondition() {
 		join = ""; 
 	} 
-	public DefaultXMLCondition(String id, String text, boolean isStatic){
+	public DefaultXMLCondition(String id, String text, boolean isStatic) {
 		join = ""; 
 		this.id = id; 
 		this.text = text; 
 		setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_INDEX); 
-		if(!isStatic){
+		if(!isStatic) {
 			parseText(); 
 		}else{
 			setVariableType(Condition.VARIABLE_PLACEHOLDER_TYPE_NONE);
 		} 
 	} 
-	public void init(){
+	public void init() {
 		setActive(false); 
-		if(null == variables){
+		if(null == variables) {
 			variables = new ArrayList<Variable>();
 		} 
-		for(Variable variable:variables){
+		for(Variable variable:variables) {
 			variable.init(); 
 		} 
 	} 
@@ -93,19 +93,19 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	 * @param variable  variable
 	 * @param values  values
 	 */ 
-	public void setValue(String variable, Object values){
+	public void setValue(String variable, Object values) {
 		runValuesMap.put(variable, values); 
-		if(null == variable || null == variables){
+		if(null == variable || null == variables) {
 			return; 
 		} 
-		for(Variable v:variables){
-			if(null == v){
+		for(Variable v:variables) {
+			if(null == v) {
 				continue;
 			} 
-			if(variable.equalsIgnoreCase(v.getKey())){
+			if(variable.equalsIgnoreCase(v.getKey())) {
 				v.setValue(values);
 				Compare.EMPTY_VALUE_SWITCH swt = v.getSwt();
-				if(BasicUtil.isNotEmpty(true,values) || swt == Compare.EMPTY_VALUE_SWITCH.NULL || swt == Compare.EMPTY_VALUE_SWITCH.SRC){
+				if(BasicUtil.isNotEmpty(true,values) || swt == Compare.EMPTY_VALUE_SWITCH.NULL || swt == Compare.EMPTY_VALUE_SWITCH.SRC) {
 					setActive(true); 
 				} 
 			} 
@@ -115,31 +115,31 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	/** 
 	 * 解析变量
 	 */ 
-	private void parseText(){
+	private void parseText() {
 		try{
 			List<List<String>> keys = null;
 			// AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD} || CD = #{CD}
 			//{CD} 用来兼容旧版本，新版本中不要用，避免与josn格式冲突
 			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
-			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT){
+			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT) {
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
 			} 
-			if(BasicUtil.isNotEmpty(true,keys)){
+			if(BasicUtil.isNotEmpty(true,keys)) {
 				setVariableType(VARIABLE_PLACEHOLDER_TYPE_KEY); 
 				int varType = Variable.VAR_TYPE_INDEX;
 				Compare compare = Compare.EQUAL;
-				for(int i=0; i<keys.size(); i++){
+				for(int i=0; i<keys.size(); i++) {
 					List<String> keyItem = keys.get(i); 
 					String prefix = keyItem.get(1).trim();		// 前缀 空或#或$
 					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD} #{CD} 8.5之后不用{CD}避免与json冲突
 					String typeChar = keyItem.get(3);	// null || "'" || ")" 
 					// String key = fullKey.replace(":","").replace(" {","").replace("}","").replace("$","");
-					if(fullKey.startsWith("::") || fullKey.startsWith("${")){
+					if(fullKey.startsWith("::") || fullKey.startsWith("${")) {
 						//替换
 						// AND CD = ::CD  AND CD = ${CD}
 						varType = Variable.VAR_TYPE_REPLACE;
-					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){
+					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))) {
 						//符合占位  但需要替换 如在''内
 						// AND CD = ':CD' 
 						varType = Variable.VAR_TYPE_KEY_REPLACE;
@@ -148,7 +148,7 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 						varType = Variable.VAR_TYPE_KEY;
 					}
 
-					if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
+					if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")) {
 						compare = Compare.IN;
 					}
 					Variable var = new DefaultVariable();
@@ -159,11 +159,11 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 				} 
 			}else{
 				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0); 
-				if(BasicUtil.isNotEmpty(true,idxKeys)){
+				if(BasicUtil.isNotEmpty(true,idxKeys)) {
 					// 按下标区分变量 
 					this.setVariableType(VARIABLE_PLACEHOLDER_TYPE_INDEX); 
 					int varType = Variable.VAR_TYPE_INDEX;
-					for(int i=0; i<idxKeys.size(); i++){
+					for(int i=0; i<idxKeys.size(); i++) {
 						Variable var = new DefaultVariable();
 						var.setType(varType); 
 						var.setKey(id); 
@@ -171,13 +171,13 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 					} 
 				} 
 			} 
-		}catch(Exception e){
+		}catch(Exception e) {
 			e.printStackTrace(); 
 		} 
 	} 
  
-	private void addVariable(Variable variable){
-		if(null == variables){
+	private void addVariable(Variable variable) {
+		if(null == variables) {
 			variables = new ArrayList<Variable>();
 		} 
 		variables.add(variable); 
@@ -199,72 +199,72 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 	public String getRunText(String prefix, DataRuntime runtime, boolean placeholder) {
 		String result = text; 
 		runValues = new ArrayList<>();
-		if(null == variables){
+		if(null == variables) {
 			return result;
 		}
-		for(Variable var: variables){
-			if(null == var){
+		for(Variable var: variables) {
+			if(null == var) {
 				continue;
 			} 
-			if(var.getType() == Variable.VAR_TYPE_REPLACE){
+			if(var.getType() == Variable.VAR_TYPE_REPLACE) {
 				// CD = ::CD 
 				List<Object> values = var.getValues(); 
 				String value = null; 
-				if(BasicUtil.isNotEmpty(true,values)){
-					if(var.getCompare() == Compare.IN){
+				if(BasicUtil.isNotEmpty(true,values)) {
+					if(var.getCompare() == Compare.IN) {
 						value = BeanUtil.concat(BeanUtil.wrap(values, "'"));
 					}else {
 						value = values.get(0).toString();
 					}
 				} 
-				if(BasicUtil.isNotEmpty(value)){
+				if(BasicUtil.isNotEmpty(value)) {
 					result = result.replace(var.getFullKey(), value);
 				}else{
 					result = result.replace(var.getFullKey(), "NULL");
 				} 
 			} 
 		} 
-		for(Variable var: variables){
-			if(null == var){
+		for(Variable var: variables) {
+			if(null == var) {
 				continue;
 			} 
-			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE){
+			if(var.getType() == Variable.VAR_TYPE_KEY_REPLACE) {
 				// CD = ':CD' CD = '::CD'
 				List<Object> values = var.getValues(); 
 				String value = null; 
-				if(BasicUtil.isNotEmpty(true,values)){
+				if(BasicUtil.isNotEmpty(true,values)) {
 					value = (String)values.get(0); 
 				} 
-				if(null != value){
+				if(null != value) {
 					result = result.replace(var.getFullKey(), value);
 				}else{
 					result = result.replace(var.getFullKey(), "");
 				} 
 			} 
 		} 
-		for(Variable var:variables){
-			if(null == var){
+		for(Variable var:variables) {
+			if(null == var) {
 				continue;
 			} 
-			if(var.getType() == Variable.VAR_TYPE_KEY){
+			if(var.getType() == Variable.VAR_TYPE_KEY) {
 				// CD=:CD    ID IN(#{ID})
 				List<Object> varValues = var.getValues(); 
-				if(Compare.IN == var.getCompare()){
+				if(Compare.IN == var.getCompare()) {
 					String replaceDst = "";
-					for(int i=0; i<varValues.size(); i++){
+					for(int i=0; i<varValues.size(); i++) {
 						replaceDst += "?";
-						if(i<varValues.size()-1){
+						if(i<varValues.size()-1) {
 							replaceDst += ",";
 						} 
 					}
 					result = result.replace(var.getFullKey(), replaceDst);
-					for(Object obj:varValues){
+					for(Object obj:varValues) {
 						runValues.add(new RunValue(var.getKey(), obj));
 					}
 				}else{
 					result = result.replace(var.getFullKey(), "?");
 					String value = null; 
-					if(BasicUtil.isNotEmpty(true,varValues)){
+					if(BasicUtil.isNotEmpty(true,varValues)) {
 						value = varValues.get(0).toString(); 
 					} 
 					runValues.add(new RunValue(var.getKey(), value));
@@ -273,14 +273,14 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 			} 
 		} 
 		 
-		for(Variable var:variables){
-			if(null == var){
+		for(Variable var:variables) {
+			if(null == var) {
 				continue;
 			} 
-			if(var.getType() == Variable.VAR_TYPE_INDEX){
+			if(var.getType() == Variable.VAR_TYPE_INDEX) {
 				List<Object> values = var.getValues(); 
 				String value = null; 
-				if(BasicUtil.isNotEmpty(true,values)){
+				if(BasicUtil.isNotEmpty(true,values)) {
 					value = (String)values.get(0); 
 				} 
 				runValues.add(new RunValue((String)null, value));
@@ -294,17 +294,17 @@ public class DefaultXMLCondition extends AbstractCondition implements Condition 
 		this.text = text;
 		return this;
 	}
-	public boolean isValid(){
-		if(!super.isValid()){
+	public boolean isValid() {
+		if(!super.isValid()) {
 			return false;
 		}
-		if(null != variables){
-			for(Variable variable:variables){
-				if(null == variable){
+		if(null != variables) {
+			for(Variable variable:variables) {
+				if(null == variable) {
 					continue;
 				}
 				List<Object> values = variable.getValues();
-				if(swt == Compare.EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, values)){
+				if(swt == Compare.EMPTY_VALUE_SWITCH.BREAK && BasicUtil.isEmpty(true, values)) {
 					return false;
 				}
 			}

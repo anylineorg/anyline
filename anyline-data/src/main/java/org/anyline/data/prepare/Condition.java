@@ -41,14 +41,14 @@ public interface Condition extends Cloneable{
 	 * @param connector 是否携带开头的连接符号(and or)默认true
 	 * @return String
 	 */
-	default String getRunText(boolean connector, String prefix, DataRuntime runtime, boolean placeholder){
+	default String getRunText(boolean connector, String prefix, DataRuntime runtime, boolean placeholder) {
 		String txt = getRunText(prefix, runtime, placeholder).trim();
-		if(!connector){
+		if(!connector) {
 			txt = txt.trim();
 			String up = txt.toUpperCase();
-			if(up.startsWith("AND ") || up.startsWith("AND(")){
+			if(up.startsWith("AND ") || up.startsWith("AND(")) {
 				txt = txt.substring(3);
-			}else if(up.startsWith("OR ") || up.startsWith("OR(")){
+			}else if(up.startsWith("OR ") || up.startsWith("OR(")) {
 				txt = txt.substring(2);
 			}
 		}

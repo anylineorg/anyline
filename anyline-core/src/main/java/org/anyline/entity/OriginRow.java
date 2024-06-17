@@ -28,7 +28,7 @@ public class OriginRow extends DataRow {
     private static final Logger log = LoggerFactory.getLogger(OriginRow.class);
     protected KEY_CASE keyCase 				        = KEY_CASE.SRC      ; // 列名格式
 
-    public OriginRow(){
+    public OriginRow() {
         String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
         if (null != pk) {
             primaryKeys.add(DEFAULT_PRIMARY_KEY);
@@ -37,7 +37,7 @@ public class OriginRow extends DataRow {
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();
     }
-    public KEY_CASE keyCase(){
+    public KEY_CASE keyCase() {
         return this.keyCase;
     }
     @Override
@@ -46,7 +46,7 @@ public class OriginRow extends DataRow {
         return this;
     }
 
-    public DataRow put(String key){
+    public DataRow put(String key) {
         DataRow row = new OriginRow();
         put(key, row);
         return row;
@@ -58,12 +58,12 @@ public class OriginRow extends DataRow {
                 if (null == oldValue || !oldValue.equals(value)) {
                     mapPut(key, value);
                 }
-                if(null == value){
-                    if(isInsertNullColumn() || isUpdateNullColumn()){
+                if(null == value) {
+                    if(isInsertNullColumn() || isUpdateNullColumn()) {
                         addUpdateColumns(key);
                     }
-                }else if(BasicUtil.isEmpty(true, value)){
-                    if(isInsertEmptyColumn() || isUpdateEmptyColumn()){
+                }else if(BasicUtil.isEmpty(true, value)) {
+                    if(isInsertEmptyColumn() || isUpdateEmptyColumn()) {
                         addUpdateColumns(key);
                     }
                 }else {

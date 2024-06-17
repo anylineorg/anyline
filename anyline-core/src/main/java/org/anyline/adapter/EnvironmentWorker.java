@@ -57,7 +57,7 @@ public interface EnvironmentWorker {
 
 
 
-    default  <T> T value(Map<String, HashSet<String>>  aliasMap, String prefix, String key, Class<T> clazz, T def){
+    default  <T> T value(Map<String, HashSet<String>>  aliasMap, String prefix, String key, Class<T> clazz, T def) {
         if(null != prefix && null != key) {
             String ps[] = prefix.split(",");
             String ks[] = key.split(",");
@@ -94,7 +94,7 @@ public interface EnvironmentWorker {
      * @return T
      * @param <T> T
      */
-    default  <T> T value(String prefix, String key, Map<String, HashSet<String>> alias, Class<T> clazz, T def){
+    default  <T> T value(String prefix, String key, Map<String, HashSet<String>> alias, Class<T> clazz, T def) {
         if(null != prefix && null != key) {
             String ps[] = prefix.split(",");
             String ks[] = key.split(",");
@@ -120,7 +120,7 @@ public interface EnvironmentWorker {
         }
         return def;
     }
-    default Object value(String prefix, String keys, Map<String, HashSet<String>> alias){
+    default Object value(String prefix, String keys, Map<String, HashSet<String>> alias) {
         return value(prefix, keys, alias, Object.class, null);
     }
     /**

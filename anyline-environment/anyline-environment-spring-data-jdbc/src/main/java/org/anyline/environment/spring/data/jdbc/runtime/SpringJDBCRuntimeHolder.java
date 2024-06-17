@@ -40,10 +40,10 @@ import java.util.Map;
 @Component("anyline.environment.spring.data.runtime.holder.jdbc")
 public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements RuntimeHolder {
     private static final SpringJDBCRuntimeHolder instance = new SpringJDBCRuntimeHolder();
-    public static SpringJDBCRuntimeHolder instance(){
+    public static SpringJDBCRuntimeHolder instance() {
         return instance;
     }
-    public SpringJDBCRuntimeHolder(){
+    public SpringJDBCRuntimeHolder() {
     }
 
     /**
@@ -56,7 +56,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
      */
     public DataRuntime temporary(Object datasource, String database, DriverAdapter adapter) throws Exception {
         SpringJDBCRuntime runtime = new SpringJDBCRuntime();
-        if(datasource instanceof DataSource){
+        if(datasource instanceof DataSource) {
             String key = "temporary_jdbc";
             //关闭上一个
             close(key);
@@ -83,7 +83,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
      * @param key 数据源前缀
      * @param datasource 数据源bean id
      */
-    public DataRuntime reg(String key, String datasource){
+    public DataRuntime reg(String key, String datasource) {
         //ClientHolder.reg(key);
         String template_key = DataRuntime.ANYLINE_JDBC_TEMPLATE_BEAN_PREFIX +  key;
         BeanDefine define = new DefaultBeanDefine(JdbcTemplate.class);
@@ -94,7 +94,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         return reg(key, template, null);
     }
 
-    public DataRuntime reg(String key, DataSource datasource){
+    public DataRuntime reg(String key, DataSource datasource) {
         String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
         ConfigTable.environment().regBean(datasource_key, datasource);
 
@@ -113,10 +113,10 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
      * @param template template
      * @param adapter adapter 可以为空 第一次执行时补齐
      */
-    public SpringJDBCRuntime reg(String datasource, JdbcTemplate template, JDBCAdapter adapter){
+    public SpringJDBCRuntime reg(String datasource, JdbcTemplate template, JDBCAdapter adapter) {
         log.debug("[create jdbc runtime][key:{}]", datasource);
         SpringJDBCRuntime runtime = new SpringJDBCRuntime(datasource, template, adapter);
-        if(runtimes.containsKey(datasource)){
+        if(runtimes.containsKey(datasource)) {
             destroy(datasource);
         }
         runtimes.put(datasource, runtime);
@@ -136,7 +136,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
         ConfigTable.environment().regBean(service_key, serviceDefine);
         return runtime;
     }
-    public boolean destroy(String key){
+    public boolean destroy(String key) {
         try {
             runtimes.remove(key);
             ConfigTable.environment().destroyBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  key);
@@ -149,10 +149,10 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
             log.warn("[注销数据源及相关资源][key:{}]", key);
             //从当前数据源复制的 子源一块注销
             Map<String, DataRuntime> runtimes = RuntimeHolder.runtimes(key);
-            for(String item:runtimes.keySet()){
+            for(String item:runtimes.keySet()) {
                 destroy(item);
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -160,13 +160,13 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
     }
 
 
-    public static void close(String key){
+    public static void close(String key) {
         Object datasource = null;
-        if(ConfigTable.environment().containsBean(key)){
+        if(ConfigTable.environment().containsBean(key)) {
             datasource = ConfigTable.environment().getSingletonBean(key);
             try {
                 closeConnection(datasource);
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -181,7 +181,7 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
     }
     public static void closeConnection(Object datasource) throws Exception {
         Method method = ClassUtil.getMethod(datasource.getClass(), "close");
-        if(null != method){
+        if(null != method) {
             method.invoke(datasource);
         }
     }

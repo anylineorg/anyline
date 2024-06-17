@@ -68,7 +68,7 @@ public class SFTPUtil {
         Channel channel = null; 
         JSch jsch = new JSch(); 
         session = jsch.getSession(this.user, this.host, this.port);
-        if(BasicUtil.isNotEmpty(this.password)){
+        if(BasicUtil.isNotEmpty(this.password)) {
         	session.setPassword(this.password);   
         } 
         Properties sshConfig = new Properties();   
@@ -80,10 +80,10 @@ public class SFTPUtil {
         client = (ChannelSftp) channel; 
 	} 
  
-    public static SFTPUtil getInstance (String host, String account, String password, int port){
+    public static SFTPUtil getInstance (String host, String account, String password, int port) {
     	String key = "host:"+host+", account:"+account+", password:"+password+", port:"+port;
     	SFTPUtil util = instances.get(key); 
-    	if(null == util){
+    	if(null == util) {
     		try {
 				util = new SFTPUtil(host, account, password, port);
 			} catch (Exception e) {
@@ -92,7 +92,7 @@ public class SFTPUtil {
     	} 
     	return util; 
     }   
-    public static SFTPUtil getInstance(String host, String account, String password){
+    public static SFTPUtil getInstance(String host, String account, String password) {
     	return getInstance(host, account, password, 22);
     } 
        
@@ -116,7 +116,7 @@ public class SFTPUtil {
             os = new FileOutputStream(localFile);   
             List<String> list = FTPUtil.formatPath(remote); 
             long fr = System.currentTimeMillis(); 
-            if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
             	log.debug("[文件下载][file:{}]", list.get(0) + list.get(1));
             } 
             String remotePath = list.get(0) + list.get(1); 
@@ -124,7 +124,7 @@ public class SFTPUtil {
             long length = attr.getSize(); 
             SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath, local, length);
             client.get(remotePath, os, process);
-            if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+            if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
             	log.debug("[文件下载完成][耗时:{}][file:{}]", System.currentTimeMillis()-fr, list.get(0) + list.get(1));
             } 
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class SFTPUtil {
      * 断开连接 
      * @return boolean
      */ 
-	public boolean disconnect(){
+	public boolean disconnect() {
         if (session != null) {
             if (session.isConnected()) {
                 session.disconnect();   
@@ -151,13 +151,13 @@ public class SFTPUtil {
         }   
 		return true; 
 	} 
-    public int fileSize(String remoteDir){
+    public int fileSize(String remoteDir) {
     	int size = 0; 
     	try {
 			Vector<?> files = client.ls(remoteDir); 
 			size = files.size(); 
 		} catch (Exception e) {
-			if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+			if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
             	log.debug("[检测文件数量][result:fail][msg:{}]", e.toString());
             } 
 		} 
@@ -217,7 +217,7 @@ public class SFTPUtil {
         mkdir(remoteDir);   
         client.cd(remoteDir);   
         client.put(localFile, remoteFile);
-        if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+        if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
         	log.debug("[文件上传][耗时:{}][local:{}][remote:{}]", DateUtil.conversion(System.currentTimeMillis()-fr), localFile, remoteDir+"/"+remoteFile);
         } 
     }   
@@ -248,7 +248,7 @@ public class SFTPUtil {
      * @throws SftpException 异常  
      */   
     public boolean mkdir(String dir) throws SftpException {
-        if (BasicUtil.isEmpty(dir)){
+        if (BasicUtil.isEmpty(dir)) {
             return false;   
         }
         String md = dir.replaceAll("\\\\", "/");
@@ -267,7 +267,7 @@ public class SFTPUtil {
         String[] dirArr = dir.split("/");   
         String base = "";   
         for (String d : dirArr) {
-        	if(BasicUtil.isEmpty(d)){
+        	if(BasicUtil.isEmpty(d)) {
         		continue; 
         	} 
             base += "/" + d;   
@@ -298,17 +298,17 @@ public class SFTPUtil {
     }   
    
     @SuppressWarnings("unchecked")
-	public List<String> files(String dir){
+	public List<String> files(String dir) {
     	List<String> list = new ArrayList<>();
     	try {
 			Vector<LsEntry> files = client.ls(dir); 
-			for(LsEntry file:files){
+			for(LsEntry file:files) {
 //				int t = file.getAttrs().getATime(); 
 //				String s= file.getAttrs().getAtimeString(); 
 //				int t1 = file.getAttrs().getMTime(); 
 //				String s1= file.getAttrs().getMtimeString(); 
 				String nm = file.getFilename(); 
-				if(".".equals(nm) || "..".equals(nm)){
+				if(".".equals(nm) || "..".equals(nm)) {
 					continue; 
 				} 
 				list.add(nm); 
@@ -316,28 +316,28 @@ public class SFTPUtil {
 		} catch (Exception e) {
 			log.warn("[scan dir error][dir:{}][error:{}]", dir, e.toString());
 		} 
-    	if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+    	if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
     		log.debug("[scan dir][dir:{}][file size:{}]", dir, list.size());
     	} 
     	return list; 
     } 
-    public boolean fileExists(String dir, String file){
+    public boolean fileExists(String dir, String file) {
     	List<String> files = files(dir); 
-    	if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+    	if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
     		log.debug("[check file exists][dir:{}][file:{}]", dir, file);
     	} 
-    	for(String item:files){
-    		if(item.equals(file)){
+    	for(String item:files) {
+    		if(item.equals(file)) {
     			return true; 
     		} 
     	} 
     	return false; 
     } 
-    public boolean fileExists(String path){
+    public boolean fileExists(String path) {
     	List<String> list = FTPUtil.formatPath(path); 
     	String dir = list.get(0); 
     	String file = list.get(1); 
-    	if(ConfigTable.IS_DEBUG && log.isDebugEnabled()){
+    	if(ConfigTable.IS_DEBUG && log.isDebugEnabled()) {
     		log.debug("[check file exists][path:"+path+"]");
     	} 
     	return fileExists(dir, file);
@@ -355,36 +355,36 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	private long startTime = 0; 
 	private long displayTime;		// 最后显示下载时间 
  
-	public SFTPProgressMonitor(String remote, long length){
+	public SFTPProgressMonitor(String remote, long length) {
 		this.remote = remote; 
 		this.length = length; 
 		this.startTime = System.currentTimeMillis(); 
 	} 
-	public SFTPProgressMonitor(String remote, String local, long length){
+	public SFTPProgressMonitor(String remote, String local, long length) {
 		this.remote = remote; 
 		this.local = local; 
 		this.length = length; 
 		this.startTime = System.currentTimeMillis(); 
 	} 
-	public SFTPProgressMonitor(long length){
+	public SFTPProgressMonitor(long length) {
 		this.length = length; 
 		this.startTime = System.currentTimeMillis(); 
 	} 
 	@Override 
 	public boolean count(long count) {
 		double curRate = (transfered+count)/length * 100; 
-		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5 || curRate == 100){
+		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5 || curRate == 100) {
 			displayRate = curRate;  
 			displayTime = System.currentTimeMillis(); 
 			long delay = System.currentTimeMillis()-startTime; 
 			double expect = 0; 
-			if(delay>0 && transfered>0){
+			if(delay>0 && transfered>0) {
 				expect = length / (transfered/delay); 
 				String total_title = "[文件下载][进度:" + FileUtil.progress(length, transfered) +"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(transfered*1000/delay)+"/s)]";
-				if(null != local){
+				if(null != local) {
 					total_title = "[local:"+local+"]" + total_title; 
 				} 
-				if(null != remote){
+				if(null != remote) {
 					total_title = "[remote:"+remote+"]"  + total_title; 
 				} 
 				log.debug(total_title);

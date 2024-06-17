@@ -25,13 +25,13 @@ public class Line extends Geometry{
 
     private Point p1;
     private Point p2;
-    public Line(){}
-    public Line(Point p1, Point p2){
+    public Line() {}
+    public Line(Point p1, Point p2) {
         this.p1 = p1;
         this.p2 = p2;
         slope();
     }
-    public Line(double a, double b, double c){
+    public Line(double a, double b, double c) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -124,16 +124,16 @@ public class Line extends Geometry{
     public String sql(boolean tag, boolean bracket) {
 
         StringBuilder builder = new StringBuilder();
-        if(tag){
+        if(tag) {
             builder.append(tag());
         }
-        if(bracket){
+        if(bracket) {
             builder.append("(");
         }
         builder.append(p1.sql(false, false));
         builder.append(",");
         builder.append(p2.sql(false, false));
-        if(bracket){
+        if(bracket) {
             builder.append(")");
         }
         return builder.toString();
@@ -144,8 +144,8 @@ public class Line extends Geometry{
         return sql(true, true);
     }
 
-    public void slope(){
-        if(null != p1 || null == p2){
+    public void slope() {
+        if(null != p1 || null == p2) {
             return;
         }
         double x1 = p1.x();
@@ -163,7 +163,7 @@ public class Line extends Geometry{
         this.c = y1 - this.a * x1;
     }
     public void point() {
-        if(null==a || null==b || null==c){
+        if(null==a || null==b || null==c) {
             return;
         }
         if (b != 0) {

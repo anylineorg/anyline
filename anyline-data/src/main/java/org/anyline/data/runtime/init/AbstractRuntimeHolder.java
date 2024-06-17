@@ -32,20 +32,20 @@ public abstract class AbstractRuntimeHolder implements RuntimeHolder {
      */
     protected static Map<String, Object> temporary = new HashMap<>();
 
-    public static String parseAdapterKey(String url){
+    public static String parseAdapterKey(String url) {
         return parseParamValue(url, "adapter");
     }
-    public static String parseCatalog(String url){
+    public static String parseCatalog(String url) {
         return parseParamValue(url, "catalog");
     }
-    public static String parseSchema(String url){
+    public static String parseSchema(String url) {
         return parseParamValue(url, "schema");
     }
-    public static String parseParamValue(String url, String key){
+    public static String parseParamValue(String url, String key) {
         String value = null;
-        if(null != url && url.contains(key)){
+        if(null != url && url.contains(key)) {
             value = RegularUtil.cut(url, key+"=", "&");
-            if(BasicUtil.isEmpty(value)){
+            if(BasicUtil.isEmpty(value)) {
                 value = RegularUtil.cut(url, key+"=", RegularUtil.TAG_END);
             }
         }

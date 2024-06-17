@@ -52,31 +52,31 @@ public class CacheUtil {
      * @param sec sec
      * @return boolean
      */
-    public static boolean start(String key, int sec){
+    public static boolean start(String key, int sec) {
     	boolean result = false;
     	Long fr = reflushFlag.get(key);
     	long age = -1;			// 已生存
-    	if(null == fr){
+    	if(null == fr) {
     		result = true;
     	}else{
 	    	age = (System.currentTimeMillis() - fr) / 1000;
-	    	if(age > sec){
+	    	if(age > sec) {
 	    		result = true;
 	    	}
     	}
-    	if(result){
+    	if(result) {
     		reflushFlag.put(key, System.currentTimeMillis());
-    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
     			log.info("[频率控制放行][key:{}][间隔:{}/{}]", key, age, sec);
     		}
     	}else{
-    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
     			log.info("[频率控制拦截][key:{}][间隔:{}/{}]", key, age, sec);
     		}
     	}
     	return result;
     }
-    public static boolean start(String key){
+    public static boolean start(String key) {
     	int period = ConfigTable.getInt(key, 120);		// 两次刷新最小间隔
     	return start(key, period);
     }
@@ -85,29 +85,29 @@ public class CacheUtil {
      * @param key key
      * @param sec sec
      */
-    public static void stop(String key, int sec){
+    public static void stop(String key, int sec) {
     	Long fr = reflushFlag.get(key);
-    	if(null == fr){
-    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+    	if(null == fr) {
+    		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
     			log.info("[频率控制还原完成 有可能key拼写有误][key:{}]", key);
     		}
     		return;
     	}
     	long age = (System.currentTimeMillis() - fr)/1000;			// 已生存
     	
-    	if(age > sec){
+    	if(age > sec) {
     		reflushFlag.remove(key);
     	}
-		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
 			log.info("[频率控制还原完成][key:{}][间隔:{}/{}]", key, age, sec);
 		}
     }
-    public static void stop(String key){
+    public static void stop(String key) {
     	int period = ConfigTable.getInt(key, 120);					// 两次刷新最小间隔
     	stop(key, period);
     }
-    public static boolean isRun(String key){
-    	if(null == reflushFlag.get(key)){
+    public static boolean isRun(String key) {
+    	if(null == reflushFlag.get(key)) {
     		return false;
     	}
     	return true;
@@ -117,10 +117,10 @@ public class CacheUtil {
      * @param key key
      * @return long
      */
-    public static long getRunTime(String key){
+    public static long getRunTime(String key) {
     	long result = -1;
     	Long fr = reflushFlag.get(key);
-    	if(null != fr){
+    	if(null != fr) {
     		return System.currentTimeMillis() - fr;
     	}
     	return result;
@@ -131,11 +131,11 @@ public class CacheUtil {
      * @param row row
      * @return String
      */
-    public static String crateCachePrimaryKey(String table, DataRow row){
+    public static String crateCachePrimaryKey(String table, DataRow row) {
     	String key = table;
     	List<String> pks = row.getPrimaryKeys();
-    	if(BasicUtil.isNotEmpty(pks) && null != row){
-    		for(String pk:pks){
+    	if(BasicUtil.isNotEmpty(pks) && null != row) {
+    		for(String pk:pks) {
     			String value = row.getString(pk);
     			key += "|" + pk + "=" + value;
     		}
@@ -151,38 +151,38 @@ public class CacheUtil {
 	 * @param conditions 固定查询条件
 	 * @return String
 	 */
-	public static String createCacheElementKey(boolean page, boolean order, String dest, ConfigStore store, String ... conditions){
+	public static String createCacheElementKey(boolean page, boolean order, String dest, ConfigStore store, String ... conditions) {
 		conditions = BasicUtil.compress(conditions);
 		StringBuilder result = new StringBuilder(dest + "|");
-		if(null != store){
+		if(null != store) {
 			ConfigChain chain = store.getConfigChain();
-			if(null != chain){
+			if(null != chain) {
 				List<Config> configs = chain.getConfigs();
-				if(null != configs){
-					for(Config config:configs){
+				if(null != configs) {
+					for(Config config:configs) {
 						List<Object> values = config.getValues();
-						if(null != values){
+						if(null != values) {
 							result.append(config).append("|");
 						}
 					}	
 				}
 			}
 			PageNavi navi = store.getPageNavi();
-			if(page && null != navi){
+			if(page && null != navi) {
 				result.append("page=").append(navi.getCurPage()).append("|first=").append(navi.getFirstRow()).append("|last=").append(navi.getLastRow()).append("|");
 			}
-			if(order){
+			if(order) {
 				OrderStore orders = store.getOrders();
-				if(null != orders){
+				if(null != orders) {
 					result.append(orders.getRunText("").toUpperCase()).append("|");
 				}
 			}
 		}
-		if(null != conditions){
-			for(String condition:conditions){
-				if(BasicUtil.isNotEmpty(condition)){
-					if(condition.trim().toUpperCase().startsWith("ORDER")){
-						if(order){
+		if(null != conditions) {
+			for(String condition:conditions) {
+				if(BasicUtil.isNotEmpty(condition)) {
+					if(condition.trim().toUpperCase().startsWith("ORDER")) {
+						if(order) {
 							result.append(condition.toUpperCase()).append("|");
 						}
 					}else{
@@ -191,15 +191,15 @@ public class CacheUtil {
 				}
 			}
 		}
-		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+		if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
 			log.info("[create cache key][key:{}]", result.toString());
 		}
 		return MD5Util.crypto(result.toString());
 	}
 
-	public static String createCacheElementKey(boolean page, boolean order, Table dest, ConfigStore store, String ... conditions){
+	public static String createCacheElementKey(boolean page, boolean order, Table dest, ConfigStore store, String ... conditions) {
 		String key = null;
-		if(null != dest){
+		if(null != dest) {
 			key = dest.toString();
 		}
 		return createCacheElementKey(page, order, key, store, conditions);

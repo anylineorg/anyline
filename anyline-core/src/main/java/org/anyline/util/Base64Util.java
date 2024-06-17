@@ -141,7 +141,7 @@ public class Base64Util {
             return false;
         }
         int len = str.trim().length();
-        if(len == 0){
+        if(len == 0) {
             return false;
         }
         if (len % 4 != 0) {
@@ -153,8 +153,8 @@ public class Base64Util {
             idx ++;
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
                     || c == '+' || c == '/') {
-            }else if(c == '='){
-                if(idx < len - 2){
+            }else if(c == '=') {
+                if(idx < len - 2) {
                     return false;
                 }
             }else {

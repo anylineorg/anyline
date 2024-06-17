@@ -37,15 +37,15 @@ import java.util.Map;
 public class MD5Util {
 	private static final Logger log = LoggerFactory.getLogger(MD5Util.class);  
 
-	public static String sign(String src){
+	public static String sign(String src) {
 		return sign(src, "UTF-8");
 	} 
 	 
-	public static String sign(String src, String encode){
+	public static String sign(String src, String encode) {
 		if(null == src) return ""; 
 		String result = null;
 		 
-        if (!src.isEmpty()){
+        if (!src.isEmpty()) {
             try{
 
         		MessageDigest md = MessageDigest.getInstance("MD5");
@@ -54,7 +54,7 @@ public class MD5Util {
         		else
         			result = NumberUtil.byte2hex(md.digest(src.getBytes(encode)));
         		 
-            } catch(Exception ex){
+            } catch(Exception ex) {
 				log.error("md5 sign exception:", ex);
             }      
         }
@@ -66,16 +66,16 @@ public class MD5Util {
 	 * @param src  src
 	 * @return String
 	 */ 
-	public static String crypto(String src){
+	public static String crypto(String src) {
 		return sign(src, "UTF-8");
     }  
-	public static String crypto(String src, String encode){
+	public static String crypto(String src, String encode) {
 		return sign(src, encode);
     }  
-	public static String crypto2(String str){
+	public static String crypto2(String str) {
 		return crypto2(str, "UTF-8");
 	} 
-	public static String crypto2(String str, String encode){
+	public static String crypto2(String str, String encode) {
 		return crypto(crypto(str, encode), encode);
 	} 
 
@@ -85,7 +85,7 @@ public class MD5Util {
     * @return MD5
     */ 
     public static String crypto(File file) {
-	    if (null == file || !file.isFile() || !file.exists()){
+	    if (null == file || !file.isFile() || !file.exists()) {
 	    	return null; 
 	    } 
 	    MessageDigest digest = null; 
@@ -114,19 +114,19 @@ public class MD5Util {
     * @return Map
     */ 
     public static Map<String, String> crypto(File file, boolean recursion) {
-	    if(null == file || !file.isDirectory() || !file.exists()){
+	    if(null == file || !file.isDirectory() || !file.exists()) {
 	    	return null; 
 	    } 
 	    Map<String, String> map=new HashMap<>();
 	    String md5; 
 	    File files[]=file.listFiles(); 
-	    for(int i=0;i<files.length;i++){
+	    for(int i=0;i<files.length;i++) {
 	    	File f=files[i]; 
-	    	if(f.isDirectory()&&recursion){
+	    	if(f.isDirectory()&&recursion) {
 	    		map.putAll(crypto(f, recursion));
 	    	} else {
 	    		md5=crypto(f);
-	    		if(md5!=null){
+	    		if(md5!=null) {
 	    			map.put(f.getPath(), md5);
 	    		} 
 	    	} 

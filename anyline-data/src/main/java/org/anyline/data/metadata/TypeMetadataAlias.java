@@ -21,7 +21,7 @@ package org.anyline.data.metadata;
 import org.anyline.metadata.type.TypeMetadata;
 
 public interface TypeMetadataAlias {
-    default String input(){
+    default String input() {
         return "";
     }
     /**

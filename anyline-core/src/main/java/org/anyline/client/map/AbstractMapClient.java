@@ -47,7 +47,7 @@ public abstract class AbstractMapClient implements MapClient{
      * @return Coordinate
      */
     @Override
-    public Coordinate geo(String address, String city){
+    public Coordinate geo(String address, String city) {
         if(log.isDebugEnabled()) {
             log.debug(LogUtil.format("子类(" + this.getClass().getName() + ")未实现 Coordinate geo(String address, String city)", 37));
         }
@@ -55,7 +55,7 @@ public abstract class AbstractMapClient implements MapClient{
     }
 
     @Override
-    public Coordinate geo(String address){
+    public Coordinate geo(String address) {
         return geo(address, null);
     }
     /**
@@ -65,7 +65,7 @@ public abstract class AbstractMapClient implements MapClient{
      * @return Coordinate
      */
     @Override
-    public Coordinate regeo(SRS srs, Double lng, Double lat){
+    public Coordinate regeo(SRS srs, Double lng, Double lat) {
         Coordinate coordinate = new Coordinate(srs, lng, lat);
         return regeo(coordinate);
     }
@@ -83,27 +83,27 @@ public abstract class AbstractMapClient implements MapClient{
     public Coordinate regeo(String point)  {
         return regeo(SRS.GCJ02LL, point);
     }
-    public Coordinate regeo(String lng, String lat){
+    public Coordinate regeo(String lng, String lat) {
         return regeo(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     @Override
-    public Coordinate regeo(Double lng, Double lat){
+    public Coordinate regeo(Double lng, Double lat) {
         return regeo(SRS.GCJ02LL, lng, lat);
     }
     @Override
-    public Coordinate regeo(SRS srs, String[] point){
+    public Coordinate regeo(SRS srs, String[] point) {
         return regeo(srs, point[0], point[1]);
     }
     @Override
-    public Coordinate regeo(String[] point){
+    public Coordinate regeo(String[] point) {
         return regeo(point[0], point[1]);
     }
     @Override
-    public Coordinate regeo(SRS srs, Double[] point){
+    public Coordinate regeo(SRS srs, Double[] point) {
         return regeo(srs, point[0], point[1]);
     }
     @Override
-    public Coordinate regeo(Double[] point){
+    public Coordinate regeo(Double[] point) {
         return regeo(point[0], point[1]);
     }
 

@@ -25,22 +25,22 @@ import java.io.Serializable;
 
 public class EdgeTable extends GraphTable implements Serializable {
 
-    public EdgeTable(){
+    public EdgeTable() {
     }
-    public EdgeTable(String name){
+    public EdgeTable(String name) {
         super(name);
     }
 
-    public EdgeTable(String schema, String table){
+    public EdgeTable(String schema, String table) {
         super(schema, table);
     }
-    public EdgeTable(Schema schema, String table){
+    public EdgeTable(Schema schema, String table) {
         super(schema, table);
     }
-    public EdgeTable(String catalog, String schema, String name){
+    public EdgeTable(String catalog, String schema, String name) {
         super(catalog, schema, name);
     }
-    public EdgeTable(Catalog catalog, Schema schema, String name){
+    public EdgeTable(Catalog catalog, Schema schema, String name) {
         super(catalog, schema, name);
     }
 }

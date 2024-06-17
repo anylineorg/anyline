@@ -49,11 +49,11 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	protected String alias;
 	protected List<Join> joins = new ArrayList<Join>();//关联表
 
-	public DefaultAutoPrepare(){
+	public DefaultAutoPrepare() {
 		super();
 		chain = new DefaultAutoConditionChain();
 	}
-	public RunPrepare init(){
+	public RunPrepare init() {
 		return this;
 	}
 
@@ -63,16 +63,16 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * @param table 表
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	public RunPrepare setDest(String table){
-		if(null == table){
+	public RunPrepare setDest(String table) {
+		if(null == table) {
 			return this;
 		}
 		this.table = new Table(table);
 		parseTable(this.table);
 		return this;
 	}
-	public RunPrepare setDest(Table table){
-		if(null == table){
+	public RunPrepare setDest(Table table) {
+		if(null == table) {
 			return this;
 		}
 		this.table = table;
@@ -92,8 +92,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * @param compare  比较方式
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	public RunPrepare addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value){
-		if(null == chain){
+	public RunPrepare addCondition(Compare.EMPTY_VALUE_SWITCH swt, Compare compare, String column, Object value) {
+		if(null == chain) {
 			chain = new DefaultAutoConditionChain();
 		}
 		Condition condition = new DefaultAutoCondition(swt, compare, null, column, value);
@@ -105,10 +105,10 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * 添加静态文本查询条件
 	 */
 	public RunPrepare addCondition(String condition) {
-		if(BasicUtil.isEmpty(condition)){
+		if(BasicUtil.isEmpty(condition)) {
 			return this;
 		}
-		if(condition.contains(":")){
+		if(condition.contains(":")) {
 			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
 			addCondition(parser.getSwt(), parser.getCompare(), parser.getVar(), value);
@@ -137,19 +137,19 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * @param columns  columns
 	 */
 	@Override
-	public RunPrepare addColumn(String columns){
-		if(BasicUtil.isEmpty(columns)){
+	public RunPrepare addColumn(String columns) {
+		if(BasicUtil.isEmpty(columns)) {
 			return this;
 		}
-		if(null == this.columns){
+		if(null == this.columns) {
 			this.columns = new LinkedHashMap<>();
 		}
-		if(columns.contains(",")){
+		if(columns.contains(",")) {
 			// 多列
 			parseMultiColumns(false, columns);
 		}else{
 			// 单列
-			if(columns.startsWith("!")){
+			if(columns.startsWith("!")) {
 				excludeColumn(columns.substring(1));
 			}else {
 				this.columns.put(columns.toUpperCase(), new Column(columns));
@@ -158,8 +158,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 		return this;
 	}
 	@Override
-	public RunPrepare addColumn(Column column){
-		if(null == this.columns){
+	public RunPrepare addColumn(Column column) {
+		if(null == this.columns) {
 			this.columns = new LinkedHashMap<>();
 		}
 		columns.put(column.getName().toUpperCase(), column);
@@ -168,13 +168,13 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 
 	@Override
 	public RunPrepare excludeColumn(String columns) {
-		if(BasicUtil.isEmpty(columns)){
+		if(BasicUtil.isEmpty(columns)) {
 			return this;
 		}
-		if(null == this.excludes){
+		if(null == this.excludes) {
 			this.excludes = new ArrayList<>();
 		}
-		if(columns.contains(",")){
+		if(columns.contains(",")) {
 			// 多列
 			parseMultiColumns(true, columns);
 		}else{
@@ -191,14 +191,14 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * 解析多列
 	 * @param src src
 	 */
-	protected void parseMultiColumns(boolean exclude, String src){
+	protected void parseMultiColumns(boolean exclude, String src) {
 		List<String> cols = new ArrayList<>();
 		// 拆分转义字段(${}) CD, ${ISNULL(NM, '') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
-		while(src.contains("${")){
+		while(src.contains("${")) {
 			src = src.trim();
 			int fr = src.indexOf("${");
 			String tmp = "";
-			if(0 == fr){
+			if(0 == fr) {
 				tmp = src.substring(0, src.indexOf("}")+1);
 				src = src.substring(src.indexOf("}")+1);
 			}else{
@@ -209,8 +209,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 		}
 		cols.add(src);
 		// 二次拆分
-		for(String c:cols){
-			if(c.contains("${")){
+		for(String c:cols) {
+			if(c.contains("${")) {
 				if(exclude) {
 					excludeColumn(c);
 				}else{
@@ -218,7 +218,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 				}
 			}else{
 				String[] cs = c.split(",");
-				for(String item:cs){
+				for(String item:cs) {
 					item = item.trim();
 					if(item.length()>0)
 						addColumn(item);
@@ -236,12 +236,12 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	 * user as u(id, nm)
 	 * &lt;ds_hr&gt;user as u(id, nm)
 	 */
-	public void parseTable(Table table){
-		if(null != table){
+	public void parseTable(Table table) {
+		if(null != table) {
 			String catalog = null;
 			String schema = null;
 			String name = table.getName();
-			if(name.startsWith("<")){
+			if(name.startsWith("<")) {
 				datasoruce = name.substring(1, name.indexOf(">"));
 				name = name.substring(name.indexOf(">")+1);
 			}
@@ -249,48 +249,48 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			String tag = " as ";
 			String lower = name.toLowerCase();
 			int tagIdx = lower.lastIndexOf(tag);
-			if(tagIdx > 0){
-				if(name.substring(tagIdx+tag.length()).contains(")")){
+			if(tagIdx > 0) {
+				if(name.substring(tagIdx+tag.length()).contains(")")) {
 					// 列别名中的as
 				}else{
 					alias = name.substring(tagIdx+tag.length()).trim();
 					name = name.substring(0, tagIdx).trim();
 				}
 			}
-			if(name.contains("(")){
+			if(name.contains("(")) {
 				String colStr = name.substring(name.indexOf("(")+1, name.lastIndexOf(")")).trim();
-				if(colStr.toLowerCase().startsWith("distinct")){
+				if(colStr.toLowerCase().startsWith("distinct")) {
 					distinct = "distinct";
 					colStr = colStr.substring(9).trim();
 				}
 				parseColumn(colStr);
 				name = name.substring(0, name.indexOf("("));
 			}
-			if(null != name && name.contains(".")){
+			if(null != name && name.contains(".")) {
 				String[] tbs = name.split("\\.");
-				if(tbs.length == 2){
+				if(tbs.length == 2) {
 					schema = tbs[0];
 					name = tbs[1];
-				}else if(tbs.length == 3){
+				}else if(tbs.length == 3) {
 					catalog = tbs[0];
 					schema = tbs[1];
 					name = tbs[2];
 				}
 			}
-			if(name.contains(" ")){
+			if(name.contains(" ")) {
 				String[] tmps = name.split(" ");
-				if(tmps[0].contains("(")){
+				if(tmps[0].contains("(")) {
 					// 列中的空格
 				}else {
 					name = tmps[0];
 					alias = tmps[1];
 				}
 			}
-			if(null != catalog){
+			if(null != catalog) {
 				table.setCatalog(catalog);
 				this.catalog = new Catalog(catalog);
 			}
-			if(null != schema){
+			if(null != schema) {
 				table.setSchema(schema);
 				this.schema = new Schema(schema);
 			}
@@ -302,8 +302,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			}
 		}
 	}
-	private void parseColumn(String sql){
-		if(BasicUtil.isEmpty(sql)){
+	private void parseColumn(String sql) {
+		if(BasicUtil.isEmpty(sql)) {
 			return;
 		}
 		if(sql.contains("${")) {
@@ -331,23 +331,23 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 			}
 		}
 	}
-	public String getDest(){
+	public String getDest() {
 		String dest = null;
 		String catalogName = getCatalogName();
 		String schemaName = getSchemaName();
 		String tableName = getTableName();
-		if(BasicUtil.isNotEmpty(catalogName)){
+		if(BasicUtil.isNotEmpty(catalogName)) {
 			dest = catalogName;
 		}
-		if(BasicUtil.isNotEmpty(schemaName)){
-			if(null == dest){
+		if(BasicUtil.isNotEmpty(schemaName)) {
+			if(null == dest) {
 				dest = schemaName;
 			}else{
 				dest += "." + schemaName;
 			}
 		}
-		if(BasicUtil.isNotEmpty(tableName)){
-			if(null == dest){
+		if(BasicUtil.isNotEmpty(tableName)) {
+			if(null == dest) {
 				dest = tableName;
 			}else{
 				dest += "." + tableName;
@@ -364,7 +364,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 
 	@Override
 	public RunPrepare setCatalog(String catalog) {
-		if(BasicUtil.isNotEmpty(catalog)){
+		if(BasicUtil.isNotEmpty(catalog)) {
 			this.catalog = new Catalog(catalog);
 		}else{
 			this.catalog = null;
@@ -384,7 +384,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 
 	@Override
 	public String getCatalogName() {
-		if(null != catalog){
+		if(null != catalog) {
 			return catalog.getName();
 		}
 		return null;
@@ -392,8 +392,8 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	public Schema getSchema() {
 		return schema;
 	}
-	public String getSchemaName(){
-		if(null != schema){
+	public String getSchemaName() {
+		if(null != schema) {
 			return schema.getName();
 		}
 		return null;
@@ -412,7 +412,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	}
 	@Override
 	public String getTableName() {
-		if(null != table){
+		if(null != table) {
 			return table.getName();
 		}
 		return null;
@@ -459,7 +459,7 @@ public abstract class DefaultAutoPrepare extends AbstractRunPrepare implements A
 	}
 
 	@Override
-	public List<Join> getJoins(){
+	public List<Join> getJoins() {
 		return joins;
 	}
 

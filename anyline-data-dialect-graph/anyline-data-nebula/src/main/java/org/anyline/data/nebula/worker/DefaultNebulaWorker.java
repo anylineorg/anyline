@@ -52,7 +52,7 @@ public class DefaultNebulaWorker implements DriverWorker {
     public Class<? extends DriverAdapter> supportAdapterType() {
         return NebulaAdapter.class;
     }
-    protected SessionPool session(DataRuntime runtime){
+    protected SessionPool session(DataRuntime runtime) {
         return ((NebulaRuntime)runtime).session();
     }
     @Override
@@ -101,7 +101,7 @@ public class DefaultNebulaWorker implements DriverWorker {
         final LinkedHashMap<String, Column> metadatas = new LinkedHashMap<>();
         set.setMetadata(metadatas);
         SessionPool sesion = session(runtime);
-        if(null == sesion){
+        if(null == sesion) {
             return set;
         }
         ResultSet rs = sesion.execute(cmd);
@@ -128,8 +128,8 @@ public class DefaultNebulaWorker implements DriverWorker {
         int MERGE_GRAPH_QUERY_RESULT_TABLE = ConfigStore.MERGE_GRAPH_QUERY_RESULT_TABLE(configs);
         int size = rs.rowsSize();
         List<String> cols = rs.getColumnNames();
-        if(IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 2){
-            if(cols.size() == 1){
+        if(IGNORE_GRAPH_QUERY_RESULT_TOP_KEY == 2) {
+            if(cols.size() == 1) {
                 IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = 1;
             }else{
                 IGNORE_GRAPH_QUERY_RESULT_TOP_KEY = 0;
@@ -140,7 +140,7 @@ public class DefaultNebulaWorker implements DriverWorker {
             GraphRow top = new GraphRow();
             for (String col : cols) { //return中的key
                 ValueWrapper wrapper = record.get(col);
-                if(wrapper.isEmpty()){
+                if(wrapper.isEmpty()) {
                     top.put(col, null);
                     continue;
                 }
@@ -193,25 +193,25 @@ public class DefaultNebulaWorker implements DriverWorker {
                             tag_row.put(k, fv);
                         }
                     }
-                }else if(wrapper.isEdge()){
+                }else if(wrapper.isEdge()) {
 
-                }else if(wrapper.isString()){
+                }else if(wrapper.isString()) {
                     top.put(col, wrapper.asString());
-                }else if(wrapper.isBoolean()){
+                }else if(wrapper.isBoolean()) {
                     top.put(col, wrapper.asBoolean());
-                }else if(wrapper.isDouble()){
+                }else if(wrapper.isDouble()) {
                     top.put(col, wrapper.asDouble());
-                }else if(wrapper.isLong()){
+                }else if(wrapper.isLong()) {
                     top.put(col, wrapper.asLong());
-                }else if(wrapper.isDate()){
+                }else if(wrapper.isDate()) {
                     DateWrapper date = wrapper.asDate();
                     LocalDate local = LocalDate.of(date.getYear(), date.getMonth(), date.getDay());
                     top.put(col, local);
-                }else if(wrapper.isTime()){
+                }else if(wrapper.isTime()) {
                     top.put(col, wrapper.asTime().getLocalTime());
-                }else if(wrapper.isDateTime()){
+                }else if(wrapper.isDateTime()) {
                     top.put(col, wrapper.asDateTime().getLocalDateTime());
-                }else if(wrapper.isList()){
+                }else if(wrapper.isList()) {
                     top.put(col, wrapper.asList());
                 }else{
                     top.put(col, wrapper.asString());
@@ -221,9 +221,9 @@ public class DefaultNebulaWorker implements DriverWorker {
         }
 
         StreamHandler _handler = null;
-        if(null != configs){
+        if(null != configs) {
             DataHandler handler = configs.handler();
-            if(handler instanceof StreamHandler){
+            if(handler instanceof StreamHandler) {
                 _handler = (StreamHandler) handler;
             }
         }
@@ -249,12 +249,12 @@ public class DefaultNebulaWorker implements DriverWorker {
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
         long cnt = -1;
         SessionPool session = session(runtime);
-        if(null == session){
+        if(null == session) {
             return cnt;
         }
         String cmd = run.getFinalInsert();
         ResultSet rs = session.execute(cmd);
-        if(!rs.isSucceeded()){
+        if(!rs.isSucceeded()) {
             throw new SQLUpdateException(rs.getErrorMessage());
         }
         cnt = run.getRows();
@@ -266,7 +266,7 @@ public class DefaultNebulaWorker implements DriverWorker {
         SessionPool session = session(runtime);
         String cmd = run.getBuilder().toString();
         ResultSet rs = session.execute(cmd);
-        if(!rs.isSucceeded()){
+        if(!rs.isSucceeded()) {
             throw new SQLUpdateException(rs.getErrorMessage());
         }
         //不返回影响行数
@@ -283,7 +283,7 @@ public class DefaultNebulaWorker implements DriverWorker {
         String cmd = run.getFinalExecute();
         SessionPool session = session(runtime);
         ResultSet rs = session.execute(cmd);
-        if(!rs.isSucceeded()){
+        if(!rs.isSucceeded()) {
             throw new SQLUpdateException(rs.getErrorMessage());
         }
         return 0;

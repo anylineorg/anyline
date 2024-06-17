@@ -67,27 +67,27 @@ public interface DataSourceHolder {
 	 * @param check 驱动类型
 	 * @param holder holder
 	 */
-	static void register(Object check, DataSourceHolder holder){
+	static void register(Object check, DataSourceHolder holder) {
 		instances.put(check, holder);
 	}
 
-	static DataSourceHolder instance(DataRuntime runtime){
+	static DataSourceHolder instance(DataRuntime runtime) {
 		Object processor = runtime.getProcessor();
 		Class clazz = processor.getClass();
 		DataSourceHolder holder = instance(clazz);
 		return holder;
 	}
-	static DataSourceHolder instance(DatabaseType type){
+	static DataSourceHolder instance(DatabaseType type) {
 		return instances.get(type);
 	}
-	static DataSourceHolder instance(Class clazz){
+	static DataSourceHolder instance(Class clazz) {
 		DataSourceHolder holder = instances.get(clazz);
 		//子类
-		if(null == holder){
-			for(Object item: instances.keySet()){
-				if(item instanceof Class){
+		if(null == holder) {
+			for(Object item: instances.keySet()) {
+				if(item instanceof Class) {
 					Class c = (Class) item;
-					if(ClassUtil.isInSub(clazz, c)){
+					if(ClassUtil.isInSub(clazz, c)) {
 						DataSourceHolder h = instances.get(c);
 						instances.put(clazz, h);
 						holder = h;
@@ -96,7 +96,7 @@ public interface DataSourceHolder {
 				}
 			}
 		}
-		if(instances.isEmpty()){
+		if(instances.isEmpty()) {
 			log.warn("[没有可用的DataSourceHolder][有可能是pom中没有依赖anyline-environment-*或纯Java环境没有启动DefaultEnvironmentWorker.start()]");
 		}
 		return holder;
@@ -107,7 +107,7 @@ public interface DataSourceHolder {
 	 * @param check 数据源|jdbc协议|driver.class|url
 	 * @return DataSourceHolder
 	 */
-	static DataSourceHolder instance(String check){
+	static DataSourceHolder instance(String check) {
 		DataSourceHolder holder = instances.get(check);
 		if(null == holder) {
 			try {
@@ -118,30 +118,30 @@ public interface DataSourceHolder {
 			}catch (Exception e) {}
 		}
 		//先提取协议
-		if(null == holder){
-			if(check.contains("://")){ // jdbc:postgresql://localhost:35432/simple
+		if(null == holder) {
+			if(check.contains("://")) { // jdbc:postgresql://localhost:35432/simple
 				String[] chks = check.split("://");
 				holder = instances.get(chks[0]); //jdbc:postgresql
 			}
 		}
 		//再提取adapter(数据库类型)
-		if(null == holder){
+		if(null == holder) {
 			String adapter = DataSourceUtil.parseAdapterKey(check);
-			if(null != adapter){
+			if(null != adapter) {
 				holder = instances.get(adapter.toUpperCase());
 			}
 		}
 		return holder;
 	}
-	static DataSourceHolder instance(Object chk){
+	static DataSourceHolder instance(Object chk) {
 		DataSourceHolder holder = null;
-		if(chk instanceof DataRuntime){
+		if(chk instanceof DataRuntime) {
 			holder = instance((DataRuntime) chk);
-		}else if(chk instanceof Class){
+		}else if(chk instanceof Class) {
 			holder = instance((Class) chk);
-		}else if(chk instanceof DatabaseType){
+		}else if(chk instanceof DatabaseType) {
 			holder = instance((DatabaseType) chk);
-		}else if(chk instanceof String){
+		}else if(chk instanceof String) {
 			holder = instance((String)chk);
 		}
 		return holder;
@@ -161,10 +161,10 @@ public interface DataSourceHolder {
 	 */
 	static String reg(String key, String pool, String driver, String url, String user, String password) throws Exception {
 		DataSourceHolder instance = instance(pool);
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(driver);
 		}
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(url);
 		}
 		if(null != instance) {
@@ -185,7 +185,7 @@ public interface DataSourceHolder {
 	 */
 	static String reg(String key, DatabaseType type, String url, String user, String password) throws Exception{
 		DataSourceHolder instance = instance(type);
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(url);
 		}
 		if(null != instance) {
@@ -200,19 +200,19 @@ public interface DataSourceHolder {
 
 	static String reg(String key, Map<String, Object> param, boolean override) throws Exception {
 		DataSourceHolder instance = instance(param.get("url"));
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(param.get("driver"));
 		}
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(param.get("url"));
 		}
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(param.get("adapter"));
 		}
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(param.get("type"));
 		}
-		if(null != instance){
+		if(null != instance) {
 			return instance.create(key, param, override);
 		}
 		return null;
@@ -220,10 +220,10 @@ public interface DataSourceHolder {
 
 	static DataRuntime reg(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
 		DataSourceHolder instance = instance(DataSource.class);
-		if(null == instance){
+		if(null == instance) {
 			instance = instance(type);
 		}
-		if (null != instance){
+		if (null != instance) {
 			return instance.create(key, datasource, database, type, adapter, override);
 		}
 		return null;
@@ -261,8 +261,8 @@ public interface DataSourceHolder {
 	 * @throws Exception 如果存在 并 不可覆盖会抛出异常
 	 */
 	static void check(String key, boolean override) throws Exception {
-		if(contains(key)){
-			if(!override){
+		if(contains(key)) {
+			if(!override) {
 				throw new Exception("[数据源重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 			}else{
 				//清空
@@ -276,7 +276,7 @@ public interface DataSourceHolder {
 	 * @param datasource 数据源名称
 	 * @return boolean
 	 */
-	static boolean contains(String datasource){
+	static boolean contains(String datasource) {
 		return RuntimeHolder.contains(datasource);
 	}
 
@@ -285,10 +285,10 @@ public interface DataSourceHolder {
 	 * @param datasource 数据源名称
 	 * @return 数据库类型
 	 */
-	static DatabaseType dialect(String datasource){
+	static DatabaseType dialect(String datasource) {
 		return types.get(datasource);
 	}
-	static void dialect(String datasource, DatabaseType type){
+	static void dialect(String datasource, DatabaseType type) {
 		types.put(datasource, type);
 	}
 
@@ -296,7 +296,7 @@ public interface DataSourceHolder {
 	 * 已注册成功的所有数据源
 	 * @return List
 	 */
-	static List<String> list(){
+	static List<String> list() {
 		return RuntimeHolder.keys();
 	}
 
@@ -305,12 +305,12 @@ public interface DataSourceHolder {
 	 * @param datasource 数据源
 	 * @return boolean
 	 */
-	static boolean validity(String datasource){
+	static boolean validity(String datasource) {
 		DataSourceHolder instance = instance(datasource);
-		if(null != instance){
+		if(null != instance) {
 			try {
 				return instance.validate(datasource);
-			}catch (Exception e){
+			}catch (Exception e) {
 				return false;
 			}
 		}
@@ -321,12 +321,12 @@ public interface DataSourceHolder {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @return boolean
 	 */
-	static boolean validity(DataRuntime runtime){
+	static boolean validity(DataRuntime runtime) {
 		DataSourceHolder instance = instance(runtime);
-		if(null != instance){
+		if(null != instance) {
 			try {
 				return instance.validate(runtime);
-			}catch (Exception e){
+			}catch (Exception e) {
 				return false;
 			}
 		}
@@ -451,12 +451,12 @@ public interface DataSourceHolder {
 	}
 	default DataRuntime create(String key, Object datasource, DatabaseType type) throws Exception {
 		DataRuntime runtime = runtime(key, datasource, false);
-		if(null != runtime && null != type){
+		if(null != runtime && null != type) {
 			runtime.setAdapterKey(type.name());
 		}
 		return runtime;
 	}
-	default DataSource create(String key, Connection connection){
+	default DataSource create(String key, Connection connection) {
 		return create(key, connection, false);
 	}
 
@@ -492,38 +492,38 @@ public interface DataSourceHolder {
 	 * @param datasource 数据源
 	 * @return list
 	 */
-	static List<String> copy(String datasource){
+	static List<String> copy(String datasource) {
 		return copy(RuntimeHolder.runtime(datasource));
 	}
-	static List<String> copy(){
+	static List<String> copy() {
 		return copy(RuntimeHolder.runtime());
 	}
-	static List<String> copy(DataRuntime runtime){
+	static List<String> copy(DataRuntime runtime) {
 		List<String> list = new ArrayList<>();
 		//查看结果
 		AnylineService service = ServiceProxy.service(runtime.datasource());
 		LinkedHashMap<String, Database> databases = service.metadata().databases();
 		Map<String, Object> map = params.get(runtime.datasource());
-		if(null == map){
+		if(null == map) {
 			log.warn("不是从anyline创建的数据源获取不到数据源参数");
 			return list;
 		}
-		for(String database:databases.keySet()){
+		for(String database:databases.keySet()) {
 			Map<String, Object> copy_params = new HashMap<>();
 			BeanUtil.copy(copy_params, map);
 			String key = runtime.datasource() + "_" + database.toLowerCase();
-			if(RuntimeHolder.contains(key)){
+			if(RuntimeHolder.contains(key)) {
 				list.add(key);
 				continue;
 			}
 			HashSet<String> fieldatasource = DataSourceKeyMap.alias("url");
-			for(String field:fieldatasource){
+			for(String field:fieldatasource) {
 				String value = (String) copy_params.get(field);
-				if(null != value){
+				if(null != value) {
 					// jdbc:mysql://localhost:36932/db?
 					String head = value.split("\\?")[0];
 					String db = head.substring(head.lastIndexOf("/")+1);
-					if(db == null || db.equalsIgnoreCase(database)){
+					if(db == null || db.equalsIgnoreCase(database)) {
 						continue;
 					}
 					value = value.replace("/"+db, "/"+database);
@@ -536,22 +536,22 @@ public interface DataSourceHolder {
 					RuntimeHolder.runtime(key).origin(runtime.getKey());
 					list.add(key);
 				}
-			}catch (Exception e){
+			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return list;
 	}
 
-	default String regTransactionManager(String key, DataSource datasource){
+	default String regTransactionManager(String key, DataSource datasource) {
 		return regTransactionManager(key, datasource, false);
 	}
 	String regTransactionManager(String key, DataSource datasource, boolean primary);
 
-	default String regTransactionManager(String key, String datasource){
+	default String regTransactionManager(String key, String datasource) {
 		return regTransactionManager(key, datasource, false);
 	}
-	default String regTransactionManager(String key, String datasource, boolean primary){
+	default String regTransactionManager(String key, String datasource, boolean primary) {
 		return regTransactionManager(key, ConfigTable.environment().getBean(datasource, DataSource.class), primary);
 	}
 	/**
@@ -590,10 +590,10 @@ public interface DataSourceHolder {
 	String inject(String key, String prefix, Map<String, Object> params,  boolean override) throws Exception;
 
 
-	default  <T> T value(Map map, String keys, Class<T> clazz, T def){
+	default  <T> T value(Map map, String keys, Class<T> clazz, T def) {
 		return BeanUtil.value(map, keys, DataSourceKeyMap.maps, clazz, def);
 	}
-	default <T> T value(String prefix, String keys, Class<T> clazz, T def){
+	default <T> T value(String prefix, String keys, Class<T> clazz, T def) {
 		return ConfigTable.environment().value(prefix, keys, DataSourceKeyMap.maps, clazz, def);
 	}
 

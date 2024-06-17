@@ -47,13 +47,13 @@ public interface ConfigChain extends Config{
 	 * 过滤不存在的列
 	 * @param metadatas 可用范围
 	 */
-	default void filter(LinkedHashMap<String, Column> metadatas){
+	default void filter(LinkedHashMap<String, Column> metadatas) {
 		List<Config> configs = getConfigs();
-		if(null != configs){
+		if(null != configs) {
 			int size = configs.size();
-			for(int i=size-1; i>=0; i--){
+			for(int i=size-1; i>=0; i--) {
 				Config config = configs.get(i);
-				if(config instanceof ConfigChain){
+				if(config instanceof ConfigChain) {
 					((ConfigChain)config).filter(metadatas);
 				}else {
 					String key = config.getVariable();

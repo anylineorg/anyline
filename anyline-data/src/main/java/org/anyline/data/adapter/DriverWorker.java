@@ -46,7 +46,7 @@ public interface DriverWorker {
      * 支持相同DriverAdapter的worker只有一个生效，以优先级最高的为准
      * @return int
      */
-    default int priority(){
+    default int priority() {
         return 0;
     }
     DataSource getDataSource(DriverAdapter adapter, DataRuntime runtime);
@@ -156,7 +156,7 @@ public interface DriverWorker {
      * @param comment 是否需要查询列注释
      * @return LinkedHashMap
      */
-    default LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment){
+    default LinkedHashMap<String, Column> metadata(DriverAdapter adapter, DataRuntime runtime, String random, Run run, boolean comment) {
         return new LinkedHashMap<>();
     }
 

@@ -72,7 +72,7 @@ import java.util.*;
 public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder implements DataSourceHolder{
 	private Logger log = LoggerFactory.getLogger(ElasticSearchDataSourceHolder.class);
 
-	public ElasticSearchDataSourceHolder(){
+	public ElasticSearchDataSourceHolder() {
 		DataSourceHolderProxy.reg(DataSource.class, this);
 		DataSourceHolderProxy.reg(RestClient.class, this);
 	}
@@ -140,26 +140,26 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	@Override
 	public String reg(String key, String prefix) {
 		try {
-			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")){
+			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")) {
 				prefix += ".";
 			}
 			String url = ConfigTable.environment().string(prefix, "url");
-			if(BasicUtil.isEmpty(url)){
+			if(BasicUtil.isEmpty(url)) {
 				return null;
 			}
 
 			String type = ConfigTable.environment().string(prefix, "type");
-			if(null == type){//未设置类型 先取默认数据源类型
+			if(null == type) {//未设置类型 先取默认数据源类型
 				type = ConfigTable.environment().string(prefix.substring(0, prefix.length()- key.length()-1), "type");
 			}
 
-			if(null == type || !type.contains("ElasticSearchDataSource")){
+			if(null == type || !type.contains("ElasticSearchDataSource")) {
 				//只注册es驱动
 				return null;
 			}
 			Map<String, Object> map = new HashMap<>();
 			String ds = inject(key, prefix, map, true);
-			if(null == ds){//创建数据源失败
+			if(null == ds) {//创建数据源失败
 				return null;
 			}
 			init(key, ds, false);
@@ -196,23 +196,23 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 
 	private String inject(String key, String prefix, Map<String, Object> params, boolean override) throws Exception {
 		Map<String, Object> cache = DataSourceHolder.params.get(key);
-		if(null == cache){
+		if(null == cache) {
 			cache = new HashMap<>();
 			DataSourceHolder.params.put(key, cache);
 		}
 		check(key, override);
 		String url =  value(params, "url", String.class, null);
-		if(BasicUtil.isEmpty(url)){
+		if(BasicUtil.isEmpty(url)) {
 			url = ConfigTable.environment().string(prefix, "url");
 		}
-		if(BasicUtil.isEmpty(url)){
+		if(BasicUtil.isEmpty(url)) {
 			return null;
 		}
 		String type = value(params, "type", String.class, null);
-		if(BasicUtil.isEmpty(type)){
+		if(BasicUtil.isEmpty(type)) {
 			type = ConfigTable.environment().string(prefix, "type");
 		}
-		if(null == type || !type.contains("ElasticSearchDataSource")){
+		if(null == type || !type.contains("ElasticSearchDataSource")) {
 			//只注册ElasticSearchDataSource类型
 			return null;
 		}
@@ -222,7 +222,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			String[] hosts = url.split(",");
 			HttpHost[] posts = new HttpHost[hosts.length];
 			int idx = 0;
-			for(String host:hosts){
+			for(String host:hosts) {
 				String[] tmps = host.split(":");
 				String schema = tmps[0];
 				String ip = tmps[1].replace("//","");
@@ -336,26 +336,26 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	 * @return boolean
 	 *//*
 
-	public boolean validate(String ds){
+	public boolean validate(String ds) {
 		return validate(RuntimeHolder.runtime(ds));
 	}
-	public boolean validate(){
+	public boolean validate() {
 		return validate(RuntimeHolder.runtime());
 	}
-	public boolean validate(DataRuntime runtime){
+	public boolean validate(DataRuntime runtime) {
 		RestClient client = (RestClient) runtime.getProcessor();
 		return validate(client);
 	}
 
-	public boolean validate(RestClient client){
+	public boolean validate(RestClient client) {
 		try{
 			return exeValidate(client);
-		}catch (Exception e){
+		}catch (Exception e) {
 			return false;
 		}
 	}
 
-	public boolean exeValidate(RestClient client){
+	public boolean exeValidate(RestClient client) {
 		return client.isRunning();
 	}
 
@@ -376,13 +376,13 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	public void calldestroy(String datasource) {
 		exedestroy(datasource);
 	}
-	private void exedestroy(String datasource){
+	private void exedestroy(String datasource) {
 		ElasticSearchRuntimeHolder.destroy(datasource);
 	}
-	public List<String> copy(){
+	public List<String> copy() {
 		return copy("default");
 	}
-	public List<String> copy(String datasource){
+	public List<String> copy(String datasource) {
 		DataRuntime runtime = RuntimeHolder.runtime(datasource);
 		return copy(runtime);
 	}
@@ -401,32 +401,32 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 	public List<String> callCopy(DataRuntime runtime) {
 		return exeCopy(runtime);
 	}
-	private List<String> exeCopy(DataRuntime runtime){
+	private List<String> exeCopy(DataRuntime runtime) {
 		List<String> list = new ArrayList<>();
 		//查看结果
 		AnylineService service = ServiceProxy.service(runtime.datasource());
 		LinkedHashMap<String, Database> databases = service.metadata().databases();
 		Map<String,Object> map = params.get(runtime.datasource());
-		if(null == map){
+		if(null == map) {
 			log.warn("不是从anyline创建的数据源获取不到数据源参数");
 			return list;
 		}
-		for(String database:databases.keySet()){
+		for(String database:databases.keySet()) {
 			Map<String, Object> copy_params = new HashMap<>();
 			BeanUtil.copy(copy_params, map);
 			String key = runtime.datasource() + "_" + database.toLowerCase();
-			if(RuntimeHolder.contains(key)){
+			if(RuntimeHolder.contains(key)) {
 				list.add(key);
 				continue;
 			}
 			HashSet<String> fields = DataSourceKeyMap.alias("url");
-			for(String field:fields){
+			for(String field:fields) {
 				String value = (String) copy_params.get(field);
-				if(null != value){
+				if(null != value) {
 					// jdbc:mysql://localhost:36932/db?
 					String head = value.split("\\?")[0];
 					String db = head.substring(head.lastIndexOf("/")+1);
-					if(db == null || db.equalsIgnoreCase(database)){
+					if(db == null || db.equalsIgnoreCase(database)) {
 						continue;
 					}
 					value = value.replace("/"+db, "/"+database);
@@ -439,7 +439,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 					RuntimeHolder.runtime(key).origin(runtime.getKey());
 					list.add(key);
 				}
-			}catch (Exception e){
+			}catch (Exception e) {
                 log.error("复制数据源 异常:", e);
 			}
 		}

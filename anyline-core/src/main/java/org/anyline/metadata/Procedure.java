@@ -36,23 +36,23 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	private boolean hasReturn = false;
 	private PageNavi navi;
 
-	public Procedure(String name){
+	public Procedure(String name) {
 		this();
 		this.name = name;
 	}
-	public Procedure(){}
+	public Procedure() {}
 
 	public Procedure addInput(Parameter... params) {
-		if(null != params){
-			for(Parameter parameter:params){
+		if(null != params) {
+			for(Parameter parameter:params) {
 				inputs.add(parameter);
 			}
 		}
 		return this;
 	}
 	public Procedure addOutput(Parameter... params) {
-		if(null != params){
-			for(Parameter parameter:params){
+		if(null != params) {
+			for(Parameter parameter:params) {
 				outputs.add(parameter);
 			}
 		}
@@ -65,14 +65,14 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	 * @param type	类型 type	类型
 	 * @return Procedure
 	 */
-	public Procedure addInput(Object value, Integer type){
+	public Procedure addInput(Object value, Integer type) {
 		Parameter param = new Parameter();
 		param.setType(type);
 		param.setValue(value);
 		inputs.add(param);
 		return this;
 	}
-	public Procedure addInput(String value){
+	public Procedure addInput(String value) {
 		return addInput(value, java.sql.Types.VARCHAR);
 	}
 
@@ -81,7 +81,7 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	 * @param type	类型 type	类型
 	 * @return Procedure
 	 */
-	public Procedure regOutput(Integer type){
+	public Procedure regOutput(Integer type) {
 		return regOutput(null, type);
 	}
 
@@ -89,7 +89,7 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 	 * 注册输出参数(调用过程)
 	 * @return Procedure
 	 */
-	public Procedure regOutput(){
+	public Procedure regOutput() {
 		return regOutput(java.sql.Types.VARCHAR);
 	}
 
@@ -120,7 +120,7 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 		return this;
 	}
 	public List<Object> getResult() {
-		if(getmap && null != update){
+		if(getmap && null != update) {
 			return update.result;
 		}
 		return result;
@@ -129,36 +129,36 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 		this.result = result;
 		return this;
 	}
-	public List<Object> getOutput(){
-		if(getmap && null != update){
+	public List<Object> getOutput() {
+		if(getmap && null != update) {
 			return update.result;
 		}
 		return result;
 	}
 
 	public List<Parameter> getInputs() {
-		if(getmap && null != update){
+		if(getmap && null != update) {
 			return update.inputs;
 		}
 		return inputs;
 	}
 
 	public List<Parameter> getOutputs() {
-		if(getmap && null != update){
+		if(getmap && null != update) {
 			return update.outputs;
 		}
 		return outputs;
 	}
 
-	public Procedure regReturn(){
-		if(getmap && null != update){
+	public Procedure regReturn() {
+		if(getmap && null != update) {
 			return update.regReturn();
 		}
 		hasReturn = true;
 		return this;
 	}
-	public boolean hasReturn(){
-		if(getmap && null != update){
+	public boolean hasReturn() {
+		if(getmap && null != update) {
 			return update.hasReturn;
 		}
 		return hasReturn;
@@ -173,14 +173,14 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 		return this;
 	}
 	public String getReturnType() {
-		if(getmap && null != update){
+		if(getmap && null != update) {
 			return update.returnType;
 		}
 		return returnType;
 	}
 
 	public Procedure setReturnType(String returnType) {
-		if(setmap && null != update){
+		if(setmap && null != update) {
 			update.returnType = returnType;
 		}
 		this.returnType = returnType;
@@ -191,19 +191,19 @@ public class Procedure extends Metadata<Procedure> implements Serializable {
 		Procedure copy = super.clone();
 
 		List<Parameter> parameters = new ArrayList<>();
-		for(Parameter parameter:this.parameters){
+		for(Parameter parameter:this.parameters) {
 			parameters.add(parameter.clone());
 		}
 		copy.parameters = parameters;
 
 		List<Parameter> inputs = new ArrayList<>();
-		for(Parameter parameter:this.inputs){
+		for(Parameter parameter:this.inputs) {
 			inputs.add(parameter.clone());
 		}
 		copy.inputs = inputs;
 
 		List<Parameter> outputs = new ArrayList<>();
-		for(Parameter parameter:this.outputs){
+		for(Parameter parameter:this.outputs) {
 			outputs.add(parameter.clone());
 		}
 		copy.outputs = outputs;

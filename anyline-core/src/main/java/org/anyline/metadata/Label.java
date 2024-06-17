@@ -24,22 +24,22 @@ public class Label extends Table<Label> implements Serializable {
     protected String keyword = "LABEL"            ;
     protected Label update;
 
-    public Label(){
+    public Label() {
         this(null);
     }
-    public Label(String name){
+    public Label(String name) {
         this(null, name);
     }
-    public Label(Schema schema, String table){
+    public Label(Schema schema, String table) {
         this(null, schema, table);
     }
-    public Label(Catalog catalog, Schema schema, String name){
+    public Label(Catalog catalog, Schema schema, String name) {
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
     }
 
-    public Label drop(){
+    public Label drop() {
         this.action = ACTION.DDL.COLUMN_DROP;
         return super.drop();
     }
@@ -48,7 +48,7 @@ public class Label extends Table<Label> implements Serializable {
         return this.keyword;
     }
 
-    public String toString(){
+    public String toString() {
         return this.keyword+":"+name;
     }
 }

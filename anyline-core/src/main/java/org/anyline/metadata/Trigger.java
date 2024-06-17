@@ -32,10 +32,10 @@ public class Trigger extends Metadata<Trigger> implements Serializable {
         AFTER("AFTER"),
         INSTEAD ("INSTEAD OF");
         final String sql;
-        TIME(String sql){
+        TIME(String sql) {
             this.sql = sql;
         }
-        public String sql(){
+        public String sql() {
             return sql;
         }
     }
@@ -43,7 +43,7 @@ public class Trigger extends Metadata<Trigger> implements Serializable {
     private List<EVENT> events = new ArrayList<>();
     private boolean each = true; //每行触发发
 
-    public Trigger drop(){
+    public Trigger drop() {
         this.action = ACTION.DDL.TRIGGER_DROP;
         return super.drop();
     }
@@ -52,14 +52,14 @@ public class Trigger extends Metadata<Trigger> implements Serializable {
     }
 
     public TIME getTime() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return ((Trigger)update).time;
         }
         return time;
     }
 
     public Trigger setTime(TIME time) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             ((Trigger)update).time = time;
             return this;
         }
@@ -67,7 +67,7 @@ public class Trigger extends Metadata<Trigger> implements Serializable {
         return this;
     }
     public Trigger setTime(String time) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             ((Trigger)update).setTime(time);
             return this;
         }
@@ -76,35 +76,35 @@ public class Trigger extends Metadata<Trigger> implements Serializable {
     }
 
     public List<EVENT> getEvents() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return ((Trigger)update).events;
         }
         return events;
     }
 
     public Trigger addEvent(EVENT ... events) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             ((Trigger)update).addEvent(events);
             return this;
         }
-        for(EVENT event:events){
+        for(EVENT event:events) {
             this.events.add(event);
         }
         return this;
     }
     public Trigger addEvent(String ... events) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             ((Trigger)update).addEvent(events);
             return this;
         }
-        for(String event:events){
+        for(String event:events) {
             this.events.add(EVENT.valueOf(event));
         }
         return this;
     }
 
     public boolean isEach() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return ((Trigger)update).each;
         }
         return each;

@@ -44,14 +44,14 @@ public enum Aggregation {
     VARPA		    ("VARPA"  		, "总体方差(空值参与)");
     final String code;
     final String name;
-    Aggregation(String code, String name){
+    Aggregation(String code, String name) {
         this.code = code;
         this.name = name;
     }
-    public String getName(){
+    public String getName() {
         return name;
     }
-    public String getCode(){
+    public String getCode() {
         return code;
     }
 }

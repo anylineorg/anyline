@@ -27,14 +27,14 @@ public class Function extends Metadata<Function> implements Serializable {
     protected List<Parameter> parameters = new ArrayList<>();
 
     public List<Parameter> getParameters() {
-        if(getmap && null != update){
+        if(getmap && null != update) {
             return update.parameters;
         }
         return parameters;
     }
 
     public Function setParameters(List<Parameter> parameters) {
-        if(setmap && null != update){
+        if(setmap && null != update) {
             update.parameters = parameters;
             return this;
         }
@@ -49,7 +49,7 @@ public class Function extends Metadata<Function> implements Serializable {
     public Function clone() {
         Function copy = super.clone();
         List<Parameter> pms = new ArrayList<>();
-        for(Parameter parameter:parameters){
+        for(Parameter parameter:parameters) {
             pms.add(parameter.clone());
         }
         copy.parameters = pms;

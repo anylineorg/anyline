@@ -56,10 +56,10 @@ public abstract class AbstractCondition implements Condition {
 	//protected boolean apart = false										;   // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality = true								;   // 是否作为一个整体，不可分割，与其他条件合并时以()包围
 
-	public void init(){
+	public void init() {
 	} 
-	public void initRunValue(){
-		if(null == runValues){
+	public void initRunValue() {
+		if(null == runValues) {
 			runValues = new ArrayList<>();
 		}else{
 			runValues.clear(); 
@@ -67,26 +67,26 @@ public abstract class AbstractCondition implements Condition {
 		setValue = false;
 	}
 	@Override 
-	public void setActive(boolean active){
+	public void setActive(boolean active) {
 		this.active = active; 
 	}
 	@Override
-	public boolean isActive(){
+	public boolean isActive() {
 		return active; 
 	}
 	@Override
-	public List<RunValue> getRunValues(){
+	public List<RunValue> getRunValues() {
 		return runValues; 
 	}
 
 	@Override
-	public Condition setJoin(String join){
+	public Condition setJoin(String join) {
 		this.join = join; 
 		return this; 
 	}
 
 	@Override
-	public String getJoin(){
+	public String getJoin() {
 		return join; 
 	}
 	@Override
@@ -99,15 +99,15 @@ public abstract class AbstractCondition implements Condition {
 		return this; 
 	}
 	@Override
-	public boolean hasContainer(){
+	public boolean hasContainer() {
 		return (null != container); 
 	}
 	@Override
-	public boolean isContainer(){
+	public boolean isContainer() {
 		return (this instanceof ConditionChain); 
 	}
 	@Override
-	public String getId(){
+	public String getId() {
 		return id; 
 	}
 	@Override
@@ -125,9 +125,9 @@ public abstract class AbstractCondition implements Condition {
 	 * @param values  values
 	 */
 	@Override
-	public void setValue(String variable, Object values){
+	public void setValue(String variable, Object values) {
 		Variable var = getVariable(variable);
-		if(null != var){
+		if(null != var) {
 			var.setValue(values);
 			setValue = true;
 		}
@@ -142,34 +142,34 @@ public abstract class AbstractCondition implements Condition {
 		return test;
 	}
 	@Override
-	public Map<String, Object> getRunValuesMap(){
+	public Map<String, Object> getRunValuesMap() {
 		return runValuesMap;
 	}
 	@Override
-	public boolean isValid(){
-		if(null != vaild && !vaild){
+	public boolean isValid() {
+		if(null != vaild && !vaild) {
 			return false;
 		}
-		if(swt == EMPTY_VALUE_SWITCH.BREAK && ! isActive()){
+		if(swt == EMPTY_VALUE_SWITCH.BREAK && ! isActive()) {
 			return false;
 		}
 		return true;
 	}
 
-	public void setValid(boolean valid){
+	public void setValid(boolean valid) {
 		this.vaild = valid;
 	}
 
 	@Override
 	public Variable getVariable(String var) {
-		if(null == variables || null == var){
+		if(null == variables || null == var) {
 			return null;
 		}
-		for(Variable variable:variables){
-			if(null == variable){
+		for(Variable variable:variables) {
+			if(null == variable) {
 				continue;
 			}
-			if(var.equalsIgnoreCase(variable.getKey())){
+			if(var.equalsIgnoreCase(variable.getKey())) {
 				return variable;
 			}
 		}
@@ -177,7 +177,7 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
-	public List<Variable> getVariables(){
+	public List<Variable> getVariables() {
 		return variables;
 	}
 	@Override
@@ -197,7 +197,7 @@ public abstract class AbstractCondition implements Condition {
 	@Override
 	public boolean isSetValue(String variable) {
 		Variable var = getVariable(variable);
-		if(null != var){
+		if(null != var) {
 			return var.isSetValue();
 		}
 		return false;
@@ -235,17 +235,17 @@ public abstract class AbstractCondition implements Condition {
 		AbstractCondition clone = null;
 		try {
 			clone = (AbstractCondition) super.clone();
-		}catch (Exception e){
+		}catch (Exception e) {
 		}
-		if(null != runValues){
+		if(null != runValues) {
 			List<RunValue> cRunValues = new ArrayList<>();
-			for(RunValue obj:runValues){
+			for(RunValue obj:runValues) {
 				RunValue tmp = obj;
 				cRunValues.add(tmp);
 			}
 			clone.runValues = cRunValues;
 		}
-		if(null != container){
+		if(null != container) {
 			clone.container = container.clone();
 		}
 		return clone;

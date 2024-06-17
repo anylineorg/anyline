@@ -48,13 +48,13 @@ public class DefaultConfig implements Config {
 	protected boolean overValue		 = true  ; // 相同查询条件第二次赋值是否覆盖上一次的值，如果不覆盖则追加到集合中
 	//protected boolean apart          = false ; // 是否需要跟前面的条件 隔离，前面所有条件加到()中
 	protected boolean integrality    = true	 ; // 是否作为一个整体，不可分割，与其他条件合并时以()包围
-	public DefaultConfig(){
+	public DefaultConfig() {
 		this.parser = new ParseResult();
 	}
-	public DefaultConfig(ParseResult parser){
+	public DefaultConfig(ParseResult parser) {
 		this.parser = parser;
 	}
-	public String toString(){
+	public String toString() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("join", this.getJoin());
 		map.put("prefix", this.getPrefix());
@@ -64,10 +64,10 @@ public class DefaultConfig implements Config {
 		map.put("values", values);
 		return BeanUtil.map2json(map);
 	}
-	public DataRow map(boolean empty){
+	public DataRow map(boolean empty) {
 		DataRow row = new OriginRow();
 		String join = getJoin();
-		if(null != join){
+		if(null != join) {
 			join = join.trim();
 		}
 		row.put("join", join);
@@ -85,7 +85,7 @@ public class DefaultConfig implements Config {
 		row.put("compare", getCompareCode());
 		if("or".equalsIgnoreCase(join)) {
 			if(empty || BasicUtil.isNotEmpty(orValues) || BasicUtil.isNotEmpty(values)) {
-				if(BasicUtil.isEmpty(orValues)){
+				if(BasicUtil.isEmpty(orValues)) {
 					row.put("values", values);
 				}else {
 					row.put("values", orValues);
@@ -101,10 +101,10 @@ public class DefaultConfig implements Config {
 		row.put("parser", parser.map(empty));
 		return row;
 	}
-	public String json(){
+	public String json() {
 		return map().json();
 	}
-	public String cacheKey(){
+	public String cacheKey() {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("prefix", this.getPrefix());
 		map.put("compare", this.getCompare().getCode());
@@ -120,24 +120,24 @@ public class DefaultConfig implements Config {
 	 * 						 
 	 * @param config  config
 	 */ 
-	public DefaultConfig(String config){
+	public DefaultConfig(String config) {
 		parser = ConfigParser.parse(config, true); 
 	}
-	public void setValue(Map<String,Object> values){
+	public void setValue(Map<String,Object> values) {
 		try{
 			//解析动态column ${column}
 			ConfigParser.parseVar(values, parser);
 			this.values = ConfigParser.getValues(values, parser);
 			empty = BasicUtil.isEmpty(true, this.values); 
 			setOrValue(values);
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("set file value exception:", e);
 		} 
 	} 
-	public void setOrValue(Map<String,Object> values){
+	public void setOrValue(Map<String,Object> values) {
 		try{
 			this.orValues = ConfigParser.getValues(values, parser.getOr());
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("set or value exception:", e);
 		} 
 	}
@@ -149,18 +149,18 @@ public class DefaultConfig implements Config {
 		return orValues; 
 	} 
 	@SuppressWarnings({"rawtypes","unchecked" })
-	public void addValue(Object value){
+	public void addValue(Object value) {
 		values = append(values, value);
 	}
-	public void setValue(Object value){
+	public void setValue(Object value) {
 		values = new ArrayList<Object>();
 		addValue(value);
 	} 
-	public void setOrValue(Object value){
+	public void setOrValue(Object value) {
 		orValues = new ArrayList<Object>();
 		addValue(value);
 	}
-	public void addOrValue(Object value){
+	public void addOrValue(Object value) {
 		orValues = append(orValues, value);
 	}
 
@@ -170,19 +170,19 @@ public class DefaultConfig implements Config {
 	 * @param value Object | Collection | null
 	 * @return
 	 */
-	private List<Object> append(List<Object> values, Object value){
-		if(null == values){
+	private List<Object> append(List<Object> values, Object value) {
+		if(null == values) {
 			values = new ArrayList<>();
 		}
-		if(null != value){
+		if(null != value) {
 			if(value instanceof Collection) {
 				Collection list = (Collection) value;
-				for(Object item:list){
+				for(Object item:list) {
 					addValue(item);
 				}
-			}else if(value instanceof Object[]){
+			}else if(value instanceof Object[]) {
 				Object[] tmps = (Object[]) value;
-				for(Object tmp:tmps){
+				for(Object tmp:tmps) {
 					addValue(tmp);
 				}
 			}else{
@@ -199,16 +199,16 @@ public class DefaultConfig implements Config {
 	 * @param chain 容器 
 	 * @return Condition
 	 */ 
-	public Condition createAutoCondition(ConditionChain chain){
+	public Condition createAutoCondition(ConditionChain chain) {
 		Condition condition = null;
 		EMPTY_VALUE_SWITCH swt = parser.getSwt();
-		if(!isEmpty() || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC){ //非空 或 IS NULL 或 = ''
-			if(this instanceof ConfigChain){
+		if(!isEmpty() || swt == EMPTY_VALUE_SWITCH.NULL || swt == EMPTY_VALUE_SWITCH.SRC) { //非空 或 IS NULL 或 = ''
+			if(this instanceof ConfigChain) {
 				condition = new DefaultAutoConditionChain((ConfigChain)this);
 				condition.setJoin(this.getJoin());
 				condition.setContainer(chain);
 			}else{
-				if(null != text){
+				if(null != text) {
 					condition = new DefaultAutoCondition(this);
 					condition.setRunText(text);
 					condition.setContainer(chain);
@@ -220,7 +220,7 @@ public class DefaultConfig implements Config {
 				}
 			} 
 		}
-		if(null != condition){
+		if(null != condition) {
 			condition.setSwt(getSwt());
 			//condition.apart(apart);
 			condition.integrality(integrality);
@@ -258,7 +258,7 @@ public class DefaultConfig implements Config {
 	}
 	public int getCompareCode() {
 		Compare compare = parser.getCompare();
-		if(null != compare){
+		if(null != compare) {
 			return compare.getCode();
 		}
 		return Compare.EQUAL.getCode();
@@ -270,10 +270,10 @@ public class DefaultConfig implements Config {
  
 	public boolean isEmpty() {
 		EMPTY_VALUE_SWITCH sw = null;
-		if(null != parser){
+		if(null != parser) {
 			sw = parser.getSwt();
 		}
-		if(sw == EMPTY_VALUE_SWITCH.NULL || sw == EMPTY_VALUE_SWITCH.SRC){
+		if(sw == EMPTY_VALUE_SWITCH.NULL || sw == EMPTY_VALUE_SWITCH.SRC) {
 			return false;
 		}
 		return BasicUtil.isEmpty(true, this.values) && BasicUtil.isEmpty(text);
@@ -301,7 +301,7 @@ public class DefaultConfig implements Config {
 	@Override
 	public Compare getOrCompare() {
 		ParseResult or = parser.getOr();
-		if(null != or){
+		if(null != or) {
 			return or.getCompare();
 		}
 		return parser.getCompare();
@@ -309,14 +309,14 @@ public class DefaultConfig implements Config {
 	@Override
 	public void setOrCompare(Compare compare) {
 		ParseResult or = parser.getOr();
-		if(null != or){
+		if(null != or) {
 			or.setCompare(compare);
 		}
 	}
-	public void setTable(String table){
+	public void setTable(String table) {
 
 	}
-	public String getTable(){
+	public String getTable() {
 		return parser.getPrefix();
 	}
 
@@ -386,7 +386,7 @@ public class DefaultConfig implements Config {
 		DefaultConfig clone = null;
 		try{
 			clone = (DefaultConfig) super.clone();
-		}catch (Exception ignored){
+		}catch (Exception ignored) {
 			clone = new DefaultConfig();
 		}
 		clone.parser = this.parser;

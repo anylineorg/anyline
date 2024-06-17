@@ -114,13 +114,13 @@ public interface Config extends Cloneable {
 	 * @return DataRow
 	 */
 	DataRow map(boolean empty);
-	default DataRow map(){
+	default DataRow map() {
 		return map(false);
 	}
-	default String json(boolean empty){
+	default String json(boolean empty) {
 		return map(empty).json();
 	}
-	default String json(){
+	default String json() {
 		return json(false);
 	}
 }

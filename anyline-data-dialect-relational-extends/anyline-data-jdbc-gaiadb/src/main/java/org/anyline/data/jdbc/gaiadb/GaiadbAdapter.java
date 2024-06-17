@@ -24,7 +24,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.gaiadb")
 public class GaiadbAdapter extends MySQLAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.GaiaDB;
     }
     

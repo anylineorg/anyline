@@ -141,7 +141,7 @@ public interface Run {
 		return getBaseQuery(true);
 	}
 	String getFinalQuery(boolean placeholder);
-	default String getFinalQuery(){
+	default String getFinalQuery() {
 		return getFinalQuery(true);
 	}
 
@@ -150,23 +150,23 @@ public interface Run {
 		return getTotalQuery(true);
 	}
 	String getFinalExists(boolean placeholder);
-	default String getFinalExists(){
+	default String getFinalExists() {
 		return getFinalExists(true);
 	}
 	String getFinalInsert(boolean placeholder);
-	default String getFinalInsert(){
+	default String getFinalInsert() {
 		return getFinalInsert(true);
 	}
 	String getFinalDelete(boolean placeholder);
-	default String getFinalDelete(){
+	default String getFinalDelete() {
 		return getFinalDelete(true);
 	}
 	String getFinalUpdate(boolean placeholder);
-	default String getFinalUpdate(){
+	default String getFinalUpdate() {
 		return getFinalUpdate(true);
 	}
 	String getFinalExecute(boolean placeholder);
-	default String getFinalExecute(){
+	default String getFinalExecute() {
 		return getFinalExecute(true);
 	}
 
@@ -174,7 +174,7 @@ public interface Run {
 	 * SQL是否支持换行
 	 * @return boolean
 	 */
-	default boolean supportBr(){
+	default boolean supportBr() {
 		return true;
 	}
 	void supportBr(boolean support);
@@ -230,12 +230,12 @@ public interface Run {
 	boolean isUnionAll();
 	Run union(Run run, boolean all);
 	Run union(Run run);
-	default Run unionAll(Run run){
+	default Run unionAll(Run run) {
 		return union(run, true);
 	}
 	Run union(List<Run> runs, boolean all);
 	Run union(List<Run> run);
-	default Run unionAll(List<Run> run){
+	default Run unionAll(List<Run> run) {
 		return union(run, true);
 	}
 	List<Run> getUnions();

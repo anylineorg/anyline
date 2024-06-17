@@ -25,7 +25,7 @@ import org.anyline.metadata.type.DatabaseType;
 @Component("anyline.data.jdbc.adapter.yugabyte")
 public class YugabyteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     
-    public DatabaseType type(){
+    public DatabaseType type() {
         return DatabaseType.YugabyteDB;
     }
     

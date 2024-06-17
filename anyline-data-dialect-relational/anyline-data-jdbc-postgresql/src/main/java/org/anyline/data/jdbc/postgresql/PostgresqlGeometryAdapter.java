@@ -29,7 +29,7 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生point
      * @return Point
      */
-    public static Point parsePoint(PGpoint pg){
+    public static Point parsePoint(PGpoint pg) {
         Point point = new Point(pg.x, pg.y);
         point.origin(pg);
         point.tag("Point");
@@ -40,7 +40,7 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生lseg
      * @return LineSegment
      */
-    public static LineSegment parseLineSegment(PGlseg pg){
+    public static LineSegment parseLineSegment(PGlseg pg) {
         PGpoint[] points = pg.point;
         LineSegment segment = new LineSegment(parsePoint(points[0]), parsePoint(points[1]));
         segment.origin(pg);
@@ -52,10 +52,10 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生path
      * @return LineString
      */
-    public static LineString parsePath(PGpath pg){
+    public static LineString parsePath(PGpath pg) {
         LineString string = new LineString();
         PGpoint[] points = pg.points;
-        for(PGpoint point:points){
+        for(PGpoint point:points) {
             string.add(parsePoint(point));
         }
         string.origin(pg);
@@ -67,13 +67,13 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生polygon
      * @return Polygon
      */
-    public static Polygon parsePolygon(PGpolygon pg){
+    public static Polygon parsePolygon(PGpolygon pg) {
         Polygon polygon = new Polygon();
         PGpoint[] points = pg.points;
         //只有一个外环
         Ring ring = new Ring();
         ring.clockwise(false);
-        for(PGpoint point:points){
+        for(PGpoint point:points) {
             ring.add(parsePoint(point));
         }
         polygon.add(ring);
@@ -86,7 +86,7 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生circle
      * @return Circle
      */
-    public static Circle parseCircle(PGcircle pg){
+    public static Circle parseCircle(PGcircle pg) {
         Circle circle = new Circle(parsePoint(pg.center), pg.radius);
         circle.origin(pg);
         circle.tag("Circle");
@@ -98,7 +98,7 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生line
      * @return Line
      */
-    public static Line parseLine(PGline pg){
+    public static Line parseLine(PGline pg) {
         Line line = new Line(pg.a, pg.b, pg.c);
         line.origin(pg);
         line.tag("Line");
@@ -109,7 +109,7 @@ public class PostgresqlGeometryAdapter {
      * @param pg PG原生box
      * @return Line
      */
-    public static Box parseBox(PGbox pg){
+    public static Box parseBox(PGbox pg) {
         PGpoint[] points = pg.point;
         Box box = new Box(parsePoint(points[0]), parsePoint(points[1]));
         box.origin(pg);
@@ -117,27 +117,27 @@ public class PostgresqlGeometryAdapter {
         return box;
     }
 
-    public static PGpoint convert(Point point){
+    public static PGpoint convert(Point point) {
         PGpoint pg = new PGpoint(point.x(), point.y());
         return pg;
     }
-    public static PGlseg convert(LineSegment segment){
+    public static PGlseg convert(LineSegment segment) {
         PGlseg  pg = new PGlseg(convert(segment.p1()), convert(segment.p2()));
         return pg;
     }
-    public static PGpath convert(LineString string){
+    public static PGpath convert(LineString string) {
         List<Point> points = string.points();
         if(!points.isEmpty()) {
             int size = points.size();
             Point first = points.get(0);
             Point last = points.get(size - 1);
             boolean open = true;
-            if(first.x() == last.x() && first.y() == last.y()){
+            if(first.x() == last.x() && first.y() == last.y()) {
                 open = false;
             }
             PGpoint[] pgs = new PGpoint[size];
             int index = 0;
-            for(Point point:points){
+            for(Point point:points) {
                 pgs[index++] = convert(point);
             }
             PGpath pg = new PGpath(pgs, open);
@@ -145,15 +145,15 @@ public class PostgresqlGeometryAdapter {
         }
         return new PGpath();
     }
-    public static PGline convert(Line line){
+    public static PGline convert(Line line) {
         PGline pg = new PGline(line.a(), line.b(), line.c());
         return pg;
     }
-    public static PGbox convert(Box box){
+    public static PGbox convert(Box box) {
         PGbox pg = new PGbox(convert(box.p1()), convert(box.p2()));
         return pg;
     }
-    public static PGcircle convert(Circle circle){
+    public static PGcircle convert(Circle circle) {
         PGcircle pg = new PGcircle(convert(circle.center()), circle.radius());
         return pg;
     }

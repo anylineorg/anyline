@@ -36,13 +36,13 @@ public class MapUtil {
 	 * @param keys  keys
 	 * @return List
 	 */
-	public static List<Map<String, Object>> extracts(Collection<Map<String, Object>> list, String ... keys){
+	public static List<Map<String, Object>> extracts(Collection<Map<String, Object>> list, String ... keys) {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		if(null != list){
-			for(Map<String, Object> obj:list){
+		if(null != list) {
+			for(Map<String, Object> obj:list) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				if(null !=keys){
-					for(String key:keys){
+				if(null !=keys) {
+					for(String key:keys) {
 						map.put(key, obj.get(key));
 					}
 					result.add(map);
@@ -58,16 +58,16 @@ public class MapUtil {
 	 * @param keys 根据keys列或属性值比较
 	 * @return   return
 	 */
-	public static Collection<Map<String, Object>> distinct(Collection<Map<String, Object>> list, String ... keys){
+	public static Collection<Map<String, Object>> distinct(Collection<Map<String, Object>> list, String ... keys) {
 		List<Map<String, Object>> result = new ArrayList<>();
-		if(null != list){
-			for(Map<String, Object> obj:list){
-				if(null == keys || keys.length==0){
-					if(!result.contains(obj)){
+		if(null != list) {
+			for(Map<String, Object> obj:list) {
+				if(null == keys || keys.length==0) {
+					if(!result.contains(obj)) {
 						result.add(extract(obj, keys));
 					}
 				}else{
-					if(contain(result, obj, keys)){
+					if(contain(result, obj, keys)) {
 						result.add(extract(obj, keys));
 					}
 				}
@@ -75,28 +75,28 @@ public class MapUtil {
 		}
 		return result;
 	}
-	public static Collection<Object> distinctValue(Collection<Map<String, Object>> list, String key){
+	public static Collection<Object> distinctValue(Collection<Map<String, Object>> list, String key) {
 		List<Object> result = new ArrayList<>();
-		if(null != list){
-			for(Map<String, Object> obj:list){
+		if(null != list) {
+			for(Map<String, Object> obj:list) {
 				Object value = obj.get(key);
-				if(!result.contains(value)){
+				if(!result.contains(value)) {
 					result.add(value);
 				}
 			}
 		}
 		return result;
 	}
-	public static Collection<Map<String, Object>> distinct(Collection<Map<String, Object>> list, List<String> keys){
+	public static Collection<Map<String, Object>> distinct(Collection<Map<String, Object>> list, List<String> keys) {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		if(null != list){
-			for(Map<String, Object> obj:list){
-				if(null == keys || keys.size()==0){
-					if(!result.contains(obj)){
+		if(null != list) {
+			for(Map<String, Object> obj:list) {
+				if(null == keys || keys.size()==0) {
+					if(!result.contains(obj)) {
 						result.add(extract(obj, keys));
 					}
 				}else{
-					if(!contain(result, obj, keys)){
+					if(!contain(result, obj, keys)) {
 						result.add(extract(obj, keys));
 					}
 				}
@@ -104,43 +104,43 @@ public class MapUtil {
 		}
 		return result;
 	}
-	public static Map<String, Object> extract(Map<String, Object> src, List<String> keys){
+	public static Map<String, Object> extract(Map<String, Object> src, List<String> keys) {
 		Map<String, Object> map = new HashMap<>();
-		for(String key:keys){
+		for(String key:keys) {
 			map.put(key, src.get(key));
 		}
 		return map;
 	}
-	public static Map<String, Object> extract(Map<String, Object> src, String ... keys){
+	public static Map<String, Object> extract(Map<String, Object> src, String ... keys) {
 		Map<String, Object> map = new HashMap<>();
-		for(String key:keys){
+		for(String key:keys) {
 			map.put(key, src.get(key));
 		}
 		return map;
 	}
-	public static boolean contain(Collection<Map<String, Object>> list, Map<String, Object> obj, String ... keys){
-		for(Map<String, Object> item:list){
-			if(equals(item, obj)){
+	public static boolean contain(Collection<Map<String, Object>> list, Map<String, Object> obj, String ... keys) {
+		for(Map<String, Object> item:list) {
+			if(equals(item, obj)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	public static boolean contain(Collection<Map<String, Object>> list, Map<String, Object> obj, List<String> keys){
-		for(Map<String, Object> item:list){
-			if(equals(item, obj, keys)){
+	public static boolean contain(Collection<Map<String, Object>> list, Map<String, Object> obj, List<String> keys) {
+		for(Map<String, Object> item:list) {
+			if(equals(item, obj, keys)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static boolean equals(Map<String, Object> obj1, Map<String, Object> obj2, List<String> keys){
+	public static boolean equals(Map<String, Object> obj1, Map<String, Object> obj2, List<String> keys) {
 
-		for(String key:keys){
+		for(String key:keys) {
 			Object v1 = obj1.get(key);
 			Object v2 = obj2.get(key);
-			if(null == v1 || !v1.equals(v2)){
+			if(null == v1 || !v1.equals(v2)) {
 				return false;
 			}
 
@@ -148,27 +148,27 @@ public class MapUtil {
 		return true;
 	}
 
-	public static boolean equals(Map<String, Object> obj1, Map<String, Object> obj2, String ... keys){
+	public static boolean equals(Map<String, Object> obj1, Map<String, Object> obj2, String ... keys) {
 		return equals(obj1, obj2, BeanUtil.array2list(keys));
 	}
 
-	public static String parseFinalValue(Map<String, Object> obj, String key){
-		if(null == obj){
+	public static String parseFinalValue(Map<String, Object> obj, String key) {
+		if(null == obj) {
 			return key;
 		}
 		String value = key;
-		if(BasicUtil.isNotEmpty(key)){
-			if(key.contains("${")){
+		if(BasicUtil.isNotEmpty(key)) {
+			if(key.contains("${")) {
 				try{
 					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
-					for(String k:ks){
+					for(String k:ks) {
 						Object v =  obj.get(k.replace("${","").replace("}",""));
-						if(null == v){
+						if(null == v) {
 							v = "";
 						}
 						value = value.replace(k, v.toString());
 					}
-				}catch(Exception e){
+				}catch(Exception e) {
 					log.error("parse final value exception:", e);
 				}
 			} else {
@@ -178,8 +178,8 @@ public class MapUtil {
 		return value;
 	}
 
-	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy, List<String> keys){
-		if(null == copy ){
+	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy, List<String> keys) {
+		if(null == copy ) {
 			return  src;
 		}
 		if(null != keys) {
@@ -190,8 +190,8 @@ public class MapUtil {
 		}
 		return src;
 	}
-	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy, String ... keys){
-		if(null == copy ){
+	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy, String ... keys) {
+		if(null == copy ) {
 			return  src;
 		}
 		if(null != keys) {
@@ -202,12 +202,12 @@ public class MapUtil {
 		}
 		return src;
 	}
-	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy){
+	public static Map<String, Object> copy(Map<String, Object> src, Map<String, Object> copy) {
 		return copy(src, copy, BeanUtil.getMapKeys(copy));
 	}
-	public static Map<String, Object> query(Collection<Map<String, Object>> datas, Map<String, Object> kvs){
+	public static Map<String, Object> query(Collection<Map<String, Object>> datas, Map<String, Object> kvs) {
 		List<Map<String, Object>> list = querys(datas, 0, 1, kvs);
-		if(list.size()>0){
+		if(list.size()>0) {
 			return list.get(0);
 		}
 		return null;
@@ -267,7 +267,7 @@ public class MapUtil {
 	public static List<Map<String, Object>> querys(Collection<Map<String, Object>> datas, int begin, int qty, Map<String, Object> kvs) {
 		List<Map<String, Object>> set = new ArrayList<>();
 		for (Map<String, Object> row:datas) {
-			if(row.containsKey("_tmp_skip")){
+			if(row.containsKey("_tmp_skip")) {
 				continue;
 			}
 			boolean chk = true;//对比结果
@@ -305,11 +305,11 @@ public class MapUtil {
 		}//end for rows
 		return set;
 	}
-	private static String concatValue(Map<String, Object> row, String split){
+	private static String concatValue(Map<String, Object> row, String split) {
 		StringBuilder builder = new StringBuilder();
 		List<String> keys = BeanUtil.getMapKeys(row);
-		for(String key:keys){
-			if(builder.length() > 0){
+		for(String key:keys) {
+			if(builder.length() > 0) {
 				builder.append(split);
 			}
 			builder.append(row.get(key));
@@ -349,12 +349,12 @@ public class MapUtil {
 				copy(params, row, pks);
 				copy(params, classValue);
 				Map<String, Object> valueRow = query(datas, params);
-				if(null != valueRow){
+				if(null != valueRow) {
 					valueRow.put("_tmp_skip","1");
 				}
 				String finalKey = concatValue(classValue, "-");//2010-数学
-				if(null != valueKeys && !valueKeys.isEmpty()){
-					if(valueKeys.size() == 1){
+				if(null != valueKeys && !valueKeys.isEmpty()) {
+					if(valueKeys.size() == 1) {
 						if (null != valueRow) {
 							row.put(finalKey, valueRow.get(valueKeys.get(0)));
 						} else {
@@ -371,7 +371,7 @@ public class MapUtil {
 						}
 					}
 				}else{
-					if (null != valueRow){
+					if (null != valueRow) {
 						row.put(finalKey, valueRow);
 					}else{
 						row.put(finalKey, null);
@@ -379,7 +379,7 @@ public class MapUtil {
 				}
 			}
 		}
-		for(Map<String, Object> data:datas){
+		for(Map<String, Object> data:datas) {
 			data.remove("_tmp_skip");
 		}
 		return result;
@@ -414,8 +414,8 @@ public class MapUtil {
 
 	public static Collection<Map<String, Object>> pivot(Collection<Map<String, Object>> datas, List<String> pks, List<String> classKeys, String ... valueKeys) {
 		List<String> list = new ArrayList<>();
-		if(null != valueKeys){
-			for(String item:valueKeys){
+		if(null != valueKeys) {
+			for(String item:valueKeys) {
 				list.add(item);
 			}
 		}

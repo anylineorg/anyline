@@ -48,7 +48,7 @@ import java.util.List;
 @Component("anyline.data.jdbc.adapter.mssql2000")
 public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
 
-    public String version(){return "2000";}
+    public String version() {return "2000";}
 
 	/**
 	 * 验证运行环境与当前适配器是否匹配<br/>
@@ -68,7 +68,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
             if (null != version && version.contains(".")) {
                 version = version.split("\\.")[0];
                 double v = BasicUtil.parseDouble(version, 0d);
-                if(ConfigTable.IS_LOG_ADAPTER_MATCH){
+                if(ConfigTable.IS_LOG_ADAPTER_MATCH) {
                     log.debug("[adapter match][SQL Server版本检测][result:{}][runtime version:{}][adapter:{}]", false, version, this.getClass());
                 }
                 if (v < 9.0) {
@@ -85,7 +85,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public String mergeFinalQuery(DataRuntime runtime, Run run){
+    public String mergeFinalQuery(DataRuntime runtime, Run run) {
         StringBuilder builder = new StringBuilder();
         String cols = run.getQueryColumn();
         PageNavi navi = run.getPageNavi();
@@ -94,26 +94,26 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         long first = 0;
         long last = 0;
         String order = "";
-        if(null != orders){
+        if(null != orders) {
             order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
         }
-        if(null != navi){
+        if(null != navi) {
             first = navi.getFirstRow();
             last = navi.getLastRow();
         }
-        if(first == 0 && null != navi){
+        if(first == 0 && null != navi) {
             // top
             builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
             builder.append(sql).append("\n) AS _TAB_O \n");
             builder.append(order);
             return builder.toString();
         }
-        if(null == navi){
+        if(null == navi) {
             builder.append(sql).append("\n").append(order);
         }else{
             // 分页
             long rows = navi.getPageRows();
-            if(rows * navi.getCurPage() > navi.getTotalRow()){
+            if(rows * navi.getCurPage() > navi.getTotalRow()) {
                 // 最后一页不足10条
                 rows = navi.getTotalRow() % navi.getPageRows();
             }
@@ -141,17 +141,17 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, DataSet set, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         //2000及以下
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
 
         LinkedHashMap<String, Column> pks = null;
         PrimaryGenerator generator = checkPrimaryGenerator(type(), dest.getName());
-        if(null != generator){
+        if(null != generator) {
             pks = set.getRow(0).getPrimaryColumns();
             columns.putAll(pks);
         }
@@ -161,8 +161,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         builder.append("(");
 
         boolean start = true;
-        for(Column column:columns.values()){
-            if(!start){
+        for(Column column:columns.values()) {
+            if(!start) {
                 builder.append(",");
             }
             start = false;
@@ -171,20 +171,20 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         }
         builder.append(")");
         int dataSize = set.size();
-        for(int i=0; i<dataSize; i++){
+        for(int i=0; i<dataSize; i++) {
             DataRow row = set.getRow(i);
-            if(null == row){
+            if(null == row) {
                 continue;
             }
-            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())){
-                if(null != generator){
+            if(row.hasPrimaryKeys() && BasicUtil.isEmpty(row.getPrimaryValue())) {
+                if(null != generator) {
                     generator.create(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                 }
                 //createPrimaryValue(row, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
             }
             builder.append("\n SELECT ");
             builder.append(insertValue(runtime, run, row, i==0, true, true, false, false, columns));
-            if(i<dataSize-1){
+            if(i<dataSize-1) {
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");
             }
@@ -201,13 +201,13 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @param columns 需插入的列
      */
     @Override
-    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns){
+    public void fillInsertContent(DataRuntime runtime, Run run, Table dest, Collection list, LinkedHashMap<String, Column> columns) {
         StringBuilder builder = run.getBuilder();
-        if(null == builder){
+        if(null == builder) {
             builder = new StringBuilder();
             run.setBuilder(builder);
         }
-        if(list instanceof DataSet){
+        if(list instanceof DataSet) {
             DataSet set = (DataSet) list;
             this.fillInsertContent(runtime, run, dest, set, columns);
             return;
@@ -225,8 +225,8 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         name(runtime, builder, dest);
         builder.append("(");
         boolean start = true;
-        for(Column column:columns.values()){
-            if(!start){
+        for(Column column:columns.values()) {
+            if(!start) {
                 builder.append(",");
             }
             start = false;
@@ -236,7 +236,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         builder.append(")\n ");
         int dataSize = list.size();
         int idx = 0;
-        for(Object obj:list){
+        for(Object obj:list) {
             builder.append("\n SELECT ");
            /* if(obj instanceof DataRow) {
                 DataRow row = (DataRow)obj;
@@ -246,13 +246,13 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
                 insertValue(template, run, row, true, false, false, keys);
             }else{*/
                 boolean create = EntityAdapterProxy.createPrimaryValue(obj, pks);
-                if(!create && null != generator){
+                if(!create && null != generator) {
                     generator.create(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pks, null);
                     //createPrimaryValue(obj, type(), dest.getName().replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), null, null);
                 }
             builder.append(insertValue(runtime, run, obj, idx==0,true, true, false, false, columns));
            // }
-            if(idx<dataSize-1){
+            if(idx<dataSize-1) {
                 //多行数据之间的分隔符
                 builder.append("\n UNION ALL ");
 
@@ -277,13 +277,13 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
         StringBuilder builder = run.getBuilder();
 		builder.append("SELECT M.*, SCHEMA_NAME(M.SCHEMA_ID) AS TABLE_SCHEMA, F.VALUE AS TABLE_COMMENT FROM SYS.TABLES AS M \n")
 				.append("LEFT JOIN SYS.EXTENDED_PROPERTIES AS F ON M.OBJECT_ID = F.MAJOR_ID AND F.MINOR_ID=0 \n");
-        if(BasicUtil.isNotEmpty(pattern) || !empty(schema)){
+        if(BasicUtil.isNotEmpty(pattern) || !empty(schema)) {
             builder.append(conditionHead());
         }
-		if(BasicUtil.isNotEmpty(pattern)){
+		if(BasicUtil.isNotEmpty(pattern)) {
 			builder.append(" AND M.NAME LIKE '").append(pattern).append("'");
 		}
-		if(!empty(schema)){
+		if(!empty(schema)) {
 			builder.append(" AND SCHEMA_NAME(M.SCHEMA_ID) = '").append(schema.getName()).append("'");
 		}
         //SYS.TABLES 中没有视图不需要过滤视图
@@ -298,7 +298,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Table table) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = table.getComment();
-        if(BasicUtil.isNotEmpty(comment)){
+        if(BasicUtil.isNotEmpty(comment)) {
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -318,7 +318,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Table table) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = table.getComment();
-        if(BasicUtil.isNotEmpty(comment)){
+        if(BasicUtil.isNotEmpty(comment)) {
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
@@ -343,12 +343,12 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     public List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = column.getComment();
-        if(BasicUtil.isNotEmpty(comment)){
+        if(BasicUtil.isNotEmpty(comment)) {
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
             Schema schema = column.getSchema();
-            if(BasicUtil.isEmpty(schema)){
+            if(BasicUtil.isEmpty(schema)) {
                 schema = column.getTable(true).getSchema();
             }
             builder.append("EXEC sp_addextendedproperty ");
@@ -384,17 +384,17 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
     public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = null;
-        if(null != column.getUpdate()){
+        if(null != column.getUpdate()) {
             comment = column.getUpdate().getComment();
         }else {
             comment = column.getComment();
         }
-        if(BasicUtil.isNotEmpty(comment)){
+        if(BasicUtil.isNotEmpty(comment)) {
             Run run = new SimpleRun(runtime);
             runs.add(run);
             StringBuilder builder = run.getBuilder();
             Schema schema = column.getSchema();
-            if(BasicUtil.isEmpty(schema)){
+            if(BasicUtil.isEmpty(schema)) {
                 schema = column.getTable(true).getSchema();
             }
             builder.append("EXEC sp_updateextendedproperty ");

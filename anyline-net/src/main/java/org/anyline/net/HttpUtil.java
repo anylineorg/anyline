@@ -226,42 +226,42 @@ public class HttpUtil {
 	} 
  
 
-	public static int status(String url){
+	public static int status(String url) {
 		return HttpBuilder.init().setUrl(url).build().status();
 	}
 
-	public static DownloadTask download(String url, String dst){
+	public static DownloadTask download(String url, String dst) {
 		File file = new File(dst); 
 		return download(url, file, null, null, false);
 	} 
-	public static DownloadTask download(String url, File dst){
+	public static DownloadTask download(String url, File dst) {
 		return download(url, dst, null, null, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params) {
 		File file = new File(dest);
 		return download(url, file, headers, params, false);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params){
+	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params) {
 		return download(url, dst, headers, params, false);
 	} 
-	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override){
+	public static DownloadTask download(String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override) {
 		File file = new File(dest);
 		return download(url, file, headers, params, override);
 	} 
-	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override){
+	public static DownloadTask download(String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override) {
 		return download(new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, boolean override) {
 		return download(progress, url, new File(dest), null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override) {
 		return download(progress, url, dst, null, null, override);
 	} 
-	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, String dest, Map<String, String> headers, Map<String, Object> params, boolean override) {
 		return download(progress, url, new File(dest), headers, params, override);
 	}
 
-	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String, String> headers, Map<String, Object> params, boolean override) {
 		DownloadTask task = new DownloadTask(); 
 		task.setProgress(progress); 
 		task.setLocal(dst); 
@@ -273,7 +273,7 @@ public class HttpUtil {
 		return task; 
 	} 
 
-	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, String> headers, Map<String, Object> params){
+	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, String> headers, Map<String, Object> params) {
 		return upload(url, files, "UTF-8", headers, params);
 	} 
 	public static HttpResponse upload(String url, Map<String, Object> files, Map<String, Object> params) {
@@ -292,7 +292,7 @@ public class HttpUtil {
 	 * @param params 参数
 	 * @return HttpResponse
 	 */
-	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String, Object> params){
+	public static HttpResponse upload(String url, Map<String, Object> files, String charset, Map<String, String> headers, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setUrl(url)
 				.setCharset(charset)
@@ -302,20 +302,20 @@ public class HttpUtil {
 				.build().upload();
 	}
 
-	public static String mergePath(String ... paths){
+	public static String mergePath(String ... paths) {
 		String result = null;
 		String separator = "/";
-		if(null != paths){
-			for(String path:paths){
-				if(BasicUtil.isEmpty(path)){
+		if(null != paths) {
+			for(String path:paths) {
+				if(BasicUtil.isEmpty(path)) {
 					continue;
 				}
 				path = path.replace("\\","/");
-				if(null == result){
+				if(null == result) {
 					result = path;
 				}else{
-					if(result.endsWith("/")){
-						if(path.startsWith("/")){
+					if(result.endsWith("/")) {
+						if(path.startsWith("/")) {
 							// "root/" + "/sub"
 							result += path.substring(1);
 						}else{
@@ -323,7 +323,7 @@ public class HttpUtil {
 							result += path;
 						}
 					}else{
-						if(path.startsWith("/")){
+						if(path.startsWith("/")) {
 							// "root" + "/sub"
 							result += path;
 						}else{
@@ -344,7 +344,7 @@ public class HttpUtil {
 	 * @return String
 	 */
 	public static String createFullPath(String host, String url) {
-		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
+		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)) {
 			return url;
 		}
 		String fullPath = null;
@@ -370,7 +370,7 @@ public class HttpUtil {
 	 * @return String
 	 */
 	public static String host(String url) {
-		if(null == url){
+		if(null == url) {
 			return null;
 		}
 		String str = url.replaceAll("http://","").replaceAll("https://","").replaceAll("//","");
@@ -378,23 +378,23 @@ public class HttpUtil {
 		if (idx != -1) {
 			str = str.substring(0, idx);
 		}
-		if(url.startsWith("https")){
+		if(url.startsWith("https")) {
 			return "https://" + str;
-		}else if(url.startsWith("//")){
+		}else if(url.startsWith("//")) {
 			return "//" + str;
 		}else {
 			return "http://" + str;
 		}
 	}
 	public static String domain(String url) {
-		if(null == url){
+		if(null == url) {
 			return null;
 		}
 		url = url.replace("http://","").replace("https://","");
-		if (url.contains(":")){
+		if (url.contains(":")) {
 			url = url.substring(0, url.indexOf(":"));
 		}
-		if(url.contains("/")){
+		if(url.contains("/")) {
 			url = url.substring(0, url.indexOf("/"));
 		}
 		return url;
@@ -421,7 +421,7 @@ public class HttpUtil {
 	 */
 	public static String parseDir(String url) {
 		String dir = null;
-		if(null == url){
+		if(null == url) {
 			return dir;
 		}
 		if (url.endsWith("/")) {
@@ -443,11 +443,11 @@ public class HttpUtil {
 	 */
 	public static String parseFileName(String url) {
 		String name = null;
-		if(null != url){
+		if(null != url) {
 			url = url.replace("://","");
-			if(!url.endsWith("/")){
+			if(!url.endsWith("/")) {
 				name = url.substring(url.lastIndexOf("/")+1);
-				if(name.contains("?")){
+				if(name.contains("?")) {
 					name = name.substring(0, name.indexOf("?"));
 				}
 			}
@@ -507,16 +507,16 @@ public class HttpUtil {
 	 * @param params  params
 	 * @return String
 	 */
-	public static String mergeParam(String url, Map<String, Object> params){
-		if(BasicUtil.isEmpty(params)){
+	public static String mergeParam(String url, Map<String, Object> params) {
+		if(BasicUtil.isEmpty(params)) {
 			return url;
 		}
-		if(null == url){
+		if(null == url) {
 			url = "";
 		}
 		url = url.trim();
 		String kv = BeanUtil.map2string(params);
-		if(BasicUtil.isNotEmpty(kv)){
+		if(BasicUtil.isNotEmpty(kv)) {
 			if (url.indexOf("?") > -1) {
 				if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
 					url += "&";
@@ -528,13 +528,13 @@ public class HttpUtil {
 		}
 		return url;
 	}
-	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String, Object> params, ContentType contetType){
-		if(null != params){
+	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String, Object> params, ContentType contetType) {
+		if(null != params) {
 			String txt = BeanUtil.map2string(params);
 			String[] kvs = txt.split("&");
-			for(String kv:kvs){
+			for(String kv:kvs) {
 				String[] tmps = kv.split("=");
-				if(tmps.length==2){
+				if(tmps.length==2) {
 					builder.addTextBody(tmps[0], tmps[1], contetType);
 				}
 			}
@@ -548,8 +548,8 @@ public class HttpUtil {
 	 * @param params  params
 	 * @return String
 	 */
-	public static String mergeParam(String url, String ... params){
-		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
+	public static String mergeParam(String url, String ... params) {
+		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)) {
 			return url;
 		}
 		url = url.trim();
@@ -561,11 +561,11 @@ public class HttpUtil {
 			url += "?";
 		}
 		String tmp = null;
-		for(String param:params){
-			if(BasicUtil.isEmpty(param)){
+		for(String param:params) {
+			if(BasicUtil.isEmpty(param)) {
 				continue;
 			}
-			if(null == tmp){
+			if(null == tmp) {
 				tmp = param;
 			}else{
 				tmp += "&"+param;
@@ -576,41 +576,41 @@ public class HttpUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static List<NameValuePair> packNameValuePair(Map<String, Object> params){
+	public static List<NameValuePair> packNameValuePair(Map<String, Object> params) {
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		if (null != params) {
 			Iterator<String> keys = params.keySet().iterator();
 			while (keys.hasNext()) {
 				String key = keys.next();
 				Object value = params.get(key);
-				if(null == value){
+				if(null == value) {
 					continue;
 				}
-				if(value instanceof String[]){
+				if(value instanceof String[]) {
 					String vals[] = (String[])value;
-					for(String val:vals){
-						if(null == val){
+					for(String val:vals) {
+						if(null == val) {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val));
-						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()){
+						if(ConfigTable.IS_DEBUG && log.isWarnEnabled()) {
 							log.info("[request param][{}={}]", key, BasicUtil.cut(val, 0, 100));
 						}
 					}
-				}else if(value instanceof Collection){
+				}else if(value instanceof Collection) {
 					Collection vals = (Collection)value;
-					for(Object val:vals){
-						if(null == val){
+					for(Object val:vals) {
+						if(null == val) {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
-						if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+						if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
 							log.info("[request param][{}={}]", key, BasicUtil.cut(val.toString(), 0, 100));
 						}
 					}
-				}else if(null != value){
+				}else if(null != value) {
 					pairs.add(new BasicNameValuePair(key, value.toString()));
-					if(ConfigTable.IS_DEBUG && log.isInfoEnabled()){
+					if(ConfigTable.IS_DEBUG && log.isInfoEnabled()) {
 						log.info("[request param][{}={}]", key, BasicUtil.cut(value.toString(), 0, 100));
 					}
 				}
@@ -619,30 +619,30 @@ public class HttpUtil {
 		return pairs;
 	}
 
-	public static CloseableHttpClient client(String url){
-		if(url.contains("https://")){
+	public static CloseableHttpClient client(String url) {
+		if(url.contains("https://")) {
 			return defaultSSLClient();
 		}else{
 			return defaultClient();
 		}
 	}
-	public static CloseableHttpClient client(String url, String userAgent){
-		if(url.contains("https://")){
+	public static CloseableHttpClient client(String url, String userAgent) {
+		if(url.contains("https://")) {
 			return defaultSSLClient(userAgent);
 		}else{
 			return defaultClient(userAgent);
 		}
 	}
-	public static CloseableHttpClient defaultClient(){
+	public static CloseableHttpClient defaultClient() {
 		return defaultClient(default_user_agent);
 	}
-	public static CloseableHttpClient defaultClient(String userAgent){
+	public static CloseableHttpClient defaultClient(String userAgent) {
 		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(default_request_config);
 		builder.setUserAgent(userAgent);
 		default_client = builder.build();
 		return default_client;
 	}
-	public static CloseableHttpClient createClient(String userAgent){
+	public static CloseableHttpClient createClient(String userAgent) {
 		CloseableHttpClient client = null;
 		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(default_request_config);
 		builder.setUserAgent(userAgent);
@@ -650,7 +650,7 @@ public class HttpUtil {
 		return client;
 	}
 
-	public static CloseableHttpClient createSSLClient(File keyFile, String protocol, String password){
+	public static CloseableHttpClient createSSLClient(File keyFile, String protocol, String password) {
 		CloseableHttpClient httpclient = null;
 		try{
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
@@ -668,17 +668,17 @@ public class HttpUtil {
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-		}catch(Exception e){
+		}catch(Exception e) {
 			log.error("close ssl exception:", e);
 		}
 		return httpclient;
 	}
-	public static CloseableHttpClient defaultSSLClient(){
+	public static CloseableHttpClient defaultSSLClient() {
 		return defaultSSLClient(default_user_agent);
 	}
-	public static CloseableHttpClient defaultSSLClient(String userAgent){
+	public static CloseableHttpClient defaultSSLClient(String userAgent) {
 		try {
-			if(null != default_ssl_client){
+			if(null != default_ssl_client) {
 				return default_ssl_client;
 			}
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
@@ -714,12 +714,12 @@ public class HttpUtil {
 	 * @param cn 是否编译中文
 	 * @return String
 	 */
-	public static String encode(String src, boolean enable, boolean cn){
+	public static String encode(String src, boolean enable, boolean cn) {
 		String result = src;
-		if(cn){
+		if(cn) {
 			try {
 				result = URLEncoder.encode(src, "UTF-8");
-			}catch (Exception e){
+			}catch (Exception e) {
 				return src;
 			}
 		}else{

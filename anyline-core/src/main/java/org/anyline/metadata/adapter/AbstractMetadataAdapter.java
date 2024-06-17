@@ -46,8 +46,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return nameRefer;
     }
 
-    public String getNameRefer(){
-        if(null != nameRefer && nameRefer.length > 0){
+    public String getNameRefer() {
+        if(null != nameRefer && nameRefer.length > 0) {
             return nameRefer[0];
         }
         return null;
@@ -69,8 +69,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return commentRefer;
     }
 
-    public String getCommentRefer(){
-        if(null != commentRefer && commentRefer.length > 0){
+    public String getCommentRefer() {
+        if(null != commentRefer && commentRefer.length > 0) {
             return commentRefer[0];
         }
         return null;
@@ -92,8 +92,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return defineRefer;
     }
 
-    public String getDefineRefer(){
-        if(null != defineRefer && defineRefer.length > 0){
+    public String getDefineRefer() {
+        if(null != defineRefer && defineRefer.length > 0) {
             return defineRefer[0];
         }
         return null;
@@ -114,8 +114,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return catalogRefer;
     }
 
-    public String getCatalogRefer(){
-        if(null != catalogRefer && catalogRefer.length > 0){
+    public String getCatalogRefer() {
+        if(null != catalogRefer && catalogRefer.length > 0) {
             return catalogRefer[0];
         }
         return null;
@@ -138,8 +138,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return schemaRefer;
     }
 
-    public String getSchemaRefer(){
-        if(null != schemaRefer && schemaRefer.length > 0){
+    public String getSchemaRefer() {
+        if(null != schemaRefer && schemaRefer.length > 0) {
             return schemaRefer[0];
         }
         return null;
@@ -161,8 +161,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return tableRefer;
     }
 
-    public String getTableRefer(){
-        if(null != tableRefer && tableRefer.length > 0){
+    public String getTableRefer() {
+        if(null != tableRefer && tableRefer.length > 0) {
             return tableRefer[0];
         }
         return null;
@@ -184,8 +184,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
         return columnRefer;
     }
 
-    public String getColumnRefer(){
-        if(null != columnRefer && columnRefer.length > 0){
+    public String getColumnRefer() {
+        if(null != columnRefer && columnRefer.length > 0) {
             return columnRefer[0];
         }
         return null;
@@ -205,8 +205,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
     public String[] getTypeRefers() {
         return typeRefer;
     }
-    public String getTypeRefer(){
-        if(null != typeRefer && typeRefer.length > 0){
+    public String getTypeRefer() {
+        if(null != typeRefer && typeRefer.length > 0) {
             return typeRefer[0];
         }
         return null;
@@ -228,8 +228,8 @@ public class AbstractMetadataAdapter<T extends AbstractMetadataAdapter> {
     public String[] getDefaultRefers() {
         return defaultRefer;
     }
-    public String getDefaultRefer(){
-        if(null != defaultRefer && defaultRefer.length > 0){
+    public String getDefaultRefer() {
+        if(null != defaultRefer && defaultRefer.length > 0) {
             return defaultRefer[0];
         }
         return null;
