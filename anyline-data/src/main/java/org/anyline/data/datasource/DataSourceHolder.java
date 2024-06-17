@@ -54,7 +54,7 @@ public interface DataSourceHolder {
 	/**
 	 * 运行环境未启动之前注册的数据源参数 缓存
 	 */
-	Map<String, DataSource> caches = new HashMap<>();
+	Map<String, Object> caches = new HashMap<>();
 
 	/**
 	 * 数据源对应的数据库类型
@@ -263,7 +263,7 @@ public interface DataSourceHolder {
 	static void check(String key, boolean override) throws Exception {
 		if(contains(key)){
 			if(!override){
-				throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+				throw new Exception("[数据源重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 			}else{
 				//清空
 				RuntimeHolder.destroy(key);

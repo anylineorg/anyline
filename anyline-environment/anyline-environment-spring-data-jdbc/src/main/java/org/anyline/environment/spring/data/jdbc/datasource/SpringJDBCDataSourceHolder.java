@@ -164,7 +164,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 			}else{
 				//spring还没加载完先缓存起来，最后统一注册
 				if(!caches.containsKey(key) || override){
-					caches.put(key, (DataSource)datasource);
+					caches.put(key, datasource);
 				}
 			}
 		}
@@ -176,7 +176,7 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 	 */
 	public void loadCache(){
 		for(String key:caches.keySet()){
-			DataSource datasource = caches.get(key);
+			Object datasource = caches.get(key);
 			try {
 				runtime(key, datasource, true);
 			}catch (Exception e){

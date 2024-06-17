@@ -292,6 +292,8 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 				variableType = Condition.VARIABLE_PLACEHOLDER_TYPE_NONE;
 			}else if(compareCode == 191){							// IS NOT EMPTY
 				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
+			}else{
+				adapter.formula(runtime, builder, column, compare, null, null,  placeholder);
 			}
 		}
 

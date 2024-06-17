@@ -49,7 +49,6 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
-import org.anyline.exception.NotSupportException;
 import org.anyline.exception.SQLUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.*;
@@ -2959,7 +2958,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		Run run = null;
 		if(null == dest){
-			dest = DataSourceUtil.parseDest(null, obj, null);
+			dest = DataSourceUtil.parseDest(null, obj, configs);
 		}
 		if(null == dest){
 			Object entity = obj;

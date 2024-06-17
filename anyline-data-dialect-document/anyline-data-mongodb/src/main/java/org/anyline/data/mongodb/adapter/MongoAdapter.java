@@ -89,7 +89,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
-        return buildInsertRun(runtime, batch, dest, obj, configs, columns);
+        return createInsertRun(runtime, dest, obj, configs, columns);
     }
 
 /**
@@ -333,10 +333,12 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         if(null == bson){
             bson = child;
         }else {
-            if ("or".equalsIgnoreCase(join)) {
-                bson = Filters.or(bson, child);
-            } else {
-                bson = Filters.and(bson, child);
+            if(null != child) {
+                if ("or".equalsIgnoreCase(join)) {
+                    bson = Filters.or(bson, child);
+                } else {
+                    bson = Filters.and(bson, child);
+                }
             }
         }
         return bson;
@@ -477,7 +479,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public long update(DataRuntime runtime, String random, String dest, Object data, ConfigStore configs, Run run) {
+    public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
         long result = -1;
         ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
         long fr = System.currentTimeMillis();
@@ -506,7 +508,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public <T> long deletes(DataRuntime runtime, String random, int batch, String table, String key, Collection<T> values) {
+    public <T> long deletes(DataRuntime runtime, String random, int batch, Table table, String key, Collection<T> values) {
         ConfigStore configs = new DefaultConfigStore();
         configs.and(key, values);
         return delete(runtime, random, table, configs);
@@ -541,12 +543,12 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      */
 
     @Override
-    public long update(DataRuntime runtime, String random, int batch, String dest, Object data, ConfigStore configs, List<String> columns){
+    public long update(DataRuntime runtime, String random, int batch, Table dest, Object data, ConfigStore configs, List<String> columns){
         return super.update(runtime, random, batch, dest, data, configs, columns);
     }
 
     @Override
-    public Run buildUpdateRunFromEntity(DataRuntime runtime, String dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
+    public Run buildUpdateRunFromEntity(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, LinkedHashMap<String, Column> columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(2);
         LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
@@ -574,7 +576,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             cols.remove("_ID");
         }
         boolean isReplaceEmptyNull = ConfigTable.IS_REPLACE_EMPTY_NULL;
-        cols = checkMetadata(runtime, new Table(dest), configs, cols);
+        cols = checkMetadata(runtime, dest, configs, cols);
         List<Bson> updates = new ArrayList<>();
 
         /*构造SQL*/
@@ -636,13 +638,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildUpdateRunFromDataRow(DataRuntime runtime, String dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
+    public Run buildUpdateRunFromDataRow(DataRuntime runtime, Table dest, DataRow row, ConfigStore configs, LinkedHashMap<String,Column> columns){
         TableRun run = new TableRun(runtime, dest);
         run.setFrom(1);
 
-    /*确定需要更新的列*/
-
-
+        /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.size() == 0){
@@ -697,7 +697,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
-    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
+    public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return null;
     }
 
@@ -723,17 +723,17 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
 
     @Override
     public Run buildDeleteRunFromEntity(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String... columns) {
-        if(null == obj){
-            return null;
-        }
-        if(null == columns || columns.length == 0){
-           columns = new String[]{"_id"};
-        }
-        if(null == configs) {
-            configs = new DefaultConfigStore();
-        }
-        for(String column:columns){
-            configs.and(column, BeanUtil.getFieldValue(obj, column));
+        //没有configs条件的 才根据主键删除
+        if(null == configs || configs.isEmptyCondition()) {
+            if(null == columns || columns.length == 0){
+                columns = new String[]{"_id"};
+            }
+            if(null == configs) {
+                configs = new DefaultConfigStore();
+            }
+            for(String column:columns){
+                configs.and(column, BeanUtil.getFieldValue(obj, column));
+            }
         }
         return buildDeleteRun(runtime, dest, configs);
     }
@@ -743,21 +743,21 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
      * 													DELETE
      * -----------------------------------------------------------------------------------------------------------------
      * Run buildDeleteRun(DataRuntime runtime, String table, ConfigStore configs, String key, Object values)
-     * Run buildDeleteRun(DataRuntime runtime, String dest, Object obj, String ... columns)
+     * Run buildDeleteRun(DataRuntime runtime, Table dest, Object obj, String ... columns)
      * Run fillDeleteRunContent(DataRuntime runtime, Run run)
      *
      * protected Run buildDeleteRunFromTable(String table, String key, Object values)
-     * protected Run buildDeleteRunFromEntity(String dest, Object obj, String ... columns)
+     * protected Run buildDeleteRunFromEntity(Table dest, Object obj, String ... columns)
      ******************************************************************************************************************/
 
     @Override
     public Run buildDeleteRun(DataRuntime runtime, Table dest, ConfigStore configs, Object obj, String ... columns){
-        if(null == obj){
+        if(null == obj && (null == configs || configs.isEmptyCondition())){
             return null;
         }
         Run run = null;
         if(null == dest){
-            dest = DataSourceUtil.parseDest(dest.getName(), obj, null);
+            dest = DataSourceUtil.parseDest(null, obj, configs);
         }
         if(null == dest){
             Object entity = obj;
@@ -799,6 +799,14 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return null;
     }
 
+    @Override
+    public Run buildDeleteRun(DataRuntime runtime, Table table, ConfigStore configs){
+        TableRun run = new TableRun(runtime, table);
+        run.setConfigs(configs);
+        run.init();
+        fillDeleteRunContent(runtime, run);
+        return run;
+    }
     /**
      * 构造删除主体
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)

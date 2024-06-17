@@ -18,17 +18,15 @@
 
 package org.anyline.data.mongodb.datasource;
 
+import com.mongodb.client.MongoDatabase;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
 import org.anyline.data.runtime.DataRuntime;
-import org.anyline.data.transaction.TransactionManage;
-import org.anyline.data.transaction.init.DefaultTransactionManage;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +45,11 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
         if(!ConfigTable.environment().containsBean(DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + ".default")){
             //如果还没有注册默认数据源
             // 项目中可以提前注册好默认数据源 如通过@Configuration注解先执行注册 也可以在spring启动完成后覆盖默认数据源
-            DataSource datasource = null;
+            MongoDatabase datasource = null;
             DataRuntime runtime = null;
 
             try{
-                datasource = ConfigTable.environment().getBean(DataSource.class);
+                datasource = ConfigTable.environment().getBean(MongoDatabase.class);
             }catch (Exception e){
                 runtime = null;
             }
@@ -61,15 +59,13 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
                     loadDefault = false;
                 }catch (Exception e){
                     runtime = null;
-                    log.error("加载JDBC数据源 异常:", e);
+                    log.error("加载mongo数据源 异常:", e);
                 }
             }
 
             //有不支持通过connection返回获取连接信息的驱动，所以从配置文件中获取
             if(null != runtime) {
-                String driver = ConfigTable.environment().string("spring.datasource.,anyline.datasource.", "driver,driver-class,driver-class-name");
-                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,jdbc-url");
-                runtime.setDriver(driver);
+                String url = ConfigTable.environment().string( "spring.datasource.,anyline.datasource.", "url,uri");
                 runtime.setUrl(url);
                 if (BasicUtil.isNotEmpty(url)) {
                     runtime.setAdapterKey(DataSourceUtil.parseAdapterKey(url));
@@ -79,7 +75,6 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
                         runtime.setAdapterKey(adapterKey);
                     }
                 }
-                TransactionManage.reg("default", new DefaultTransactionManage(datasource));
             }
         }else{
             loadDefault = false;
@@ -87,8 +82,6 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
         list.addAll(load("spring.datasource", loadDefault));
         list.addAll(load("anyline.datasource", loadDefault));
         //TODO 项目指定一个前缀
-
-
         Object def = ConfigTable.environment().getBean("anyline.service.default");
         if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
             ConfigTable.environment().regBean("anyline.service", def);
@@ -137,7 +130,7 @@ public class MongoDataSourceLoader extends AbstractDataSourceLoader implements D
                         }
                     }
                 }catch (Exception e){
-                    log.error("[注入数据源失败][type:JDBC][key:{}][msg:{}]", prefix, e.toString());
+                    log.error("[注入数据源失败][type:mongo][key:{}][msg:{}]", prefix, e.toString());
                 }
             }
         }

@@ -22,6 +22,7 @@ import org.anyline.entity.OriginRow;
 
 public class NebulaDataRow  extends OriginRow {
     public NebulaDataRow() {
+        primaryKeys.clear();
         primaryKeys.add("id");
         createTime = System.currentTimeMillis();
         nanoTime = System.currentTimeMillis();

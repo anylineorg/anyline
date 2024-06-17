@@ -1,5 +1,4 @@
-
-
 anyline.dao=org.anyline.dao.init.DefaultDao
 anyline.service=org.anyline.service.init.DefaultService
 anyline.listener.ddl=org.anyline.data.listener.init.DefaultDDListener
+anyline.data.loader.jdbc=org.anyline.data.listener.init.DataSourceLoadListener

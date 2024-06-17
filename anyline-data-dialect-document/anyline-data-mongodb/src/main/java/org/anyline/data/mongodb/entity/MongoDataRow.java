@@ -22,6 +22,7 @@ import org.anyline.entity.OriginRow;
 
 public class MongoDataRow extends OriginRow {
     public MongoDataRow() {
+        primaryKeys.clear();
         primaryKeys.add("_id");
         parseKeyCase(keyCase);
         createTime = System.currentTimeMillis();
