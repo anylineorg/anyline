@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <name>anyline-data-jdbc-vastbase</name>
     <url>http://www.anyline.org/vastbase</url>
-    <description>海量数据, 基于openGauss, 但根据连接信息中是postgresql信息所以定位不了openGauss</description>
+    <description>海量数据, 基于openGauss</description>
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>

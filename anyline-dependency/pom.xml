@@ -36,6 +36,7 @@
 		<solon.version>2.7.5</solon.version>
 		<spring.version>5.3.23</spring.version>
 		<vertx.version>4.5.7</vertx.version>
+
 		<jdbc-mssql.version>7.2.2.jre8</jdbc-mssql.version>
 		<jdbc-mysql.version>8.0.28</jdbc-mysql.version>
 		<jdbc-db2.version>11.5.0.0</jdbc-db2.version>
@@ -97,10 +98,16 @@
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>
 		<javax.jstl.version>1.1.2</javax.jstl.version>
-		<!--JDK17部分-->
+		<!--JDK17部分+-->
 		<jakarta.servlet.version>6.0.0</jakarta.servlet.version>
 		<jakarta.jsp.version>3.1.1</jakarta.jsp.version>
 		<jakarta.jstl.version>3.0.0</jakarta.jstl.version>
+
+		<!--maven-->
+		<maven-source-plugin.version>2.2.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
+		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -1067,7 +1074,7 @@
 				<artifactId>sqlite-jdbc</artifactId>
 				<version>${jdbc-sqlite.veriosn}</version>
 			</dependency>
-			<!--JDK17-->
+			<!--JDK17+-->
 			<dependency>
 				<groupId>jakarta.servlet</groupId>
 				<artifactId>jakarta.servlet-api</artifactId>
@@ -1082,7 +1089,6 @@
 				<scope>provided</scope>
 				<optional>true</optional>
 			</dependency>
-
 			<dependency>
 				<groupId>jakarta.servlet.jsp.jstl</groupId>
 				<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
@@ -1158,7 +1164,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>2.2.1</version>
+						<version>${maven-source-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -1171,7 +1177,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>${maven-javadoc-plugin.version}</version>
 						<configuration>
 							<encoding>UTF-8</encoding>
 							<charset>UTF-8</charset>
@@ -1192,7 +1198,7 @@
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
+						<version>${nexus-staging-maven-plugin.version}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
@@ -1203,7 +1209,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>${maven-gpg-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -1237,7 +1243,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>2.2.1</version>
+						<version>${maven-source-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -1250,7 +1256,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>${maven-javadoc-plugin.version}</version>
 						<configuration>
 							<skip>true</skip>
 						</configuration>
