@@ -366,6 +366,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return cnt;
 	}
 
+	@Override
+	public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+		return 0;
+	}
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
