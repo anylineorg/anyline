@@ -718,9 +718,13 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
             builder.append("(");
         }
         boolean first = true;
+        String join = " OR ";
+        if(compare == Compare.FIND_IN_SET_AND){
+            join = " AND ";
+        }
         for(Object v:values) {
             if(!first) {
-                builder.append(" OR ");
+                builder.append(join);
             }
             if(placeholder) {
                 builder.append("FIND_IN_SET(?, ").append(column).append(")");
