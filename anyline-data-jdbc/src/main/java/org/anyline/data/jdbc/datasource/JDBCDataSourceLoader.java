@@ -18,6 +18,7 @@
 
 package org.anyline.data.jdbc.datasource;
 
+import org.anyline.annotation.Component;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -32,6 +33,7 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component("anyline.environment.data.datasource.loader.jdbc")
 public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
     private final JDBCDataSourceHolder holder = JDBCDataSourceHolder.instance();
