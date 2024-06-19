@@ -87,9 +87,19 @@ public class SQLUtil {
 		return delimiter(builder, name, delimiterFr, delimiterTo);
 	}
 	public static StringBuilder delimiter(StringBuilder builder, String src, String delimiterFr, String delimiterTo) {
+		if("null".equalsIgnoreCase(src)) {
+			builder.append(src);
+			return builder;
+		}
 		if(BasicUtil.isEmpty(src)) {
 			return builder;
 		}
+		if(src.startsWith("${") && src.endsWith("}")) {
+			String body = RegularUtil.cut(src, "${", "}");
+			builder.append(body);
+			return builder;
+		}
+
 		if(!delimiter(src)) {
 			builder.append(src);
 			return builder;
@@ -124,7 +134,7 @@ public class SQLUtil {
 					builder.append(".");
 				}
 			}
-		}else if(src.contains(" ")) {
+		}else if(src.contains(" ") || src.contains("(")) {
 			builder.append(src);
 		}else {
 			builder.append(delimiterFr).append(src).append(delimiterTo);
