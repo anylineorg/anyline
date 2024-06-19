@@ -367,6 +367,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
+	 * insert into table select * from table
+	 * @param dest 表 table(c1,c2,c3)
+	 * @param prepare 一般通过TableBuilder生成查询
+	 * @param columns 插入的列
+	 * @return 影响行数
+	 */
+	@Override
+	public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+		return 0;
+	}
+
+	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
