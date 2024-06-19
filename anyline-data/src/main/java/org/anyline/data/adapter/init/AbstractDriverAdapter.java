@@ -379,27 +379,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
+	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions)", 37));
-		}
-		return 0;
-	}
-
-
-	/**
-	 * insert into table select * from table
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param dest 表 table(c1,c2,c3)
-	 * @param prepare 一般通过TableBuilder生成查询
-	 * @param columns 插入的列
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions)", 37));
 		}
 		return 0;
 	}
@@ -417,6 +399,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns)", 37));
+		}
+		return null;
+	}
+	@Override
+	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String... conditions)", 37));
 		}
 		return null;
 	}

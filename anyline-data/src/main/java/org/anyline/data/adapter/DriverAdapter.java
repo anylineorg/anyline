@@ -749,7 +749,7 @@ public interface DriverAdapter {
 	 * @param configs 过滤条件及相关配置
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
-	Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs);
+	Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)

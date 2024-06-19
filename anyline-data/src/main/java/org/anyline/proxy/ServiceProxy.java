@@ -33,14 +33,8 @@ import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.init.AbstractRuntime;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
-import org.anyline.entity.PageNavi;
-import org.anyline.metadata.Catalog;
-import org.anyline.metadata.Procedure;
-import org.anyline.metadata.Schema;
-import org.anyline.metadata.Table;
+import org.anyline.entity.*;
+import org.anyline.metadata.*;
 import org.anyline.metadata.differ.MetadataDiffer;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.service.AnylineService;
@@ -54,6 +48,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -241,27 +236,9 @@ public class ServiceProxy {
 
 
 
-    /**
-     * insert into table select * from table
-     * 复杂的查询先通过TableBuilder构造查询
-     * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
-     * @param prepare 一般通过TableBuilder生成查询
-     * @param columns 插入的列
-     * @return 影响行数
-     */
-    public static long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns){
-        return service.insert(dest, prepare, configs, columns);
-    }
-    public static long insert(Table dest, RunPrepare prepare, String ... columns) {
-        return service.insert(dest, prepare, columns);
-    }
-    public static long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
-        return service.insert(dest, prepare, configs, columns);
-    }
-    public static long insert(String dest, RunPrepare prepare, String ... columns) {
-        return service.insert(dest, prepare, null, columns);
-    }
-
+    /* *****************************************************************************************************************
+     * 													INSERT SELECT
+     ******************************************************************************************************************/
     /**
      * insert into table select * from table
      * 与query参数一致
@@ -273,13 +250,13 @@ public class ServiceProxy {
      * @return 影响行数
      */
     public static long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions){
-        return service().insert(dest, origin, configs, obj, conditions);
+        return service.insert(dest, origin, configs, obj, conditions);
     }
     public static long insert(Table dest, Table origin, Object obj, String ... conditions) {
-        return service.insert(dest, origin,  obj, conditions);
+        return service.insert(dest, origin, obj, conditions);
     }
     public static long insert(Table dest, Table origin, long first, long last, Object obj, String ... conditions) {
-        return insert(dest, origin, first, last, obj, conditions);
+        return service.insert(dest, origin, first, last, obj, conditions);
     }
     public static long insert(Table dest, Table origin, ConfigStore configs, String ... conditions) {
         return service.insert(dest, origin, configs, conditions);
@@ -288,11 +265,12 @@ public class ServiceProxy {
         return service.insert(dest, origin, conditions);
     }
     public static long insert(Table dest, Table origin, PageNavi navi, String ... conditions) {
-        return service.insert(dest, origin, navi, conditions);
+        return service.insert(dest, origin, navi,  conditions);
     }
     public static long insert(Table dest, Table origin, long first, long last, String ... conditions) {
-        return service.insert(dest, origin, first, last, conditions);
+        return service.insert(dest, origin, first, last,  conditions);
     }
+
     public static long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions){
         return service.insert(dest, origin, configs, obj, conditions);
     }
@@ -303,7 +281,7 @@ public class ServiceProxy {
         return service.insert(dest, origin, first, last, obj, conditions);
     }
     public static long insert(String dest, String origin, ConfigStore configs, String ... conditions) {
-        return service.insert(dest, origin, configs, conditions);
+        return service.insert(dest, origin, configs,  conditions);
     }
     public static long insert(String dest, String origin, String ... conditions) {
         return service.insert(dest, origin, conditions);
@@ -314,6 +292,63 @@ public class ServiceProxy {
     public static long insert(String dest, String origin, long first, long last, String ... conditions) {
         return service.insert(dest, origin, first, last, conditions);
     }
+
+
+    /**
+     * insert into table select * from table
+     * 复杂的查询先通过TableBuilder构造查询
+     * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
+     * @param prepare 一般通过TableBuilder生成查询
+     * @return 影响行数
+     */
+    public static long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+        return service.insert(dest, prepare, configs, obj, conditions);
+    }
+    public static long insert(Table dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.insert(dest, prepare, first, last, configs, obj, conditions);
+    }
+    public static long insert(Table dest, RunPrepare prepare, Object obj, String ... conditions) {
+        return service.insert(dest, prepare,  obj, conditions);
+    }
+    public static long insert(Table dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+        return service.insert(dest, prepare, first, last, obj, conditions);
+    }
+
+    public static long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.insert(dest, prepare, configs,  conditions);
+    }
+    public static long insert(Table dest, RunPrepare prepare, String ... conditions) {
+        return service.insert(dest, prepare, conditions);
+    }
+    public static long insert(Table dest, RunPrepare prepare, long first, long last, String ... conditions) {
+        return service.insert(dest, prepare, first, last,  conditions);
+    }
+
+
+    public static long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+        return service.insert(dest, prepare, configs, obj, conditions);
+    }
+    public static long insert(String dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+        return service.insert(dest, prepare, first, last, configs, obj, conditions);
+    }
+    public static long insert(String dest, RunPrepare prepare, Object obj, String ... conditions) {
+        return service.insert(dest, prepare, obj, conditions);
+    }
+    public static long insert(String dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+        return insert(dest, prepare, first, last, obj, conditions);
+    }
+
+    public static long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return service.insert(dest, prepare, configs, conditions);
+    }
+    public static long insert(String dest, RunPrepare prepare, String ... conditions) {
+        return service.insert(dest, prepare,  conditions);
+    }
+    public static long insert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
+        return service.insert(dest, prepare, first, last, conditions);
+    }
+
+
     /* *****************************************************************************************************************
      * 													UPDATE
      ******************************************************************************************************************/
@@ -1138,6 +1173,34 @@ public class ServiceProxy {
     public static boolean execute(Procedure procedure, String... inputs) {
         return service.execute(procedure, inputs);
     }
+
+
+
+    /**
+     * 执行命令<br/>
+     * execute(10, sql, List&lt;List&lt;Object&gt;&gt;);<br/>
+     * 批量执行要求SQL一样
+     * @param batch 大于1时表示批量执行
+     * @param sql sql
+     * @param values 如果是批量执行，需要提供一个二维数组
+     * @return 影响行数批量执行时不准确
+     */
+    public static long execute(int batch, String sql, Collection<Object> values){
+        return service.execute(batch, sql, values);
+    }
+    /**
+     * 执行命令<br/>
+     * execute(10, sql, List&lt;List&lt;Object&gt;&gt;);<br/>
+     * 批量执行要求SQL一样
+     * @param batch 大于1时表示批量执行
+     * @param vol 每行多少个占位符
+     * @param sql sql
+     * @param values 如果是批量执行，需要提供一个二维数组
+     * @return 影响行数批量执行时不准确
+     */
+    public static long execute(int batch, int vol, String sql, Collection<Object> values){
+        return service.execute(batch, vol, sql, values);
+    }
     /**
      * 根据存储过程查询
      * @param procedure  procedure
@@ -1345,6 +1408,21 @@ public class ServiceProxy {
      */
     public static List<Run> ddls(List<MetadataDiffer> differs) {
         return service.ddls(differs);
+    }
+
+
+    /**
+     * 根据结果集对象获取列结构, 如果有表名应该调用metadata().columns(table);或metadata().table(table).getColumns()
+     * @param sql sql
+     * @param comment 是否需要列注释
+     * @param condition 是否需要拼接查询条件, 如果需要会拼接where 1=0 条件(默认不添加，通常情况下SQL自带查询条件，给参数赋值NULL达到相同的效果)
+     * @return LinkedHashMap
+     */
+    public static LinkedHashMap<String, Column> metadata(String sql, boolean comment, boolean condition){
+        return service.metadata(sql, comment,condition);
+    }
+    public static  LinkedHashMap<String, Column> metadata(String sql) {
+        return metadata(sql, false, false);
     }
 
     public static AnylineService.DDLService ddl() {

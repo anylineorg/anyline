@@ -170,25 +170,10 @@ public interface AnylineService<E>{
 		return insert(dest, data, configs, BeanUtil.array2list(columns));
 	}
 
-	/**
-	 * insert into table select * from table
-	 * 复杂的查询先通过TableBuilder构造查询
-	 * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
-	 * @param prepare 一般通过TableBuilder生成查询
-	 * @param columns 插入的列
-	 * @return 影响行数
-	 */
-	long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns);
-	default long insert(Table dest, RunPrepare prepare, String ... columns) {
-		return insert(dest, prepare, null, columns);
-	}
-	default long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
-		return insert(new Table(dest), prepare, configs, columns);
-	}
-	default long insert(String dest, RunPrepare prepare, String ... columns) {
-		return insert(new Table(dest), prepare, null, columns);
-	}
 
+	/* *****************************************************************************************************************
+	 * 													INSERT SELECT
+	 ******************************************************************************************************************/
 	/**
 	 * insert into table select * from table
 	 * 与query参数一致
@@ -240,6 +225,68 @@ public interface AnylineService<E>{
 	default long insert(String dest, String origin, long first, long last, String ... conditions) {
 		return insert(dest, origin, first, last, null, conditions);
 	}
+
+
+	/**
+	 * insert into table select * from table
+	 * 复杂的查询先通过TableBuilder构造查询
+	 * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
+	 * @param prepare 一般通过TableBuilder生成查询
+	 * @return 影响行数
+	 */
+	long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default long insert(Table dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		DefaultPageNavi navi = new DefaultPageNavi();
+		if(null == configs) {
+			configs = new DefaultConfigStore();
+		}
+		navi.scope(first, last);
+		configs.setPageNavi(navi);
+		return insert(dest, prepare, configs, obj, conditions);
+	}
+	default long insert(Table dest, RunPrepare prepare, Object obj, String ... conditions) {
+		return insert(dest, prepare, (ConfigStore) null, obj, conditions);
+	}
+	default long insert(Table dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return insert(dest, prepare, configs, obj, conditions);
+	}
+
+	default long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return insert(dest, prepare, configs, null, conditions);
+	}
+	default long insert(Table dest, RunPrepare prepare, String ... conditions) {
+		return insert(dest, prepare, (ConfigStore) null, null, conditions);
+	}
+	default long insert(Table dest, RunPrepare prepare, long first, long last, String ... conditions) {
+		return insert(dest, prepare, first, last, null, conditions);
+	}
+
+
+	default long insert(String dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+		return insert(new Table<>(dest), prepare, configs, obj, conditions);
+	}
+	default long insert(String dest, RunPrepare prepare, long first, long last, ConfigStore configs, Object obj, String ... conditions) {
+		return insert(new Table(dest), prepare, first, last, configs, obj, conditions);
+	}
+	default long insert(String dest, RunPrepare prepare, Object obj, String ... conditions) {
+		return insert(dest, prepare, (ConfigStore) null, obj, conditions);
+	}
+	default long insert(String dest, RunPrepare prepare, long first, long last, Object obj, String ... conditions) {
+		ConfigStore configs = new DefaultConfigStore(first, last);
+		return insert(dest, prepare, configs, obj, conditions);
+	}
+
+	default long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return insert(dest, prepare, configs, null, conditions);
+	}
+	default long insert(String dest, RunPrepare prepare, String ... conditions) {
+		return insert(dest, prepare, (ConfigStore) null, null, conditions);
+	}
+	default long insert(String dest, RunPrepare prepare, long first, long last, String ... conditions) {
+		return insert(dest, prepare, first, last, null, conditions);
+	}
+
 
 	/* *****************************************************************************************************************
 	 * 													UPDATE

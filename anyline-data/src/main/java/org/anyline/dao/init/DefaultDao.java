@@ -686,23 +686,6 @@ public class DefaultDao<E> implements AnylineDao<E> {
 		}
 		return runtime.getAdapter().insert(runtime, random, dest, prepare, configs, obj, conditions);
 	}
-
-	/**
-	 * insert into table select * from table
-	 * 复杂的查询先构造好TRunPrepare
-	 * @param dest 表 table(c1,c2,c3)
-	 * @param prepare 一般通过TableBuilder生成查询
-	 * @param columns 插入的列
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
-		if(null == runtime) {
-			runtime = runtime();
-		}
-		return runtime.getAdapter().insert(runtime, random, dest, prepare, configs, columns);
-	}
-
 	/**
 	 * 查询
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端

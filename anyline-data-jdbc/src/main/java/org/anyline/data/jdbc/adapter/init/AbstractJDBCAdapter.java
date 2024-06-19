@@ -206,22 +206,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
-		Run run = buildQueryRun(runtime, new Prepare, configs, conditions);
-		return 0;
-	}
-
-	/**
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param dest 表 table(c1,c2,c3)
-	 * @param prepare 一般通过TableBuilder生成查询
-	 * @param configs 查询条件与相关配置
-	 * @param columns 插入的列
-	 * @return 影响行数
-	 */
-	@Override
-	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
-
+	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
 		String name = dest.getName();
 		if(name.contains("(")){
 			String[] cols = name.substring(name.indexOf("(")+1, name.lastIndexOf(")")).split(",");
@@ -229,11 +214,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				dest.addColumn(new Column(col));
 			}
 			dest.setName(name.substring(0, name.indexOf("(")));
-		}
-		if(null != columns && columns.length > 0) {
-			for (String column : columns) {
-				dest.addColumn(new Column(column));
-			}
 		}
 
 		if(null == random) {
@@ -252,7 +232,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			return -1;
 		}
 
-		Run run = buildInsertRun(runtime, dest, prepare, configs);
+		Run run = buildInsertRun(runtime, dest, prepare, configs, obj, conditions);
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
 			dest.setColumns(columns(runtime, random, false, dest, false));
@@ -294,9 +274,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	@Override
-	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs){
+	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
 		Run run = new TableRun(runtime, dest);
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isEmpty(dest)) {
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
@@ -318,11 +298,11 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			builder.append(")");
 		}
 		builder.append("\n");
-		Run query = buildQueryRun(runtime, prepare, configs);
+		Run query = buildQueryRun(runtime, prepare, configs, conditions);
 		if (query.isValid()) {
 			String cmd = query.getFinalQuery();
 			builder.append(cmd);
-			run.setValues(run.getRunValues());
+			run.setValues(query.getRunValues());
 		}
 		return run;
 	}
@@ -545,7 +525,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	protected Run createInsertRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		Run run = new TableRun(runtime, dest);
 		// List<Object> values = new ArrayList<Object>();
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = run.getBuilder();
 		if(BasicUtil.isEmpty(dest)) {
 			throw new org.anyline.exception.SQLException("未指定表");
 		}
@@ -643,7 +623,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		valuesBuilder.append(")");
 		builder.append(valuesBuilder);
 		builder.append(insertFoot(configs, cols));
-		run.setBuilder(builder);
 		run.setInsertColumns(insertColumns);
 		return run;
 	}
@@ -2182,8 +2161,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				return null;
 			}
 		}
-		StringBuilder builder = new StringBuilder();
 		TableRun run = new TableRun(runtime, table);
+		StringBuilder builder = run.getBuilder();
 		builder.append("DELETE FROM ");
 		name(runtime, builder, table);
 		builder.append(" WHERE ");
@@ -2232,8 +2211,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			builder.append("=?");
 			addRunValue(runtime, run, Compare.EQUAL, new Column(key), values);
 		}
-
-		run.setBuilder(builder);
 
 		return run;
 	}

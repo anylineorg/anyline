@@ -166,10 +166,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return super.insert(runtime, random, batch, dest, data, configs, columns);
     }
 
-    @Override
-    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs) {
-        return null;
-    }
 
     /**
      * insert [命令合成]<br/>

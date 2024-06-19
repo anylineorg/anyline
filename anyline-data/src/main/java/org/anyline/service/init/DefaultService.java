@@ -888,12 +888,12 @@ public class DefaultService<E> implements AnylineService<E> {
     }
 
     @Override
-    public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
+    public long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
-            return ServiceProxy.service(ps[0]).insert(dest, prepare, configs, columns);
+            return ServiceProxy.service(ps[0]).insert(dest, prepare, configs, conditions);
         }
-        return dao.insert(dest, prepare, configs, columns);
+        return dao.insert(dest, prepare, configs, obj, conditions);
     }
 
     @Override
