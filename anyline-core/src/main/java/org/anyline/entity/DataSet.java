@@ -3048,7 +3048,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 result.add(rows.get(i));
             }
         }
-        if (keys.size() == 0) {
+        if (keys.isEmpty()) {
             keys.add(ConfigTable.DEFAULT_PRIMARY_KEY);
         }
         int size = set.size();
@@ -3094,10 +3094,10 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return boolean
      */
     public boolean contains(DataRow row, List<String> keys) {
-        if (null == rows || rows.size() == 0 || null == row) {
+        if (null == rows || rows.isEmpty() || null == row) {
             return false;
         }
-        if (keys.size() == 0) {
+        if (keys.isEmpty()) {
             keys.add(ConfigTable.DEFAULT_PRIMARY_KEY);
         }
         String params[] = packParam(row, keys);
@@ -3240,7 +3240,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
         if (null == items) {
             return this;
         }
-        if(keys.size() == 0) {
+        if(keys.isEmpty()) {
             throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
@@ -3386,7 +3386,7 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
      * @return DataSet
      */
     public DataSet join(DataSet items, List<String>  keys) {
-        if (null == items || keys.size() == 0) {
+        if (null == items || keys.isEmpty()) {
             return this;
         }
         for (DataRow row : rows) {

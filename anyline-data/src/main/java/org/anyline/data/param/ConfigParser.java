@@ -935,7 +935,7 @@ public class ConfigParser {
 		List<String> list = null;
 		if(null != key && null != partMap) {
 			list = partMap.get(encryptHttpRequestParamKey(key));
-			if (null == list || list.size() == 0) {
+			if (null == list || list.isEmpty()) {
 				list = partMap.get(key);
 			}
 		}

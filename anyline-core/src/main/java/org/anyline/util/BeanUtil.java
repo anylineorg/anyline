@@ -1412,7 +1412,7 @@ public class BeanUtil {
 	}
 
 	public static <T> boolean equals(T obj1, T obj2, List<String> keys) {
-		if(null == keys || keys.size() == 0) {
+		if(null == keys || keys.isEmpty()) {
 			if(null == obj1) {
 				if(null == obj2) {
 					return true;

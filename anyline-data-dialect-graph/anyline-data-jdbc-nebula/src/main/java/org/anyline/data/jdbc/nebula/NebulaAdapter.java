@@ -891,7 +891,7 @@ public class NebulaAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
-        if(primaryKeys.size() == 0) {
+        if(primaryKeys.isEmpty()) {
             throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 

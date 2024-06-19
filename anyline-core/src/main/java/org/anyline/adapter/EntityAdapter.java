@@ -461,7 +461,7 @@ public interface EntityAdapter {
                     }
                 }
             }
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 list.put(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase(), new Column(DataRow.DEFAULT_PRIMARY_KEY));
             }
             EntityAdapterProxy.primarys.put(clazz.getName().toUpperCase(), list);

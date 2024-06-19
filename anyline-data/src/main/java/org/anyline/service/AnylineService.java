@@ -172,7 +172,8 @@ public interface AnylineService<E>{
 
 	/**
 	 * insert into table select * from table
-	 * @param dest 表 table(c1,c2,c3)
+	 * 复杂的查询先通过TableBuilder构造查询
+	 * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
 	 * @param prepare 一般通过TableBuilder生成查询
 	 * @param columns 插入的列
 	 * @return 影响行数
@@ -187,6 +188,59 @@ public interface AnylineService<E>{
 	default long insert(String dest, RunPrepare prepare, String ... columns) {
 		return insert(new Table(dest), prepare, null, columns);
 	}
+
+	/**
+	 * insert into table select * from table
+	 * 与query参数一致
+	 * @param dest 插入表
+	 * @param origin 查询表
+	 * @param configs 查询条件及相关配置
+	 * @param obj 查询条件
+	 * @param conditions 查询条件
+	 * @return 影响行数
+	 */
+	long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions);
+	default long insert(Table dest, Table origin, Object obj, String ... conditions) {
+		return insert(dest, origin, (ConfigStore) null, obj, conditions);
+	}
+	default long insert(Table dest, Table origin, long first, long last, Object obj, String ... conditions) {
+		return insert(dest, origin, new DefaultConfigStore(first, last), obj, conditions);
+	}
+	default long insert(Table dest, Table origin, ConfigStore configs, String ... conditions) {
+		return insert(dest, origin, configs, null, conditions);
+	}
+	default long insert(Table dest, Table origin, String ... conditions) {
+		return insert(dest, origin, (ConfigStore) null, null, conditions);
+	}
+	default long insert(Table dest, Table origin, PageNavi navi, String ... conditions) {
+		return insert(dest, origin, new DefaultConfigStore().setPageNavi(navi), null, conditions);
+	}
+	default long insert(Table dest, Table origin, long first, long last, String ... conditions) {
+		return insert(dest, origin, first, last, null, conditions);
+	}
+
+	default long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions){
+		return insert(new Table(dest), new Table(origin), configs, obj, conditions);
+	}
+	default long insert(String dest, String origin, Object obj, String ... conditions) {
+		return insert(dest, origin, (ConfigStore) null, obj, conditions);
+	}
+	default long insert(String dest, String origin, long first, long last, Object obj, String ... conditions) {
+		return insert(dest, origin, new DefaultConfigStore(first, last), obj, conditions);
+	}
+	default long insert(String dest, String origin, ConfigStore configs, String ... conditions) {
+		return insert(dest, origin, configs, null, conditions);
+	}
+	default long insert(String dest, String origin, String ... conditions) {
+		return insert(dest, origin, (ConfigStore) null, null, conditions);
+	}
+	default long insert(String dest, String origin, PageNavi navi, String ... conditions) {
+		return insert(dest, origin, new DefaultConfigStore().setPageNavi(navi), null, conditions);
+	}
+	default long insert(String dest, String origin, long first, long last, String ... conditions) {
+		return insert(dest, origin, first, last, null, conditions);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/

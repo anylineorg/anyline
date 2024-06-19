@@ -1065,13 +1065,12 @@ public abstract class AbstractRun implements Run {
 	public void setValue(Object value) {
 		this.value = value;
 	}
-/*
 
 	@Override
-	public void setValues(List<Object> values) {
-		this.batchValues = new ArrayList<>();
+	public void setValues(List<RunValue> values) {
+		this.values = values;
 	}
-*/
+
 
 	@Override
 	public Run setQueryColumns(String... columns) {

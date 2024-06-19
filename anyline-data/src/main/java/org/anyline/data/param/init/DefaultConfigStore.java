@@ -1150,7 +1150,7 @@ public class DefaultConfigStore implements ConfigStore {
 		}
 		if(value instanceof List) {
 			List list = (List)value;
-			if(list.size() == 0) {
+			if(list.isEmpty()) {
 				value = null;
 			}else if(list.size() ==1) {
 				value = list.get(0);

@@ -333,22 +333,38 @@ public interface AnylineDao<E>{
 		return insert(0, dest, data, configs, BeanUtil.array2list(columns));
 	}
 
+
 	/**
 	 * insert into table select * from table
-	 * @param dest 表 table(c1,c2,c3)
-	 * @param prepare 一般通过TableBuilder生成查询
-	 * @param columns 插入的列
+	 * 与query参数一致
+	 * @param dest 插入表
+	 * @param prepare 查询表
+	 * @param configs 查询条件及相关配置
+	 * @param obj 查询条件
+	 * @param conditions 查询条件
 	 * @return 影响行数
 	 */
-	long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns);
-	default long insert(Table dest, RunPrepare prepare, String ... columns) {
-		return insert(dest, prepare, null, columns);
+	long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default long insert(Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+		return insert(runtime(), null, dest, prepare, configs, obj, conditions);
 	}
-	default long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
-		return insert(new Table(dest), prepare, configs, columns);
+	default long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare) {
+		return insert(runtime, random, dest, prepare, null);
 	}
-	default long insert(String dest, RunPrepare prepare, String ... columns) {
-		return insert(new Table(dest), prepare, null, columns);
+	default long insert(DataRuntime runtime, String random, String dest, RunPrepare prepare, ConfigStore configs) {
+		return insert(runtime, random, new Table(dest), prepare, configs, null, (String) null);
+	}
+	default long insert(DataRuntime runtime, String random, String dest, RunPrepare prepare) {
+		return insert(runtime, random, new Table(dest), prepare);
+	}
+	default long insert(Table dest, RunPrepare prepare) {
+		return insert(dest, prepare, (ConfigStore)null);
+	}
+	default long insert(String dest, RunPrepare prepare, ConfigStore configs) {
+		return insert(new Table(dest), prepare, configs);
+	}
+	default long insert(String dest, RunPrepare prepare) {
+		return insert(new Table(dest), prepare, (ConfigStore) null);
 	}
 	/**
 	 * 保存(insert|update)

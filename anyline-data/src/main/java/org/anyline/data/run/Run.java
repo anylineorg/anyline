@@ -215,6 +215,7 @@ public interface Run {
 
 	void setValue(Object value);
 	void setValues(String key, Collection<Object> values);
+	void setValues(List<RunValue> values);
 	void addValues(String key, Collection<Object> values);
 	Object getValue();
 	void setBatch(int batch);

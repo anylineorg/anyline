@@ -366,19 +366,41 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return cnt;
 	}
 
-	@Override
-	public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
-		return 0;
-	}
+
 	/**
 	 * insert into table select * from table
+	 * 与query参数一致
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 插入表
+	 * @param origin 查询表
+	 * @param configs 查询条件及相关配置
+	 * @param obj 查询条件
+	 * @param conditions 查询条件
+	 * @return 影响行数
+	 */
+	@Override
+	public long insert(DataRuntime runtime, String random, Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions)", 37));
+		}
+		return 0;
+	}
+
+
+	/**
+	 * insert into table select * from table
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
 	 * @param dest 表 table(c1,c2,c3)
 	 * @param prepare 一般通过TableBuilder生成查询
 	 * @param columns 插入的列
 	 * @return 影响行数
 	 */
 	@Override
-	public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns)", 37));
+		}
 		return 0;
 	}
 
@@ -1135,7 +1157,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!keys.isEmpty()) {
 			primaryKeys = keys;
 		}
-		if(primaryKeys.size() == 0) {
+		if(primaryKeys.isEmpty()) {
 			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}
 
@@ -2084,7 +2106,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX, Regular.MATCH_MODE.CONTAIN);
 			type = Variable.KEY_TYPE_SIGN_V2 ;
 			//::KEY 格式的占位符解析,在PG环境中会与 ::INT8 格式冲突 需要禁用
-			if(keys.size() == 0 && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT && supportSqlVarPlaceholderRegexExt(runtime)) {
+			if(keys.isEmpty() && ConfigTable.IS_ENABLE_PLACEHOLDER_REGEX_EXT && supportSqlVarPlaceholderRegexExt(runtime)) {
 				// AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				keys = RegularUtil.fetchs(text, RunPrepare.SQL_VAR_PLACEHOLDER_REGEX_EXT, Regular.MATCH_MODE.CONTAIN);
 				type = Variable.KEY_TYPE_SIGN_V1 ;
@@ -4265,7 +4287,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 
 			// 根据系统表查询失败后根据驱动内置接口补充
-			if(list.size() == 0) {
+			if(list.isEmpty()) {
 				try {
 					list = tables(runtime, true, list, catalog, schema, origin, types);
 					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -4820,7 +4842,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 
 			// 根据系统表查询失败后根据驱动内置接口补充
-			if(list.size() == 0) {
+			if(list.isEmpty()) {
 				try {
 					list = vertexTables(runtime, true, list, catalog, schema, pattern, types);
 					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -5346,7 +5368,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 
 			// 根据系统表查询失败后根据驱动内置接口补充
-			if(list.size() == 0) {
+			if(list.isEmpty()) {
 				try {
 					list = edgeTables(runtime, true, list, catalog, schema, origin, types);
 					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
@@ -12865,7 +12887,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		Table table = meta.getTable(true);
 		if(null == table) {
 			List<Table> tables = tables(runtime, null, false, meta.getCatalog(), meta.getSchema(), meta.getTableName(true), Table.TYPE.NORMAL.value);
-			if(tables.size() == 0) {
+			if(tables.isEmpty()) {
 				if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
 					throw new AnylineException("表不存在:" + meta.getTableName(true));
 				}else{

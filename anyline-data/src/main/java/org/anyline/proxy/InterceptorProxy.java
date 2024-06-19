@@ -253,6 +253,19 @@ public class InterceptorProxy {
         }
         return swt;
     }
+
+    public static SWITCH prepareInsert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(InsertInterceptor interceptor:insertInterceptors) {
+            swt = interceptor.prepare(runtime, random, dest, prepare, configs);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 prepare
+                return swt;
+            }
+        }
+        return swt;
+    }
+
     public static SWITCH beforeInsert(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns) {
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors) {
@@ -264,6 +277,19 @@ public class InterceptorProxy {
         }
         return swt;
     }
+
+    public static SWITCH beforeInsert(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(InsertInterceptor interceptor:insertInterceptors) {
+            swt = interceptor.before(runtime, random, run, dest, prepare, configs);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 before
+                return swt;
+            }
+        }
+        return swt;
+    }
+
     public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns, boolean success, long result, long millis) {
         SWITCH swt = SWITCH.CONTINUE;
         for(InsertInterceptor interceptor:insertInterceptors) {
@@ -276,6 +302,18 @@ public class InterceptorProxy {
         return swt;
     }
 
+
+    public static SWITCH afterInsert(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs, boolean success, long result, long millis) {
+        SWITCH swt = SWITCH.CONTINUE;
+        for(InsertInterceptor interceptor:insertInterceptors) {
+            swt = interceptor.after(runtime, random, run, dest, prepare, configs, success, result, millis);
+            if(swt == SWITCH.SKIP) {
+                //跳过后续的 after
+                return swt;
+            }
+        }
+        return swt;
+    }
     public static SWITCH prepareDelete(DataRuntime runtime, String random, int batch, Table table, String key, Collection values) {
         SWITCH swt = SWITCH.CONTINUE;
         for(DeleteInterceptor interceptor:deleteInterceptors) {

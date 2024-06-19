@@ -32,6 +32,7 @@ import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.jdbc.handler.SimpleConnectionHandler;
 import org.anyline.data.jdbc.util.JDBCUtil;
 import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataRow;
@@ -575,6 +576,11 @@ public class DefaultJDBCWorker implements DriverWorker {
             cnt = batch(adapter, runtime, datasource, cmd, batch, run.getVol(), values);
         }else {
             boolean keyHolder = adapter.supportKeyHolder(runtime, configs);
+
+            if(data instanceof RunPrepare){
+                // insert into a select * from b
+                keyHolder = false;
+            }
             PreparedStatement ps = null;
             //是否支持返回自增值
             if(keyHolder) {

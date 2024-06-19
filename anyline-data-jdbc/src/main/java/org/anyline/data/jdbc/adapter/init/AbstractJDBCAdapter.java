@@ -195,6 +195,138 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 
 
 	/**
+	 * insert into table select * from table
+	 * 与query参数一致
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 插入表
+	 * @param origin 查询表
+	 * @param configs 查询条件及相关配置
+	 * @param obj 查询条件
+	 * @param conditions 查询条件
+	 * @return 影响行数
+	 */
+	@Override
+	public long insert(DataRuntime runtime, String random, Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions) {
+		Run run = buildQueryRun(runtime, new Prepare, configs, conditions);
+		return 0;
+	}
+
+	/**
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 table(c1,c2,c3)
+	 * @param prepare 一般通过TableBuilder生成查询
+	 * @param configs 查询条件与相关配置
+	 * @param columns 插入的列
+	 * @return 影响行数
+	 */
+	@Override
+	public long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+
+		String name = dest.getName();
+		if(name.contains("(")){
+			String[] cols = name.substring(name.indexOf("(")+1, name.lastIndexOf(")")).split(",");
+			for(String col:cols){
+				dest.addColumn(new Column(col));
+			}
+			dest.setName(name.substring(0, name.indexOf("(")));
+		}
+		if(null != columns && columns.length > 0) {
+			for (String column : columns) {
+				dest.addColumn(new Column(column));
+			}
+		}
+
+		if(null == random) {
+			random = random(runtime);
+		}
+		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
+		boolean cmd_success = false;
+		swt = InterceptorProxy.prepareInsert(runtime, random, dest, prepare, configs);
+		if(swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+		if(null != dmListener) {
+			swt = dmListener.prepareInsert(runtime, random, dest, prepare, configs);
+		}
+		if(swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+
+		Run run = buildInsertRun(runtime, dest, prepare, configs);
+		//提前设置好columns,到了adapter中需要手动检测缓存
+		if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
+			dest.setColumns(columns(runtime, random, false, dest, false));
+		}
+		if(null == run) {
+			return 0;
+		}
+
+		long cnt = 0;
+		long fr = System.currentTimeMillis();
+		long millis = -1;
+
+		swt = InterceptorProxy.beforeInsert(runtime, random, run, dest, prepare, configs);
+		if(swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+		if(null != dmListener) {
+			swt = dmListener.beforeInsert(runtime, random, run, dest, prepare, configs);
+		}
+		if(swt == ACTION.SWITCH.BREAK) {
+			return -1;
+		}
+		cnt = insert(runtime, random, prepare, configs, run, null);
+		if (null != dmListener) {
+			dmListener.afterInsert(runtime, random, run, cnt, dest, prepare, configs, cmd_success, cnt, millis);
+		}
+		InterceptorProxy.afterInsert(runtime, random, run, dest, prepare, configs, cmd_success, cnt, System.currentTimeMillis() - fr);
+		return cnt;
+
+	}
+
+	/**
+	 * insert [命令合成]<br/>
+	 * 填充inset命令内容(创建批量INSERT RunPrepare)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param prepare 查询
+	 * @param configs 过滤条件及相关配置
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
+	@Override
+	public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs){
+		Run run = new TableRun(runtime, dest);
+		StringBuilder builder = new StringBuilder();
+		if(BasicUtil.isEmpty(dest)) {
+			throw new org.anyline.exception.SQLException("未指定表");
+		}
+
+		checkName(runtime, null, dest);
+		builder.append("INSERT INTO ");
+		name(runtime, builder, dest);
+		LinkedHashMap<String, Column> cols = dest.getColumns();
+		if(null != cols && !cols.isEmpty()){
+			builder.append("(");
+			boolean first = true;
+			for(Column col:cols.values()){
+				if(!first){
+					builder.append(", ");
+				}
+				first = false;
+				name(runtime, builder, col);
+			}
+			builder.append(")");
+		}
+		builder.append("\n");
+		Run query = buildQueryRun(runtime, prepare, configs);
+		if (query.isValid()) {
+			String cmd = query.getFinalQuery();
+			builder.append(cmd);
+			run.setValues(run.getRunValues());
+		}
+		return run;
+	}
+	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -447,7 +579,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		run.setFrom(from);
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
-		if(null == cols || cols.size() == 0) {
+		if(null == cols || cols.isEmpty()) {
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
 		}
 		boolean replaceEmptyNull = false;
@@ -545,7 +677,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				break;
 			}
 		}
-		if(null == cols || cols.size() == 0) {
+		if(null == cols || cols.isEmpty()) {
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
 		}
 		run.setInsertColumns(cols);
@@ -3901,7 +4033,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}
 
 			// 方法(3)根据根据驱动内置接口补充
-			if (null == columns || columns.size() == 0) {
+			if (null == columns || columns.isEmpty()) {
 				columns = worker.metadata(this, runtime, true, columns, table, null);
 
 				if(null != columns) {
@@ -4416,7 +4548,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 					log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.toString());
 				}
 			}
-			if (null == tags || tags.size() == 0) {
+			if (null == tags || tags.isEmpty()) {
 				// 根据驱动内置接口补充
 				try {
 					// isAutoIncrement isGenerated remark default

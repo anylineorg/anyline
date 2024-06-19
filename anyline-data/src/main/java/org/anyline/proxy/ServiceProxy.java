@@ -239,9 +239,12 @@ public class ServiceProxy {
         return insert(dest, data, configs, BeanUtil.array2list(columns));
     }
 
+
+
     /**
      * insert into table select * from table
-     * @param dest 表 table(c1,c2,c3)
+     * 复杂的查询先通过TableBuilder构造查询
+     * @param dest 表 table(c1,c2,c3)需要插入的列可以通过addColumn添加到dest中
      * @param prepare 一般通过TableBuilder生成查询
      * @param columns 插入的列
      * @return 影响行数
@@ -250,13 +253,66 @@ public class ServiceProxy {
         return service.insert(dest, prepare, configs, columns);
     }
     public static long insert(Table dest, RunPrepare prepare, String ... columns) {
-        return insert(dest, prepare, null, columns);
+        return service.insert(dest, prepare, columns);
     }
     public static long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
-        return insert(new Table(dest), prepare, configs, columns);
+        return service.insert(dest, prepare, configs, columns);
     }
     public static long insert(String dest, RunPrepare prepare, String ... columns) {
-        return insert(new Table(dest), prepare, null, columns);
+        return service.insert(dest, prepare, null, columns);
+    }
+
+    /**
+     * insert into table select * from table
+     * 与query参数一致
+     * @param dest 插入表
+     * @param origin 查询表
+     * @param configs 查询条件及相关配置
+     * @param obj 查询条件
+     * @param conditions 查询条件
+     * @return 影响行数
+     */
+    public static long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions){
+        return service().insert(dest, origin, configs, obj, conditions);
+    }
+    public static long insert(Table dest, Table origin, Object obj, String ... conditions) {
+        return service.insert(dest, origin,  obj, conditions);
+    }
+    public static long insert(Table dest, Table origin, long first, long last, Object obj, String ... conditions) {
+        return insert(dest, origin, first, last, obj, conditions);
+    }
+    public static long insert(Table dest, Table origin, ConfigStore configs, String ... conditions) {
+        return service.insert(dest, origin, configs, conditions);
+    }
+    public static long insert(Table dest, Table origin, String ... conditions) {
+        return service.insert(dest, origin, conditions);
+    }
+    public static long insert(Table dest, Table origin, PageNavi navi, String ... conditions) {
+        return service.insert(dest, origin, navi, conditions);
+    }
+    public static long insert(Table dest, Table origin, long first, long last, String ... conditions) {
+        return service.insert(dest, origin, first, last, conditions);
+    }
+    public static long insert(String dest, String origin, ConfigStore configs, Object obj, String ... conditions){
+        return service.insert(dest, origin, configs, obj, conditions);
+    }
+    public static long insert(String dest, String origin, Object obj, String ... conditions) {
+        return service.insert(dest, origin, obj, conditions);
+    }
+    public static long insert(String dest, String origin, long first, long last, Object obj, String ... conditions) {
+        return service.insert(dest, origin, first, last, obj, conditions);
+    }
+    public static long insert(String dest, String origin, ConfigStore configs, String ... conditions) {
+        return service.insert(dest, origin, configs, conditions);
+    }
+    public static long insert(String dest, String origin, String ... conditions) {
+        return service.insert(dest, origin, conditions);
+    }
+    public static long insert(String dest, String origin, PageNavi navi, String ... conditions) {
+        return service.insert(dest, origin, navi, conditions);
+    }
+    public static long insert(String dest, String origin, long first, long last, String ... conditions) {
+        return service.insert(dest, origin, first, last, conditions);
     }
     /* *****************************************************************************************************************
      * 													UPDATE

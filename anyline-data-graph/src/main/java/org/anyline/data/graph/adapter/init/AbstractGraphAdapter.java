@@ -398,7 +398,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		run.setFrom(from);
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
-		if(null == cols || cols.size() == 0) {
+		if(null == cols || cols.isEmpty()) {
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
 		}
 		boolean replaceEmptyNull = false;
@@ -490,7 +490,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
-		if(null == cols || cols.size() == 0) {
+		if(null == cols || cols.isEmpty()) {
 			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
 		}
 		run.setInsertColumns(cols);

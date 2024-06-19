@@ -88,6 +88,11 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
     @Override
+    public Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs) {
+        return null;
+    }
+
+    @Override
     public Run buildInsertRun(DataRuntime runtime, int batch, Table dest, Object obj, ConfigStore configs, List<String> columns) {
         return createInsertRun(runtime, dest, obj, configs, columns);
     }
@@ -645,7 +650,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         /*确定需要更新的列*/
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
-        if(primaryKeys.size() == 0) {
+        if(primaryKeys.isEmpty()) {
             throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 

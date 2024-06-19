@@ -18,6 +18,8 @@
 
 package org.anyline.data.interceptor;
 
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.ACTION.SWITCH;
@@ -36,7 +38,9 @@ public interface InsertInterceptor extends DMInterceptor{
      * @return SWITCH
      */
     default SWITCH prepare(DataRuntime runtime, String random, int batch, Table dest, Object data, List<String> columns) { return SWITCH.CONTINUE;}
-
+    default SWITCH prepare(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs){
+        return SWITCH.CONTINUE;
+    }
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -44,6 +48,7 @@ public interface InsertInterceptor extends DMInterceptor{
      * @return SWITCH
      */
     default SWITCH before(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns) { return SWITCH.CONTINUE;}
+    default SWITCH before(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs) { return SWITCH.CONTINUE;}
     /**
      * 合计总数之前调用，到这一步SQL已创建完成
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -53,4 +58,5 @@ public interface InsertInterceptor extends DMInterceptor{
      * @return SWITCH
      */
     default SWITCH after(DataRuntime runtime, String random, Run run, Table dest, Object data, List<String> columns, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
+    default SWITCH after(DataRuntime runtime, String random, Run run, Table dest, RunPrepare prepare, ConfigStore configs, boolean success, long result, long millis) { return SWITCH.CONTINUE;}
 }

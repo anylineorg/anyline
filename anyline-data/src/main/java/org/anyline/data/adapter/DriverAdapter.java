@@ -727,24 +727,29 @@ public interface DriverAdapter {
 		return insert(runtime, random, dest, data, BeanUtil.array2list(columns));
 	}
 
-
 	/**
 	 * insert into table select * from table
-	 * @param dest 表 table(c1,c2,c3)
-	 * @param prepare 一般通过TableBuilder生成查询
-	 * @param columns 插入的列
+	 * 与query参数一致
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 插入表
+	 * @param prepare 查询表
+	 * @param configs 查询条件及相关配置
+	 * @param obj 查询条件
+	 * @param conditions 查询条件
 	 * @return 影响行数
 	 */
-	long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns);
-	default long insert(Table dest, RunPrepare prepare, String ... columns) {
-		return insert(dest, prepare, null, columns);
-	}
-	default long insert(String dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
-		return insert(new Table(dest), prepare, configs, columns);
-	}
-	default long insert(String dest, RunPrepare prepare, String ... columns) {
-		return insert(new Table(dest), prepare, null, columns);
-	}
+	long insert(DataRuntime runtime, String random, Table dest, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+
+	/**
+	 * insert [命令合成]<br/>
+	 * 填充inset命令内容(创建批量INSERT RunPrepare)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param dest 表 如果不提供表名则根据data解析,表名可以事实前缀&lt;数据源名&gt;表示切换数据源
+	 * @param prepare 查询
+	 * @param configs 过滤条件及相关配置
+	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
+	 */
+	Run buildInsertRun(DataRuntime runtime, Table dest, RunPrepare prepare, ConfigStore configs);
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)

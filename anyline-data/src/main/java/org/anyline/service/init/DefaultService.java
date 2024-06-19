@@ -32,6 +32,7 @@ import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.run.Run;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
@@ -890,24 +891,19 @@ public class DefaultService<E> implements AnylineService<E> {
     public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String ... columns) {
         String[] ps = DataSourceUtil.parseRuntime(dest);
         if(null != ps[0]) {
-            return ServiceProxy.service(ps[0]).insert(dest, prepare, configs);
+            return ServiceProxy.service(ps[0]).insert(dest, prepare, configs, columns);
         }
-        String name = dest.getName();
-        if(name.contains("(")){
-            String[] cols = name.substring(name.indexOf("(")+1, name.lastIndexOf(")")).split(",");
-            if(null == configs){
-                configs = new DefaultConfigStore();
-                configs.columns(cols);
-            }
-            dest.setName(name.substring(0, name.indexOf("(")));
+        return dao.insert(dest, prepare, configs, columns);
+    }
+
+    @Override
+    public long insert(Table dest, Table origin, ConfigStore configs, Object obj, String ... conditions){
+        String[] ps = DataSourceUtil.parseRuntime(dest);
+        if(null != ps[0]) {
+            return ServiceProxy.service(ps[0]).insert(dest, origin, configs, obj, conditions);
         }
-        if(null != columns && columns.length > 0){
-            if(null == configs){
-                configs = new DefaultConfigStore();
-                configs.columns(columns);
-            }
-        }
-        return dao.insert(dest, prepare, configs);
+        RunPrepare prepare = createRunPrepare(origin);
+        return dao.insert(dest, prepare, configs, obj, conditions);
     }
     /* *****************************************************************************************************************
      * 													UPDATE
@@ -1977,7 +1973,7 @@ public class DefaultService<E> implements AnylineService<E> {
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = table.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-                if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
+                if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
                     columns = columns(table);
                     table.setColumns(columns);
                     table.setTags(tags(table));
@@ -2097,7 +2093,7 @@ public class DefaultService<E> implements AnylineService<E> {
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = vertexTable.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-                if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
+                if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
                     columns = columns(vertexTable);
                     vertexTable.setColumns(columns);
                     vertexTable.setTags(tags(vertexTable));
@@ -2217,7 +2213,7 @@ public class DefaultService<E> implements AnylineService<E> {
             //是否查询详细结构(1列、2主键、4索引、8外键、16约束、128DDL等)
             LinkedHashMap<String, Column> columns = edgeTable.getColumns();
             if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-                if(null == columns || columns.size() == 0) {//上一步ddl是否加载过以下内容
+                if(null == columns || columns.isEmpty()) {//上一步ddl是否加载过以下内容
                     columns = columns(edgeTable);
                     edgeTable.setColumns(columns);
                     edgeTable.setTags(tags(edgeTable));
@@ -2395,7 +2391,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public MasterTable mtable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
             LinkedHashMap<String, MasterTable> tables = masterTables(greedy, catalog, schema, name, MasterTable.TYPE.NORMAL.value);
-            if (tables.size() == 0) {
+            if (tables.isEmpty()) {
                 return null;
             }
             MasterTable table = tables.values().iterator().next();
@@ -2513,7 +2509,7 @@ public class DefaultService<E> implements AnylineService<E> {
         @Override
         public PartitionTable ptable(boolean greedy, MasterTable master, String name) {
             LinkedHashMap<String, PartitionTable> tables = partitionTables(greedy, master, name);
-            if (tables.size() == 0) {
+            if (tables.isEmpty()) {
                 return null;
             }
             PartitionTable table = tables.values().iterator().next();
