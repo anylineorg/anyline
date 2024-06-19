@@ -203,8 +203,6 @@ public class SpringJDBCDataSourceHolder extends JDBCDataSourceHolder {
 		Connection con = null;
 		try{
 			con = DataSourceUtils.getConnection(datasource);
-		}catch (Exception e) {
-			return false;
 		}finally {
 			if (null != con && !DataSourceUtils.isConnectionTransactional(con, datasource)) {
 				DataSourceUtils.releaseConnection(con, datasource);
