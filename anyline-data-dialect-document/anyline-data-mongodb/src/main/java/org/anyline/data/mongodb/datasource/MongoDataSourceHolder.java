@@ -27,6 +27,7 @@ import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverAdapterHolder;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
+import org.anyline.data.mongodb.runtime.MongoRuntime;
 import org.anyline.data.mongodb.runtime.MongoRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.type.DatabaseType;
@@ -87,7 +88,9 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
 
     @Override
     public boolean validate(DataRuntime runtime) throws Exception {
-        return false;
+        MongoClient client = ((MongoRuntime)runtime).client();
+        client.listDatabaseNames();
+        return true;
     }
 
     @Override
