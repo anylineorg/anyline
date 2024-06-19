@@ -5161,6 +5161,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 			}
 		}
 		if(null != def) {
+			String str = def.toString().trim();
 			builder.append(" DEFAULT ");
 			//boolean isCharColumn = isCharColumn(runtime, column);
 			SQL_BUILD_IN_VALUE val = checkDefaultBuildInValue(runtime, def);
@@ -5172,13 +5173,15 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 				if(null != value) {
 					builder.append("'").append(value).append("'");
 				}
+			}else if(str.startsWith("${") && str.endsWith("}")) {
+				builder.append(str.substring(2, str.length()-1));
 			}else {
 				def = write(runtime, meta, def, false);
 				if(null == def) {
 					def = meta.getDefaultValue();
 				}
 				//format(builder, def);
-				builder.append("'").append(def).append("'");
+				builder.append(def);
 			}
 		}
 		return builder;
