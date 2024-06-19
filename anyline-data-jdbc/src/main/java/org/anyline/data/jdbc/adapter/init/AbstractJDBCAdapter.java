@@ -193,6 +193,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		return super.insert(runtime, random, batch, dest, data, configs, columns);
 	}
 
+
 	/**
 	 * insert [命令合成]<br/>
 	 * 填充inset命令内容(创建批量INSERT RunPrepare)

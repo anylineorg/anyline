@@ -366,6 +366,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return cnt;
 	}
 
+	@Override
+	public long insert(Table dest, RunPrepare prepare, ConfigStore configs, String... columns) {
+		return 0;
+	}
 	/**
 	 * insert into table select * from table
 	 * @param dest 表 table(c1,c2,c3)
