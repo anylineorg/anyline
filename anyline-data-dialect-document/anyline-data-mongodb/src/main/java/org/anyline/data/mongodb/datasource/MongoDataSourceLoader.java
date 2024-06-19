@@ -19,6 +19,7 @@
 package org.anyline.data.mongodb.datasource;
 
 import com.mongodb.client.MongoDatabase;
+import org.anyline.annotation.Component;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -29,7 +30,7 @@ import org.anyline.util.ConfigTable;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Component("anyline.environment.data.datasource.loader.mongo")
 public class MongoDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
 
     private final MongoDataSourceHolder holder = MongoDataSourceHolder.instance();
