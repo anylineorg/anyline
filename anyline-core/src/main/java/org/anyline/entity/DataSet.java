@@ -1674,21 +1674,72 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
     }
 
     public BigDecimal avg(int scale, int round, String key) {
-        BigDecimal result = avg(true, scale, round, size(), key);
-        return result;
+        return avg(true, scale, round, size(), key);
     }
     public BigDecimal avg(boolean empty, int scale, int round, String key) {
-        BigDecimal result = avg(empty, scale, round, size(), key);
-        return result;
+        return avg(empty, scale, round, size(), key);
     }
 
     public BigDecimal avg(boolean empty, String key) {
-        BigDecimal result = avg(empty, size(), 2, BigDecimal.ROUND_HALF_UP, key);
-        return result;
+        return avg(empty, size(), 2, BigDecimal.ROUND_HALF_UP, key);
     }
 
     public BigDecimal avg(String key) {
         return avg(true, key);
+    }
+
+
+
+
+    /**
+     * 中位数
+     *
+     * @param key key
+     * @return BigDecimal
+     */
+    public BigDecimal median(String key) {
+        List<BigDecimal> numbers = getDecimals(key, BigDecimal.ZERO);
+        Collections.sort(numbers);
+        int size = numbers.size();
+        int middle =size / 2;
+        if(size > 0) {
+            if (size % 2 == 1) {
+                // 如果数组长度是奇数，直接返回中间的数
+                return numbers.get(middle);
+            } else {
+                // 如果数组长度是偶数，返回中间两个数的平均值
+                return numbers.get(middle - 1).add(numbers.get(middle)).divide(new BigDecimal(2));
+            }
+        }
+        return null;
+    }
+    public Double median(String key, Double def){
+        BigDecimal median = median(key);
+        if(null == median){
+            return def;
+        }
+        return median.doubleValue();
+    }
+    public Float median(String key, Float def){
+        BigDecimal median = median(key);
+        if(null == median){
+            return def;
+        }
+        return median.floatValue();
+    }
+    public Long median(String key, Long def){
+        BigDecimal median = median(key);
+        if(null == median){
+            return def;
+        }
+        return median.longValue();
+    }
+    public Integer median(String key, Integer def){
+        BigDecimal median = median(key);
+        if(null == median){
+            return def;
+        }
+        return median.intValue();
     }
     /**
      * 求和
@@ -3581,6 +3632,9 @@ public class DataSet implements Collection<DataRow>, Serializable, AnyData<DataS
                 break;
             case AVGA:
                 result = avg(true, scale, round, key);
+                break;
+            case MEDIAN:
+                result = median(key);
                 break;
             case MAX:
                 result = max(key);
