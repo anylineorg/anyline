@@ -21,8 +21,6 @@
 package org.anyline.util;
 
 import org.anyline.util.encrypt.MD5Util;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -659,14 +657,15 @@ public class FileUtil {
 
 	/**
 	 * 读取当前目录及子目录下所有文件
-	 * @param dir  dir
-	 * @param subbfixs  subbfixs
+	 * @param dir  目录
+	 * @param suffix  后缀 如果有点. 需要带上
+	 * @param depth 目录深度 0表示根目录 -1表示不限制深度
 	 * @return List
 	 */
-	public static List<File> getAllChildrenFile(File dir, String ...subbfixs) {
-		List<File> list = new ArrayList<File>();
+	public static List<File> getAllChildrenFile(File dir, int depth, String ... suffix) {
+		List<File> list = new ArrayList<>();
 		if(dir.isFile()) {
-			if(filterByType(dir, subbfixs)) {
+			if(filterByType(dir, suffix)) {
 				list.add(dir);
 			}
 			return list;
@@ -680,16 +679,21 @@ public class FileUtil {
 					continue;
 				}
 				if(child.isFile()) {
-					if(filterByType(child, subbfixs)) {
+					if(filterByType(child, suffix)) {
 						list.add(child);
 					}
 				}else{
-					List<File> tmpList = getAllChildrenFile(child, subbfixs);
-					list.addAll(tmpList);
+					if(depth != 0) {
+						List<File> tmpList = getAllChildrenFile(child, depth - 1, suffix);
+						list.addAll(tmpList);
+					}
 				}
 			}
 		}
 		return list;
+	}
+	public static List<File> getAllChildrenFile(File dir, String ...suffix) {
+		return getAllChildrenFile(dir, -1, suffix);
 	}
 
 	/**
@@ -787,12 +791,12 @@ public class FileUtil {
 		for(String type:types) {
 			String fileName = file.getAbsolutePath().toUpperCase();
 			type = type.toUpperCase();
-			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)) {
+			/*if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)) {
 				return true;
-			}
-			if(!type.startsWith(".")) {
+			}*/
+			/*if(!type.startsWith(".")) {
 				type = "." + type;
-			}
+			}*/
 			if(fileName.endsWith(type)) {
 				return true;
 			}

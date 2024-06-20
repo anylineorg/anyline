@@ -49,7 +49,7 @@ public abstract class AbstractRun implements Run {
 	protected Schema schema;
 	protected Table table;
 	protected List<String> keys;
-	protected List<RunValue> values;
+	protected List<RunValue> values = new ArrayList<>();
 	protected List<RunValue> batchValues;
 	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			// 查询条件

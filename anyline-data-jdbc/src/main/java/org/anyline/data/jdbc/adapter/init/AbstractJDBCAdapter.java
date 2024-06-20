@@ -199,7 +199,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * 与query参数一致
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 插入表
-	 * @param origin 查询表
+	 * @param prepare 查询表
 	 * @param configs 查询条件及相关配置
 	 * @param obj 查询条件
 	 * @param conditions 查询条件
@@ -1302,7 +1302,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				//if (column.startsWith("${") && column.endsWith("}")) {
 				if (BasicUtil.checkEl(name)) {
 					name = name.substring(2, name.length()-1);
-					builder.append(column);
+					builder.append(name);
 				}else{
 					if(name.contains("(") || name.contains(",")) {
 						builder.append(name);
