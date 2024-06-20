@@ -659,7 +659,7 @@ public class FileUtil {
 	 * 读取当前目录及子目录下所有文件
 	 * @param dir  目录
 	 * @param suffix  后缀 如果有点. 需要带上
-	 * @param depth 目录深度 0表示根目录 -1表示不限制深度
+	 * @param depth 目录深度 0表示根目录 1表示1级子目录 -1表示不限制深度
 	 * @return List
 	 */
 	public static List<File> getAllChildrenFile(File dir, int depth, String ... suffix) {
