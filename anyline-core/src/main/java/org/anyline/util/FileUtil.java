@@ -672,12 +672,10 @@ public class FileUtil {
 		}
 		File[] children = dir.listFiles();
 		if(null != children) {
-			int size = children.length;
-			for(int i=0; i<size; i++) {
-				File child = children[i];
-				if(child.isHidden()) {
+			for(File child:children) {
+				/*if(child.isHidden()) {
 					continue;
-				}
+				}*/
 				if(child.isFile()) {
 					if(filterByType(child, suffix)) {
 						list.add(child);
