@@ -366,7 +366,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return cnt;
 	}
 
-
 	/**
 	 * insert into table select * from table
 	 * 与query参数一致

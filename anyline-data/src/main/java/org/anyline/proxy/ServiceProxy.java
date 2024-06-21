@@ -1126,6 +1126,21 @@ public class ServiceProxy {
         return service.count(dest, conditions);
     }
 
+
+    public static long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+        return service.count(prepare, configs, obj, conditions);
+    }
+    public static long count(RunPrepare prepare, Object obj, String ... conditions) {
+        return count(prepare, null, obj, conditions);
+    }
+    public static long count(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+        return count(prepare, configs, null, conditions);
+    }
+    public static long count(RunPrepare prepare, String ... conditions) {
+        return count(prepare, null, null, conditions);
+    }
+
+
     /* *****************************************************************************************************************
      * 													EXECUTE
      ******************************************************************************************************************/

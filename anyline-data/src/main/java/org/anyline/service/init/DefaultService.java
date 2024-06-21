@@ -32,7 +32,6 @@ import org.anyline.data.prepare.auto.init.DefaultTablePrepare;
 import org.anyline.data.prepare.auto.init.DefaultTextPrepare;
 import org.anyline.data.prepare.init.DefaultSQLStore;
 import org.anyline.data.run.Run;
-import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
@@ -857,7 +856,24 @@ public class DefaultService<E> implements AnylineService<E> {
         }
         return count;
     }
-
+    @Override
+    public
+    long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions){
+        long count = -1;
+        try {
+            conditions = BasicUtil.compress(conditions);
+            if(null != prepare.getRuntime()) {
+                count = ServiceProxy.service(prepare.getRuntime()).getDao().count(prepare, append(configs, obj), conditions);
+            }else {
+                count = dao.count(prepare, append(configs, obj), conditions);
+            }
+        } catch (Exception e) {
+            if (ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
+                throw e;
+            }
+        }
+        return count;
+    }
     /* *****************************************************************************************************************
      * 													INSERT
      ******************************************************************************************************************/

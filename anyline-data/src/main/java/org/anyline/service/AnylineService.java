@@ -1312,6 +1312,17 @@ public interface AnylineService<E>{
 		return count(dest, null, null, conditions);
 	}
 
+	long count(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	default long count(RunPrepare prepare, Object obj, String ... conditions) {
+		return count(prepare, null, obj, conditions);
+	}
+	default long count(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return count(prepare, configs, null, conditions);
+	}
+	default long count(RunPrepare prepare, String ... conditions) {
+		return count(prepare, null, null, conditions);
+	}
+
 	/* *****************************************************************************************************************
 	 * 													EXECUTE
 	 ******************************************************************************************************************/
