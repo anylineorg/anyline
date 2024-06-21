@@ -372,7 +372,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 与query参数一致
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param dest 插入表
-	 * @param origin 查询表
+	 * @param prepare 查询表
 	 * @param configs 查询条件及相关配置
 	 * @param obj 查询条件
 	 * @param conditions 查询条件

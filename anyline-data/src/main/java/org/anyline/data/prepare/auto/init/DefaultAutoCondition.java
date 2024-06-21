@@ -163,7 +163,9 @@ public class DefaultAutoCondition extends AbstractCondition implements AutoCondi
 		if(BasicUtil.isNotEmpty(table)) {
 			prefix = table;
 		}
-
+		if(BasicUtil.isEmpty(column)){
+			return "";
+		}
 		StringBuilder col_builder = new StringBuilder();
 		if(!column.contains(".")) {
 			if(BasicUtil.isNotEmpty(prefix)) {
