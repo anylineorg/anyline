@@ -1741,7 +1741,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
      * [命令合成]
-     * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
      * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
      * [结果集封装]<br/>
      * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
@@ -1785,8 +1785,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param schema schema
      */
     @Override
-    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
-        super.tableMap(runtime, random, greedy, catalog, schema);
+    protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+        super.tableMap(runtime, random, greedy, catalog, schema, configs);
     }
 
     @Override
@@ -1807,7 +1807,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -2013,8 +2013,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @param <T> View
      */
     @Override
-    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-        return super.views(runtime, random, greedy, catalog, schema, pattern, types);
+    public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
+        return super.views(runtime, random, greedy, catalog, schema, pattern, types, configs);
     }
     /**
      * view[命令合成]<br/>

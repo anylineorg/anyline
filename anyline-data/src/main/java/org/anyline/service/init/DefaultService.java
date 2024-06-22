@@ -1969,20 +1969,24 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().tables(greedy, catalog, schema, ps[1], types, struct);
+                return ServiceProxy.service(ps[0]).metadata().tables(greedy, catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.tables(greedy, catalog, schema, name, types, struct);
+            return dao.tables(greedy, catalog, schema, name, types, struct, configs);
         }
         @Override
-        public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
+        public <T extends Table>  List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
+            return tables(greedy, catalog, schema, name, types, struct, null);
+        }
+        @Override
+        public <T extends Table>  LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
-                return ServiceProxy.service(ps[0]).metadata().tables(catalog, schema, ps[1], types, struct);
+                return ServiceProxy.service(ps[0]).metadata().tables(catalog, schema, ps[1], types, struct, configs);
             }
-            return dao.tables(catalog, schema, name, types, struct);
+            return dao.tables(catalog, schema, name, types, struct, configs);
         }
 
         private void struct(Table table, int struct) {

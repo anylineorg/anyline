@@ -677,13 +677,22 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
-	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
-	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-		int config = 0;
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs);
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+		return tables(runtime, random, greedy, catalog, schema, name, types, struct, null);
+	}
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return tables(runtime, random, greedy, catalog, schema, name, types, config);
+		return tables(runtime, random, greedy, catalog, schema, name, types, structs, configs);
+	}
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+		return tables(runtime, random, greedy, catalog, schema, name, types, struct, null);
+	}
+	default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+		return tables(runtime(), null, greedy, catalog, schema, name, types, struct, configs);
 	}
 	default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return tables(runtime(), null, greedy, catalog, schema, name, types, struct);
@@ -712,43 +721,58 @@ public interface AnylineDao<E>{
 	default <T extends Table> List<T> tables(boolean greedy, boolean struct) {
 		return tables(greedy, null, null, null, 1, struct);
 	}
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, int struct);
-	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-		int config = 0;
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, int struct) {
+		return tables(runtime, random, catalog, schema, name, types, struct, null);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return tables(runtime, random, catalog, schema, name, types, config);
+		return tables(runtime, random, catalog, schema, name, types, structs, configs);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+		return tables(runtime, random, catalog, schema, name, types, struct, null);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct) {
 		return tables(runtime(), null, catalog, schema, name, types, struct);
 	}
+	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs) {
+		return tables(runtime(), null, catalog, schema, name, types, struct, configs);
+	}
 	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
 		return tables(runtime(), null, catalog, schema, name, types, struct);
 	}
+	default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+		return tables(runtime(), null, catalog, schema, name, types, struct, configs);
+	}
 
 	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct) {
-		return tables( null, schema, name, types, struct);
+		return tables(null, schema, name, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct) {
-		return tables( null, schema, name, types, struct);
+		return tables(null, schema, name, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, int struct) {
-		return tables( null, null, name, types, struct);
+		return tables(null, null, name, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct) {
-		return tables( null, null, name, types, struct);
+		return tables(null, null, name, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct) {
-		return tables( null, null, types, struct);
+		return tables(null, null, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct) {
-		return tables( null, null, types, struct);
+		return tables(null, null, types, struct);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables() {
-		return tables( null, null, null, 1, false);
+		return tables(null, null, null, 1, false);
 	}
 
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+		return tables(runtime, random, greedy, catalog, schema, name, types, false, configs);
+	}
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types) {
 		return tables(runtime, random, greedy, catalog, schema, name, types, false);
 	}
@@ -775,13 +799,13 @@ public interface AnylineDao<E>{
 	}
 
 	default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types) {
-		return tables( null, schema, name, types);
+		return tables(null, schema, name, types);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(String name, int types) {
-		return tables( null, null, name, types);
+		return tables(null, null, name, types);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(int types) {
-		return tables( null, null, types);
+		return tables(null, null, types);
 	}
 
 	/**
@@ -803,11 +827,11 @@ public interface AnylineDao<E>{
 	 ******************************************************************************************************************/
 	<T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
 	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return vertexTables(runtime, random, greedy, catalog, schema, name, types, config);
+		return vertexTables(runtime, random, greedy, catalog, schema, name, types, structs);
 	}
 	default <T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return vertexTables(runtime(), null, greedy, catalog, schema, name, types, struct);
@@ -838,11 +862,11 @@ public interface AnylineDao<E>{
 	}
 	<T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, int struct);
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return vertexTables(runtime, random, catalog, schema, name, types, config);
+		return vertexTables(runtime, random, catalog, schema, name, types, structs);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, int struct) {
 		return vertexTables(runtime(), null, catalog, schema, name, types, struct);
@@ -852,25 +876,25 @@ public interface AnylineDao<E>{
 	}
 
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, int struct) {
-		return vertexTables( null, schema, name, types, struct);
+		return vertexTables(null, schema, name, types, struct);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, boolean struct) {
-		return vertexTables( null, schema, name, types, struct);
+		return vertexTables(null, schema, name, types, struct);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, int struct) {
-		return vertexTables( null, null, name, types, struct);
+		return vertexTables(null, null, name, types, struct);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, boolean struct) {
-		return vertexTables( null, null, name, types, struct);
+		return vertexTables(null, null, name, types, struct);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, int struct) {
-		return vertexTables( null, null, types, struct);
+		return vertexTables(null, null, types, struct);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, boolean struct) {
-		return vertexTables( null, null, types, struct);
+		return vertexTables(null, null, types, struct);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables() {
-		return vertexTables( null, null, null, 1, false);
+		return vertexTables(null, null, null, 1, false);
 	}
 
 	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types) {
@@ -899,13 +923,13 @@ public interface AnylineDao<E>{
 	}
 
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types) {
-		return vertexTables( null, schema, name, types);
+		return vertexTables(null, schema, name, types);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types) {
-		return vertexTables( null, null, name, types);
+		return vertexTables(null, null, name, types);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types) {
-		return vertexTables( null, null, types);
+		return vertexTables(null, null, types);
 	}
 
 	/**
@@ -927,11 +951,11 @@ public interface AnylineDao<E>{
 	 ******************************************************************************************************************/
 	<T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
 	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return edgeTables(runtime, random, greedy, catalog, schema, name, types, config);
+		return edgeTables(runtime, random, greedy, catalog, schema, name, types, structs);
 	}
 	default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct) {
 		return edgeTables(runtime(), null, greedy, catalog, schema, name, types, struct);
@@ -962,11 +986,11 @@ public interface AnylineDao<E>{
 	}
 	<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, int struct);
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return edgeTables(runtime, random, catalog, schema, name, types, config);
+		return edgeTables(runtime, random, catalog, schema, name, types, structs);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, int struct) {
 		return edgeTables(runtime(), null, catalog, schema, name, types, struct);
@@ -976,25 +1000,25 @@ public interface AnylineDao<E>{
 	}
 
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, int struct) {
-		return edgeTables( null, schema, name, types, struct);
+		return edgeTables(null, schema, name, types, struct);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, boolean struct) {
-		return edgeTables( null, schema, name, types, struct);
+		return edgeTables(null, schema, name, types, struct);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, int struct) {
-		return edgeTables( null, null, name, types, struct);
+		return edgeTables(null, null, name, types, struct);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, boolean struct) {
-		return edgeTables( null, null, name, types, struct);
+		return edgeTables(null, null, name, types, struct);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, int struct) {
-		return edgeTables( null, null, types, struct);
+		return edgeTables(null, null, types, struct);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, boolean struct) {
-		return edgeTables( null, null, types, struct);
+		return edgeTables(null, null, types, struct);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables() {
-		return edgeTables( null, null, null, 1, false);
+		return edgeTables(null, null, null, 1, false);
 	}
 
 	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String name, int types) {
@@ -1023,13 +1047,13 @@ public interface AnylineDao<E>{
 	}
 
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types) {
-		return edgeTables( null, schema, name, types);
+		return edgeTables(null, schema, name, types);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types) {
-		return edgeTables( null, null, name, types);
+		return edgeTables(null, null, name, types);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types) {
-		return edgeTables( null, null, types);
+		return edgeTables(null, null, types);
 	}
 
 	/**

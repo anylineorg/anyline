@@ -1879,13 +1879,19 @@ public interface AnylineService<E>{
 		 * @param types Metadata.TYPE
 		 * @return tables
 		 */
-		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			int config = 0;
+		<T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs);
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct){
+			return tables(greedy, catalog, schema, name, types, struct, null);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return tables(greedy, catalog, schema, name, types, config);
+			return tables(greedy, catalog, schema, name, types, structs, configs);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
+			return tables(greedy, catalog, schema, name, types, struct, null);
 		}
 		default <T extends Table> List<T> tables(boolean greedy, Schema schema, String name, int types, int struct) {
 			return tables(greedy, null, schema, name, types, struct);
@@ -1909,37 +1915,57 @@ public interface AnylineService<E>{
 			return tables(greedy, Table.TYPE.NORMAL.value, struct);
 		}
 
-		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct);
-		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			int config = 0;
+		<T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct, ConfigStore configs);
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, int struct){
+			return tables(catalog, schema, name, types, struct, null);
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct, ConfigStore configs) {
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return tables(catalog, schema, name, types, config);
+			return tables(catalog, schema, name, types, structs, configs);
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
+			return tables(catalog, schema, name, types, struct, null);
 		}
 
 		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, int struct) {
-			return tables( null, schema, name, types, struct);
+			return tables(null, schema, name, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types, boolean struct) {
-			return tables( null, schema, name, types, struct);
+			return tables(null, schema, name, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, int struct) {
-			return tables( null, null, name, types, struct);
+			return tables(null, null, name, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types, boolean struct) {
-			return tables( null, null, name, types, struct);
+			return tables(null, null, name, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct) {
-			return tables( null, types, struct);
+			return tables(null, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct) {
-			return tables( null, types, struct);
+			return tables(null, types, struct);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables() {
 			return tables( Table.TYPE.NORMAL.value, false);
 		}
 
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, int struct, ConfigStore configs) {
+			return tables(null, null, null, types, struct, configs);
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, boolean struct, ConfigStore configs) {
+			return tables(null, null, null,  types, struct, configs);
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(ConfigStore configs) {
+			return tables(Table.TYPE.NORMAL.value, false, configs);
+		}
+
+
+		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types, ConfigStore configs) {
+			return tables(greedy, catalog, schema, name, types, false, configs);
+		}
 		default <T extends Table> List<T> tables(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
 			return tables(greedy, catalog, schema, name, types, false);
 		}
@@ -1955,19 +1981,28 @@ public interface AnylineService<E>{
 		default <T extends Table> List<T> tables(boolean greedy) {
 			return tables(greedy, Table.TYPE.NORMAL.value, false);
 		}
+		default <T extends Table> List<T> tables(boolean greedy, int types, ConfigStore configs) {
+			return tables(greedy, null, null, null, types, configs);
+		}
+		default <T extends Table> List<T> tables(boolean greedy, ConfigStore configs) {
+			return tables(greedy, null, null, null, Table.TYPE.NORMAL.value, configs);
+		}
 
 		default <T extends Table> LinkedHashMap<String, T> tables(Catalog catalog, Schema schema, String name, int types) {
 			return tables(catalog, schema, name, types, false);
 		}
 
 		default <T extends Table> LinkedHashMap<String, T> tables(Schema schema, String name, int types) {
-			return tables( null, schema, name, types, false);
+			return tables(null, schema, name, types, false);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(String name, int types) {
-			return tables( null, null, name, types, false);
+			return tables(null, null, name, types, false);
 		}
 		default <T extends Table> LinkedHashMap<String, T> tables(int types) {
-			return tables( null, types, false);
+			return tables(null, types, false);
+		}
+		default <T extends Table> LinkedHashMap<String, T> tables(int types, ConfigStore configs) {
+			return tables(null,null,null, types, false, configs);
 		}
 
 		/**
@@ -1980,11 +2015,11 @@ public interface AnylineService<E>{
 		 */
 		Table table(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
 		default Table table(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return table(greedy, catalog, schema, name, config);
+			return table(greedy, catalog, schema, name, structs);
 		}
 		default Table table(boolean greedy, Schema schema, String name, int struct) {
 			return table(greedy, null, schema, name, struct);
@@ -2001,11 +2036,11 @@ public interface AnylineService<E>{
 
 		Table table(Catalog catalog, Schema schema, String name, int struct);
 		default Table table(Catalog catalog, Schema schema, String name, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return table(catalog, schema, name, config);
+			return table(catalog, schema, name, structs);
 		}
 		default Table table(Schema schema, String name, int struct) {
 			return table(false, null, schema, name, struct);
@@ -2033,10 +2068,10 @@ public interface AnylineService<E>{
 			return table( catalog, schema, name, true);
 		}
 		default Table table(Schema schema, String name) {
-			return table( null, schema, name, true);
+			return table(null, schema, name, true);
 		}
 		default Table table(String name) {
-			return table( null, null, name, true);
+			return table(null, null, name, true);
 		}
 
 		/**
@@ -2300,11 +2335,11 @@ public interface AnylineService<E>{
 		 */
 		<T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
 		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return vertexTables(greedy, catalog, schema, name, types, config);
+			return vertexTables(greedy, catalog, schema, name, types, structs);
 		}
 		default <T extends VertexTable> List<T> vertexTables(boolean greedy, Schema schema, String name, int types, int struct) {
 			return vertexTables(greedy, null, schema, name, types, struct);
@@ -2330,30 +2365,30 @@ public interface AnylineService<E>{
 
 		<T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, int struct);
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return vertexTables(catalog, schema, name, types, config);
+			return vertexTables(catalog, schema, name, types, structs);
 		}
 
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, int struct) {
-			return vertexTables( null, schema, name, types, struct);
+			return vertexTables(null, schema, name, types, struct);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types, boolean struct) {
-			return vertexTables( null, schema, name, types, struct);
+			return vertexTables(null, schema, name, types, struct);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, int struct) {
-			return vertexTables( null, null, name, types, struct);
+			return vertexTables(null, null, name, types, struct);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types, boolean struct) {
-			return vertexTables( null, null, name, types, struct);
+			return vertexTables(null, null, name, types, struct);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, int struct) {
-			return vertexTables( null, types, struct);
+			return vertexTables(null, types, struct);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types, boolean struct) {
-			return vertexTables( null, types, struct);
+			return vertexTables(null, types, struct);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables() {
 			return vertexTables( Table.TYPE.NORMAL.value, false);
@@ -2380,13 +2415,13 @@ public interface AnylineService<E>{
 		}
 
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(Schema schema, String name, int types) {
-			return vertexTables( null, schema, name, types, false);
+			return vertexTables(null, schema, name, types, false);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(String name, int types) {
-			return vertexTables( null, null, name, types, false);
+			return vertexTables(null, null, name, types, false);
 		}
 		default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(int types) {
-			return vertexTables( null, types, false);
+			return vertexTables(null, types, false);
 		}
 
 		/**
@@ -2399,11 +2434,11 @@ public interface AnylineService<E>{
 		 */
 		VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
 		default VertexTable vertexTable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return vertexTable(greedy, catalog, schema, name, config);
+			return vertexTable(greedy, catalog, schema, name, structs);
 		}
 		default VertexTable vertexTable(boolean greedy, Schema schema, String name, int struct) {
 			return vertexTable(greedy, null, schema, name, struct);
@@ -2420,11 +2455,11 @@ public interface AnylineService<E>{
 
 		VertexTable vertexTable(Catalog catalog, Schema schema, String name, int struct);
 		default VertexTable vertexTable(Catalog catalog, Schema schema, String name, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return vertexTable(catalog, schema, name, config);
+			return vertexTable(catalog, schema, name, structs);
 		}
 		default VertexTable vertexTable(Schema schema, String name, int struct) {
 			return vertexTable(false, null, schema, name, struct);
@@ -2452,10 +2487,10 @@ public interface AnylineService<E>{
 			return vertexTable( catalog, schema, name, true);
 		}
 		default VertexTable vertexTable(Schema schema, String name) {
-			return vertexTable( null, schema, name, true);
+			return vertexTable(null, schema, name, true);
 		}
 		default VertexTable vertexTable(String name) {
-			return vertexTable( null, null, name, true);
+			return vertexTable(null, null, name, true);
 		}
 
 		/**
@@ -2495,11 +2530,11 @@ public interface AnylineService<E>{
 		 */
 		<T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, int struct);
 		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return edgeTables(greedy, catalog, schema, name, types, config);
+			return edgeTables(greedy, catalog, schema, name, types, structs);
 		}
 		default <T extends EdgeTable> List<T> edgeTables(boolean greedy, Schema schema, String name, int types, int struct) {
 			return edgeTables(greedy, null, schema, name, types, struct);
@@ -2525,30 +2560,30 @@ public interface AnylineService<E>{
 
 		<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, int struct);
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Catalog catalog, Schema schema, String name, int types, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return edgeTables(catalog, schema, name, types, config);
+			return edgeTables(catalog, schema, name, types, structs);
 		}
 
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, int struct) {
-			return edgeTables( null, schema, name, types, struct);
+			return edgeTables(null, schema, name, types, struct);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types, boolean struct) {
-			return edgeTables( null, schema, name, types, struct);
+			return edgeTables(null, schema, name, types, struct);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, int struct) {
-			return edgeTables( null, null, name, types, struct);
+			return edgeTables(null, null, name, types, struct);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types, boolean struct) {
-			return edgeTables( null, null, name, types, struct);
+			return edgeTables(null, null, name, types, struct);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, int struct) {
-			return edgeTables( null, types, struct);
+			return edgeTables(null, types, struct);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types, boolean struct) {
-			return edgeTables( null, types, struct);
+			return edgeTables(null, types, struct);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables() {
 			return edgeTables( Table.TYPE.NORMAL.value, false);
@@ -2575,13 +2610,13 @@ public interface AnylineService<E>{
 		}
 
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(Schema schema, String name, int types) {
-			return edgeTables( null, schema, name, types, false);
+			return edgeTables(null, schema, name, types, false);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(String name, int types) {
-			return edgeTables( null, null, name, types, false);
+			return edgeTables(null, null, name, types, false);
 		}
 		default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(int types) {
-			return edgeTables( null, types, false);
+			return edgeTables(null, types, false);
 		}
 
 		/**
@@ -2594,11 +2629,11 @@ public interface AnylineService<E>{
 		 */
 		EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name, int struct);
 		default EdgeTable edgeTable(boolean greedy, Catalog catalog, Schema schema, String name, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return edgeTable(greedy, catalog, schema, name, config);
+			return edgeTable(greedy, catalog, schema, name, structs);
 		}
 		default EdgeTable edgeTable(boolean greedy, Schema schema, String name, int struct) {
 			return edgeTable(greedy, null, schema, name, struct);
@@ -2615,11 +2650,11 @@ public interface AnylineService<E>{
 
 		EdgeTable edgeTable(Catalog catalog, Schema schema, String name, int struct);
 		default EdgeTable edgeTable(Catalog catalog, Schema schema, String name, boolean struct) {
-			int config = 0;
+			int structs = 0;
 			if(struct) {
-				config = 32767;
+				structs = 32767;
 			}
-			return edgeTable(catalog, schema, name, config);
+			return edgeTable(catalog, schema, name, structs);
 		}
 		default EdgeTable edgeTable(Schema schema, String name, int struct) {
 			return edgeTable(false, null, schema, name, struct);
@@ -2647,10 +2682,10 @@ public interface AnylineService<E>{
 			return edgeTable( catalog, schema, name, true);
 		}
 		default EdgeTable edgeTable(Schema schema, String name) {
-			return edgeTable( null, schema, name, true);
+			return edgeTable(null, schema, name, true);
 		}
 		default EdgeTable edgeTable(String name) {
-			return edgeTable( null, null, name, true);
+			return edgeTable(null, null, name, true);
 		}
 
 		/**

@@ -4189,7 +4189,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * List<Run> buildQueryTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
@@ -4220,7 +4220,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Table
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -4246,7 +4246,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			String origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
-				tableMap(runtime, random, greedy, catalog, schema);
+				tableMap(runtime, random, greedy, catalog, schema, null);
 				origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
 			}
 			if(null == origin) {
@@ -4258,7 +4258,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, origin, types);
+				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
@@ -4362,7 +4362,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
-	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
+	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		Map<String, String> names = CacheProxy.names(this, catalog, schema);
 		if(null == names || names.isEmpty()) {
 			if(null == random) {
@@ -4376,7 +4376,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				schema = null;
 			}
 			try {
-				List<Run> runs =buildQueryTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value);
+				//缓存 不需要configs条件及分页
+				List<Run> runs =buildQueryTablesRun(runtime, greedy, catalog, schema, null, Table.TYPE.NORMAL.value, null);
 				if (null != runs && !runs.isEmpty()) {
 					int idx = 0;
 					for (Run run : runs) {
@@ -4401,9 +4402,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	}
 
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
-		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types, struct);
+		List<T> list = tables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
 		for(T table:list) {
 			tables.put(table.getName().toUpperCase(), table);
 		}
@@ -4423,7 +4424,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
@@ -4938,7 +4939,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
-	protected void vertexTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
+	protected void vertextableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		Map<String, String> names = CacheProxy.names(this, catalog, schema);
 		if(null == names || names.isEmpty()) {
 			if(null == random) {
@@ -5327,7 +5328,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			String origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
-				edgeTableMap(runtime, random, greedy, catalog, schema);
+				edgeTableMap(runtime, random, greedy, catalog, schema, null);
 				origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
 			}
 			if(null == origin) {
@@ -5464,7 +5465,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
-	protected void edgeTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema) {
+	protected void edgeTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
 		Map<String, String> names = CacheProxy.names(this, catalog, schema);
 		if(null == names || names.isEmpty()) {
 			if(null == random) {
@@ -5821,7 +5822,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
 		LinkedHashMap<String,T> views = new LinkedHashMap<>();
 		if(null == random) {
 			random = random(runtime);
@@ -5941,7 +5942,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}

@@ -2224,24 +2224,36 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> Table
 	 */
-	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct);
-	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		int config = 0;
+	<T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return tables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return tables(runtime, random, greedy, catalog, schema, pattern, types, config);
+		return tables(runtime, random, greedy, catalog, schema, pattern, types, structs, configs);
+	}
+	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return tables(runtime, random, greedy, catalog, schema, pattern, types, struct, null);
 	}
 	default <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return tables(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
-	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct);
-	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		int config = 0;
+	<T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs);
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct){
+		return tables(runtime, random, catalog, schema, pattern, types, struct, null);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct, ConfigStore configs) {
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return tables(runtime, random, catalog, schema, pattern, types, config);
+		return tables(runtime, random, catalog, schema, pattern, types, structs, configs);
+	}
+	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
+		return tables(runtime, random, catalog, schema, pattern, types, struct, null);
 	}
 	default <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
 		return tables(runtime, random, catalog, schema, pattern, types, false);
@@ -2259,7 +2271,7 @@ public interface DriverAdapter {
 	 * @return String
 	 * @throws Exception Exception
 	 */
-	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
 
 	/**
 	 * table[命令合成]<br/>
@@ -2412,22 +2424,22 @@ public interface DriverAdapter {
 	 */
 	<T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct);
 	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, config);
+		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, structs);
 	}
 	default <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return vertexTables(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
 	<T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct);
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return vertexTables(runtime, random, catalog, schema, pattern, types, config);
+		return vertexTables(runtime, random, catalog, schema, pattern, types, structs);
 	}
 	default <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
 		return vertexTables(runtime, random, catalog, schema, pattern, types, false);
@@ -2575,22 +2587,22 @@ public interface DriverAdapter {
 	 */
 	<T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct);
 	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, config);
+		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, structs);
 	}
 	default <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
 		return edgeTables(runtime, random, greedy, catalog, schema, pattern, types, false);
 	}
 	<T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct);
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, boolean struct) {
-		int config = 0;
+		int structs = 0;
 		if(struct) {
-			config = 32767;
+			structs = 32767;
 		}
-		return edgeTables(runtime, random, catalog, schema, pattern, types, config);
+		return edgeTables(runtime, random, catalog, schema, pattern, types, structs);
 	}
 	default <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types) {
 		return edgeTables(runtime, random, catalog, schema, pattern, types, false);
@@ -2736,7 +2748,10 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> View
 	 */
-	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types);
+	<T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs);
+	default <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types){
+		return views(runtime, random, greedy, catalog, schema, pattern, types, null);
+	}
 	/**
 	 * view[命令合成]<br/>
 	 * 查询视图
@@ -2748,7 +2763,10 @@ public interface DriverAdapter {
 	 * @param types types VIEW.TYPE.
 	 * @return List
 	 */
-	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception;
+	List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception;
+	default List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception{
+		return buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types, null);
+	}
 
 	/**
 	 * view[结果集封装]<br/>

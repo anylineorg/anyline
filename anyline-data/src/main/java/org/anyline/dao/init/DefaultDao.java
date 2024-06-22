@@ -963,19 +963,19 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().tables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+		return runtime.getAdapter().tables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 
 	@Override
-	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends Table> LinkedHashMap<String, T> tables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, struct);
+		return runtime.getAdapter().tables(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
 
 	/* *****************************************************************************************************************

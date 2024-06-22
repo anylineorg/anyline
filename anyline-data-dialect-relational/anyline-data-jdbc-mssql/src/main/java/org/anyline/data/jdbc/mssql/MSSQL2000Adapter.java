@@ -270,7 +270,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
