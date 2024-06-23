@@ -1503,7 +1503,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			ProcedureRun pr = (ProcedureRun)run;
 			return querys(runtime, random, pr.getProcedure(), configs.getPageNavi());
 		}
-		String cmd = run.getFinalQuery();
+		String cmd = mergeFinalQuery(runtime, run);//run.getFinalQuery();
 		if(BasicUtil.isEmpty(cmd)) {
 			return new DataSet().setTable(table);
 		}
@@ -9697,8 +9697,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		String sql = run.getBaseQuery();
 		String cols = run.getQueryColumn();
 		if(!"*".equals(cols)) {
-			String reg = "(?i)^select[\\s\\S]+from";
-			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
+			String regex = "(?i)^select[\\s\\S]+from";
+			sql = sql.replaceAll(regex,"SELECT "+cols+" FROM ");
 		}
 		OrderStore orders = run.getOrderStore();
 		if(null != orders) {

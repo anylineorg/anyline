@@ -4255,15 +4255,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			search.setName(origin);
 			search.setCatalog(catalog);
 			search.setSchema(schema);
-
+			PageNavi navi = null;
+			if(null == configs){
+				configs = new DefaultConfigStore();
+			}
+			navi = configs.getPageNavi();
 			// 根据系统表查询
 			try{
 				List<Run> runs = buildQueryTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						if(null != navi){
+							run.setPageNavi(navi);
+							mergeFinalQuery(runtime, run);
+						}
+						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						list = tables(runtime, idx++, true, list, catalog, schema, set);
+						if(null != navi){
+							//分页只查一次
+							break;
+						}
 					}
 				}
 			}catch (Exception e) {
@@ -4310,8 +4322,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
+							if(null != navi){
+								run.setPageNavi(navi);
+								//mergeFinalQuery(runtime, run);
+							}
 							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
+							if(null != navi){
+								break;
+							}
 							//merge(list, maps);
 						}
 					}
@@ -5867,11 +5886,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			// 根据系统表查询
 			try{
+				if(null == configs){
+					configs = new DefaultConfigStore();
+				}
 				List<Run> runs = buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						views = views(runtime, idx++, true, views, catalog, schema, set);
 					}
 				}
