@@ -7943,6 +7943,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		}
 		builder.append(")");
 		type(runtime, builder, meta);
+		property(runtime, builder, meta);
 		comment(runtime, builder, meta);
 		return runs;
 	}
@@ -8019,6 +8020,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	@Override
 	public StringBuilder type(DataRuntime runtime, StringBuilder builder, Index meta) {
 		return super.type(runtime, builder, meta);
+	}
+
+	/**
+	 * index[命令合成-子流程]<br/>
+	 * 索引属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 索引
+	 * @param builder builder
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Index meta) {
+		return super.property(runtime, builder, meta);
 	}
 
 	/**

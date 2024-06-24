@@ -5928,6 +5928,37 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 
 	/**
 	 * index[命令合成-子流程]<br/>
+	 * 索引属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 索引
+	 * @param builder builder
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder property(DataRuntime runtime, StringBuilder builder, Index meta) {
+		LinkedHashMap<String, Object> map = meta.getProperty();
+		boolean append = null != map && !map.isEmpty();
+		if(append){
+			builder.append(" PROPERTIES(");
+		}
+		boolean first = false;
+		for(String key:map.keySet()){
+			Object value = map.get(key);
+			if(BasicUtil.isNotEmpty(value)){
+				if(!first){
+					builder.append(",");
+					builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
+				}
+			}
+		}
+		if(append){
+			builder.append(")");
+		}
+		return super.property(runtime, builder, meta);
+	}
+
+	/**
+	 * index[命令合成-子流程]<br/>
 	 * 索引备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 索引
