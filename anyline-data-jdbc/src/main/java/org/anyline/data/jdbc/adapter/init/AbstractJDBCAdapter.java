@@ -7489,8 +7489,8 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildDropAutoIncrement(runtime, meta);
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildDropAutoIncrement(runtime, meta, slice);
 	}
 
 	/**
@@ -8101,7 +8101,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(null != meta) {//没有新主键的就不执行了
 			Table table = null;
@@ -8110,14 +8110,15 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 			}else{
 				table = origin.getTable();
 			}
-			List<Run> slices = new ArrayList<>();
+			//List<Run> slices = new ArrayList<>();
 			if (null != origin) {
-				slices.addAll(buildDropRun(runtime, origin, true));
+				runs.addAll(buildDropRun(runtime, origin, slice));
 			}
 			if (null != meta && !meta.isDrop()) {
-				slices.addAll(buildAddRun(runtime, meta, true));
+				runs.addAll(buildAddRun(runtime, meta, slice));
 			}
-			if(slice(true)) {
+		/*外层合并
+		if(slice(true)) {
 				if (!slices.isEmpty()) {
 					Run run = new SimpleRun(runtime);
 					StringBuilder builder = run.getBuilder();
@@ -8140,7 +8141,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				}
 			}else{
 				runs.addAll(slices);
-			}
+			}*/
 		}
 		return runs;
 	}

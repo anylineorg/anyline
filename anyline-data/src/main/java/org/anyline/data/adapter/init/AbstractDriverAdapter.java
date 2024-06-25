@@ -9519,17 +9519,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * 修改主键前先 根据主键检测自增 部分数据库要求自增必须在主键上时才需要执行
+	 * 修改主键前先 根据主键检测自增 如果数据库要求自增必须在主键上时才需要执行
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param table 表
 	 * @return boolean
 	 * @throws Exception 异常
 	 */
-	protected boolean checkAutoIncrement(DataRuntime runtime, String random, Table table) throws Exception {
-		boolean result = false;
+	protected List<Run> checkAutoIncrement(DataRuntime runtime, String random, Table table, boolean slice) throws Exception {
+		List<Run> runs = new ArrayList<>();
 		Table update = (Table)table.getUpdate();
-		if(table.primaryEquals(update)) {
+		if(!table.primaryEquals(update)) {
 			LinkedHashMap<String, Column> pks = table.getPrimaryKeyColumns();
 			LinkedHashMap<String, Column> npks = update.getPrimaryKeyColumns();
 			LinkedHashMap<String, Column> columns = table.getColumns();
@@ -9540,16 +9540,40 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						if (null != npks && !npks.containsKey(auto.getName().toUpperCase())) { //当前不是主键
 							auto.primary(false);
 							//取消自增
-							List<Run> runs = buildDropAutoIncrement(runtime, auto);
-							result = execute(runtime, random, table, ACTION.DDL.TABLE_ALTER, runs);
+							runs = buildDropAutoIncrement(runtime, auto, slice);
 						}
 					}
 				}
 			}
 		}
-		return result;
+		return runs;
 	}
-
+	public Run merge(DataRuntime runtime, Table meta, List<Run> slices){
+		Run run = null;
+		if(!slices.isEmpty()){
+			run = new SimpleRun(runtime);
+			StringBuilder builder = run.getBuilder();
+			builder.append("ALTER ").append(keyword(meta)).append(" ");
+			name(runtime, builder, meta);
+			boolean first = true;
+			for(Run item:slices) {
+				if(BasicUtil.isNotEmpty(item)) {
+					String line = item.getFinalUpdate().trim();
+					if(BasicUtil.isEmpty(line)) {
+						continue;
+					}
+					builder.append("\n");
+					if(!first) {
+						builder.append(",");
+					}
+					first = false;
+					builder.append(line);
+				}
+			}
+		}
+		return run;
+	}
+	
 	/**
 	 * table[调用入口]<br/>
 	 * 修改表,执行的SQL通过meta.ddls()返回
@@ -9606,8 +9630,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 
 
-		boolean merge = supportDdlMerge();
-		List<Run> merges = new ArrayList<>();
+		boolean slice  = slice();
+		List<Run> slices = new ArrayList<>();
+		//List<Run> merges = new ArrayList<>();
 
 		LinkedHashMap<String, Column> cols = checkColumnAction(runtime, meta);
 		//主键
@@ -9619,15 +9644,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		//如果主键有更新 先删除主键 避免alters中把原主键列的非空取消时与主键约束冲突
 		try {
-			checkAutoIncrement(runtime, null, meta);
+			List<Run> autos = checkAutoIncrement(runtime, null, meta, slice);
+			if(slice) {
+				slices.addAll(autos);
+			}else{
+				result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, autos) && result;
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 			result = false;
 		}
 		if(change_pk && null != src_primary) {
 			src_primary.execute(meta.execute());
-			if(merge){
-				merges.addAll(buildDropRun(runtime, src_primary));
+			if(slice){
+				slices.addAll(buildDropRun(runtime, src_primary, slice));
 			}else {
 				drop(runtime, src_primary);
 			}
@@ -9635,11 +9665,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 
 		//更新列
-		List<Run> alters = buildAlterRun(runtime, meta, cols.values());
-		if(null != alters && alters.size()>0) {
-			if(merge){
-				merges.addAll(alters);
-			}else {
+		List<Run> alters = buildAlterRun(runtime, meta, cols.values(), slice);
+		if(slice){
+			slices.addAll(alters);
+		}else{
+			if(null != alters && alters.size()>0) {
 				result = execute(runtime, random, meta, ACTION.DDL.COLUMN_ALTER, alters) && result;
 			}
 		}
@@ -9648,11 +9678,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//TODO 但是如果 添加了新主键需要先删除旧主键
 		//TODO 如果DDL支持合并需要合成一个DDL
 		if(meta.getPrimaryKeySize() > 1) {//复合主键的单独添加
-			if(merge){
-				merges.addAll(buildAlterRun(runtime, src_primary, cur_primary));
+			if(slice){
+				slices.addAll(buildAlterRun(runtime, src_primary, cur_primary, slice));
 			}else {
 				alter(runtime, meta, src_primary, cur_primary);
 			}
+		}
+		Run merge = merge(runtime, meta, slices);
+		if(null != merge) {//非空
+			result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, merge) && result;
+			meta.addDdl(merge.getFinalUpdate());
 		}
 		/*
 		修改索引
@@ -9667,38 +9702,22 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			index.execute(meta.execute());
 			if(index.isDrop()) {
 				//项目中调用drop()明确要删除的
-				if(merge){
-
-				}else {
-					drop(runtime, index);
-				}
+				drop(runtime, index);
 			}else{
 				if(null != index.getUpdate()) {
 					//改名或设置过update的
-					if(merge){
-
-					}else {
-						alter(runtime, index);
-					}
+					alter(runtime, index);
 				}else {
 					Index oindex = oindexs.get(index.getName().toUpperCase());
 					if (null == oindex) {
 						//名称不存在的
-						if(merge){
-
-						}else {
-							add(runtime, index);
-						}
+						add(runtime, index);
 					}else{
 						//有同名的
 						if(!index.equals(oindex)) {
 							oindex.execute(meta.execute());
 							oindex.setUpdate(index, false, false);
-							if(merge){
-
-							}else {
-								alter(runtime, oindex);
-							}
+							alter(runtime, oindex);
 						}
 					}
 				}
@@ -9860,7 +9879,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param columns 列
 	 * @return List
 	 */
-	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		for(Column column:columns) {
 			ACTION.DDL action = column.getAction();
@@ -9872,11 +9891,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				continue;
 			}
 			if(CMD.CREATE == cmd) {
-				runs.addAll(buildAddRun(runtime, column, false));
+				runs.addAll(buildAddRun(runtime, column, slice));
 			}else if(CMD.ALTER == cmd) {
-				runs.addAll(buildAlterRun(runtime, column, false));
+				runs.addAll(buildAlterRun(runtime, column, slice));
 			}else if(CMD.DROP == cmd) {
-				runs.addAll(buildDropRun(runtime, column, false));
+				runs.addAll(buildDropRun(runtime, column, slice));
 			}
 		}
 		return runs;
@@ -11794,7 +11813,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta)", 37));
 		}
@@ -12818,7 +12837,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta)", 37));
 		}

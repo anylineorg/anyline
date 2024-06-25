@@ -102,9 +102,6 @@ public interface DriverAdapter {
 	DriverWorker getWorker();
 	boolean supportCatalog();
 	boolean supportSchema();
-	default boolean supportDdlMerge(){
-		return false;
-	}
 	void setListener(DDListener listener);
 	DDListener getDDListener();
 	void setListener(DMListener listener);
@@ -4419,9 +4416,13 @@ public interface DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @param columns 列
+	 * @param slice 是否只生成片段(true:不含alter table部分，用于DDL合并)
 	 * @return List
 	 */
-	List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception;
+	default List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception{
+		return buildAlterRun(runtime, meta, columns, false);
+	}
 
 	/**
 	 * table[命令合成]<br/>
@@ -5209,7 +5210,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildDropAutoIncrement(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5666,7 +5667,10 @@ public interface DriverAdapter {
 	 * @param meta 新主键
 	 * @return List
 	 */
-	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception;
+	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception{
+		return buildAlterRun(runtime, origin, meta, false);
+	}
 	default List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey meta) throws Exception {
 		return buildAlterRun(runtime, null, meta);
 	}
@@ -5676,7 +5680,7 @@ public interface DriverAdapter {
 	 * 删除主键
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param primary 主键
-	 * @param slice 是否只生成片段(不含alter table部分，用于DDL合并)
+	 * @param slice 是否只生成片段(true:不含alter table部分，用于DDL合并)
 	 * @return String
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, PrimaryKey primary, boolean slice) throws Exception;

@@ -4750,8 +4750,8 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildDropAutoIncrement(runtime, meta);
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildDropAutoIncrement(runtime, meta, slice);
 	}
 
 	/**
@@ -5263,8 +5263,8 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
-		return super.buildAlterRun(runtime, origin, meta);
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
+		return super.buildAlterRun(runtime, origin, meta, slice);
 	}
 
 	/**

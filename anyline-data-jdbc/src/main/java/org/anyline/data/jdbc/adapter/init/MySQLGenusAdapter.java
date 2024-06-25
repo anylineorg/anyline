@@ -61,10 +61,6 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean supportCatalog() {
         return false;
     }
-    @Override
-    public boolean supportDdlMerge() {
-        return true;
-    }
 
     @Override
     public boolean supportSchema() {
@@ -4067,44 +4063,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns) throws Exception {
-        List<Run> runs = new ArrayList<>();
-        if (!columns.isEmpty()) {
-            Run run = new SimpleRun(runtime);
-            StringBuilder builder = run.getBuilder();
-            builder.append("ALTER ").append(keyword(meta)).append(" ");
-            name(runtime, builder, meta);
-            List<Run> slices = new ArrayList<>();
-            for(Column column:columns) {
-                ACTION.DDL action = column.getAction();
-                if(action == ACTION.DDL.COLUMN_ADD) {
-                    slices.addAll(buildAddRun(runtime, column, true));
-                }else if(action == ACTION.DDL.COLUMN_ALTER) {
-                    slices.addAll(buildAlterRun(runtime, column, true));
-                }else if(action == ACTION.DDL.COLUMN_DROP) {
-                    slices.addAll(buildDropRun(runtime, column, true));
-                }
-            }
-            boolean first = true;
-            for(Run slice:slices) {
-                if(BasicUtil.isNotEmpty(slice)) {
-                    String line = slice.getFinalUpdate().trim();
-                    if(BasicUtil.isEmpty(line)) {
-                        continue;
-                    }
-                    builder.append("\n");
-                    if(!first) {
-                        builder.append(",");
-                    }
-                    first = false;
-                    builder.append(line);
-                }
-            }
-            if(!first) {//非空
-                runs.add(run);
-            }
-        }
-        return runs;
+    public List<Run> buildAlterRun(DataRuntime runtime, Table meta, Collection<Column> columns, boolean slice) throws Exception {
+        return super.buildAlterRun(runtime, meta, columns, slice);
     }
 
     /**
@@ -5162,9 +5122,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         meta.update().autoIncrement(false);
-        return buildAlterRun(runtime, meta);
+        return buildAlterRun(runtime, meta, slice);
     }
 
     /**
@@ -5710,8 +5670,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
-        return super.buildAlterRun(runtime, origin, meta);
+    public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
+        return super.buildAlterRun(runtime, origin, meta, slice);
     }
     /**
      * primary[命令合成]<br/>

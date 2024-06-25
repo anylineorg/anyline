@@ -5323,8 +5323,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
-		return super.buildAlterRun(runtime, origin, meta);
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
+		return super.buildAlterRun(runtime, origin, meta, slice);
 	}
 
 	/**

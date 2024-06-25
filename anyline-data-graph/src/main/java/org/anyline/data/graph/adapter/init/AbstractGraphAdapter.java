@@ -6935,8 +6935,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildDropAutoIncrement(runtime, meta);
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildDropAutoIncrement(runtime, meta, slice);
 	}
 
 	/**
@@ -7548,48 +7548,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta) throws Exception {
-		List<Run> runs = new ArrayList<>();
-		if(null != meta) {//没有新主键的就不执行了
-			Table table = null;
-			if(null != meta) {
-				table = meta.getTable();
-			}else{
-				table = origin.getTable();
-			}
-			List<Run> slices = new ArrayList<>();
-			if (null != origin) {
-				slices.addAll(buildDropRun(runtime, origin, true));
-			}
-			if (null != meta && !meta.isDrop()) {
-				slices.addAll(buildAddRun(runtime, meta, true));
-			}
-			if(slice(true)) {
-				if (!slices.isEmpty()) {
-					Run run = new SimpleRun(runtime);
-					StringBuilder builder = run.getBuilder();
-					builder.append("ALTER TABLE ");
-					name(runtime, builder, table);
-					boolean first = true;
-					for (Run item : slices) {
-						if (item.getBuilder().length() == 0) {
-							continue;
-						}
-						if (!first) {
-							builder.append(",");
-						}
-						builder.append(item.getBuilder());
-						first = false;
-					}
-					if (!first) {//非空
-						runs.add(run);
-					}
-				}
-			}else{
-				runs.addAll(slices);
-			}
-		}
-		return runs;
+	public List<Run> buildAlterRun(DataRuntime runtime, PrimaryKey origin, PrimaryKey meta, boolean slice) throws Exception {
+		return new ArrayList<>();
 	}
 
 	/**
@@ -7602,17 +7562,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 */
 	@Override
 	public List<Run> buildDropRun(DataRuntime runtime, PrimaryKey meta, boolean slice) throws Exception {
-		List<Run> runs = new ArrayList<>();
-		Run run = new SimpleRun(runtime);
-		runs.add(run);
-		StringBuilder builder = run.getBuilder();
-		if(!slice(slice)) {
-			builder.append("ALTER TABLE ");
-			name(runtime, builder, meta.getTable(true));
-		}
-		builder.append(" DROP CONSTRAINT ");
-		delimiter(builder, meta.getName());
-		return runs;
+		return new ArrayList<>();
 	}
 
 	/**
