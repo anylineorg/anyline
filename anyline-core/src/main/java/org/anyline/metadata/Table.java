@@ -1250,6 +1250,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
          * 分桶数量
          */
         private int buckets = -1;
+        private boolean autoBucket = true;
         /**
          * 分桶依据列
          */
@@ -1272,7 +1273,16 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
 
         public Distribution setBuckets(int buckets) {
             this.buckets = buckets;
+            setAutoBucket(false);
             return this;
+        }
+
+        public boolean isAutoBucket() {
+            return autoBucket;
+        }
+
+        public void setAutoBucket(boolean autoBucket) {
+            this.autoBucket = autoBucket;
         }
 
         public TYPE getType() {
