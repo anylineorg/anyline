@@ -4047,11 +4047,14 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 			builder.append("\nPROPERTIES(");
 			boolean first = true;
 			for(String key:property.keySet()) {
+				Object value = property.get(key);
+				if(BasicUtil.isEmpty(value)){
+					continue;
+				}
 				if(!first) {
 					builder.append(",");
 				}
 				first = false;
-				Object value = property.get(key);
 				builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
 			}
 			builder.append(")");
@@ -5943,15 +5946,17 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		if(append){
 			builder.append(" PROPERTIES(");
 		}
-		boolean first = false;
+		boolean first = true;
 		for(String key:map.keySet()){
 			Object value = map.get(key);
-			if(BasicUtil.isNotEmpty(value)){
-				if(!first){
-					builder.append(",");
-					builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
-				}
+			if(BasicUtil.isEmpty(value)){
+				continue;
 			}
+			if(!first){
+				builder.append(",");
+			}
+			first = false;
+			builder.append("\"").append(key).append("\" = \"").append(value).append("\"");
 		}
 		if(append){
 			builder.append(")");
