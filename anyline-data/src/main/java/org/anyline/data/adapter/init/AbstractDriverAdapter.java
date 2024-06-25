@@ -9622,6 +9622,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			result = false;
 		}
 		if(change_pk && null != src_primary) {
+			src_primary.execute(meta.execute());
 			drop(runtime, src_primary);
 			src_primary = null;
 		}
@@ -9648,6 +9649,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(index.isPrimary()) {
 				continue;
 			}
+			index.execute(meta.execute());
 			if(index.isDrop()) {
 				//项目中调用drop()明确要删除的
 				drop(runtime, index);
@@ -9663,6 +9665,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}else{
 						//有同名的
 						if(!index.equals(oindex)) {
+							oindex.execute(meta.execute());
 							oindex.setUpdate(index, false, false);
 							alter(runtime, oindex);
 						}

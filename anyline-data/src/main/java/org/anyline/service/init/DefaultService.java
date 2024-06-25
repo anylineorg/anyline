@@ -2982,6 +2982,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 Table otable = metadata.table(table.getCatalog(), table.getSchema(), table.getName());
                 if (null != otable) {
                     otable.setAutoDropColumn(table.isAutoDropColumn());
+                    otable.execute(table.execute());
                     Table update = (Table) table.getUpdate();
                     if (null == update) {
                         update = table;

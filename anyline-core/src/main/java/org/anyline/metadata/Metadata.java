@@ -501,6 +501,9 @@ public class Metadata<T extends Metadata> {
             this.ddls = new ArrayList<>();
         }
         ddls.add(ddl);
+        if(null != this.table){
+            this.table.addDdl(ddl);
+        }
     }
     public List<String> ddls() {
         return ddls;
