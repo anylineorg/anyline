@@ -102,6 +102,9 @@ public interface DriverAdapter {
 	DriverWorker getWorker();
 	boolean supportCatalog();
 	boolean supportSchema();
+	default boolean supportDdlMerge(){
+		return false;
+	}
 	void setListener(DDListener listener);
 	DDListener getDDListener();
 	void setListener(DMListener listener);

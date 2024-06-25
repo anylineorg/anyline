@@ -9586,7 +9586,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!result) {
 			return result;
 		}
-
 		//修改表备注
 		String comment = update.getComment()+"";
 		if(!comment.equals(meta.getComment())) {
@@ -9606,6 +9605,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 
+
+		boolean merge = supportDdlMerge();
+		List<Run> merges = new ArrayList<>();
+
 		LinkedHashMap<String, Column> cols = checkColumnAction(runtime, meta);
 		//主键
 		PrimaryKey src_primary = primary(runtime, random, false, meta);
@@ -9623,21 +9626,33 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(change_pk && null != src_primary) {
 			src_primary.execute(meta.execute());
-			drop(runtime, src_primary);
+			if(merge){
+				merges.addAll(buildDropRun(runtime, src_primary));
+			}else {
+				drop(runtime, src_primary);
+			}
 			src_primary = null;
 		}
 
 		//更新列
 		List<Run> alters = buildAlterRun(runtime, meta, cols.values());
 		if(null != alters && alters.size()>0) {
-			result = execute(runtime, random, meta, ACTION.DDL.COLUMN_ALTER, alters) && result;
+			if(merge){
+				merges.addAll(alters);
+			}else {
+				result = execute(runtime, random, meta, ACTION.DDL.COLUMN_ALTER, alters) && result;
+			}
 		}
 
 		//在alters执行完成后 添加主键 避免主键中存在alerts新添加的列
 		//TODO 但是如果 添加了新主键需要先删除旧主键
 		//TODO 如果DDL支持合并需要合成一个DDL
 		if(meta.getPrimaryKeySize() > 1) {//复合主键的单独添加
-			alter(runtime, meta, src_primary, cur_primary);
+			if(merge){
+				merges.addAll(buildAlterRun(runtime, src_primary, cur_primary));
+			}else {
+				alter(runtime, meta, src_primary, cur_primary);
+			}
 		}
 		/*
 		修改索引
@@ -9652,22 +9667,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			index.execute(meta.execute());
 			if(index.isDrop()) {
 				//项目中调用drop()明确要删除的
-				drop(runtime, index);
+				if(merge){
+
+				}else {
+					drop(runtime, index);
+				}
 			}else{
 				if(null != index.getUpdate()) {
 					//改名或设置过update的
-					alter(runtime, index);
+					if(merge){
+
+					}else {
+						alter(runtime, index);
+					}
 				}else {
 					Index oindex = oindexs.get(index.getName().toUpperCase());
 					if (null == oindex) {
 						//名称不存在的
-						add(runtime, index);
+						if(merge){
+
+						}else {
+							add(runtime, index);
+						}
 					}else{
 						//有同名的
 						if(!index.equals(oindex)) {
 							oindex.execute(meta.execute());
 							oindex.setUpdate(index, false, false);
-							alter(runtime, oindex);
+							if(merge){
+
+							}else {
+								alter(runtime, oindex);
+							}
 						}
 					}
 				}

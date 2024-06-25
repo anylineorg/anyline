@@ -222,8 +222,8 @@ public interface Run {
 	int getBatch();
 	void setVol(int vol);
 	int getVol();
-	String action();
-	void action(String action);
+	ACTION action();
+	void action(ACTION action);
 
 	String log(ACTION.DML action, boolean placeholder);
 

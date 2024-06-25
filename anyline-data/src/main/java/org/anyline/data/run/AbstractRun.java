@@ -77,7 +77,7 @@ public abstract class AbstractRun implements Run {
 	protected String delimiterFr;
 	protected String delimiterTo;
 
-	protected String action;
+	protected ACTION action;
 	protected boolean emptyCondition = true;
 	protected String distinct = "";
 	protected String alias;
@@ -1126,11 +1126,11 @@ public abstract class AbstractRun implements Run {
 	}
 
 	@Override
-	public String action() {
+	public ACTION action() {
 		return action;
 	}
 	@Override
-	public void action(String action) {
+	public void action(ACTION action) {
 		this.action = action;
 	}
 

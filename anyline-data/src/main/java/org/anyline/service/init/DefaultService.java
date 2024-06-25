@@ -2990,6 +2990,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     otable.setUpdate(update, false, false);
                     sort(table);
                     result = dao.alter(otable);
+                    table.setDdls(otable.ddls());
                 } else {
                     sort(table);
                     result = dao.create(table);

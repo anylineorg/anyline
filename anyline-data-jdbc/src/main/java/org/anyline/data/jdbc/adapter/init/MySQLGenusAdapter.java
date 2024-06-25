@@ -61,6 +61,10 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public boolean supportCatalog() {
         return false;
     }
+    @Override
+    public boolean supportDdlMerge() {
+        return true;
+    }
 
     @Override
     public boolean supportSchema() {
