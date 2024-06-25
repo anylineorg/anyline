@@ -3990,6 +3990,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 					int buckets = distribution.getBuckets();
 					if(buckets > 0) {
 						builder.append(" BUCKETS ").append(buckets);
+					}else if(distribution.isAutoBucket()){
+						builder.append(" BUCKETS AUTO");
 					}
 				}
 			}
