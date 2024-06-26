@@ -4958,7 +4958,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         boolean rename = meta.isRename();
         if(rename) {
-            builder.append(" CHANGE ").append(alterColumnKeyword(runtime));
+            builder.append(" CHANGE ");
         }else{
             builder.append(" MODIFY ").append(alterColumnKeyword(runtime));
         }
@@ -5026,7 +5026,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public String alterColumnKeyword(DataRuntime runtime) {
-        return "ALTER COLUMN ";
+        return " COLUMN ";
     }
 
     /**

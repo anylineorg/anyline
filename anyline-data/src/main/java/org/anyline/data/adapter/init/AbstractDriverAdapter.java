@@ -11696,10 +11696,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public String alterColumnKeyword(DataRuntime runtime) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 String alterColumnKeyword(DataRuntime runtime)", 37));
-		}
-		return null;
+		return "";
 	}
 
 	/**
