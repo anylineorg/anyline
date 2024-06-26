@@ -18,6 +18,7 @@
 
 package org.anyline.metadata;
 
+import org.anyline.data.Run;
 import org.anyline.entity.DataRow;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.util.BasicUtil;
@@ -113,7 +114,8 @@ public class Metadata<T extends Metadata> {
 
     protected boolean drop = false                ;
     protected ACTION.DDL action = null            ; //ddl命令 add drop alter
-    protected List<String> ddls                   ;
+    protected List<String> ddls                   ; //create
+    protected List<Run> runs                      ; //alter
     protected String identity                     ;
     protected Object extend                       ; //扩展属性
     protected Date checkSchemaTime                ;
@@ -530,6 +532,58 @@ public class Metadata<T extends Metadata> {
     public String getDdl(boolean init) {
         if(null != ddls && ddls.size()>0) {
             return ddls.get(0);
+        }
+        return null;
+    }
+
+    public Run getRun() {
+        if(null != runs && runs.size()>0) {
+            return runs.get(0);
+        }
+        return null;
+    }
+
+    public List<Run> getRuns() {
+        return runs;
+    }
+
+    public void setRuns(List<Run> run) {
+        this.runs = run;
+    }
+    public void addRun(Run run) {
+        if(this.runs == null) {
+            this.runs = new ArrayList<>();
+        }
+        runs.add(run);
+        if(null != this.table){
+            this.table.addRun(run);
+        }
+    }
+    public List<Run> runs() {
+        return runs;
+    }
+    public List<Run> runs(boolean init) {
+        return runs;
+    }
+    public List<Run> getRuns(boolean init) {
+        return runs;
+    }
+
+    public Run run() {
+        if(null != runs && runs.size()>0) {
+            return runs.get(0);
+        }
+        return null;
+    }
+    public Run run(boolean init) {
+        if(null != runs && runs.size()>0) {
+            return runs.get(0);
+        }
+        return null;
+    }
+    public Run getRun(boolean init) {
+        if(null != runs && runs.size()>0) {
+            return runs.get(0);
         }
         return null;
     }

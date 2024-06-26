@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public interface Run {
+public interface Run extends org.anyline.data.Run{
 	Run setRuntime(DataRuntime runtime);
 	void init();
 	DriverAdapter adapter();

@@ -4804,9 +4804,8 @@ public class ClickHouseAdapter extends MySQLGenusAdapter implements JDBCAdapter 
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta) throws Exception {
-		//return super.buildDropAutoIncrement(runtime, meta);
-		return new ArrayList<>();
+	public List<Run> buildDropAutoIncrement(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildDropAutoIncrement(runtime, meta, slice);
 	}
 
 	/**

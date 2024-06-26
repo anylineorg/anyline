@@ -2991,6 +2991,7 @@ public class DefaultService<E> implements AnylineService<E> {
                     sort(table);
                     result = dao.alter(otable);
                     table.setDdls(otable.ddls());
+                    table.setRuns(otable.runs());
                 } else {
                     sort(table);
                     result = dao.create(table);

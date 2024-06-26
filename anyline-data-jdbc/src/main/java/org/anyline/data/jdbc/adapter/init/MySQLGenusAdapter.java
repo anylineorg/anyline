@@ -4958,9 +4958,9 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         }
         boolean rename = meta.isRename();
         if(rename) {
-            builder.append(" CHANGE ");
+            builder.append(" CHANGE ").append(alterColumnKeyword(runtime));
         }else{
-            builder.append(" MODIFY ");
+            builder.append(" MODIFY ").append(alterColumnKeyword(runtime));
         }
         delimiter(builder, meta.getName()).append(" ");
         if(rename) {

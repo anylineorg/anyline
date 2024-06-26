@@ -19,7 +19,7 @@
 package org.anyline.metadata;
 
 public interface ACTION {
-    enum DML{
+    enum DML implements ACTION{
         SELECT,
         COUNT,
         INSERT,
@@ -29,7 +29,7 @@ public interface ACTION {
         EXECUTE,
         PROCEDURE
     }
-    enum DDL{
+    enum DDL implements ACTION{
         IGNORE    (CMD.IGNORE, "忽略"),
         TABLE_CREATE    (CMD.CREATE, "表创建"),
         TABLE_ALTER     (CMD.ALTER, "表结构修改"),

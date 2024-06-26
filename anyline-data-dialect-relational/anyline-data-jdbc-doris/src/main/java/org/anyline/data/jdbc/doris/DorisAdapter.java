@@ -4933,7 +4933,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public String alterColumnKeyword(DataRuntime runtime) {
-		return super.alterColumnKeyword(runtime);
+		return "COLUMN";
 	}
 
 	/**

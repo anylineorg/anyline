@@ -5864,8 +5864,9 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		}
 		boolean result = false;
 		String sql = run.getFinalUpdate();
-		meta.addDdl(sql);
+		run.action(action);
 		if(BasicUtil.isNotEmpty(sql)) {
+			meta.addRun(run);
 			if(meta.execute()) {
 				try {
 					update(runtime, random, (Table) null, null, null, run);

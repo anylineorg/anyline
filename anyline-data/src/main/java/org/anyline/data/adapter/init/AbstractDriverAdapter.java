@@ -9687,7 +9687,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		Run merge = merge(runtime, meta, slices);
 		if(null != merge) {//非空
 			result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, merge) && result;
-			meta.addDdl(merge.getFinalUpdate());
 		}
 		/*
 		修改索引
