@@ -84,6 +84,7 @@ public abstract class AbstractRun implements Run {
 	protected List<Join> joins = new ArrayList<Join>();//关联表
 	protected boolean unionAll = false;
 	protected List<Run> unions = new ArrayList<>();
+	protected boolean slice = false;
 
 	@Override
 	public boolean isEmptyCondition() {
@@ -101,6 +102,16 @@ public abstract class AbstractRun implements Run {
 	public Run setRuntime(DataRuntime runtime) {
 		this.runtime = runtime;
 		return this;
+	}
+
+	@Override
+	public void slice(boolean slice) {
+		this.slice = slice;
+	}
+
+	@Override
+	public boolean slice() {
+		return false;
 	}
 
 	@Override

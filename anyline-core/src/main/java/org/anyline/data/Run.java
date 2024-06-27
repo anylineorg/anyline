@@ -25,6 +25,8 @@ import java.util.List;
 
 public interface Run {
     void init();
+    void slice(boolean slice);
+    boolean slice();
 
     /**
      * 过滤条件是否为空

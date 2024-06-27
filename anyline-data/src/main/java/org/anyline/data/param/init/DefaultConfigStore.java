@@ -212,6 +212,7 @@ public class DefaultConfigStore implements ConfigStore {
 	@Override
 	public ConfigStore copyProperty(ConfigStore configs) {
 		if(null != configs) {
+			//BeanUtil.copyFieldValue(this, configs);
 			this.table = configs.table();
 			this.handler = configs.handler();
 			this.catalog = configs.catalog();
@@ -221,6 +222,8 @@ public class DefaultConfigStore implements ConfigStore {
 			this.execute = configs.execute();
 			this.clazz = configs.getClass();
 			this.integrality = configs.integrality();
+			this.primaryKeys = configs.getPrimaryKeys();
+			this.configs = configs.getConfigs();
 		}
 		return this;
 	}
@@ -1345,6 +1348,12 @@ public class DefaultConfigStore implements ConfigStore {
 	public Config getConfig(String var) {
 		return chain.getConfig(null,var);
 	}
+
+	@Override
+	public Hashtable<String, Object> getConfigs() {
+		return configs;
+	}
+
 	public ConfigStore removeConfig(String var) {
 		Config config = getConfig(var);
 		return removeConfig(config);
@@ -1452,6 +1461,16 @@ public class DefaultConfigStore implements ConfigStore {
 	}
 	public List<String> columns() {
 		return columns;
+	}
+
+	public LinkedHashMap<String, Column> getColumns(){
+		LinkedHashMap<String, Column> map = new LinkedHashMap();
+		if(null != columns){
+			for(String column:columns){
+				map.put(column.toUpperCase(), new Column(column));
+			}
+		}
+		return map;
 	}
 	public ConfigStore excludes(String ... columns) {
 		if(null != columns) {

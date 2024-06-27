@@ -472,7 +472,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return new LinkedHashMap<>();
 		}
 		if(obj instanceof Map && !(obj instanceof DataRow)) {
-			obj = new DataRow((Map)obj);
+			obj = new DataRow(KeyAdapter.KEY_CASE.SRC, (Map)obj);
 		}
 		LinkedHashMap<String, Column> mastKeys = new LinkedHashMap<>();		// 必须插入列
 		List<String> ignores = new ArrayList<>();		// 必须不插入列
@@ -794,6 +794,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 		Run run = buildUpdateRun(runtime, batch, dest, data, configs, columns);
 
+		if(run.isEmptyCondition()) {
+			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+				log.warn("[valid:false][没有更新条件][dest:"+dest+"]");
+			}
+			return -1;
+		}
+
 		//提前设置好columns,到了adapter中需要手动检测缓存
 		if(ConfigStore.IS_AUTO_CHECK_METADATA(configs)) {
 			dest.setColumns(columns(runtime, null, false, dest, false));
@@ -916,15 +923,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}*/
 		// 不更新主键 除非显示指定
+		LinkedHashMap<String, Column> configColumns = configs.getColumns();
 		for(String pk:primaryKeys) {
 			pk = pk.toUpperCase();
-			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk)) {
+			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
 				cols.remove(pk.toUpperCase());
 			}
 		}
 		//不更新默认主键  除非显示指定
 		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
-		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)) {
+		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
 			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
 		}
 		boolean isReplaceEmptyNull = ConfigStore.IS_REPLACE_EMPTY_NULL(configs);
@@ -1045,15 +1053,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 
 		// 不更新主键 除非显示指定
+		LinkedHashMap<String, Column> configColumns = configs.getColumns();
 		for(String pk:primaryKeys) {
 			pk = pk.toUpperCase();
-			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk)) {
+			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
 				cols.remove(pk.toUpperCase());
 			}
 		}
 		//不更新默认主键  除非显示指定
 		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
-		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)) {
+		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk) && !configColumns.containsKey(defaultPk)) {
 			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
 		}
 
@@ -1148,17 +1157,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(primaryKeys.isEmpty()) {
 			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}
-
+		LinkedHashMap<String, Column> configColumns = configs.getColumns();
 		// 不更新主键 除非显示指定
 		for(String pk:primaryKeys) {
 			pk = pk.toUpperCase();
-			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk)) {
+			if(!columns.containsKey(pk) && !columns.containsKey("+"+pk) && !configColumns.containsKey(pk)) {
 				cols.remove(pk.toUpperCase());
 			}
 		}
 		//不更新默认主键  除非显示指定
 		String defaultPk = DataRow.DEFAULT_PRIMARY_KEY.toUpperCase();
-		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)) {
+		if(!columns.containsKey(defaultPk) && !columns.containsKey("+"+defaultPk)&& !configColumns.containsKey(defaultPk)) {
 			cols.remove(DataRow.DEFAULT_PRIMARY_KEY.toUpperCase());
 		}
 		List<String> updateColumns = new ArrayList<>();
@@ -1336,6 +1345,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == obj) {
 			return new LinkedHashMap<>();
 		}
+
+		if(obj instanceof Map && !(obj instanceof DataRow)) {
+			obj = new DataRow(KeyAdapter.KEY_CASE.SRC, (Map)obj);
+		}
 		boolean each = true;//是否需要从row中查找列
 		List<String> conditions = new ArrayList<>()							; // 更新条件
 		LinkedHashMap<String, Column> masters = new LinkedHashMap<>()		; // 必须更新列
@@ -1370,12 +1383,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			cols = masters;
 		}
 		if(each) {
-			cols = new LinkedHashMap<>();
-			cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
-			cols.putAll(masters);
 			// 是否更新null及""列
 			boolean isUpdateNullColumn = ConfigStore.IS_UPDATE_NULL_FIELD(configs);
 			boolean isUpdateEmptyColumn = ConfigStore.IS_UPDATE_EMPTY_FIELD(configs);
+			cols = new LinkedHashMap<>();
+			if(obj instanceof DataRow) {
+				DataRow row = (DataRow)obj;
+				masters.putAll(row.getUpdateColumns(true));
+				ignores.addAll(row.getIgnoreUpdateColumns());
+				cols = row.getColumns();
+				isUpdateNullColumn = row.isUpdateNullColumn();
+				isUpdateEmptyColumn = row.isUpdateEmptyColumn();
+			} else {
+				cols.putAll(EntityAdapterProxy.columns(obj.getClass(), EntityAdapter.MODE.UPDATE)); ;
+			}
+			cols.putAll(masters);
 			List<String> keys = Column.names(cols);
 			for(String key:keys) {
 				if(masters.containsKey(key)) {
@@ -9548,19 +9570,29 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return runs;
 	}
-	public Run merge(DataRuntime runtime, Table meta, List<Run> slices){
+	public List<Run> merge(DataRuntime runtime, Table meta, List<Run> slices){
+		List<Run> runs = new ArrayList<>();
 		Run run = null;
 		if(!slices.isEmpty()){
-			run = new SimpleRun(runtime);
-			StringBuilder builder = run.getBuilder();
-			builder.append("ALTER ").append(keyword(meta)).append(" ");
-			name(runtime, builder, meta);
+			StringBuilder builder = null;
 			boolean first = true;
 			for(Run item:slices) {
 				if(BasicUtil.isNotEmpty(item)) {
 					String line = item.getFinalUpdate().trim();
 					if(BasicUtil.isEmpty(line)) {
 						continue;
+					}
+					if(!item.slice()){
+						//不支持合并的(不是片段的)
+						runs.add(item);
+						continue;
+					}
+					if(null == run){
+						run = new SimpleRun(runtime);
+						builder = run.getBuilder();
+						builder.append("ALTER ").append(keyword(meta)).append(" ");
+						name(runtime, builder, meta);
+						runs.add(run);
 					}
 					builder.append("\n");
 					if(!first) {
@@ -9571,7 +9603,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		return run;
+		return runs;
 	}
 	
 	/**
@@ -9646,7 +9678,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try {
 			List<Run> autos = checkAutoIncrement(runtime, null, meta, slice);
 			if(slice) {
-				slices.addAll(autos);
+				//后面更新新会有重复设置列属性这里不需要add
+				//slices.addAll(autos);
 			}else{
 				result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, autos) && result;
 			}
@@ -9684,8 +9717,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				alter(runtime, meta, src_primary, cur_primary);
 			}
 		}
-		Run merge = merge(runtime, meta, slices);
-		if(null != merge) {//非空
+		List<Run> merges = merge(runtime, meta, slices);
+		for(Run merge:merges){
 			result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, merge) && result;
 		}
 		/*
@@ -11374,7 +11407,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
-		List<Run> runs = buildAddRun(runtime, meta);
+		List<Run> runs = buildAddRun(runtime, meta, false);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -11518,7 +11551,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
-		List<Run> runs = buildDropRun(runtime, meta);
+		List<Run> runs = buildDropRun(runtime, meta, false);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -11567,7 +11600,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, origin);
-		List<Run> runs = buildRenameRun(runtime, origin);
+		List<Run> runs = buildRenameRun(runtime, origin, false);
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -11609,10 +11642,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, Column meta) throws Exception {
-		return buildAddRun(runtime, meta, false);
-	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -11630,11 +11659,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Column meta) throws Exception {
-		return buildAlterRun(runtime, meta, false);
-	}
-
 	/**
 	 * column[命令合成]<br/>
 	 * 删除列
@@ -11651,11 +11675,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 
-	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, Column meta) throws Exception {
-		return buildDropRun(runtime, meta, false);
-	}
-
 	/**
 	 * column[命令合成]<br/>
 	 * 修改列名
@@ -11665,7 +11684,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Column meta)", 37));
 		}
@@ -11681,7 +11700,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta)", 37));
 		}
@@ -11740,9 +11759,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11756,9 +11775,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11772,9 +11791,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -11794,9 +11813,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -12222,7 +12241,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
-		List<Run> runs = buildAddRun(runtime, meta);
+		List<Run> runs = buildAddRun(runtime, meta, false);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
 			swt = ddListener.beforeAdd(runtime, random, meta, runs);
@@ -12354,7 +12373,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, meta);
-		List<Run> runs = buildDropRun(runtime, meta);
+		List<Run> runs = buildDropRun(runtime, meta, false);
 		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
 			swt = ddListener.beforeDrop(runtime, random, meta, runs);
@@ -12403,7 +12422,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return false;
 		}
 		checkSchema(runtime, origin);
-		List<Run> runs = buildRenameRun(runtime, origin);
+		List<Run> runs = buildRenameRun(runtime, origin, slice());
 		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
 		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
 			swt = ddListener.beforeRename(runtime, random, origin, runs);
@@ -12438,7 +12457,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAddRun(DataRuntime runtime, Tag meta)", 37));
 		}
@@ -12454,7 +12473,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildAlterRun(DataRuntime runtime, Tag meta)", 37));
 		}
@@ -12469,9 +12488,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Tag meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -12485,9 +12504,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Tag meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -12501,7 +12520,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta)", 37));
 		}
@@ -12517,7 +12536,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta)", 37));
 		}
@@ -12533,7 +12552,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta)", 37));
 		}
@@ -12549,7 +12568,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta)", 37));
 		}

@@ -199,6 +199,7 @@ public interface ConfigStore extends Cloneable{
 	boolean isEmpty();
 
 	Config getConfig(String key);
+	Hashtable<String, Object> getConfigs();
 	ConfigStore removeConfig(String var);
 	ConfigStore removeConfig(Config config);
 	List<Object> getConfigValues(String var);
@@ -1671,6 +1672,7 @@ public interface ConfigStore extends Cloneable{
 	ConfigStore columns(String ... columns);
 	ConfigStore columns(List<String> columns);
 	List<String> columns();
+	LinkedHashMap<String, Column> getColumns();
 
 	/**
 	 * 级联(如删除点相关的边)

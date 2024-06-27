@@ -529,27 +529,28 @@ public interface DriverAdapter {
 			list.addAll(ddls(runtime, random, columnsDiffer));
 			list.addAll(ddls(runtime, random, indexsDiffer));
 		}else if(differ instanceof ColumnsDiffer) {
+			boolean slice = slice();
 			ColumnsDiffer df = (ColumnsDiffer) differ;
 			LinkedHashMap<String, Column> adds = df.getAdds();
 			LinkedHashMap<String, Column> drops = df.getDrops();
 			LinkedHashMap<String, Column> updates = df.getUpdates();
 			for(Column add:adds.values()) {
 				try {
-					list.addAll(buildAddRun(runtime, add));
+					list.addAll(buildAddRun(runtime, add, slice));
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
 			}
 			for(Column update:updates.values()) {
 				try {
-					list.addAll(buildAlterRun(runtime, update));
+					list.addAll(buildAlterRun(runtime, update, slice));
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
 			}
 			for(Column drop:drops.values()) {
 				try {
-					list.addAll(buildDropRun(runtime, drop));
+					list.addAll(buildDropRun(runtime, drop, slice));
 				}catch (Exception e) {
 					log.error("build ddl exception:", e);
 				}
@@ -5079,9 +5080,6 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildAddRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-	default List<Run> buildAddRun(DataRuntime runtime, Column column) throws Exception {
-		return buildAddRun(runtime, column, false);
-	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -5094,9 +5092,6 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildAlterRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-	default List<Run> buildAlterRun(DataRuntime runtime, Column column) throws Exception {
-		return buildAlterRun(runtime, column, false);
-	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -5108,9 +5103,6 @@ public interface DriverAdapter {
 	 */
 	List<Run> buildDropRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
-	default List<Run> buildDropRun(DataRuntime runtime, Column column) throws Exception {
-		return buildDropRun(runtime, column, false);
-	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -5120,7 +5112,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildRenameRun(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5130,7 +5122,10 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildChangeTypeRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
+	default List<Run> buildChangeTypeRun(DataRuntime runtime, Column column) throws Exception{
+		return buildChangeTypeRun(runtime, column, false);
+	}
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5170,7 +5165,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildChangeDefaultRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5180,7 +5175,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeNullableRun(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildChangeNullableRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5190,7 +5185,7 @@ public interface DriverAdapter {
 	 * @param column 列
 	 * @return String
 	 */
-	List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5200,7 +5195,7 @@ public interface DriverAdapter {
 	 * @return sql
 	 * @throws Exception 异常
 	 */
-	List<Run> buildAppendCommentRun(DataRuntime runtime, Column column) throws Exception;
+	List<Run> buildAppendCommentRun(DataRuntime runtime, Column column, boolean slice) throws Exception;
 
 	/**
 	 * column[命令合成-子流程]<br/>
@@ -5456,7 +5451,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildAddRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildAddRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改标签
@@ -5465,7 +5460,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return List
 	 */
-	List<Run> buildAlterRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildAlterRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 
 	/**
 	 * tag[命令合成]<br/>
@@ -5474,7 +5469,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildDropRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildDropRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改标签名
@@ -5483,7 +5478,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildRenameRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildRenameRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 	/**
 	 * tag[命令合成]<br/>
 	 * 修改默认值
@@ -5492,7 +5487,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 
 	/**
 	 * tag[命令合成]<br/>
@@ -5502,7 +5497,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildChangeNullableRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 
 	/**
 	 * tag[命令合成]<br/>
@@ -5512,7 +5507,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildChangeCommentRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 
 	/**
 	 * tag[命令合成]<br/>
@@ -5522,7 +5517,7 @@ public interface DriverAdapter {
 	 * @param tag 标签
 	 * @return String
 	 */
-	List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag) throws Exception;
+	List<Run> buildChangeTypeRun(DataRuntime runtime, Tag tag, boolean slice) throws Exception;
 
 	/**
 	 * tag[命令合成]<br/>

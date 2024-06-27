@@ -4559,10 +4559,6 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         return super.buildAddRun(runtime, meta, slice);
     }
-    @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildAddRun(runtime, meta);
-    }
 
     /**
      * column[命令合成]<br/>
@@ -4577,10 +4573,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, meta, slice);
     }
-    @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildAlterRun(runtime, meta);
-    }
+   
 
     /**
      * column[命令合成]<br/>
@@ -4595,10 +4588,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
         return super.buildDropRun(runtime, meta, slice);
     }
 
-    @Override
-    public List<Run> buildDropRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
-    }
+    
 
     /**
      * column[命令合成]<br/>
@@ -4609,8 +4599,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildRenameRun(runtime, meta);
+    public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return super.buildRenameRun(runtime, meta, slice);
     }
 
     /**
@@ -4622,14 +4612,19 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Column update = meta.getUpdate();
-        builder.append("ALTER TABLE ");
-        name(runtime, builder, meta.getTable(true));
+        if(!slice(slice)) {
+            Table table = meta.getTable(true);
+            builder.append("ALTER ").append(keyword(table)).append(" ");
+            name(runtime, builder, table);
+        }else{
+            run.slice(slice);
+        }
         builder.append(" MODIFY ");
         delimiter(builder, meta.getName());
         String type = update.getTypeName();
@@ -4690,8 +4685,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildChangeDefaultRun(runtime, meta);
+    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return super.buildChangeDefaultRun(runtime, meta, slice);
     }
 
     /**
@@ -4703,8 +4698,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildChangeNullableRun(runtime, meta);
+    public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return super.buildChangeNullableRun(runtime, meta, slice);
     }
 
     /**
@@ -4716,8 +4711,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildChangeCommentRun(runtime, meta);
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return super.buildChangeCommentRun(runtime, meta, slice);
     }
 
     /**
@@ -4729,8 +4724,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildAppendCommentRun(runtime, meta);
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return super.buildAppendCommentRun(runtime, meta, slice);
     }
 
     /**
@@ -4960,8 +4955,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * [命令合成]
      * List<Run> buildAddRun(DataRuntime runtime, Tag meta)
      * List<Run> buildAlterRun(DataRuntime runtime, Tag meta)
-     * List<Run> buildDropRun(DataRuntime runtime, Tag meta)
-     * List<Run> buildRenameRun(DataRuntime runtime, Tag meta)
+     * List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice)
+     * List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice)
      * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta)
      * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta)
      * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta)
@@ -5044,8 +5039,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildAddRun(runtime, meta);
+    public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildAddRun(runtime, meta, slice);
     }
     /**
      * tag[命令合成]<br/>
@@ -5056,8 +5051,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildAlterRun(runtime, meta);
+    public List<Run> buildAlterRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildAlterRun(runtime, meta, slice);
     }
 
     /**
@@ -5068,8 +5063,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildDropRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+    public List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildDropRun(runtime, meta, slice);
     }
 
     /**
@@ -5081,8 +5076,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildRenameRun(runtime, meta);
+    public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildRenameRun(runtime, meta, slice);
     }
     /**
      * tag[命令合成]<br/>
@@ -5093,8 +5088,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeDefaultRun(runtime, meta);
+    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeDefaultRun(runtime, meta, slice);
     }
 
     /**
@@ -5106,8 +5101,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeNullableRun(runtime, meta);
+    public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeNullableRun(runtime, meta, slice);
     }
 
     /**
@@ -5119,8 +5114,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeCommentRun(runtime, meta);
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeCommentRun(runtime, meta, slice);
     }
 
     /**
@@ -5132,8 +5127,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeTypeRun(runtime, meta);
+    public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeTypeRun(runtime, meta, slice);
     }
 
     /**
@@ -5263,6 +5258,8 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             if(!slice(slice)) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
+            }else{
+                run.slice(slice);
             }
             builder.append(" ADD CONSTRAINT PRIMARY KEY (");
             Column.sort(meta.getPositions(), columns);

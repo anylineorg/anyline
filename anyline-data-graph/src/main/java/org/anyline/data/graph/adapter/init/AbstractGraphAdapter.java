@@ -6667,6 +6667,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			Table table = meta.getTable(true);
 			builder.append("ALTER ").append(keyword(table)).append(" ");
 			name(runtime, builder, table);
+		}else{
+			run.slice(slice);
 		}
 		// Column update = column.getUpdate();
 		// if(null == update) {
@@ -6676,12 +6678,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		delimiter(builder, meta.getName()).append(" ");
 		define(runtime, builder, meta, ACTION.DDL.COLUMN_ADD);
 		// }
-		runs.addAll(buildAppendCommentRun(runtime, meta));
+		runs.addAll(buildAppendCommentRun(runtime, meta, slice));
 		return runs;
-	}
-	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAddRun(runtime, meta);
 	}
 
 	/**
@@ -6705,14 +6703,14 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			String name = meta.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)) {
-				runs.addAll(buildRenameRun(runtime, meta));
+				runs.addAll(buildRenameRun(runtime, meta, slice));
 			}
 			// 修改数据类型
 			String type = type(runtime, null, meta).toString();
 			String utype = type(runtime, null, update).toString();
 			boolean exe = false;
 			if(!BasicUtil.equalsIgnoreCase(type, utype)) {
-				List<Run> list = buildChangeTypeRun(runtime, meta);
+				List<Run> list = buildChangeTypeRun(runtime, meta, slice);
 				if(null != list) {
 					runs.addAll(list);
 					exe = true;
@@ -6720,7 +6718,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			}else{
 				//数据类型没变但长度变了
 				if(meta.getPrecision() != update.getPrecision() || meta.getScale() != update.getScale()) {
-					List<Run> list = buildChangeTypeRun(runtime, meta);
+					List<Run> list = buildChangeTypeRun(runtime, meta, slice);
 					if(null != list) {
 						runs.addAll(list);
 						exe = true;
@@ -6731,7 +6729,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			Object def = meta.getDefaultValue();
 			Object udef = update.getDefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)) {
-				List<Run> defs = buildChangeDefaultRun(runtime, meta);
+				List<Run> defs = buildChangeDefaultRun(runtime, meta, slice);
 				if(null != defs) {
 					runs.addAll(defs);
 				}
@@ -6740,7 +6738,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			int nullable = meta.isNullable();
 			int unullable = update.isNullable();
 			if(nullable != unullable) {
-				List<Run> nulls = buildChangeNullableRun(runtime, meta);
+				List<Run> nulls = buildChangeNullableRun(runtime, meta, slice);
 				if(null != nulls) {
 					runs.addAll(nulls);
 				}
@@ -6749,17 +6747,13 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			String comment = meta.getComment();
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)) {
-				List<Run> cmts = buildChangeCommentRun(runtime, meta);
+				List<Run> cmts = buildChangeCommentRun(runtime, meta, slice);
 				if(null != cmts) {
 					runs.addAll(cmts);
 				}
 			}
 		}
 		return runs;
-	}
-	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAlterRun(runtime, meta);
 	}
 
 	/**
@@ -6778,22 +6772,20 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		StringBuilder builder = run.getBuilder();
 		if(meta instanceof Tag) {
 			Tag tag = (Tag)meta;
-			return buildDropRun(runtime, tag);
+			return buildDropRun(runtime, tag, slice);
 		}
 		if(!slice(slice)) {
 			Table table = meta.getTable(true);
 			builder.append("ALTER ").append(keyword(table)).append(" ");
 			name(runtime, builder, table);
+		}else{
+			run.slice(slice);
 		}
 		dropColumnGuide(runtime, builder, meta);
 		delimiter(builder, meta.getName());
 		return runs;
 	}
 
-	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildDropRun(runtime, meta);
-	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -6804,7 +6796,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception {
+	public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -6829,8 +6821,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeTypeRun(runtime, meta);
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta, boolean  slice) throws Exception {
+		return super.buildChangeTypeRun(runtime, meta, slice);
 	}
 
 	/**
@@ -6883,8 +6875,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeDefaultRun(runtime, meta);
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildChangeDefaultRun(runtime, meta, slice);
 	}
 
 	/**
@@ -6896,8 +6888,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeNullableRun(runtime, meta);
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildChangeNullableRun(runtime, meta, slice);
 	}
 
 	/**
@@ -6909,8 +6901,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeCommentRun(runtime, meta);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildChangeCommentRun(runtime, meta, slice);
 	}
 
 	/**
@@ -6922,8 +6914,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAppendCommentRun(runtime, meta);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildAppendCommentRun(runtime, meta, slice);
 	}
 
 	/**
@@ -7156,8 +7148,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, Tag meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Tag meta)
-	 * List<Run> buildDropRun(DataRuntime runtime, Tag meta)
-	 * List<Run> buildRenameRun(DataRuntime runtime, Tag meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice)
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta)
@@ -7240,7 +7232,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -7267,7 +7259,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Tag update = meta.getUpdate();
 		if(null != update) {
@@ -7275,7 +7267,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			String name = meta.getName();
 			String uname = update.getName();
 			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)) {
-				runs.addAll(buildRenameRun(runtime, meta));
+				runs.addAll(buildRenameRun(runtime, meta, slice));
 			}
 			meta.setName(uname);
 			// 修改数据类型
@@ -7299,19 +7291,19 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 			Object def = meta.getDefaultValue();
 			Object udef = update.getDefaultValue();
 			if(!BasicUtil.equalsIgnoreCase(def, udef)) {
-				runs.addAll(buildChangeDefaultRun(runtime, meta));
+				runs.addAll(buildChangeDefaultRun(runtime, meta, slice));
 			}
 			// 修改非空限制
 			int nullable = meta.isNullable();
 			int unullable = update.isNullable();
 			if(nullable != unullable) {
-				runs.addAll(buildChangeNullableRun(runtime, meta));
+				runs.addAll(buildChangeNullableRun(runtime, meta, slice));
 			}
 			// 修改备注
 			String comment = meta.getComment();
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)) {
-				runs.addAll(buildChangeCommentRun(runtime, meta));
+				runs.addAll(buildChangeCommentRun(runtime, meta, slice));
 			}
 		}
 
@@ -7326,7 +7318,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -7348,7 +7340,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception {
+	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		Run run = new SimpleRun(runtime);
 		runs.add(run);
@@ -7372,8 +7364,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeDefaultRun(runtime, meta);
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeDefaultRun(runtime, meta, slice);
 	}
 
 	/**
@@ -7385,8 +7377,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeNullableRun(runtime, meta);
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeNullableRun(runtime, meta, slice);
 	}
 
 	/**
@@ -7398,8 +7390,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeCommentRun(runtime, meta);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeCommentRun(runtime, meta, slice);
 	}
 
 	/**
@@ -7411,8 +7403,8 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeTypeRun(runtime, meta);
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeTypeRun(runtime, meta, slice);
 	}
 
 	/**

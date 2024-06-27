@@ -4985,6 +4985,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             Table table = meta.getTable(true);
             builder.append("ALTER TABLE ");
             name(runtime, builder, table);
+        }else{
+            run.slice(slice);
         }
         // Column update = column.getUpdate();
         // if(null == update) {
@@ -4993,12 +4995,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         delimiter(builder, meta.getName()).append(" ");
         define(runtime, builder, meta, ACTION.DDL.COLUMN_ADD);
         //}
-        runs.addAll(buildAppendCommentRun(runtime, meta));
+        runs.addAll(buildAppendCommentRun(runtime, meta, slice));
         return runs;
-    }
-    @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildAddRun(runtime, meta);
     }
 
     /**
@@ -5014,10 +5012,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, meta, slice);
     }
-    @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Column meta) throws Exception {
-        return buildAlterRun(runtime, meta, false);
-    }
 
     /**
      * column[命令合成]<br/>
@@ -5032,10 +5026,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         return super.buildDropRun(runtime, meta, slice);
     }
 
-    @Override
-    public List<Run> buildDropRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
-    }
+    
 
     /**
      * column[命令合成]<br/>
@@ -5046,13 +5037,18 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("ALTER TABLE ");
-        name(runtime, builder, meta.getTable(true));
+        if(!slice(slice)) {
+            Table table = meta.getTable(true);
+            builder.append("ALTER ").append(keyword(table)).append(" ");
+            name(runtime, builder, table);
+        }else{
+            run.slice(slice);
+        }
         builder.append(" RENAME COLUMN ");
         delimiter(builder, meta.getName());
         builder.append(" TO ");
@@ -5074,7 +5070,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Column update = meta.getUpdate();
         String name = meta.getName();
@@ -5085,16 +5081,16 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         TypeMetadata column_metadata = meta.getTypeMetadata();
 
         if(uname.endsWith(ConfigTable.ALTER_COLUMN_TYPE_SUFFIX)) {
-            runs.addAll(buildDropRun(runtime, update));
+            runs.addAll(buildDropRun(runtime, update, slice));
         }else {
             if (null != update_metadata && !update_metadata.equals(column_metadata)) {
                 String tmp_name = meta.getName() + ConfigTable.ALTER_COLUMN_TYPE_SUFFIX;
 
                 update.setName(tmp_name);
-                runs.addAll(buildRenameRun(runtime, meta));
+                runs.addAll(buildRenameRun(runtime, meta, slice));
 
                 update.setName(uname);
-                runs.addAll(buildAddRun(runtime, update));
+                runs.addAll(buildAddRun(runtime, update, slice));
                 long size = count(runtime, null, new DefaultTablePrepare(meta.getTable(true)), null);
                 if(size > 0) {
                     StringBuilder builder = new StringBuilder();
@@ -5107,7 +5103,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                     runs.add(new SimpleRun(runtime, builder));
                 }
                 meta.setName(tmp_name);
-                List<Run> drop = buildDropRun(runtime, meta);
+                List<Run> drop = buildDropRun(runtime, meta, slice);
                 runs.addAll(drop);
 
                 meta.setName(name);
@@ -5115,14 +5111,20 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
                 meta.setNullable(update.isNullable());
 
             } else {
-                StringBuilder builder = new StringBuilder();
-                builder.append("ALTER TABLE ");
-                name(runtime, builder, meta.getTable(true));
+                Run run = new SimpleRun(runtime);
+                StringBuilder builder = run.getBuilder();
+                if(!slice(slice)) {
+                    Table table = meta.getTable(true);
+                    builder.append("ALTER ").append(keyword(table)).append(" ");
+                    name(runtime, builder, table);
+                }else{
+                    run.slice(slice);
+                }
                 builder.append(" MODIFY(");
                 delimiter(builder, meta.getName()).append(" ");
                 type(runtime, builder, meta.getUpdate());
                 builder.append(")");
-                runs.add(new SimpleRun(runtime, builder));
+                runs.add(run);
             }
         }
         // column.setName(name);
@@ -5176,7 +5178,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -5210,7 +5212,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -5243,7 +5245,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = null;
         if(null != meta.getUpdate()) {
@@ -5279,8 +5281,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
-        return buildChangeCommentRun(runtime, meta);
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return buildChangeCommentRun(runtime, meta, slice);
     }
 
     /**
@@ -5463,8 +5465,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * [命令合成]
      * List<Run> buildAddRun(DataRuntime runtime, Tag meta)
      * List<Run> buildAlterRun(DataRuntime runtime, Tag meta)
-     * List<Run> buildDropRun(DataRuntime runtime, Tag meta)
-     * List<Run> buildRenameRun(DataRuntime runtime, Tag meta)
+     * List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice)
+     * List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice)
      * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta)
      * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta)
      * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta)
@@ -5547,8 +5549,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildAddRun(runtime, meta);
+    public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildAddRun(runtime, meta, slice);
     }
     /**
      * tag[命令合成]<br/>
@@ -5559,8 +5561,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildAlterRun(runtime, meta);
+    public List<Run> buildAlterRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildAlterRun(runtime, meta, slice);
     }
 
     /**
@@ -5571,8 +5573,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildDropRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+    public List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildDropRun(runtime, meta, slice);
     }
 
     /**
@@ -5584,8 +5586,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildRenameRun(runtime, meta);
+    public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildRenameRun(runtime, meta, slice);
     }
     /**
      * tag[命令合成]<br/>
@@ -5596,8 +5598,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeDefaultRun(runtime, meta);
+    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeDefaultRun(runtime, meta, slice);
     }
 
     /**
@@ -5609,8 +5611,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeNullableRun(runtime, meta);
+    public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeNullableRun(runtime, meta, slice);
     }
 
     /**
@@ -5622,7 +5624,7 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta) throws Exception {
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -5645,8 +5647,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeTypeRun(runtime, meta);
+    public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeTypeRun(runtime, meta, slice);
     }
 
     /**
@@ -5763,6 +5765,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
             if(!slice(slice)) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
+            }else{
+                run.slice(slice);
             }
             String name = meta.getName();
             if(BasicUtil.isEmpty(name)) {
@@ -5808,6 +5812,8 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         if(!slice(slice)) {
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true));
+        }else{
+            run.slice(slice);
         }
         builder.append(" DROP PRIMARY KEY");
         return runs;

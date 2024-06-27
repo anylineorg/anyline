@@ -4591,10 +4591,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	public List<Run> buildAddRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		return super.buildAddRun(runtime, meta, slice);
 	}
-	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAddRun(runtime, meta);
-	}
 
 	/**
 	 * column[命令合成]<br/>
@@ -4608,10 +4604,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	@Override
 	public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
 		return super.buildAlterRun(runtime, meta, slice);
-	}
-	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAlterRun(runtime, meta);
 	}
 
 	/**
@@ -4627,11 +4619,6 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		return super.buildDropRun(runtime, meta, slice);
 	}
 
-	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildDropRun(runtime, meta);
-	}
-
 	/**
 	 * column[命令合成]<br/>
 	 * 修改列名
@@ -4641,8 +4628,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildRenameRun(runtime, meta);
+	public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildRenameRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4654,8 +4641,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeTypeRun(runtime, meta);
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta, boolean  slice) throws Exception {
+		return super.buildChangeTypeRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4706,8 +4693,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeDefaultRun(runtime, meta);
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildChangeDefaultRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4719,8 +4706,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeNullableRun(runtime, meta);
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildChangeNullableRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4732,8 +4719,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildChangeCommentRun(runtime, meta);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildChangeCommentRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4745,8 +4732,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
-		return super.buildAppendCommentRun(runtime, meta);
+	public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+		return super.buildAppendCommentRun(runtime, meta, slice);
 	}
 
 	/**
@@ -4974,8 +4961,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * [命令合成]
 	 * List<Run> buildAddRun(DataRuntime runtime, Tag meta)
 	 * List<Run> buildAlterRun(DataRuntime runtime, Tag meta)
-	 * List<Run> buildDropRun(DataRuntime runtime, Tag meta)
-	 * List<Run> buildRenameRun(DataRuntime runtime, Tag meta)
+	 * List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice)
+	 * List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice)
 	 * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta)
 	 * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta)
 	 * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta)
@@ -5058,8 +5045,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildAddRun(runtime, meta);
+	public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean  slice) throws Exception {
+		return super.buildAddRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5071,8 +5058,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildAlterRun(runtime, meta);
+	public List<Run> buildAlterRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildAlterRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5083,8 +5070,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildDropRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildDropRun(runtime, meta);
+	public List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildDropRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5096,8 +5083,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildRenameRun(runtime, meta);
+	public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildRenameRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5109,8 +5096,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeDefaultRun(runtime, meta);
+	public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeDefaultRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5122,8 +5109,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeNullableRun(runtime, meta);
+	public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeNullableRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5135,8 +5122,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeCommentRun(runtime, meta);
+	public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeCommentRun(runtime, meta, slice);
 	}
 
 	/**
@@ -5148,8 +5135,8 @@ public class HiveAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception {
-		return super.buildChangeTypeRun(runtime, meta);
+	public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+		return super.buildChangeTypeRun(runtime, meta, slice);
 	}
 
 	/**

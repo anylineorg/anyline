@@ -381,7 +381,7 @@ public class MSSQL2000Adapter extends MSSQLAdapter implements JDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column) throws Exception {
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column column, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = null;
         if(null != column.getUpdate()) {

@@ -4026,7 +4026,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             LinkedHashMap<String, Column> columns = meta.getColumns();
             if(null != columns) {
                 for(Column column:columns.values()) {
-                    runs.addAll(buildChangeCommentRun(runtime, column));
+                    runs.addAll(buildChangeCommentRun(runtime, column, false));
                 }
             }
         }
@@ -4817,11 +4817,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     public List<Run> buildAddRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         return super.buildAddRun(runtime, meta, slice);
     }
-    @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Column meta) throws Exception {
-        return buildAddRun(runtime, meta, false);
-    }
-
     /**
      * column[命令合成]<br/>
      * 修改列
@@ -4834,10 +4829,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildAlterRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         return super.buildAlterRun(runtime, meta, slice);
-    }
-    @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Column meta) throws Exception {
-        return buildAlterRun(runtime, meta, false);
     }
 
     /**
@@ -4853,11 +4844,6 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         return super.buildDropRun(runtime, meta, slice);
     }
 
-    @Override
-    public List<Run> buildDropRun(DataRuntime runtime, Column meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
-    }
-
     /**
      * column[命令合成]<br/>
      * 修改列名
@@ -4867,14 +4853,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildRenameRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildRenameRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         checkName(runtime, null, meta);
         StringBuilder builder = run.getBuilder();
-        builder.append("ALTER TABLE ");
-        name(runtime, builder, meta.getTable(true));
+        if(!slice(slice)) {
+            Table table = meta.getTable(true);
+            builder.append("ALTER ").append(keyword(table)).append(" ");
+            name(runtime, builder, meta.getTable(true));
+        }else{
+            run.slice(slice);
+        }
         builder.append(" RENAME ");
         delimiter(builder, meta.getName());
         builder.append(" TO ");
@@ -4893,14 +4884,19 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeTypeRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
         Column update = meta.getUpdate();
-        builder.append("ALTER TABLE ");
-        name(runtime, builder, meta.getTable(true));
+        if(!slice(slice)) {
+            Table table = meta.getTable(true);
+            builder.append("ALTER ").append(keyword(table)).append(" ");
+            name(runtime, builder, table);
+        }else{
+            run.slice(slice);
+        }
         builder.append(" ALTER COLUMN ");
         delimiter(builder, meta.getName());
         builder.append(" TYPE ");
@@ -4963,7 +4959,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -5005,7 +5001,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeNullableRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -5038,7 +5034,7 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta) throws Exception {
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
         List<Run> runs = new ArrayList<>();
         String comment = null;
         Column update = meta.getUpdate();
@@ -5075,8 +5071,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @throws Exception 异常
      */
     @Override
-    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta) throws Exception {
-        return buildChangeCommentRun(runtime, meta);
+    public List<Run> buildAppendCommentRun(DataRuntime runtime, Column meta, boolean slice) throws Exception {
+        return buildChangeCommentRun(runtime, meta, slice);
     }
 
     /**
@@ -5298,8 +5294,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * [命令合成]
      * List<Run> buildAddRun(DataRuntime runtime, Tag meta)
      * List<Run> buildAlterRun(DataRuntime runtime, Tag meta)
-     * List<Run> buildDropRun(DataRuntime runtime, Tag meta)
-     * List<Run> buildRenameRun(DataRuntime runtime, Tag meta)
+     * List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice)
+     * List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice)
      * List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta)
      * List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta)
      * List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta)
@@ -5382,8 +5378,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildAddRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildAddRun(runtime, meta);
+    public List<Run> buildAddRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildAddRun(runtime, meta, slice);
     }
     /**
      * tag[命令合成]<br/>
@@ -5394,8 +5390,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return List
      */
     @Override
-    public List<Run> buildAlterRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildAlterRun(runtime, meta);
+    public List<Run> buildAlterRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildAlterRun(runtime, meta, slice);
     }
 
     /**
@@ -5406,8 +5402,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildDropRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildDropRun(runtime, meta);
+    public List<Run> buildDropRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildDropRun(runtime, meta, slice);
     }
 
     /**
@@ -5419,8 +5415,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildRenameRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildRenameRun(runtime, meta);
+    public List<Run> buildRenameRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildRenameRun(runtime, meta, slice);
     }
     /**
      * tag[命令合成]<br/>
@@ -5431,8 +5427,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeDefaultRun(runtime, meta);
+    public List<Run> buildChangeDefaultRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeDefaultRun(runtime, meta, slice);
     }
 
     /**
@@ -5444,8 +5440,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeNullableRun(runtime, meta);
+    public List<Run> buildChangeNullableRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeNullableRun(runtime, meta, slice);
     }
 
     /**
@@ -5457,8 +5453,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeCommentRun(runtime, meta);
+    public List<Run> buildChangeCommentRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeCommentRun(runtime, meta, slice);
     }
 
     /**
@@ -5470,8 +5466,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
      * @return String
      */
     @Override
-    public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta) throws Exception {
-        return super.buildChangeTypeRun(runtime, meta);
+    public List<Run> buildChangeTypeRun(DataRuntime runtime, Tag meta, boolean slice) throws Exception {
+        return super.buildChangeTypeRun(runtime, meta, slice);
     }
 
     /**
@@ -5588,6 +5584,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
             if(!slice(slice)) {
                 builder.append("ALTER TABLE ");
                 name(runtime, builder, meta.getTable(true));
+            }else{
+                run.slice(slice);
             }
             builder.append(" ADD PRIMARY KEY (");
             Column.sort(meta.getPositions(), columns);
@@ -5627,6 +5625,8 @@ public abstract class PostgresGenusAdapter extends AbstractJDBCAdapter {
         if(!slice(slice)) {
             builder.append("ALTER TABLE ");
             name(runtime, builder, meta.getTable(true));
+        }else{
+            run.slice(slice);
         }
         builder.append(" DROP CONSTRAINT ");
         delimiter(builder, meta.getName());
