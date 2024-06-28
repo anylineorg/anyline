@@ -111,7 +111,7 @@ public abstract class AbstractRun implements Run {
 
 	@Override
 	public boolean slice() {
-		return false;
+		return slice;
 	}
 
 	@Override
