@@ -54,6 +54,14 @@ public class Metadata<T extends Metadata> {
             return value;
         }
     }
+    public static <T extends Metadata> T match(T meta, List<T> metas) {
+        for(T item:metas) {
+            if (item.getIdentity().equals(meta.getIdentity())) {
+                return item;
+            }
+        }
+        return null;
+    }
     public static boolean check(int strut, Type type) {
         int tp = type.value();
         return ((strut & tp) == tp);
@@ -156,10 +164,10 @@ public class Metadata<T extends Metadata> {
         return names;
     }
 
-    public static <T extends Metadata> List<String> names(List<T> metas) {
+    public static <T extends Metadata> List<String> names(Collection<T> metas) {
         return names(metas, false);
     }
-    public static <T extends Metadata> List<String> names(List<T> metas, boolean upper) {
+    public static <T extends Metadata> List<String> names(Collection<T> metas, boolean upper) {
         List<String> names = new ArrayList<>();
         if(null != metas) {
             for (T meta : metas) {
@@ -657,7 +665,7 @@ public class Metadata<T extends Metadata> {
         return clone;
     }
 
-    public static <T extends Metadata> T search(List<T> list, String catalog, String schema, String name) {
+    public static <T extends Metadata> T match(List<T> list, String catalog, String schema, String name) {
         for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
                     && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
@@ -668,7 +676,7 @@ public class Metadata<T extends Metadata> {
         }
         return null;
     }
-    public static <T extends Metadata> T search(List<T> list, Catalog catalog, Schema schema, String name) {
+    public static <T extends Metadata> T match(List<T> list, Catalog catalog, Schema schema, String name) {
         for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)
                     && BasicUtil.equalsIgnoreCase(item.getSchemaName(), schema)
@@ -679,7 +687,7 @@ public class Metadata<T extends Metadata> {
         }
         return null;
     }
-    public static <T extends Metadata> T search(List<T> list, String catalog, String name) {
+    public static <T extends Metadata> T match(List<T> list, String catalog, String name) {
         for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getName(), name)) {
                 if(BasicUtil.equalsIgnoreCase(item.getCatalogName(), catalog)) {
@@ -689,7 +697,7 @@ public class Metadata<T extends Metadata> {
         }
         return null;
     }
-    public static <T extends Metadata> T search(List<T> list, String name) {
+    public static <T extends Metadata> T match(List<T> list, String name) {
         for(T item:list) {
             if(BasicUtil.equalsIgnoreCase(item.getName(), name)) {
                 return item;

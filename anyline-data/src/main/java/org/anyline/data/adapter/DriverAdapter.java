@@ -3157,7 +3157,7 @@ public interface DriverAdapter {
 	 * @return List
 	 * @param <T> Column
 	 */
-	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables);
+	<T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables);
 	/**
 	 * column[调用入口]<br/>(方法3)<br/>
 	 * DatabaseMetaData
@@ -3190,7 +3190,7 @@ public interface DriverAdapter {
 	 * @param metadata 是否根据metadata(true:SELECT * FROM T WHERE 1=0,false:查询系统表)
 	 * @return runs
 	 */
-	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception;
+	List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception;
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
 	 * 根据系统表查询SQL获取表结构
@@ -3234,7 +3234,7 @@ public interface DriverAdapter {
 	 * @return columns
 	 * @throws Exception 异常
 	 */
-	<T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception;
+	<T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception;
 
 	/**
 	 * column[结果集封装]<br/>(方法1)<br/>
@@ -3585,6 +3585,7 @@ public interface DriverAdapter {
 	 */
 	<T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
 
+	<T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy,  Collection<Table> tables);
 	/**
 	 *
 	 * index[调用入口]<br/>
@@ -3605,6 +3606,7 @@ public interface DriverAdapter {
 	 * @return sqls
 	 */
 	List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name);
+	List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables);
 
 	/**
 	 * index[结果集封装]<br/>
@@ -3620,6 +3622,7 @@ public interface DriverAdapter {
 	 */
 	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
 	<T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception;
+	<T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexs, DataSet set) throws Exception;
 
 	/**
 	 * index[结果集封装]<br/>

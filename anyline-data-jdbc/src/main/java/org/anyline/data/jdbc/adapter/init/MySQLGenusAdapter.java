@@ -27,6 +27,7 @@ import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
+import org.anyline.metadata.adapter.IndexMetadataAdapter;
 import org.anyline.metadata.adapter.MetadataAdapterHolder;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.util.BasicUtil;
@@ -2556,11 +2557,11 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
-            table = tables.get(0);
+            table = tables.iterator().next();
         }
         if(null != table) {
             checkName(runtime, null, table);
@@ -2967,6 +2968,47 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return runs;
     }
 
+    @Override
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+        List<Run> runs = new ArrayList<>();
+        Run run = new SimpleRun(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT * FROM INFORMATION_SCHEMA.STATISTICS\n");
+        builder.append("WHERE 1=1\n");
+        Table table = null;
+        if(null != tables && !tables.isEmpty()){
+            table = tables.iterator().next();
+        }
+        if(null != table) {
+            checkName(runtime, null, table);
+            if (null != table.getSchema()) {
+                builder.append("AND TABLE_SCHEMA='").append(table.getSchemaName()).append("'\n");
+            }
+        }
+        List<String> names = Table.names(tables);
+        in(runtime, builder, "TABLE_NAME", names);
+        builder.append("ORDER BY TABLE_NAME, SEQ_IN_INDEX");
+        return runs;
+    }
+    /**
+     * index[结构集封装-依据]<br/>
+     * 读取index元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return IndexMetadataAdapter
+     */
+    @Override
+    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setNameRefer("INDEX_NAME");
+        adapter.setTableRefer("TABLE_NAME");
+        adapter.setSchemaRefer("TABLE_SCHEMA");
+        adapter.setColumnRefer("COLUMN_NAME");
+        adapter.setColumnOrderRefer("COLLATION");
+        adapter.setColumnPositionRefer("SEQ_IN_INDEX");
+        adapter.setCatalogRefer("");
+        return adapter;
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -2981,39 +3023,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-        if(null == indexs) {
-            indexs = new LinkedHashMap<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("INDEX_NAME");
-            if(null == name) {
-                continue;
-            }
-            T idx = indexs.get(name.toUpperCase());
-            if(null == idx && create) {
-                idx = (T)new Index();
-                indexs.put(name.toUpperCase(), idx);
-                Table tab = new Table(row.getString("TABLE_NAME"));
-                tab.setSchema(row.getString("TABLE_SCHEMA"));
-                idx.setTable(tab);
-            };
-            idx.setName(name);
-            if(name.equals("PRIMARY")) {
-                idx.setPrimary(true);
-            }
-            if("0".equals(row.getString("NON_UNIQUE"))) {
-                idx.setUnique(true);
-            }
-            idx.setComment(row.getString("INDEX_COMMENT"));
-            idx.setType(row.getString("INDEX_TYPE"));
-
-            String col = row.getString("COLUMN_NAME");
-            Column column = idx.getColumn(col);
-            if(null == column) {
-                idx.addColumn(col, null, row.getInt("SEQ_IN_INDEX", 0));
-            }
-        }
-        return indexs;
+        return super.indexs(runtime, index, create, table, indexs, set);
     }
     /**
      * index[结果集封装]<br/>
@@ -3029,40 +3039,7 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
      */
     @Override
     public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-        if(null == indexs) {
-            indexs = new ArrayList<>();
-        }
-        for(DataRow row:set) {
-            String name = row.getString("INDEX_NAME");
-            if(null == name) {
-                continue;
-            }
-            String schema = row.getString("TABLE_SCHEMA");
-            T idx = search(indexs, null, schema, name);
-            if(null == idx && create) {
-                idx = (T)new Index();
-                indexs.add(idx);
-                Table tab = new Table(row.getString("TABLE_NAME"));
-                tab.setSchema(schema);
-                idx.setTable(tab);
-            };
-            idx.setName(name);
-            if(name.equals("PRIMARY")) {
-                idx.setPrimary(true);
-            }
-            if("0".equals(row.getString("NON_UNIQUE"))) {
-                idx.setUnique(true);
-            }
-            idx.setComment(row.getString("INDEX_COMMENT"));
-            idx.setType(row.getString("INDEX_TYPE"));
-
-            String col = row.getString("COLUMN_NAME");
-            Column column = idx.getColumn(col);
-            if(null == column) {
-                idx.addColumn(col, null, row.getInt("SEQ_IN_INDEX", 0));
-            }
-        }
-        return indexs;
+        return super.indexs(runtime, index, create, table, indexs, set);
     }
 
     /**
@@ -3096,6 +3073,42 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         return super.indexs(runtime, create, indexs, table, unique, approximate);
     }
 
+    /**
+     * index[结构集封装]<br/>
+     * 根据查询结果集构造index基础属性(name,table,schema,catalog)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Index> T init(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+        return super.init(runtime, index, meta, table, row);
+    }
+
+    /**
+     * index[结构集封装]<br/>
+     * 根据查询结果集构造index更多属性(column,order, position)
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
+     * @param meta 上一步封装结果
+     * @param table 表
+     * @param row sql查询结果
+     * @throws Exception 异常
+     */
+    @Override
+    public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
+        meta =  super.detail(runtime, index, meta, table, row);
+        if(row.getBoolean("PRIMARY_KEY", false)) {
+            meta.setPrimary(true);
+        }
+        if("0".equals(row.getString("NON_UNIQUE"))) {
+            meta.setUnique(true);
+        }
+        return meta;
+    }
     /* *****************************************************************************************************************
      * 													constraint
      * -----------------------------------------------------------------------------------------------------------------

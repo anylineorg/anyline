@@ -2320,7 +2320,7 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
 		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 	/**
@@ -2358,7 +2358,7 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
 		return super.columns(runtime, index, create, tables, columns, set);
 	}
 
@@ -2375,7 +2375,7 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
@@ -2738,6 +2738,10 @@ public class GBaseAdapter extends PostgresGenusAdapter implements JDBCAdapter {
 	@Override
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
 		return super.buildQueryIndexesRun(runtime, table, name);
+	}
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		return super.buildQueryIndexesRun(runtime, tables);
 	}
 
 	/**

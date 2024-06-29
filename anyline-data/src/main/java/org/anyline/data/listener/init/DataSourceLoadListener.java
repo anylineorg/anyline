@@ -28,6 +28,7 @@ import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.interceptor.*;
 import org.anyline.data.listener.DDListener;
 import org.anyline.data.listener.DMListener;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.InterceptorProxy;
@@ -41,7 +42,7 @@ import java.util.Map;
 @Component("anyline.environment.data.listener.jdbc")
 public class DataSourceLoadListener implements LoadListener {
     @Override
-    public void load() {
+    public void start() {
         //缓存
         CacheProvider provider = ConfigTable.environment().getBean(CacheProvider.class);
         CacheProxy.init(provider);
@@ -106,8 +107,8 @@ public class DataSourceLoadListener implements LoadListener {
                 }
             }
         }
-        if(ConfigTable.environment().containsBean("anyline.service.default")) {
-            AnylineService service = ConfigTable.environment().getBean("anyline.service.default", AnylineService.class);
+        if(ConfigTable.environment().containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default")) {
+            AnylineService service = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default", AnylineService.class);
             if(null != service) {
                 ServiceProxy.init(service);
                 Map<String, AnylineService> services = ConfigTable.environment().getBeans(AnylineService.class);

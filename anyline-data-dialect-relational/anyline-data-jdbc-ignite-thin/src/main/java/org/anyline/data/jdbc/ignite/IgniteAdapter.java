@@ -2827,6 +2827,49 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 		return runs;
 	}
 
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		List<Run> runs = new ArrayList<>();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM SYS.INDEXES\n");
+		builder.append("WHERE 1=1\n");
+		Table table = null;
+		if(null != tables && !tables.isEmpty()){
+			table = tables.iterator().next();
+		}
+		if(null != table) {
+			if (null != table.getSchema()) {
+				builder.append("AND SCHEMA_NAME='").append(table.getSchemaName()).append("'\n");
+			}
+			if (null != table.getName()) {
+				builder.append("AND TABLE_NAME='").append(objectName(runtime, table.getName())).append("'\n");
+			}
+		}
+
+		List<String> names = Table.names(tables);
+		in(runtime, builder, "TABLE_NAME", names);
+		return runs;
+	}
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+		IndexMetadataAdapter adapter = super.indexMetadataAdapter(runtime);
+		adapter.setNameRefer("INDEX_NAME");
+		adapter.setSchemaRefer("SCHEMA_NAME");
+		adapter.setTableRefer("TABLE_NAME");
+		adapter.setCommentRefer("INDEX_COMMENT");
+		adapter.setTypeRefer("INDEX_TYPE");
+		adapter.setColumnRefer("COLUMN_NAME");
+		adapter.setColumnPositionRefer("ORDINAL_POSITION");
+		return adapter;
+	}
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -2841,41 +2884,7 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-		if(null == indexs) {
-			indexs = new LinkedHashMap<>();
-		}
-		for(DataRow row:set) {
-			String name = row.getString("INDEX_NAME");
-			if(null == name) {
-				continue;
-			}
-			Schema schema = new Schema(row.getString("SCHEMA_NAME"));
-			String tableName = row.getString("TABLE_NAME");
-			T idx = indexs.get(name.toUpperCase());
-			if(null == idx && create) {
-				idx = (T)new Index();
-				indexs.put(name.toUpperCase(), idx);
-			}
-			idx.setTable(tableName);
-			idx.setName(name);
-			idx.setTable(table);
-			if(row.getBoolean("PRIMARY_KEY", false)) {
-				idx.setPrimary(true);
-			}
-			if("0".equals(row.getString("NON_UNIQUE"))) {
-				idx.setUnique(true);
-			}
-			idx.setComment(row.getString("INDEX_COMMENT"));
-			idx.setType(row.getString("INDEX_TYPE"));
-
-			String col = row.getString("COLUMN_NAME");
-			Column column = idx.getColumn(col);
-			if(null == column) {
-				idx.addColumn(col, null, row.getInt("ORDINAL_POSITION", 0));
-			}
-			indexs.put(name.toUpperCase(), idx);
-		}
-		return indexs;
+		return super.indexs(runtime, index, create, table, indexs, set);
 	}
 
 	/**
@@ -2954,17 +2963,14 @@ public class IgniteAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 */
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
-		return super.detail(runtime, index, meta, table, row);
-	}
-	/**
-	 * index[结构集封装-依据]<br/>
-	 * 读取index元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
-	 */
-	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		return super.indexMetadataAdapter(runtime);
+		meta =  super.detail(runtime, index, meta, table, row);
+		if(row.getBoolean("PRIMARY_KEY", false)) {
+			meta.setPrimary(true);
+		}
+		if("0".equals(row.getString("NON_UNIQUE"))) {
+			meta.setUnique(true);
+		}
+		return meta;
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

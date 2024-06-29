@@ -4382,8 +4382,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				list = tmp;
 			}
 			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-				//查询全部表结构
+				//查询全部表结构 columns()内部已经给table.columns赋值
 				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<Table>)list);
+			}
+			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+				//查询全部表结构
+				indexs(runtime, random, greedy, (List<Table>)list);
 			}
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -4953,7 +4957,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								cols.put(column.getName().toUpperCase(), column);
 							}else{
 								if(equals(cCatalog, column.getCatalog())
-									&& equals(schema, column.getSchema())) {
+									&& equals(cSchema, column.getSchema())) {
 									cols.put(column.getName().toUpperCase(), column);
 								}
 							}
@@ -5479,7 +5483,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 								cols.put(column.getName().toUpperCase(), column);
 							}else{
 								if(equals(cCatalog, column.getCatalog())
-									&& equals(schema, column.getSchema())) {
+									&& equals(cSchema, column.getSchema())) {
 									cols.put(column.getName().toUpperCase(), column);
 								}
 							}
@@ -6797,7 +6801,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
 		List<T> columns = new ArrayList<>();
 		long fr = System.currentTimeMillis();
 		if(null == random) {
@@ -6805,7 +6809,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		Table tab = null;
 		if(null != tables && !tables.isEmpty()) {
-			tab = tables.get(0);
+			tab = tables.iterator().next();
 		}
 
 		if(null!= tab) {
@@ -6840,7 +6844,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 							cols.put(column.getName().toUpperCase(), column);
 						}else{
 							if(equals(cCatalog, column.getCatalog())
-									&& equals(schema, column.getSchema())
+									&& equals(cSchema, column.getSchema())
 									&& BasicUtil.equals(table.getName(), column.getTableName(), true)
 							) {
 								cols.put(column.getName().toUpperCase(), column);
@@ -6901,9 +6905,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6961,9 +6965,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7775,6 +7779,55 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
+	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Collection<Table> tables) {
+		List<T> indexs = null;
+		if(null == random) {
+			random = random(runtime);
+		}
+		//根据系统表查询
+		try {
+			List<Run> runs = buildQueryIndexesRun(runtime, tables);
+			if (null != runs) {
+				int idx = 0;
+				for (Run run: runs) {
+					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
+					indexs = indexs(runtime, idx, true, tables, indexs, set);
+					idx++;
+				}
+			}
+
+			for(Table table:tables) {
+				Long tObjectId = table.getObjectId();
+				LinkedHashMap<String, Index> idxs = new LinkedHashMap<>();
+				table.setIndexes(idxs);
+				for(Index index:indexs) {
+					if(table.equals(index.getTable())) {
+						Catalog cCatalog = index.getCatalog();
+						Schema cSchema = index.getSchema();
+						Long cObjectId = index.getObjectId();
+						if(null != tObjectId && null != cObjectId && tObjectId == cObjectId) {
+							idxs.put(index.getName().toUpperCase(), index);
+						}else{
+							if(equals(cCatalog, index.getCatalog())
+									&& equals(cSchema, index.getSchema())
+									&& BasicUtil.equals(table.getName(), index.getTableName(), true)
+							) {
+								idxs.put(index.getName().toUpperCase(), index);
+							}
+						}
+					}
+				}
+				indexs.removeAll(idxs.values());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(null == indexs) {
+			indexs = new ArrayList<>();
+		}
+		return indexs;
+	}
+
 	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
 		List<T> indexs = null;
 		if(null == table) {
@@ -7920,7 +7973,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return new ArrayList<>();
 	}
-
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables)", 37));
+		}
+		return new ArrayList<>();
+	}
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -7996,7 +8055,31 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexs;
 	}
-
+	public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexs, DataSet set) throws Exception {
+		if(null == indexs) {
+			indexs = new ArrayList<>();
+		}
+		Map<String,Table> tbls = new HashMap<>();
+		for(Table table:tables) {
+			tbls.put(table.getName().toUpperCase(), table);
+		}
+		for(DataRow row:set) {
+			T meta = null;
+			meta = init(runtime, index, meta, null, row);
+			if(null == Metadata.match(meta, indexs)) {
+				indexs.add(meta);
+			}
+			detail(runtime, index, meta, null, row);
+			String tableName = meta.getTableName();
+			if(null != tableName) {
+				Table table = tbls.get(tableName.toUpperCase());
+				if(null != table) {
+					table.add(meta);
+				}
+			}
+		}
+		return indexs;
+	}
 	/**
 	 * index[结果集封装]<br/>
 	 * 根据驱动内置接口
@@ -15635,19 +15718,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		return Metadata.search(list, catalog, schema, name);
+		return Metadata.match(list, catalog, schema, name);
 	}
 
 	public <T extends Metadata> T search(List<T> list, String catalog, String schema, String name) {
-		return Metadata.search(list, catalog, schema, name);
+		return Metadata.match(list, catalog, schema, name);
 	}
 
 	public <T extends Metadata> T search(List<T> list, String catalog, String name) {
-		return Metadata.search(list, catalog, name);
+		return Metadata.match(list, catalog, name);
 	}
 
 	public <T extends Metadata> T search(List<T> list, String name) {
-		return Metadata.search(list, name);
+		return Metadata.match(list, name);
 	}
 
 }

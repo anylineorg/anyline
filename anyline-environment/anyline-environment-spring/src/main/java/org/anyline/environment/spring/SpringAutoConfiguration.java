@@ -91,7 +91,7 @@ public class SpringAutoConfiguration implements InitializingBean {
     private void listenerLoad() {
         if(!loadStatus && null != listeners && null != ConfigTable.worker) {
             for (LoadListener listener : listeners.values()) {
-                listener.load();
+                listener.start();
             }
             loadStatus = true;
         }

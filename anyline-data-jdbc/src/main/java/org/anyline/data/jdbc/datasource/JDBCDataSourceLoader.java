@@ -91,7 +91,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         //TODO 项目指定一个前缀
 
 
-        Object def = ConfigTable.environment().getBean("anyline.service.default");
+        Object def = ConfigTable.environment().getBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default");
         if(null == ConfigTable.environment().getBean("anyline.service") && null != def) {
             ConfigTable.environment().regBean("anyline.service", def);
         }
@@ -110,7 +110,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
         List<String> list = new ArrayList<>();
         if(loadDefault) {
             //上下文初始化前后会调用 两次第二次就不执行加载了
-            if(!ConfigTable.worker.containsBean("anyline.service.default")) {
+            if(!ConfigTable.worker.containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+"default")) {
                 String def = holder().create("default", head);
                 if (null != def) {
                     list.add(def);
@@ -132,7 +132,7 @@ public class JDBCDataSourceLoader extends AbstractDataSourceLoader implements Da
                     //返回 datasource的bean id
                     // sso, anyline.datasource.sso, env
                     //上下文初始化前后会调用 两次第二次就不执行加载了
-                    if(!ConfigTable.worker.containsBean("anyline.service."+prefix)) {
+                    if(!ConfigTable.worker.containsBean(DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX+prefix)) {
                         String datasource =  holder().create(prefix, head + "." + prefix);
                         if(null != datasource) {
                             list.add(datasource);

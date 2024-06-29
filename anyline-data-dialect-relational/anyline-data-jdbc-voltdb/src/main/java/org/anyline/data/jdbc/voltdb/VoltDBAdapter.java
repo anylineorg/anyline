@@ -2746,6 +2746,14 @@ public class VoltDBAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		runs.add(run);
 		return runs;
 	}
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		List<Run> runs = new ArrayList<>();
+		for(Table table:tables){
+			runs.addAll(buildQueryIndexesRun(runtime, table, null));
+		}
+		return runs;
+	}
 
 	/**
 	 * index[结果集封装]<br/>

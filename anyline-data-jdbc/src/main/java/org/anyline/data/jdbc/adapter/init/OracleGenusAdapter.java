@@ -2595,11 +2595,11 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
-            table = tables.get(0);
+            table = tables.iterator().next();
         }
         if(null != table) {
             checkName(runtime, null, table);
@@ -3018,13 +3018,9 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        Run run = buildQueryIndexBody(runtime);
         runs.add(run);
         StringBuilder builder = run.getBuilder();
-        builder.append("SELECT M.*, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
-        builder.append("LEFT JOIN ALL_IND_EXPRESSIONS F\n");
-        builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
-        builder.append("WHERE 1=1\n");
         String schema = table.getSchemaName();
         String tab = table.getName();
         if(!empty(schema)) {
@@ -3038,7 +3034,52 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
         }
         return runs;
     }
-
+    @Override
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+        List<Run> runs = new ArrayList<>();
+        Run run = buildQueryIndexBody(runtime);
+        runs.add(run);
+        StringBuilder builder = run.getBuilder();
+        Table table = null;
+        if(null != tables && !tables.isEmpty()){
+            table = tables.iterator().next();
+        }
+        String schema = table.getSchemaName();
+        String tab = table.getName();
+        if(!empty(schema)) {
+            builder.append("AND M.INDEX_OWNER = '").append(schema).append("'\n");
+        }
+        List<String> names = Table.names(tables);
+        in(runtime, builder, "M.TABLE_NAME", names);
+        return runs;
+    }
+    protected Run buildQueryIndexBody(DataRuntime runtime){
+        Run run = new SimpleRun(runtime);
+        StringBuilder builder = run.getBuilder();
+        builder.append("SELECT M.*, F.COLUMN_EXPRESSION FROM ALL_IND_COLUMNS M\n");
+        builder.append("LEFT JOIN ALL_IND_EXPRESSIONS F\n");
+        builder.append("ON M.INDEX_OWNER = F.INDEX_OWNER AND M.INDEX_NAME = F.INDEX_NAME AND M.COLUMN_POSITION = F.COLUMN_POSITION\n");
+        builder.append("WHERE 1=1\n");
+        return run;
+    }
+    /**
+     * index[结构集封装-依据]<br/>
+     * 读取index元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return IndexMetadataAdapter
+     */
+    @Override
+    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+        adapter.setNameRefer("INDEX_NAME");
+        adapter.setTableRefer("TABLE_NAME");
+        adapter.setSchemaRefer("INDEX_OWNER");
+        adapter.setCatalogRefer("");
+        adapter.setColumnRefer("COLUMN_EXPRESSION,COLUMN_NAME");
+        adapter.setColumnOrderRefer("DESCEND");
+        adapter.setColumnPositionRefer("COLUMN_POSITION");
+        return adapter;
+    }
     /**
      * index[结果集封装]<br/>
      *  根据查询结果集构造Index
@@ -3134,24 +3175,6 @@ public abstract class OracleGenusAdapter extends AbstractJDBCAdapter {
     @Override
     public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
         return super.detail(runtime, index, meta, table, row);
-    }
-    /**
-     * index[结构集封装-依据]<br/>
-     * 读取index元数据结果集的依据
-     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-     * @return IndexMetadataAdapter
-     */
-    @Override
-    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-        IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
-        adapter.setNameRefer("INDEX_NAME");
-        adapter.setTableRefer("TABLE_NAME");
-        adapter.setSchemaRefer("INDEX_OWNER");
-        adapter.setCatalogRefer("");
-        adapter.setColumnRefer("COLUMN_EXPRESSION,COLUMN_NAME");
-        adapter.setColumnOrderRefer("DESCEND");
-        adapter.setColumnPositionRefer("COLUMN_POSITION");
-        return adapter;
     }
     /* *****************************************************************************************************************
      * 													constraint

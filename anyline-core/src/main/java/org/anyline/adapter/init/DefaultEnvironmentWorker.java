@@ -61,7 +61,7 @@ public class DefaultEnvironmentWorker implements EnvironmentWorker {
 
         Map<String, LoadListener> listeners = instance.getBeans(LoadListener.class);
         for(LoadListener listener:listeners.values()) {
-            listener.load();
+            listener.start();
         }
         return instance;
     }

@@ -21,12 +21,14 @@ package org.anyline.environment.spring.data.jdbc.runtime;
 import org.anyline.bean.BeanDefine;
 import org.anyline.bean.init.DefaultBeanDefine;
 import org.anyline.bean.init.DefaultValueReference;
+import org.anyline.dao.AnylineDao;
 import org.anyline.dao.init.DefaultDao;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.jdbc.adapter.JDBCAdapter;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
 import org.anyline.data.runtime.init.AbstractRuntimeHolder;
+import org.anyline.service.AnylineService;
 import org.anyline.service.init.DefaultService;
 import org.anyline.util.ClassUtil;
 import org.anyline.util.ConfigTable;
@@ -123,17 +125,21 @@ public class SpringJDBCRuntimeHolder extends AbstractRuntimeHolder implements Ru
 
         String dao_key = DataRuntime.ANYLINE_DAO_BEAN_PREFIX +  datasource;
         String service_key = DataRuntime.ANYLINE_SERVICE_BEAN_PREFIX +  datasource;
-        log.debug("[instance service][data source:{}][instance id:{}]", datasource, service_key);
-
         BeanDefine daoDefine = new DefaultBeanDefine(DefaultDao.class);
         daoDefine.addValue("runtime", runtime);
         daoDefine.setLazy(true);
         ConfigTable.environment().regBean(dao_key, daoDefine);
-
-        BeanDefine serviceDefine = new DefaultBeanDefine(DefaultService.class);
-        serviceDefine.addValue("dao", new DefaultValueReference(dao_key));
-        serviceDefine.setLazy(true);
-        ConfigTable.environment().regBean(service_key, serviceDefine);
+        if(ConfigTable.environment().containsBean(service_key)){
+            //提前注入了占位
+            AnylineService service = (AnylineService)ConfigTable.environment().get(service_key);
+            service.setDao((AnylineDao) ConfigTable.environment().getBean(dao_key));
+        }else{
+            log.debug("[instance service][data source:{}][instance id:{}]", datasource, service_key);
+            BeanDefine serviceDefine = new DefaultBeanDefine(DefaultService.class);
+            serviceDefine.addValue("dao", new DefaultValueReference(dao_key));
+            serviceDefine.setLazy(true);
+            ConfigTable.environment().regBean(service_key, serviceDefine);
+        }
         return runtime;
     }
     public boolean destroy(String key) {

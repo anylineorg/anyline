@@ -4045,7 +4045,6 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      */
     @Override
     public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
-
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         runs.add(run);
@@ -4054,6 +4053,34 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         builder.append(keyword(table));
         builder.append(" INDEXES");
         return runs;
+    }
+    @Override
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+        List<Run> runs = new ArrayList<>();
+        for(Table table:tables){
+            runs.addAll(buildQueryIndexesRun(runtime, table, null));
+        }
+        return runs;
+    }
+    /**
+     * index[结构集封装-依据]<br/>
+     * 读取index元数据结果集的依据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @return IndexMetadataAdapter
+     */
+    @Override
+    public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+        IndexMetadataAdapter adapter = super.indexMetadataAdapter(runtime);
+        adapter.setNameRefer("Index Name");
+        adapter.setTableRefer("By Tag,By Edge");
+        adapter.setColumnRefer("Columns");
+        /*SHOW TAG INDEXES;
+        +------------------+----------+----------+
+        | Index Name       | By Tag   | Columns  |
+        +------------------+----------+----------+
+        | "player_index_0" | "player" | []       |
+        | "player_index_1" | "player" | ["name"] |*/
+        return adapter;
     }
 
     /**

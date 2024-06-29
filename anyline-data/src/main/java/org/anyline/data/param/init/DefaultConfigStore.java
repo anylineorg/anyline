@@ -252,6 +252,9 @@ public class DefaultConfigStore implements ConfigStore {
 	 */
 	@Override
 	public List<String> keys() {
+		if(null == primaryKeys){
+			return new ArrayList<>();
+		}
 		return primaryKeys;
 	}
 

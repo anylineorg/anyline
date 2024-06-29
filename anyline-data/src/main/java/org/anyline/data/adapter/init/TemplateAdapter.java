@@ -2296,7 +2296,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
 		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 	/**
@@ -2334,7 +2334,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
 		return super.columns(runtime, index, create, tables, columns, set);
 	}
 
@@ -2351,7 +2351,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
@@ -2715,7 +2715,21 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
 		return super.buildQueryIndexesRun(runtime, table, name);
 	}
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		return super.buildQueryIndexesRun(runtime, tables);
+	}
 
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+		return super.indexMetadataAdapter(runtime);
+	}
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -2810,16 +2824,6 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
 		return super.detail(runtime, index, meta, table, row);
-	}
-	/**
-	 * index[结构集封装-依据]<br/>
-	 * 读取index元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
-	 */
-	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

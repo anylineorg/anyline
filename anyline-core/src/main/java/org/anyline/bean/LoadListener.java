@@ -25,5 +25,5 @@ public interface LoadListener {
      * 2.上下文中所有实例完成注入后调用一次
      * anyline需要等项目中的jdbc/datasource实例完成后 用来创建默认数据源的service
      */
-    void load();
+    void start();
 }

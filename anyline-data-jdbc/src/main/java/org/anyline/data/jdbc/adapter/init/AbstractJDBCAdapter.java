@@ -4143,7 +4143,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
 		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 	/**
@@ -4181,7 +4181,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		for(DataRow row:set) {
 			T column = null;
 			column = init(runtime, index, column, table, row);
-			if(null == column(column, columns)) {
+			if(null == Metadata.match(column, columns)) {
 				columns.add(column);
 			}
 			detail(runtime, index, column, null, null, row);
@@ -4203,7 +4203,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
 		if(null == columns) {
 			columns = new ArrayList<>();
 		}
@@ -4214,7 +4214,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 		for(DataRow row:set) {
 			T meta = null;
 			meta = init(runtime, index, meta, null, row);
-			if(null == column(meta, columns)) {
+			if(null == Metadata.match(meta, columns)) {
 				columns.add(meta);
 			}
 			detail(runtime, index, meta, null, null,  row);
@@ -4241,7 +4241,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 	/**
@@ -4827,6 +4827,10 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name) {
 		return super.buildQueryIndexesRun(runtime, table, name);
 	}
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		return super.buildQueryIndexesRun(runtime, tables);
+	}
 
 	/**
 	 * index[结果集封装]<br/>
@@ -4931,7 +4935,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 */
 	@Override
 	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		return super.indexMetadataAdapter(runtime);
+		IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+		adapter.setNameRefer("INDEX_NAME");
+		adapter.setTableRefer("TABLE_NAME");
+		adapter.setSchemaRefer("TABLE_SCHEMA");
+		adapter.setColumnRefer("COLUMN_NAME");
+		adapter.setColumnOrderRefer("COLLATION");
+		adapter.setColumnPositionRefer("SEQ_IN_INDEX");
+		return adapter;
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint
@@ -9526,14 +9537,6 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 				if (identity.equals(column.getIdentity())) {
 					return column;
 				}
-			}
-		}
-		return null;
-	}
-	public <T extends Column> T column(T column, List<T> columns) {
-		for(T item:columns) {
-			if (item.getIdentity().equals(column.getIdentity())) {
-				return item;
 			}
 		}
 		return null;

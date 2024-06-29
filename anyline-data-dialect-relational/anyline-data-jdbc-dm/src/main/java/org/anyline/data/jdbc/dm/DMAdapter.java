@@ -2414,7 +2414,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
 		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 	/**
@@ -2452,7 +2452,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, List<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
 		return super.columns(runtime, index, create, tables, columns, set);
 	}
 
@@ -2469,7 +2469,7 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, List<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
@@ -2871,6 +2871,44 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 		return runs;
 	}
 
+	@Override
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+		List<Run> runs = new ArrayList<>();
+		if(null == tables || tables.isEmpty()){
+			return runs;
+		}
+		Table table = tables.iterator().next();
+		Run run = new SimpleRun(runtime);
+		runs.add(run);
+		StringBuilder builder = run.getBuilder();
+		builder.append("SELECT * FROM dba_ind_columns WHERE 1=1\n");
+		String schema = table.getSchemaName();
+		if(!empty(schema)) {
+			builder.append(" AND INDEX_OWNER = '").append(schema).append("'\n");
+		}
+		List<String> names = Table.names(tables);
+		in(runtime, builder, "TABLE_NAME", names);
+
+		return runs;
+	}
+	/**
+	 * index[结构集封装-依据]<br/>
+	 * 读取index元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return IndexMetadataAdapter
+	 */
+	@Override
+	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
+		//{"INDEX_OWNER":"SYS","INDEX_NAME":"SYSINDEXSYSOBJECTS","TABLE_OWNER":"SYS","TABLE_NAME":"SYSOBJECTS","COLUMN_NAME":"NAME","COLUMN_POSITION":3,"COLUMN_LENGTH":128,"CHAR_LENGTH":128,"DESCEND":"ASC"}
+		IndexMetadataAdapter adapter =  super.indexMetadataAdapter(runtime);
+		adapter.setSchemaRefer("INDEX_OWNER");
+		adapter.setNameRefer("INDEX_NAME");
+		adapter.setTableRefer("TABLE_NAME");
+		adapter.setColumnRefer("COLUMN_NAME");
+		adapter.setColumnPositionRefer("COLUMN_POSITION");
+		adapter.setColumnOrderRefer("DESCEND");
+		return adapter;
+	}
 	/**
 	 * index[结果集封装]<br/>
 	 *  根据查询结果集构造Index
@@ -2965,16 +3003,6 @@ public class DMAdapter extends OracleGenusAdapter implements JDBCAdapter {
 	@Override
 	public <T extends Index> T detail(DataRuntime runtime, int index, T meta, Table table, DataRow row) throws Exception{
 		return super.detail(runtime, index, meta, table, row);
-	}
-	/**
-	 * index[结构集封装-依据]<br/>
-	 * 读取index元数据结果集的依据
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @return IndexMetadataAdapter
-	 */
-	@Override
-	public IndexMetadataAdapter indexMetadataAdapter(DataRuntime runtime) {
-		return super.indexMetadataAdapter(runtime);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

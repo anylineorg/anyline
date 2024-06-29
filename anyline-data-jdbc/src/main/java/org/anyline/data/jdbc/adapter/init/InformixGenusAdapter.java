@@ -2470,11 +2470,11 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
      * @return sqls
      */
     @Override
-    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, List<Table> tables, boolean metadata) throws Exception {
+    public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
         List<Run> runs = new ArrayList<>();
         Table table = null;
         if(!tables.isEmpty()) {
-            table = tables.get(0);
+            table = tables.iterator().next();
         }
         if(null != table) {
             catalog = table.getCatalog();
@@ -2535,7 +2535,7 @@ public abstract class InformixGenusAdapter extends AbstractJDBCAdapter {
             T tmp = (T)new Column();
             tmp.setName(name);
             init(runtime, index, tmp, table, row);
-            T column = column(tmp, columns);
+            T column = Metadata.match(tmp, columns);
             if(null == column) {
                 column = (T) new Column();
                 column.setName(name);
