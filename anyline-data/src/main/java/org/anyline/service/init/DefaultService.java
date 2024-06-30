@@ -2017,9 +2017,9 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-                LinkedHashMap<String, Index> indexs = table.getIndexes();
-                if(null == indexs || indexs.isEmpty()) {
-                    table.setIndexes(indexs(table));
+                LinkedHashMap<String, Index> indexes = table.getIndexes();
+                if(null == indexes || indexes.isEmpty()) {
+                    table.setIndexes(indexes(table));
                 }
             }
             if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
@@ -2137,9 +2137,9 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-                LinkedHashMap<String, Index> indexs = vertexTable.getIndexes();
-                if(null == indexs || indexs.isEmpty()) {
-                    vertexTable.setIndexes(indexs(vertexTable));
+                LinkedHashMap<String, Index> indexes = vertexTable.getIndexes();
+                if(null == indexes || indexes.isEmpty()) {
+                    vertexTable.setIndexes(indexes(vertexTable));
                 }
             }
             if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
@@ -2257,9 +2257,9 @@ public class DefaultService<E> implements AnylineService<E> {
                 }
             }
             if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
-                LinkedHashMap<String, Index> indexs = edgeTable.getIndexes();
-                if(null == indexs || indexs.isEmpty()) {
-                    edgeTable.setIndexes(indexs(edgeTable));
+                LinkedHashMap<String, Index> indexes = edgeTable.getIndexes();
+                if(null == indexes || indexes.isEmpty()) {
+                    edgeTable.setIndexes(indexes(edgeTable));
                 }
             }
             if(Metadata.check(struct, Metadata.TYPE.CONSTRAINT)) {
@@ -2360,7 +2360,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 view.setColumns(columns(view));
                 ddl(view);
                 //view.setTags(tags(view));
-                //view.setIndexs(indexs(view));
+                //view.setIndexes(indexes(view));
             }
             return view;
         }
@@ -2417,7 +2417,7 @@ public class DefaultService<E> implements AnylineService<E> {
             MasterTable table = tables.values().iterator().next();
             table.setColumns(columns(table));
             table.setTags(tags(table));
-            table.setIndexes(indexs(table));
+            table.setIndexes(indexes(table));
             return table;
         }
 
@@ -2535,7 +2535,7 @@ public class DefaultService<E> implements AnylineService<E> {
             PartitionTable table = tables.values().iterator().next();
             table.setColumns(columns(table));
             table.setTags(tags(table));
-            table.setIndexes(indexs(table));
+            table.setIndexes(indexes(table));
             return table;
         }
 
@@ -2718,32 +2718,32 @@ public class DefaultService<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													index
          * -----------------------------------------------------------------------------------------------------------------
-         * LinkedHashMap<String, Index> indexs(Table table)
-         * LinkedHashMap<String, Index> indexs(String table)
-         * LinkedHashMap<String, Index> indexs(Catalog catalog, Schema schema, String table)
+         * LinkedHashMap<String, Index> indexes(Table table)
+         * LinkedHashMap<String, Index> indexes(String table)
+         * LinkedHashMap<String, Index> indexes(Catalog catalog, Schema schema, String table)
          * Index index(Table table, String name);
          * Index index(String table, String name);
          * Index index(String name);
          ******************************************************************************************************************/
 
         @Override
-        public <T extends Index> List<T> indexs(boolean greedy, Table table) {
+        public <T extends Index> List<T> indexes(boolean greedy, Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
             if(null != ps[0]) {
                 table.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().indexs(greedy, table);
+                return ServiceProxy.service(ps[0]).metadata().indexes(greedy, table);
             }
-            return dao.indexs(greedy, table);
+            return dao.indexes(greedy, table);
         }
 
         @Override
-        public <T extends Index> LinkedHashMap<String, T> indexs(Table table) {
+        public <T extends Index> LinkedHashMap<String, T> indexes(Table table) {
             String[] ps = DataSourceUtil.parseRuntime(table);
             if(null != ps[0]) {
                 table.setName(ps[1]);
-                return ServiceProxy.service(ps[0]).metadata().indexs(table);
+                return ServiceProxy.service(ps[0]).metadata().indexes(table);
             }
-            return dao.indexs(table);
+            return dao.indexes(table);
         }
 
         @Override
@@ -2754,7 +2754,7 @@ public class DefaultService<E> implements AnylineService<E> {
                 return ServiceProxy.service(ps[0]).metadata().index(greedy, table, name);
             }
             Index index = null;
-            List<Index> all = dao.indexs(greedy, table, name);
+            List<Index> all = dao.indexes(greedy, table, name);
             if (null != all && !all.isEmpty()) {
                 index = all.get(0);
             }

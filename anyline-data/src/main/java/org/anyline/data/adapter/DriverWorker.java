@@ -264,10 +264,10 @@ public interface DriverWorker {
      * @param table 表
      * @param unique 是否唯一
      * @param approximate 索引允许结果反映近似值
-     * @return indexs indexs
+     * @return indexes indexes
      * @throws Exception 异常
      */
-    default <T extends Index> LinkedHashMap<String, T> indexs(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
+    default <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception{
         return new LinkedHashMap<>();
     }
 }

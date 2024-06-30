@@ -1323,38 +1323,38 @@ public interface AnylineDao<E>{
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
-	<T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name);
-	default <T extends Index> List<T> indexs(boolean greedy, Table table, String name) {
-		return indexs(runtime(), null, greedy, table, name);
+	<T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String name);
+	default <T extends Index> List<T> indexes(boolean greedy, Table table, String name) {
+		return indexes(runtime(), null, greedy, table, name);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy, String table, String name) {
-		return indexs(greedy, new Table(table), name);
+	default <T extends Index> List<T> indexes(boolean greedy, String table, String name) {
+		return indexes(greedy, new Table(table), name);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy, Table table) {
-		return indexs(greedy, table, null);
+	default <T extends Index> List<T> indexes(boolean greedy, Table table) {
+		return indexes(greedy, table, null);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy, String table) {
-		return indexs(greedy, new Table(table), null);
+	default <T extends Index> List<T> indexes(boolean greedy, String table) {
+		return indexes(greedy, new Table(table), null);
 	}
-	default <T extends Index> List<T> indexs(boolean greedy, Catalog catalog, Schema schema, String table) {
-		return indexs(greedy, new Table(catalog, schema, table), null);
+	default <T extends Index> List<T> indexes(boolean greedy, Catalog catalog, Schema schema, String table) {
+		return indexes(greedy, new Table(catalog, schema, table), null);
 	}
 
-	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String name);
-	default <T extends Index> LinkedHashMap<String, T> indexs(Table table, String name) {
-		return indexs(runtime(), null, table, name);
+	<T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String name);
+	default <T extends Index> LinkedHashMap<String, T> indexes(Table table, String name) {
+		return indexes(runtime(), null, table, name);
 	}
-	default <T extends Index> LinkedHashMap<String, T> indexs(String table, String name) {
-		return indexs(new Table(table), name);
+	default <T extends Index> LinkedHashMap<String, T> indexes(String table, String name) {
+		return indexes(new Table(table), name);
 	}
-	default <T extends Index> LinkedHashMap<String, T> indexs(Table table) {
-		return indexs(table, null);
+	default <T extends Index> LinkedHashMap<String, T> indexes(Table table) {
+		return indexes(table, null);
 	}
-	default <T extends Index> LinkedHashMap<String, T> indexs(String table) {
-		return indexs(new Table(table), null);
+	default <T extends Index> LinkedHashMap<String, T> indexes(String table) {
+		return indexes(new Table(table), null);
 	}
-	default <T extends Index> LinkedHashMap<String, T> indexs(Catalog catalog, Schema schema, String table) {
-		return indexs(new Table(catalog, schema, table), null);
+	default <T extends Index> LinkedHashMap<String, T> indexes(Catalog catalog, Schema schema, String table) {
+		return indexes(new Table(catalog, schema, table), null);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

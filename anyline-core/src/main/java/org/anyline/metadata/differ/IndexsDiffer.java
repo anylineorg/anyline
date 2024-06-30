@@ -22,13 +22,13 @@ import org.anyline.metadata.Index;
 
 import java.util.LinkedHashMap;
 
-public class IndexsDiffer implements MetadataDiffer {
+public class IndexesDiffer implements MetadataDiffer {
     private LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
     private LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
     private LinkedHashMap<String, Index> updates = new LinkedHashMap<>();
 
-    public static IndexsDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests) {
-        IndexsDiffer differ = new IndexsDiffer();
+    public static IndexesDiffer compare(LinkedHashMap<String, Index> origins, LinkedHashMap<String, Index> dests) {
+        IndexesDiffer differ = new IndexesDiffer();
         LinkedHashMap<String, Index> adds = new LinkedHashMap<>();
         LinkedHashMap<String, Index> drops = new LinkedHashMap<>();
         LinkedHashMap<String, Index> updates = new LinkedHashMap<>();

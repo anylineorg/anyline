@@ -2890,26 +2890,26 @@ public interface AnylineService<E>{
 		 * 													index
 		 ******************************************************************************************************************/
 
-		<T extends Index> List<T> indexs(boolean greedy, Table table);
-		default <T extends Index> List<T> indexs(boolean greedy, String table) {
-			return indexs(greedy, new Table(table));
+		<T extends Index> List<T> indexes(boolean greedy, Table table);
+		default <T extends Index> List<T> indexes(boolean greedy, String table) {
+			return indexes(greedy, new Table(table));
 		}
-		default <T extends Index> List<T> indexs(boolean greedy) {
-			return indexs(greedy, (Table)null);
+		default <T extends Index> List<T> indexes(boolean greedy) {
+			return indexes(greedy, (Table)null);
 		}
-		default <T extends Index> List<T> indexs(boolean greedy, Catalog catalog, Schema schema, String table) {
-			return indexs(greedy, new Table(catalog, schema, table));
+		default <T extends Index> List<T> indexes(boolean greedy, Catalog catalog, Schema schema, String table) {
+			return indexes(greedy, new Table(catalog, schema, table));
 		}
 
-		<T extends Index> LinkedHashMap<String, T> indexs(Table table);
-		default <T extends Index> LinkedHashMap<String, T> indexs(String table) {
-			return indexs(new Table(table));
+		<T extends Index> LinkedHashMap<String, T> indexes(Table table);
+		default <T extends Index> LinkedHashMap<String, T> indexes(String table) {
+			return indexes(new Table(table));
 		}
-		default <T extends Index> LinkedHashMap<String, T> indexs() {
-			return indexs((Table)null);
+		default <T extends Index> LinkedHashMap<String, T> indexes() {
+			return indexes((Table)null);
 		}
-		default <T extends Index> LinkedHashMap<String, T> indexs(Catalog catalog, Schema schema, String table) {
-			return indexs(new Table(catalog, schema, table));
+		default <T extends Index> LinkedHashMap<String, T> indexes(Catalog catalog, Schema schema, String table) {
+			return indexes(new Table(catalog, schema, table));
 		}
 
 		Index index(boolean greedy, Table table, String name);

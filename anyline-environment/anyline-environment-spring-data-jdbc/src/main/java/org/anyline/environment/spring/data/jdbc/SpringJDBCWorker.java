@@ -1091,14 +1091,14 @@ public class SpringJDBCWorker implements DriverWorker {
      * @param table 表
      * @param unique 是否唯一
      * @param approximate 索引允许结果反映近似值
-     * @return indexs indexs
+     * @return indexes indexes
      * @throws Exception 异常
      */
-    public <T extends Index> LinkedHashMap<String, T> indexs(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception{
+    public <T extends Index> LinkedHashMap<String, T> indexes(DriverAdapter adapter, DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception{
         DataSource ds = null;
         Connection con = null;
-        if(null == indexs) {
-            indexs = new LinkedHashMap<>();
+        if(null == indexes) {
+            indexes = new LinkedHashMap<>();
         }
         JdbcTemplate jdbc = jdbc(runtime);
         if(null == jdbc) {
@@ -1118,11 +1118,11 @@ public class SpringJDBCWorker implements DriverWorker {
                 if(null == name) {
                     continue;
                 }
-                T index = indexs.get(name.toUpperCase());
+                T index = indexes.get(name.toUpperCase());
                 if(null == index) {
                     if(create) {
                         index = (T)new Index();
-                        indexs.put(name.toUpperCase(), index);
+                        indexes.put(name.toUpperCase(), index);
                     }else{
                         continue;
                     }
@@ -1136,7 +1136,7 @@ public class SpringJDBCWorker implements DriverWorker {
                         continue;
                     }
                     index.setTable(org.anyline.data.jdbc.util.JDBCUtil.string(keys, "TABLE_NAME", set));
-                    indexs.put(name.toUpperCase(), index);
+                    indexes.put(name.toUpperCase(), index);
                     columns = new LinkedHashMap<>();
                     index.setColumns(columns);
                     if(name.equalsIgnoreCase("PRIMARY")) {
@@ -1173,7 +1173,7 @@ public class SpringJDBCWorker implements DriverWorker {
                 DataSourceUtils.releaseConnection(con, ds);
             }
         }
-        return indexs;
+        return indexes;
     }
 
 }

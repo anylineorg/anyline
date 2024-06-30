@@ -842,7 +842,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         return (LinkedHashMap<String, T>) indexes;
     }
-    public <T extends Index> LinkedHashMap<String, T> getIndexs() {
+    public <T extends Index> LinkedHashMap<String, T> getIndexes() {
         return getIndexes();
     }
     public LinkedHashMap<String, Column> getPrimaryKeyColumns() {

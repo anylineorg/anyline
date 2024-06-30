@@ -3994,15 +3994,15 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * 													index
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
-     * <T extends Index> LinkedHashMap<T, Index> indexs(DataRuntime runtime, String random, Table table, String pattern)
+     * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
+     * <T extends Index> LinkedHashMap<T, Index> indexes(DataRuntime runtime, String random, Table table, String pattern)
      * [命令合成]
      * List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name)
      * [结果集封装]<br/>
-     * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
-     * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)
-     * <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)
-     * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate)
+     * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
+     * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
+     * <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)
+     * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)
      ******************************************************************************************************************/
     /**
      *
@@ -4016,8 +4016,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> Index
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-        return super.indexs(runtime, random, greedy, table, pattern);
+    public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
+        return super.indexes(runtime, random, greedy, table, pattern);
     }
 
     /**
@@ -4031,8 +4031,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> Index
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
-        return super.indexs(runtime, random, table, pattern);
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
+        return super.indexes(runtime, random, table, pattern);
     }
 
     /**
@@ -4090,15 +4090,15 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param indexs 上一步查询结果
+     * @param indexes 上一步查询结果
      * @param set 查询结果集
-     * @return indexs indexs
+     * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-        if(null == indexs) {
-            indexs = new LinkedHashMap<>();
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception {
+        if(null == indexes) {
+            indexes = new LinkedHashMap<>();
         }
         IndexMetadataAdapter config = indexMetadataAdapter(runtime);
         for(DataRow row:set) {
@@ -4106,7 +4106,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             if(null == name) {
                 continue;
             }
-            T meta = indexs.get(name.toUpperCase());
+            T meta = indexes.get(name.toUpperCase());
             meta = init(runtime, index, meta, table, row);
             if(null != table) {
                 if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
@@ -4115,10 +4115,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             }
             meta = detail(runtime, index, meta, table, row);
             if(null != meta) {
-                indexs.put(meta.getName().toUpperCase(), meta);
+                indexes.put(meta.getName().toUpperCase(), meta);
             }
         }
-        return indexs;
+        return indexes;
     }
 
     /**
@@ -4128,15 +4128,15 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
      * @param create 上一步没有查到的,这一步是否需要新创建
      * @param table 表
-     * @param indexs 上一步查询结果
+     * @param indexes 上一步查询结果
      * @param set 查询结果集
-     * @return indexs indexs
+     * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-        if(null == indexs) {
-            indexs = new ArrayList<>();
+    public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception {
+        if(null == indexes) {
+            indexes = new ArrayList<>();
         }
         IndexMetadataAdapter config = indexMetadataAdapter(runtime);
         for(DataRow row:set) {
@@ -4158,10 +4158,10 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
             }
             meta = detail(runtime, index, meta, table, row);
             if(null != meta) {
-                indexs.add(meta);
+                indexes.add(meta);
             }
         }
-        return indexs;
+        return indexes;
     }
 
     /**
@@ -4172,12 +4172,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param table 表
      * @param unique 是否唯一
      * @param approximate 索引允许结果反映近似值
-     * @return indexs indexs
+     * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
-        return super.indexs(runtime, create, indexs, table, unique, approximate);
+    public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+        return super.indexes(runtime, create, indexes, table, unique, approximate);
     }
 
     /**
@@ -4188,12 +4188,12 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param table 表
      * @param unique 是否唯一
      * @param approximate 索引允许结果反映近似值
-     * @return indexs indexs
+     * @return indexes indexes
      * @throws Exception 异常
      */
     @Override
-    public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
-        return super.indexs(runtime, create, indexs, table, unique, approximate);
+    public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+        return super.indexes(runtime, create, indexes, table, unique, approximate);
     }
 
     /* *****************************************************************************************************************
@@ -5238,8 +5238,8 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return StringBuilder
      */
     @Override
-    public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta) {
-        return super.indexs(runtime, builder, meta);
+    public StringBuilder indexes(DataRuntime runtime, StringBuilder builder, Table meta) {
+        return super.indexes(runtime, builder, meta);
     }
 
     /**

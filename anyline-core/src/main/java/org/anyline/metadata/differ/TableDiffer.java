@@ -30,7 +30,7 @@ public class TableDiffer implements MetadataDiffer {
     private Table origin;
     private Table dest;
     private ColumnsDiffer columnsDiffer;
-    private IndexsDiffer indexsDiffer;
+    private IndexesDiffer indexesDiffer;
     //部分数据库的触发器 关联不到表
     private TriggersDiffer triggersDiffer;
     public TableDiffer() {}
@@ -42,7 +42,7 @@ public class TableDiffer implements MetadataDiffer {
         if(null != columnsDiffer && !columnsDiffer.isEmpty()) {
             return false;
         }
-        if(null != indexsDiffer && !indexsDiffer.isEmpty()) {
+        if(null != indexesDiffer && !indexesDiffer.isEmpty()) {
             return false;
         }
         return true;
@@ -59,7 +59,7 @@ public class TableDiffer implements MetadataDiffer {
 
         differ.setColumnsDiffer(ColumnsDiffer.compare(originColumns, destColumns));
 
-        differ.setIndexsDiffer(IndexsDiffer.compare(origin.getIndexes(), dest.getIndexes()));
+        differ.setIndexesDiffer(IndexesDiffer.compare(origin.getIndexes(), dest.getIndexes()));
         return differ;
     }
 
@@ -71,12 +71,12 @@ public class TableDiffer implements MetadataDiffer {
         this.columnsDiffer = columnsDiffer;
     }
 
-    public IndexsDiffer getIndexsDiffer() {
-        return indexsDiffer;
+    public IndexesDiffer getIndexesDiffer() {
+        return indexesDiffer;
     }
 
-    public void setIndexsDiffer(IndexsDiffer indexsDiffer) {
-        this.indexsDiffer = indexsDiffer;
+    public void setIndexesDiffer(IndexesDiffer indexesDiffer) {
+        this.indexesDiffer = indexesDiffer;
     }
 
     public TriggersDiffer getTriggersDiffer() {

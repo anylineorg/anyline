@@ -1263,26 +1263,26 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * LinkedHashMap<String, Index> indexs(Table table, String name)
-	 * LinkedHashMap<String, Index> indexs(String table, String name)
-	 * LinkedHashMap<String, Index> indexs(Table table)
-	 * LinkedHashMap<String, Index> indexs(String table)
-	 * LinkedHashMap<String, Index> indexs(Catalog catalog, Schema schema, String table)
+	 * LinkedHashMap<String, Index> indexes(Table table, String name)
+	 * LinkedHashMap<String, Index> indexes(String table, String name)
+	 * LinkedHashMap<String, Index> indexes(Table table)
+	 * LinkedHashMap<String, Index> indexes(String table)
+	 * LinkedHashMap<String, Index> indexes(Catalog catalog, Schema schema, String table)
 	 ******************************************************************************************************************/
 
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String name) {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().indexs(runtime, random, greedy, table, name);
+		return runtime.getAdapter().indexes(runtime, random, greedy, table, name);
 	}
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String name) {
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String name) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().indexs(runtime, random, table, name);
+		return runtime.getAdapter().indexes(runtime, random, table, name);
 	}
 	/* *****************************************************************************************************************
 	 * 													constraint

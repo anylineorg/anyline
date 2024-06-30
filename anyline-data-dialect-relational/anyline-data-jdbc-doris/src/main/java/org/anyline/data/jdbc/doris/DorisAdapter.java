@@ -2715,15 +2715,15 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
-	 * <T extends Index> LinkedHashMap<T, Index> indexs(DataRuntime runtime, String random, Table table, String pattern)
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
+	 * <T extends Index> LinkedHashMap<T, Index> indexes(DataRuntime runtime, String random, Table table, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name)
 	 * [结果集封装]<br/>
-	 * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)
-	 * <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate)
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -2737,8 +2737,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-		return super.indexs(runtime, random, greedy, table, pattern);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
+		return super.indexes(runtime, random, greedy, table, pattern);
 	}
 
 	/**
@@ -2752,8 +2752,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param <T> Index
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
-		return super.indexs(runtime, random, table, pattern);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
+		return super.indexes(runtime, random, table, pattern);
 	}
 
 	/**
@@ -2780,14 +2780,14 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexs 上一步查询结果
+	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-		return super.indexs(runtime, index, create, table, indexs, set);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, table, indexes, set);
 	}
 
 	/**
@@ -2797,14 +2797,14 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexs 上一步查询结果
+	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-		return super.indexs(runtime, index, create, table, indexs, set);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception {
+		return super.indexes(runtime, index, create, table, indexes, set);
 	}
 
 	/**
@@ -2815,12 +2815,12 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param table 表
 	 * @param unique 是否唯一
 	 * @param approximate 索引允许结果反映近似值
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
-		return super.indexs(runtime, create, indexs, table, unique, approximate);
+	public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+		return super.indexes(runtime, create, indexes, table, unique, approximate);
 	}
 
 	/**
@@ -2831,12 +2831,12 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @param table 表
 	 * @param unique 是否唯一
 	 * @param approximate 索引允许结果反映近似值
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
-		return super.indexs(runtime, create, indexs, table, unique, approximate);
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
+		return super.indexes(runtime, create, indexes, table, unique, approximate);
 	}
 
 	/**
@@ -3687,7 +3687,7 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 		//列,索引
 		body(runtime, builder, meta);
 		//索引
-		indexs(runtime, builder, meta);
+		indexes(runtime, builder, meta);
 		//继承表
 		inherit(runtime, builder, meta);
 		//引擎
@@ -3907,8 +3907,8 @@ public class DorisAdapter extends MySQLGenusAdapter implements JDBCAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta) {
-		return super.indexs(runtime, builder, meta);
+	public StringBuilder indexes(DataRuntime runtime, StringBuilder builder, Table meta) {
+		return super.indexes(runtime, builder, meta);
 	}
 
 	/**

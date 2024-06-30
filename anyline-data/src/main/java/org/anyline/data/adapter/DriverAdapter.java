@@ -525,9 +525,9 @@ public interface DriverAdapter {
 		}else if(differ instanceof TableDiffer) {
 			TableDiffer df = (TableDiffer) differ;
 			ColumnsDiffer columnsDiffer = df.getColumnsDiffer();
-			IndexsDiffer indexsDiffer = df.getIndexsDiffer();
+			IndexesDiffer indexesDiffer = df.getIndexesDiffer();
 			list.addAll(ddls(runtime, random, columnsDiffer));
-			list.addAll(ddls(runtime, random, indexsDiffer));
+			list.addAll(ddls(runtime, random, indexesDiffer));
 		}else if(differ instanceof ColumnsDiffer) {
 			boolean slice = slice();
 			ColumnsDiffer df = (ColumnsDiffer) differ;
@@ -555,8 +555,8 @@ public interface DriverAdapter {
 					log.error("build ddl exception:", e);
 				}
 			}
-		}else if(differ instanceof IndexsDiffer) {
-			IndexsDiffer df = (IndexsDiffer) differ;
+		}else if(differ instanceof IndexesDiffer) {
+			IndexesDiffer df = (IndexesDiffer) differ;
 			LinkedHashMap<String, Index> adds = df.getAdds();
 			LinkedHashMap<String, Index> drops = df.getDrops();
 			LinkedHashMap<String, Index> updates = df.getUpdates();
@@ -3583,9 +3583,9 @@ public interface DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	<T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
+	<T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern);
 
-	<T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy,  Collection<Table> tables);
+	<T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy,  Collection<Table> tables);
 	/**
 	 *
 	 * index[调用入口]<br/>
@@ -3596,7 +3596,7 @@ public interface DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern);
+	<T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern);
 	/**
 	 * index[命令合成]<br/>
 	 * 查询表上的索引
@@ -3615,14 +3615,14 @@ public interface DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexs 上一步查询结果
+	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception;
-	<T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception;
-	<T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexs, DataSet set) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception;
+	<T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception;
+	<T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexes, DataSet set) throws Exception;
 
 	/**
 	 * index[结果集封装]<br/>
@@ -3632,10 +3632,10 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @param unique 是否唯一
 	 * @param approximate 索引允许结果反映近似值
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
-	<T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate) throws Exception;
+	<T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception;
 
 	/**
 	 * index[结果集封装]<br/>
@@ -3645,10 +3645,10 @@ public interface DriverAdapter {
 	 * @param table 表
 	 * @param unique 是否唯一
 	 * @param approximate 索引允许结果反映近似值
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
-	<T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception;
+	<T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception;
 
 	/**
 	 * index[结构集封装]<br/>
@@ -4541,7 +4541,7 @@ public interface DriverAdapter {
 	 * @param meta 表
 	 * @return StringBuilder
 	 */
-	StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta);
+	StringBuilder indexes(DataRuntime runtime, StringBuilder builder, Table meta);
 
 	/**
 	 * table[命令合成-子流程]<br/>

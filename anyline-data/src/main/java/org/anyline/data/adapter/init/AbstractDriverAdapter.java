@@ -4387,7 +4387,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
 				//查询全部表结构
-				indexs(runtime, random, greedy, (List<Table>)list);
+				indexes(runtime, random, greedy, (List<Table>)list);
 			}
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -4732,9 +4732,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				table.setPrimaryKey(pk);
-				LinkedHashMap<String, Index> indexs = table.getIndexes();
-				if(null == indexs || indexs.isEmpty()) {
-					table.setIndexes(indexs(runtime, random, table, null));
+				LinkedHashMap<String, Index> indexes = table.getIndexes();
+				if(null == indexes || indexes.isEmpty()) {
+					table.setIndexes(indexes(runtime, random, table, null));
 				}
 				runs = buildCreateRun(runtime, table);
 				for(Run run:runs) {
@@ -5249,9 +5249,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				vertexTable.setPrimaryKey(pk);
-				LinkedHashMap<String, Index> indexs = vertexTable.getIndexes();
-				if(null == indexs || indexs.isEmpty()) {
-					vertexTable.setIndexes(indexs(runtime, random, vertexTable, null));
+				LinkedHashMap<String, Index> indexes = vertexTable.getIndexes();
+				if(null == indexes || indexes.isEmpty()) {
+					vertexTable.setIndexes(indexes(runtime, random, vertexTable, null));
 				}
 				runs = buildCreateRun(runtime, vertexTable);
 				for(Run run:runs) {
@@ -5775,9 +5775,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					}
 				}
 				edgeTable.setPrimaryKey(pk);
-				LinkedHashMap<String, Index> indexs = edgeTable.getIndexes();
-				if(null == indexs || indexs.isEmpty()) {
-					edgeTable.setIndexes(indexs(runtime, random, edgeTable, null));
+				LinkedHashMap<String, Index> indexes = edgeTable.getIndexes();
+				if(null == indexes || indexes.isEmpty()) {
+					edgeTable.setIndexes(indexes(runtime, random, edgeTable, null));
 				}
 				runs = buildCreateRun(runtime, edgeTable);
 				for(Run run:runs) {
@@ -7758,15 +7758,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern)
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern)
 	 * [命令合成]
 	 * List<Run> buildQueryIndexesRun(DataRuntime runtime, Table table, String name)
 	 * [结果集封装]<br/>
-	 * <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set)
-	 * <T extends Index> List< T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)
-	 * <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate)
+	 * <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set)
+	 * <T extends Index> List< T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)
+	 * <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -7779,8 +7779,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Collection<Table> tables) {
-		List<T> indexs = null;
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<Table> tables) {
+		List<T> indexes = null;
 		if(null == random) {
 			random = random(runtime);
 		}
@@ -7791,7 +7791,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				int idx = 0;
 				for (Run run: runs) {
 					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run);
-					indexs = indexs(runtime, idx, true, tables, indexs, set);
+					indexes = indexes(runtime, idx, true, tables, indexes, set);
 					idx++;
 				}
 			}
@@ -7800,7 +7800,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				Long tObjectId = table.getObjectId();
 				LinkedHashMap<String, Index> idxs = new LinkedHashMap<>();
 				table.setIndexes(idxs);
-				for(Index index:indexs) {
+				for(Index index:indexes) {
 					if(table.equals(index.getTable())) {
 						Catalog cCatalog = index.getCatalog();
 						Schema cSchema = index.getSchema();
@@ -7817,19 +7817,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						}
 					}
 				}
-				indexs.removeAll(idxs.values());
+				indexes.removeAll(idxs.values());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(null == indexs) {
-			indexs = new ArrayList<>();
+		if(null == indexes) {
+			indexes = new ArrayList<>();
 		}
-		return indexs;
+		return indexes;
 	}
 
-	public <T extends Index> List<T> indexs(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
-		List<T> indexs = null;
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Table table, String pattern) {
+		List<T> indexes = null;
 		if(null == table) {
 			table = new Table();
 		}
@@ -7845,7 +7845,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					indexs = indexs(runtime, idx, true, table, indexs, set);
+					indexes = indexes(runtime, idx, true, table, indexes, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -7854,10 +7854,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				idx ++;
 			}
 		}
-		if(null == indexs || indexs.isEmpty()) {
+		if(null == indexes || indexes.isEmpty()) {
 			if(null != table.getName()) {
 				try {
-					LinkedHashMap<String,T> maps = indexs(runtime, true, new LinkedHashMap<>(), table, false, false);
+					LinkedHashMap<String,T> maps = indexes(runtime, true, new LinkedHashMap<>(), table, false, false);
 					table.setIndexes(maps);
 				} catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -7866,10 +7866,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		if(null == indexs) {
-			indexs = new ArrayList<>();
+		if(null == indexes) {
+			indexes = new ArrayList<>();
 		}
-		return indexs;
+		return indexes;
 	}
 
 	/**
@@ -7882,8 +7882,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, String random, Table table, String pattern) {
-		LinkedHashMap<String,T> indexs = null;
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, String random, Table table, String pattern) {
+		LinkedHashMap<String,T> indexes = null;
 		if(null == table) {
 			table = new Table();
 		}
@@ -7900,7 +7900,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			for(Run run:runs) {
 				DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 				try {
-					indexs = indexs(runtime, idx, true, table, indexs, set);
+					indexes = indexes(runtime, idx, true, table, indexes, set);
 				}catch (Exception e) {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
@@ -7909,28 +7909,28 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				idx ++;
 			}
 		}
-		if(null == indexs || indexs.isEmpty()) {
+		if(null == indexes || indexes.isEmpty()) {
 			if(null != table.getName()) {
 				try {
-					indexs = indexs(runtime, true, indexs, table, false, false);
-					table.setIndexes(indexs);
+					indexes = indexes(runtime, true, indexes, table, false, false);
+					table.setIndexes(indexes);
 				} catch (Exception e) {
 					log.info("{}[{}][table:{}][msg:{}]", random, LogUtil.format("JDBC方式获取索引失败", 33), table, e.toString());
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}
-					indexs = new LinkedHashMap<>();
+					indexes = new LinkedHashMap<>();
 				}
 				if(BasicUtil.isNotEmpty(pattern)) {
-					T index = indexs.get(pattern.toUpperCase());
-					indexs = new LinkedHashMap<>();
-					indexs.put(pattern.toUpperCase(), index);
+					T index = indexes.get(pattern.toUpperCase());
+					indexes = new LinkedHashMap<>();
+					indexes.put(pattern.toUpperCase(), index);
 				}
 			}
 		}
 		Index pk = null;
-		if(null != indexs) {
-			for (Index index : indexs.values()) {
+		if(null != indexes) {
+			for (Index index : indexes.values()) {
 				if (index.isPrimary()) {
 					pk = index;
 					break;
@@ -7944,18 +7944,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				pk = primary(runtime, random, false, table);
 			}
 			if (null != pk) {
-				Index index = indexs.get(pk.getName().toUpperCase());
+				Index index = indexes.get(pk.getName().toUpperCase());
 				if (null != index) {
 					index.setPrimary(true);
 				} else {
-					indexs.put(pk.getName().toUpperCase(), (T) pk);
+					indexes.put(pk.getName().toUpperCase(), (T) pk);
 				}
 			}
 		}
-		if(null == indexs) {
-			indexs = new LinkedHashMap<>();
+		if(null == indexes) {
+			indexes = new LinkedHashMap<>();
 		}
-		return indexs;
+		return indexes;
 	}
 
 	/**
@@ -7987,15 +7987,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexs 上一步查询结果
+	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexs, DataSet set) throws Exception {
-		if(null == indexs) {
-			indexs = new LinkedHashMap<>();
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, int index, boolean create, Table table, LinkedHashMap<String, T> indexes, DataSet set) throws Exception {
+		if(null == indexes) {
+			indexes = new LinkedHashMap<>();
 		}
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
 		for(DataRow row:set) {
@@ -8003,7 +8003,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(null == name) {
 				continue;
 			}
-			T meta = indexs.get(name.toUpperCase());
+			T meta = indexes.get(name.toUpperCase());
 			meta = init(runtime, index, meta, table, row);
 			if(null != table) {
 				if (!table.getName().equalsIgnoreCase(meta.getTableName())) {
@@ -8012,10 +8012,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			meta = detail(runtime, index, meta, table, row);
 			if(null != meta) {
-				indexs.put(meta.getName().toUpperCase(), meta);
+				indexes.put(meta.getName().toUpperCase(), meta);
 			}
 		}
-		return indexs;
+		return indexes;
 	}
 
 	/**
@@ -8025,15 +8025,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexesRun 返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param table 表
-	 * @param indexs 上一步查询结果
+	 * @param indexes 上一步查询结果
 	 * @param set 查询结果集
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Table table, List<T> indexs, DataSet set) throws Exception {
-		if(null == indexs) {
-			indexs = new ArrayList<>();
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Table table, List<T> indexes, DataSet set) throws Exception {
+		if(null == indexes) {
+			indexes = new ArrayList<>();
 		}
 		IndexMetadataAdapter config = indexMetadataAdapter(runtime);
 		for(DataRow row:set) {
@@ -8050,14 +8050,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 			meta = detail(runtime, index, meta, table, row);
 			if(null != meta) {
-				indexs.add(meta);
+				indexes.add(meta);
 			}
 		}
-		return indexs;
+		return indexes;
 	}
-	public <T extends Index> List<T> indexs(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexs, DataSet set) throws Exception {
-		if(null == indexs) {
-			indexs = new ArrayList<>();
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexes, DataSet set) throws Exception {
+		if(null == indexes) {
+			indexes = new ArrayList<>();
 		}
 		Map<String,Table> tbls = new HashMap<>();
 		for(Table table:tables) {
@@ -8066,8 +8066,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		for(DataRow row:set) {
 			T meta = null;
 			meta = init(runtime, index, meta, null, row);
-			if(null == Metadata.match(meta, indexs)) {
-				indexs.add(meta);
+			if(null == Metadata.match(meta, indexes)) {
+				indexes.add(meta);
 			}
 			detail(runtime, index, meta, null, row);
 			String tableName = meta.getTableName();
@@ -8078,7 +8078,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		return indexs;
+		return indexes;
 	}
 	/**
 	 * index[结果集封装]<br/>
@@ -8088,18 +8088,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @param unique 是否唯一
 	 * @param approximate 索引允许结果反映近似值
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> List<T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, List<T> indexs, Table table, boolean unique, boolean approximate)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, List<T> indexes, Table table, boolean unique, boolean approximate)", 37));
 		}
-		if(null == indexs) {
-			indexs = new ArrayList<>();
+		if(null == indexes) {
+			indexes = new ArrayList<>();
 		}
-		return indexs;
+		return indexes;
 	}
 
 	/**
@@ -8110,18 +8110,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param table 表
 	 * @param unique 是否唯一
 	 * @param approximate 索引允许结果反映近似值
-	 * @return indexs indexs
+	 * @return indexes indexes
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate) throws Exception {
+	public <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> LinkedHashMap<String, T> indexs(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexs, Table table, boolean unique, boolean approximate)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Index> LinkedHashMap<String, T> indexes(DataRuntime runtime, boolean create, LinkedHashMap<String, T> indexes, Table table, boolean unique, boolean approximate)", 37));
 		}
-		if(null == indexs) {
-			indexs = new LinkedHashMap<>();
+		if(null == indexes) {
+			indexes = new LinkedHashMap<>();
 		}
-		return indexs;
+		return indexes;
 	}
 
 	/**
@@ -9806,11 +9806,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		/*
 		修改索引
-		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexs中)
+		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexes中)
 		*/
-		LinkedHashMap<String, Index> oindexs = indexs(runtime, random, meta, null);		//原索引
-		LinkedHashMap<String, Index> indexs = update.getIndexes();		//新索引
-		for(Index index:indexs.values()) {
+		LinkedHashMap<String, Index> oindexes = indexes(runtime, random, meta, null);		//原索引
+		LinkedHashMap<String, Index> indexes = update.getIndexes();		//新索引
+		for(Index index:indexes.values()) {
 			if(index.isPrimary()) {
 				continue;
 			}
@@ -9823,7 +9823,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					//改名或设置过update的
 					alter(runtime, index);
 				}else {
-					Index oindex = oindexs.get(index.getName().toUpperCase());
+					Index oindex = oindexes.get(index.getName().toUpperCase());
 					if (null == oindex) {
 						//名称不存在的
 						add(runtime, index);
@@ -10200,9 +10200,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return StringBuilder
 	 */
 	@Override
-	public StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta) {
+	public StringBuilder indexes(DataRuntime runtime, StringBuilder builder, Table meta) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder indexs(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 StringBuilder indexes(DataRuntime runtime, StringBuilder builder, Table meta)", 37));
 		}
 		return builder;
 	}
@@ -13512,9 +13512,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public List<Run> buildAppendIndexRun(DataRuntime runtime, Table meta) throws Exception {
 		List<Run> runs = new ArrayList<>();
 		if(null != meta) {
-			LinkedHashMap<String, Index> indexs = meta.getIndexes();
-			if(null != indexs) {
-				for(Index index:indexs.values()) {
+			LinkedHashMap<String, Index> indexes = meta.getIndexes();
+			if(null != indexes) {
+				for(Index index:indexes.values()) {
 					if(index.isPrimary()) {
 						continue;
 					}
