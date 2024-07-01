@@ -445,11 +445,12 @@ public class InterceptorProxy {
      * ****************************************************************************************************************/
 
     public static <T extends Metadata<T>> SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata) {
-        SWITCH swt = SWITCH.CONTINUE;
+        SWITCH swt = metadata.swt();//SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors) {
             for(DDInterceptor interceptor:interceptors) {
                 swt = interceptor.prepare(runtime, random, action, metadata);
+                metadata.swt(swt);
                 if(swt != SWITCH.CONTINUE) {
                     //跳过后续的 after
                     return swt;
@@ -460,11 +461,12 @@ public class InterceptorProxy {
     }
 
     public static <T extends Metadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs) {
-        SWITCH swt = SWITCH.CONTINUE;
+        SWITCH swt = metadata.swt();//SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors) {
             for(DDInterceptor interceptor:interceptors) {
                 swt = interceptor.before(runtime, random, action, metadata, runs);
+                metadata.swt(swt);
                 if(swt != SWITCH.CONTINUE) {
                     //跳过后续的 after
                     return swt;
@@ -474,11 +476,12 @@ public class InterceptorProxy {
         return swt;
     }
     public static <T extends Metadata<T>> SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs, boolean result, long millis) {
-        SWITCH swt = SWITCH.CONTINUE;
+        SWITCH swt = metadata.swt();//SWITCH.CONTINUE;
         List<DDInterceptor> interceptors = dds.get(action);
         if(null != interceptors) {
             for(DDInterceptor interceptor:interceptors) {
                 swt = interceptor.after(runtime, random, action, metadata, runs, result, millis);
+                metadata.swt(swt);
                 if(swt != SWITCH.CONTINUE) {
                     //跳过后续的 after
                     return swt;
