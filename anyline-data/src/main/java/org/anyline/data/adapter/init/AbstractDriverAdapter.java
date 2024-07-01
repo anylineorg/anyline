@@ -9801,9 +9801,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			}
 		}
 		List<Run> merges = merge(runtime, meta, slices);
-		for(Run merge:merges){
-			result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, merge) && result;
-		}
+		result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, merges) && result;
 		/*
 		修改索引
 		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexes中)

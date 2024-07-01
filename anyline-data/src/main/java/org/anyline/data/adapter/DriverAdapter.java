@@ -40,6 +40,7 @@ import org.anyline.metadata.graph.EdgeTable;
 import org.anyline.metadata.graph.VertexTable;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
+import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -4324,7 +4325,19 @@ public interface DriverAdapter {
 		boolean result = true;
 		int idx = 0;
 		for(Run run:runs) {
-			result = execute(runtime, random + "[index:" + idx++ + "]", meta, action, run) && result;
+			ACTION.SWITCH swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+			long cmt_fr = System.currentTimeMillis();
+			if(swt == ACTION.SWITCH.CONTINUE){
+				result = execute(runtime, random + "[index:" + idx++ + "]", meta, action, run) && result;
+			}else if(swt == ACTION.SWITCH.SKIP){
+				continue;
+			}else if(swt == ACTION.SWITCH.BREAK){
+				break;
+			}
+			swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, System.currentTimeMillis()-cmt_fr);
+			if(swt == ACTION.SWITCH.BREAK){
+				break;
+			}
 		}
 		return result;
 	}
