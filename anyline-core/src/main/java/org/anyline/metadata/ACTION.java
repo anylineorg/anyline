@@ -30,7 +30,9 @@ public interface ACTION {
         PROCEDURE
     }
     enum DDL implements ACTION{
-        IGNORE    (CMD.IGNORE, "忽略"),
+        IGNORE          (CMD.IGNORE, "忽略"),
+        ALL             (CMD.IGNORE, "全部"), //注册事件时用到
+
         TABLE_CREATE    (CMD.CREATE, "表创建"),
         TABLE_ALTER     (CMD.ALTER, "表结构修改"),
         TABLE_DROP      (CMD.DROP, "表删除"),

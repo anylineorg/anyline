@@ -92,11 +92,19 @@ public class InterceptorProxy {
         }
     }
     public static void reg(DDL action, DDInterceptor interceptor) {
+        if(action == DDL.ALL){
+            for(DDL item:DDL.values()){
+                if(item != DDL.ALL && item != DDL.IGNORE){
+                    reg(item, interceptor);
+                }
+            }
+            return;
+        }
         List<DDInterceptor> interceptors = dds.get(action);
         if(null == interceptors) {
             interceptors = new ArrayList<>();
-            dds.put(action, interceptors);
         }
+        dds.put(action, interceptors);
         interceptors.add(interceptor);
     }
 
