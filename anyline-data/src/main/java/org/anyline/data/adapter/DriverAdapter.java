@@ -44,6 +44,7 @@ import org.anyline.proxy.InterceptorProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -4321,26 +4322,7 @@ public interface DriverAdapter {
 	 * @return boolean
 	 */
 	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, Run run);
-	default boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs) {
-		boolean result = true;
-		int idx = 0;
-		for(Run run:runs) {
-			ACTION.SWITCH swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-			long cmt_fr = System.currentTimeMillis();
-			if(swt == ACTION.SWITCH.CONTINUE){
-				result = execute(runtime, random + "[index:" + idx++ + "]", meta, action, run) && result;
-			}else if(swt == ACTION.SWITCH.SKIP){
-				continue;
-			}else if(swt == ACTION.SWITCH.BREAK){
-				break;
-			}
-			swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, System.currentTimeMillis()-cmt_fr);
-			if(swt == ACTION.SWITCH.BREAK){
-				break;
-			}
-		}
-		return result;
-	}
+	boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs);
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -4352,7 +4334,7 @@ public interface DriverAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 创建表,执行的SQL通过meta.ddls()返回
+	 * 创建表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4362,7 +4344,7 @@ public interface DriverAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 修改表,执行的SQL通过meta.ddls()返回
+	 * 修改表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4371,7 +4353,7 @@ public interface DriverAdapter {
 	boolean alter(DataRuntime runtime, Table meta) throws Exception;
 	/**
 	 * table[调用入口]<br/>
-	 * 删除表,执行的SQL通过meta.ddls()返回
+	 * 删除表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4381,7 +4363,7 @@ public interface DriverAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 重命名表,执行的SQL通过meta.ddls()返回
+	 * 重命名表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -4666,7 +4648,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * view[调用入口]<br/>
-	 * 创建视图,执行的SQL通过meta.ddls()返回
+	 * 创建视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return boolean 是否执行成功
@@ -4675,7 +4657,7 @@ public interface DriverAdapter {
 	boolean create(DataRuntime runtime, View view) throws Exception;
 	/**
 	 * view[调用入口]<br/>
-	 * 修改视图,执行的SQL通过meta.ddls()返回
+	 * 修改视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return boolean 是否执行成功
@@ -4685,7 +4667,7 @@ public interface DriverAdapter {
 
 	/**
 	 * view[调用入口]<br/>
-	 * 删除视图,执行的SQL通过meta.ddls()返回
+	 * 删除视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param view 视图
 	 * @return boolean 是否执行成功
@@ -4695,7 +4677,7 @@ public interface DriverAdapter {
 
 	/**
 	 * view[调用入口]<br/>
-	 * 重命名视图,执行的SQL通过meta.ddls()返回
+	 * 重命名视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 视图
 	 * @param name 新名称
@@ -4815,7 +4797,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * master table[调用入口]<br/>
-	 * 创建主表,执行的SQL通过meta.ddls()返回
+	 * 创建主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -4825,7 +4807,7 @@ public interface DriverAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 修改主表,执行的SQL通过meta.ddls()返回
+	 * 修改主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -4835,7 +4817,7 @@ public interface DriverAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 删除主表,执行的SQL通过meta.ddls()返回
+	 * 删除主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -4845,7 +4827,7 @@ public interface DriverAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 重命名主表,执行的SQL通过meta.ddls()返回
+	 * 重命名主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -4923,7 +4905,7 @@ public interface DriverAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 创建分区表,执行的SQL通过meta.ddls()返回
+	 * 创建分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4933,7 +4915,7 @@ public interface DriverAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 修改分区表,执行的SQL通过meta.ddls()返回
+	 * 修改分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4943,7 +4925,7 @@ public interface DriverAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 删除分区表,执行的SQL通过meta.ddls()返回
+	 * 删除分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4953,7 +4935,7 @@ public interface DriverAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 创建分区表,执行的SQL通过meta.ddls()返回
+	 * 创建分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -5033,7 +5015,7 @@ public interface DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * column[调用入口]<br/>
-	 * 添加列,执行的SQL通过meta.ddls()返回
+	 * 添加列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -5043,7 +5025,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 修改列,执行的SQL通过meta.ddls()返回
+	 * 修改列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @param trigger 修改异常时，是否触发监听器
@@ -5057,7 +5039,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 修改列,执行的SQL通过meta.ddls()返回
+	 * 修改列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -5067,7 +5049,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 删除列,执行的SQL通过meta.ddls()返回
+	 * 删除列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -5077,7 +5059,7 @@ public interface DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 重命名列,执行的SQL通过meta.ddls()返回
+	 * 重命名列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 列
 	 * @param name 新名称

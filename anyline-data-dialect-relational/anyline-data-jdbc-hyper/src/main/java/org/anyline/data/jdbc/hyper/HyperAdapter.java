@@ -3558,7 +3558,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * table[调用入口]<br/>
-	 * 创建表,执行的SQL通过meta.ddls()返回
+	 * 创建表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -3571,7 +3571,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 修改表,执行的SQL通过meta.ddls()返回
+	 * 修改表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -3584,7 +3584,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 删除表,执行的SQL通过meta.ddls()返回
+	 * 删除表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -3597,7 +3597,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 重命名表,执行的SQL通过meta.ddls()返回
+	 * 重命名表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -3979,7 +3979,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * view[调用入口]<br/>
-	 * 创建视图,执行的SQL通过meta.ddls()返回
+	 * 创建视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 视图
 	 * @return boolean 是否执行成功
@@ -3992,7 +3992,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * view[调用入口]<br/>
-	 * 修改视图,执行的SQL通过meta.ddls()返回
+	 * 修改视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 视图
 	 * @return boolean 是否执行成功
@@ -4005,7 +4005,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * view[调用入口]<br/>
-	 * 删除视图,执行的SQL通过meta.ddls()返回
+	 * 删除视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 视图
 	 * @return boolean 是否执行成功
@@ -4018,7 +4018,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * view[调用入口]<br/>
-	 * 重命名视图,执行的SQL通过meta.ddls()返回
+	 * 重命名视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 视图
 	 * @param name 新名称
@@ -4184,7 +4184,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 创建主表,执行的SQL通过meta.ddls()返回
+	 * 创建主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -4197,7 +4197,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 修改主表,执行的SQL通过meta.ddls()返回
+	 * 修改主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -4210,7 +4210,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 删除主表,执行的SQL通过meta.ddls()返回
+	 * 删除主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -4223,7 +4223,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 重命名主表,执行的SQL通过meta.ddls()返回
+	 * 重命名主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -4334,7 +4334,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 创建分区表,执行的SQL通过meta.ddls()返回
+	 * 创建分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4347,7 +4347,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 修改分区表,执行的SQL通过meta.ddls()返回
+	 * 修改分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4360,7 +4360,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 删除分区表,执行的SQL通过meta.ddls()返回
+	 * 删除分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -4373,7 +4373,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 创建分区表,执行的SQL通过meta.ddls()返回
+	 * 创建分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -4510,7 +4510,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 添加列,执行的SQL通过meta.ddls()返回
+	 * 添加列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -4523,7 +4523,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 修改列,执行的SQL通过meta.ddls()返回
+	 * 修改列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @param trigger 修改异常时，是否触发监听器
@@ -4537,7 +4537,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 修改列,执行的SQL通过meta.ddls()返回
+	 * 修改列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -4550,7 +4550,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 删除列,执行的SQL通过meta.ddls()返回
+	 * 删除列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -4563,7 +4563,7 @@ public class HyperAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 重命名列,执行的SQL通过meta.ddls()返回
+	 * 重命名列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 列
 	 * @param name 新名称

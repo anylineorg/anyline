@@ -47,23 +47,48 @@ public interface DDInterceptor  extends JDBCInterceptor{
     default <T extends Metadata<T>> SWITCH prepare(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata) {return SWITCH.CONTINUE;}
 
     /**
+     * 一组命令中每个执行前后调用
      * 在SQL执行之前触发，注意到了这一步，SQL已经创建完成不可修改
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param action 执行命令
      * @param metadata table/column等
-     * @param runs 需要执行的SQL 有些命令需要多条SQL完成
+     * @param run 当前执行的命令
+     * @param runs 需要执行的命令集合 有些命令需要多条SQL完成，如创建表
      * @return SWITCH
      */
-    default <T extends Metadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs) {return SWITCH.CONTINUE;}
+    default <T extends Metadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, Run run, List<Run> runs) {return SWITCH.CONTINUE;}
 
     /**
-     *
+     * 整组命令执行前调用
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
      * @param action 执行命令
      * @param metadata table/column等
-     * @param runs 需要执行的SQL 有些命令需要多条SQL完成
+     * @param runs 需要执行的命令集合 有些命令需要多条SQL完成，如创建表
+     * @return SWITCH
+     */
+    default <T extends Metadata<T>> SWITCH before(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, List<Run> runs) {return SWITCH.CONTINUE;}
+    /**
+     * 一组命令中每个执行完成后调用
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param action 执行命令
+     * @param metadata table/column等
+     * @param run 当前执行的命令
+     * @param runs 需要执行的命令 有些命令需要多条SQL完成
+     * @param result SQL是否成功执行
+     * @param millis 执行耗时
+     * @return SWITCH
+     */
+    default <T extends Metadata<T>> SWITCH after(DataRuntime runtime, String random, ACTION.DDL action, Metadata<T> metadata, Run run, List<Run> runs, boolean result, long millis) {return SWITCH.CONTINUE;}
+    /**
+     * 整组命令执行后调用
+     * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
+     * @param random 用来标记同一组SQL、执行结构、参数等
+     * @param action 执行命令
+     * @param metadata table/column等
+     * @param runs 需要执行的命令 有些命令需要多条SQL完成
      * @param result SQL是否成功执行
      * @param millis 执行耗时
      * @return SWITCH

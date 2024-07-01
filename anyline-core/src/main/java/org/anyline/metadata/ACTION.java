@@ -128,8 +128,8 @@ public interface ACTION {
      * */
     enum SWITCH {
         CONTINUE("正常执行"),
-        SKIP("跳过后续prepare/before/after"), //before1返回SKIP则跳过before2, before3, 但不影响after2, after3,
-        BREAK("中断主流程执行")
+        SKIP("跳过后续prepare/before/after"), //跞当前命令，执行下一个，before1返回SKIP则跳过exe1 after1,同时跳过其他拦截器 //before2, before3
+        BREAK("中断主流程执行") //SKIP + 当前命令组内其他命令中断执行
         ;
         private final String title;
         SWITCH(String title) {

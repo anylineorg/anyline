@@ -51,7 +51,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @return SWITCH
      */
     default SWITCH beforeTotal(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
@@ -61,7 +61,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param success SQL是否成功执行
      * @param total 总行数
      * @param millis 执行耗时
@@ -76,7 +76,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param total 上一步合计的总行数
      * @return SWITCH
      */
@@ -87,7 +87,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param maps 查询结果
      * @param success SQL是否成功执行
      * @param millis 执行耗时
@@ -101,7 +101,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param set 查询结果
      * @param success SQL是否成功执行
      * @param millis 执行耗时
@@ -114,7 +114,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @return SWITCH
      */
     default SWITCH beforeCount(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
@@ -124,7 +124,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param result 行数
      * @param success SQL是否成功执行
      * @param millis 执行耗时
@@ -138,7 +138,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @return SWITCH
      */
     default SWITCH beforeExists(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
@@ -148,7 +148,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param exists 是否存在
      * @param success SQL是否成功执行
      * @param millis 执行耗时
@@ -224,7 +224,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 接入内容
      * @param columns 需要插入的列
@@ -239,7 +239,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param count 影响行数
      * @param dest 表 如果不提供表名则根据data解析, 表名可以事实前缀&lt;数据源名&gt;表示切换数据源
      * @param obj 接入内容
@@ -258,7 +258,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @return SWITCH
      */
     default SWITCH  beforeExecute(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
@@ -269,7 +269,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param success SQL是否成功执行
      * @param qty 景程行数，如果执行不成功返回-1
      * @param millis 执行耗时
@@ -362,7 +362,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @return SWITCH
      */
     default SWITCH  beforeDelete(DataRuntime runtime, String random, Run run) {return SWITCH.CONTINUE;}
@@ -373,7 +373,7 @@ public interface DMListener {
      
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param success SQL是否成功执行
      * @param qty 景程行数，如果执行不成功返回-1
      * @param millis 执行耗时
@@ -387,7 +387,7 @@ public interface DMListener {
      * @param runtime  包含数据源(key)、适配器、JDBCTemplate、dao
      * @param random 用来标记同一组SQL、执行结构、参数等 
      * @param action 执行命令
-     * @param run 包含最终执行的SQL以及占位参数值
+     * @param run 包含最终执行的命令以及占位参数值
      * @param sql SQL或存储过程名称
      * @param inputs 输入参数
      * @param outputs 输出参数

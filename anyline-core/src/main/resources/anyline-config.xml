@@ -28,7 +28,7 @@
 	<!-- 抛出SQL异常 -->
 	<property key="IS_THROW_SQL_EXCEPTION">true</property>
 
-	<!-- 是否显示执行的SQL -->
+	<!-- 是否显示执行的命令 -->
 	<property key="IS_LOG_SQL">true</property>
 	<property key="IS_LOG_SQL_PARAM">true</property>
 	<property key="IS_LOG_SQL_WHEN_ERROR">false</property>
@@ -108,7 +108,7 @@
 	<!--
 		是否开启界定符占位
 		开启后, 编码时无论什么数据库都可以用这里指定的界定符, 在SQL执行之前会替换成相应数据库的界定符
-		如果最终执行的SQL中出现界定符(不包括?占位的参数值), 需要把占位符写两次 类似与sql insert values中出'要写成''
+		如果最终执行的命令中出现界定符(不包括?占位的参数值), 需要把占位符写两次 类似与sql insert values中出'要写成''
 	-->
 	<property key="IS_SQL_DELIMITER_PLACEHOLDER_OPEN">false</property>
 	<!--

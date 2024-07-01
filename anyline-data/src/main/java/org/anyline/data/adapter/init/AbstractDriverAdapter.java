@@ -2616,8 +2616,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				run.setValues(null, list);
 			}
 		}
-		long result = execute(runtime, random, configs, run);
-		return result;
+		return execute(runtime, random, configs, run);
 	}
 
 	@Override
@@ -9471,6 +9470,38 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs) {
+		boolean result = true;
+		int idx = 0;
+		long frs = System.currentTimeMillis();
+		ACTION.SWITCH swt = meta.swt();
+		if(swt == ACTION.SWITCH.CONTINUE) {//上一步执行状态保存在meta中
+			swt = InterceptorProxy.before(runtime, random, action, meta, runs);
+			if (swt == ACTION.SWITCH.CONTINUE) {
+				for (Run run : runs) {
+					swt = InterceptorProxy.before(runtime, random, action, meta, run, runs);
+					long fr = System.currentTimeMillis();
+					if (swt == ACTION.SWITCH.CONTINUE) {
+						result = execute(runtime, random + "[index:" + idx++ + "]", meta, action, run) && result;
+					} else if (swt == ACTION.SWITCH.SKIP) {//跳过after
+						continue;
+					} else if (swt == ACTION.SWITCH.BREAK) {//中断整组命令
+						break;
+					}
+					swt = InterceptorProxy.after(runtime, random, action, meta, run, runs, result, System.currentTimeMillis() - fr);
+					if (swt == ACTION.SWITCH.BREAK) {
+						break;
+					}
+				}
+				long millis = System.currentTimeMillis() - frs;
+				if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+					log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
+				}
+				swt = InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
+			}
+		}
+		return result;
+	}
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -9497,20 +9528,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * table[调用入口]<br/>
-	 * 创建表,执行的SQL通过meta.ddls()返回
+	 * 创建表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean create(DataRuntime runtime, Table meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TABLE_CREATE;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
@@ -9518,30 +9545,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		//检测表主键(在没有显式设置主键时根据其他条件判断如自增),同时根据主键对象给相关列设置主键标识
 		checkPrimary(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeCreate(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -9691,7 +9695,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	
 	/**
 	 * table[调用入口]<br/>
-	 * 修改表,执行的SQL通过meta.ddls()返回
+	 * 修改表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -9707,9 +9711,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		String uname = update.getName();
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_ALTER, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.parepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
@@ -9729,21 +9730,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		String comment = update.getComment()+"";
 		if(!comment.equals(meta.getComment())) {
 			swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
-			if(swt != ACTION.SWITCH.BREAK) {
-				if(BasicUtil.isNotEmpty(meta.getComment())) {
-					runs.addAll(buildChangeCommentRun(runtime, update));
-				}else{
-					runs.addAll(buildAppendCommentRun(runtime, update));
-				}
-				swt = InterceptorProxy.before(runtime, random, ACTION.DDL.TABLE_COMMENT, meta, runs);
-				if(swt != ACTION.SWITCH.BREAK) {
-					long cmt_fr = System.currentTimeMillis();
-					result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
-					InterceptorProxy.after(runtime, random, ACTION.DDL.TABLE_COMMENT, meta, runs, result, System.currentTimeMillis()-cmt_fr);
-				}
+			if(swt == ACTION.SWITCH.BREAK) {
+				return false;
+			}
+			if(BasicUtil.isNotEmpty(meta.getComment())) {
+				runs.addAll(buildChangeCommentRun(runtime, update));
+			}else{
+				runs.addAll(buildAppendCommentRun(runtime, update));
+			}
+			result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
+			if(meta.swt() == ACTION.SWITCH.BREAK) {
+				return result;
 			}
 		}
-
 
 		boolean slice  = slice();
 		List<Run> slices = new ArrayList<>();
@@ -9765,6 +9764,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//slices.addAll(autos);
 			}else{
 				result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, autos) && result;
+				if(meta.swt() == ACTION.SWITCH.BREAK) {
+					return result;
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -9787,6 +9789,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}else{
 			if(null != alters && alters.size()>0) {
 				result = execute(runtime, random, meta, ACTION.DDL.COLUMN_ALTER, alters) && result;
+				if(meta.swt() == ACTION.SWITCH.BREAK) {
+					return result;
+				}
 			}
 		}
 
@@ -9802,6 +9807,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		List<Run> merges = merge(runtime, meta, slices);
 		result = execute(runtime, random, meta, ACTION.DDL.TABLE_ALTER, merges) && result;
+		if(meta.swt() == ACTION.SWITCH.BREAK) {
+			return result;
+		}
 		/*
 		修改索引
 		在索引上标记删除的才删除,没有明确标记删除的不删除(因为许多情况会生成索引，比如唯一约束也会生成个索引，但并不在uindexes中)
@@ -9841,54 +9849,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * table[调用入口]<br/>
-	 * 删除表,执行的SQL通过meta.ddls()返回
+	 * 删除表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean drop(DataRuntime runtime, Table meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TABLE_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * table[调用入口]<br/>
-	 * 重命名表,执行的SQL通过meta.ddls()返回
+	 * 重命名表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -9897,43 +9878,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 
 	public boolean rename(DataRuntime runtime, Table origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TABLE_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -10391,149 +10345,67 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * view[调用入口]<br/>
-	 * 创建视图,执行的SQL通过meta.ddls()返回
+	 * 创建视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 视图
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean create(DataRuntime runtime, View meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.VIEW_CREATE;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeCreate(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * view[调用入口]<br/>
-	 * 修改视图,执行的SQL通过meta.ddls()返回
+	 * 修改视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 视图
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean alter(DataRuntime runtime, View meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.VIEW_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * view[调用入口]<br/>
-	 * 删除视图,执行的SQL通过meta.ddls()返回
+	 * 删除视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 视图
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean drop(DataRuntime runtime, View meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.VIEW_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * view[调用入口]<br/>
-	 * 重命名视图,执行的SQL通过meta.ddls()返回
+	 * 重命名视图,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 视图
 	 * @param name 新名称
@@ -10541,43 +10413,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	public boolean rename(DataRuntime runtime, View origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.VIEW_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -10764,54 +10609,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 创建主表,执行的SQL通过meta.ddls()返回
+	 * 创建主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean create(DataRuntime runtime, MasterTable meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.MASTER_TABLE_CREATE;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeCreate(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 修改主表,执行的SQL通过meta.ddls()返回
+	 * 修改主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
@@ -10820,9 +10638,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, MasterTable meta) throws Exception {
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		String random = random(runtime);
-		if (null != ddListener) {
-			//swt = ddListener.prepareAlter(runtime, random, table);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
@@ -10905,54 +10720,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 删除主表,执行的SQL通过meta.ddls()返回
+	 * 删除主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 主表
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean drop(DataRuntime runtime, MasterTable meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.MASTER_TABLE_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * master table[调用入口]<br/>
-	 * 重命名主表,执行的SQL通过meta.ddls()返回
+	 * 重命名主表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -10960,44 +10748,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	public boolean rename(DataRuntime runtime, MasterTable origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.MASTER_TABLE_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				swt = InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -11117,54 +10878,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 创建分区表,执行的SQL通过meta.ddls()返回
+	 * 创建分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean create(DataRuntime runtime, PartitionTable meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PARTITION_TABLE_CREATE;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeCreate(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][master:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getMasterName(), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 修改分区表,执行的SQL通过meta.ddls()返回
+	 * 修改分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -11173,9 +10907,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	public boolean alter(DataRuntime runtime, PartitionTable meta) throws Exception {
 		ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE;
 		String random = random(runtime);
-		if (null != ddListener) {
-			//swt = ddListener.prepareAlter(runtime, random, table);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
@@ -11221,9 +10952,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 		}
-		if (null != ddListener) {
-
-		}
 		if (ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
 			log.info("{}[alter partition table][table:{}][result:{}][执行耗时:{}]", random, meta.getName(), result, DateUtil.format(System.currentTimeMillis() - fr));
 		}
@@ -11232,7 +10960,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 删除分区表,执行的SQL通过meta.ddls()返回
+	 * 删除分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 表
 	 * @return boolean 是否执行成功
@@ -11240,47 +10968,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 
 	public boolean drop(DataRuntime runtime, PartitionTable meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PARTITION_TABLE_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][master:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getMasterName(), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return  execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * partition table[调用入口]<br/>
-	 * 创建分区表,执行的SQL通过meta.ddls()返回
+	 * 创建分区表,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 原表
 	 * @param name 新名称
@@ -11288,43 +10989,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	public boolean rename(DataRuntime runtime, PartitionTable origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PARTITION_TABLE_RENAME;
 		origin.setNewName(name);
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][master:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getMasterName(), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -11470,54 +11144,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 添加列,执行的SQL通过meta.ddls()返回
+	 * 添加列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
 	 * @throws Exception DDL异常
 	 */
 	public boolean add(DataRuntime runtime, Column meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.COLUMN_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAdd(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAddRun(runtime, meta, false);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAdd(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * column[调用入口]<br/>
-	 * 修改列,执行的SQL通过meta.ddls()返回
+	 * 修改列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @param trigger 修改异常时，是否触发监听器
@@ -11529,26 +11176,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		ACTION.DDL action = ACTION.DDL.COLUMN_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta, false);
 
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-
-		long fr = System.currentTimeMillis();
 		try{
 			result = execute(runtime, random, meta, action, runs);
+			if(meta.swt() == ACTION.SWITCH.BREAK) {
+				return result;
+			}
 		}catch (Exception e) {
 			// 如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
@@ -11571,25 +11209,13 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				result = false;
 				throw e;
 			}
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
 		}
 		return result;
 	}
 
 	/**
 	 * column[调用入口]<br/>
-	 * 修改列,执行的SQL通过meta.ddls()返回
+	 * 修改列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -11614,7 +11240,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * column[调用入口]<br/>
-	 * 删除列,执行的SQL通过meta.ddls()返回
+	 * 删除列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 列
 	 * @return boolean 是否执行成功
@@ -11625,43 +11251,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		ACTION.DDL action = ACTION.DDL.COLUMN_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta, false);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
 	 * column[调用入口]<br/>
-	 * 重命名列,执行的SQL通过meta.ddls()返回
+	 * 重命名列,执行的命令通过meta.ddls()返回
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param origin 列
 	 * @param name 新名称
@@ -11669,43 +11269,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception DDL异常
 	 */
 	public boolean rename(DataRuntime runtime, Column origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.COLUMN_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin, false);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return  execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -12311,42 +11884,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean add(DataRuntime runtime, Tag meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TAG_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAdd(runtime, random, meta);
-		}
+
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAddRun(runtime, meta, false);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAdd(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -12363,9 +11910,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		ACTION.DDL action = ACTION.DDL.TAG_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
@@ -12392,18 +11936,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				log.error("{}[修改Column执行异常][中断执行]", random);
 				result = false;
 				throw e;
-			}
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
 			}
 		}
 		return result;
@@ -12443,42 +11975,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, Tag meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TAG_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta, false);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -12491,43 +11996,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Tag origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TAG_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin, slice());
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -12698,42 +12176,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean add(DataRuntime runtime, PrimaryKey meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAdd(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAddRun(runtime, meta, false);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAdd(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -12772,43 +12223,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Table table, PrimaryKey origin, PrimaryKey meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, origin, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, table, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-
-		return result;
+		return execute(runtime, random, table, action, runs);
 	}
 
 	/**
@@ -12820,42 +12243,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, PrimaryKey meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PRIMARY_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -12868,43 +12264,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, PrimaryKey origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PRIMARY_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -12997,42 +12366,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean add(DataRuntime runtime, ForeignKey meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.FOREIGN_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAdd(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAddRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAdd(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13069,43 +12411,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Table table, ForeignKey meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13117,42 +12431,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, ForeignKey meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.FOREIGN_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13165,43 +12452,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, ForeignKey origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.FOREIGN_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -13293,42 +12553,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean add(DataRuntime runtime, Index meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.INDEX_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAdd(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAddRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAdd(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13365,42 +12598,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Table table, Index meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.INDEX_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13412,42 +12618,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, Index meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.INDEX_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13460,43 +12639,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Index origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.INDEX_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -13667,42 +12819,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean add(DataRuntime runtime, Constraint meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAdd(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAddRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAdd(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAdd(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13739,42 +12864,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Table table, Constraint meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13786,42 +12884,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, Constraint meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13834,44 +12905,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Constraint origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.CONSTRAINT_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -13956,38 +13000,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeCreate(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -13999,42 +13017,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Trigger meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size()>1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14046,42 +13037,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, Trigger meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getTableName(true), meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14094,43 +13058,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Trigger origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.TRIGGER_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][table:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getTableName(true), origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -14236,42 +13173,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean create(DataRuntime runtime, Procedure meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PRIMARY_ADD;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeCreate(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14283,39 +13193,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Procedure meta) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PROCEDURE_ALTER;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareAlter(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeAlter(runtime, random, meta, runs);
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() >1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14327,42 +13213,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, Procedure meta) throws Exception {
-		boolean result = true;
 		ACTION.DDL action = ACTION.DDL.PROCEDURE_DROP;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14375,44 +13234,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Procedure origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.PROCEDURE_RENAME;
 		origin.setNewName(name);
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, origin);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, origin);
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null == ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, origin.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -14511,36 +13342,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean create(DataRuntime runtime, Function meta) throws Exception {
-		boolean result = true;
 		ACTION.DDL action = ACTION.DDL.FUNCTION_CREATE;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			swt = ACTION.SWITCH.CONTINUE;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14552,43 +13362,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Function meta) throws Exception {
-		boolean result = false;
 		String random = random(runtime);
 		ACTION.DDL action = ACTION.DDL.FUNCTION_ALTER;
 		ACTION.SWITCH swt  = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt =  ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14600,46 +13382,16 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean drop(DataRuntime runtime, Function meta) throws Exception {
-		boolean result = false;
 		String random = random(runtime);
 		ACTION.DDL action = ACTION.DDL.FUNCTION_DROP;
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
 		checkSchema(runtime, meta);
 
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14652,7 +13404,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Function origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.FUNCTION_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
@@ -14660,39 +13411,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
 		checkSchema(runtime, origin);
 
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
@@ -14776,36 +13498,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean create(DataRuntime runtime, Sequence meta) throws Exception {
-		boolean result = true;
 		ACTION.DDL action = ACTION.DDL.SEQUENCE_CREATE;
 		String random = random(runtime);
 		ACTION.SWITCH swt = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareCreate(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildCreateRun(runtime, meta);
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			swt = ACTION.SWITCH.CONTINUE;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-
-			if(null != ddListener) {
-				swt = ddListener.afterCreate(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14817,43 +13518,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean alter(DataRuntime runtime, Sequence meta) throws Exception {
-		boolean result = false;
 		String random = random(runtime);
 		ACTION.DDL action = ACTION.DDL.SEQUENCE_ALTER;
 		ACTION.SWITCH swt  = InterceptorProxy.prepare(runtime, random, action, meta);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
 		checkSchema(runtime, meta);
 		List<Run> runs = buildAlterRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt =  ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-
-		long fr = System.currentTimeMillis();
-		try {
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterAlter(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14872,39 +13545,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareDrop(runtime, random, meta);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
 		checkSchema(runtime, meta);
 
 		List<Run> runs = buildDropRun(runtime, meta);
-		swt = InterceptorProxy.before(runtime, random, action, meta, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeDrop(runtime, random, meta, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, meta, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, meta.getName(), runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterDrop(runtime, random, meta, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, meta, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, meta, action, runs);
 	}
 
 	/**
@@ -14917,7 +13561,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	public boolean rename(DataRuntime runtime, Sequence origin, String name) throws Exception {
-		boolean result = false;
 		ACTION.DDL action = ACTION.DDL.SEQUENCE_RENAME;
 		String random = random(runtime);
 		origin.setNewName(name);
@@ -14925,39 +13568,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(swt == ACTION.SWITCH.BREAK) {
 			return false;
 		}
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.prepareRename(runtime, random, origin);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
 		checkSchema(runtime, origin);
 
 		List<Run> runs = buildRenameRun(runtime, origin);
-		swt = InterceptorProxy.before(runtime, random, action, origin, runs);
-		if(null != ddListener && swt == ACTION.SWITCH.CONTINUE) {
-			swt = ddListener.beforeRename(runtime, random, origin, runs);
-		}
-		if(swt == ACTION.SWITCH.BREAK) {
-			return false;
-		}
-		long fr = System.currentTimeMillis();
-		try{
-			result = execute(runtime, random, origin, action, runs);
-		}finally {
-			long millis = System.currentTimeMillis() - fr;
-			if(runs.size() > 1 && ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
-				log.info("{}[action:{}][name:{}][rename:{}][cmds:{}][result:{}][执行耗时:{}]", random, action, origin.getName(), name, runs.size(), result, DateUtil.format(millis));
-			}
-			swt = ACTION.SWITCH.CONTINUE;
-			if(null != ddListener) {
-				swt = ddListener.afterRename(runtime, random, origin, runs, result, millis);
-			}
-			if(swt == ACTION.SWITCH.CONTINUE) {
-				InterceptorProxy.after(runtime, random, action, origin, runs, result, millis);
-			}
-		}
-		return result;
+		return execute(runtime, random, origin, action, runs);
 	}
 
 	/**
