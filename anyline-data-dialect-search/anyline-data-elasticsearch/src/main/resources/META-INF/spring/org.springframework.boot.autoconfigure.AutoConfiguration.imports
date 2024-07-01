@@ -1,6 +1,4 @@
-
-
-#org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter
-#org.anyline.data.elasticsearch.runtime.ElasticSearchRuntimeHolder
-#org.anyline.data.elasticsearch.datasource.ElasticSearchDataSourceHolder
-#org.anyline.data.elasticsearch.datasource.ElasticSearchDataSourceLoader
+org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter
+org.anyline.data.elasticsearch.datasource.ElasticSearchDataSourceLoader
+org.anyline.data.elasticsearch.datasource.ElasticSearchDataSourceHolder
+org.anyline.data.elasticsearch.runtime.ElasticSearchRuntimeHolder

@@ -5661,18 +5661,6 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         return null;
     }
 
-    /*PUT /es_db
- {
- "mappings":{
-     "properties":{
-         "name":{"type":"keyword","index":true,"store":true},
-         "sex":{"type":"integer","index":true,"store":true},
-         "age":{"type":"integer","index":true,"store":true},
-         "book":{"type":"text","index":true,"store":true},
-         "address":{"type":"text","index":true,"store":true}
-     }
- }
- }*/
     @Override
     public String concat(DataRuntime runtime, String... args) {
         return null;
@@ -5682,14 +5670,20 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
         Object processor = runtime.getProcessor();
         return (RestClient) processor;
     }
-    /*
-PUT index_user/_bulk
-{"index":{"_index":"index_user","_id":"10011"}}
-{"id":1001, "name":"a b","age":20}
-{"index":{"_index":"index_user","_id":"10012"}}
-{"id":1002, "name":"b c","age":20}
-{"index":{"_index":"index_user","_id":"10013"}}
-{"id":1003, "name":"c d","age":30}*/
+    /**
+     *
+     PUT index_user/_bulk<br/>
+     {"index":{"_index":"index_user","_id":"10011"}}<br/>
+     {"id":1001, "name":"a b","age":20}<br/>
+     {"index":{"_index":"index_user","_id":"10012"}}<br/>
+     {"id":1002, "name":"b c","age":20}<br/>
+     {"index":{"_index":"index_user","_id":"10013"}}<br/>
+     {"id":1003, "name":"c d","age":30}
+     * @param runtime
+     * @param table
+     * @param list
+     * @return
+     */
     public boolean inserts(DataRuntime runtime, String table, Collection list) {
         boolean result = false;
         String pk = "_id";
@@ -5719,13 +5713,13 @@ PUT index_user/_bulk
     }
 
     /**
-     *PUT index_user/_bulk
-     * {"index":{"_index":"index_user","_id":"10011"}}
-     * {"id":1001, "name":"a b","age":20}
-     * {"index":{"_index":"index_user","_id":"10012"}}
-     * {"id":1002, "name":"b c","age":20}
-     * {"index":{"_index":"index_user","_id":"10013"}}
-     * {"id":1003, "name":"c d","age":30}
+     *PUT index_user/_bulk<br/>
+     * {"index":{"_index":"index_user","_id":"10011"}}<br/>
+     * {"id":1001, "name":"a b","age":20}<br/>
+     * {"index":{"_index":"index_user","_id":"10012"}}<br/>
+     * {"id":1002, "name":"b c","age":20}<br/>
+     * {"index":{"_index":"index_user","_id":"10013"}}<br/>
+     * {"id":1003, "name":"c d","age":30}<br/>
      * @param table
      * @param set
      * @return boolean
@@ -5863,12 +5857,6 @@ PUT index_user/_bulk
         }
         return set;
     }
-    /*GET _analyze
-{
-  "analyzer": "ik_max_word",
-  "text": ["马铃薯真好吃"]
-}
-*/
     public LinkedHashMap<String,DataRow> analyze(DataRuntime runtime, String key) {
         return analyze(runtime, key, null);
     }

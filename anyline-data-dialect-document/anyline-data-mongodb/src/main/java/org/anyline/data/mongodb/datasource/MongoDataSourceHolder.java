@@ -61,9 +61,7 @@ public class MongoDataSourceHolder extends AbstractDataSourceHolder implements D
             if(BasicUtil.isEmpty(url)) {
                 return null;
             }
-
-            String datasource = inject(key, prefix, map, true);
-            return datasource;
+            return inject(key, prefix, map, true);
         } catch (Exception e) {
             log.error("注册Mongo数据源 异常:", e);
         }
