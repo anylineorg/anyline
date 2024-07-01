@@ -129,6 +129,7 @@ public class Metadata<T extends Metadata> {
     protected Date checkSchemaTime                ;
     protected LinkedHashMap<String, Object> property;
     protected DataRow metadata = null             ; //驱动返回的全部属性
+    protected ACTION.SWITCH swt = ACTION.SWITCH.CONTINUE        ;
 
     public DataRow getMetadata() {
         return metadata;
@@ -721,7 +722,12 @@ public class Metadata<T extends Metadata> {
     public void setText(String text) {
         this.text = text;
     }
-
+    public void swt(ACTION.SWITCH swt){
+        this.swt = swt;
+    }
+    public ACTION.SWITCH swt(){
+        return this.swt;
+    }
     public String getKeyword() {
         return "object";
     }
