@@ -9727,20 +9727,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			return result;
 		}
 		//修改表备注
-		String comment = update.getComment()+"";
-		if(!comment.equals(meta.getComment())) {
-			swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
-			if(swt == ACTION.SWITCH.BREAK) {
-				return false;
-			}
-			if(BasicUtil.isNotEmpty(meta.getComment())) {
-				runs.addAll(buildChangeCommentRun(runtime, update));
-			}else{
-				runs.addAll(buildAppendCommentRun(runtime, update));
-			}
-			result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
-			if(meta.swt() == ACTION.SWITCH.BREAK) {
-				return result;
+		String ucomment = update.getComment();
+		String comment = meta.getComment();
+		if(BasicUtil.isEmpty(ucomment) && BasicUtil.isEmpty(comment)){
+			//都为空时不更新
+		}else {
+			if (!BasicUtil.equals(comment, ucomment)) {
+				swt = InterceptorProxy.prepare(runtime, random, ACTION.DDL.TABLE_COMMENT, meta);
+				if (swt == ACTION.SWITCH.BREAK) {
+					return false;
+				}
+				if (BasicUtil.isNotEmpty(meta.getComment())) {
+					runs.addAll(buildChangeCommentRun(runtime, update));
+				} else {
+					runs.addAll(buildAddCommentRun(runtime, update));
+				}
+				result = execute(runtime, random, meta, ACTION.DDL.TABLE_COMMENT, runs) && result;
+				if (meta.swt() == ACTION.SWITCH.BREAK) {
+					return result;
+				}
 			}
 		}
 

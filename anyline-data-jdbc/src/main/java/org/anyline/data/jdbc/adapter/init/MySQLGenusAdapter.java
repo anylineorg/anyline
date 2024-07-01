@@ -4163,7 +4163,8 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
         List<Run> runs = new ArrayList<>();
         String comment = meta.getComment();
         if(BasicUtil.isEmpty(comment)) {
-            return runs;
+            //return runs;
+            comment = "";
         }
         Run run = new SimpleRun(runtime);
         runs.add(run);

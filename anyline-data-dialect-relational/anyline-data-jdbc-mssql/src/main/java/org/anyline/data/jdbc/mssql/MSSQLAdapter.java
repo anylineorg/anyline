@@ -4065,6 +4065,18 @@ public class MSSQLAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
 
 	/**
 	 * table[命令合成-子流程]<br/>
+	 * 添加备注(部分数据库需要区分添加还是修改)
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception 异常
+	 */
+	@Override
+	public List<Run> buildAddCommentRun(DataRuntime runtime, Table table) throws Exception{
+		return buildAppendCommentRun(runtime, table);
+	}
+	/**
+	 * table[命令合成-子流程]<br/>
 	 * 创建或删除表之前  检测表是否存在
 	 * IF NOT EXISTS
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
