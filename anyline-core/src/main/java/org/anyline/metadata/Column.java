@@ -148,12 +148,6 @@ public class Column extends Metadata<Column> implements Serializable {
     protected boolean array                       ; // 是否数组
     protected boolean isKey                       ; // doris中用到
 
-    protected Boolean index                       ; // 是否需要创建索引(ES里用的其他数据库应该通过new Index()创建索引)
-    protected Boolean store                       ; // 是否需要存储
-    protected String analyzer                     ; // 分词器
-    protected String searchAnalyzer               ; // 查询分词器
-    protected Integer ignoreAbove                 ; // 可创建索引的最大词长度
-
     protected Integer position                    ; // 在表或索引中的位置, 如果需要在第一列 设置成0
     protected String order                        ; // 在索引中的排序方式ASC | DESC
 
@@ -1340,32 +1334,7 @@ public class Column extends Metadata<Column> implements Serializable {
         }
         return TypeMetadata.CATEGORY.NONE;
     }
-    public String getAnalyzer() {
-        return analyzer;
-    }
 
-    public Column setAnalyzer(String analyzer) {
-        this.analyzer = analyzer;
-        return this;
-    }
-
-    public String getSearchAnalyzer() {
-        return searchAnalyzer;
-    }
-
-    public Column setSearchAnalyzer(String searchAnalyzer) {
-        this.searchAnalyzer = searchAnalyzer;
-        return this;
-    }
-
-    public Integer getIgnoreAbove() {
-        return ignoreAbove;
-    }
-
-    public Column setIgnoreAbove(Integer ignoreAbove) {
-        this.ignoreAbove = ignoreAbove;
-        return this;
-    }
 
     public Column setTypeMetadata(TypeMetadata typeMetadata) {
         if(setmap && null != update) {
@@ -1442,23 +1411,6 @@ public class Column extends Metadata<Column> implements Serializable {
         return this;
     }
 
-    public Boolean getIndex() {
-        return index;
-    }
-
-    public Column setIndex(Boolean index) {
-        this.index = index;
-        return this;
-    }
-
-    public Boolean getStore() {
-        return store;
-    }
-
-    public Column setStore(Boolean store) {
-        this.store = store;
-        return this;
-    }
 
     public void ignoreLength(int ignoreLength) {
         this.ignoreLength = ignoreLength;
