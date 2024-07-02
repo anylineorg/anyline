@@ -197,216 +197,6 @@ public class Column extends Metadata<Column> implements Serializable {
     private String termVector;
     protected int parseLvl                      = 0;// 类型解析级别0:未解析 1:column解析 2:adapter解析
 
-    public Boolean getIndex() {
-        return index;
-    }
-
-    public void setIndex(Boolean index) {
-        this.index = index;
-    }
-
-    public Boolean getStore() {
-        return store;
-    }
-
-    public void setStore(Boolean store) {
-        this.store = store;
-    }
-
-    public String getAnalyzer() {
-        return analyzer;
-    }
-
-    public void setAnalyzer(String analyzer) {
-        this.analyzer = analyzer;
-    }
-
-    public String getSearchAnalyzer() {
-        return searchAnalyzer;
-    }
-
-    public void setSearchAnalyzer(String searchAnalyzer) {
-        this.searchAnalyzer = searchAnalyzer;
-    }
-
-    public Integer getIgnoreAbove() {
-        return ignoreAbove;
-    }
-
-    public void setIgnoreAbove(Integer ignoreAbove) {
-        this.ignoreAbove = ignoreAbove;
-    }
-
-    public String getCoerce() {
-        return coerce;
-    }
-
-    public void setCoerce(String coerce) {
-        this.coerce = coerce;
-    }
-
-    public String getCopyTo() {
-        return copyTo;
-    }
-
-    public void setCopyTo(String copyTo) {
-        this.copyTo = copyTo;
-    }
-
-    public String getDocValues() {
-        return docValues;
-    }
-
-    public void setDocValues(String docValues) {
-        this.docValues = docValues;
-    }
-
-    public String getDynamic() {
-        return dynamic;
-    }
-
-    public void setDynamic(String dynamic) {
-        this.dynamic = dynamic;
-    }
-
-    public String getEagerGlobalOrdinals() {
-        return eagerGlobalOrdinals;
-    }
-
-    public void setEagerGlobalOrdinals(String eagerGlobalOrdinals) {
-        this.eagerGlobalOrdinals = eagerGlobalOrdinals;
-    }
-
-    public String getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(String enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public String getIgnoreMalformed() {
-        return ignoreMalformed;
-    }
-
-    public void setIgnoreMalformed(String ignoreMalformed) {
-        this.ignoreMalformed = ignoreMalformed;
-    }
-
-    public String getIndexOptions() {
-        return indexOptions;
-    }
-
-    public void setIndexOptions(String indexOptions) {
-        this.indexOptions = indexOptions;
-    }
-
-    public String getIndexPhrases() {
-        return indexPhrases;
-    }
-
-    public void setIndexPhrases(String indexPhrases) {
-        this.indexPhrases = indexPhrases;
-    }
-
-    public String getIndexPrefixes() {
-        return indexPrefixes;
-    }
-
-    public void setIndexPrefixes(String indexPrefixes) {
-        this.indexPrefixes = indexPrefixes;
-    }
-
-    public String getMeta() {
-        return meta;
-    }
-
-    public void setMeta(String meta) {
-        this.meta = meta;
-    }
-
-    public String getFields() {
-        return fields;
-    }
-
-    public void setFields(String fields) {
-        this.fields = fields;
-    }
-
-    public String getNormalizer() {
-        return normalizer;
-    }
-
-    public void setNormalizer(String normalizer) {
-        this.normalizer = normalizer;
-    }
-
-    public String getNorms() {
-        return norms;
-    }
-
-    public void setNorms(String norms) {
-        this.norms = norms;
-    }
-
-    public String getNullValue() {
-        return nullValue;
-    }
-
-    public void setNullValue(String nullValue) {
-        this.nullValue = nullValue;
-    }
-
-    public String getPositionIncrementGap() {
-        return positionIncrementGap;
-    }
-
-    public void setPositionIncrementGap(String positionIncrementGap) {
-        this.positionIncrementGap = positionIncrementGap;
-    }
-
-    public String getSimilarity() {
-        return similarity;
-    }
-
-    public void setSimilarity(String similarity) {
-        this.similarity = similarity;
-    }
-
-    public String getSubObjects() {
-        return subObjects;
-    }
-
-    public void setSubObjects(String subObjects) {
-        this.subObjects = subObjects;
-    }
-
-    public String getTermVector() {
-        return termVector;
-    }
-
-    public void setTermVector(String termVector) {
-        this.termVector = termVector;
-    }
-    public void addProperty(String name, String type){
-        properties.put(name, new Property(type));
-    }
-    public LinkedHashMap<String, Property> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(LinkedHashMap<String, Property> properties) {
-        this.properties = properties;
-    }
-
     public Column() {
     }
     public Column(Table table, String name, String type) {
@@ -457,6 +247,242 @@ public class Column extends Metadata<Column> implements Serializable {
         this.name = name;
         setType(type);
     }
+
+    public Boolean getIndex() {
+        return index;
+    }
+
+    public Column setIndex(Boolean index) {
+        this.index = index;
+        return this;
+    }
+
+    public Boolean getStore() {
+        return store;
+    }
+
+    public Column setStore(Boolean store) {
+        this.store = store;
+        return this;
+    }
+
+    public String getAnalyzer() {
+        return analyzer;
+    }
+
+    public Column setAnalyzer(String analyzer) {
+        this.analyzer = analyzer;
+        return this;
+    }
+
+    public String getSearchAnalyzer() {
+        return searchAnalyzer;
+    }
+
+    public Column setSearchAnalyzer(String searchAnalyzer) {
+        this.searchAnalyzer = searchAnalyzer;
+        return this;
+    }
+
+    public Integer getIgnoreAbove() {
+        return ignoreAbove;
+    }
+
+    public Column setIgnoreAbove(Integer ignoreAbove) {
+        this.ignoreAbove = ignoreAbove;
+        return this;
+    }
+
+    public String getCoerce() {
+        return coerce;
+    }
+
+    public Column setCoerce(String coerce) {
+        this.coerce = coerce;
+        return this;
+    }
+
+    public String getCopyTo() {
+        return copyTo;
+    }
+
+    public Column setCopyTo(String copyTo) {
+        this.copyTo = copyTo;
+        return this;
+    }
+
+    public String getDocValues() {
+        return docValues;
+    }
+
+    public Column setDocValues(String docValues) {
+        this.docValues = docValues;
+        return this;
+    }
+
+    public String getDynamic() {
+        return dynamic;
+    }
+
+    public Column setDynamic(String dynamic) {
+        this.dynamic = dynamic;
+        return this;
+    }
+
+    public String getEagerGlobalOrdinals() {
+        return eagerGlobalOrdinals;
+    }
+
+    public Column setEagerGlobalOrdinals(String eagerGlobalOrdinals) {
+        this.eagerGlobalOrdinals = eagerGlobalOrdinals;
+        return this;
+    }
+
+    public String getEnabled() {
+        return enabled;
+    }
+
+    public Column setEnabled(String enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getIgnoreMalformed() {
+        return ignoreMalformed;
+    }
+
+    public Column setIgnoreMalformed(String ignoreMalformed) {
+        this.ignoreMalformed = ignoreMalformed;
+        return this;
+    }
+
+    public String getIndexOptions() {
+        return indexOptions;
+    }
+
+    public Column setIndexOptions(String indexOptions) {
+        this.indexOptions = indexOptions;
+        return this;
+    }
+
+    public String getIndexPhrases() {
+        return indexPhrases;
+    }
+
+    public Column setIndexPhrases(String indexPhrases) {
+        this.indexPhrases = indexPhrases;
+        return this;
+    }
+
+    public String getIndexPrefixes() {
+        return indexPrefixes;
+    }
+
+    public Column setIndexPrefixes(String indexPrefixes) {
+        this.indexPrefixes = indexPrefixes;
+        return this;
+    }
+
+    public String getMeta() {
+        return meta;
+    }
+
+    public Column setMeta(String meta) {
+        this.meta = meta;
+        return this;
+    }
+
+    public String getFields() {
+        return fields;
+    }
+
+    public Column setFields(String fields) {
+        this.fields = fields;
+        return this;
+    }
+
+    public String getNormalizer() {
+        return normalizer;
+    }
+
+    public Column setNormalizer(String normalizer) {
+        this.normalizer = normalizer;
+        return this;
+    }
+
+    public String getNorms() {
+        return norms;
+    }
+
+    public Column setNorms(String norms) {
+        this.norms = norms;
+        return this;
+    }
+
+    public String getNullValue() {
+        return nullValue;
+    }
+
+    public Column setNullValue(String nullValue) {
+        this.nullValue = nullValue;
+        return this;
+    }
+
+    public String getPositionIncrementGap() {
+        return positionIncrementGap;
+    }
+
+    public Column setPositionIncrementGap(String positionIncrementGap) {
+        this.positionIncrementGap = positionIncrementGap;
+        return this;
+    }
+
+    public String getSimilarity() {
+        return similarity;
+    }
+
+    public Column setSimilarity(String similarity) {
+        this.similarity = similarity;
+        return this;
+    }
+
+    public String getSubObjects() {
+        return subObjects;
+    }
+
+    public Column setSubObjects(String subObjects) {
+        this.subObjects = subObjects;
+        return this;
+    }
+
+    public String getTermVector() {
+        return termVector;
+    }
+
+    public Column setTermVector(String termVector) {
+        this.termVector = termVector;
+        return this;
+    }
+    public Column addProperty(String name, String type){
+        properties.put(name, new Property(type));
+        return this;
+    }
+    public LinkedHashMap<String, Property> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(LinkedHashMap<String, Property> properties) {
+        this.properties = properties;
+    }
+
 
     public Column drop() {
         this.action = ACTION.DDL.COLUMN_DROP;
