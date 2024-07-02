@@ -19,6 +19,7 @@
 
 package org.anyline.data.elasticsearch.datasource;
 
+import org.anyline.annotation.Component;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.DataSourceLoader;
 import org.anyline.data.datasource.init.AbstractDataSourceLoader;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Component("anyline.environment.data.datasource.loader.elasticsearch")
 public class ElasticSearchDataSourceLoader extends AbstractDataSourceLoader implements DataSourceLoader {
     public static Logger log = LoggerFactory.getLogger(ElasticSearchDataSourceLoader.class);
 
