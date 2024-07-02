@@ -34,17 +34,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
-
-
-/**
+    /**
      * 临时数据源
      */
 
     private static Map<String, RestClient> temporary = new HashMap<>();
 
+    private static final ElasticSearchRuntimeHolder instance = new ElasticSearchRuntimeHolder();
     public ElasticSearchRuntimeHolder() {
     }
-
+    public static ElasticSearchRuntimeHolder instance() {
+        return instance;
+    }
 
 /**
      * 注册数据源 子类覆盖 生成简单的DataRuntime不注册到spring
@@ -77,7 +78,12 @@ public class ElasticSearchRuntimeHolder extends AbstractRuntimeHolder {
         //runtime.setHolder(this);
         return runtime;
     }
-
+    public DataRuntime reg(String key, RestClient client) {
+        String datasource_key = DataRuntime.ANYLINE_DATASOURCE_BEAN_PREFIX + key;
+        log.info("[注入数据源][type:ElasticSearch][key:{}][bean:{}]", key, datasource_key);
+        ConfigTable.environment().regBean(datasource_key, client);
+        return reg(key, client, null);
+    }
 
 /**
      * 注册运行环境
