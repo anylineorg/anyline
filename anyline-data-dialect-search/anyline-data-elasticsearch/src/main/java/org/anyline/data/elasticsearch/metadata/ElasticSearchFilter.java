@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 public class ElasticSearchFilter {
     private String type;
     private String synonymsPath;   // 同义词文件path
+    private String synonymsSet;
+    private int updateable;
     private LinkedHashMap<String, String> synonyms = new LinkedHashMap<>(); //同义词
 
     public String getType() {
@@ -43,5 +45,13 @@ public class ElasticSearchFilter {
     public ElasticSearchFilter addSynonym(String origin, String synonym){
         synonyms.put(origin, synonym);
         return this;
+    }
+
+    public int getUpdateable() {
+        return updateable;
+    }
+
+    public void setUpdateable(int updateable) {
+        this.updateable = updateable;
     }
 }

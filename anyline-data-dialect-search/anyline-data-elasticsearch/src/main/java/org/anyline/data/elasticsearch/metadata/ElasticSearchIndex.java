@@ -5,46 +5,15 @@ import org.anyline.metadata.Table;
 import java.util.LinkedHashMap;
 
 public class ElasticSearchIndex extends Table {
-    private Settings settings;
+    private LinkedHashMap<String, ElasticSearchAnalyzer> analyzers = new LinkedHashMap<>();
 
-    public Settings getSettings() {
-        return settings;
+    public LinkedHashMap<String, ElasticSearchAnalyzer> getAnalyzers() {
+        return analyzers;
     }
 
-    public ElasticSearchIndex setSettings(Settings settings) {
-        this.settings = settings;
+    public ElasticSearchIndex setAnalyzers(LinkedHashMap<String, ElasticSearchAnalyzer> analyzers) {
+        this.analyzers = analyzers;
         return this;
-    }
-
-    public class Settings{
-        private LinkedHashMap<String, ElasticSearchFilter> filters = new LinkedHashMap<>();
-        private LinkedHashMap<String, ElasticSearchAnalyzer> analyzers = new LinkedHashMap<>();
-
-        public LinkedHashMap<String, ElasticSearchFilter> getFilters() {
-            return filters;
-        }
-
-        public Settings setFilters(LinkedHashMap<String, ElasticSearchFilter> filters) {
-            this.filters = filters;
-            return this;
-        }
-        public Settings addFilter(String key, ElasticSearchFilter filter) {
-            filters.put(key, filter);
-            return this;
-        }
-
-        public LinkedHashMap<String, ElasticSearchAnalyzer> getAnalyzers() {
-            return analyzers;
-        }
-
-        public Settings setAnalyzers(LinkedHashMap<String, ElasticSearchAnalyzer> analyzers) {
-            this.analyzers = analyzers;
-            return this;
-        }
-        public Settings addAnalyzer(String key, ElasticSearchAnalyzer analyzer) {
-            this.analyzers.put(key, analyzer);
-            return this;
-        }
     }
 }
 /*
