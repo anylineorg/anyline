@@ -1,58 +1,45 @@
 package org.anyline.data.elasticsearch.metadata;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-
 
 /**
- * 对应index.setting[.index].analysis.analyzer
+ * 对应index.setting[.index].analysis
  */
-public class ElasticSearchAnalyzer {
-    private String key;
-    private String tokenizer;
-    private List<String> filters = new ArrayList<>();
+public class ElasticSearchAnalysis {
+    private LinkedHashMap<String, ElasticSearchFilter> filters = new LinkedHashMap<>();
+    private LinkedHashMap<String, ElasticSearchAnalyzer> analyzers = new LinkedHashMap<>();
 
-    public String getTokenizer() {
-        return tokenizer;
-    }
-
-    public ElasticSearchAnalyzer setTokenizer(String tokenizer) {
-        this.tokenizer = tokenizer;
-        return this;
-    }
-
-    public List<String> getFilters() {
+    public LinkedHashMap<String, ElasticSearchFilter> getFilters() {
         return filters;
     }
 
-    public ElasticSearchAnalyzer setFilters(List<String> filters) {
+    public void setFilters(LinkedHashMap<String, ElasticSearchFilter> filters) {
         this.filters = filters;
-        return this;
-    }
-    public ElasticSearchAnalyzer addFilter(String filter) {
-        filters.add(filter);
-        return this;
     }
 
-    public String getKey() {
-        return key;
+    public LinkedHashMap<String, ElasticSearchAnalyzer> getAnalyzers() {
+        return analyzers;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setAnalyzers(LinkedHashMap<String, ElasticSearchAnalyzer> analyzers) {
+        this.analyzers = analyzers;
     }
     public LinkedHashMap<String, Object> map(){
         LinkedHashMap<String, Object> map =new LinkedHashMap<>();
-        if(null != tokenizer){
-            map.put("tokenizer", tokenizer);
-        }
         if(null != filters && !filters.isEmpty()){
-            map.put("filter", tokenizer);
+            for(String key:filters.keySet()){
+                map.put(key, filters.get(key).map());
+            }
+        }
+        if(null != analyzers && !analyzers.isEmpty()){
+            for(String key:analyzers.keySet()){
+                map.put(key, analyzers.get(key).map());
+            }
         }
         return map;
     }
-}/*
+}
+/*
 "settings": {
     "analysis": {
         "filter": {

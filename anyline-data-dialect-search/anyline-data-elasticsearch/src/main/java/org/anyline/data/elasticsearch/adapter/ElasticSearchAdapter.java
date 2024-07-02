@@ -22,6 +22,9 @@ import org.anyline.adapter.KeyAdapter;
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
+import org.anyline.data.elasticsearch.metadata.ElasticSearchAnalysis;
+import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
+import org.anyline.data.elasticsearch.metadata.ElasticSearchIndex;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
@@ -3324,40 +3327,8 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     @Override
     public boolean create(DataRuntime runtime, Table meta) throws Exception {
         boolean result = false;
-        DataRow body = new DataRow(KeyAdapter.KEY_CASE.SRC);
-        DataRow mappings = new DataRow(KeyAdapter.KEY_CASE.SRC);
-        LinkedHashMap<String, Column> columns = meta.getColumns();
-        LinkedHashMap<String,DataRow> properties = new LinkedHashMap<>();
-        for(Column column:columns.values()) {
-            DataRow col = new DataRow(KeyAdapter.KEY_CASE.SRC);
-            String type = column.getFullType(type());
-            Boolean index = column.getIndex();
-            Boolean store = column.getStore();
-            String analyzer = column.getAnalyzer();
-            String searchAnalyzer = column.getSearchAnalyzer();
-            if(BasicUtil.isNotEmpty(type)) {
-                col.put("type", type);
-            }
-            if(null != index) {
-                col.put("index", index);
-            }
-            if(null != store) {
-                col.put("store", store);
-            }
-            if(BasicUtil.isNotEmpty(analyzer)) {
-                col.put("analyzer", analyzer);
-            }
-            if(BasicUtil.isNotEmpty(searchAnalyzer)) {
-                col.put("search_analyzer", searchAnalyzer);
-            }
-            properties.put(column.getName(), col);
-        }
-        if(null != meta.getExtend()) {
-            body.put("settings", meta.getExtend());
-        }
-        body.put("mappings", mappings);
-        mappings.put("properties", properties);
-        String json = body.toJSON();
+        LinkedHashMap<String, Object> map = ElasticSearchBuilder.build(meta);
+        String json = BeanUtil.map2json(map);
         log.info("[create index][map:{}]", json);
         Request request = new Request("PUT","/" + meta.getName());
         request.setJsonEntity(json);
