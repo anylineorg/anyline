@@ -21,18 +21,13 @@ package org.anyline.data.elasticsearch.datasource;
 
 import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.data.datasource.DataSourceKeyMap;
 import org.anyline.data.datasource.DataSourceHolder;
 import org.anyline.data.datasource.init.AbstractDataSourceHolder;
 import org.anyline.data.elasticsearch.runtime.ElasticSearchRuntimeHolder;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.runtime.RuntimeHolder;
-import org.anyline.metadata.Database;
 import org.anyline.metadata.type.DatabaseType;
-import org.anyline.proxy.ServiceProxy;
-import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -62,8 +57,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
@@ -85,7 +78,8 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			if(BasicUtil.isNotEmpty(prefix) && !prefix.endsWith(".")) {
 				prefix += ".";
 			}
-			String url = ConfigTable.environment().string(prefix, "url");
+			String url = ConfigTable.environment().string(prefix, "url,uri,host,hosts");
+
 			if(BasicUtil.isEmpty(url)) {
 				return null;
 			}
@@ -141,9 +135,9 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 			cache = new HashMap<>();
 			DataSourceHolder.params.put(key, cache);
 		}
-		String url =  value(params, "url", String.class, null);
+		String url =  value(params, "url,uri,host,hosts", String.class, null);
 		if(BasicUtil.isEmpty(url)) {
-			url = ConfigTable.environment().string(prefix, "url");
+			url = ConfigTable.environment().string(prefix, "url,uri,host,hosts");
 		}
 		if(BasicUtil.isEmpty(url)) {
 			return null;
@@ -226,8 +220,8 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 						String password = value(prefix, "password", String.class, null);
 						return getHttpAsyncClientBuilder(httpSyncClientBuilder, user, password);
 					}).build();
-			ConfigTable.environment().regBean(datasource_id, client);
-
+			//ConfigTable.environment().regBean(datasource_id, client);
+			ElasticSearchRuntimeHolder.instance().reg(key, client);
 		} catch (Exception e) {
 			log.error("[注册数据源失败][type:ElasticSearch][key:{}][msg:{}]", key, e.toString());
 			return null;
@@ -243,7 +237,7 @@ public class ElasticSearchDataSourceHolder extends AbstractDataSourceHolder impl
 
 	@Override
 	public String create(String key, String prefix) {
-		return null;
+		return reg(key, prefix);
 	}
 
 	@Override
