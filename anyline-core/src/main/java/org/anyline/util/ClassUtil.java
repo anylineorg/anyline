@@ -737,6 +737,32 @@ public class ClassUtil {
 		}
 		return null;
 	}
+	public static Class[] getComponentClasses(Field field) {
+		Class[] array = new Class[2];
+		//数组
+		if(field.getType().isArray()) {
+			array[0] = field.getType().getComponentType();
+			array[1] = array[0];
+		}
+		//集合
+		Type gtype = field.getGenericType();
+		if(gtype instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) gtype;
+			Type[] args = pt.getActualTypeArguments();
+			if (null != args) {
+				if(args.length > 0 && args[0] instanceof Class) {
+					array[0] = (Class) args[0];
+				}
+				if(args.length > 1 && args[1] instanceof Class) {
+					array[1] = (Class) args[1];
+				}
+			}
+		}else if(gtype instanceof Class) {
+			array[0] = (Class) gtype;
+			array[1] = array[0];
+		}
+		return array;
+	}
 
 	/**
 	 * 集合或数组的泛型类

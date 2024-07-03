@@ -1529,7 +1529,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		String cmd = run.getFinalUpdate();
 		if(BasicUtil.isEmpty(cmd)) {
-			log.warn("[不具备更新条件][dest:{}]", dest);
+			log.warn("[不具备执行条件][dest:{}]", dest);
 			return -1;
 		}
 		if(null != configs) {
@@ -1537,9 +1537,12 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		List<Object> values = run.getValues();
 		int batch = run.getBatch();
-		String action = "update";
+		String action = null;
+		if(null != run.action()){
+			action = run.action().toString();
+		}
 		if(batch > 1) {
-			action = "batch update";
+			action = "batch " + action;
 		}
 		long fr = System.currentTimeMillis();
 

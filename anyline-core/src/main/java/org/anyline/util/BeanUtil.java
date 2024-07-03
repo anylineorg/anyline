@@ -289,7 +289,8 @@ public class BeanUtil {
 								result = list;
 							} else if (ClassUtil.isInSub(targetClass, Map.class)) {
 								Map map = (Map) ClassUtil.newInstance(targetClass);
-								map = object2map(map, value);
+								Class[] cls = ClassUtil.getComponentClasses(field);
+								map = object2map(map, value, null, cls[1]);
 								result = map;
 							} else if (ClassUtil.isWrapClass(targetClass) && !targetClass.getName().startsWith("java")) {
 								//entity
@@ -1116,13 +1117,13 @@ public class BeanUtil {
 		return map;
 	}
 	public static Map<String, Object> object2map(Object obj, List<String> keys) {
-		return object2map(new HashMap(), obj, keys);
+		return object2map(new HashMap(), obj, keys, null);
 	}
 
 	public static Map<String, Object> object2map(Map map, Object obj) {
-		return object2map(map, obj, null);
+		return object2map(map, obj, null, null);
 	}
-	public static Map<String, Object> object2map(Map map, Object obj, List<String> keys) {
+	public static Map<String, Object> object2map(Map map, Object obj, List<String> keys, Class valueClass) {
 		if(null == obj) {
 			return null;
 		}
@@ -1134,7 +1135,11 @@ public class BeanUtil {
 					}
 					Map objmap = (Map)obj;
 					for (Object key:objmap.keySet()) {
-						map.put(key, objmap.get(key));
+						Object value = objmap.get(key);
+						if(null != valueClass && null != value){
+							value = ConvertProxy.convert(value, valueClass, false);
+						}
+						map.put(key, value);
 					}
 				}catch (Exception e) {
 					e.printStackTrace();
@@ -1146,9 +1151,12 @@ public class BeanUtil {
 				List<Field> fields = ClassUtil.getFields(obj.getClass());
 				for(Field field:fields) {
 					Object value = getFieldValue(obj, field);
-					if (null == value) {
-						value = "";
+					if(null != valueClass && null != value){
+						value = ConvertProxy.convert(value, valueClass, false);
 					}
+					/*if (null == value) {
+						value = "";
+					}*/
 					map.put(field.getName(), value);
 				}
 			}
@@ -1162,9 +1170,13 @@ public class BeanUtil {
 			}else {
 				for (String key : keys) {
 					Object value = getFieldValue(obj, key);
-					if (null == value) {
-						value = "";
+
+					if(null != valueClass && null != value){
+						value = ConvertProxy.convert(value, valueClass, false);
 					}
+					/*if (null == value) {
+						value = "";
+					}*/
 					map.put(key, value);
 				}
 			}
