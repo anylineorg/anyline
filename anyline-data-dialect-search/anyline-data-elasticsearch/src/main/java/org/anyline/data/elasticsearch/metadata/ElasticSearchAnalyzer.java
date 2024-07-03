@@ -48,7 +48,7 @@ public class ElasticSearchAnalyzer {
             map.put("tokenizer", tokenizer);
         }
         if(null != filters && !filters.isEmpty()){
-            map.put("filter", tokenizer);
+            map.put("filter", filters);
         }
         return map;
     }

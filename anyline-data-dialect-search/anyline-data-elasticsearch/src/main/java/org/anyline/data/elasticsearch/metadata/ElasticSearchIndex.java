@@ -10,40 +10,48 @@ public class ElasticSearchIndex extends Table {
     //index.store.type 后续版本会删除
     private ElasticSearchAnalysis analysis = null;
 
+    public ElasticSearchIndex(){}
+    public ElasticSearchIndex(String name){
+        super(name);
+    }
     public Integer getNumberOfShards() {
         return numberOfShards;
     }
 
-    public void setNumberOfShards(Integer numberOfShards) {
+    public ElasticSearchIndex setNumberOfShards(Integer numberOfShards) {
         this.numberOfShards = numberOfShards;
+        return this;
     }
 
     public Integer getNumberOfReplicas() {
         return numberOfReplicas;
     }
 
-    public void setNumberOfReplicas(Integer numberOfReplicas) {
+    public ElasticSearchIndex setNumberOfReplicas(Integer numberOfReplicas) {
         this.numberOfReplicas = numberOfReplicas;
+        return this;
     }
 
-    public ElasticSearchAnalysis getAnalyzers() {
+    public ElasticSearchAnalysis getAnalysis() {
         return analysis;
     }
 
-    public void setAnalyzers(ElasticSearchAnalysis analyzers) {
-        this.analysis = analyzers;
+    public ElasticSearchIndex setAnalysis(ElasticSearchAnalysis analysis) {
+        this.analysis = analysis;
+        return this;
     }
+
     public LinkedHashMap<String, Object> map(){
         LinkedHashMap<String, Object> map =new LinkedHashMap<>();
         if(null != analysis){
-            LinkedHashMap<String, Object> setting = new LinkedHashMap<>();
-            map.put("setting", setting);
-            setting.put("analysis", analysis.map());
+            LinkedHashMap<String, Object> settings = new LinkedHashMap<>();
+            map.put("settings", settings);
+            settings.put("analysis", analysis.map());
             if(null != numberOfReplicas){
-                setting.put("number_of_replicas", numberOfReplicas);
+                settings.put("number_of_replicas", numberOfReplicas);
             }
             if(null != numberOfShards){
-                setting.put("number_of_shards", numberOfShards);
+                settings.put("number_of_shards", numberOfShards);
             }
         }
         return map;

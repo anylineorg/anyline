@@ -13,27 +13,41 @@ public class ElasticSearchAnalysis {
         return filters;
     }
 
-    public void setFilters(LinkedHashMap<String, ElasticSearchFilter> filters) {
+    public ElasticSearchAnalysis setFilters(LinkedHashMap<String, ElasticSearchFilter> filters) {
         this.filters = filters;
+        return this;
+    }
+    public ElasticSearchAnalysis addFilter(String key, ElasticSearchFilter filter){
+        this.filters.put(key, filter);
+        return this;
     }
 
     public LinkedHashMap<String, ElasticSearchAnalyzer> getAnalyzers() {
         return analyzers;
     }
 
-    public void setAnalyzers(LinkedHashMap<String, ElasticSearchAnalyzer> analyzers) {
+    public ElasticSearchAnalysis setAnalyzers(LinkedHashMap<String, ElasticSearchAnalyzer> analyzers) {
         this.analyzers = analyzers;
+        return this;
+    }
+    public ElasticSearchAnalysis addAnalyzer(String key, ElasticSearchAnalyzer analyzer) {
+        this.analyzers.put(key, analyzer);
+        return this;
     }
     public LinkedHashMap<String, Object> map(){
         LinkedHashMap<String, Object> map =new LinkedHashMap<>();
         if(null != filters && !filters.isEmpty()){
+            LinkedHashMap<String, Object> filter = new LinkedHashMap<>();
+            map.put("filter", filter);
             for(String key:filters.keySet()){
-                map.put(key, filters.get(key).map());
+                filter.put(key, filters.get(key).map());
             }
         }
         if(null != analyzers && !analyzers.isEmpty()){
+            LinkedHashMap<String, Object> analyzer = new LinkedHashMap<>();
+            map.put("analyzer", analyzer);
             for(String key:analyzers.keySet()){
-                map.put(key, analyzers.get(key).map());
+                analyzer.put(key, analyzers.get(key).map());
             }
         }
         return map;
