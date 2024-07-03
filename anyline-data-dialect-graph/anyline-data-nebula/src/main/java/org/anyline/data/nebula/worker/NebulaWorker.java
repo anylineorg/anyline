@@ -23,6 +23,7 @@ import com.vesoft.nebula.client.graph.SessionPool;
 import com.vesoft.nebula.client.graph.data.DateWrapper;
 import com.vesoft.nebula.client.graph.data.ResultSet;
 import com.vesoft.nebula.client.graph.data.ValueWrapper;
+import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverWorker;
 import org.anyline.data.handler.DataHandler;
@@ -37,7 +38,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.graph.GraphRow;
 import org.anyline.entity.graph.VertexRow;
-import org.anyline.exception.SQLUpdateException;
+import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 
 import javax.sql.DataSource;
@@ -46,8 +47,8 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-public class DefaultNebulaWorker implements DriverWorker {
+@Component("anyline.environment.data.driver.worker.nebula")
+public class NebulaWorker implements DriverWorker {
     @Override
     public Class<? extends DriverAdapter> supportAdapterType() {
         return NebulaAdapter.class;
@@ -255,7 +256,7 @@ public class DefaultNebulaWorker implements DriverWorker {
         String cmd = run.getFinalInsert();
         ResultSet rs = session.execute(cmd);
         if(!rs.isSucceeded()) {
-            throw new SQLUpdateException(rs.getErrorMessage());
+            throw new CommandUpdateException(rs.getErrorMessage());
         }
         cnt = run.getRows();
         return cnt;
@@ -267,7 +268,7 @@ public class DefaultNebulaWorker implements DriverWorker {
         String cmd = run.getBuilder().toString();
         ResultSet rs = session.execute(cmd);
         if(!rs.isSucceeded()) {
-            throw new SQLUpdateException(rs.getErrorMessage());
+            throw new CommandUpdateException(rs.getErrorMessage());
         }
         //不返回影响行数
         return 0;
@@ -284,7 +285,7 @@ public class DefaultNebulaWorker implements DriverWorker {
         SessionPool session = session(runtime);
         ResultSet rs = session.execute(cmd);
         if(!rs.isSucceeded()) {
-            throw new SQLUpdateException(rs.getErrorMessage());
+            throw new CommandUpdateException(rs.getErrorMessage());
         }
         return 0;
     }
