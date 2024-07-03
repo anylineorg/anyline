@@ -31,9 +31,9 @@ import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
-import org.anyline.exception.SQLException;
-import org.anyline.exception.SQLUpdateException;
+import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.Column;
 import org.anyline.metadata.Table;
 import org.anyline.metadata.type.DatabaseType;
@@ -194,7 +194,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         run.setPrepare(new DefaultTablePrepare());
         StringBuilder builder = run.getBuilder();
         if(BasicUtil.isEmpty(dest)) {
-            throw new SQLException("未指定表");
+            throw new CommandException("未指定表");
         }
         // CREATE (emp:Employee{id:123, name:"zh"})
 
@@ -236,7 +236,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
     protected Run createInsertRunFromCollection(DataRuntime runtime, int batch, Table dest, Collection list, ConfigStore configs, List<String> columns) {
         Run run = new TableRun(runtime, dest);
         if(null == list || list.isEmpty()) {
-            throw new SQLException("空数据");
+            throw new CommandException("空数据");
         }
         Object first = null;
         if(list instanceof DataSet) {
@@ -252,7 +252,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
             }
         }
         if(BasicUtil.isEmpty(dest)) {
-            throw new SQLException("未指定表");
+            throw new CommandException("未指定表");
         }
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
         fillInsertContent(runtime, run, dest, list, cols);
@@ -395,7 +395,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 log.error("insert exception:", e);
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
                 ex.setCmd(sql);
                 ex.setValues(values);
                 throw ex;
@@ -891,7 +891,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.isEmpty()) {
-            throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
+            throw new CommandUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 
         // 不更新主键 除非显示指定
@@ -1011,7 +1011,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                     builder.append("=?");
                 }
             }else{
-                throw new SQLUpdateException("删除异常:删除条件为空, delete方法不支持删除整表操作.");
+                throw new CommandUpdateException("删除异常:删除条件为空, delete方法不支持删除整表操作.");
             }
         }else{
             delimiter(builder, key);
@@ -1064,7 +1064,7 @@ public class Neo4jAdapter extends AbstractJDBCAdapter implements JDBCAdapter {
                 run.addValues(Compare.EQUAL, new Column(key), value, ConfigTable.IS_AUTO_SPLIT_ARRAY);
             }
         }else{
-            throw new SQLUpdateException("删除异常:删除条件为空, delete方法不支持删除整表操作.");
+            throw new CommandUpdateException("删除异常:删除条件为空, delete方法不支持删除整表操作.");
         }
         builder.append(" DELETE d");
         run.setBuilder(builder);

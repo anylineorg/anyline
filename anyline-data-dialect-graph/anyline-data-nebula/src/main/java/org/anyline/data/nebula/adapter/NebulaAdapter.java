@@ -36,9 +36,10 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.entity.graph.EdgeRow;
 import org.anyline.entity.graph.VertexRow;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
-import org.anyline.exception.SQLQueryException;
-import org.anyline.exception.SQLUpdateException;
+import org.anyline.exception.CommandQueryException;
+import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
@@ -435,7 +436,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         // List<Object> values = new ArrayList<Object>();
         StringBuilder builder = run.getBuilder();
         if(BasicUtil.isEmpty(dest)) {
-            throw new org.anyline.exception.SQLException("未指定表");
+            throw new CommandException("未指定表");
         }
 
         checkName(runtime, null, dest);
@@ -467,7 +468,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         /*确定需要插入的列*/
         LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
         if(null == cols || cols.isEmpty()) {
-            throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+ BeanUtil.object2json(obj)+"]");
+            throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+ BeanUtil.object2json(obj)+"]");
         }
         boolean replaceEmptyNull = false;
         if(obj instanceof DataRow) {
@@ -629,7 +630,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
                 ex.setCmd(cmd);
                 ex.setValues(values);
                 throw ex;
@@ -940,7 +941,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 log.error("update 异常:", e);
             }
             if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                SQLUpdateException ex = new SQLUpdateException("update异常:" + e.toString(), e);
+                CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
                 ex.setCmd(cmd);
                 ex.setValues(values);
                 throw ex;
@@ -1280,7 +1281,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
     protected DataSet select(DataRuntime runtime, String random, boolean system, ACTION.DML action, Table table, ConfigStore configs, Run run, String cmd, List<Object> values) {
         if(BasicUtil.isEmpty(cmd)) {
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                throw new SQLQueryException("未指定命令");
+                throw new CommandQueryException("未指定命令");
             }else{
                 log.error("未指定命令");
                 return new DataSet().setTable(table);
@@ -1345,7 +1346,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
                 log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,  ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
             }
             if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-                SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(),e);
+                CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(),e);
                 ex.setCmd(cmd);
                 ex.setValues(values);
                 throw ex;

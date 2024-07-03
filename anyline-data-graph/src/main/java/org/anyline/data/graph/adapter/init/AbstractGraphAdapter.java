@@ -33,9 +33,10 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
+import org.anyline.exception.CommandException;
 import org.anyline.exception.NotSupportException;
-import org.anyline.exception.SQLQueryException;
-import org.anyline.exception.SQLUpdateException;
+import org.anyline.exception.CommandQueryException;
+import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ColumnMetadataAdapter;
 import org.anyline.metadata.adapter.IndexMetadataAdapter;
@@ -366,7 +367,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		// List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)) {
-			throw new org.anyline.exception.SQLException("未指定表");
+			throw new CommandException("未指定表");
 		}
 
 		checkName(runtime, null, dest);
@@ -399,7 +400,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, obj, configs, columns, false);
 		if(null == cols || cols.isEmpty()) {
-			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
+			throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
 		}
 		boolean replaceEmptyNull = false;
 		if(obj instanceof DataRow) {
@@ -481,17 +482,17 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		Run run = new TableRun(runtime, dest);
 		run.setBatch(batch);
 		if(null == list || list.isEmpty()) {
-			throw new org.anyline.exception.SQLException("空数据");
+			throw new CommandException("空数据");
 		}
 		Object first = list.iterator().next();
 
 		if(BasicUtil.isEmpty(dest)) {
-			throw new org.anyline.exception.SQLException("未指定表");
+			throw new CommandException("未指定表");
 		}
 		/*确定需要插入的列*/
 		LinkedHashMap<String, Column> cols = confirmInsertColumns(runtime, dest, first, configs, columns, true);
 		if(null == cols || cols.isEmpty()) {
-			throw new org.anyline.exception.SQLException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
+			throw new CommandException("未指定列(DataRow或Entity中没有需要插入的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
 		}
 		run.setInsertColumns(cols);
 		run.setVol(cols.size());
@@ -594,7 +595,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				SQLUpdateException ex = new SQLUpdateException("insert异常:"+e.toString(), e);
+				CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
 				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
@@ -822,7 +823,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				e.printStackTrace();
 			}
 			if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				SQLUpdateException ex = new SQLUpdateException("update异常:" + e.toString(), e);
+				CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
 				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
@@ -1010,7 +1011,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				e.printStackTrace();
 			}
 			if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
+				CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
 				throw ex;
 			}else{
 				if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -1358,7 +1359,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		List<Object> values = run.getValues();
 		if(BasicUtil.isEmpty(sql)) {
 			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				throw new SQLQueryException("未指定命令");
+				throw new CommandQueryException("未指定命令");
 			}else{
 				log.error("未指定命令");
 				return new ArrayList<>();
@@ -1425,7 +1426,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
 			}
 			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
-				SQLQueryException ex = new SQLQueryException("query异常:"+e.toString(), e);
+				CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
 				ex.setCmd(sql);
 				ex.setValues(values);
 				throw ex;
@@ -1769,7 +1770,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				e.printStackTrace();
 			}
 			if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-				SQLUpdateException ex = new SQLUpdateException("execute异常:"+e.toString(), e);
+				CommandUpdateException ex = new CommandUpdateException("execute异常:"+e.toString(), e);
 				ex.setCmd(sql);
 				throw ex;
 			}else{
@@ -2067,7 +2068,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 						builder.append("=?");
 					}
 				} else {
-					throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
+					throw new CommandUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 				}
 				addRunValue(runtime, run, Compare.IN, new Column(key), values);
 			}
@@ -2133,7 +2134,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 				addRunValue(runtime, run, Compare.EQUAL, new Column(key),value);
 			}
 		}else{
-			throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
+			throw new CommandUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 		}
 		run.setBuilder(builder);
 

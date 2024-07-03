@@ -49,7 +49,8 @@ import org.anyline.entity.*;
 import org.anyline.entity.generator.GeneratorConfig;
 import org.anyline.entity.generator.PrimaryGenerator;
 import org.anyline.exception.AnylineException;
-import org.anyline.exception.SQLUpdateException;
+import org.anyline.exception.CommandQueryException;
+import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.*;
 import org.anyline.metadata.graph.EdgeTable;
@@ -326,7 +327,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				if(partitionTables.size() != 1) {
 					String msg = "分区表定位异常,主表:" + dest + ",标签:" + BeanUtil.map2json(tags) + ",分区表:" + BeanUtil.object2json(partitionTables.keySet());
 					if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-						throw new SQLUpdateException(msg);
+						throw new CommandUpdateException(msg);
 					}else{
 						log.error(msg);
 						return -1;
@@ -684,10 +685,83 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	public long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long insert(DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String[] pks)", 37));
+
+		long cnt = 0;
+		int batch = run.getBatch();
+		String action = "insert";
+		if(batch > 1) {
+			action = "batch insert";
 		}
-		return -1;
+		if(!run.isValid()) {
+			if(log.isWarnEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+				log.warn("[valid:false][action:{}][table:{}][不具备执行条件]", action, run.getTableName());
+			}
+			return -1;
+		}
+		String cmd = run.getFinalInsert();
+		if(BasicUtil.isEmpty(cmd)) {
+			log.warn("[不具备执行条件][action:{}][table:{}]", action, run.getTable());
+			return -1;
+		}
+		if(null != configs) {
+			configs.add(run);
+		}
+		List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
+		/*执行SQL*/
+		if (log.isInfoEnabled() && ConfigStore.IS_LOG_SQL(configs)) {
+			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
+				log.info("{}[action:{}][table:{}][cmd:\n{}\n]\n[param size:{}]", random, action, run.getTable(), cmd, values.size());
+			}else {
+				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+		}
+		long millis = -1;
+
+		boolean exe = true;
+		if(null != configs) {
+			exe = configs.execute();
+		}
+		if(!exe) {
+			return -1;
+		}
+		try {
+			cnt = worker.insert(this, runtime, random, data, configs, run, generatedKey(), pks);
+			millis = System.currentTimeMillis() - fr;
+			boolean slow = false;
+			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+			if(SLOW_SQL_MILLIS > 0 && ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+				if(millis > SLOW_SQL_MILLIS) {
+					slow = true;
+					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.INSERT, ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					if(null != dmListener) {
+						dmListener.slow(runtime, random, ACTION.DML.INSERT, run, cmd, values, null, true, cnt, millis);
+					}
+				}
+			}
+			if (!slow && log.isInfoEnabled() && ConfigStore.IS_LOG_SQL_TIME(configs)) {
+				String qty = LogUtil.format(cnt, 34);
+				if(batch > 1) {
+					qty = LogUtil.format("约"+cnt, 34);
+				}
+				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), qty);
+			}
+		}catch(Exception e) {
+			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+				log.error("insert 异常:", e);
+			}
+			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+				log.error("{}[{}][action:{}][table:{}]{}", random, LogUtil.format("插入异常:", 33)+e, action, run.getTable(), run.log(ACTION.DML.INSERT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+				CommandUpdateException ex = new CommandUpdateException("insert异常:"+e.toString(), e);
+				ex.setCmd(cmd);
+				ex.setValues(values);
+				throw ex;
+			}
+
+		}
+		return cnt;
 	}
 
 	/**
@@ -773,7 +847,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(null == data) {
 			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				throw new SQLUpdateException("更新空数据");
+				throw new CommandUpdateException("更新空数据");
 			}else{
 				log.error("更新空数据");
 			}
@@ -1035,7 +1109,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			primaryKeys.addAll(row.getPrimaryKeys());
 		}
 		if(primaryKeys.isEmpty()) {
-			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
+			throw new CommandUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}
 		if(configs.isEmptyCondition()) {
 			//没有其他条件时添加 主键作条件
@@ -1155,7 +1229,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			primaryKeys = keys;
 		}
 		if(primaryKeys.isEmpty()) {
-			throw new SQLUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
+			throw new CommandUpdateException("[更新异常][更新条件为空, update方法不支持更新整表操作]");
 		}
 		LinkedHashMap<String, Column> configColumns = configs.getColumns();
 		// 不更新主键 除非显示指定
@@ -1446,10 +1520,84 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return 影响行数
 	 */
 	public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run)", 37));
+		long result = 0;
+		if(!run.isValid()) {
+			if(log.isWarnEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+				log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
+			}
+			return -1;
 		}
-		return -1;
+		String cmd = run.getFinalUpdate();
+		if(BasicUtil.isEmpty(cmd)) {
+			log.warn("[不具备更新条件][dest:{}]", dest);
+			return -1;
+		}
+		if(null != configs) {
+			configs.add(run);
+		}
+		List<Object> values = run.getValues();
+		int batch = run.getBatch();
+		String action = "update";
+		if(batch > 1) {
+			action = "batch update";
+		}
+		long fr = System.currentTimeMillis();
+
+		/*执行SQL*/
+		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+			if(batch > 1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
+				log.info("{}[action:{}][table:{}]{}", random, action, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}else {
+				log.info("{}[action:update][table:{}]{}", random, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+		}
+
+		boolean exe = true;
+		if(null != configs) {
+			exe = configs.execute();
+		}
+		if(!exe) {
+			return -1;
+		}
+		long millis = -1;
+		try{
+			result = worker.update(this, runtime, random, dest, data, configs, run);
+			millis = System.currentTimeMillis() - fr;
+			boolean slow = false;
+			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+				if(millis > SLOW_SQL_MILLIS) {
+					slow = true;
+					log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, action, run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+					if(null != dmListener) {
+						dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
+					}
+				}
+			}
+			if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+				String qty = result+"";
+				if(batch>1) {
+					qty = "约"+result;
+				}
+				log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, action, run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
+			}
+
+		}catch(Exception e) {
+			if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+				log.error("update 异常:", e);
+			}
+			if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+				CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
+				ex.setCmd(cmd);
+				ex.setValues(values);
+				throw ex;
+			}
+			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+				log.error("{}[{}][action:update][table:{}]{}", random, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+
+		}
+		return result;
 	}
 
 	/**
@@ -1486,7 +1634,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		if(null == data) {
 			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-				throw new SQLUpdateException("save空数据");
+				throw new CommandUpdateException("save空数据");
 			}else {
 				log.error("save空数据");
 				return -1;
@@ -2339,10 +2487,52 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Map<String, Object>> maps(DataRuntime runtime, String random, ConfigStore configs, Run run)", 37));
+		List<Map<String, Object>> maps = null;
+		if(null == random) {
+			random = random(runtime);
 		}
-		return new ArrayList<>();
+		if(null != configs) {
+			configs.add(run);
+		}
+		String sql = run.getFinalQuery();
+		List<Object> values = run.getValues();
+		if(BasicUtil.isEmpty(sql)) {
+			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+				throw new CommandQueryException("未指定命令");
+			}else{
+				log.error("未指定命令");
+				return new ArrayList<>();
+			}
+		}
+		if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+			log.info("{}[action:select]{}", random, run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+		}
+		boolean exe = true;
+		if(null != configs) {
+			exe = configs.execute();
+		}
+		if(!exe) {
+			return new ArrayList<>();
+		}
+		try{
+			maps = worker.maps(this, runtime, random, configs, run);
+			maps = process(runtime, maps);
+		}catch(Exception e) {
+			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+				log.error("maps 异常:", e);
+			}
+			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+				log.error("{}[{}][action:select]{}", random, LogUtil.format("查询异常:", 33) + e.toString(), run.log(ACTION.DML.SELECT,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+				CommandQueryException ex = new CommandQueryException("query异常:"+e.toString(), e);
+				ex.setCmd(sql);
+				ex.setValues(values);
+				throw ex;
+			}
+
+		}
+		return maps;
 	}
 
 	/**
@@ -2354,10 +2544,53 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 Map<String, Object> map(DataRuntime runtime, String random, ConfigStore configs, Run run) ", 37));
+		Map<String, Object> map = null;
+		String sql = run.getFinalExists();
+		List<Object> values = run.getValues();
+		if(null != configs) {
+			configs.add(run);
 		}
-		return null;
+		long fr = System.currentTimeMillis();
+		if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+			log.info("{}[action:select]{}", random, run.log(ACTION.DML.EXISTS,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+		}
+		boolean exe = true;
+		if(null != configs) {
+			exe = configs.execute();
+		}
+		if(!exe) {
+			return new HashMap<>();
+		}
+		try {
+			map = worker.map(this, runtime, random, configs, run);
+		}catch (Exception e) {
+			if(ConfigStore.IS_THROW_SQL_QUERY_EXCEPTION(configs)) {
+				throw new CommandQueryException("查询异常", e);
+			}
+			if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+				if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+					e.printStackTrace();
+				}
+				log.error("{}[{}][action:select][cmd:\n{}\n]\n[param:{}]", random, LogUtil.format("查询异常:", 33)+e, sql, LogUtil.param(values));
+			}
+		}
+		//}
+		Long millis = System.currentTimeMillis() - fr;
+		boolean slow = false;
+		long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+		if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+			if(millis > SLOW_SQL_MILLIS) {
+				slow = true;
+				log.warn("{}[slow cmd][action:exists][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, DateUtil.format(millis), sql, LogUtil.param(values));
+				if(null != dmListener) {
+					dmListener.slow(runtime, random, ACTION.DML.EXISTS, run, sql, values, null, true, map, millis);
+				}
+			}
+		}
+		if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+			log.info("{}[action:select][执行耗时:{}][封装行数:{}]", random, DateUtil.format(millis), LogUtil.format(map == null ?0:1, 34));
+		}
+		return map;
 	}
 
 	/**
@@ -2726,10 +2959,70 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 */
 	@Override
 	public long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 long execute(DataRuntime runtime, String random, ConfigStore configs, Run run) ", 37));
+		long result = -1;
+		if(null == random) {
+			random = random(runtime);
 		}
-		return -1;
+		String sql = run.getFinalExecute();
+		List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
+		int batch = run.getBatch();
+		String action = "execute";
+		if(batch > 1) {
+			action = "batch execute";
+		}
+		if(log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
+			if(batch >1 && !ConfigStore.IS_LOG_BATCH_SQL_PARAM(configs)) {
+				log.info("{}[action:{}][cmd:\n{}\n]\n[param size:{}]", random, action, sql, values.size());
+			}else {
+				log.info("{}[action:{}]{}", random, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+		}
+		if(null != configs) {
+			configs.add(run);
+		}
+		boolean exe = true;
+		if(null != configs) {
+			exe = configs.execute();
+		}
+		if(!exe) {
+			return -1;
+		}
+		long millis = -1;
+		try{
+			result = worker.execute(this, runtime, random, configs, run);
+			millis = System.currentTimeMillis() - fr;
+			boolean slow = false;
+			long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
+			if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
+				if(millis > SLOW_SQL_MILLIS) {
+					slow = true;
+					log.warn("{}[slow cmd][action:{}][执行耗时:{}][cmd:\n{}\n]\n[param:{}]", random, action, DateUtil.format(millis), sql, LogUtil.param(values));
+					if(null != dmListener) {
+						dmListener.slow(runtime, random, ACTION.DML.EXECUTE, run, sql, values, null, true, result, millis);
+					}
+				}
+			}
+			if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
+				String qty = ""+result;
+				if(batch>1) {
+					qty = "约"+result;
+				}
+				log.info("{}[action:{}][执行耗时:{}][影响行数:{}]", random, action, DateUtil.format(millis), LogUtil.format(qty, 34));
+			}
+		}catch(Exception e) {
+			if(ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
+				log.error("execute exception:",e);
+			}
+			if(ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
+				log.error("{}[{}][action:{}]{}", random, LogUtil.format("命令执行异常:", 33)+e, action, run.log(ACTION.DML.EXECUTE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
+			}
+			if(ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
+				throw new CommandUpdateException("命令执行异常", e);
+			}
+
+		}
+		return result;
 	}
 
 	protected void replaceVariable(DataRuntime runtime, TextRun run) {
@@ -9470,6 +9763,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return false;
 	}
+	/**
+	 * 执行命令
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param meta Metadata(表,列等)
+	 * @param action 执行命令
+	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @return boolean
+	 */
 	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs) {
 		boolean result = true;
 		int idx = 0;
