@@ -745,21 +745,22 @@ public class Column extends Metadata<Column> implements Serializable {
         int ignoreLength = -1;
         int ignorePrecision = -1;
         int ignoreScale = -1;
+        String result = null;
+        String type = null;
+        String formula = null;
         if(null != config) {
             ignoreLength = config.ignoreLength();
             ignorePrecision = config.ignorePrecision();
             ignoreScale = config.ignoreScale();
+            formula = config.getFormula();
         }else{
             ignoreLength = ignoreLength(database);
             ignorePrecision = ignorePrecision(database);
             ignoreScale = ignoreScale(database);
+            formula = formula(database);
         }
-        String result = null;
-        String type = null;
-        String formula = null;
-        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL) {
+        if(null != typeMetadata && typeMetadata != TypeMetadata.NONE && typeMetadata != TypeMetadata.ILLEGAL && database == this.database) {
             type = typeMetadata.getName();
-            formula = typeMetadata.formula();
         }else{
             type = getTypeName();
         }
@@ -1703,6 +1704,13 @@ public class Column extends Metadata<Column> implements Serializable {
             return MetadataAdapterHolder.ignoreScale(database, typeMetadata);
         }else{
             return ignoreScale();
+        }
+    }
+    public String formula(DatabaseType database) {
+        if(null != typeMetadata) {
+            return MetadataAdapterHolder.formula(database, typeMetadata);
+        }else{
+            return null;
         }
     }
 
