@@ -22,12 +22,19 @@ import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.DriverWorker;
 import org.anyline.data.elasticsearch.adapter.ElasticSearchAdapter;
+import org.anyline.data.elasticsearch.run.ElasticSearchRun;
+import org.anyline.data.elasticsearch.runtime.ElasticSearchRuntime;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.run.Run;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.metadata.*;
+import org.anyline.net.HttpResponse;
+import org.anyline.util.FileUtil;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
+import org.elasticsearch.client.RestClient;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -104,15 +111,19 @@ public class ElasticSearchWorker implements DriverWorker {
 
     @Override
     public long insert(DriverAdapter adapter, DataRuntime runtime, String random, Object data, ConfigStore configs, Run run, String generatedKey, String[] pks) throws Exception{
-        long cnt = -1;
-
+        long cnt = 0;
+        ElasticSearchRun r = (ElasticSearchRun)run;
+        String method = r.getMethod();
+        String endpoint = r.getEndpoint();
+        Request request = new Request(method, endpoint);
+        request.setJsonEntity(run.getFinalUpdate(false));
+        execute(client(runtime), request);
         return cnt;
     }
 
     @Override
     public long update(DriverAdapter adapter, DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) throws Exception{
 
-        //不返回影响行数
         return 0;
     }
 
@@ -126,5 +137,16 @@ public class ElasticSearchWorker implements DriverWorker {
         String cmd = run.getFinalExecute();
 
         return 0;
+    }
+    private RestClient client(DataRuntime runtime){
+        return ((ElasticSearchRuntime)runtime).client();
+    }
+    private HttpResponse execute(RestClient client, Request request) throws Exception{
+        HttpResponse result = new HttpResponse();
+        Response response = client.performRequest(request);
+        //{"_index":"index_user","_id":"102","_version":3,"result":"updated","_shards":{"total":2,"successful":2,"failed":0},"_seq_no":9,"_primary_term":1}
+        String content = FileUtil.read(response.getEntity().getContent()).toString();
+        result.setText(content);
+        return result;
     }
 }

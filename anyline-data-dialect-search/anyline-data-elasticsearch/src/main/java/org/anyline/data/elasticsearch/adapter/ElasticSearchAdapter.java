@@ -23,20 +23,22 @@ import org.anyline.annotation.Component;
 import org.anyline.data.adapter.DriverAdapter;
 import org.anyline.data.adapter.init.AbstractDriverAdapter;
 import org.anyline.data.elasticsearch.metadata.ElasticSearchBuilder;
+import org.anyline.data.elasticsearch.run.ElasticSearchRun;
 import org.anyline.data.param.ConfigStore;
 import org.anyline.data.prepare.RunPrepare;
 import org.anyline.data.run.*;
 import org.anyline.data.runtime.DataRuntime;
 import org.anyline.entity.*;
 import org.anyline.exception.NotSupportException;
-import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
 import org.anyline.metadata.type.TypeMetadata;
 import org.anyline.net.HttpResponse;
 import org.anyline.proxy.CacheProxy;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.FileUtil;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
@@ -425,70 +427,7 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      */
     @Override
     public long update(DataRuntime runtime, String random, Table dest, Object data, ConfigStore configs, Run run) {
-        long result = 0;
-        if(!run.isValid()) {
-            if(log.isWarnEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-                log.warn("[valid:false][不具备执行条件][dest:"+dest+"]");
-            }
-            return -1;
-        }
-        String cmd = run.getFinalUpdate();
-        if(BasicUtil.isEmpty(cmd)) {
-            log.warn("[不具备更新条件][dest:{}]", dest);
-            return -1;
-        }
-        if(null != configs) {
-            configs.add(run);
-        }
-        List<Object> values = run.getValues();
-        long fr = System.currentTimeMillis();
-
-        if (log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL(configs)) {
-            log.info("{}[action:update][table:{}]{}", random, run.getTable(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-        }
-
-        boolean exe = true;
-        if(null != configs) {
-            exe = configs.execute();
-        }
-        if(!exe) {
-            return -1;
-        }
-        long millis = -1;
-        try{
-            result = worker.update(this, runtime, random, dest, data, configs, run);
-            millis = System.currentTimeMillis() - fr;
-            boolean slow = false;
-            long SLOW_SQL_MILLIS = ConfigStore.SLOW_SQL_MILLIS(configs);
-            if(SLOW_SQL_MILLIS > 0 &&ConfigStore.IS_LOG_SLOW_SQL(configs)) {
-                if(millis > SLOW_SQL_MILLIS) {
-                    slow = true;
-                    log.warn("{}[slow cmd][action:{}][table:{}][执行耗时:{}]{}", random, run.action(), run.getTable(), DateUtil.format(millis), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-                    if(null != dmListener) {
-                        dmListener.slow(runtime, random, ACTION.DML.UPDATE, run, cmd, values, null, true, result, millis);
-                    }
-                }
-            }
-            if (!slow && log.isInfoEnabled() &&ConfigStore.IS_LOG_SQL_TIME(configs)) {
-                String qty = result+"";
-                log.info("{}[action:{}][table:{}][执行耗时:{}][影响行数:{}]", random, run.action(), run.getTable(), DateUtil.format(millis), LogUtil.format(qty, 34));
-            }
-
-        }catch(Exception e) {
-            if (ConfigStore.IS_PRINT_EXCEPTION_STACK_TRACE(configs)) {
-                log.error("update 异常:", e);
-            }
-            if (ConfigStore.IS_THROW_SQL_UPDATE_EXCEPTION(configs)) {
-                CommandUpdateException ex = new CommandUpdateException("update异常:" + e.toString(), e);
-                ex.setCmd(cmd);
-                throw ex;
-            }
-            if (ConfigStore.IS_LOG_SQL_WHEN_ERROR(configs)) {
-                log.error("{}[{}][action:update][table:{}]{}", random, run.getTable(), LogUtil.format("更新异常:", 33) + e.toString(), run.log(ACTION.DML.UPDATE,ConfigStore.IS_SQL_LOG_PLACEHOLDER(configs)));
-            }
-
-        }
-        return result;
+        return super.update(runtime, random, dest, data, configs, run);
     }
 
     /**
@@ -3482,7 +3421,8 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
     @Override
     public List<Run> buildCreateRun(DataRuntime runtime, Table meta) throws Exception {
         List<Run> runs = new ArrayList<>();
-        Run run = new SimpleRun(runtime);
+        ElasticSearchRun run = new ElasticSearchRun(runtime);
+        run.action(ACTION.DDL.TABLE_CREATE);
         runs.add(run);
         LinkedHashMap<String, Column> columns = meta.getColumns();
         for(Column column:columns.values()){
