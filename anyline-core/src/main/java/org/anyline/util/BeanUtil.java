@@ -1105,29 +1105,56 @@ public class BeanUtil {
 		if(null == obj) {
 			return null;
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields) {
 			Object value = getFieldValue(obj, field);
-			if(null == value) {
-				value = "";
+			if(null != value && !ClassUtil.isPrimitiveClass(value) && !(value instanceof String)){
+				String cn = value.getClass().getName();
+				if(!cn.startsWith("java")){
+					if(value instanceof Map){
+						Map vmap = (Map) value;
+						for(Object k:vmap.keySet()){
+							vmap.put(k, object2map(vmap.get(k)));
+						}
+					}else if(value instanceof Collection){
+						Collection arrays = (Collection) value;
+						List list = new ArrayList<>();
+						for(Object item:arrays){
+							list.add(object2map(item));
+						}
+						value = list;
+					}else if(value.getClass().isArray()){
+						List<Object> arrays = Arrays.asList(value);
+						List list = new ArrayList<>();
+						for(Object item:arrays){
+							list.add(object2map(item));
+						}
+						value = list;
+					}else {
+						value = object2map(value);
+					}
+				}
 			}
+			/*if(null == value) {
+				value = "";
+			}*/
 			map.put(field.getName(), value);
 		}
 		return map;
 	}
-	public static Map<String, Object> object2map(Object obj, List<String> keys) {
+	public static <K, V> Map<K, V> object2map(Object obj, List<K> keys) {
 		return object2map(new HashMap(), obj, keys, null);
 	}
 
-	public static Map<String, Object> object2map(Map map, Object obj) {
+	public static <K, V> Map<K, V> object2map(Map map, Object obj) {
 		return object2map(map, obj, null, null);
 	}
-	public static Map<String, Object> object2map(Map map, Object obj, List<String> keys, Class valueClass) {
+	public static <K, V> Map<K, V> object2map(Map map, Object obj, List<K> keys, Class<? extends V> valueClass) {
 		if(null == obj) {
 			return null;
 		}
-		if(null == keys || keys.size()==0) {
+		if(null == keys || keys.isEmpty()) {
 			if(obj instanceof Map) {
 				try {
 					if(null == map) {
@@ -1168,8 +1195,8 @@ public class BeanUtil {
 			if(obj instanceof Map) {
 				map=(Map)obj;
 			}else {
-				for (String key : keys) {
-					Object value = getFieldValue(obj, key);
+				for (K key : keys) {
+					Object value = getFieldValue(obj, key.toString());
 
 					if(null != valueClass && null != value){
 						value = ConvertProxy.convert(value, valueClass, false);
