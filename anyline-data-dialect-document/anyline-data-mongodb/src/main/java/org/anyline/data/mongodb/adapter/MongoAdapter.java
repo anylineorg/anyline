@@ -46,8 +46,8 @@ import org.anyline.data.runtime.DataRuntime;
 import org.anyline.data.util.DataSourceUtil;
 import org.anyline.entity.*;
 import org.anyline.entity.generator.PrimaryGenerator;
-import org.anyline.exception.SQLQueryException;
-import org.anyline.exception.SQLUpdateException;
+import org.anyline.exception.CommandQueryException;
+import org.anyline.exception.CommandUpdateException;
 import org.anyline.metadata.*;
 import org.anyline.metadata.adapter.ViewMetadataAdapter;
 import org.anyline.metadata.type.DatabaseType;
@@ -226,7 +226,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.error("insert 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_UPDATE_EXCEPTION) {
-                SQLUpdateException ex = new SQLUpdateException("insert异常:"+e, e);
+                CommandUpdateException ex = new CommandUpdateException("insert异常:"+e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -447,7 +447,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
                 log.error("select 异常:", e);
             }
             if(ConfigTable.IS_THROW_SQL_QUERY_EXCEPTION) {
-                SQLQueryException ex = new SQLQueryException("query异常:"+e, e);
+                CommandQueryException ex = new CommandQueryException("query异常:"+e, e);
                 throw ex;
             }else{
                 if(ConfigTable.IS_LOG_SQL_WHEN_ERROR) {
@@ -651,7 +651,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         LinkedHashMap<String, Column> cols = confirmUpdateColumns(runtime, dest, row, configs, Column.names(columns));
         List<String> primaryKeys = row.getPrimaryKeys();
         if(primaryKeys.isEmpty()) {
-            throw new SQLUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
+            throw new CommandUpdateException("[更新更新异常][更新条件为空, update方法不支持更新整表操作]");
         }
 
         // 不更新主键 除非显示指定
