@@ -19,23 +19,43 @@
 
 package org.anyline.exception;
 
+import org.anyline.metadata.type.DatabaseType;
+
 import java.util.List;
 
-public class SQLException extends RuntimeException{
+public class CommandException extends RuntimeException{
+	protected DatabaseType database;
+	protected String datasource;
 	protected Exception src;
 	protected String cmd;
 	protected List<Object> values;
-	public SQLException() {
+	public CommandException() {
 		super(); 
 	}
-	public SQLException(String title) {
+	public CommandException(String title) {
 		super(title);
 	}
-	public SQLException(String title, Exception src) {
+	public CommandException(String title, Exception src) {
 		super(title, src);
 		if(null != src) {
 			super.setStackTrace(src.getStackTrace());
 		}
+	}
+
+	public DatabaseType getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(DatabaseType database) {
+		this.database = database;
+	}
+
+	public String getDatasource() {
+		return datasource;
+	}
+
+	public void setDatasource(String datasource) {
+		this.datasource = datasource;
 	}
 
 	public Exception getSrc() {

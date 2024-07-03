@@ -19,15 +19,15 @@
 
 package org.anyline.exception;
  
-public class SQLUpdateException extends SQLException{
+public class CommandQueryException extends CommandException {
 	private static final long serialVersionUID = 1L; 
-	public SQLUpdateException() {
+	public CommandQueryException() {
 		super(); 
 	}
-	public SQLUpdateException(String title) {
+	public CommandQueryException(String title) {
 		super(title);
 	}
-	public SQLUpdateException(String title, Exception src) {
+	public CommandQueryException(String title, Exception src) {
 		super(title, src);
 	}
 } 
