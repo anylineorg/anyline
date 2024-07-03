@@ -25,6 +25,7 @@ public class ElasticSearchBuilder {
             for(Column column:columns.values()){
                 properties.put(column.getName(), build(column));
             }
+            map.put("mappings", mappings);
         }
         return map;
     }
