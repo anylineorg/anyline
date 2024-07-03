@@ -41,7 +41,7 @@ public class MetadataAdapterHolder {
     private static LinkedHashMap<DatabaseType, LinkedHashMap<TypeMetadata.CATEGORY, TypeMetadata.Config>> typeCategoryConfigs = new LinkedHashMap<>();
 
     static {
-        reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
+        reg(DatabaseType.COMMON, org.anyline.metadata.type.TypeMetadata.CATEGORY.CHAR, new TypeMetadata.Config( 0, 1, 1));
         reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.TEXT, new TypeMetadata.Config(1, 1, 1));
         reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BOOLEAN, new TypeMetadata.Config(1,1, 1));
         reg(DatabaseType.COMMON, TypeMetadata.CATEGORY.BYTES, new TypeMetadata.Config(0, 1, 1));
@@ -312,4 +312,90 @@ public class MetadataAdapterHolder {
         return result;
     }
 
+    /**
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return String
+     */
+    public static String formula(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return null;
+        }
+        String result = null;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        if(null != config) {
+            result = config.getFormula();
+        }
+        //2.配置类-数据类型名称
+        if(null == result) {
+            //根据数据类型名称
+            config = MetadataAdapterHolder.get(database, type.getName());
+            if(null != config) {
+                result = config.getFormula();
+            }
+        }
+        //3.数据类型自带
+        if(null == result) {
+            result = type.formula();
+        }
+        //4.配置类-数据类型大类
+        if(null == result) {
+            config = MetadataAdapterHolder.get(database, type.getCategory());
+            if(null != config) {
+                result = config.getFormula();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 原数据类型(不带长度等参数)
+     * @param database 数据库类型
+     * @param type TypeMetadata
+     * @return String
+     */
+    public static String metadata(DatabaseType database, TypeMetadata type) {
+        if(null == type) {
+            return null;
+        }
+        String result = null;
+		/*
+		1.配置类-数据类型
+		2.配置类-数据类型名称
+		3.数据类型自带
+		4.配置类-数据类型大类
+		 */
+        //1.配置类 数据类型
+        TypeMetadata.Config config = MetadataAdapterHolder.get(database, type);
+        if(null != config) {
+            result = config.getMeta();
+        }
+        //2.配置类-数据类型名称
+        if(null == result) {
+            //根据数据类型名称
+            config = MetadataAdapterHolder.get(database, type.getName());
+            if(null != config) {
+                result = config.getMeta();
+            }
+        }
+        //3.数据类型自带
+        if(null == result) {
+            result = type.getName();
+        }
+        //4.配置类-数据类型大类
+        if(null == result) {
+            config = MetadataAdapterHolder.get(database, type.getCategory());
+            if(null != config) {
+                result = config.getMeta();
+            }
+        }
+        return result;
+    }
 }
