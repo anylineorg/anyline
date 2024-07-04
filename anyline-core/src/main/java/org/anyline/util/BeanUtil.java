@@ -54,6 +54,7 @@ import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -264,9 +265,27 @@ public class BeanUtil {
 				columnTypeName = columnTypeName.toUpperCase();
 			}
 		}
-
+		if(null != value){
+			if(ClassUtil.isInSub(value.getClass(), targetClass)){
+				try {
+					if (field.isAccessible()) {
+						// 可访问属性
+						field.set(obj, result);
+					} else {
+						// 不可访问属性
+						field.setAccessible(true);
+						field.set(obj, result);
+						field.setAccessible(false);
+					}
+					return true;
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 		String srcTypeKey = ClassUtil.type(value);
 		String tarTypeKey = ClassUtil.type(field);
+
 		Class componentClass = ClassUtil.getComponentClass(field);
 		try{
 			if(null != value) {
@@ -449,7 +468,7 @@ public class BeanUtil {
 		return result;
 	}
 	public static byte[] char2bytes(char[] chars) {
-		Charset charset = Charset.forName("ISO-8859-1");
+		Charset charset = StandardCharsets.ISO_8859_1;
 		CharBuffer charBuffer = CharBuffer.allocate(chars.length);
 		charBuffer.put(chars);
 		charBuffer.flip();
@@ -457,7 +476,7 @@ public class BeanUtil {
 		return byteBuffer.array();
 	}
 	public static char[] byte2char(byte[] bytes) {
-		Charset charset = Charset.forName("ISO-8859-1");
+		Charset charset = StandardCharsets.ISO_8859_1;
 		ByteBuffer byteBuffer = ByteBuffer.allocate(bytes.length);
 		byteBuffer.put(bytes);
 		byteBuffer.flip();
@@ -571,7 +590,7 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> toMap(Object obj, String ... keys) {
+	public static Map<String, Object> object2map(Object obj, String ... keys) {
 		if(null == obj) {
 			return null;
 		}
@@ -611,13 +630,13 @@ public class BeanUtil {
 		}
 		return map;
 	}
-	public static List<Map<String, Object>> toMaps(Collection<?> objs, String ... keys) {
+	public static List<Map<String, Object>> list2maps(Collection<?> objs, String ... keys) {
 		if(null == objs) {
 			return null;
 		}
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		for(Object obj:objs) {
-			list.add(toMap(obj, keys));
+			list.add(object2map(obj, keys));
 		}
 		return list;
 	}
@@ -1101,6 +1120,12 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
+
+	/**
+	 * 对象属性转map格式
+	 * @param obj obj
+	 * @return map
+	 */
 	public static Map<String, Object> object2map(Object obj) {
 		if(null == obj) {
 			return null;
@@ -1109,31 +1134,44 @@ public class BeanUtil {
 		List<Field> fields = ClassUtil.getFields(obj.getClass());
 		for(Field field:fields) {
 			Object value = getFieldValue(obj, field);
-			if(null != value && !ClassUtil.isPrimitiveClass(value) && !(value instanceof String)){
-				String cn = value.getClass().getName();
-				if(!cn.startsWith("java")){
-					if(value instanceof Map){
-						Map vmap = (Map) value;
-						for(Object k:vmap.keySet()){
-							vmap.put(k, object2map(vmap.get(k)));
+			if(!ClassUtil.isJavaType(value)){
+				//如果不是java基础类型需要继续转map
+				if(value instanceof Map){
+					//map的value转map
+					Map vmap = (Map) value;
+					for(Object k:vmap.keySet()){
+						Object v = vmap.get(k);
+						if(!ClassUtil.isJavaType(v)) {
+							vmap.put(k, object2map(v));
+						}else{
+							vmap.put(k, v);
 						}
-					}else if(value instanceof Collection){
-						Collection arrays = (Collection) value;
-						List list = new ArrayList<>();
-						for(Object item:arrays){
-							list.add(object2map(item));
-						}
-						value = list;
-					}else if(value.getClass().isArray()){
-						List<Object> arrays = Arrays.asList(value);
-						List list = new ArrayList<>();
-						for(Object item:arrays){
-							list.add(object2map(item));
-						}
-						value = list;
-					}else {
-						value = object2map(value);
 					}
+				}else if(value instanceof Collection){
+					//集合条件转map
+					Collection arrays = (Collection) value;
+					List list = new ArrayList<>();
+					for(Object item:arrays){
+						if(!ClassUtil.isJavaType(item)) {
+							list.add(object2map(item));
+						}else{
+							list.add(item);
+						}
+					}
+					value = list;
+				}else if(value.getClass().isArray()){
+					List list = new ArrayList<>();
+					int len = Array.getLength(value);
+					for (int i = 0; i < len; i++) {
+						Object item = Array.get(value, i);
+						if(!ClassUtil.isJavaType(item)){
+							item = object2map(item);
+						}
+						list.add(item);
+					}
+					value = list;
+				}else {
+					value = object2map(value);
 				}
 			}
 			/*if(null == value) {
