@@ -46,13 +46,9 @@ public class ConvertProxy {
     public ConvertProxy() {}
 
     public static void reg(Convert convert) {
-        Class origin = convert.getOrigin();
-        Class target = convert.getTarget();
-        Map<Class, Convert> map = converts.get(origin);
-        if(null == map) {
-            map = new Hashtable<>();
-            converts.put(origin, map);
-        }
+        Class origin = convert.getOrigin(); //源类型
+        Class target = convert.getTarget(); //目标类型
+        Map<Class, Convert> map = converts.computeIfAbsent(origin, k -> new Hashtable<>());
         map.put(target, convert);
 
         DataType type = JavaTypeAdapter.types.get(origin);
