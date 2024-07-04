@@ -65,6 +65,29 @@ public class ClassUtil {
 	}
 
 	/**
+	 * 是否java基础类型(以java.开头的类)
+	 * @param check 类或对象
+	 * @return null返回true
+	 */
+	public static boolean isJavaType(Object check){
+		if(null == check){
+			return true;
+		}
+		if(ClassUtil.isPrimitiveClass(check)){
+			return true;
+		}
+		if(check instanceof Class) {
+			if (((Class)check).getName().startsWith("java.")) {
+				return true;
+			}
+		}else{
+			if (check.getClass().getName().startsWith("java.")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
 	 * 是否是封装类(基础类型之外的类) String类返回true
 	 * @param obj obj
 	 * @return boolean
