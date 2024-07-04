@@ -19,6 +19,7 @@
 package org.anyline.data.mongodb.adapter;
 
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.ListCollectionNamesIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -417,7 +418,7 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
             if(ConfigTable.IS_LOG_SQL && log.isInfoEnabled()) {
                 log.info("{}[cmd:select][collection:{}][filter:{}]", random, run.getTableName(), bson);
             }
-            FindIterable<MongoDataRow> rows = database.getCollection(run.getTableName(), ConfigTable.DEFAULT_MONGO_ENTITY_CLASS).find(bson);
+            FindIterable<MongoDataRow> rows = database.getCollection(run.getTableName(), MongoDataRow.class).find(bson);
             List<Bson> fields = new ArrayList<>();
             List<String> queryColumns = run.getQueryColumns();
             //查询的列
@@ -874,6 +875,31 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         return result;
     }
 
+
+
+    /**
+     * table[调用入口]<br/>
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param catalog catalog
+     * @param schema schema
+     * @param pattern 名称统配符或正则
+     * @param types  Metadata.TYPE.
+     * @param struct 是否查询表结构
+     * @return List
+     * @param <T> Table
+     */
+    public <T extends Table> List<T> tables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs){
+        List<T> tables = new ArrayList<>();
+        MongoRuntime rt = (MongoRuntime) runtime;
+        MongoDatabase database = rt.getDatabase();
+        ListCollectionNamesIterable names = database.listCollectionNames();
+        for(String name:names){
+            tables.add((T)new Table(name));
+        }
+        return tables;
+    }
     @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {
 

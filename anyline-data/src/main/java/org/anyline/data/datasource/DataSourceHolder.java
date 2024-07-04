@@ -219,7 +219,10 @@ public interface DataSourceHolder {
 	}
 
 	static DataRuntime reg(String key, Object datasource, String database, DatabaseType type, DriverAdapter adapter, boolean override) throws Exception {
-		DataSourceHolder instance = instance(DataSource.class);
+		DataSourceHolder instance = null;
+		if(null != datasource){
+			instance = instance(datasource.getClass());
+		}
 		if(null == instance) {
 			instance = instance(type);
 		}

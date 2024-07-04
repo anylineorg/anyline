@@ -3,4 +3,4 @@ org.anyline.data.mongodb.adapter.MongoAdapter,\
 org.anyline.data.mongodb.datasource.MongoDataSourceLoader,\
 org.anyline.data.mongodb.datasource.MongoDataSourceHolder,\
 org.anyline.data.mongodb.runtime.MongoRuntimeHolder,\
-org.anyline.data.mongodb.work.MongoWorkHolder
+org.anyline.data.mongodb.worker.MongoWorker
