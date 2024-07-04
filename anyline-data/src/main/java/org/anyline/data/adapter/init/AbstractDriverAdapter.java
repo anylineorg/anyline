@@ -4521,7 +4521,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, Table table, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
-
 	/**
 	 *
 	 * table[调用入口]<br/>
@@ -4542,6 +4541,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(null == random) {
 			random = random(runtime);
 		}
+
 		try{
 			long fr = System.currentTimeMillis();
 			Table search = new Table();
@@ -4560,11 +4560,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					schema = tmp.getSchema();
 				}
 			}
-			String origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
+			String caches_key = CacheProxy.key(runtime, "tables", greedy, catalog, schema, pattern, types, configs);
+			list = CacheProxy.tables(caches_key);
+			if(null != list && !list.isEmpty()){
+				return list;
+			}
+			String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, pattern);
+			String origin = CacheProxy.name(cache_key);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
 				tableMap(runtime, random, greedy, catalog, schema, null);
-				origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
+				origin = CacheProxy.name(cache_key);
 			}
 			if(null == origin) {
 				origin = pattern;
@@ -4684,6 +4690,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				//查询全部表结构
 				indexes(runtime, random, greedy, (List<Table>)list);
 			}
+			CacheProxy.tables(caches_key, list);
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -4703,8 +4710,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 */
 	protected void tableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-		Map<String, String> names = CacheProxy.names(this, catalog, schema);
-		if(null == names || names.isEmpty()) {
+		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
+		//if(null == names || names.isEmpty()) {
 			if(null == random) {
 				random = random(runtime);
 			}
@@ -4723,7 +4730,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					for (Run run : runs) {
 						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						tables = tables(runtime, idx++, true, tables, catalog, schema, set);
-						CacheProxy.name(this, tables);
+						for(Table table:tables){
+							String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, table.getName());
+							CacheProxy.name(cache_key, table.getName());
+						}
 						sys = true;
 					}
 				}
@@ -4733,12 +4743,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if(!sys) {
 				try {
 					tables = tables(runtime, true, tables, catalog, schema, null, Table.TYPE.NORMAL.value);
-					CacheProxy.name(this, tables);
+					for(Table table:tables){
+						String cache_key = CacheProxy.key(runtime, "table", greedy, catalog, schema, table.getName());
+						CacheProxy.name(cache_key, table.getName());
+					}
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		}
+		//}
 
 	}
 
@@ -4969,6 +4982,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return tables
 	 * @throws Exception 异常
 	 */
+	@Override
 	public <T extends Table> List<T> comments(DataRuntime runtime, int index, boolean create, List<T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(null == tables) {
 			tables = new ArrayList<>();
@@ -5087,14 +5101,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
+
 	/* *****************************************************************************************************************
-	 * 													VertexTable
+	 * 													vertexTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
 	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * List<Run> buildQueryVertexTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> vertexTables, Catalog catalog, Schema schema, DataSet set)
@@ -5109,7 +5124,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, VertexTable vertexTable, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
-
 	/**
 	 *
 	 * vertexTable[调用入口]<br/>
@@ -5125,17 +5139,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> VertexTable
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
+
 		try{
 			long fr = System.currentTimeMillis();
 			VertexTable search = new VertexTable();
 			if(
-				(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
-					|| (supportSchema() && empty(schema))	//支持schema 但schema为空
+					(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
+							|| (supportSchema() && empty(schema))	//支持schema 但schema为空
 			) {
 				VertexTable tmp = new VertexTable();
 				if(!greedy) { //非贪婪模式下 检测当前catalog schema
@@ -5148,32 +5163,59 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					schema = tmp.getSchema();
 				}
 			}
-			search.setName(pattern);
+			String caches_key = CacheProxy.key(runtime, "vertexTables", greedy, catalog, schema, pattern, types, configs);
+			list = CacheProxy.vertexTables(caches_key);
+			if(null != list && !list.isEmpty()){
+				return list;
+			}
+			String cache_key = CacheProxy.key(runtime, "vertexTable", greedy, catalog, schema, pattern);
+			String origin = CacheProxy.name(cache_key);
+			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+				//先查出所有key并以大写缓存 用来实现忽略大小写
+				vertexTableMap(runtime, random, greedy, catalog, schema, null);
+				origin = CacheProxy.name(cache_key);
+			}
+			if(null == origin) {
+				origin = pattern;
+			}
+			search.setName(origin);
 			search.setCatalog(catalog);
 			search.setSchema(schema);
-
+			PageNavi navi = null;
+			if(null == configs){
+				configs = new DefaultConfigStore();
+			}
+			navi = configs.getPageNavi();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types);
+				List<Run> runs = buildQueryVertexTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						if(null != navi){
+							run.setPageNavi(navi);
+							mergeFinalQuery(runtime, run);
+						}
+						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						list = vertexTables(runtime, idx++, true, list, catalog, schema, set);
+						if(null != navi){
+							//分页只查一次
+							break;
+						}
 					}
 				}
 			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+					log.warn("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
 				}
 			}
 
 			// 根据系统表查询失败后根据驱动内置接口补充
 			if(list.isEmpty()) {
 				try {
-					list = vertexTables(runtime, true, list, catalog, schema, pattern, types);
+					list = vertexTables(runtime, true, list, catalog, schema, origin, types);
 					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
 					if(!greedy) {
 						int size = list.size();
@@ -5188,7 +5230,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}else {
-						log.warn("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, pattern, e.toString());
+						log.warn("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
 					}
 				}
 			}
@@ -5202,12 +5244,19 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			//表备注
 			if(!comment) {
 				try {
-					List<Run> runs = buildQueryVertexTablesCommentRun(runtime, catalog, schema, pattern, types);
+					List<Run> runs = buildQueryVertexTablesCommentRun(runtime, catalog, schema, origin, types);
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
+							if(null != navi){
+								run.setPageNavi(navi);
+								//mergeFinalQuery(runtime, run);
+							}
 							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
+							if(null != navi){
+								break;
+							}
 							//merge(list, maps);
 						}
 					}
@@ -5215,20 +5264,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-						log.info("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+						log.info("{}[vertexTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
 					}
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, pattern, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[vertexTables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
-			if(BasicUtil.isNotEmpty(pattern)) {
-				pattern = pattern.replace("%",".*");
+			if(BasicUtil.isNotEmpty(origin)) {
+				origin = origin.replace("%",".*");
 				//有表名的，根据表名过滤出符合条件的
 				List<T> tmp = new ArrayList<>();
 				for(T item:list) {
 					String name = item.getName(greedy)+"";
-					if(RegularUtil.match(name.toUpperCase(), pattern.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
 						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
 							tmp.add(item);
 						}
@@ -5237,30 +5286,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				list = tmp;
 			}
 			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-				//查询全部表结构
-				List<Column> columns = columns(runtime, random, greedy, catalog, schema, pattern);
-				for(VertexTable vertexTable:list) {
-					Long tObjectId = vertexTable.getObjectId();
-					LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-					vertexTable.setColumns(cols);
-					for(Column column:columns) {
-						if(vertexTable.equals(column.getTable())) {
-							Catalog cCatalog = column.getCatalog();
-							Schema cSchema = column.getSchema();
-							Long cObjectId = column.getObjectId();
-							if(null != tObjectId && null != cObjectId && tObjectId == cObjectId) {
-								cols.put(column.getName().toUpperCase(), column);
-							}else{
-								if(equals(cCatalog, column.getCatalog())
-									&& equals(cSchema, column.getSchema())) {
-									cols.put(column.getName().toUpperCase(), column);
-								}
-							}
-						}
-					}
-					columns.removeAll(cols.values());
-				}
+				//查询全部表结构 columns()内部已经给vertexTable.columns赋值
+				List<Column> columns = columns(runtime, random, greedy, catalog, schema, list);
 			}
+			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+				//查询全部表结构
+				//indexes(runtime, random, greedy, (List<VertexTable>)list);
+			}
+			CacheProxy.tables(caches_key, list);
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -5279,48 +5312,55 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param catalog catalog
 	 * @param schema schema
 	 */
-	protected void vertextableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-		Map<String, String> names = CacheProxy.names(this, catalog, schema);
-		if(null == names || names.isEmpty()) {
-			if(null == random) {
-				random = random(runtime);
-			}
-			DriverAdapter adapter = runtime.getAdapter();
-			List<VertexTable> vertexTables = null;
-			boolean sys = false; //根据系统表查询
-			if(greedy) {
-				catalog = null;
-				schema = null;
-			}
-			try {
-				List<Run> runs =buildQueryVertexTablesRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value);
-				if (null != runs && !runs.isEmpty()) {
-					int idx = 0;
-					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						vertexTables = vertexTables(runtime, idx++, true, vertexTables, catalog, schema, set);
-						CacheProxy.name(this, vertexTables);
-						sys = true;
+	protected void vertexTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
+		//if(null == names || names.isEmpty()) {
+		if(null == random) {
+			random = random(runtime);
+		}
+		DriverAdapter adapter = runtime.getAdapter();
+		List<VertexTable> vertexTables = null;
+		boolean sys = false; //根据系统表查询
+		if(greedy) {
+			catalog = null;
+			schema = null;
+		}
+		try {
+			//缓存 不需要configs条件及分页
+			List<Run> runs =buildQueryVertexTablesRun(runtime, greedy, catalog, schema, null, VertexTable.TYPE.NORMAL.value, null);
+			if (null != runs && !runs.isEmpty()) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					vertexTables = vertexTables(runtime, idx++, true, vertexTables, catalog, schema, set);
+					for(VertexTable vertexTable:vertexTables){
+						String cache_key = CacheProxy.key(runtime, "vertexTable", greedy, catalog, schema, vertexTable.getName());
+						CacheProxy.name(cache_key, vertexTable.getName());
 					}
+					sys = true;
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(!sys) {
+			try {
+				vertexTables = vertexTables(runtime, true, vertexTables, catalog, schema, null, VertexTable.TYPE.NORMAL.value);
+				for(VertexTable vertexTable:vertexTables){
+					String cache_key = CacheProxy.key(runtime, "vertexTable", greedy, catalog, schema, vertexTable.getName());
+					CacheProxy.name(cache_key, vertexTable.getName());
 				}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
-			if(!sys) {
-				try {
-					vertexTables = vertexTables(runtime, true, vertexTables, catalog, schema, null, VertexTable.TYPE.NORMAL.value);
-					CacheProxy.name(this, vertexTables);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
+		//}
 
 	}
 
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> vertexTables = new LinkedHashMap<>();
-		List<T> list = vertexTables(runtime, random, false, catalog, schema, pattern, types);
+		List<T> list = vertexTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
 		for(T vertexTable:list) {
 			vertexTables.put(vertexTable.getName().toUpperCase(), vertexTable);
 		}
@@ -5340,7 +5380,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryVertexTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
@@ -5497,6 +5537,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return null;
 	}
 	/**
+	 * vertexTable[结构集封装-依据]<br/>
+	 * 读取vertexTable元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return VertexTableMetadataAdapter
+	 */
+	@Override
+	public VertexTableMetadataAdapter vertexTableMetadataAdapter(DataRuntime runtime) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 VertexTableMetadataAdapter vertexTableMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new VertexTableMetadataAdapter();
+	}
+	
+	/**
 	 *
 	 * vertexTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -5604,14 +5658,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
+
 	/* *****************************************************************************************************************
-	 * 													EdgeTable
+	 * 													edgeTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
 	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
 	 * List<Run> buildQueryEdgeTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
@@ -5626,7 +5681,6 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
-
 	/**
 	 *
 	 * edgeTable[调用入口]<br/>
@@ -5642,17 +5696,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
+
 		try{
 			long fr = System.currentTimeMillis();
 			EdgeTable search = new EdgeTable();
 			if(
-				(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
-					|| (supportSchema() && empty(schema))	//支持schema 但schema为空
+					(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
+							|| (supportSchema() && empty(schema))	//支持schema 但schema为空
 			) {
 				EdgeTable tmp = new EdgeTable();
 				if(!greedy) { //非贪婪模式下 检测当前catalog schema
@@ -5665,11 +5720,17 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					schema = tmp.getSchema();
 				}
 			}
-			String origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
+			String caches_key = CacheProxy.key(runtime, "edgeTables", greedy, catalog, schema, pattern, types, configs);
+			list = CacheProxy.edgeTables(caches_key);
+			if(null != list && !list.isEmpty()){
+				return list;
+			}
+			String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, pattern);
+			String origin = CacheProxy.name(cache_key);
 			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
 				//先查出所有key并以大写缓存 用来实现忽略大小写
 				edgeTableMap(runtime, random, greedy, catalog, schema, null);
-				origin = CacheProxy.name(this, greedy, catalog, schema, pattern);
+				origin = CacheProxy.name(cache_key);
 			}
 			if(null == origin) {
 				origin = pattern;
@@ -5677,15 +5738,27 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			search.setName(origin);
 			search.setCatalog(catalog);
 			search.setSchema(schema);
-
+			PageNavi navi = null;
+			if(null == configs){
+				configs = new DefaultConfigStore();
+			}
+			navi = configs.getPageNavi();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, origin, types);
+				List<Run> runs = buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						if(null != navi){
+							run.setPageNavi(navi);
+							mergeFinalQuery(runtime, run);
+						}
+						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 						list = edgeTables(runtime, idx++, true, list, catalog, schema, set);
+						if(null != navi){
+							//分页只查一次
+							break;
+						}
 					}
 				}
 			}catch (Exception e) {
@@ -5732,8 +5805,15 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if (null != runs) {
 						int idx = 0;
 						for (Run run : runs) {
+							if(null != navi){
+								run.setPageNavi(navi);
+								//mergeFinalQuery(runtime, run);
+							}
 							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 							list = comments(runtime, idx++, true, list, catalog, schema, set);
+							if(null != navi){
+								break;
+							}
 							//merge(list, maps);
 						}
 					}
@@ -5763,30 +5843,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				list = tmp;
 			}
 			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
-				//查询全部表结构
-				List<Column> columns = columns(runtime, random, greedy, catalog, schema, pattern);
-				for(EdgeTable edgeTable:list) {
-					Long tObjectId = edgeTable.getObjectId();
-					LinkedHashMap<String, Column> cols = new LinkedHashMap<>();
-					edgeTable.setColumns(cols);
-					for(Column column:columns) {
-						if(edgeTable.equals(column.getTable())) {
-							Catalog cCatalog = column.getCatalog();
-							Schema cSchema = column.getSchema();
-							Long cObjectId = column.getObjectId();
-							if(null != tObjectId && null != cObjectId && tObjectId == cObjectId) {
-								cols.put(column.getName().toUpperCase(), column);
-							}else{
-								if(equals(cCatalog, column.getCatalog())
-									&& equals(cSchema, column.getSchema())) {
-									cols.put(column.getName().toUpperCase(), column);
-								}
-							}
-						}
-					}
-					columns.removeAll(cols.values());
-				}
+				//查询全部表结构 columns()内部已经给edgeTable.columns赋值
+				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<EdgeTable>)list);
 			}
+			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+				//查询全部表结构
+				indexes(runtime, random, greedy, (List<EdgeTable>)list);
+			}
+			CacheProxy.tables(caches_key, list);
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -5806,47 +5870,54 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 */
 	protected void edgeTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
-		Map<String, String> names = CacheProxy.names(this, catalog, schema);
-		if(null == names || names.isEmpty()) {
-			if(null == random) {
-				random = random(runtime);
-			}
-			DriverAdapter adapter = runtime.getAdapter();
-			List<EdgeTable> edgeTables = null;
-			boolean sys = false; //根据系统表查询
-			if(greedy) {
-				catalog = null;
-				schema = null;
-			}
-			try {
-				List<Run> runs = buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, null, EdgeTable.TYPE.NORMAL.value);
-				if (null != runs && !runs.isEmpty()) {
-					int idx = 0;
-					for (Run run : runs) {
-						DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						edgeTables = edgeTables(runtime, idx++, true, edgeTables, catalog, schema, set);
-						CacheProxy.name(this, edgeTables);
-						sys = true;
+		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
+		//if(null == names || names.isEmpty()) {
+		if(null == random) {
+			random = random(runtime);
+		}
+		DriverAdapter adapter = runtime.getAdapter();
+		List<EdgeTable> edgeTables = null;
+		boolean sys = false; //根据系统表查询
+		if(greedy) {
+			catalog = null;
+			schema = null;
+		}
+		try {
+			//缓存 不需要configs条件及分页
+			List<Run> runs =buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, null, EdgeTable.TYPE.NORMAL.value, null);
+			if (null != runs && !runs.isEmpty()) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					edgeTables = edgeTables(runtime, idx++, true, edgeTables, catalog, schema, set);
+					for(EdgeTable edgeTable:edgeTables){
+						String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, edgeTable.getName());
+						CacheProxy.name(cache_key, edgeTable.getName());
 					}
+					sys = true;
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(!sys) {
+			try {
+				edgeTables = edgeTables(runtime, true, edgeTables, catalog, schema, null, EdgeTable.TYPE.NORMAL.value);
+				for(EdgeTable edgeTable:edgeTables){
+					String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, edgeTable.getName());
+					CacheProxy.name(cache_key, edgeTable.getName());
 				}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
-			if(!sys) {
-				try {
-					edgeTables = edgeTables(runtime, true, edgeTables, catalog, schema, null, EdgeTable.TYPE.NORMAL.value);
-					CacheProxy.name(this, edgeTables);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
+		//}
 
 	}
 
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		LinkedHashMap<String, T> edgeTables = new LinkedHashMap<>();
-		List<T> list = edgeTables(runtime, random, false, catalog, schema, pattern, types);
+		List<T> list = edgeTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
 		for(T edgeTable:list) {
 			edgeTables.put(edgeTable.getName().toUpperCase(), edgeTable);
 		}
@@ -5866,7 +5937,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
@@ -6023,6 +6094,21 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return null;
 	}
 	/**
+	 * edgeTable[结构集封装-依据]<br/>
+	 * 读取edgeTable元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return EdgeTableMetadataAdapter
+	 */
+	@Override
+	public EdgeTableMetadataAdapter edgeTableMetadataAdapter(DataRuntime runtime) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 EdgeTableMetadataAdapter edgeTableMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new EdgeTableMetadataAdapter();
+	}
+	
+
+	/**
 	 *
 	 * edgeTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
@@ -6130,27 +6216,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
+
 	/* *****************************************************************************************************************
 	 * 													view
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set)
 	 * <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends View> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> views, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, View view)
+	 * List<String> ddl(DataRuntime runtime, String random, View view, boolean init)
 	 * [命令合成]
 	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)
 	 * [结果集封装]<br/>
 	 * List<String> ddl(DataRuntime runtime, int index, View view, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
-
 	/**
+	 *
 	 * view[调用入口]<br/>
-	 * 查询视图
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -6158,84 +6249,95 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询视图结构
 	 * @return List
 	 * @param <T> View
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) {
-		LinkedHashMap<String,T> views = new LinkedHashMap<>();
+	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
+
 		try{
 			long fr = System.currentTimeMillis();
 			View search = new View();
-			if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
+			if(
+					(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
+							|| (supportSchema() && empty(schema))	//支持schema 但schema为空
+			) {
 				View tmp = new View();
-				if(!greedy) {
+				if(!greedy) { //非贪婪模式下 检测当前catalog schema
 					checkSchema(runtime, tmp);
 				}
-				if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
+				if(supportCatalog() && empty(catalog)) {
 					catalog = tmp.getCatalog();
 				}
-				if(null == schema || BasicUtil.isEmpty(schema.getName())) {
+				if(supportSchema() && empty(schema)) {
 					schema = tmp.getSchema();
 				}
 			}
-			search.setName(pattern);
+			String caches_key = CacheProxy.key(runtime, "views", greedy, catalog, schema, pattern, types, configs);
+			list = CacheProxy.views(caches_key);
+			if(null != list && !list.isEmpty()){
+				return list;
+			}
+			String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, pattern);
+			String origin = CacheProxy.name(cache_key);
+			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+				//先查出所有key并以大写缓存 用来实现忽略大小写
+				viewMap(runtime, random, greedy, catalog, schema, null);
+				origin = CacheProxy.name(cache_key);
+			}
+			if(null == origin) {
+				origin = pattern;
+			}
+			search.setName(origin);
 			search.setCatalog(catalog);
 			search.setSchema(schema);
-
-			DataRow view_map = CacheProxy.getViewMaps(runtime.datasource());
-			if(null != pattern) {
-				if(view_map.isEmpty()) {
-					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
-					LinkedHashMap<String,View> all = views(runtime, random, greedy, catalog, schema, null, types);
-					if(!greedy) {
-						for (View view : all.values()) {
-							if (equals(catalog, view.getCatalog()) && equals(schema, view.getSchema())) {
-								view_map.put(view.getName(greedy).toUpperCase(), view.getName(greedy));
-							}
-						}
-					}
-				}
-				if(view_map.containsKey(search.getName(greedy).toUpperCase())) {
-					pattern = view_map.getString(search.getName(greedy).toUpperCase());
-				}else{
-					pattern = search.getName(greedy);
-				}
+			PageNavi navi = null;
+			if(null == configs){
+				configs = new DefaultConfigStore();
 			}
-			// 根据系统表查询
+			navi = configs.getPageNavi();
+			// 根据系统视图查询
 			try{
-				if(null == configs){
-					configs = new DefaultConfigStore();
-				}
-				List<Run> runs = buildQueryViewsRun(runtime, greedy, catalog, schema, pattern, types);
+				List<Run> runs = buildQueryViewsRun(runtime, greedy, catalog, schema, origin, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
+						if(null != navi){
+							run.setPageNavi(navi);
+							mergeFinalQuery(runtime, run);
+						}
 						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						views = views(runtime, idx++, true, views, catalog, schema, set);
+						list = views(runtime, idx++, true, list, catalog, schema, set);
+						if(null != navi){
+							//分页只查一次
+							break;
+						}
 					}
 				}
 			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+					log.warn("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统视图查询失败", 33), catalog, schema, origin, e.toString());
 				}
 			}
-			if(null == views || views.isEmpty()) {
-				// 根据驱动内置接口补充
+
+			// 根据系统视图查询失败后根据驱动内置接口补充
+			if(list.isEmpty()) {
 				try {
-					LinkedHashMap<String, T> tmps = views(runtime, true, null, catalog, schema, pattern, types);
-					for (String key : tmps.keySet()) {
-						if (!views.containsKey(key.toUpperCase())) {
-							T item = tmps.get(key);
-							if (null != item) {
-								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
-									views.put(key.toUpperCase(), item);
-								}
+					list = views(runtime, true, list, catalog, schema, origin, types);
+					//删除跨库视图，JDBC驱动内置接口补充可能会返回跨库视图
+					if(!greedy) {
+						int size = list.size();
+						for(int i=size-1;i>=0; i--) {
+							View item = list.get(i);
+							if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+								list.remove(i);
 							}
 						}
 					}
@@ -6243,26 +6345,70 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}else {
-						log.warn("{}[views][][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, pattern, e.toString());
+						log.warn("{}[views][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+					}
+				}
+			}
+			boolean comment = false;
+			for(View view:list) {
+				if(BasicUtil.isNotEmpty(view.getComment())) {
+					comment = true;
+					break;
+				}
+			}
+			//视图备注
+			if(!comment) {
+				try {
+					List<Run> runs = buildQueryViewsCommentRun(runtime, catalog, schema, origin, types);
+					if (null != runs) {
+						int idx = 0;
+						for (Run run : runs) {
+							if(null != navi){
+								run.setPageNavi(navi);
+								//mergeFinalQuery(runtime, run);
+							}
+							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							list = comments(runtime, idx++, true, list, catalog, schema, set);
+							if(null != navi){
+								break;
+							}
+							//merge(list, maps);
+						}
+					}
+				} catch (Exception e) {
+					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+						log.info("{}[views][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统视图查询失败", 33), catalog, schema, origin, e.toString());
 					}
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, pattern, types, views.size(), DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[views][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
-			if(BasicUtil.isNotEmpty(pattern)) {
-				pattern = pattern.replace("%",".*");
-				LinkedHashMap<String,T> tmps = new LinkedHashMap<>();
-				List<String> keys = BeanUtil.getMapKeys(views);
-				for(String key:keys) {
-					T item = views.get(key);
-					String name = item.getName(greedy);
-					if(RegularUtil.match(name, pattern, Regular.MATCH_MODE.MATCH)) {
-						tmps.put(name.toUpperCase(), item);
+			if(BasicUtil.isNotEmpty(origin)) {
+				origin = origin.replace("%",".*");
+				//有视图名的，根据视图名过滤出符合条件的
+				List<T> tmp = new ArrayList<>();
+				for(T item:list) {
+					String name = item.getName(greedy)+"";
+					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+							tmp.add(item);
+						}
 					}
 				}
-				views = tmps;
+				list = tmp;
 			}
+			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+				//查询全部视图结构 columns()内部已经给view.columns赋值
+				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<View>)list);
+			}
+			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+				//查询全部视图结构
+				indexes(runtime, random, greedy, (List<View>)list);
+			}
+			CacheProxy.views(caches_key, list);
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
@@ -6270,24 +6416,106 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				log.error("[views][result:fail][msg:{}]", e.toString());
 			}
 		}
+		return list;
+	}
+
+	/**
+	 * view[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	protected void viewMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
+		//if(null == names || names.isEmpty()) {
+		if(null == random) {
+			random = random(runtime);
+		}
+		DriverAdapter adapter = runtime.getAdapter();
+		List<View> views = null;
+		boolean sys = false; //根据系统视图查询
+		if(greedy) {
+			catalog = null;
+			schema = null;
+		}
+		try {
+			//缓存 不需要configs条件及分页
+			List<Run> runs =buildQueryViewsRun(runtime, greedy, catalog, schema, null, View.TYPE.NORMAL.value, null);
+			if (null != runs && !runs.isEmpty()) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					views = views(runtime, idx++, true, views, catalog, schema, set);
+					for(View view:views){
+						String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, view.getName());
+						CacheProxy.name(cache_key, view.getName());
+					}
+					sys = true;
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(!sys) {
+			try {
+				views = views(runtime, true, views, catalog, schema, null, View.TYPE.NORMAL.value);
+				for(View view:views){
+					String cache_key = CacheProxy.key(runtime, "view", greedy, catalog, schema, view.getName());
+					CacheProxy.name(cache_key, view.getName());
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		//}
+
+	}
+
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		LinkedHashMap<String, T> views = new LinkedHashMap<>();
+		List<T> list = views(runtime, random, false, catalog, schema, pattern, types, struct, configs);
+		for(T view:list) {
+			views.put(view.getName().toUpperCase(), view);
+		}
 		return views;
 	}
 
 	/**
 	 * view[命令合成]<br/>
-	 * 查询视图
+	 * 查询视图,不是查视图中的数据
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types Metadata.TYPE.
-	 * @return List
+	 * @param types  Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
 	public List<Run> buildQueryViewsRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * view[命令合成]<br/>
+	 * 查询视图备注
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	public List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryViewsCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6315,6 +6543,20 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return views;
 	}
+
+	/**
+	 * view[结果集封装]<br/>
+	 *  根据查询结果集构造View
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryViewsRun返回顺序
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param views 上一步查询结果
+	 * @param set 查询结果集
+	 * @return views
+	 * @throws Exception 异常
+	 */
 	@Override
 	public <T extends View> List<T> views(DataRuntime runtime, int index, boolean create, List<T> views, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
@@ -6328,7 +6570,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * view[结果集封装]<br/>
-	 * 根据根据驱动内置接口补充
+	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param views 上一步查询结果
@@ -6351,14 +6593,89 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
+	 * view[结果集封装]<br/>
+	 * 根据驱动内置方法补充
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param views 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return views
+	 * @throws Exception 异常
+	 * @param <T> View
+	 */
+	@Override
+	public <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> List<T> views(DataRuntime runtime, boolean create, List<T> views, Catalog catalog, Schema schema, String pattern, int types)", 37));
+		}
+		if(null == views) {
+			views = new ArrayList<>();
+		}
+		return views;
+	}
+
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装View对象,只封装catalog,schema,name等基础属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param row 查询结果集
+	 * @return View
+	 * @param <T> View
+	 */
+	@Override
+	public <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return null;
+	}
+	/**
+	 * view[结果集封装]<br/>
+	 * 根据查询结果封装View对象,更多属性
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param meta 上一步封装结果
+	 * @param row 查询结果集
+	 * @return View
+	 * @param <T> View
+	 */
+	@Override
+	public <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
+		}
+		return null;
+	}
+	/**
+	 * view[结构集封装-依据]<br/>
+	 * 读取view元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return ViewMetadataAdapter
+	 */
+	@Override
+	public ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 ViewMetadataAdapter viewMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new ViewMetadataAdapter();
+	}
+
+	/**
+	 *
 	 * view[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param view 视图
+	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view) {
+	public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
@@ -6366,13 +6683,45 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		try {
 			long fr = System.currentTimeMillis();
 			List<Run> runs = buildQueryDdlsRun(runtime, view);
-			if (null != runs) {
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					//不要传view,这里的view用来查询视图结构
+					DataSet set = select(runtime, random, true, (View)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					list = ddl(runtime, idx++, view, list, set);
 				}
 				view.setDdls(list);
+			}else{
+				//数据库不支持的 根据metadata拼装
+				LinkedHashMap<String, Column> columns = view.getColumns();
+				if(null == columns || columns.isEmpty()) {
+					columns = columns(runtime, random, false, view, true);
+					view.setColumns(columns);
+					view.setTags(tags(runtime, random, false, view));
+				}
+				PrimaryKey pk = view.getPrimaryKey();
+				if(null == pk) {
+					pk = primary(runtime, random, false, view);
+				}
+				if (null != pk) {
+					for (String col : pk.getColumns().keySet()) {
+						Column column = columns.get(col.toUpperCase());
+						if (null != column) {
+							column.primary(true);
+						}
+					}
+				}
+				view.setPrimaryKey(pk);
+				LinkedHashMap<String, Index> indexes = view.getIndexes();
+				if(null == indexes || indexes.isEmpty()) {
+					view.setIndexes(indexes(runtime, random, view, null));
+				}
+				runs = buildCreateRun(runtime, view);
+				for(Run run:runs) {
+					list.add(run.getFinalUpdate());
+					view.setDdls(list);
+				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
 				log.info("{}[view ddl][view:{}][result:{}][执行耗时:{}]", random, view.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
@@ -6381,7 +6730,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-				log.info("{}[view ddl][{}][view:{}][msg:{}]", random, LogUtil.format("查询视图创建DDL失败", 33), view.getName(), e.toString());
+				log.info("{}[view ddl][{}][view:{}][msg:{}]", random, LogUtil.format("查询视图的创建DDL失败", 33), view.getName(), e.toString());
 			}
 		}
 		return list;
@@ -6389,26 +6738,26 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 	/**
 	 * view[命令合成]<br/>
-	 * 查询view DDL
+	 * 查询视图DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param view view
+	 * @param view 视图
 	 * @return List
 	 */
 	@Override
 	public List<Run> buildQueryDdlsRun(DataRuntime runtime, View view) throws Exception {
-		List<Run> runs = new ArrayList<>();
+		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, View view)", 37));
 		}
-		return runs;
+		return new ArrayList<>();
 	}
 
 	/**
 	 * view[结果集封装]<br/>
-	 * 查询 view DDL
+	 * 查询视图DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param view view
+	 * @param view 视图
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
@@ -6424,60 +6773,32 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return ddls;
 	}
 
-	/**
-	 * view[结果集封装]<br/>
-	 * 根据查询结果封装view对象,只封装catalog,schema,name等基础属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 上一步封装结果
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param row 查询结果集
-	 * @return View
-	 */
-	@Override
-	public <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
-		}
-		return meta;
-	}
-	/**
-	 * view[结果集封装]<br/>
-	 * 根据查询结果封装view对象,更多属性
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param meta 上一步封装结果
-	 * @param row 查询结果集
-	 * @return View
-	 */
-	@Override
-	public <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
-		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends View> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
-		}
-		return meta;
-	}
+
 	/* *****************************************************************************************************************
-	 * 													master table
+	 * 													masterTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, String types, boolean struct)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs)
+	 * List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
 	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
-	 * [结果集封装]<br/>
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, MasterTable table)
+	 * List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
-
 	/**
-	 * master table[调用入口]<br/>
-	 * 查询主表
+	 *
+	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
@@ -6485,71 +6806,95 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
 	 * @param types  Metadata.TYPE.
+	 * @param struct 是否查询表结构
 	 * @return List
 	 * @param <T> MasterTable
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-		LinkedHashMap<String, T> tables = new LinkedHashMap<>();
+	@Override
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		List<T> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
+
 		try{
 			long fr = System.currentTimeMillis();
-			if(null == catalog || null == schema || BasicUtil.isEmpty(catalog.getName()) || BasicUtil.isEmpty(schema.getName()) ) {
-				Table tmp = new Table();
-				if(!greedy) {
+			MasterTable search = new MasterTable();
+			if(
+					(supportCatalog() && empty(catalog))    //支持catalog 但catalog为空
+							|| (supportSchema() && empty(schema))	//支持schema 但schema为空
+			) {
+				MasterTable tmp = new MasterTable();
+				if(!greedy) { //非贪婪模式下 检测当前catalog schema
 					checkSchema(runtime, tmp);
 				}
-				if(null == catalog || BasicUtil.isEmpty(catalog.getName())) {
+				if(supportCatalog() && empty(catalog)) {
 					catalog = tmp.getCatalog();
 				}
-				if(null == schema || BasicUtil.isEmpty(schema.getName())) {
+				if(supportSchema() && empty(schema)) {
 					schema = tmp.getSchema();
 				}
 			}
-			DataRow table_map = CacheProxy.getTableMaps(runtime.datasource());
-			if(null != pattern) {
-				if(table_map.isEmpty()) {
-					// 如果是根据表名查询、大小写有可能造成查询失败,先查询全部表,生成缓存,再从缓存中不区分大小写查询
-					LinkedHashMap<String, MasterTable> all = masterTables(runtime, random, greedy, catalog, schema, null, types);
-					for(Table table:all.values()) {
-						table_map.put(table.getName().toUpperCase(), table.getName());
-					}
-				}
-				if(table_map.containsKey(pattern.toUpperCase())) {
-					pattern = table_map.getString(pattern.toUpperCase());
-				}
+			String caches_key = CacheProxy.key(runtime, "masterTables", greedy, catalog, schema, pattern, types, configs);
+			list = CacheProxy.masterTables(caches_key);
+			if(null != list && !list.isEmpty()){
+				return list;
 			}
-
+			String cache_key = CacheProxy.key(runtime, "masterTable", greedy, catalog, schema, pattern);
+			String origin = CacheProxy.name(cache_key);
+			if(null == origin && ConfigTable.IS_METADATA_IGNORE_CASE) {
+				//先查出所有key并以大写缓存 用来实现忽略大小写
+				masterTableMap(runtime, random, greedy, catalog, schema, null);
+				origin = CacheProxy.name(cache_key);
+			}
+			if(null == origin) {
+				origin = pattern;
+			}
+			search.setName(origin);
+			search.setCatalog(catalog);
+			search.setSchema(schema);
+			PageNavi navi = null;
+			if(null == configs){
+				configs = new DefaultConfigStore();
+			}
+			navi = configs.getPageNavi();
 			// 根据系统表查询
 			try{
-				List<Run> runs = buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
+				List<Run> runs = buildQueryMasterTablesRun(runtime, greedy, catalog, schema, origin, types, configs);
 				if(null != runs) {
 					int idx = 0;
 					for(Run run:runs) {
-						DataSet set = select(runtime, random, true, (String)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-						tables = masterTables(runtime, idx++, true, tables, catalog, schema, set);
+						if(null != navi){
+							run.setPageNavi(navi);
+							mergeFinalQuery(runtime, run);
+						}
+						DataSet set = select(runtime, random, true, (String)null, configs.keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+						list = masterTables(runtime, idx++, true, list, catalog, schema, set);
+						if(null != navi){
+							//分页只查一次
+							break;
+						}
 					}
 				}
 			}catch (Exception e) {
 				if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 					e.printStackTrace();
 				}else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.toString());
+					log.warn("{}[masterTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
 				}
 			}
 
-			if(null == tables || tables.isEmpty() ) {
-				// 根据驱动内置接口补充
+			// 根据系统表查询失败后根据驱动内置接口补充
+			if(list.isEmpty()) {
 				try {
-					LinkedHashMap<String, T> tmps = masterTables(runtime, true, tables, catalog, schema, pattern, types);
-					for (String key : tmps.keySet()) {
-						if (!tables.containsKey(key.toUpperCase())) {
-							T item = tmps.get(key);
-							if (null != item) {
-								if (greedy || (catalog + "_" + schema).equalsIgnoreCase(item.getCatalog() + "_" + item.getSchema())) {
-									tables.put(key.toUpperCase(), item);
-								}
+					list = masterTables(runtime, true, list, catalog, schema, origin, types);
+					//删除跨库表，JDBC驱动内置接口补充可能会返回跨库表
+					if(!greedy) {
+						int size = list.size();
+						for(int i=size-1;i>=0; i--) {
+							MasterTable item = list.get(i);
+							if(!equals(catalog, item.getCatalog()) || !equals(schema, item.getSchema())) {
+								list.remove(i);
 							}
 						}
 					}
@@ -6557,35 +6902,157 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 					if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 						e.printStackTrace();
 					}else {
-						log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, pattern, e.toString());
+						log.warn("{}[masterTables][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据驱动内置接口补充失败", 33), catalog, schema, origin, e.toString());
+					}
+				}
+			}
+			boolean comment = false;
+			for(MasterTable masterTable:list) {
+				if(BasicUtil.isNotEmpty(masterTable.getComment())) {
+					comment = true;
+					break;
+				}
+			}
+			//表备注
+			if(!comment) {
+				try {
+					List<Run> runs = buildQueryMasterTablesCommentRun(runtime, catalog, schema, origin, types);
+					if (null != runs) {
+						int idx = 0;
+						for (Run run : runs) {
+							if(null != navi){
+								run.setPageNavi(navi);
+								//mergeFinalQuery(runtime, run);
+							}
+							DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+							list = comments(runtime, idx++, true, list, catalog, schema, set);
+							if(null != navi){
+								break;
+							}
+							//merge(list, maps);
+						}
+					}
+				} catch (Exception e) {
+					if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+						e.printStackTrace();
+					} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+						log.info("{}[masterTables][{}][catalog:{}][schema:{}][pattern:{}][msg:{}]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, origin, e.toString());
 					}
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, pattern, types, tables.size(), DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[masterTables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}]", random, catalog, schema, origin, types, list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
+			if(BasicUtil.isNotEmpty(origin)) {
+				origin = origin.replace("%",".*");
+				//有表名的，根据表名过滤出符合条件的
+				List<T> tmp = new ArrayList<>();
+				for(T item:list) {
+					String name = item.getName(greedy)+"";
+					if(RegularUtil.match(name.toUpperCase(), origin.toUpperCase(), Regular.MATCH_MODE.MATCH)) {
+						if(equals(catalog, item.getCatalog()) && equals(schema, item.getSchema())) {
+							tmp.add(item);
+						}
+					}
+				}
+				list = tmp;
+			}
+			if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+				//查询全部表结构 columns()内部已经给masterTable.columns赋值
+				List<Column> columns = columns(runtime, random, greedy, catalog, schema, (List<MasterTable>)list);
+			}
+			if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+				//查询全部表结构
+				indexes(runtime, random, greedy, (List<MasterTable>)list);
+			}
+			CacheProxy.tables(caches_key, list);
 		}catch (Exception e) {
 			if(ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			}else{
-				log.error("[mtables][result:fail][msg:{}]", e.toString());
+				log.error("[masterTables][result:fail][msg:{}]", e.toString());
 			}
 		}
-		return tables;
+		return list;
 	}
 
 	/**
-	 * master table[命令合成]<br/>
-	 * 查询主表
+	 * masterTable[结果集封装-子流程]<br/>
+	 * 查出所有key并以大写缓存 用来实现忽略大小写
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param catalog catalog
+	 * @param schema schema
+	 */
+	protected void masterTableMap(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, ConfigStore configs) {
+		//Map<String, String> names = CacheProxy.names(this, catalog, schema);
+		//if(null == names || names.isEmpty()) {
+		if(null == random) {
+			random = random(runtime);
+		}
+		DriverAdapter adapter = runtime.getAdapter();
+		List<MasterTable> masterTables = null;
+		boolean sys = false; //根据系统表查询
+		if(greedy) {
+			catalog = null;
+			schema = null;
+		}
+		try {
+			//缓存 不需要configs条件及分页
+			List<Run> runs =buildQueryMasterTablesRun(runtime, greedy, catalog, schema, null, MasterTable.TYPE.NORMAL.value, null);
+			if (null != runs && !runs.isEmpty()) {
+				int idx = 0;
+				for (Run run : runs) {
+					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					masterTables = masterTables(runtime, idx++, true, masterTables, catalog, schema, set);
+					for(MasterTable masterTable:masterTables){
+						String cache_key = CacheProxy.key(runtime, "masterTable", greedy, catalog, schema, masterTable.getName());
+						CacheProxy.name(cache_key, masterTable.getName());
+					}
+					sys = true;
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(!sys) {
+			try {
+				masterTables = masterTables(runtime, true, masterTables, catalog, schema, null, MasterTable.TYPE.NORMAL.value);
+				for(MasterTable masterTable:masterTables){
+					String cache_key = CacheProxy.key(runtime, "masterTable", greedy, catalog, schema, masterTable.getName());
+					CacheProxy.name(cache_key, masterTable.getName());
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		//}
+
+	}
+
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		LinkedHashMap<String, T> masterTables = new LinkedHashMap<>();
+		List<T> list = masterTables(runtime, random, false, catalog, schema, pattern, types, struct, configs);
+		for(T masterTable:list) {
+			masterTables.put(masterTable.getName().toUpperCase(), masterTable);
+		}
+		return masterTables;
+	}
+
+	/**
+	 * masterTable[命令合成]<br/>
+	 * 查询表,不是查表中的数据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern 名称统配符或正则
-	 * @param types types
+	 * @param types  Metadata.TYPE.
 	 * @return String
+	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
@@ -6593,125 +7060,122 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 *  根据查询结果集构造Table
+	 * masterTable[命令合成]<br/>
+	 * 查询表备注
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryMasterTablesRun返回顺序
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return String
+	 * @throws Exception Exception
+	 */
+	public List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryMasterTablesCommentRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * masterTable[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
+	 * @param masterTables 上一步查询结果
 	 * @param set 查询结果集
-	 * @return tables
+	 * @return masterTables
 	 * @throws Exception 异常
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set) throws Exception {
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+		if(null == masterTables) {
+			masterTables = new LinkedHashMap<>();
 		}
-		return tables;
+		return masterTables;
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 * 根据根据驱动内置接口
+	 * masterTable[结果集封装]<br/>
+	 *  根据查询结果集构造MasterTable
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照buildQueryMasterTablesRun返回顺序
 	 * @param create 上一步没有查到的,这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @return tables
+	 * @param masterTables 上一步查询结果
+	 * @param set 查询结果集
+	 * @return masterTables
 	 * @throws Exception 异常
 	 */
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	@Override
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> tables,Catalog catalog, Schema schema, String pattern, int types)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> List<T> masterTables(DataRuntime runtime, int index, boolean create, List<T> masterTables, Catalog catalog, Schema schema, DataSet set)", 37));
 		}
-		if(null == tables) {
-			tables = new LinkedHashMap<>();
+		if(null == masterTables) {
+			masterTables = new ArrayList<>();
 		}
-		return tables;
+		return masterTables;
 	}
 
 	/**
-	 * master table[调用入口]<br/>
+	 * masterTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param random 用来标记同一组命令
-	 * @param table MasterTable
-	 * @return List
-	 */
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
-
-		List<String> list = new ArrayList<>();
-		if(null == random) {
-			random = random(runtime);
-		}
-		try {
-			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, table);
-			if (null != runs) {
-				int idx = 0;
-				for (Run run : runs) {
-					DataSet set = select(runtime, random, true, (Table)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, table, list, set);
-				}
-				table.setDdls(list);
-			}
-			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[master table ddl][table:{}][result:{}][执行耗时:{}]", random, table.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
-			}
-		}catch (Exception e) {
-			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
-				e.printStackTrace();
-			} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-				log.info("{}[master table ddl][{}][table:{}][msg:{}]", random, LogUtil.format("查询主表创建DDL失败", 33), table.getName(), e.toString());
-			}
-		}
-		return list;
-	}
-
-	/**
-	 * master table[命令合成]<br/>
-	 * 查询 MasterTable DDL
-	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param table MasterTable
-	 * @return List
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param masterTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return masterTables
+	 * @throws Exception 异常
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table) throws Exception {
-		List<Run> runs = new ArrayList<>();
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable table)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, boolean create, LinkedHashMap<String, T> masterTables, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
-		return runs;
+		if(null == masterTables) {
+			masterTables = new LinkedHashMap<>();
+		}
+		return masterTables;
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
-	 * 查询 MasterTable DDL
+	 * masterTable[结果集封装]<br/>
+	 * 根据驱动内置方法补充
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param table MasterTable
-	 * @param ddls 上一步查询结果
-	 * @param set sql执行的结果集
-	 * @return List
+	 * @param create 上一步没有查到的,这一步是否需要新创建
+	 * @param masterTables 上一步查询结果
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern 名称统配符或正则
+	 * @param types types Metadata.TYPE.
+	 * @return masterTables
+	 * @throws Exception 异常
+	 * @param <T> MasterTable
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set) {
-		if(null == ddls) {
-			ddls = new ArrayList<>();
-		}
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, MasterTable table, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> List<T> masterTables(DataRuntime runtime, boolean create, List<T> masterTables, Catalog catalog, Schema schema, String pattern, int types)", 37));
 		}
-		return ddls;
+		if(null == masterTables) {
+			masterTables = new ArrayList<>();
+		}
+		return masterTables;
 	}
 
 	/**
-	 * master table[结果集封装]<br/>
+	 * masterTable[结果集封装]<br/>
 	 * 根据查询结果封装MasterTable对象,只封装catalog,schema,name等基础属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
@@ -6719,29 +7183,154 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param schema schema
 	 * @param row 查询结果集
 	 * @return MasterTable
+	 * @param <T> MasterTable
 	 */
 	@Override
 	public <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T init(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
-		return meta;
+		return null;
 	}
 	/**
-	 * master table[结果集封装]<br/>
+	 * masterTable[结果集封装]<br/>
 	 * 根据查询结果封装MasterTable对象,更多属性
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param meta 上一步封装结果
 	 * @param row 查询结果集
 	 * @return MasterTable
+	 * @param <T> MasterTable
 	 */
 	@Override
 	public <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row) {
 		if(log.isDebugEnabled()) {
 			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends MasterTable> T detail(DataRuntime runtime, int index, T meta, Catalog catalog, Schema schema, DataRow row)", 37));
 		}
-		return meta;
+		return null;
 	}
+	/**
+	 * masterTable[结构集封装-依据]<br/>
+	 * 读取masterTable元数据结果集的依据
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @return MasterTableMetadataAdapter
+	 */
+	@Override
+	public MasterTableMetadataAdapter masterTableMetadataAdapter(DataRuntime runtime) {
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 MasterTableMetadataAdapter masterTableMetadataAdapter(DataRuntime runtime)", 37));
+		}
+		return new MasterTableMetadataAdapter();
+	}
+
+
+	/**
+	 *
+	 * masterTable[调用入口]<br/>
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param random 用来标记同一组命令
+	 * @param masterTable 表
+	 * @param init 是否还原初始状态 如自增状态
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init) {
+		List<String> list = new ArrayList<>();
+		if(null == random) {
+			random = random(runtime);
+		}
+		try {
+			long fr = System.currentTimeMillis();
+			List<Run> runs = buildQueryDdlsRun(runtime, masterTable);
+			if (null != runs && runs.size()>0) {
+				//直接查询DDL
+				int idx = 0;
+				for (Run run : runs) {
+					//不要传masterTable,这里的masterTable用来查询表结构
+					DataSet set = select(runtime, random, true, (MasterTable)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
+					list = ddl(runtime, idx++, masterTable, list, set);
+				}
+				masterTable.setDdls(list);
+			}else{
+				//数据库不支持的 根据metadata拼装
+				LinkedHashMap<String, Column> columns = masterTable.getColumns();
+				if(null == columns || columns.isEmpty()) {
+					columns = columns(runtime, random, false, masterTable, true);
+					masterTable.setColumns(columns);
+					masterTable.setTags(tags(runtime, random, false, masterTable));
+				}
+				PrimaryKey pk = masterTable.getPrimaryKey();
+				if(null == pk) {
+					pk = primary(runtime, random, false, masterTable);
+				}
+				if (null != pk) {
+					for (String col : pk.getColumns().keySet()) {
+						Column column = columns.get(col.toUpperCase());
+						if (null != column) {
+							column.primary(true);
+						}
+					}
+				}
+				masterTable.setPrimaryKey(pk);
+				LinkedHashMap<String, Index> indexes = masterTable.getIndexes();
+				if(null == indexes || indexes.isEmpty()) {
+					masterTable.setIndexes(indexes(runtime, random, masterTable, null));
+				}
+				runs = buildCreateRun(runtime, masterTable);
+				for(Run run:runs) {
+					list.add(run.getFinalUpdate());
+					masterTable.setDdls(list);
+				}
+			}
+			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
+				log.info("{}[masterTable ddl][masterTable:{}][result:{}][执行耗时:{}]", random, masterTable.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+			}
+		}catch (Exception e) {
+			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
+				e.printStackTrace();
+			} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
+				log.info("{}[masterTable ddl][{}][masterTable:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), masterTable.getName(), e.toString());
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * masterTable[命令合成]<br/>
+	 * 查询表DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param masterTable 表
+	 * @return List
+	 */
+	@Override
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable) throws Exception {
+		//有支持直接查询DDL的在子类中实现
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable)", 37));
+		}
+		return new ArrayList<>();
+	}
+
+	/**
+	 * masterTable[结果集封装]<br/>
+	 * 查询表DDL
+	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
+	 * @param masterTable 表
+	 * @param ddls 上一步查询结果
+	 * @param set sql执行的结果集
+	 * @return List
+	 */
+	@Override
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set) {
+		if(null == ddls) {
+			ddls = new ArrayList<>();
+		}
+		if(log.isDebugEnabled()) {
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set)", 37));
+		}
+		return ddls;
+	}
+
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
@@ -7096,7 +7685,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
 		List<T> columns = new ArrayList<>();
 		long fr = System.currentTimeMillis();
 		if(null == random) {
@@ -7200,9 +7789,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -7260,9 +7849,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> columns, DataSet set) throws Exception {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> columns, DataSet set)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8074,7 +8663,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
-	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<Table> tables) {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, String random, boolean greedy, Collection<? extends Table> tables) {
 		List<T> indexes = null;
 		if(null == random) {
 			random = random(runtime);
@@ -8269,9 +8858,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		return new ArrayList<>();
 	}
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -8350,7 +8939,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		}
 		return indexes;
 	}
-	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> indexes, DataSet set) throws Exception {
+	public <T extends Index> List<T> indexes(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> indexes, DataSet set) throws Exception {
 		if(null == indexes) {
 			indexes = new ArrayList<>();
 		}

@@ -876,6 +876,22 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
     }
 
 
+    /**
+     * table[命令合成]<br/>
+     * 查询表,不是查表中的数据
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param greedy 贪婪模式 true:查询权限范围内尽可能多的数据
+     * @param catalog catalog
+     * @param schema schema
+     * @param pattern 名称统配符或正则
+     * @param types  Metadata.TYPE.
+     * @return String
+     * @throws Exception Exception
+     */
+    @Override
+    public List<Run> buildQueryTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
+        return new ArrayList<>();
+    }
 
     /**
      * table[调用入口]<br/>
@@ -898,7 +914,41 @@ public class MongoAdapter extends AbstractDriverAdapter implements DriverAdapter
         for(String name:names){
             tables.add((T)new Table(name));
         }
+        if(Metadata.check(struct, Metadata.TYPE.COLUMN)) {
+            //查询全部表结构 columns()内部已经给table.columns赋值
+            columns(runtime, random, greedy, catalog, schema, (List<Table>)tables);
+        }
+        if(Metadata.check(struct, Metadata.TYPE.INDEX)) {
+            //查询全部表结构
+            indexes(runtime, random, greedy, (List<Table>)tables);
+        }
         return tables;
+    }
+
+    /**
+     * column[调用入口]<br/>(方法1)<br/>
+     * 查询多个表列，并分配到每个表中，需要保持所有表的catalog,schema相同
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
+     * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+     * @param catalog catalog
+     * @param schema schema
+     * @param tables 表
+     * @return List
+     * @param <T> Column
+     */
+    @Override
+    public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
+        List<T> columns = new ArrayList<>();
+        MongoRuntime rt = (MongoRuntime) runtime;
+        MongoDatabase database = rt.getDatabase();
+        for(Table table:tables){
+            MongoCollection collection = database.getCollection(table.getName());
+            if(null != collection){
+
+            }
+        }
+        return columns;
     }
     @Override
     public <T extends Metadata> void checkSchema(DataRuntime runtime, T meta) {

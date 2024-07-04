@@ -3055,7 +3055,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		return super.buildQueryVertexTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
@@ -3254,7 +3254,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> EdgeTable
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
 	}
 
@@ -3275,7 +3275,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception Exception
 	 */
 	@Override
-	public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
 		return super.buildQueryEdgeTablesRun(runtime, greedy, catalog, schema, pattern, types);
 	}
 
@@ -3440,9 +3440,9 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
-	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
 	 * [命令合成]
-	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+	 * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
 	 * [结果集封装]<br/>
 	 * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
 	 * [结果集封装]<br/>
@@ -3469,7 +3469,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> MasterTable
 	 */
 	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
 	}
 
@@ -3484,7 +3484,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return String
 	 */
 	@Override
-	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+	public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) throws Exception {
 		return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
 	}
 
@@ -3902,7 +3902,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @return runs
 	 */
 	@Override
-	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<Table> tables, boolean metadata) throws Exception {
+	public List<Run> buildQueryColumnsRun(DataRuntime runtime, Catalog catalog, Schema schema, Collection<? extends Table> tables, boolean metadata) throws Exception {
 		return super.buildQueryColumnsRun(runtime, catalog, schema, tables, metadata);
 	}
 	/**
@@ -3962,7 +3962,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @throws Exception 异常
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<Table> tables, List<T> columns, DataSet set) throws Exception {
+	public <T extends Column> List<T> columns(DataRuntime runtime, int index, boolean create, Collection<? extends Table> tables, List<T> columns, DataSet set) throws Exception {
 		if(null == columns) {
 			columns = new ArrayList<>();
 		}
@@ -4000,7 +4000,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 	 * @param <T> Column
 	 */
 	@Override
-	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<Table> tables) {
+	public <T extends Column> List<T> columns(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, Collection<? extends Table> tables) {
 		return super.columns(runtime, random, greedy, catalog, schema, tables);
 	}
 
@@ -4288,7 +4288,7 @@ public abstract class AbstractGraphAdapter extends AbstractDriverAdapter {
 		return super.buildQueryIndexesRun(runtime, table, name);
 	}
 	@Override
-	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+	public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
 		return super.buildQueryIndexesRun(runtime, tables);
 	}
 

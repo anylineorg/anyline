@@ -18,16 +18,15 @@
 
 package org.anyline.proxy;
 
-import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
-import org.anyline.data.adapter.DriverAdapter;
-import org.anyline.entity.DataRow;
+import org.anyline.data.param.ConfigStore;
+import org.anyline.data.runtime.DataRuntime;
 import org.anyline.metadata.*;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
+import org.anyline.metadata.graph.EdgeTable;
+import org.anyline.metadata.graph.VertexTable;
+import org.anyline.util.encrypt.MD5Util;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,18 +37,89 @@ public class CacheProxy {
     public static void init(CacheProvider provider) {
         CacheProxy.provider = provider;
     }
+/*
 
     private static Map<String, DataRow> cache_columns = new HashMap<>();
     private static Map<String, Map<String, String>>  cache_names = new HashMap<>();
     private static Map<String, DataRow> cache_table_maps = new HashMap<>();
     private static Map<String, DataRow> cache_view_maps = new HashMap<>();
+*/
+
+    private static Map<String, Object> caches = new HashMap<>();
+    private static Map<String, String> names = new HashMap<>();
+
+    public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs){
+        StringBuilder key = new StringBuilder();
+        key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
+        if(null != catalog){
+            key.append(catalog.getName());
+        }
+        key.append("_");
+        if(null != schema){
+            key.append(schema.getName());
+        }
+        key.append("_").append(pattern).append("_").append(types);
+        if(null != configs){
+            key.append(MD5Util.crypto(configs.json()));;
+        }
+        return key.toString().toUpperCase();
+    }
+    public static String key(DataRuntime runtime, String flag, boolean greedy, Catalog catalog, Schema schema, String pattern){
+        StringBuilder key = new StringBuilder();
+        key.append(runtime.datasource()).append("_").append(flag).append("_").append(greedy).append("_");
+        if(null != catalog){
+            key.append(catalog.getName());
+        }
+        key.append("_");
+        if(null != schema){
+            key.append(schema.getName());
+        }
+        key.append("_").append(pattern);
+        return key.toString().toUpperCase();
+    }
+    public static String name(String key) {
+        return names.get(key.toUpperCase());
+    }
+    public static void name(String key, String origin) {
+        names.put(key.toUpperCase(), origin);
+    }
+    public static  <T extends Table> List<T> tables(String cache){
+        List<T> tables = (List<T>)caches.get(cache);
+        return tables;
+    }
+    public static  <T extends MasterTable> List<T> masterTables(String cache){
+        List<T> tables = (List<T>)caches.get(cache);
+        return tables;
+    }
+    public static  <T extends EdgeTable> List<T> edgeTables(String cache){
+        List<T> tables = (List<T>)caches.get(cache);
+        return tables;
+    }
+    public static  <T extends VertexTable> List<T> vertexTables(String cache){
+        List<T> tables = (List<T>)caches.get(cache);
+        return tables;
+    }
+    public static  <T extends Table> void tables(String cache, List<T> tables){
+        caches.put(cache, tables);
+    }
+
+    public static  <T extends View> List<T> views(String cache){
+        List<T> view = (List<T>)caches.get(cache);
+        return view;
+    }
+    public static  <T extends View> void views(String cache, List<T> view){
+        caches.put(cache, view);
+    }
+
+/*
     public static <T extends Table> void name(DriverAdapter adapter, List<T> tables) {
         if(null != tables) {
             for (Table table : tables) {
                 name(adapter, table.getCatalog(), table.getSchema(), table.getName(), table.getName());
             }
         }
-    }
+    }*/
+/*
     private static String key(DriverAdapter adapter, Catalog catalog, Schema schema) {
         String key = null;
         String catalog_name = null;
@@ -94,7 +164,7 @@ public class CacheProxy {
             key = key.toUpperCase();
         }
         return key;
-    }
+    }*//*
     public static void name(DriverAdapter adapter, Catalog catalog, Schema schema, String name, String origin) {
         String group_key = key(adapter, catalog, schema);
         Map<String, String> maps = cache_names.get(group_key);
@@ -131,8 +201,8 @@ public class CacheProxy {
             }
         }
         return null;
-    }
-    public static String datasource(String datasource) {
+    }*/
+    /*public static String datasource(String datasource) {
         if(null == datasource || "common".equalsIgnoreCase(datasource)) {
             //datasource = DataSourceHolder.curDataSource();
         }
@@ -141,7 +211,7 @@ public class CacheProxy {
         }
         return datasource.toUpperCase();
     }
-
+*//*
     public static String tableName(String datasource, String name) {
         DataRow row = cache_table_maps.get(datasource(datasource));
         if(null != row) {
@@ -161,41 +231,29 @@ public class CacheProxy {
     }
     public static void setViewMaps(String datasource, DataRow maps) {
         cache_view_maps.put(datasource(datasource), maps);
-    }
+    }*/
 
-    /**
-     * 表缓存
-     * @param datasource 数据源名_TYPES crm_TABLE  crm_VIEW
-     * @return DataRow
-     */
-    public static DataRow getTableMaps(String datasource) {
+
+   /* public static DataRow getTableMaps(String datasource) {
         DataRow row = cache_table_maps.get(datasource(datasource));
         if(null == row) {
             row = new DataRow();
             cache_table_maps.put(datasource(datasource), row);
         }
         return row;
-    }
-    /**
-     * 视图缓存
-     * @param datasource 数据源名_TYPES crm_TABLE  crm_VIEW
-     * @return DataRow
-     */
-    public static DataRow getViewMaps(String datasource) {
+    }*/
+
+  /*  public static DataRow getViewMaps(String datasource) {
         DataRow row = cache_view_maps.get(datasource(datasource));
         if(null == row) {
             row = new DataRow();
             cache_view_maps.put(datasource(datasource), row);
         }
         return row;
-    }
+    }*/
 
-    /**
-     * 表或视图的列，调用之前一要定行检测 table.schema/catalog
-     * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
-     * @return LinkedHashMap
-     */
-    public static <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, String datasource, Table table) {
+
+  /*  public static <T extends Column> LinkedHashMap<String, T> columns(DriverAdapter adapter, String datasource, Table table) {
         if(null == table) {
             return null;
         }
@@ -220,13 +278,9 @@ public class CacheProxy {
         }
         return columns;
     }
+*/
 
-    /**
-     * 设置缓存
-     * @param table 表
-     * @param columns 列
-     */
-    public static <T extends Column> void columns(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> columns) {
+   /* public static <T extends Column> void columns(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> columns) {
         if(null == table) {
             return;
         }
@@ -240,59 +294,9 @@ public class CacheProxy {
             static_cache.put("keys", columns);
             cache_columns.put(key, static_cache);
         }
-    }
+    } */
 
-    /**
-     * 表或视图的Tag
-     * @param table 表名或视图表 贪婪模式下会带前缀 catalog.schema.table
-     * @return LinkedHashMap
-     */
-    public static <T extends Tag> LinkedHashMap<String, T> tags(DriverAdapter adapter, String datasource, Table table) {
-        if(null == table) {
-            return null;
-        }
-        LinkedHashMap<String, T> tags = null;
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_TAGS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
-            CacheElement cacheElement = provider.get(cache, key);
-            if(null != cacheElement) {
-                tags = (LinkedHashMap<String, T>) cacheElement.getValue();
-            }
-        }else{
-            // 通过静态变量缓存
-            DataRow static_cache = cache_columns.get(key);
-            if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                tags = (LinkedHashMap<String, T>) static_cache.get("keys");
-            }
-        }
-        if(null == tags) {
-            tags = new LinkedHashMap<>();
-        }
-        return tags;
-    }
-
-    /**
-     * 设置缓存
-     * @param table 表
-     * @param tags Tag
-     */
-    public static <T extends Tag> void tags(DriverAdapter adapter, String datasource, Table table, LinkedHashMap<String, T> tags) {
-        if(null == table) {
-            return;
-        }
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = datasource(datasource)+"_TAGS_" + key(adapter, table.getCatalog(), table.getSchema(), table);
-        if(null != provider && BasicUtil.isNotEmpty(cache) && !ConfigTable.IS_CACHE_DISABLED) {
-            provider.put(cache, key, tags);
-        }else{
-            DataRow static_cache = new DataRow();
-            static_cache.put("keys", tags);
-            cache_columns.put(key, static_cache);
-        }
-    }
-
-    public static void clear() {
+    public static void clear() {/*
         if(null != provider && !ConfigTable.IS_CACHE_DISABLED) {
             String cache = ConfigTable.TABLE_METADATA_CACHE_KEY;
             if(BasicUtil.isNotEmpty(cache)) {
@@ -300,11 +304,10 @@ public class CacheProxy {
             }
         }else{
             cache_columns.clear();
-        }
+        }*/
 
-        cache_table_maps.clear();
-        cache_view_maps.clear();
-        cache_names.clear();
+        caches.clear();
+        names.clear();
     }
 
 }

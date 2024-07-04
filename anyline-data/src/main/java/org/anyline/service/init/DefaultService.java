@@ -2334,7 +2334,7 @@ public class DefaultService<E> implements AnylineService<E> {
         }
 
         @Override
-        public <T extends View> LinkedHashMap<String, T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
+        public <T extends View> List<T> views(boolean greedy, Catalog catalog, Schema schema, String name, int types) {
             String[] ps = DataSourceUtil.parseRuntime(name);
             if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().views(greedy, catalog, schema, ps[1], types);
@@ -2348,7 +2348,7 @@ public class DefaultService<E> implements AnylineService<E> {
             if(null != ps[0]) {
                 return ServiceProxy.service(ps[0]).metadata().views(catalog, schema, ps[1], types);
             }
-            return dao.views(false, catalog, schema, name, types);
+            return dao.views(catalog, schema, name, types);
         }
 
         @Override
@@ -3135,7 +3135,7 @@ public class DefaultService<E> implements AnylineService<E> {
             boolean result = false;
             CacheProxy.clear();
             try {
-                MasterTable otable = metadata.mtable(table.getCatalog(), table.getSchema(), table.getName());
+                MasterTable otable = metadata.masterTable(table.getCatalog(), table.getSchema(), table.getName());
                 if (null != otable) {
                     otable.setUpdate(table, false, false);
                     result = alter(otable);

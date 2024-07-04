@@ -998,23 +998,22 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends VertexTable> List<T> vertexTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+		return runtime.getAdapter().vertexTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 
 	@Override
-	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends VertexTable> LinkedHashMap<String, T> vertexTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().vertexTables(runtime, random, catalog, schema, pattern, types, struct);
+		return runtime.getAdapter().vertexTables(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
-
 	/* *****************************************************************************************************************
-	 * 													EdgeTable
+	 * 													edgeTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * LinkedHashMap<String, EdgeTable> edgeTables(Catalog catalog, Schema schema, String name, int types)
 	 * LinkedHashMap<String, EdgeTable> edgeTables(Schema schema, String name, int types)
@@ -1024,7 +1023,7 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 
 	/**
-	 * EdgeTables
+	 * edgeTables
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
 	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
 	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
@@ -1033,21 +1032,20 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
+		return runtime.getAdapter().edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 
 	@Override
-	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+	public <T extends EdgeTable> LinkedHashMap<String, T> edgeTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().edgeTables(runtime, random, catalog, schema, pattern, types, struct);
+		return runtime.getAdapter().edgeTables(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
-
 	/**
 	 * 查询表的创建SQL
 	 * @param meta EdgeTable
@@ -1110,27 +1108,28 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	@Override
-	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+	public <T extends View> List<T> views(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().views(runtime, random, greedy, catalog, schema, pattern, types);
+		return runtime.getAdapter().views(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
 	}
 
-	/**
-	 * 查询view的创建SQL
-	 * @param view view
-	 * @return list
-	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, View view) {
+	public <T extends View> LinkedHashMap<String, T> views(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddl(runtime, random, view);
+		return runtime.getAdapter().views(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
+
+	@Override
+	public List<String> ddl(DataRuntime runtime, String random, View view, boolean init) {
+		return null;
+	}
+
 	/* *****************************************************************************************************************
-	 * 													master table
+	 * 													masterTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * LinkedHashMap<String, MasterTable> masterTables(Catalog catalog, Schema schema, String name, int types)
 	 * LinkedHashMap<String, MasterTable> masterTables(Schema schema, String name, int types)
@@ -1138,25 +1137,30 @@ public class DefaultDao<E> implements AnylineDao<E> {
 	 * LinkedHashMap<String, MasterTable> masterTables(int types)
 	 * LinkedHashMap<String, MasterTable> masterTables()
 	 ******************************************************************************************************************/
-	@Override
-	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
-		if(null == runtime) {
-			runtime = runtime();
-		}
-		return runtime.getAdapter().masterTables(runtime, random, greedy, catalog, schema, pattern, types);
-	}
 
 	/**
-	 * 查询MasterTable创建SQL
-	 * @param table MasterTable
-	 * @return list
+	 * masterTables
+	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
+	 * @param catalog 对于MySQL, 则对应相应的数据库, 对于Oracle来说, 则是对应相应的数据库实例, 可以不填, 也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名, 而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意, 其登陆名必须是大写, 不然的话是无法获取到相应的数据, 而MySQL则不做强制要求。
+	 * @param pattern 一般情况下如果要获取所有的表的话, 可以直接设置为null, 如果设置为特定的表名称, 则返回该表的具体信息。
+	 * @param types Metadata.TYPE
+	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable table) {
+	public <T extends MasterTable> List<T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
 		if(null == runtime) {
 			runtime = runtime();
 		}
-		return runtime.getAdapter().ddl(runtime, random, table);
+		return runtime.getAdapter().masterTables(runtime, random, greedy, catalog, schema, pattern, types, struct, configs);
+	}
+
+	@Override
+	public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
+		if(null == runtime) {
+			runtime = runtime();
+		}
+		return runtime.getAdapter().masterTables(runtime, random, catalog, schema, pattern, types, struct, configs);
 	}
 	/* *****************************************************************************************************************
 	 * 													partition table

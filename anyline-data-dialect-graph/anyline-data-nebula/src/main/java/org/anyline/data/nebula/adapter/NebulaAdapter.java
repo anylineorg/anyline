@@ -2639,7 +2639,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public List<Run> buildQueryVertexTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
@@ -2857,7 +2857,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> EdgeTable
      */
     @Override
-    public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct) {
+    public <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
         return super.edgeTables(runtime, random, greedy, catalog, schema, pattern, types, struct);
     }
 
@@ -2878,7 +2878,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @throws Exception Exception
      */
     @Override
-    public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public List<Run> buildQueryEdgeTablesRun(DataRuntime runtime, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, ConfigStore configs) throws Exception {
         List<Run> runs = new ArrayList<>();
         Run run = new SimpleRun(runtime);
         StringBuilder builder = run.getBuilder();
@@ -3193,9 +3193,9 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * 													master table
      * -----------------------------------------------------------------------------------------------------------------
      * [调用入口]
-     * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types)
+     * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
      * [命令合成]
-     * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types)
+     * List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs)
      * [结果集封装]<br/>
      * <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> tables, Catalog catalog, Schema schema, DataSet set)
      * [结果集封装]<br/>
@@ -3222,7 +3222,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @param <T> MasterTable
      */
     @Override
-    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types) {
+    public <T extends MasterTable> LinkedHashMap<String, T> masterTables(DataRuntime runtime, String random, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) {
         return super.masterTables(runtime, random, greedy, catalog, schema, pattern, types);
     }
 
@@ -3237,7 +3237,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
      * @return String
      */
     @Override
-    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types) throws Exception {
+    public List<Run> buildQueryMasterTablesRun(DataRuntime runtime, Catalog catalog, Schema schema, String pattern, int types, int struct, ConfigStore configs) throws Exception {
         return super.buildQueryMasterTablesRun(runtime, catalog, schema, pattern, types);
     }
 
@@ -4056,7 +4056,7 @@ public class NebulaAdapter extends AbstractGraphAdapter implements DriverAdapter
         return runs;
     }
     @Override
-    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<Table> tables) {
+    public List<Run> buildQueryIndexesRun(DataRuntime runtime, Collection<? extends Table> tables) {
         List<Run> runs = new ArrayList<>();
         for(Table table:tables){
             runs.addAll(buildQueryIndexesRun(runtime, table, null));

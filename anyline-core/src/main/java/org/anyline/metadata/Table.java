@@ -183,6 +183,7 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
      * 是否临时表
      */
     protected int temporary                     ;
+    protected int metadataScan = 1000           ; //部分数据库的列信息需要检测数据,0:检测 -1:全部
 
     /**
      * 主键是否需要更新
@@ -417,6 +418,14 @@ public class Table<E extends Table> extends Metadata<E> implements Serializable 
         }
         this.materializes.put(view.getName().toUpperCase(), view);
         return this;
+    }
+
+    public int getMetadataScan() {
+        return metadataScan;
+    }
+
+    public void setMetadataScan(int metadataScan) {
+        this.metadataScan = metadataScan;
     }
 
     public LinkedHashMap<String, Column> primarys() {
