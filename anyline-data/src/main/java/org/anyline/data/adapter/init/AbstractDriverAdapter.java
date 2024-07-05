@@ -967,6 +967,10 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 			run = buildUpdateRunFromEntity(runtime, dest, obj, configs, cols);
 		}
 		convert(runtime, configs, run);
+		buildUpdateRunLimit(runtime, run);
+		return run;
+	}
+	public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
 		return run;
 	}
 	@Override
@@ -5660,7 +5664,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 
 
 	/* *****************************************************************************************************************
-	 * 													edgeTable
+	 * 													EdgeTable
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * [调用入口]
 	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, String random, boolean greedy, Catalog catalog, Schema schema, String pattern, int types, boolean struct)
@@ -5675,11 +5679,11 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * <T extends EdgeTable> List<T> edgeTables(DataRuntime runtime, boolean create, List<T> edgeTables, Catalog catalog, Schema schema, String pattern, int types)
 	 * <T extends EdgeTable> LinkedHashMap<String, T> comments(DataRuntime runtime, int index, boolean create, LinkedHashMap<String, T> edgeTables, Catalog catalog, Schema schema, DataSet set)
 	 * [调用入口]
-	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init)
+	 * List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init)
 	 * [命令合成]
-	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable)
+	 * List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta)
 	 * [结果集封装]<br/>
-	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set)
+	 * List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -5792,8 +5796,8 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				}
 			}
 			boolean comment = false;
-			for(EdgeTable edgeTable:list) {
-				if(BasicUtil.isNotEmpty(edgeTable.getComment())) {
+			for(EdgeTable item:list) {
+				if(BasicUtil.isNotEmpty(item.getComment())) {
 					comment = true;
 					break;
 				}
@@ -5890,9 +5894,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 				for (Run run : runs) {
 					DataSet set = select(runtime, random, true, (String) null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
 					edgeTables = edgeTables(runtime, idx++, true, edgeTables, catalog, schema, set);
-					for(EdgeTable edgeTable:edgeTables){
-						String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, edgeTable.getName());
-						CacheProxy.name(cache_key, edgeTable.getName());
+					for(EdgeTable item:edgeTables){
+						String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, item.getName());
+						CacheProxy.name(cache_key, item.getName());
 					}
 					sys = true;
 				}
@@ -5903,9 +5907,9 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 		if(!sys) {
 			try {
 				edgeTables = edgeTables(runtime, true, edgeTables, catalog, schema, null, EdgeTable.TYPE.NORMAL.value);
-				for(EdgeTable edgeTable:edgeTables){
-					String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, edgeTable.getName());
-					CacheProxy.name(cache_key, edgeTable.getName());
+				for(EdgeTable item:edgeTables){
+					String cache_key = CacheProxy.key(runtime, "edgeTable", greedy, catalog, schema, item.getName());
+					CacheProxy.name(cache_key, item.getName());
 				}
 			}catch (Exception e) {
 				e.printStackTrace();
@@ -6113,39 +6117,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edgeTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param edgeTable 表
+	 * @param meta 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, EdgeTable edgeTable, boolean init) {
+	public List<String> ddl(DataRuntime runtime, String random, EdgeTable meta, boolean init) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, edgeTable);
+			List<Run> runs = buildQueryDdlsRun(runtime, meta);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传edgeTable,这里的edgeTable用来查询表结构
 					DataSet set = select(runtime, random, true, (EdgeTable)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, edgeTable, list, set);
+					list = ddl(runtime, idx++, meta, list, set);
 				}
-				edgeTable.setDdls(list);
+				meta.setDdls(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
-				LinkedHashMap<String, Column> columns = edgeTable.getColumns();
+				LinkedHashMap<String, Column> columns = meta.getColumns();
 				if(null == columns || columns.isEmpty()) {
-					columns = columns(runtime, random, false, edgeTable, true);
-					edgeTable.setColumns(columns);
-					edgeTable.setTags(tags(runtime, random, false, edgeTable));
+					columns = columns(runtime, random, false, meta, true);
+					meta.setColumns(columns);
+					meta.setTags(tags(runtime, random, false, meta));
 				}
-				PrimaryKey pk = edgeTable.getPrimaryKey();
+				PrimaryKey pk = meta.getPrimaryKey();
 				if(null == pk) {
-					pk = primary(runtime, random, false, edgeTable);
+					pk = primary(runtime, random, false, meta);
 				}
 				if (null != pk) {
 					for (String col : pk.getColumns().keySet()) {
@@ -6155,25 +6159,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						}
 					}
 				}
-				edgeTable.setPrimaryKey(pk);
-				LinkedHashMap<String, Index> indexes = edgeTable.getIndexes();
+				meta.setPrimaryKey(pk);
+				LinkedHashMap<String, Index> indexes = meta.getIndexes();
 				if(null == indexes || indexes.isEmpty()) {
-					edgeTable.setIndexes(indexes(runtime, random, edgeTable, null));
+					meta.setIndexes(indexes(runtime, random, meta, null));
 				}
-				runs = buildCreateRun(runtime, edgeTable);
+				runs = buildCreateRun(runtime, meta);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					edgeTable.setDdls(list);
+					meta.setDdls(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[edgeTable ddl][edgeTable:{}][result:{}][执行耗时:{}]", random, edgeTable.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[edgeTable ddl][edgeTable:{}][result:{}][执行耗时:{}]", random, meta.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
 		}catch (Exception e) {
 			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-				log.info("{}[edgeTable ddl][{}][edgeTable:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), edgeTable.getName(), e.toString());
+				log.info("{}[edgeTable ddl][{}][edgeTable:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), meta.getName(), e.toString());
 			}
 		}
 		return list;
@@ -6183,14 +6187,14 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * edgeTable[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param edgeTable 表
+	 * @param meta 表
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable) throws Exception {
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta) throws Exception {
 		//有支持直接查询DDL的在子类中实现
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable edgeTable)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<Run> buildQueryDdlsRun(DataRuntime runtime, EdgeTable meta)", 37));
 		}
 		return new ArrayList<>();
 	}
@@ -6200,18 +6204,18 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param edgeTable 表
+	 * @param meta 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set) {
+	public List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set) {
 		if(null == ddls) {
 			ddls = new ArrayList<>();
 		}
 		if(log.isDebugEnabled()) {
-			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, EdgeTable edgeTable, List<String> ddls, DataSet set)", 37));
+			log.debug(LogUtil.format("子类(" + this.getClass().getSimpleName() + ")未实现 List<String> ddl(DataRuntime runtime, int index, EdgeTable meta, List<String> ddls, DataSet set)", 37));
 		}
 		return ddls;
 	}
@@ -7228,39 +7232,39 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param masterTable 表
+	 * @param meta 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, String random, MasterTable masterTable, boolean init) {
+	public List<String> ddl(DataRuntime runtime, String random, MasterTable meta, boolean init) {
 		List<String> list = new ArrayList<>();
 		if(null == random) {
 			random = random(runtime);
 		}
 		try {
 			long fr = System.currentTimeMillis();
-			List<Run> runs = buildQueryDdlsRun(runtime, masterTable);
+			List<Run> runs = buildQueryDdlsRun(runtime, meta);
 			if (null != runs && runs.size()>0) {
 				//直接查询DDL
 				int idx = 0;
 				for (Run run : runs) {
 					//不要传masterTable,这里的masterTable用来查询表结构
 					DataSet set = select(runtime, random, true, (MasterTable)null, new DefaultConfigStore().keyCase(KeyAdapter.KEY_CASE.PUT_UPPER), run).toUpperKey();
-					list = ddl(runtime, idx++, masterTable, list, set);
+					list = ddl(runtime, idx++, meta, list, set);
 				}
-				masterTable.setDdls(list);
+				meta.setDdls(list);
 			}else{
 				//数据库不支持的 根据metadata拼装
-				LinkedHashMap<String, Column> columns = masterTable.getColumns();
+				LinkedHashMap<String, Column> columns = meta.getColumns();
 				if(null == columns || columns.isEmpty()) {
-					columns = columns(runtime, random, false, masterTable, true);
-					masterTable.setColumns(columns);
-					masterTable.setTags(tags(runtime, random, false, masterTable));
+					columns = columns(runtime, random, false, meta, true);
+					meta.setColumns(columns);
+					meta.setTags(tags(runtime, random, false, meta));
 				}
-				PrimaryKey pk = masterTable.getPrimaryKey();
+				PrimaryKey pk = meta.getPrimaryKey();
 				if(null == pk) {
-					pk = primary(runtime, random, false, masterTable);
+					pk = primary(runtime, random, false, meta);
 				}
 				if (null != pk) {
 					for (String col : pk.getColumns().keySet()) {
@@ -7270,25 +7274,25 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 						}
 					}
 				}
-				masterTable.setPrimaryKey(pk);
-				LinkedHashMap<String, Index> indexes = masterTable.getIndexes();
+				meta.setPrimaryKey(pk);
+				LinkedHashMap<String, Index> indexes = meta.getIndexes();
 				if(null == indexes || indexes.isEmpty()) {
-					masterTable.setIndexes(indexes(runtime, random, masterTable, null));
+					meta.setIndexes(indexes(runtime, random, meta, null));
 				}
-				runs = buildCreateRun(runtime, masterTable);
+				runs = buildCreateRun(runtime, meta);
 				for(Run run:runs) {
 					list.add(run.getFinalUpdate());
-					masterTable.setDdls(list);
+					meta.setDdls(list);
 				}
 			}
 			if (ConfigTable.IS_LOG_SQL_TIME && log.isInfoEnabled()) {
-				log.info("{}[masterTable ddl][masterTable:{}][result:{}][执行耗时:{}]", random, masterTable.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
+				log.info("{}[masterTable ddl][masterTable:{}][result:{}][执行耗时:{}]", random, meta.getName(), list.size(), DateUtil.format(System.currentTimeMillis() - fr));
 			}
 		}catch (Exception e) {
 			if (ConfigTable.IS_PRINT_EXCEPTION_STACK_TRACE) {
 				e.printStackTrace();
 			} else if (ConfigTable.IS_LOG_SQL && log.isWarnEnabled()) {
-				log.info("{}[masterTable ddl][{}][masterTable:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), masterTable.getName(), e.toString());
+				log.info("{}[masterTable ddl][{}][masterTable:{}][msg:{}]", random, LogUtil.format("查询表的创建DDL失败", 33), meta.getName(), e.toString());
 			}
 		}
 		return list;
@@ -8658,8 +8662,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
 	 * @param greedy 贪婪模式 true:如果不填写catalog或schema则查询全部 false:只在当前catalog和schema中查询
-	 * @param table 表
-	 * @param pattern 名称统配符或正则
+	 * @param tables 表
 	 * @return  LinkedHashMap
 	 * @param <T> Index
 	 */
@@ -10361,7 +10364,7 @@ public abstract class AbstractDriverAdapter implements DriverAdapter {
 	 * @param random 用来标记同一组命令
 	 * @param meta Metadata(表,列等)
 	 * @param action 执行命令
-	 * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+	 * @param runs 最终待执行的命令和参数(如果是JDBC环境就是SQL)
 	 * @return boolean
 	 */
 	public boolean execute(DataRuntime runtime, String random, Metadata meta, ACTION.DDL action, List<Run> runs) {

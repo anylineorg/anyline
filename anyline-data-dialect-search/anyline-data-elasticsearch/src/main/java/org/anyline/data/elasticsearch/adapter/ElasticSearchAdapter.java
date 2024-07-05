@@ -577,9 +577,11 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * select [命令执行-子流程]<br/>
      * DataRow转换成Entity
      * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param random 用来标记同一组命令
      * @param clazz entity class
      * @param table table
      * @param run 最终待执行的命令和参数(如果是JDBC环境就是SQL)
+     * @param configs 过滤条件及相关配置
      * @return EntitySet
      * @param <T> entity.class
      *
@@ -5669,10 +5671,10 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      {"id":1002, "name":"b c","age":20}<br/>
      {"index":{"_index":"index_user","_id":"10013"}}<br/>
      {"id":1003, "name":"c d","age":30}
-     * @param runtime
-     * @param table
-     * @param list
-     * @return
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表(索引)
+     * @param list list
+     * @return boolean
      */
     public boolean inserts(DataRuntime runtime, String table, Collection list) {
         boolean result = false;
@@ -5710,8 +5712,9 @@ public class ElasticSearchAdapter extends AbstractDriverAdapter implements Drive
      * {"id":1002, "name":"b c","age":20}<br/>
      * {"index":{"_index":"index_user","_id":"10013"}}<br/>
      * {"id":1003, "name":"c d","age":30}<br/>
-     * @param table
-     * @param set
+     * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
+     * @param table 表(索引)
+     * @param set 数据集合
      * @return boolean
      */
     public boolean insert(DataRuntime runtime, String table, DataSet set) {

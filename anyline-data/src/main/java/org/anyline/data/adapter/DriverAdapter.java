@@ -1059,6 +1059,7 @@ public interface DriverAdapter {
 	 * @return Run 最终执行命令 如果是JDBC类型库 会包含 SQL 与 参数值
 	 */
 	Run buildUpdateRun(DataRuntime runtime, int btch, Table dest, Object obj, ConfigStore configs, List<String> columns);
+	Run buildUpdateRunLimit(DataRuntime runtime, Run run);
 	default Run buildUpdateRun(DataRuntime runtime, Table dest, Object obj, ConfigStore configs, List<String> columns) {
 		return buildUpdateRun(runtime, 0, dest, obj, configs, columns);
 	}

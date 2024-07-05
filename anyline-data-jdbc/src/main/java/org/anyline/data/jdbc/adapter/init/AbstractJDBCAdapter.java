@@ -3554,7 +3554,7 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param masterTable 表
+	 * @param meta 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */
@@ -3567,12 +3567,12 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * masterTable[命令合成]<br/>
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
-	 * @param masterTable 表
+	 * @param meta 表
 	 * @return List
 	 */
 	@Override
-	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable masterTable) throws Exception {
-		return super.buildQueryDdlsRun(runtime, masterTable);
+	public List<Run> buildQueryDdlsRun(DataRuntime runtime, MasterTable meta) throws Exception {
+		return super.buildQueryDdlsRun(runtime, meta);
 	}
 
 	/**
@@ -3580,14 +3580,14 @@ public class AbstractJDBCAdapter extends AbstractDriverAdapter implements JDBCAd
 	 * 查询表DDL
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param index 第几条SQL 对照 buildQueryDdlsRun 返回顺序
-	 * @param masterTable 表
+	 * @param meta 表
 	 * @param ddls 上一步查询结果
 	 * @param set sql执行的结果集
 	 * @return List
 	 */
 	@Override
-	public List<String> ddl(DataRuntime runtime, int index, MasterTable masterTable, List<String> ddls, DataSet set) {
-		return super.ddl(runtime, index, masterTable, ddls, set);
+	public List<String> ddl(DataRuntime runtime, int index, MasterTable meta, List<String> ddls, DataSet set) {
+		return super.ddl(runtime, index, meta, ddls, set);
 	}
 
 	/**

@@ -2195,7 +2195,7 @@ public abstract class TemplateAdapter extends AbstractDriverAdapter {
 	 * masterTable[调用入口]<br/>
 	 * @param runtime 运行环境主要包含驱动适配器 数据源或客户端
 	 * @param random 用来标记同一组命令
-	 * @param masterTable 表
+	 * @param meta 表
 	 * @param init 是否还原初始状态 如自增状态
 	 * @return List
 	 */

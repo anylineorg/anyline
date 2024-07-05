@@ -398,6 +398,22 @@ public abstract class MySQLGenusAdapter extends AbstractJDBCAdapter {
     public Run buildUpdateRunFromCollection(DataRuntime runtime, int batch, String dest, Collection list, ConfigStore configs, LinkedHashMap<String, Column> columns) {
         return super.buildUpdateRunFromCollection(runtime, batch, dest, list, configs, columns);
     }
+    @Override
+    public Run buildUpdateRunLimit(DataRuntime runtime, Run run){
+        if(null != run){
+            ConfigStore configs = run.getConfigs();
+            if(null != configs){
+                PageNavi navi = configs.getPageNavi();
+                if(null != navi){
+                    int limit = navi.getPageRows();
+                    if(limit > 0) {
+                        run.getBuilder().append(" LIMIT ").append(limit);
+                    }
+                }
+            }
+        }
+        return run;
+    }
     /**
      * update [命令合成-子流程]<br/>
      * 确认需要更新的列
